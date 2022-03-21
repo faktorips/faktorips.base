@@ -17,13 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -111,8 +110,8 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
     }
 
@@ -149,14 +148,14 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreException {
+    public void testValidateUserInputThis() {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_RenameToSameFolder() throws CoreException {
+    public void testValidateUserInputThis_RenameToSameFolder() {
         processor.setNewName("data.products");
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -165,7 +164,7 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testValidateUserInputThis_RenameToNotValidFolder() throws CoreException {
+    public void testValidateUserInputThis_RenameToNotValidFolder() {
         processor.setNewName("data.");
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -183,7 +182,7 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("data.newproducts");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);

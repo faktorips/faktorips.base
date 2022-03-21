@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -33,12 +31,8 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends Xtend
 
     @Override
     public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
-        try {
-            if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
-                return true;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
+            return true;
         }
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
         if (ipsObject instanceof IPolicyCmptType) {

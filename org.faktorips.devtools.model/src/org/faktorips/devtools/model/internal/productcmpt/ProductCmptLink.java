@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
@@ -18,12 +19,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
@@ -92,7 +91,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
         IProductCmptType productCmptType = getProductCmpt().findProductCmptType(ipsProject);
         if (productCmptType == null) {
             return null;
@@ -113,7 +112,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException {
+    public IProductCmpt findTarget(IIpsProject ipsProject) {
         return ipsProject.findProductCmpt(target);
     }
 
@@ -187,7 +186,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         if (isDeleted()) {
             return;
         }
@@ -202,7 +201,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             if (productCmptType != null) {
                 typeLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(productCmptType);
             }
-            String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, typeLabel);
+            String text = MessageFormat.format(Messages.ProductCmptRelation_msgNoRelationDefined, association,
+                    typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
             validateCardinalityForMatchingAssociation(list, ipsProject, associationObj);
@@ -210,7 +210,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             IProductCmpt targetObj = findTarget(ipsProject);
             if (!willBeValid(targetObj, associationObj, ipsProject)) {
                 String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(associationObj);
-                String msg = NLS.bind(Messages.ProductCmptRelation_msgInvalidTarget, target, associationLabel);
+                String msg = MessageFormat.format(Messages.ProductCmptRelation_msgInvalidTarget, target,
+                        associationLabel);
                 list.add(new Message(MSGCODE_INVALID_TARGET, msg, Message.ERROR, this, PROPERTY_TARGET));
             }
 
@@ -233,10 +234,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String associationLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(associationObj);
             String msg;
             if (associationObj.isChangingOverTime()) {
-                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent, associationLabel,
+                msg = MessageFormat.format(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent,
+                        associationLabel,
                         getName());
             } else {
-                msg = NLS.bind(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
+                msg = MessageFormat.format(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
                         new Object[] { associationLabel, getName(), IIpsModelExtensions.get().getModelPreferences()
                                 .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true) });
             }
@@ -252,7 +254,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         if (!cardinalityValidation.containsErrorMsg()) {
             if (associationObj.isQualified()) {
                 if (getMaxCardinality() > associationObj.getMaxCardinality()) {
-                    String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
+                    String text = MessageFormat.format(
+                            Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
                             this.getMaxCardinality(), associationObj.getMaxCardinality());
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
@@ -324,17 +327,13 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         if (isDeleted()) {
             return false;
         }
-        try {
-            IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
-            if (assoc == null) {
-                return false;
-            }
-            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = assoc
-                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
-            return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
+        if (assoc == null) {
+            return false;
         }
+        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = assoc
+                .findMatchingPolicyCmptTypeAssociation(ipsProject);
+        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
 
     }
 
@@ -354,7 +353,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String caption = null;
@@ -366,7 +365,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public String getPluralCaption(Locale locale) throws CoreException {
+    public String getPluralCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String pluralCaption = null;
@@ -388,7 +387,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreException {
+    public boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) {
         DerivedUnionVisitor hierarchyVisitor = new DerivedUnionVisitor(association, ipsProject);
         hierarchyVisitor.start(findAssociation(ipsProject));
         return hierarchyVisitor.found;
@@ -400,11 +399,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * @return <code>true</code> if it is possible to create a valid relation with the given
      *         parameters at this time, <code>false</code> otherwise.
      * 
-     * @throws CoreException if an error occurs during supertype-evaluation
+     * @throws IpsException if an error occurs during supertype-evaluation
      */
-    private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject)
-            throws CoreException {
-
+    private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject) {
         if (target == null || association == null) {
             return false;
         }
@@ -518,13 +515,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public boolean isConfiguringPolicyAssociation() {
-        try {
-            IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
-            return productAsssociation != null
-                    && productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
+        return productAsssociation != null
+                && productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {
@@ -544,11 +537,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
         @Override
         protected IAssociation findSupertype(IAssociation currentAssociation, IIpsProject ipsProject) {
-            try {
-                return currentAssociation.findSubsettedDerivedUnion(ipsProject);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return currentAssociation.findSubsettedDerivedUnion(ipsProject);
         }
 
         @Override

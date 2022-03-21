@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -242,7 +241,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_EmptyRange() throws CoreException {
+    public void testIsResponsibleFor_EmptyRange() {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[]"));
@@ -251,7 +250,7 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_Range() throws CoreException {
+    public void testIsResponsibleFor_Range() {
         when(configValueSet.getAllowedValueSetTypes(any(IIpsProject.class)))
                 .thenReturn(ValueSetType.getValueSetTypesAsList());
         assertTrue(rangeVSFormat.isResponsibleFor("[1 ... 10 / 1]"));

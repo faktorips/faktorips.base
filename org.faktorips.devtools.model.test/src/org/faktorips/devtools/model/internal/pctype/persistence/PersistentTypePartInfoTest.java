@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -57,7 +56,7 @@ public class PersistentTypePartInfoTest extends PersistenceIpsTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() {
         IPersistentAttributeInfo persistenceAttributeInfo = pcTypePart.getPersistenceAttributeInfo();
         persistenceAttributeInfo.setTransient(true);
         persistenceAttributeInfo.setIndexName("XYZ");

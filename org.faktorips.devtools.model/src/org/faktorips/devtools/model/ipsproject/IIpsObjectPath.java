@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -98,14 +98,14 @@ public interface IIpsObjectPath {
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.
      */
-    public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder);
+    public IIpsSrcFolderEntry newSourceFolderEntry(AFolder srcFolder);
 
     /**
      * Factory method that creates a new archive entry and adds it to the list of entries. If there
      * is already an archive entry with the given path no entry is created but the existing entry is
      * returned.
      */
-    public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException;
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws IpsException;
 
     /**
      * Factory method that creates a new project reference entry and adds it to the list of entries.
@@ -135,12 +135,12 @@ public interface IIpsObjectPath {
     /**
      * @return true if this path contains a reference to the given source folder.
      */
-    public boolean containsSrcFolderEntry(IFolder entry);
+    public boolean containsSrcFolderEntry(AFolder entry);
 
     /**
      * Removes the given source folder from the list of entries if contained.
      */
-    public void removeSrcFolderEntry(IFolder srcFolder);
+    public void removeSrcFolderEntry(AFolder srcFolder);
 
     /**
      * Returns true if the output folder and base package are defined per source folder, otherwise
@@ -156,18 +156,18 @@ public interface IIpsObjectPath {
     /**
      * Returns the output folder for generated but mergeable sources used for all source folders.
      */
-    public IFolder getOutputFolderForMergableSources();
+    public AFolder getOutputFolderForMergableSources();
 
     /**
      * Sets the output folder for generated but mergeable sources. If the output folder is not
      * defined per source folder that all mergeable sources are generated into this directory.
      */
-    public void setOutputFolderForMergableSources(IFolder outputFolder);
+    public void setOutputFolderForMergableSources(AFolder outputFolder);
 
     /**
      * Returns all output folders specified in the path.
      */
-    public IFolder[] getOutputFolders();
+    public AFolder[] getOutputFolders();
 
     /**
      * Returns the name of the base package for the generated Java source files that are to be
@@ -187,12 +187,12 @@ public interface IIpsObjectPath {
      * Derived artifacts are not managed by the resource management system (e.g. CVS). During the
      * clean build phase all resources in this folder will be deleted.
      */
-    public IFolder getOutputFolderForDerivedSources();
+    public AFolder getOutputFolderForDerivedSources();
 
     /**
      * Sets the output folder for derived sources.
      */
-    public void setOutputFolderForDerivedSources(IFolder outputFolder);
+    public void setOutputFolderForDerivedSources(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for generated Java source files that are considered
@@ -213,7 +213,7 @@ public interface IIpsObjectPath {
     /**
      * Validates the object path and returns the result as list of messages.
      */
-    public MessageList validate() throws CoreException;
+    public MessageList validate() throws IpsException;
 
     /**
      * Moves the entries at at the given indices up/down and adjusts the positions of the elements

@@ -10,14 +10,15 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
@@ -40,7 +41,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     // Cached Path
     // as Path is an immutable value object, we don't have any threading problems here
     // if two threads create two different paths we don't have a problem as the two paths are equal.
-    private transient IPath path = null;
+    private transient Path path = null;
 
     public QualifiedNameType(String name, IpsObjectType type) {
         ArgumentCheck.notNull(name);
@@ -67,7 +68,9 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
 
         IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
 
-        String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
+        String qNameWithBackslash = pathToFile.substring(0, index).replace(IPath.SEPARATOR,
+                IIpsPackageFragment.SEPARATOR);
+        String qName = qNameWithBackslash.replace('\\', IIpsPackageFragment.SEPARATOR);
 
         return new QualifiedNameType(qName, type);
     }
@@ -129,12 +132,12 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
     }
 
     /**
-     * Transforms this qualified name part into an IPath. E.g.: mycompany.motor.MotorPolicy of type
+     * Transforms this qualified name part into a Path. E.g.: mycompany.motor.MotorPolicy of type
      * PolicyCmptType becomes mycompany/motor/MotorPolicy.ipspct
      */
-    public IPath toPath() {
+    public Path toPath() {
         if (path == null) {
-            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+            path = Path.of(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, File.separatorChar)
                     + FILE_EXTENSION_SEPERATOR + type.getFileExtension());
         }
         return path;

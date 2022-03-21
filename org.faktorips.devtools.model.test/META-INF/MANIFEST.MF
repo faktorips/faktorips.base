@@ -15,12 +15,13 @@ Require-Bundle: org.faktorips.abstracttest,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
-Import-Package: org.junit;version="4.5.0",
- org.junit.runner;version="4.5.0",
+Import-Package: org.faktorips.testsupport,
+ org.junit;version="4.13.2",
+ org.junit.experimental.categories;version="4.13.2",
+ org.junit.runner;version="4.13.2",
  org.mockito,
  org.mockito.invocation,
  org.mockito.runners,
  org.mockito.stubbing,
- org.mockito.verification,
- org.faktorips.testsupport
+ org.mockito.verification
 Export-Package: org.faktorips.devtools.model.internal.value

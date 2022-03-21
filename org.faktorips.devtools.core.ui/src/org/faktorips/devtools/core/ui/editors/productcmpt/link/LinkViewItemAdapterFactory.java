@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -35,11 +33,7 @@ public class LinkViewItemAdapterFactory implements IAdapterFactory {
             return (T)link;
         }
         if (IIpsObject.class.equals(adapterType)) {
-            try {
-                return (T)link.findTarget(link.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return (T)link.findTarget(link.getIpsProject());
         }
         return null;
     }

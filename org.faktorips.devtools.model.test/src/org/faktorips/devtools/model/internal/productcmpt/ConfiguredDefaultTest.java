@@ -21,12 +21,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -82,7 +83,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnknownAttribute() throws CoreException {
+    public void testValidate_UnknownAttribute() {
         attribute.setName("otherName");
         MessageList ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_UNKNWON_ATTRIBUTE));
@@ -93,7 +94,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UnknownDatatype() throws CoreException {
+    public void testValidate_UnknownDatatype() {
         configuredDefaultValue.setValue("1");
 
         attribute.setAttributeType(AttributeType.CHANGEABLE);
@@ -116,7 +117,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueNotParsable() throws CoreException {
+    public void testValidate_ValueNotParsable() {
         attribute.setAttributeType(AttributeType.CHANGEABLE);
         attribute.setDatatype("Money");
 
@@ -180,24 +181,30 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_InvalidDatatype() throws Exception {
-        InvalidDatatype datatype = new InvalidDatatype();
-        attribute.setDatatype(datatype.getQualifiedName());
+        try (var testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            InvalidDatatype datatype = new InvalidDatatype();
+            if (!Abstractions.isEclipseRunning()) {
+                // for eclipse this datatype is defined in the fragment.xml
+                testIpsModelExtensions.addPredefinedDatatype(datatype);
+            }
+            attribute.setDatatype(datatype.getQualifiedName());
 
-        Datatype[] vds = ipsProject.findDatatypes(true, false);
-        ArrayList<Datatype> vdlist = new ArrayList<>();
-        vdlist.addAll(Arrays.asList(vds));
-        vdlist.add(datatype);
+            Datatype[] vds = ipsProject.findDatatypes(true, false);
+            ArrayList<Datatype> vdlist = new ArrayList<>();
+            vdlist.addAll(Arrays.asList(vds));
+            vdlist.add(datatype);
 
-        IIpsProjectProperties properties = ipsProject.getProperties();
-        properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
-        ipsProject.setProperties(properties);
+            IIpsProjectProperties properties = ipsProject.getProperties();
+            properties.setPredefinedDatatypesUsed(vdlist.toArray(new ValueDatatype[vdlist.size()]));
+            ipsProject.setProperties(properties);
 
-        MessageList ml = configuredDefaultValue.validate(configuredDefaultValue.getIpsProject());
-        assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+            MessageList ml = configuredDefaultValue.validate(configuredDefaultValue.getIpsProject());
+            assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_INVALID_DATATYPE));
+        }
     }
 
     @Test
-    public void testValidate_ValueNotInValueset() throws CoreException {
+    public void testValidate_ValueNotInValueset() {
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
@@ -225,7 +232,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueNotInValuesetForInheritedValues() throws CoreException {
+    public void testValidate_ValueNotInValuesetForInheritedValues() {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
 
@@ -253,7 +260,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ValueNotInValuesetForUndefinedValues() throws CoreException {
+    public void testValidate_ValueNotInValuesetForUndefinedValues() {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
 
@@ -294,7 +301,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValue_InheritedValue() throws CoreException {
+    public void testGetValue_InheritedValue() {
         IConfiguredDefault templateDefaultValue = createDefaultValueInNewTemplate(attribute);
 
         templateDefaultValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
@@ -315,7 +322,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetValue_UndefinedValue() throws CoreException {
+    public void testGetValue_UndefinedValue() {
         IConfiguredDefault templateDefaultValue = createDefaultValueInNewTemplate();
         templateDefaultValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         templateDefaultValue.setValue("templateValue");
@@ -325,7 +332,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_InheritedValuesAreRead() throws CoreException {
+    public void testInitFromXml_InheritedValuesAreRead() {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
 
@@ -376,7 +383,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() throws CoreException {
+    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setDatatype("Decimal");
 
@@ -413,7 +420,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         assertThat(configuredDefaultValue.getValue(), is("10"));
     }
 
-    private IConfiguredDefault createDefaultValueInNewTemplate() throws CoreException {
+    private IConfiguredDefault createDefaultValueInNewTemplate() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredDefault templateConfigElement = templateGen.newPropertyValue(attribute, IConfiguredDefault.class);
@@ -421,8 +428,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         return templateConfigElement;
     }
 
-    private IConfiguredDefault createDefaultValueInNewTemplate(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
-            throws CoreException {
+    private IConfiguredDefault createDefaultValueInNewTemplate(IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredDefault templateConfigElement = templateGen.newPropertyValue(policyCmptTypeAttribute,
@@ -433,7 +439,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     private IConfiguredDefault createDefaultValueAndValueSetInNewTemplate(
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute) throws CoreException {
+            IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IConfiguredDefault templateConfiguredDefault = templateGen.newPropertyValue(policyCmptTypeAttribute,
@@ -449,7 +455,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreException {
+    public void testGetCaption() {
         attribute.setLabelValue(Locale.US, "Attribute Label");
 
         assertThat(NLS.bind(Messages.ConfiguredDefault_caption, "Attribute Label"),

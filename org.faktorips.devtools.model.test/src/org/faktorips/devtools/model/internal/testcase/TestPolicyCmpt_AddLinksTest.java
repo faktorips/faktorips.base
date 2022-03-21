@@ -17,7 +17,6 @@ import static org.junit.Assert.assertSame;
 import java.util.GregorianCalendar;
 import java.util.UUID;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -70,7 +69,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * not optional.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityOne() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityOne() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -127,7 +126,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * No link must be added because the associations are all optional.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityZero() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityZero() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -184,7 +183,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * require at least two policy components.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityTwo() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MinCardinalityTwo() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -247,7 +246,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * must be added, because it is optional.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_MixedMinCardinalities() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MixedMinCardinalities() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -318,7 +317,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * third level.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_MultipleAssociations() throws CoreException {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_MultipleAssociations() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -398,7 +397,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * must be determined by analyzing the available product component links.
      */
     @Test
-    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityOne() throws CoreException {
+    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityOne() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -459,7 +458,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * link from product component 2 is optional.
      */
     @Test
-    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityZero() throws CoreException {
+    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityZero() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -519,7 +518,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * 3_1 for both links.
      */
     @Test
-    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityTwo() throws CoreException {
+    public void testAddPcTypeLink_AmbiguousProductComponents_OneLink_MinCardinalityTwo() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -582,7 +581,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * the other one with product component 3_2.
      */
     @Test
-    public void testAddPcTypeLink_AmbiguousProductComponents_TwoLinks_MinCardinalityOne() throws CoreException {
+    public void testAddPcTypeLink_AmbiguousProductComponents_TwoLinks_MinCardinalityOne() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -650,7 +649,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * and one with product component 3_3.
      */
     @Test
-    public void testAddPcTypeLink_AmbiguousProductComponents_ThreeLinks_MixedCardinalities() throws CoreException {
+    public void testAddPcTypeLink_AmbiguousProductComponents_ThreeLinks_MixedCardinalities() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -719,7 +718,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testAddPcTypeLink_NonAmbiguousProductComponents_LinkOptionalInTestParameterButMandatoryInProductComponent()
-            throws CoreException {
+            {
 
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
@@ -782,7 +781,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * assigned to test policy component 1.
      */
     @Test
-    public void testAddPcTypeLink_RecursiveAddNotPossibleIfNoProductCmptIsAssigned() throws CoreException {
+    public void testAddPcTypeLink_RecursiveAddNotPossibleIfNoProductCmptIsAssigned() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -813,7 +812,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPcTypeLink_OnlyWholeContentChangedEvent() throws CoreException {
+    public void testAddPcTypeLink_OnlyWholeContentChangedEvent() {
         // Create model types
         IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -872,7 +871,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * There is no link to policy 2 because the corresponding association is optional.
      */
     @Test
-    public void testAddRequiredLinks() throws CoreException {
+    public void testAddRequiredLinks() {
         // Create model types
         IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
@@ -957,7 +956,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * There is no link to policy 2 because the corresponding association is optional.
      */
     @Test
-    public void testAddRequiredLinks_staticLinks() throws CoreException {
+    public void testAddRequiredLinks_staticLinks() {
         // Create model types
         IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
@@ -1021,7 +1020,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = IllegalStateException.class)
-    public void testAddRequiredLinks_OnlyPossibleIfProductCmptAssigned() throws CoreException {
+    public void testAddRequiredLinks_OnlyPossibleIfProductCmptAssigned() {
         // Create model types
         IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
 
@@ -1038,7 +1037,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddRequiredLinks_OnlyWholeContentChangedEvent() throws CoreException {
+    public void testAddRequiredLinks_OnlyWholeContentChangedEvent() {
         // Create model types
         IPolicyCmptType rootPolicyType = newPolicyAndProductCmptType(ipsProject, "RootPolicyType", "RootProductType");
         IProductCmptType rootProductCmptType = rootPolicyType.findProductCmptType(ipsProject);
@@ -1086,7 +1085,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * sufficient if the link is provided in one generation.
      */
     @Test
-    public void testAddRequiredLinks_SearchAllGenerationsForLink() throws CoreException {
+    public void testAddRequiredLinks_SearchAllGenerationsForLink() {
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");
         IPolicyCmptType policyType2 = newPolicyAndProductCmptType(ipsProject, "PolicyType2", "ProductType2");
@@ -1248,7 +1247,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      */
     private ITestPolicyCmpt createTestCase(ITestCaseType testCaseType,
             IPolicyCmptType rootPolicyType,
-            IProductCmpt rootProductCmpt) throws CoreException {
+            IProductCmpt rootProductCmpt) {
 
         ITestCase testCase = newTestCase(testCaseType, "MyTestCase");
         ITestPolicyCmpt testPolicyCmpt = testCase.newTestPolicyCmpt();

@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -41,7 +42,7 @@ public class InvalidGenerationsDeltaEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.InvalidGenerationsDeltaEntry_description, IIpsModelExtensions.get()
+        return MessageFormat.format(Messages.InvalidGenerationsDeltaEntry_description, IIpsModelExtensions.get()
                 .getModelPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
     }
 

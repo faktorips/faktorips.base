@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.model.internal.pctype.ValidationRuleMessageText;
@@ -68,7 +67,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     private ValidationRuleMessagesPropertiesImporter importer;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         when(ipsSrcFile.isMutable()).thenReturn(true);
         List<IIpsSrcFile> srcFiles = new ArrayList<>();
         srcFiles.add(ipsSrcFile);

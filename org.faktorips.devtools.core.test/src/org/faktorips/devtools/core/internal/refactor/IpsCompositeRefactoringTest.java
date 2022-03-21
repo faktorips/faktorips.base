@@ -246,7 +246,7 @@ public class IpsCompositeRefactoringTest {
         }
 
         @Override
-        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        public RefactoringStatus validateUserInput(IProgressMonitor pm) {
             return null;
         }
 

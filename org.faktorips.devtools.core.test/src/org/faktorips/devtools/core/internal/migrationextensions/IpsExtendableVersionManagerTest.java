@@ -22,17 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Version;
 
 public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
 
     private IpsExtendableVersionManager ipsExtendableVersionManager;
-    private Version currentVersion;
+    private AVersion currentVersion;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation1;
     private AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation2;
 
@@ -42,13 +42,12 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         super.setUp();
 
         ipsExtendableVersionManager = new IpsExtendableVersionManager();
-        currentVersion = Version.parseVersion(ipsExtendableVersionManager.getCurrentVersion());
+        currentVersion = AVersion.parse(ipsExtendableVersionManager.getCurrentVersion());
     }
 
     @Test
     public void testCompareToCurrentVersion() throws Exception {
-
-        assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion + "zzz") > 0);
+        assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion + ".zzz") > 0);
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion("0.0.0") < 0);
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion.toString()) == 0);
     }
@@ -86,7 +85,7 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         assertTrue(ipsExtendableVersionManager.isCurrentVersionCompatibleWith("1.0.0"));
 
         assertFalse(ipsExtendableVersionManager.isCurrentVersionCompatibleWith("0.0.1"));
-        assertFalse(ipsExtendableVersionManager.isCurrentVersionCompatibleWith(currentVersion + "zzz"));
+        assertFalse(ipsExtendableVersionManager.isCurrentVersionCompatibleWith(currentVersion + ".zzz"));
     }
 
     private void mockMigrationOperations() {
@@ -94,12 +93,12 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
         when(ipsProjectMigrationOperation1.getTargetVersion()).thenReturn("0.1.0");
 
         ipsProjectMigrationOperation2 = mock(AbstractIpsProjectMigrationOperation.class);
-        when(ipsProjectMigrationOperation2.getTargetVersion()).thenReturn(currentVersion + "zzz");
+        when(ipsProjectMigrationOperation2.getTargetVersion()).thenReturn(currentVersion + ".zzz");
 
-        Map<Version, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
-        registeredMigrations.put(new Version(ipsProjectMigrationOperation1.getTargetVersion()),
+        Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
+        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation1.getTargetVersion()),
                 (ipsProject, featureId) -> ipsProjectMigrationOperation1);
-        registeredMigrations.put(new Version(ipsProjectMigrationOperation2.getTargetVersion()),
+        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation2.getTargetVersion()),
                 (ipsProject, featureId) -> ipsProjectMigrationOperation2);
         ipsExtendableVersionManager.setRegisteredMigrations(registeredMigrations);
     }

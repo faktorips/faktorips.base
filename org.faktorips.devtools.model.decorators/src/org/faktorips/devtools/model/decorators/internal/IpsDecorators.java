@@ -87,7 +87,6 @@ public class IpsDecorators implements IIpsDecorators {
     private final Supplier<IIpsElementDecorator> templateDecorator = CachingSupplier
             .caching(ProductCmptDecorator::forTemplates);
 
-    @SuppressWarnings("deprecation")
     private IpsDecorators() {
         // set this here, because the SimpleIpsElementDecorator will access it in its constructor
         theInstance = this;

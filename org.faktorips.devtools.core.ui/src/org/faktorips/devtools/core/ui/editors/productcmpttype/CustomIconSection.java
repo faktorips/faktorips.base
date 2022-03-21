@@ -38,6 +38,8 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -248,7 +250,8 @@ public class CustomIconSection extends IpsSection {
          * part of the {@link IpsObjectPath}.
          */
         private boolean isIpsSrcFolder(IFolder folder) {
-            IIpsProject ipsProject = IIpsModel.get().getIpsProject(folder.getProject());
+            IIpsProject ipsProject = IIpsModel.get()
+                    .getIpsProject(Wrappers.wrap(folder.getProject()).as(AProject.class));
             IIpsPackageFragmentRoot root = ipsProject
                     .getIpsPackageFragmentRoot(folder.getProjectRelativePath().toOSString());
             if (root != null && root.exists()) {
@@ -277,7 +280,7 @@ public class CustomIconSection extends IpsSection {
                         return true;
                     }
                     // referenced ipsProjects
-                    IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
+                    IIpsProject ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
                     IIpsObjectPath ioPath = type.getIpsProject().getIpsObjectPath();
                     if (ioPath.containsProjectRefEntry(ipsProject)) {
                         return true;

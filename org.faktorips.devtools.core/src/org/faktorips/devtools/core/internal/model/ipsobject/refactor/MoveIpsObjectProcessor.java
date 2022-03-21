@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -51,7 +50,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         renameMoveHelper.validateIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(),
                 validationMessageList);
     }
@@ -59,13 +58,13 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
     @Override
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
+            CheckConditionsContext context) {
         MessageList validationMessageList = renameMoveHelper.checkFinalConditionsThis(this, status, pm);
         addValidationMessagesToStatus(validationMessageList, status);
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         return renameMoveHelper.refactorIpsModel(getTargetIpsPackageFragment(), getIpsElement().getName(), false, pm);
     }
 

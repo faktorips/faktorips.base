@@ -10,22 +10,24 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.mapping.SeverityMapping;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaConventions;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
@@ -87,17 +89,16 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     @Override
-    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
+    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) {
         return validateIpsObjectNameInternal(type, name, true);
     }
 
     @Override
-    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws CoreException {
+    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) {
         ArgumentCheck.notNull(type);
         return validateIpsObjectNameInternal(type, name, false);
     }
 
-    @SuppressWarnings("deprecation")
     private MessageList validateIpsObjectNameInternal(IpsObjectType type, String name, boolean qualifiedCheck) {
         MessageList result = new MessageList();
 
@@ -171,8 +172,10 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         MessageList ml = new MessageList();
         boolean matches = FORBIDDEN_CHARACTERS_IN_TESTCASENAME_PATTERN.matcher(testCaseName).find();
         if (matches) {
-            ml.add(new Message(INVALID_NAME, NLS.bind(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
-                    FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
+            ml.add(new Message(INVALID_NAME,
+                    MessageFormat.format(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
+                            FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), //$NON-NLS-1$ //$NON-NLS-2$
+                    Message.ERROR));
         }
         return ml;
     }
@@ -207,7 +210,8 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         for (char c : chars) {
             if (unqualifiedName.indexOf(c) != -1) {
                 ml.add(new Message(INVALID_NAME,
-                        NLS.bind(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid, unqualifiedName),
+                        MessageFormat.format(Messages.DefaultIpsProjectNamingConventions_msgNameNotValid,
+                                unqualifiedName),
                         Message.ERROR));
             }
         }
@@ -246,16 +250,30 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         if (!qualifiedCheck) {
             String sourceLevel = getCompilerSourceLevel(ipsProject);
             String complianceLevel = getCompilerComplianceLevel(ipsProject);
-            IStatus status = JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
-            if (status.getSeverity() == IStatus.ERROR) {
-                ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()),
-                        Message.ERROR));
-                return ml;
+            Severity validationResult = Severity.NONE;
+            String validationMessage = IpsStringUtils.EMPTY;
+            if (Abstractions.isEclipseRunning()) {
+                IStatus status = JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
+                validationResult = SeverityMapping.toIps(status.getSeverity());
+                validationMessage = status.getMessage();
+            } else {
+                MessageList validatePackageName = PlainJavaConventions.validateTypeName(name);
+                validationResult = validatePackageName.getSeverity();
+                validationMessage = validatePackageName.getText();
             }
-            if (status.getSeverity() == IStatus.WARNING) {
-                ml.add(new Message(DISCOURAGED_NAME, NLS.bind(msgNameNotValidWarning, name, status.getMessage()),
-                        Message.WARNING));
-                return ml;
+            switch (validationResult) {
+                case ERROR:
+                    ml.add(new Message(INVALID_NAME,
+                            MessageFormat.format(msgNameNotValidError, name, validationMessage),
+                            Message.ERROR));
+                    break;
+                case WARNING:
+                    ml.add(new Message(DISCOURAGED_NAME,
+                            MessageFormat.format(msgNameNotValidWarning, name, validationMessage),
+                            Message.WARNING));
+                    break;
+                default:
+                    break;
             }
         }
         return ml;
@@ -283,21 +301,35 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         MessageList ml = new MessageList();
         String sourceLevel = getCompilerSourceLevel(ipsProject);
         String complianceLevel = getCompilerComplianceLevel(ipsProject);
-        IStatus status = JavaConventions.validatePackageName(name, sourceLevel, complianceLevel);
-        if (status.getSeverity() == IStatus.ERROR) {
-            ml.add(new Message(INVALID_NAME, NLS.bind(msgNameNotValidError, name, status.getMessage()), Message.ERROR));
-            return ml;
+        Severity validationResult = Severity.NONE;
+        String validationMessage = IpsStringUtils.EMPTY;
+        if (Abstractions.isEclipseRunning()) {
+            IStatus status = JavaConventions.validatePackageName(name, sourceLevel, complianceLevel);
+            validationResult = SeverityMapping.toIps(status.getSeverity());
+            validationMessage = status.getMessage();
+        } else {
+            MessageList validatePackageName = PlainJavaConventions.validatePackageName(name);
+            validationResult = validatePackageName.getSeverity();
+            validationMessage = validatePackageName.getText();
         }
-        if (status.getSeverity() == IStatus.WARNING) {
-            ml.add(new Message(DISCOURAGED_NAME, NLS.bind(msgNameNotValidWarning, name, status.getMessage()),
-                    Message.WARNING));
-            return ml;
+        switch (validationResult) {
+            case ERROR:
+                ml.add(new Message(INVALID_NAME, MessageFormat.format(msgNameNotValidError, name, validationMessage),
+                        Message.ERROR));
+                break;
+            case WARNING:
+                ml.add(new Message(DISCOURAGED_NAME,
+                        MessageFormat.format(msgNameNotValidWarning, name, validationMessage),
+                        Message.WARNING));
+                break;
+            default:
+                break;
         }
         return ml;
     }
 
     @Override
-    public MessageList validateIpsPackageRootName(String name) throws CoreException {
+    public MessageList validateIpsPackageRootName(String name) {
         return new MessageList();
     }
 
@@ -305,7 +337,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     public Message validateIfValidJavaIdentifier(String name,
             String text,
             Object validatedObject,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         String sourceLevel = getCompilerSourceLevel(ipsProject);
         String complianceLevel = getCompilerComplianceLevel(ipsProject);
@@ -317,11 +349,11 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
     }
 
     private String getCompilerComplianceLevel(IIpsProject ipsProject) {
-        return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
+        return ipsProject.getJavaProject().getSourceVersion().toString();
     }
 
     private String getCompilerSourceLevel(IIpsProject ipsProject) {
-        return ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
+        return ipsProject.getJavaProject().getSourceVersion().toString();
     }
 
 }

@@ -17,13 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -113,8 +112,8 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
         policyCmptType.getIpsSrcFile().save(true, null);
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
     }
 
@@ -168,14 +167,14 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreException {
+    public void testValidateUserInputThis() {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameFolder() {
         processor.setTargetIpsPackageFragment(source);
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -184,7 +183,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameParentFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameParentFolder() {
         processor.setTargetIpsPackageFragment(ipsRoot.getIpsPackageFragment("data"));
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -193,7 +192,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() throws CoreException {
+    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() {
         processor = new MoveIpsPackageFragmentProcessor(ipsRoot.getIpsPackageFragment(""));
         processor.setTargetIpsPackageFragment(target);
         RefactoringStatus status = new RefactoringStatus();
@@ -213,7 +212,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("target.products");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);

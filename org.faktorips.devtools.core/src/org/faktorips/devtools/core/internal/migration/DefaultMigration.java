@@ -11,12 +11,14 @@
 package org.faktorips.devtools.core.internal.migration;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.SortedSet;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -46,7 +48,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
 
     @SuppressWarnings("deprecation")
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         MessageList messages = new MessageList();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
@@ -67,7 +69,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return messages;
     }
 
-    private int countPackages() throws CoreException {
+    private int countPackages() {
         int packs = 0;
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -76,14 +78,15 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return packs;
     }
 
-    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor) throws CoreException {
-        IFolder folder = (IFolder)pack.getCorrespondingResource();
-        IResource[] members = folder.members();
-        monitor.beginTask("Migrate package " + pack.getName(), members.length); //$NON-NLS-1$
-        for (IResource member : members) {
+    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor)
+            {
+        AFolder folder = (AFolder)pack.getCorrespondingResource();
+        SortedSet<? extends AResource> members = folder.getMembers();
+        monitor.beginTask("Migrate package " + pack.getName(), members.size()); //$NON-NLS-1$
+        for (AResource member : members) {
             try {
-                if (member instanceof IFile) {
-                    IFile file = (IFile)member;
+                if (member instanceof AFile) {
+                    AFile file = (AFile)member;
                     boolean wasMigrated = migrate(file);
                     if (!wasMigrated) {
                         IIpsSrcFile srcFile = pack.getIpsSrcFile(file.getName());
@@ -116,9 +119,9 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      * @return true when migration is done and {@link #migrate(IIpsSrcFile)} should not be called
-     * @throws CoreException in case of any exception throw a {@link CoreException}
+     * @throws IpsException in case of any exception throw a {@link CoreException}
      */
-    protected boolean migrate(IFile file) throws CoreException {
+    protected boolean migrate(AFile file) {
         // default do nothing
         return false;
     }
@@ -138,14 +141,14 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
      * 
      * @see IIpsSrcFile#markAsDirty()
      */
-    protected abstract void migrate(IIpsSrcFile srcFile) throws CoreException;
+    protected abstract void migrate(IIpsSrcFile srcFile) throws IpsException;
 
     /**
      * Hook method for subclasses to do stuff that is done once before any file is migrated.
      * 
-     * @throws CoreException This method may throw this exception at any time.
+     * @throws IpsException This method may throw this exception at any time.
      */
-    protected void beforeFileMigration() throws CoreException {
+    protected void beforeFileMigration() {
         // Empty default implementation
     }
 }

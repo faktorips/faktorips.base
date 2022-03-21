@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -174,7 +174,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDependsOn() throws CoreException {
+    public void testDependsOn() {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
         association.setTargetRoleSingular("testAsso");
@@ -190,7 +190,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptTypeIsMissing() throws CoreException {
+    public void testValidate_ProductCmptTypeIsMissing() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
 
@@ -214,7 +214,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptTypeIsNotAbstract() throws CoreException {
+    public void testValidate_ProductCmptTypeIsNotAbstract() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
 
@@ -227,7 +227,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductTemplate_TypeMayBeAbstract() throws CoreException {
+    public void testValidate_ProductTemplate_TypeMayBeAbstract() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt productTemplate = newProductTemplate(ipsProject, "MyTemplate");
         productTemplate.setProductCmptType(type.getQualifiedName());
@@ -241,7 +241,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_TemplateType() throws CoreException {
+    public void testValidate_TemplateType() {
         IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
         IProductCmptType subType = newProductCmptType(baseType, "subType");
 
@@ -286,7 +286,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductTemplate_TemplateCycle() throws CoreException {
+    public void testValidate_ProductTemplate_TemplateCycle() {
         IProductCmptType type = newProductCmptType(ipsProject, "type");
         ProductCmpt template1 = newProductTemplate(type, "template1");
         ProductCmpt template2 = newProductTemplate(type, "template2");
@@ -309,12 +309,12 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_InconsitencyInTypeHierarch() throws CoreException {
+    public void testValidate_InconsitencyInTypeHierarch() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
 
         MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "SuperProduct");
         IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSuperProduct");
@@ -324,32 +324,32 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         supersupertype.setSupertype("abc");
 
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype("");
         ml = type.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IType.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
         ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         supersupertype.setSupertype(type.getQualifiedName());
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_CYCLE_IN_TYPE_HIERARCHY));
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
 
         type.setSupertype("Unkown");
         ml = type.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(IType.MSGCODE_SUPERTYPE_NOT_FOUND));
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TYPE_HIERARCHY));
     }
 
     @Test
-    public void testValidate_NameDoesNotComplyToNamingStrategy() throws CoreException {
+    public void testValidate_NameDoesNotComplyToNamingStrategy() {
         IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
         ProductCmpt product = newProductCmpt(type, "Product");
         IIpsProjectProperties projectProperties = ipsProject.getProperties();
@@ -361,7 +361,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RuntimeIdDoesNotComplyToNamingStrategy() throws CoreException {
+    public void testValidate_RuntimeIdDoesNotComplyToNamingStrategy() {
         IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
         ProductCmpt product = newProductCmpt(type, "Product");
         product.setRuntimeId("");
@@ -372,7 +372,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateRuntimeIds() throws CoreException {
+    public void testValidate_DuplicateRuntimeIds() {
         IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
         ProductCmpt product1 = newProductCmpt(type, "Product1");
         ProductCmpt product2 = newProductCmpt(type, "Product2");
@@ -384,7 +384,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_DuplicateRuntimeIdIgnoresTemplate() throws CoreException {
+    public void testValidate_DuplicateRuntimeIdIgnoresTemplate() {
         IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
         ProductCmpt product = newProductCmpt(type, "Product1");
         ProductCmpt template = newProductTemplate(type, "Product2");
@@ -401,7 +401,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_illegalDates()
-            throws CoreException, Exception {
+            throws IpsException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
@@ -410,7 +410,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
                 hasMessageCode(IProductCmptLinkContainer.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
     }
 
-    private void setUpLinkForDateValidityCheck() throws CoreException {
+    private void setUpLinkForDateValidityCheck() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt = newProductCmpt(type, "Product1");
         target = newProductCmpt(type, "TargetProduct");
@@ -429,7 +429,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_projectSetting()
-            throws CoreException, Exception {
+            throws IpsException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2008-01-01"));
@@ -453,7 +453,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_ReferencedProductComponentsNotValidOnValidFromDate_legalDates()
-            throws CoreException, Exception {
+            throws IpsException, Exception {
         setUpLinkForDateValidityCheck();
         productCmpt.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         target.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -468,7 +468,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_FixDifferences() throws CoreException {
+    public void testValidate_FixDifferences() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmptTypeAttribute attribute = type.newProductCmptTypeAttribute("attribtue");
         attribute.setChangingOverTime(true);
@@ -483,7 +483,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_FixDifferences_InvalidGenerations() throws CoreException {
+    public void testValidate_FixDifferences_InvalidGenerations() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         type.setChangingOverTime(true);
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
@@ -492,7 +492,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product.newGeneration(new GregorianCalendar(2016, 7, 28));
 
         MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
+        assertThat(ml, lacksMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
 
         type.setChangingOverTime(false);
         ml = product.validate(type.getIpsProject());
@@ -548,7 +548,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     @Test
     // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
-    public void testFindPropertyValues() throws CoreException {
+    public void testFindPropertyValues() {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
 
         // Create some properties on the product component
@@ -605,7 +605,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * An empty list should be returned but no exception may be thrown.
      */
     @Test
-    public void testFindPropertyValues_ProductCmptTypeCannotBeFound() throws CoreException {
+    public void testFindPropertyValues_ProductCmptTypeCannotBeFound() {
         GregorianCalendar validFrom = new GregorianCalendar(2011, 12, 12);
         productCmpt.newGeneration(validFrom);
 
@@ -624,7 +624,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate_ForProductAttribute()
-            throws CoreException {
+            {
         IProductCmptCategory category = productCmptType.newCategory("myCategory");
         IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
         productAttribute.setCategory(category.getName());
@@ -650,7 +650,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDateForPolicyAttribute()
-            throws CoreException {
+            {
         IProductCmptCategory category = productCmptType.newCategory("myCategory");
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
@@ -677,7 +677,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * should be returned.
      */
     @Test
-    public void testFindPropertyValues_NoCategoryGiven() throws CoreException {
+    public void testFindPropertyValues_NoCategoryGiven() {
         IProductCmptCategory category1 = productCmptType.newCategory("category1");
         IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
@@ -699,7 +699,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetKindId() throws CoreException {
+    public void testGetKindId() {
         IProductCmptKind kind = productCmpt.getKindId();
         assertEquals("TestProduct", kind.getName());
         assertEquals("TestProduct", kind.getRuntimeId());
@@ -715,7 +715,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetKindIdWithIllegalName() throws CoreException {
+    public void testGetKindIdWithIllegalName() {
         IProductCmptNamingStrategy strategy = new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", false);
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setProductCmptNamingStrategy(strategy);
@@ -767,7 +767,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
         productCmpt.setTemplate("MeinTemplate");
@@ -797,7 +797,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_AttributeValues() throws CoreException {
+    public void testToXml_AttributeValues() {
         attr2.setChangingOverTime(false);
         IPropertyValue propertyValue = productCmpt.newPropertyValue(attr2, IAttributeValue.class);
         Element xml = productCmpt.toXml(newDocument());
@@ -817,7 +817,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_TableContentUsage() throws CoreException {
+    public void testToXml_TableContentUsage() {
         productCmpt.newPropertyValues(new TableStructureUsage(mock(IProductCmptType.class), "tc"));
         Element xml = productCmpt.toXml(newDocument());
 
@@ -834,7 +834,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_Formula() throws CoreException {
+    public void testToXml_Formula() {
         IFormula newFormula = productCmpt
                 .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
         newFormula.setExpression("anyExpression");
@@ -846,7 +846,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_Links() throws CoreException {
+    public void testToXml_Links() {
         attr2.setChangingOverTime(false);
         IProductCmptLink newLink = productCmpt.newLink("newLink");
         newLink.setTarget("target");
@@ -873,7 +873,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_ValidationRuleConfig() throws CoreException {
+    public void testToXml_ValidationRuleConfig() {
         IValidationRule validationRule = policyCmptType.newRule();
         validationRule.setName("MyRule");
         IValidationRuleConfig validationRuleConfig = productCmpt.newValidationRuleConfig(validationRule);
@@ -905,7 +905,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferenceToModel() throws CoreException {
+    public void testContainsDifferenceToModel() {
         PolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
         a1.setName("A1");
@@ -933,7 +933,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeAttribute() throws CoreException {
+    public void testContainsDifferencesToModel_productCmptTypeAttribute() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -965,7 +965,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeAttribute() throws CoreException {
+    public void testFixDifferencesToModel_productCmptTypeAttribute() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -1011,7 +1011,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_AttributeValues() throws CoreException {
+    public void testComputeDeltaToModel_AttributeValues() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -1043,7 +1043,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeTableContent() throws CoreException {
+    public void testContainsDifferencesToModel_productCmptTypeTableContent() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -1057,7 +1057,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeTableContent() throws CoreException {
+    public void testFixDifferencesToModel_productCmptTypeTableContent() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -1072,7 +1072,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_productCmptTypeTableContent() throws CoreException {
+    public void testComputeDeltaToModel_productCmptTypeTableContent() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -1110,7 +1110,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * .
      */
     @Test
-    public void testFixAllDifferencesToModel() throws CoreException {
+    public void testFixAllDifferencesToModel() {
         IPolicyCmptType testType = newPolicyAndProductCmptType(ipsProject, "TestPolicyType", "TestProductType");
         IProductCmptType productCmptType = testType.findProductCmptType(ipsProject);
         IPolicyCmptTypeAttribute a1 = testType.newPolicyCmptTypeAttribute();
@@ -1146,7 +1146,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindMetaClass() throws CoreException {
+    public void testFindMetaClass() {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
 
@@ -1321,7 +1321,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeFormula() throws CoreException {
+    public void testContainsDifferencesToModel_productCmptTypeFormula() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1334,7 +1334,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeFormula() throws CoreException {
+    public void testFixDifferencesToModel_productCmptTypeFormula() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1348,7 +1348,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_productCmptTypeFormula() throws CoreException {
+    public void testComputeDeltaToModel_productCmptTypeFormula() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1380,7 +1380,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewFormula() throws CoreException {
+    public void testNewFormula() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod formulaSignature = newProductCmptType.newFormulaSignature("newFormula");
 
@@ -1392,7 +1392,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewFormula2() throws CoreException {
+    public void testNewFormula2() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         IFormula formula = productCmpt.newPart(IFormula.class);
@@ -1402,7 +1402,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAllowGenerations_changingOverTimeEnabled() throws CoreException {
+    public void testAllowGenerations_changingOverTimeEnabled() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         newProductCmptType.setChangingOverTime(true);
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
@@ -1411,7 +1411,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAllowGenerations_changingOverTimeDisabled() throws CoreException {
+    public void testAllowGenerations_changingOverTimeDisabled() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         newProductCmptType.setChangingOverTime(false);
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
@@ -1420,7 +1420,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAllowGenerations_productCmptTypeCanNotBeFound() throws CoreException {
+    public void testAllowGenerations_productCmptTypeCanNotBeFound() {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
         productCmpt = spy(productCmpt);
@@ -1430,14 +1430,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsProductTemplate_noTemplate() throws CoreException {
+    public void testIsProductTemplate_noTemplate() {
         ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
 
         assertFalse(product.isProductTemplate());
     }
 
     @Test
-    public void testIsProductTemplate_isTemplate() throws CoreException {
+    public void testIsProductTemplate_isTemplate() {
         IIpsObject template = newIpsObject(ipsProject, IpsObjectType.PRODUCT_TEMPLATE, "AnyProdCmpt");
 
         assertThat(template, instanceOf(IProductCmpt.class));
@@ -1454,7 +1454,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindTemplate() throws CoreException {
+    public void testFindTemplate() {
         IProductCmpt product = newProductCmpt(ipsProject, "product");
         product.setTemplate(null);
         assertThat(product.findTemplate(ipsProject), is(nullValue()));
@@ -1471,7 +1471,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+    public void testIsPartOfTemplateHierarchy_prodCmpt() {
         IProductCmpt product = newProductCmpt(ipsProject, "product");
         product.setTemplate(null);
 
@@ -1482,7 +1482,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+    public void testIsPartOfTemplateHierarchy_template() {
         IProductCmpt product = newProductTemplate(ipsProject, "product");
         product.setTemplate(null);
 
@@ -1493,7 +1493,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPartThis_ConfigElement() throws CoreException {
+    public void testAddPartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         IConfiguredDefault configDefault = product.newPropertyValue(policyAttr, IConfiguredDefault.class);
 
@@ -1501,7 +1501,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemovePartThis_ConfigElement() throws CoreException {
+    public void testRemovePartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         IConfiguredDefault configDefault = product.newPropertyValue(policyAttr, IConfiguredDefault.class);
 

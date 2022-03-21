@@ -16,8 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -61,41 +59,33 @@ public class AssociationCollector extends AbstractProductCmptCollector {
 
     private Set<IProductCmpt> getAllProductCmpts() {
         LinkedHashSet<IProductCmpt> result = new LinkedHashSet<>();
-        try {
-            IType target = getAssociation().findTarget(getIpsProject());
-            if (target instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)target;
-                IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
-                Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
-                for (IIpsSrcFile ipsSrcFile : productComponents) {
-                    result.add((IProductCmpt)ipsSrcFile.getIpsObject());
-                }
+        IType target = getAssociation().findTarget(getIpsProject());
+        if (target instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)target;
+            IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
+            Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
+            for (IIpsSrcFile ipsSrcFile : productComponents) {
+                result.add((IProductCmpt)ipsSrcFile.getIpsObject());
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
         return result;
     }
 
     private Set<IProductCmpt> getLinkedProductCmpts(Set<IProductCmpt> contextProductCmpts) {
         Set<IProductCmpt> newContextCmpts = new LinkedHashSet<>();
-        try {
-            IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
-            if (matchingAssociation == null) {
-                return null;
-            }
-            for (IProductCmpt productCmpt : contextProductCmpts) {
-                addLinkedProductCmpts(productCmpt, matchingAssociation, newContextCmpts);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IAssociation matchingAssociation = getAssociation().findMatchingAssociation();
+        if (matchingAssociation == null) {
+            return null;
+        }
+        for (IProductCmpt productCmpt : contextProductCmpts) {
+            addLinkedProductCmpts(productCmpt, matchingAssociation, newContextCmpts);
         }
         return newContextCmpts;
     }
 
     private void addLinkedProductCmpts(IProductCmpt productCmpt,
             IAssociation matchingAssociation,
-            Set<IProductCmpt> newContextCmpts) throws CoreException {
+            Set<IProductCmpt> newContextCmpts) {
         List<IProductCmptLink> links = getLinks(productCmpt, matchingAssociation.getName());
         for (IProductCmptLink cmptLink : links) {
             newContextCmpts.add(cmptLink.findTarget(getIpsProject()));

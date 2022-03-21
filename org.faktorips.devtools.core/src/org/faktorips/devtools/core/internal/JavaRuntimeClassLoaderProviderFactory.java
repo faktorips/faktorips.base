@@ -18,12 +18,12 @@ public class JavaRuntimeClassLoaderProviderFactory implements IClassLoaderProvid
 
     @Override
     public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
-        return new ClassLoaderProvider(ipsProject.getJavaProject());
+        return new ClassLoaderProvider(ipsProject.getJavaProject().unwrap());
     }
 
     @Override
     public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject, ClassLoader parent) {
-        return new ClassLoaderProvider(ipsProject.getJavaProject(), parent);
+        return new ClassLoaderProvider(ipsProject.getJavaProject().unwrap(), parent);
     }
 
 }

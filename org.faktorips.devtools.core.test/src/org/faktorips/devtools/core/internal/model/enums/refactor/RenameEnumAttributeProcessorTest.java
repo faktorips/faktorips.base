@@ -62,7 +62,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttribute() throws CoreException {
+    public void testRenameEnumAttribute() {
         enumType.setAbstract(true);
 
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
@@ -88,7 +88,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeReferencedByEnumContent() throws CoreException {
+    public void testRenameEnumAttributeReferencedByEnumContent() {
         String newAttributeName = "foo";
         performRenameRefactoring(enumAttribute, newAttributeName);
 
@@ -98,7 +98,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeUsedInLiteralName() throws CoreException {
+    public void testRenameEnumAttributeUsedInLiteralName() {
         IEnumType modelEnumType = newEnumType(ipsProject, "ModelEnumType");
         modelEnumType.setExtensible(false);
 

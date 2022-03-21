@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -98,21 +97,19 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     @Override
-    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
-            throws CoreException {
+    protected void validateContent(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute) {
         ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         String valueToValidate = getValue();
 
         if (ValidationUtils.checkParsable(valueDatatype, valueToValidate, attribute,
-                NLS.bind(Messages.ConfiguredDefault_caption, attribute), list)) {
+                MessageFormat.format(Messages.ConfiguredDefault_caption, attribute), list)) {
 
             validateValueVsValueSet(valueDatatype, ipsProject, list);
         }
 
     }
 
-    private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
-            throws CoreException {
+    private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list) {
         String valueToValidate = getValue();
         IValueSet valueSetToValidate = getValueSet();
         if (StringUtils.isNotEmpty(valueToValidate) && valueSetToValidate != null) {
@@ -120,7 +117,8 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
                 String formattedValue = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter()
                         .formatValue(valueDatatype, valueToValidate);
                 list.add(new Message(IConfiguredDefault.MSGCODE_VALUE_NOT_IN_VALUESET,
-                        NLS.bind(Messages.ConfiguredDefault_msgValueNotInValueset, formattedValue), Message.ERROR, this,
+                        MessageFormat.format(Messages.ConfiguredDefault_msgValueNotInValueset, formattedValue),
+                        Message.ERROR, this,
                         PROPERTY_VALUE));
             }
         }
@@ -164,12 +162,12 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
-        return NLS.bind(Messages.ConfiguredDefault_caption, getAttributeLabel(locale));
+    public String getCaption(Locale locale) {
+        return MessageFormat.format(Messages.ConfiguredDefault_caption, getAttributeLabel(locale));
     }
 
     @Override
     public String getLastResortCaption() {
-        return NLS.bind(Messages.ConfiguredDefault_caption, getAttributeLabel(null));
+        return MessageFormat.format(Messages.ConfiguredDefault_caption, getAttributeLabel(null));
     }
 }

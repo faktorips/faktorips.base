@@ -25,6 +25,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -47,6 +48,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.CopyFilesAndFoldersOperation;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard;
@@ -111,7 +116,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             } else if (selected instanceof IpsObjectPartContainer) {
                 paste((IpsObjectPartContainer)selected);
             } else if (selected instanceof IIpsProject) {
-                paste(((IIpsProject)selected).getProject());
+                paste((IProject)((IIpsProject)selected).getProject().unwrap());
             } else if (selected instanceof IIpsPackageFragmentRoot) {
                 paste(((IIpsPackageFragmentRoot)selected).getDefaultIpsPackageFragment());
             } else if (selected instanceof IIpsPackageFragment) {
@@ -194,7 +199,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             for (IResource re : res) {
                 try {
                     copy(parent, re);
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -237,20 +242,20 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     private void copyResources(IIpsPackageFragment parent, IResource[] resources) {
         for (IResource resource2 : resources) {
             try {
-                IResource resource = ((IIpsElement)parent).getCorrespondingResource();
+                IResource resource = ((IIpsElement)parent).getCorrespondingResource().unwrap();
                 if (resource != null) {
                     copy(resource, resource2);
                 } else {
                     showPasteNotSupportedError();
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
     }
 
     private void copyFiles(IIpsPackageFragment parent, String[] fileNames) {
-        IResource destinationResource = parent.getEnclosingResource();
+        IResource destinationResource = parent.getEnclosingResource().unwrap();
         if (destinationResource instanceof IContainer) {
             copyFiles(shell, (IFolder)destinationResource, fileNames);
         }
@@ -394,10 +399,10 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Creates a new file in the parent package fragment based on the given ips source object.
      */
-    private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) throws CoreException {
+    private void createFile(IIpsPackageFragment parent, IIpsObject ipsObject) {
         String contents = getContentsOfIpsObject(ipsObject);
 
-        String ipsSrcFileName = getNewIpsSrcFileName((IFolder)parent.getCorrespondingResource(), ipsObject);
+        String ipsSrcFileName = getNewIpsSrcFileName(parent.getCorrespondingResource().unwrap(), ipsObject);
         if (ipsSrcFileName == null) {
             return;
         }
@@ -407,13 +412,13 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Creates a new file in the parent folder based on the given ips source object.
      */
-    private void createFile(IFolder parent, IIpsObject ipsObject) throws CoreException {
+    private void createFile(IFolder parent, IIpsObject ipsObject) {
         String contents = getContentsOfIpsObject(ipsObject);
         InputStream is;
         try {
             is = new ByteArrayInputStream(contents.getBytes(ipsObject.getIpsProject().getXmlFileCharset()));
         } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
 
         String newIpsSrcFileName = getNewIpsSrcFileName(parent, ipsObject);
@@ -422,7 +427,11 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         }
 
         IFile file = parent.getFile(newIpsSrcFileName);
-        file.create(is, true, null);
+        try {
+            file.create(is, true, null);
+        } catch (CoreException e) {
+            throw new IpsException(e);
+        }
     }
 
     /**
@@ -430,7 +439,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * source package fragment.
      */
     private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment)
-            throws CoreException {
+            {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
@@ -507,7 +516,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * all children of the given source package fragment .
      */
     private IFolder createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment)
-            throws CoreException {
+            {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();
@@ -517,7 +526,11 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         }
 
         IFolder subFolder = targetParentFolder.getFolder(packageName);
-        subFolder.create(true, true, null);
+        try {
+            subFolder.create(true, true, null);
+        } catch (CoreException e) {
+            throw new IpsException(e);
+        }
         IIpsElement[] children = sourcePackageFragment.getChildren();
         for (IIpsElement element : children) {
             if (element instanceof IIpsSrcFile) {
@@ -540,9 +553,9 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     /**
      * Copy the given resource to the given target path.
      * 
-     * @throws CoreException If copy failed.
+     * @throws IpsException If copy failed.
      */
-    private void copy(IResource targetParent, IResource resource) throws CoreException {
+    private void copy(IResource targetParent, IResource resource) {
         if (targetParent == null) {
             return;
         }
@@ -560,11 +573,11 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         boolean showExtension = !isResourceIpsObject(resource);
 
         if (isResourceProductCmpt(resource)) {
-            IIpsElement source = IIpsModel.get().getIpsElement(resource);
+            IIpsElement source = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             copyProductCmptByWizard((IProductCmpt)((IIpsSrcFile)source).getIpsObject(), targetParent);
         } else {
             // non product cmpt
-            IIpsElement source = IIpsModel.get().getIpsElement(resource);
+            IIpsElement source = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             String newName = getNewNameByDialogIfNecessary(resource.getType(), targetPath, suggestedName, extension,
                     showExtension, source instanceof IIpsSrcFile ? (IIpsSrcFile)source : null);
             copyResource(resource, targetPath, newName);
@@ -607,7 +620,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     private boolean isResourceProductCmpt(IResource resource) {
         if (resource instanceof IFile) {
-            IIpsElement ipsElement = IIpsModel.get().getIpsElement(resource);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
                 if (((IIpsSrcFile)ipsElement).getIpsObject() instanceof IProductCmpt) {
                     return true;
@@ -619,7 +632,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
     private boolean isResourceIpsObject(IResource resource) {
         IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(resource.getFullPath());
-        IIpsElement ipsElement = IIpsModel.get().getIpsElement(file);
+        IIpsElement ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AFile.class));
         if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {
             return true;
         }

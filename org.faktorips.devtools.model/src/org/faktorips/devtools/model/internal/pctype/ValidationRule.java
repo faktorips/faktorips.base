@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,10 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
@@ -103,7 +101,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
                 PROPERTY_NAME, "", list); //$NON-NLS-1$
@@ -113,8 +111,6 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     PROPERTY_MESSAGE_CODE);
             list.add(msg);
         }
-
-        IIpsProject project = getIpsProject();
 
         validateValidatedAttribute(list, ipsProject);
         validateCheckValueAgainstValueSet(list);
@@ -141,7 +137,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         Set<String> usedMarkerIds = getUsedMarkerIds();
         usedMarkerIds.removeAll(definedMarkerIds);
         if (!usedMarkerIds.isEmpty()) {
-            String text = NLS.bind(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds,
+            String text = MessageFormat.format(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds,
                     markerEnumUtil.getMarkerEnumTypeName());
             Message msg = new Message(IValidationRule.MSGCODE_INVALID_MARKER_ID, text, Message.ERROR, this,
                     PROPERTY_MESSAGE_CODE);
@@ -217,7 +213,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
             String message = localizedString.getValue();
             if (StringUtils.isNotEmpty(System.lineSeparator())
                     && message.indexOf(System.lineSeparator()) != -1) {
-                String text = NLS.bind(Messages.ValidationRule_msgNoNewlineAllowed,
+                String text = MessageFormat.format(Messages.ValidationRule_msgNoNewlineAllowed,
                         localizedString.getLocale().getDisplayLanguage());
                 list.add(new Message(IValidationRule.MSGCODE_NO_NEWLINE, text, Message.ERROR, this,
                         IValidationRule.PROPERTY_MESSAGE_TEXT));
@@ -331,12 +327,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     private void initDefaultChangingOverTime() {
-        try {
-            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-            this.changingOverTime = productCmptType != null && productCmptType.isChangingOverTime();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+        this.changingOverTime = productCmptType != null && productCmptType.isChangingOverTime();
     }
 
     @Override
@@ -499,7 +491,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 

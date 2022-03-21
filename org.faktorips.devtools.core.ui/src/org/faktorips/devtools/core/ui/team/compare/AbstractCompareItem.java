@@ -23,7 +23,6 @@ import org.eclipse.compare.contentmergeviewer.IDocumentRange;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.compare.structuremergeviewer.StructureDiffViewer;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
@@ -223,7 +222,7 @@ public abstract class AbstractCompareItem
      * need to implement {@link IStreamContentAccessor} and return a non null value here.
      */
     @Override
-    public InputStream getContents() throws CoreException {
+    public InputStream getContents() {
         return new ByteArrayInputStream(new byte[0]);
     }
 

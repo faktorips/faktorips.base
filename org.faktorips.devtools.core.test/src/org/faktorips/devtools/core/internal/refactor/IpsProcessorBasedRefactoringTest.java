@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
@@ -102,17 +101,17 @@ public class IpsProcessorBasedRefactoringTest {
         }
 
         @Override
-        protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        protected void validateIpsModel(MessageList validationMessageList) {
 
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
 
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
             addAffectedSrcFiles(modificationSet);
             return modificationSet;
@@ -136,7 +135,7 @@ public class IpsProcessorBasedRefactoringTest {
 
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-                SharableParticipants sharedParticipants) throws CoreException {
+                SharableParticipants sharedParticipants) {
             return null;
         }
 

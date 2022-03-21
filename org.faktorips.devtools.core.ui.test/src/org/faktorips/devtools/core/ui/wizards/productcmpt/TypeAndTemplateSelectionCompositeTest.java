@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.TypeAndTemplateSelectionComposite.LabelProvider;
@@ -74,7 +73,7 @@ public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testGetLocalizedDescription_DescriptionFinder() throws CoreException {
+    public void testGetLocalizedDescription_DescriptionFinder() {
         IIpsProject project = newIpsProject();
         IProductCmpt productCmpt = mock(IProductCmpt.class);
         DescriptionFinder df = new DescriptionFinder(project);
@@ -89,7 +88,7 @@ public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testGetLocalizedDescription_DescriptionFinder_inherited() throws CoreException {
+    public void testGetLocalizedDescription_DescriptionFinder_inherited() {
         IIpsProject project = newIpsProject();
         ProductCmptType productCmptParent = newProductCmptType(project, "ParentPdct");
         ProductCmptType productCmptChild = newProductCmptType(productCmptParent, "ChildPdct");

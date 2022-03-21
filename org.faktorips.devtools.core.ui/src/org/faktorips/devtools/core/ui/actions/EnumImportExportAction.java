@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -22,6 +21,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumexport.EnumExportWizard;
@@ -123,7 +123,7 @@ public class EnumImportExportAction extends IpsAction {
         Runnable run = () -> {
             try {
                 enumIpsObject.getIpsSrcFile().save(true, null);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         };

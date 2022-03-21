@@ -80,9 +80,9 @@ public class NewFolderAction extends IpsAction {
         }
         IResource res = null;
         if (selected instanceof IIpsProject) {
-            res = ((IIpsProject)selected).getProject();
+            res = ((IIpsProject)selected).getProject().unwrap();
         } else if (selected instanceof IIpsElement) {
-            res = ((IIpsElement)selected).getEnclosingResource();
+            res = ((IIpsElement)selected).getEnclosingResource().unwrap();
         } else if (selected instanceof IResource) {
             res = (IResource)selected;
         }

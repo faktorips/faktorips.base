@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -53,10 +53,10 @@ public interface IProductPartsContainer extends IIpsObjectPartContainer {
      * @return The product component type this link container is based on or <code>null</code> if
      *         the product component type can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
+     * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this container may contains parts that could change over time,

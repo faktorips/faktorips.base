@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -19,8 +20,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
@@ -30,6 +32,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
 
@@ -72,7 +75,7 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() throws CoreException {
+    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() {
         Collection<IIpsSrcFile> oldResult = unqualifiedNameCache
                 .findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
@@ -86,7 +89,7 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() throws CoreException {
+    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() {
         ProductCmptType kfz = newProductCmptType(ipsProject, "kfz");
         newProductCmpt(kfz, "z.productCmptHausrat");
         productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat");
@@ -97,17 +100,21 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
         assertEquals(2, result.size());
     }
 
+    @Category(EclipseImplementation.class)
     @Test
     public void testNoResourceChangeForIpsSrcFileOffRoot() throws Exception {
-        ProductCmpt productCmpt = newProductCmpt(ipsProject, "foo.Test");
-        IIpsSrcFile ipsSrcFile = productCmpt.getIpsSrcFile();
+        if (Abstractions.isEclipseRunning()) {
+            ProductCmpt productCmpt = newProductCmpt(ipsProject, "foo.Test");
+            IIpsSrcFile ipsSrcFile = productCmpt.getIpsSrcFile();
 
-        assertThat(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test"), hasItem(ipsSrcFile));
+            assertThat(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test"), hasItem(ipsSrcFile));
 
-        IResource resource = productCmpt.getEnclosingResource();
-        resource.move(ipsProject.getProject().getFullPath().append(resource.getName()), true, null);
+            IResource resource = productCmpt.getEnclosingResource().unwrap();
+            resource.move(toEclipsePath(ipsProject.getProject().getWorkspaceRelativePath().resolve(resource.getName())),
+                    true, null);
 
-        assertTrue(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test").isEmpty());
+            assertTrue(unqualifiedNameCache.findProductCmptByUnqualifiedName("Test").isEmpty());
+        }
     }
 
 }

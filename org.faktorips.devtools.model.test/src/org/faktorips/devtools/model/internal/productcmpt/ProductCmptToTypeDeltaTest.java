@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -147,7 +146,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         assertTrue(productCmptToTypeDelta.isEmpty());
     }
 
-    protected ProductCmpt setUpTemplateAndAssociation() throws CoreException {
+    protected ProductCmpt setUpTemplateAndAssociation() {
         IProductCmptTypeAssociation asso = productCmptType.newProductCmptTypeAssociation();
         asso.setTargetRoleSingular(ASSOCIATION);
         asso.setChangingOverTime(false);

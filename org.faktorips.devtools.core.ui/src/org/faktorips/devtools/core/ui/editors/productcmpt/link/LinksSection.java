@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -60,7 +59,6 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropLi
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -310,7 +308,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     private TreeMessageHoverService createTreeMessageHoverService(final LinksMessageCueLabelProvider labelProvider) {
         return new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 return labelProvider.getMessages(element);
             }
         };
@@ -339,15 +337,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void openLink(IProductCmptLink link) {
-        try {
-            IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
-            if (targetProductCmpt != null) {
-                IProductCmptGeneration targetGeneration = targetProductCmpt
-                        .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
-                IpsUIPlugin.getDefault().openEditor(targetGeneration);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
+        if (targetProductCmpt != null) {
+            IProductCmptGeneration targetGeneration = targetProductCmpt
+                    .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
+            IpsUIPlugin.getDefault().openEditor(targetGeneration);
         }
     }
 

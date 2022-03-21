@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,9 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -73,7 +72,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public boolean findIsContainingProperty(IProductCmptProperty property,
             IProductCmptType contextType,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
         // The queried property must be found by the context type
         if (contextType.findProductCmptProperty(property.getPropertyName(), ipsProject) == null) {
             return false;
@@ -133,7 +132,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             final boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         class CategoryPropertyCollector extends TypeHierarchyVisitor<IProductCmptType> {
 
@@ -158,42 +157,38 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
             @Override
             protected boolean visit(IProductCmptType currentType) {
-                try {
-                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false,
-                            getIpsProject())) {
-                        /*
-                         * First, check whether the property has been overwritten by a subtype - in
-                         * this case we do not add the property to the category.
-                         */
-                        if (overwritingProperties.contains(property.getPropertyName())) {
-                            continue;
-                        }
-
-                        /*
-                         * Memorize the property if it is overwriting another property from the
-                         * supertype hierarchy.
-                         */
-                        if (isOverwriteProperty(property)) {
-                            overwritingProperties.add(property.getPropertyName());
-                        }
-
-                        /*
-                         * Now, check if the property is visible. If not, the property will not be
-                         * added to the category. Note that it is still important to check if it is
-                         * overwritten, first, so that super attributes that are not hidden, will
-                         * not be displayed.
-                         */
-                        if (!isVisible(property)) {
-                            continue;
-                        }
-
-                        if (findIsContainingProperty(property, currentType, getIpsProject())
-                                && !properties.contains(property)) {
-                            properties.add(property);
-                        }
+                for (IProductCmptProperty property : currentType.findProductCmptProperties(false,
+                        getIpsProject())) {
+                    /*
+                     * First, check whether the property has been overwritten by a subtype - in this
+                     * case we do not add the property to the category.
+                     */
+                    if (overwritingProperties.contains(property.getPropertyName())) {
+                        continue;
                     }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+
+                    /*
+                     * Memorize the property if it is overwriting another property from the
+                     * supertype hierarchy.
+                     */
+                    if (isOverwriteProperty(property)) {
+                        overwritingProperties.add(property.getPropertyName());
+                    }
+
+                    /*
+                     * Now, check if the property is visible. If not, the property will not be added
+                     * to the category. Note that it is still important to check if it is
+                     * overwritten, first, so that super attributes that are not hidden, will not be
+                     * displayed.
+                     */
+                    if (!isVisible(property)) {
+                        continue;
+                    }
+
+                    if (findIsContainingProperty(property, currentType, getIpsProject())
+                            && !properties.contains(property)) {
+                        properties.add(property);
+                    }
                 }
 
                 return searchSupertypeHierarchy;
@@ -326,7 +321,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         if (!validateNameIsEmpty(list)) {
             return;
         }
@@ -346,11 +341,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         return true;
     }
 
-    private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
-
+    private boolean validateNameAlreadyUsedInTypeHierarchy(MessageList list, IIpsProject ipsProject) {
         if (getProductCmptTypeImpl().findIsCategoryNameUsedTwiceInSupertypeHierarchy(name, ipsProject)) {
-            String text = NLS.bind(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
+            String text = MessageFormat.format(Messages.ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy, name,
                     getProductCmptType().getName());
             list.newError(MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY, text, this, PROPERTY_NAME);
             return false;
@@ -433,8 +426,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     @Override
-    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
-            throws CoreException {
+    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType) {
 
         if (indexes.length == 0) {
             return new int[0];
@@ -448,7 +440,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     public boolean insertProductCmptProperty(final IProductCmptProperty property,
             final IProductCmptProperty targetProperty,
-            final boolean above) throws CoreException {
+            final boolean above) {
 
         final IProductCmptType contextType = property.findProductCmptType(property.getIpsProject());
         if (contextType == null) {
@@ -460,7 +452,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                     private boolean result = true;
 
                     @Override
-                    protected boolean execute() throws CoreException {
+                    protected boolean execute() {
                         contextType.changeCategoryAndDeferPolicyChange(property, name);
                         List<IProductCmptProperty> properties = findProductCmptProperties(contextType, false,
                                 contextType.getIpsProject());
@@ -486,7 +478,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void insertProductCmptProperty(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreException {
+            boolean above) {
 
         if (propertyIndex > targetPropertyIndex) {
             moveProductCmptPropertyUp(propertyIndex, targetPropertyIndex, contextType, above);
@@ -502,7 +494,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyUp(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreException {
+            boolean above) {
 
         int targetIndex = above ? targetPropertyIndex : targetPropertyIndex + 1;
         for (int i = propertyIndex; i > targetIndex; i--) {
@@ -517,7 +509,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     private void moveProductCmptPropertyDown(int propertyIndex,
             int targetPropertyIndex,
             IProductCmptType contextType,
-            boolean above) throws CoreException {
+            boolean above) {
 
         int targetIndex = above ? targetPropertyIndex - 1 : targetPropertyIndex;
         for (int i = propertyIndex; i < targetIndex; i++) {
@@ -599,7 +591,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             try {
                 productCmptType1 = property1.findProductCmptType(productCmptType.getIpsProject());
                 productCmptType2 = property2.findProductCmptType(productCmptType.getIpsProject());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // Consider elements equal if the product component types cannot be found
                 IpsLog.log(e);
                 return 0;
@@ -633,7 +625,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             IProductCmptType contextType = null;
             try {
                 contextType = property1.findProductCmptType(property1.getIpsProject());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 /*
                  * Consider the properties equal if the product component type containing the
                  * references cannot be found.

@@ -11,10 +11,8 @@
 package org.faktorips.devtools.stdbuilder.labels;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -27,7 +25,7 @@ import org.faktorips.runtime.model.type.DocumentationKind;
 
 public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
-    public LabelAndDescriptionGenerator(IFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
+    public LabelAndDescriptionGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             AbstractLocalizedPropertiesBuilder labelAndDescriptionPropertiesBuilder) {
         super(messagesPropertiesFile, supportedLanguage, labelAndDescriptionPropertiesBuilder,
                 new LabelAndDescriptionProperties(supportedLanguage.isDefaultLanguage()));
@@ -36,15 +34,11 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
     void addLabelsAndDescriptions(IIpsObjectPartContainer ipsObjectPartContainer,
             LabelAndDescriptionProperties labelsAndDescriptions) {
         addLabelAndDescription(ipsObjectPartContainer, labelsAndDescriptions);
-        try {
-            IIpsElement[] children = ipsObjectPartContainer.getChildren();
-            for (IIpsElement ipsElement : children) {
-                if (ipsElement instanceof IIpsObjectPartContainer) {
-                    addLabelsAndDescriptions((IIpsObjectPartContainer)ipsElement, labelsAndDescriptions);
-                }
+        IIpsElement[] children = ipsObjectPartContainer.getChildren();
+        for (IIpsElement ipsElement : children) {
+            if (ipsElement instanceof IIpsObjectPartContainer) {
+                addLabelsAndDescriptions((IIpsObjectPartContainer)ipsElement, labelsAndDescriptions);
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 

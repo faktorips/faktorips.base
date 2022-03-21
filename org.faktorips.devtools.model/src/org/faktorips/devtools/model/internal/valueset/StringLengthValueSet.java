@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
@@ -72,7 +71,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         if (value == null) {
             return isContainsNull();
         }
@@ -98,12 +97,8 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         IIpsProject contextProject = subset.getIpsProject();
         String[] subsetValues = subset.getValues();
         for (String value : subsetValues) {
-            try {
-                if (!containsValue(value, contextProject)) {
-                    return false;
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (!containsValue(value, contextProject)) {
+                return false;
             }
         }
         return true;
@@ -136,9 +131,9 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
         String limit = IpsStringUtils.isBlank(maximumLength)
                 ? Messages.StringLength_unlimitedLength
                 : maximumLength;
-        StringBuilder sb = new StringBuilder(NLS.bind(Messages.StringLength_canonicalDesc, limit));
+        StringBuilder sb = new StringBuilder(MessageFormat.format(Messages.StringLength_canonicalDesc, limit));
         if (containsNull) {
-            sb.append(" (").append(NLS.bind(Messages.ValueSet_includingNull, //$NON-NLS-1$
+            sb.append(" (").append(MessageFormat.format(Messages.ValueSet_includingNull, //$NON-NLS-1$
                     IIpsModelExtensions.get().getModelPreferences().getNullPresentation())).append(")"); //$NON-NLS-1$
         }
         return sb.toString();
@@ -211,7 +206,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         StringLengthValueSetValidator validator = createValidator(getValueSetOwner(), findValueDatatype(ipsProject));
         list.add(validator.validate());

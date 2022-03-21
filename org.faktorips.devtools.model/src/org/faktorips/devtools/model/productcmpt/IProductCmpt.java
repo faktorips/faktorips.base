@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
@@ -117,10 +117,10 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Returns the product component's version id. The version id is extracted from the components
      * name with the product component naming strategy defined in the project.
      * 
-     * @throws CoreException if an exception occurs while accessing the project properties to get
+     * @throws IpsException if an exception occurs while accessing the project properties to get
      *             the naming strategy or the version id can't be derived from the component's name.
      */
-    public String getVersionId() throws CoreException;
+    public String getVersionId() throws IpsException;
 
     /**
      * Searches the policy component type that is configured by this product component.
@@ -213,7 +213,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * {@inheritDoc}
      */
     @Override
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException;
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this {@link IProductCmpt}'s generations in a type safe list.
@@ -236,7 +236,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @param effectiveDate the effective date for which to retrieve the {@link IPropertyValue
      *            property values}
      * 
-     * @throws CoreException if an error occurs while searching for the {@link IProductCmptType
+     * @throws IpsException if an error occurs while searching for the {@link IProductCmptType
      *             product component type} this {@link IProductCmpt product component} is an
      *             instance of, or while searching for the {@link IProductCmptProperty product
      *             component properties} belonging to the {@link IProductCmptType product component
@@ -244,7 +244,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      */
     public List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
             GregorianCalendar effectiveDate,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws IpsException;
 
     @Override
     public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date);

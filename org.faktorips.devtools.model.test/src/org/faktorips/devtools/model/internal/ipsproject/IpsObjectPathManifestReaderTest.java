@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.util.QNameUtil;
@@ -50,19 +50,19 @@ public class IpsObjectPathManifestReaderTest {
     private IpsProject ipsProject;
 
     @Mock
-    private IFolder myObjectDir;
+    private AFolder myObjectDir;
 
     @Mock
-    private IFolder mySrcOut;
+    private AFolder mySrcOut;
 
     @Mock
-    private IFolder myResourceOut;
+    private AFolder myResourceOut;
 
     private IpsObjectPathManifestReader objectPathReader;
 
     @Before
     public void mockIpsProjectAndFolders() {
-        IProject project = mock(IProject.class);
+        AProject project = mock(AProject.class);
         when(ipsProject.getProject()).thenReturn(project);
         when(myObjectDir.getName()).thenReturn(MY_OBJECT_DIR);
         when(project.getFolder(MY_OBJECT_DIR)).thenReturn(myObjectDir);

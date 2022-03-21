@@ -10,13 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
@@ -66,10 +64,6 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
             EnumTypeDatatypeAdapter datatype,
             String value) {
         XEnumType enumType = getBuilderSet().getModelNode(datatype.getEnumType(), XEnumType.class);
-        try {
-            fragment.append(enumType.getNewInstanceCodeFragement(datatype, value, exprCompiler));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        fragment.append(enumType.getNewInstanceCodeFragement(datatype, value, exprCompiler));
     }
 }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.application;
 import java.io.File;
 import java.io.IOException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.Platform;
@@ -77,7 +76,7 @@ public class IpsApplication implements IApplication, IExecutableExtension {
 
     @Override
     public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-            throws CoreException {
+            {
         // nothing to do
     }
 

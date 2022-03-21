@@ -19,7 +19,6 @@ import java.util.TreeSet;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogSettings;
@@ -52,7 +51,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
@@ -487,30 +485,26 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         private static IIpsElement[] addUnorderedChildren(IIpsElement[] orderedElements,
                 IpsPackageFragment packageFragment) {
-            try {
-                // sort because IFolder#members makes no guarantee for order
-                SortedSet<IIpsElement> subPackages = new TreeSet<>(
-                        AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
-                for (IIpsPackageFragment subPackage : packageFragment.getChildIpsPackageFragments()) {
-                    subPackages.add(subPackage);
-                }
-
-                SortedSet<IIpsElement> relevantSrcFiles = new TreeSet<>(
-                        AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
-                for (IIpsSrcFile ipsSrcFile : packageFragment.getIpsSrcFiles()) {
-                    if (isRelevantForSortOrder(ipsSrcFile.getIpsObjectType())) {
-                        relevantSrcFiles.add(ipsSrcFile);
-                    }
-                }
-
-                IIpsElement[] sortOrder = new IIpsElement[subPackages.size() + relevantSrcFiles.size()];
-                int i = addOrderedAndDefaultSorted(subPackages, sortOrder, 0, orderedElements);
-                addOrderedAndDefaultSorted(relevantSrcFiles, sortOrder, i, orderedElements);
-
-                return sortOrder;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            // sort because IFolder#members makes no guarantee for order
+            SortedSet<IIpsElement> subPackages = new TreeSet<>(
+                    AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
+            for (IIpsPackageFragment subPackage : packageFragment.getChildIpsPackageFragments()) {
+                subPackages.add(subPackage);
             }
+
+            SortedSet<IIpsElement> relevantSrcFiles = new TreeSet<>(
+                    AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR);
+            for (IIpsSrcFile ipsSrcFile : packageFragment.getIpsSrcFiles()) {
+                if (isRelevantForSortOrder(ipsSrcFile.getIpsObjectType())) {
+                    relevantSrcFiles.add(ipsSrcFile);
+                }
+            }
+
+            IIpsElement[] sortOrder = new IIpsElement[subPackages.size() + relevantSrcFiles.size()];
+            int i = addOrderedAndDefaultSorted(subPackages, sortOrder, 0, orderedElements);
+            addOrderedAndDefaultSorted(relevantSrcFiles, sortOrder, i, orderedElements);
+
+            return sortOrder;
         }
 
         private static int addOrderedAndDefaultSorted(SortedSet<IIpsElement> elements,

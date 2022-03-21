@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+org.moreunit.preferences.version=2
+org.moreunit.prefixes=
+org.moreunit.testClassNameTemplate=${srcFile}(Test|IntegrationTest)
+org.moreunit.unitsourcefolder=org.faktorips.devtools.abstraction\:src\:org.faktorips.devtools.abstraction.test\:src
+org.moreunit.useprojectsettings=true

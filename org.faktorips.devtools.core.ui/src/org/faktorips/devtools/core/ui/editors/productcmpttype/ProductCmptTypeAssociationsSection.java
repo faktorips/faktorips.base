@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -88,12 +87,8 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
             Object selected = selection.getFirstElement();
             if (selected instanceof IProductCmptTypeAssociation) {
                 IProductCmptTypeAssociation productCmptTypeAssociation = (IProductCmptTypeAssociation)selected;
-                try {
-                    IType target = productCmptTypeAssociation.findTarget(type.getIpsProject());
-                    IpsUIPlugin.getDefault().openEditor(target);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                IType target = productCmptTypeAssociation.findTarget(type.getIpsProject());
+                IpsUIPlugin.getDefault().openEditor(target);
             }
         }
     }

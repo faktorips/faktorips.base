@@ -342,7 +342,7 @@ public class PolicyCmptTypeTest {
     @IpsAttributes({ "attr", "overwrittenAttr", "const", "CapitalAttr" })
     @IpsAssociations({ "asso", "Asso2", "overwrittenAsso" })
     @IpsValidationRules({ "someRule", "anotherRule" })
-    private static abstract class Policy extends SuperPolicy {
+    private abstract static class Policy extends SuperPolicy {
         public static final String MSG_CODE_RULE = "dummy message code";
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -384,7 +384,7 @@ public class PolicyCmptTypeTest {
     @IpsAttributes({ "supAttr", "overwrittenAttr" })
     @IpsAssociations({ "supAsso", "overwrittenAsso" })
     @IpsValidationRules({ "superRule" })
-    private static abstract class SuperPolicy extends AbstractModelObject {
+    private abstract static class SuperPolicy extends AbstractModelObject {
         public static final String MSG_CODE_SUPER_RULE = "message code";
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -404,7 +404,7 @@ public class PolicyCmptTypeTest {
     }
 
     @IpsProductCmptType(name = "MyProduct")
-    private static abstract class Product extends ProductComponent {
+    private abstract static class Product extends ProductComponent {
 
         public Product(IRuntimeRepository repository, String id, String productKindId, String versionId) {
             super(repository, id, productKindId, versionId);

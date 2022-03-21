@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -43,7 +42,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
     }
 
     @Override
-    public MessageList getMessages(Object element) throws CoreException {
+    public MessageList getMessages(Object element) {
         if (element instanceof AbstractAssociationViewItem) {
             AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
             IProductCmpt productCmpt = viewItem.getProductCmpt();

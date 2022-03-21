@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -40,7 +39,7 @@ public class SingleTypeSelectIpsObjectContext extends CachingOpenIpsObjectContex
     }
 
     @Override
-    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
+    public List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) {
         progressMonitor.beginTask("Selecting files...", 4); //$NON-NLS-1$
         progressMonitor.worked(1);
         IIpsSrcFile[] srcFiles = project.findIpsSrcFiles(ipsObjectType);

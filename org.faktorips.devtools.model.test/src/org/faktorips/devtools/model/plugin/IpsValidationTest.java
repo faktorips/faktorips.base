@@ -17,7 +17,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -47,7 +46,7 @@ public class IpsValidationTest {
     }
 
     @Test
-    public void shouldExecuteEveryAddedTask() throws CoreException {
+    public void shouldExecuteEveryAddedTask() {
         addTask(validationTask1, true);
         addTask(validationTask2, true);
 
@@ -59,7 +58,7 @@ public class IpsValidationTest {
     }
 
     @Test
-    public void shouldAddResultOfEveryAddedTaskToResultMessageList() throws CoreException {
+    public void shouldAddResultOfEveryAddedTaskToResultMessageList() {
         addTask(validationTask1, true);
         addTask(validationTask2, true);
 
@@ -74,7 +73,7 @@ public class IpsValidationTest {
     }
 
     @Test
-    public void shouldStopIfATaskReturnsAnErrorWhileContinueOnErrorIsFalse() throws CoreException {
+    public void shouldStopIfATaskReturnsAnErrorWhileContinueOnErrorIsFalse() {
         addTask(validationTask1, false);
         addTask(validationTask2, true);
 
@@ -88,7 +87,7 @@ public class IpsValidationTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void shouldThrowNullPointerExceptionTryingToValidateGivenNullAsContextProject() throws CoreException {
+    public void shouldThrowNullPointerExceptionTryingToValidateGivenNullAsContextProject() {
         ipsValidation.validate(null);
     }
 
@@ -102,7 +101,7 @@ public class IpsValidationTest {
         ipsValidation.addTask(task);
     }
 
-    private void associateErrorMessage(IpsValidationTask task, String code) throws CoreException {
+    private void associateErrorMessage(IpsValidationTask task, String code) {
         Message message = new Message(code, "text", Message.ERROR);
         when(task.execute(ipsProject)).thenReturn(message);
     }

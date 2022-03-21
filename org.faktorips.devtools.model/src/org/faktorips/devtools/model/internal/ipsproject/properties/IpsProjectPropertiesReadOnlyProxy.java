@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
@@ -357,7 +356,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Returns the value of the underlying IIpsProjectProperties instance.
      */
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         return propertiesInternal.validate(ipsProject);
     }
 

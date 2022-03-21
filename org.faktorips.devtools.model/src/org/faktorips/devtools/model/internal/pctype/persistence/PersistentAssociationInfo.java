@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.model.internal.pctype.persistence;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
@@ -115,7 +114,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws CoreException {
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) {
         if (!cascadeTypeOverwriteDefault) {
             initDefaultsCascadeTypes();
         }
@@ -125,7 +124,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void initDefaultsCascadeTypes() throws CoreException {
+    public void initDefaultsCascadeTypes() {
         IPolicyCmptTypeAssociation invAssociation = getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject());
         RelationshipType relationship = null;
@@ -213,7 +212,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public boolean isJoinTableRequired() throws CoreException {
+    public boolean isJoinTableRequired() {
         return isJoinTableRequired(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
     }
@@ -322,7 +321,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException {
+    public boolean isForeignKeyColumnDefinedOnTargetSide() {
         return isForeignKeyColumnDefinedOnTargetSide(getPolicyComponentTypeAssociation().findInverseAssociation(
                 getPolicyComponentTypeAssociation().getIpsProject()));
     }
@@ -504,7 +503,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    public void initDefaults() throws CoreException {
+    public void initDefaults() {
         if (getPolicyComponentTypeAssociation().is1ToManyIgnoringQualifier()) {
             fetchType = FetchType.LAZY;
         } else {
@@ -567,7 +566,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     @Override
-    protected void validateThis(MessageList msgList, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList msgList, IIpsProject ipsProject) {
         if (!getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled()) {
             return;
         }
@@ -722,7 +721,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
             int maxTableNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
                     .getMaxTableNameLength();
             if (joinTableName.length() > maxTableNameLenght) {
-                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, NLS.bind(
+                msgList.add(new Message(MSGCODE_JOIN_TABLE_NAME_INVALID, MessageFormat.format(
                         Messages.PersistentAssociationInfo_msgJoinTableNameExceedsMaximumLength,
                         joinTableName.length(), maxTableNameLenght), Message.ERROR, this,
                         IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME));
@@ -739,8 +738,10 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         int maxColumnNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
                 .getMaxColumnNameLenght();
         if (columnName.length() > maxColumnNameLenght) {
-            msgList.add(new Message(messageCode, NLS.bind(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
-                    new Object[] { propertyName, columnName.length(), maxColumnNameLenght }), Message.ERROR, this,
+            msgList.add(new Message(messageCode,
+                    MessageFormat.format(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
+                            new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
+                    Message.ERROR, this,
                     property));
         }
     }
@@ -755,15 +756,15 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
 
         String emptyText = null;
         if (mustBeEmpty) {
-            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustBeEmpty, propertyName);
+            emptyText = MessageFormat.format(Messages.PersistentAssociationInfo_msgMustBeEmpty, propertyName);
         } else {
-            emptyText = NLS.bind(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
+            emptyText = MessageFormat.format(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
         }
 
         if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
-            String invalidText = NLS.bind(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
+            String invalidText = MessageFormat.format(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);
             msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
         }
     }

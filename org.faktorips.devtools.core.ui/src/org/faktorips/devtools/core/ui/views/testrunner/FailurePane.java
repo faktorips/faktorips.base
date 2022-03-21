@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -54,6 +55,7 @@ import org.eclipse.ui.actions.SelectionListenerAction;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -196,8 +198,12 @@ public class FailurePane implements IMenuListener {
     /*
      * Find java element in the given java project by the given class name.
      */
-    private IJavaElement findElement(IJavaProject project, String className) throws CoreException {
-        return project == null ? null : project.findType(className);
+    private IJavaElement findElement(IJavaProject project, String className) {
+        try {
+            return project == null ? null : project.findType(className);
+        } catch (JavaModelException e) {
+            throw new IpsException(e);
+        }
     }
 
     /**

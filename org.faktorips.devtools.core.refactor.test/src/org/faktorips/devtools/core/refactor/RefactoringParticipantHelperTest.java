@@ -19,7 +19,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -66,7 +65,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testInitializeIpsObjectPartContainer() throws CoreException {
+    public void testInitializeIpsObjectPartContainer() {
         when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
         when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockStandardBuilderSet);
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(mockIpsObjectPartContainer);
@@ -80,7 +79,7 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testInitializeIpsObjectPartContainer_targetsRemembered() throws CoreException {
+    public void testInitializeIpsObjectPartContainer_targetsRemembered() {
         ipsRefactoringProcessor = mock(IpsRefactoringProcessor.class,
                 withSettings().extraInterfaces(IIpsMoveRenameIpsObjectProcessor.class));
         when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);

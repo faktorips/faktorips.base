@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.labels;
 
-import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -63,7 +63,7 @@ public class LabelAndDescriptionPropertiesBuilder extends AbstractLocalizedPrope
     }
 
     @Override
-    protected LabelAndDescriptionGenerator createNewMessageGenerator(IFile propertyFile,
+    protected LabelAndDescriptionGenerator createNewMessageGenerator(AFile propertyFile,
             ISupportedLanguage supportedLanguage) {
         return new LabelAndDescriptionGenerator(propertyFile, supportedLanguage, this);
     }

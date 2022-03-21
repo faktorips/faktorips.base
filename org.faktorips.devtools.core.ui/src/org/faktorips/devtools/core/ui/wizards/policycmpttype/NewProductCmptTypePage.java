@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -56,7 +55,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * Sets default values to the fields of this page.
      */
     @Override
-    public void pageEntered() throws CoreException {
+    public void pageEntered() {
         if (!isAlreadyBeenEntered()) {
             if (StringUtils.isEmpty(getPackage())) {
                 setPackage(getPageOfAssociatedType().getPackage());
@@ -110,7 +109,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         super.valueChangedExtension(e);
 
         if (e.field == pcTypeField) {
@@ -122,7 +121,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validateName() throws CoreException {
+    protected void validateName() {
         super.validateName();
 
         if (getIpsProject() == null) {
@@ -136,7 +135,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            {
 
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
@@ -157,7 +156,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * of the product component type of the supertype of the policy component type.
      */
     @Override
-    protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+    protected void validatePageExtensionThis(IpsValidation validation) {
         // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidateSupertype());
         validation.addTask(new ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract());
@@ -168,7 +167,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidateSupertype extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
                 return null;
             }
@@ -187,7 +186,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             return ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
                     getPageOfAssociatedType().isAbstract(), isAbstract(), null);
         }
@@ -198,7 +197,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(getSuperType())) {
                 return null;
             }

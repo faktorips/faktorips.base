@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -59,15 +60,18 @@ public class IpsModelActivator implements BundleActivator {
         // force loading of class before model is created!
         IpsObjectType.POLICY_CMPT_TYPE.getId();
 
-        @SuppressWarnings("deprecation")
-        IpsModel ipsModel = IpsModel.get();
         dependencyGraphPersistenceManager = new DependencyGraphPersistenceManager();
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
         ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
 
-        ipsModel.startListeningToResourceChanges();
+        getEclipseIpsModel().startListeningToResourceChanges();
+    }
 
+    private EclipseIpsModel getEclipseIpsModel() {
+        @SuppressWarnings("deprecation")
+        EclipseIpsModel eclipseIpsModel = (EclipseIpsModel)IpsModel.get();
+        return eclipseIpsModel;
     }
 
     /**
@@ -75,9 +79,7 @@ public class IpsModelActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        @SuppressWarnings("deprecation")
-        IpsModel ipsModel = IpsModel.get();
-        ipsModel.stopListeningToResourceChanges();
+        getEclipseIpsModel().stopListeningToResourceChanges();
     }
 
     /**

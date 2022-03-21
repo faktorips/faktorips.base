@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -25,6 +24,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -154,7 +154,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status) {
             IStructuredSelection selection = (IStructuredSelection)treeViewer.getSelection();
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {
@@ -210,7 +210,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                         IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)parentElement;
                         return root.getIpsPackageFragments();
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
                 return new Object[0];

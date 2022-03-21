@@ -28,7 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -164,7 +163,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTableFormatPropertiesControlFactory() throws CoreException {
+    public void testGetTableFormatPropertiesControlFactory() {
         ITableFormat tableFormatWithFactory = new TestTableFormat();
         ITableFormat tableFormatWithoutFactory = new TestTableFormatTwo();
 

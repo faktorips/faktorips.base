@@ -23,7 +23,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
@@ -264,7 +263,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperConstant() throws CoreException {
+    public void testIsOverrideGetAllowedValuesFor_SuperConstant() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
@@ -279,7 +278,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperOverride() throws CoreException {
+    public void testIsOverrideGetAllowedValuesFor_SuperOverride() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);

@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.DND;
@@ -255,7 +254,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSaveFile() throws CoreException {
+    public void testSaveFile() {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());
         ipsSrcFile.save(false, null);
@@ -272,7 +271,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
         checkSaveFile(ipsSrcFile);
     }
 
-    private void checkSaveFile(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile) {
         dropListener.setAutoSave(false);
         assertFalse(ipsSrcFile.isDirty());
         assertTrue(dropListener.performDropSingle(getFilenames(cmptC1)));
@@ -346,7 +345,7 @@ public class LinkDropListenerTest extends AbstractIpsPluginTest {
     private String[] getFilenames(ProductCmpt... cmpts) {
         String[] filenames = new String[cmpts.length];
         for (int i = 0; i < cmpts.length; i++) {
-            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toOSString();
+            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toString();
         }
         return filenames;
     }

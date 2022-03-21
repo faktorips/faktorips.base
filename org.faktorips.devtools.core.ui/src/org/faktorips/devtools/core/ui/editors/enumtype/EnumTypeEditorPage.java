@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.ContributionManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -29,7 +28,6 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 
 /**
  * Base page for <code>IEnumType</code> editors providing controls to edit its properties and
@@ -111,11 +109,7 @@ public class EnumTypeEditorPage extends IpsObjectEditorPage {
 
         new EnumTypeGeneralInfoSection(enumType, formBody, toolkit);
         enumAttributesSection = new EnumAttributesSection(enumType, formBody, getSite(), toolkit);
-        try {
-            enumValuesSection = new EnumValuesSection(enumType, getEditorSite(), formBody, toolkit);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        enumValuesSection = new EnumValuesSection(enumType, getEditorSite(), formBody, toolkit);
         enumAttributesSection.setEnumValuesSection(enumValuesSection);
     }
 

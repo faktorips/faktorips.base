@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -204,14 +203,14 @@ public class EnumValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_ReturnTrueIfOnlyEnumValeSetTypeIsAllowed() throws CoreException {
+    public void testIsResponsibleFor_ReturnTrueIfOnlyEnumValeSetTypeIsAllowed() {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
 
         assertTrue(enumVSFormat.isResponsibleFor("test | test1"));
     }
 
     @Test
-    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum() throws CoreException {
+    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum() {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 
@@ -220,7 +219,7 @@ public class EnumValueSetFormatTest {
 
     @Test
     public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum_EmptyString()
-            throws CoreException {
+            {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 

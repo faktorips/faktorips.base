@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -87,7 +87,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
                 .createInvalidIdentifier(
                         Message.newError(
                                 ExprCompiler.UNDEFINED_IDENTIFIER,
-                                NLS.bind(Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(),
+                                MessageFormat.format(Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(),
                                         enumType.getName())));
     }
 
@@ -120,7 +120,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
             IMultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
             return getNameAndDescription(enumTypeDatatypeAdapter.getEnumType(), multiLanguageSupport);
         }
-        return NLS.bind(Messages.EnumParser_description, getText(enumDatatype));
+        return MessageFormat.format(Messages.EnumParser_description, getText(enumDatatype));
     }
 
     private void addEnumValueProposals(String prefix, IdentifierProposalCollector collector) {

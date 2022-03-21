@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.table;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -42,7 +40,7 @@ public class TableRowBuilder extends XtendBuilder<XTableRow> {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType());
 
     }
@@ -59,11 +57,7 @@ public class TableRowBuilder extends XtendBuilder<XTableRow> {
 
     @Override
     public boolean isGeneratingArtifactsFor(IIpsObjectPartContainer ipsObjectPartContainer) {
-        try {
-            return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return isBuilderFor(ipsObjectPartContainer.getIpsSrcFile());
     }
 
     @Override

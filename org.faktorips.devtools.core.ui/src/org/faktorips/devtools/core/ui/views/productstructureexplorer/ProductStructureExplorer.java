@@ -14,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -71,7 +70,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -1042,11 +1040,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
             changeCardinality();
 
             if (!dirty && ipsSrcFile.isDirty()) {
-                try {
-                    productCmptReference.getLink().getIpsSrcFile().save(false, new NullProgressMonitor());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                productCmptReference.getLink().getIpsSrcFile().save(false, new NullProgressMonitor());
             }
             productStructureExplorer.refresh();
         }
@@ -1119,14 +1113,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
                     event.getSelection()) instanceof IProductCmptStructureTblUsageReference) {
                 IProductCmptStructureTblUsageReference selectedTableReference = (IProductCmptStructureTblUsageReference)getSelectedObjectFromSelection(
                         event.getSelection());
-                try {
-                    ITableContents tableUsage = selectedTableReference.getTableContentUsage()
-                            .findTableContents(selectedTableReference.getTableContentUsage().getIpsProject());
-                    if (tableUsage != null) {
-                        IpsUIPlugin.getDefault().openEditor(tableUsage);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                ITableContents tableUsage = selectedTableReference.getTableContentUsage()
+                        .findTableContents(selectedTableReference.getTableContentUsage().getIpsProject());
+                if (tableUsage != null) {
+                    IpsUIPlugin.getDefault().openEditor(tableUsage);
                 }
             }
         }

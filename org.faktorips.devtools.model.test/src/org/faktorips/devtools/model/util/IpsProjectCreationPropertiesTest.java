@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.util;
 
 import static org.faktorips.abstracttest.matcher.FluentAssert.when;
 import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
-import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
@@ -25,12 +25,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -248,9 +247,9 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
-            IProject project = newPlatformProject(UUID.randomUUID().toString());
-            IJavaProject javaProject = addJavaCapabilities(project);
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            AProject project = newPlatformProject(UUID.randomUUID().toString());
+            AJavaProject javaProject = addJavaCapabilities(project);
             StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             ValidationErrorIpsProjectConfigurator validationErrorIpsProjectConfigurator = new ValidationErrorIpsProjectConfigurator();
@@ -270,24 +269,24 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     private static class NonApplicableIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return false;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+        public MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
             fail("Validation should never be called when canConfigure returns false");
             return null;
         }
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                {
             fail("should never be called");
         }
 
@@ -296,23 +295,23 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
     private static class ValidationErrorIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+        public MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
             return MessageList.ofErrors("Not OK");
         }
 
         @Override
         public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+                {
             fail("should never be called");
         }
 

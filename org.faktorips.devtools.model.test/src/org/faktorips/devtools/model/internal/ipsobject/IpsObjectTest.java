@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -55,7 +54,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetQualifiedName() throws CoreException {
+    public void testGetQualifiedName() {
         assertEquals("pack.TestProduct", ipsObject.getQualifiedName());
         IIpsPackageFragment defaultFolder = rootFolder.getIpsPackageFragment("");
         IIpsSrcFile file = defaultFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestProduct", true, null);
@@ -63,7 +62,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateEqualIpsObjectAlreadyExistsInIpsObjectPath() throws CoreException {
+    public void testValidateEqualIpsObjectAlreadyExistsInIpsObjectPath() {
         IIpsProject a = newIpsProject("aProject");
         IPolicyCmptType aPolicyProjectA = newPolicyCmptTypeWithoutProductCmptType(a, "faktorzehn.example.APolicy");
         IIpsProject b = newIpsProject("bProject");
@@ -93,7 +92,7 @@ public class IpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete() throws CoreException {
+    public void testDelete() {
         ipsObject.delete();
         assertFalse(ipsObject.exists());
     }

@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -36,6 +35,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.Page;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
@@ -99,7 +99,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
                 setTitle(getIpsObject().getName());
             }
             setDescriptionItems(createDescriptions());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 
@@ -109,7 +109,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
      * Creates a List of DescriptionItems
      * 
      */
-    protected abstract List<DescriptionItem> createDescriptions() throws CoreException;
+    protected abstract List<DescriptionItem> createDescriptions() throws IpsException;
 
     /**
      * Creates DescriptionItems

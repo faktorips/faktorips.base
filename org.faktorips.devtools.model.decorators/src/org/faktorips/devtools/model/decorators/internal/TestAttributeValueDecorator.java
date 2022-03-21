@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -32,7 +32,7 @@ public class TestAttributeValueDecorator implements IIpsObjectPartDecorator {
                 if (testAttribute != null) {
                     return IIpsDecorators.getImageDescriptor(testAttribute);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // ignore exception, return default image
                 IpsLog.log(e);
             }

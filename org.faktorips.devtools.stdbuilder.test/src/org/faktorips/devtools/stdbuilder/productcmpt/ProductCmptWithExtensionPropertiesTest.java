@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.extproperties.BooleanExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.RetentionPolicy;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -44,8 +44,8 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
     @SuppressWarnings("deprecation")
     @Test
-    public void testExtensionXml() throws CoreException, IOException, SAXException {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+    public void testExtensionXml() throws IpsException, IOException, SAXException {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             TestExtensionPropertyDefinition extensionPropertyDefinition = new TestExtensionPropertyDefinition();
             extensionPropertyDefinition.setName("TestExtension");
             extensionPropertyDefinition.setPropertyId("TestExtensionId");
@@ -96,7 +96,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
             ProductCmptXMLBuilder productCmptXMLBuilder = findProductCmptXMLBuilder();
             productCmptXMLBuilder.build(productCmpt.getIpsSrcFile());
-            IFile xmlContentFile = productCmptXMLBuilder.getXmlContentFile(productCmpt.getIpsSrcFile());
+            AFile xmlContentFile = productCmptXMLBuilder.getXmlContentFile(productCmpt.getIpsSrcFile());
 
             document = XmlUtil.getDefaultDocumentBuilder().parse(xmlContentFile.getContents());
             documentElement = document.getDocumentElement();

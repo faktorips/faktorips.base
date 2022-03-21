@@ -13,9 +13,8 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,7 +30,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -41,7 +39,7 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 /**
  * Provides drop support for {@linkplain TestCaseSection}.
@@ -187,25 +185,21 @@ class DropToMoveHelper {
         viewerDropAdapter.getCurrentEvent().detail = DND.DROP_MOVE;
 
         ITestPolicyCmpt droppedTestPolicyCmpt = getDroppedTestPolicyCmpt(data);
-        try {
-            final ITestPolicyCmpt parentTestPolicyCmpt = droppedTestPolicyCmpt.getParentTestPolicyCmpt();
-            int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(targetTestPolicyCmpt);
-            final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(droppedTestPolicyCmpt);
+        final ITestPolicyCmpt parentTestPolicyCmpt = droppedTestPolicyCmpt.getParentTestPolicyCmpt();
+        int posTarget = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(targetTestPolicyCmpt);
+        final int posSource = parentTestPolicyCmpt.getIndexOfChildTestPolicyCmpt(droppedTestPolicyCmpt);
 
-            int steps = posSource - posTarget;
-            final boolean up = (steps >= 0);
-            final int stepsToMove = Math.abs(steps);
-            IWorkspaceRunnable moveRunnable = $ -> {
-                int currPos = posSource;
-                for (int i = 0; i < stepsToMove; i++) {
-                    parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
-                    currPos += (up ? -1 : 1);
-                }
-            };
-            IIpsModel.get().runAndQueueChangeEvents(moveRunnable, null);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        int steps = posSource - posTarget;
+        final boolean up = (steps >= 0);
+        final int stepsToMove = Math.abs(steps);
+        ICoreRunnable moveRunnable = $ -> {
+            int currPos = posSource;
+            for (int i = 0; i < stepsToMove; i++) {
+                parentTestPolicyCmpt.moveTestPolicyCmptLink(new int[] { currPos }, up);
+                currPos += (up ? -1 : 1);
+            }
+        };
+        IIpsModel.get().runAndQueueChangeEvents(moveRunnable, null);
 
         ISelection selection = getViewer().getSelection();
         getTestCaseSection().refreshTreeAndDetailArea();
@@ -301,25 +295,21 @@ class DropToLinkHelper {
             @Override
             public void run() {
                 ITestPolicyCmpt newTestPolicyCmpt;
-                try {
-                    if (getCurrentTarget() instanceof ITestPolicyCmpt) {
-                        newTestPolicyCmpt = dropOnTestPolicyCmpt((ITestPolicyCmpt)getCurrentTarget());
-                    } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
-                        newTestPolicyCmpt = dropOnTestCaseTypeAssociation((TestCaseTypeAssociation)getCurrentTarget());
-                    } else {
-                        throw new RuntimeException();
-                    }
-
-                    getTestCaseSection().refreshTreeAndDetailArea();
-                    getTestCaseSection().expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);
-                    getTestCaseSection().selectInTreeByObject(newTestPolicyCmpt, true);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (getCurrentTarget() instanceof ITestPolicyCmpt) {
+                    newTestPolicyCmpt = dropOnTestPolicyCmpt((ITestPolicyCmpt)getCurrentTarget());
+                } else if (getCurrentTarget() instanceof TestCaseTypeAssociation) {
+                    newTestPolicyCmpt = dropOnTestCaseTypeAssociation((TestCaseTypeAssociation)getCurrentTarget());
+                } else {
+                    throw new RuntimeException();
                 }
+
+                getTestCaseSection().refreshTreeAndDetailArea();
+                getTestCaseSection().expandTreeAfterAdd(getCurrentTarget(), newTestPolicyCmpt);
+                getTestCaseSection().selectInTreeByObject(newTestPolicyCmpt, true);
             }
 
             private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreException {
+                    {
 
                 if (testCaseTypeAssociation.isRoot()) {
                     return dropOnRootTestCaseTypeAssociation(testCaseTypeAssociation);
@@ -329,7 +319,7 @@ class DropToLinkHelper {
             }
 
             private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    throws CoreException {
+                    {
 
                 ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().getTestCase())
                         .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());
@@ -338,7 +328,7 @@ class DropToLinkHelper {
                 return rootTestPolicyCmpt;
             }
 
-            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+            private ITestPolicyCmpt dropOnTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) {
                 ITestPolicyCmptTypeParameter targetToChildParameter = getTargetToChildParameter(productCmpt,
                         testPolicyCmpt);
                 ITestPolicyCmptLink testPolicyCmptLink = testPolicyCmpt.addTestPcTypeLink(targetToChildParameter,
@@ -358,34 +348,30 @@ class DropToLinkHelper {
     private ITestPolicyCmptTypeParameter getTargetToChildParameter(IProductCmpt productCmpt,
             ITestPolicyCmpt testPolicyCmptTarget) {
 
-        try {
-            ITestPolicyCmptTypeParameter testTypeParam = testPolicyCmptTarget
-                    .findTestPolicyCmptTypeParameter(testPolicyCmptTarget.getIpsProject());
-            if (testTypeParam == null) {
-                return null;
-            }
-            IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-            if (productCmptType == null) {
-                return null;
-            }
-            IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(productCmpt.getIpsProject());
-            if (policyCmptType == null) {
-                return null;
-            }
-            ITestPolicyCmptTypeParameter targetToChildParam = null;
-            for (ITestPolicyCmptTypeParameter potentialTargetToChildParam : testTypeParam
-                    .getTestPolicyCmptTypeParamChilds()) {
-                IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam.findPolicyCmptType(productCmpt
-                        .getIpsProject());
-                if (policyCmptType.isSubtypeOrSameType(policyTypeOfParameter, productCmpt.getIpsProject())) {
-                    targetToChildParam = potentialTargetToChildParam;
-                    break;
-                }
-            }
-            return targetToChildParam;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ITestPolicyCmptTypeParameter testTypeParam = testPolicyCmptTarget
+                .findTestPolicyCmptTypeParameter(testPolicyCmptTarget.getIpsProject());
+        if (testTypeParam == null) {
+            return null;
         }
+        IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        if (productCmptType == null) {
+            return null;
+        }
+        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(productCmpt.getIpsProject());
+        if (policyCmptType == null) {
+            return null;
+        }
+        ITestPolicyCmptTypeParameter targetToChildParam = null;
+        for (ITestPolicyCmptTypeParameter potentialTargetToChildParam : testTypeParam
+                .getTestPolicyCmptTypeParamChilds()) {
+            IPolicyCmptType policyTypeOfParameter = potentialTargetToChildParam.findPolicyCmptType(productCmpt
+                    .getIpsProject());
+            if (policyCmptType.isSubtypeOrSameType(policyTypeOfParameter, productCmpt.getIpsProject())) {
+                targetToChildParam = potentialTargetToChildParam;
+                break;
+            }
+        }
+        return targetToChildParam;
     }
 
     private IProductCmpt getProductCmpt(Object data) {
@@ -425,7 +411,7 @@ class DropToLinkHelper {
     }
 
     private IProductCmpt getProductCmpt(String filename) {
-        IFile file = NestedProjectFileUtil.getFile(filename);
+        IFile file = NestedEclipseProjectFileUtil.getFile(filename);
         return file.getAdapter(IProductCmpt.class);
     }
 

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.refactor;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.intParam;
 import static org.faktorips.devtools.stdbuilder.StdBuilderHelper.stringParam;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -27,27 +26,27 @@ import org.junit.Test;
 public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest {
 
     @Test
-    public void testPullUpPolicyCmptTypeAttributeValueSetUnrestricted() throws CoreException {
+    public void testPullUpPolicyCmptTypeAttributeValueSetUnrestricted() {
         performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED, false);
     }
 
     @Test
-    public void testPullUpPolicyCmptTypeAttributeValueSetEnum() throws CoreException {
+    public void testPullUpPolicyCmptTypeAttributeValueSetEnum() {
         performTestPullUpPolicyCmptTypeAttribute(ValueSetType.ENUM, false);
     }
 
     @Test
-    public void testPullUpPolicyCmptTypeAttributeValueSetRange() throws CoreException {
+    public void testPullUpPolicyCmptTypeAttributeValueSetRange() {
         performTestPullUpPolicyCmptTypeAttribute(ValueSetType.RANGE, false);
     }
 
     @Test
-    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+    public void testPullUpPolicyCmptTypeAttributeFurtherUpInHierarchy() {
         performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED, true);
     }
 
     private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType, boolean useSuperTarget)
-            throws CoreException {
+            {
 
         // Create target product component type configuring a policy component type
         IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct",
@@ -98,16 +97,16 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testPullUpProductCmptTypeAttribute() throws CoreException {
+    public void testPullUpProductCmptTypeAttribute() {
         performTestPullUpProductCmptTypeAttribute(false);
     }
 
     @Test
-    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() throws CoreException {
+    public void testPullUpProductCmptTypeAttributeFurtherUpInHierarchy() {
         performTestPullUpProductCmptTypeAttribute(true);
     }
 
-    private void performTestPullUpProductCmptTypeAttribute(boolean useSuperTarget) throws CoreException {
+    private void performTestPullUpProductCmptTypeAttribute(boolean useSuperTarget) {
         // Create target product component type configuring a policy component type
         IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct",
                 true);

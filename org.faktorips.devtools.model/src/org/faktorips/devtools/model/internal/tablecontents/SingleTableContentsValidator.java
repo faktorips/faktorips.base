@@ -10,12 +10,10 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -66,11 +64,7 @@ public class SingleTableContentsValidator {
     }
 
     private static ITableStructure getStructureFor(ITableContents tableContents, IIpsProject project) {
-        try {
-            return tableContents.findTableStructure(project);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return tableContents.findTableStructure(project);
     }
 
     /**
@@ -98,7 +92,7 @@ public class SingleTableContentsValidator {
 
     protected void validateAndAppendMessages(MessageList messageList) {
         if (isNumberOfContentsIllegal()) {
-            String text = NLS.bind(Messages.TableContents_msgTooManyContentsForSingleTableStructure,
+            String text = MessageFormat.format(Messages.TableContents_msgTooManyContentsForSingleTableStructure,
                     tableStructure.getName());
             messageList.add(new Message(ITableContents.MSGCODE_TOO_MANY_CONTENTS_FOR_SINGLETABLESTRUCTURE, text,
                     Message.ERROR, tableStructure.getName(), ITableContents.PROPERTY_TABLESTRUCTURE));

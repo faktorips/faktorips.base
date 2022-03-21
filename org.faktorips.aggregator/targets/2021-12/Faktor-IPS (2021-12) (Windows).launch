@@ -23,7 +23,9 @@
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*21.0.0@default:default"/>
+        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
+        <setEntry value="com.google.guava*30.1.0.v20210127-2300@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
@@ -37,20 +39,24 @@
         <setEntry value="javax.inject@default:default"/>
         <setEntry value="javax.xml@default:default"/>
         <setEntry value="jaxb-api@default:default"/>
-        <setEntry value="joda-time@default:default"/>
+        <setEntry value="joda-time*2.1.0@default:default"/>
+        <setEntry value="joda-time*2.7.0@default:default"/>
         <setEntry value="net.i2p.crypto.eddsa@default:default"/>
         <setEntry value="org.apache.ant@default:default"/>
         <setEntry value="org.apache.batik.constants@default:default"/>
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
-        <setEntry value="org.apache.commons.codec@default:default"/>
+        <setEntry value="org.apache.commons.codec*1.14.0.v20200818-1422@default:default"/>
+        <setEntry value="org.apache.commons.codec*1.6.0@default:default"/>
         <setEntry value="org.apache.commons.collections@default:default"/>
-        <setEntry value="org.apache.commons.io@default:default"/>
+        <setEntry value="org.apache.commons.io*2.4.0@default:default"/>
+        <setEntry value="org.apache.commons.io*2.8.0.v20210415-0900@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.lang@default:default"/>
-        <setEntry value="org.apache.commons.logging@default:default"/>
+        <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
+        <setEntry value="org.apache.commons.logging*1.2.0@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
@@ -175,19 +181,19 @@
         <setEntry value="org.eclipse.help.base@default:default"/>
         <setEntry value="org.eclipse.help.ui@default:default"/>
         <setEntry value="org.eclipse.help@default:default"/>
-        <setEntry value="org.eclipse.jdt.compiler.apt*1.4.50.v20210914-1429_BETA_JAVA17@default:false"/>
+        <setEntry value="org.eclipse.jdt.compiler.apt@default:false"/>
         <setEntry value="org.eclipse.jdt.compiler.tool@default:false"/>
-        <setEntry value="org.eclipse.jdt.core*3.27.50.v20210914-1429_BETA_JAVA17@default:default"/>
-        <setEntry value="org.eclipse.jdt.core.manipulation*1.15.50.v20210914-1428_BETA_JAVA17@default:default"/>
-        <setEntry value="org.eclipse.jdt.debug.ui*3.12.400.v20210816-1720_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.jdt.core.manipulation@default:default"/>
+        <setEntry value="org.eclipse.jdt.core@default:default"/>
+        <setEntry value="org.eclipse.jdt.debug.ui@default:default"/>
         <setEntry value="org.eclipse.jdt.debug@default:default"/>
-        <setEntry value="org.eclipse.jdt.junit.core*3.11.0.v20210629-0111_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.jdt.junit.core@default:default"/>
         <setEntry value="org.eclipse.jdt.junit.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
-        <setEntry value="org.eclipse.jdt.launching*3.19.350.v20210914-1442_BETA_JAVA17@default:default"/>
-        <setEntry value="org.eclipse.jdt.ui*3.24.50.v20210914-1428_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.jdt.launching@default:default"/>
+        <setEntry value="org.eclipse.jdt.ui@default:default"/>
         <setEntry value="org.eclipse.jem.util@default:default"/>
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
         <setEntry value="org.eclipse.jface.notifications@default:default"/>
@@ -223,7 +229,7 @@
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
         <setEntry value="org.eclipse.osgi@-1:true"/>
-        <setEntry value="org.eclipse.pde.build*3.11.50.v20210914-1447_BETA_JAVA17@default:default"/>
+        <setEntry value="org.eclipse.pde.build@default:default"/>
         <setEntry value="org.eclipse.pde.core@default:default"/>
         <setEntry value="org.eclipse.pde.ds.lib@default:default"/>
         <setEntry value="org.eclipse.pde.launching@default:default"/>
@@ -295,7 +301,8 @@
         <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
-        <setEntry value="org.objenesis@default:default"/>
+        <setEntry value="org.objenesis*1.4.0@default:default"/>
+        <setEntry value="org.objenesis*2.1.0@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
@@ -307,6 +314,7 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
@@ -329,7 +337,7 @@
         <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
-    <booleanAttribute key="show_selected_only" value="true"/>
+    <booleanAttribute key="show_selected_only" value="false"/>
     <stringAttribute key="templateConfig" value="${target_home}/configuration/config.ini"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
@@ -337,4 +345,3 @@
     <booleanAttribute key="useDefaultConfigArea" value="true"/>
     <booleanAttribute key="useProduct" value="true"/>
 </launchConfiguration>
-

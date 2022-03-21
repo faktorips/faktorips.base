@@ -18,12 +18,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.template.ProductCmptLinkHistograms;
 import org.faktorips.devtools.model.internal.productcmpt.template.PropertyValueHistograms;
@@ -42,7 +40,7 @@ import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
-public class InferTemplateProcessor implements IWorkspaceRunnable {
+public class InferTemplateProcessor implements ICoreRunnable {
 
     private static final Function<IProductCmpt, IProductCmptGeneration> LATEST_GENERATION = productCmpt -> productCmpt == null
             ? null
@@ -92,7 +90,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         if (monitor == null) {
             this.monitor = new NullProgressMonitor();
         } else {
@@ -149,12 +147,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         org.eclipse.core.runtime.SubProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
                 monitor, productCmpts.size());
         saveMonitor.beginTask(Messages.InferTemplateOperation_progress_save, srcFilesToSave.size() + 1);
-        try {
-            for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
-                ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
+            ipsSrcFile.save(false, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         }
     }
 

@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -207,7 +208,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             previousTarget = association.getTarget();
             try {
                 storeTargetPolicyCmptType((IPolicyCmptType)association.findTarget(ipsProject));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 showAndLogError(e);
                 return;
             }
@@ -288,7 +289,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             } else {
                 list = associationForPage.validate(ipsProject);
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             showAndLogError(e);
             return false;
         }
@@ -455,7 +456,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     getAssociation().getPolicyCmptType().getQualifiedName(),
                     getAssociation().getAssociationType().getCorrespondingAssociationType(),
                     getAssociation().getIpsProject(), false);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             showAndLogError(e);
         }
         return null;
@@ -516,7 +517,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 } else {
                     inverseAssociationPropertyPage.setExistingAssociations(new String[0]);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 showAndLogError(e);
             }
         } else if (isNewInverseAssociation()) {
@@ -527,7 +528,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             storeInverseAssociation(null);
             try {
                 createNewInverseAssociation();
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 showAndLogError(e);
             }
@@ -540,7 +541,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Create a new inverse association, i.e. create a new association on the target policy
      * component type object.
      */
-    private void createNewInverseAssociation() throws CoreException {
+    private void createNewInverseAssociation() {
         if (targetPolicyCmptType == null) {
             return;
         }
@@ -613,14 +614,14 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                     productCmptTypeAssociation.getIpsSrcFile().save(true, null);
                 }
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             showAndLogError(e);
             return false;
         }
         return true;
     }
 
-    private void checkAndPerformLastStateChange() throws CoreException {
+    private void checkAndPerformLastStateChange() {
         if (inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION) {
             handleInverseAssociationSelectionState();
         }
@@ -632,7 +633,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
     }
 
-    private void initPersistentAssociationInfo() throws CoreException {
+    private void initPersistentAssociationInfo() {
         association.getPersistenceAssociatonInfo().initDefaults();
         IPolicyCmptTypeAssociation findInverseAssociation = association.findInverseAssociation(ipsProject);
         if (findInverseAssociation == null) {

@@ -19,9 +19,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -47,18 +45,14 @@ public abstract class XProductClass extends XType {
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            if (!getType().isValid(getIpsProject())) {
-                return false;
+        if (!getType().isValid(getIpsProject())) {
+            return false;
+        } else {
+            if (isConfigurationForPolicyCmptType()) {
+                return getPolicyCmptClass().getType().isValid(getPolicyCmptClass().getIpsProject());
             } else {
-                if (isConfigurationForPolicyCmptType()) {
-                    return getPolicyCmptClass().getType().isValid(getPolicyCmptClass().getIpsProject());
-                } else {
-                    return true;
-                }
+                return true;
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 

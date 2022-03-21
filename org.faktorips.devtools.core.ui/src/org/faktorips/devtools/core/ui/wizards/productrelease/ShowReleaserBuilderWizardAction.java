@@ -18,6 +18,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -44,7 +46,7 @@ public class ShowReleaserBuilderWizardAction implements IWorkbenchWindowActionDe
             IResource resource = selection.getFirstElement().getAdapter(IResource.class);
             if (resource != null) {
                 IProject project = resource.getProject();
-                ipsProject = IIpsModel.get().getIpsProject(project);
+                ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
             }
         }
 

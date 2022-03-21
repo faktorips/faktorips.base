@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -28,6 +27,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -271,7 +271,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 try {
                     newConstrainedAssociation.getPolicyCmptType().getIpsSrcFile().save(false,
                             new NullProgressMonitor());
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -290,7 +290,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (needToSave) {
                 try {
                     oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().save(false, new NullProgressMonitor());
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -364,7 +364,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                         .findPossiblyMatchingPolicyCmptTypeAssociations(association.getIpsProject())
                         .toArray(new IPolicyCmptTypeAssociation[0]);
                 comboViewerField.setInput(possiblyMatchingAssociations);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
             getBindingContext().bindContent(comboViewerField, pmoAssociation,
@@ -420,7 +420,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     if (derivedUnionCandidates != null && derivedUnionCandidates.length > 0) {
                         getAssociation().setSubsettedDerivedUnion(derivedUnionCandidates[0].getName());
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }

@@ -11,11 +11,10 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
@@ -131,7 +130,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findAttribute(ipsProject);
     }
 
@@ -205,7 +204,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptTypeAttribute attr = findAttribute(ipsProject);
         if (attr == null) {
@@ -214,7 +213,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
             if (productCmptType != null) {
                 typeLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(productCmptType);
             }
-            String text = NLS.bind(Messages.AttributeValue_attributeNotFound, attribute, typeLabel);
+            String text = MessageFormat.format(Messages.AttributeValue_attributeNotFound, attribute, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
@@ -243,9 +242,9 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     private void attrIsHiddenMismatch(IProductCmptTypeAttribute attr, MessageList list) {
         HiddenAttributeMismatchEntry attributeEntry = new HiddenAttributeMismatchEntry(this, attr);
         if (attributeEntry.isMismatch()) {
-            String text = NLS.bind(Messages.AttributeValue_HiddenAttributeMismatch,
-                    new String[] { attr.getDefaultValue(), attributeEntry.getPropertyName(),
-                            attributeEntry.getCurrentAttributeValue() });
+            String text = MessageFormat.format(Messages.AttributeValue_HiddenAttributeMismatch,
+                    attr.getDefaultValue(), attributeEntry.getPropertyName(),
+                    attributeEntry.getCurrentAttributeValue());
             list.add(new Message(MSGCODE_HIDDEN_ATTRIBUTE, text, Message.ERROR));
         }
     }
@@ -256,7 +255,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String caption = null;

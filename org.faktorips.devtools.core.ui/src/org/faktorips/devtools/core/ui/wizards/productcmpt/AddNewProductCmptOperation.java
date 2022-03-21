@@ -10,11 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -58,11 +56,7 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
                 monitor.worked(1);
 
                 if (!wasDirty) {
-                    try {
-                        srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    srcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
                 }
             }
         }

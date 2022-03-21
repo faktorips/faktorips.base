@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -179,7 +179,7 @@ public class ExtensionPropertyControlFactory {
                     .getExtensionPropertyEditFieldFactory(extPropertyData.extProperty.getPropertyId());
             extPropertyData.editField = factory.newEditField(ipsObjectPart, workArea, uiToolkit);
             extPropertyData.partContainer = ipsObjectPart;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
     }
@@ -199,7 +199,7 @@ public class ExtensionPropertyControlFactory {
                     IpsSection newSection = sectionFactory.newSection(ipsObjectPart, parent, toolkit);
                     sections.add(newSection);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }

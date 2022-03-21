@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -58,21 +57,21 @@ import org.junit.Test;
 public class RenameRefactoringParticipantTest extends RefactoringParticipantTest {
 
     @Test
-    public void testRenamePolicyCmptTypeAttributeValueSetUnrestricted() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeValueSetUnrestricted() {
         performTestRenamePolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED);
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAttributeValueSetEnum() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeValueSetEnum() {
         performTestRenamePolicyCmptTypeAttribute(ValueSetType.ENUM);
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAttributeValueSetRange() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeValueSetRange() {
         performTestRenamePolicyCmptTypeAttribute(ValueSetType.RANGE);
     }
 
-    private void performTestRenamePolicyCmptTypeAttribute(ValueSetType valueSetType) throws CoreException {
+    private void performTestRenamePolicyCmptTypeAttribute(ValueSetType valueSetType) {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = createPolicyCmptTypeAttribute("policyAttribute", "Policy",
                 "Product");
         policyCmptTypeAttribute.setValueSetType(valueSetType);
@@ -96,7 +95,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
      * hierarchy.
      */
     @Test
-    public void testRenameOverwritingPolicyCmptTypeAttribute() throws CoreException {
+    public void testRenameOverwritingPolicyCmptTypeAttribute() {
         IPolicyCmptType superPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
@@ -127,7 +126,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
      * hierarchy which also overwrites an other attribute (transitive).
      */
     @Test
-    public void testRenameOverwritingPolicyCmptTypeAttributeTransitive() throws CoreException {
+    public void testRenameOverwritingPolicyCmptTypeAttributeTransitive() {
         IPolicyCmptType superSuperPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperSuperPolicy",
                 "SuperSuperProduct");
         IPolicyCmptType superPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SuperPolicy", "SuperProduct");
@@ -161,7 +160,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameProductCmptTypeAttribute() throws CoreException {
+    public void testRenameProductCmptTypeAttribute() {
         IProductCmptTypeAttribute productCmptTypeAttribute = createProductCmptTypeAttribute("productAttribute",
                 "Product", "Policy");
 
@@ -179,7 +178,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameEnumAttributeAbstractJava5Enums() throws CoreException {
+    public void testRenameEnumAttributeAbstractJava5Enums() {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.setAbstract(true);
 
@@ -197,7 +196,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
      * properly renamed.
      */
     @Test
-    public void testRenameEnumAttributeHierarchy() throws CoreException {
+    public void testRenameEnumAttributeHierarchy() {
         // Create the hierarchy
         IEnumType superEnumType = createEnumType("SuperEnumType", null, "id", "name");
         superEnumType.setAbstract(true);
@@ -223,7 +222,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenamePolicyCmptType() throws CoreException {
+    public void testRenamePolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
@@ -240,7 +239,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenamePolicyCmptType_illegalName() throws CoreException {
+    public void testRenamePolicyCmptType_illegalName() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
@@ -254,7 +253,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameProductCmptType() throws CoreException {
+    public void testRenameProductCmptType() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
@@ -270,7 +269,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameProductCmpt() throws CoreException {
+    public void testRenameProductCmpt() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "Prod");
@@ -293,7 +292,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenamePackage() throws CoreException {
+    public void testRenamePackage() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "pack.Prod");
@@ -324,11 +323,11 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameEnumLiteralNameAttributeValue() throws CoreException {
+    public void testRenameEnumLiteralNameAttributeValue() {
         performTestRenameEnumLiteralNameAttributeValue();
     }
 
-    private void performTestRenameEnumLiteralNameAttributeValue() throws CoreException {
+    private void performTestRenameEnumLiteralNameAttributeValue() {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name", "name", "0", "foo", "FOO");
         IEnumLiteralNameAttributeValue enumLiteralNameAttributeValue = enumType.getEnumValues().get(0)
                 .getEnumLiteralNameAttributeValue();
@@ -344,7 +343,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameEnumType() throws CoreException {
+    public void testRenameEnumType() {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.setExtensible(true);
         enumType.newEnumLiteralNameAttribute();
@@ -359,7 +358,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameTableStructure() throws CoreException {
+    public void testRenameTableStructure() {
         ITableStructure tableStructure = createTableStructure("TableStructure");
 
         saveIpsSrcFile(tableStructure);
@@ -371,7 +370,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameTestCaseType() throws CoreException {
+    public void testRenameTestCaseType() {
         ITestCaseType testCaseType = createTestCaseType("TestCaseType");
 
         saveIpsSrcFile(testCaseType);
@@ -383,7 +382,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
     }
 
     @Test
-    public void testRenameOnlyLetterCaseChanged() throws CoreException {
+    public void testRenameOnlyLetterCaseChanged() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PolicyCmptType");
 
         saveIpsSrcFile(policyCmptType);
@@ -398,7 +397,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     private IPolicyCmptTypeAttribute createPolicyCmptTypeAttribute(String name,
             String policyCmptTypeName,
-            String productCmptTypeName) throws CoreException {
+            String productCmptTypeName) {
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
                 productCmptTypeName);
@@ -419,7 +418,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
     private IProductCmptTypeAttribute createProductCmptTypeAttribute(String name,
             String productCmptTypeName,
-            String policyCmptTypeName) throws CoreException {
+            String policyCmptTypeName) {
 
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, policyCmptTypeName,
                 productCmptTypeName);

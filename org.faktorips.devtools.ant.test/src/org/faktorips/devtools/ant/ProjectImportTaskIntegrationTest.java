@@ -16,13 +16,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Calendar;
 import java.util.TimeZone;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Test;
@@ -33,45 +34,47 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
     public void testImport_NoCopy_NotAlreadyInWorkspace() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         String projectName = ipsProject.getName();
-        IPath location = ipsProject.getProject().getLocation();
-        String newProjectPath = getTempDirPath();
-        new RecursiveCopy().copyDir(location.toPortableString(), newProjectPath);
-        ipsProject.getProject().delete(true, true, null);
+        Path location = ipsProject.getProject().getLocation();
+        Path newProjectPath = getTempDirPath();
+        new RecursiveCopy().copyDir(location, newProjectPath);
+        ipsProject.getProject().delete(null);
 
         ProjectImportTask projectimporter = new ProjectImportTask();
-        projectimporter.setDir(newProjectPath);
+        projectimporter.setDir(newProjectPath.toString());
         projectimporter.setCopy(false);
 
         projectimporter.execute();
         IIpsProject project = IIpsModel.get().getIpsProject(projectName);
         assertTrue(project.exists());
-        assertThat(getCanonicalPath(project.getProject().getLocation()), is(getCanonicalPath(newProjectPath)));
+        assertThat(getCanonicalPath(project.getProject().getLocation()),
+                is(getCanonicalPath(newProjectPath)));
     }
 
     @Test
     public void testImport_Copy_NotAlreadyInWorkspace() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         String projectName = ipsProject.getName();
-        IPath location = ipsProject.getProject().getLocation();
-        String newProjectPath = getTempDirPath();
-        new RecursiveCopy().copyDir(location.toPortableString(), newProjectPath);
-        ipsProject.getProject().delete(true, true, null);
+        Path location = ipsProject.getProject().getLocation();
+        Path newProjectPath = getTempDirPath();
+        new RecursiveCopy().copyDir(location, newProjectPath);
+        ipsProject.getProject().delete(null);
 
         ProjectImportTask projectimporter = new ProjectImportTask();
-        projectimporter.setDir(newProjectPath);
+        projectimporter.setDir(newProjectPath.toString());
         projectimporter.setCopy(true);
 
         projectimporter.execute();
         IIpsProject project = IIpsModel.get().getIpsProject(projectName);
         assertTrue(project.exists());
-        IPath projectParentPath = project.getProject().getLocation().removeLastSegments(1);
+        IPath projectParentPath = PathMapping.toEclipsePath(ipsProject.getProject().getLocation())
+                .removeLastSegments(1);
         assertThat(projectParentPath, is(ResourcesPlugin.getWorkspace().getRoot().getLocation()));
     }
 
-    private String getTempDirPath() {
+    private Path getTempDirPath() {
 
         File dir = null;
-        String fakeDir = "";
+        Path path = null;
 
         while (dir == null || dir.exists()) {
             Calendar cal = Calendar.getInstance(TimeZone.getDefault());
@@ -79,18 +82,14 @@ public class ProjectImportTaskIntegrationTest extends AbstractIpsPluginTest {
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(DATE_FORMAT);
             sdf.setTimeZone(TimeZone.getDefault());
 
-            fakeDir = System.getProperty("java.io.tmpdir") + "/" + sdf.format(cal.getTime()) + "/";
-            dir = new File(fakeDir);
+            path = Path.of(System.getProperty("java.io.tmpdir"), sdf.format(cal.getTime()));
+            dir = path.toFile();
         }
 
-        return new Path(fakeDir).toPortableString();
+        return path;
     }
 
-    private String getCanonicalPath(IPath path) throws IOException {
-        return new File(path.toPortableString()).getCanonicalPath();
-    }
-
-    private String getCanonicalPath(String path) throws IOException {
-        return new File(path).getCanonicalPath();
+    private String getCanonicalPath(Path path) throws IOException {
+        return path.toFile().getCanonicalPath();
     }
 }

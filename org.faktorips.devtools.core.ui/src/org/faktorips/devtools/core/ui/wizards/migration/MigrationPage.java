@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -83,7 +83,7 @@ public class MigrationPage extends WizardPage {
                 desc.append(IpsPlugin.getDefault().getMigrationOperation(project).getDescription());
                 desc.append(System.lineSeparator());
                 desc.append(System.lineSeparator());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 desc.append(Messages.MigrationPage_labelError + e.getMessage());
                 desc.append(System.lineSeparator());
@@ -128,7 +128,7 @@ public class MigrationPage extends WizardPage {
     private Optional<? extends Object> getMigrationOperation(IIpsProject ipsProject) {
         try {
             return Optional.of(IpsPlugin.getDefault().getMigrationOperation(ipsProject));
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // will be logged in the wizard
             return Optional.empty();
         }

@@ -21,15 +21,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.tablecontents.TableContents;
@@ -58,7 +57,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
  * generations. It handles all operations needed to perform a product copy or the creation of a new
  * product version.
  */
-public class DeepCopyOperation implements IWorkspaceRunnable {
+public class DeepCopyOperation implements ICoreRunnable {
 
     private final Set<IProductCmptStructureReference> copyElements;
     private final Set<IProductCmptStructureReference> linkElements;
@@ -118,7 +117,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor progressMonitor) throws CoreException {
+    public void run(IProgressMonitor progressMonitor) {
         IProgressMonitor monitor = progressMonitor;
         if (monitor == null) {
             monitor = new NullProgressMonitor();
@@ -215,15 +214,15 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
         }
         try {
             copySortOrder(sourceIpsPackageFragment, targetIpsPackageFragment, old2NewSrcFile, monitor);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException("Exception occured during sort order copying.", e); //$NON-NLS-1$
+        } catch (IpsException e) {
+            throw new IpsException("Exception occured during sort order copying.", e); //$NON-NLS-1$
         }
     }
 
     private void copySortOrder(IIpsPackageFragment sourceParent,
             IIpsPackageFragment targetParent,
             Map<IIpsSrcFile, IIpsSrcFile> old2NewSrcFile,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) {
         Comparator<IIpsElement> sourceComparator = sourceParent.getChildOrderComparator();
         if (sourceComparator instanceof DefinedOrderComparator) {
             Comparator<IIpsElement> targetComparator = targetParent.getChildOrderComparator();
@@ -278,7 +277,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
             Hashtable<IProductCmpt, IProductCmpt> productNew2ProductOld,
             GregorianCalendar oldValidFrom,
             GregorianCalendar newValidFrom,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) {
 
         IIpsObject templateObject = toCopyProductCmptStructureReference.getWrappedIpsObject();
         IIpsSrcFile file = handleMap.get(toCopyProductCmptStructureReference);
@@ -306,7 +305,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                             ((ITimedIpsObject)file.getIpsObject()).retainOnlyGeneration(oldValidFrom, newValidFrom);
                         }
                     }
-                } catch (CoreRuntimeException e) {
+                } catch (IpsException e) {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
                 }
@@ -470,7 +469,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 final IIpsProject ipsProject = productCmptTemplate.getIpsProject();
                 IProductCmpt oldTargetProductCmpt = link.findTarget(ipsProject);
                 linkData = new LinkData(productCmptTemplate, oldTargetProductCmpt, link.findAssociation(ipsProject));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsLog.logAndShowErrorDialog(e);
                 return;
             }
@@ -501,7 +500,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
      * Creates a new package, based on the target package. To this base package, the path of the
      * source is appended, after the given number of segments to ignore is cut off.
      */
-    private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) throws CoreException {
+    private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) {
         IIpsPackageFragment result;
         String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
         result = ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);

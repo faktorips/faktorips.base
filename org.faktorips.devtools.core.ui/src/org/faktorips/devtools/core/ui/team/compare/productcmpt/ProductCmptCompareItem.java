@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 import org.faktorips.devtools.model.IIpsElement;
@@ -515,7 +515,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
     // CSON: CyclomaticComplexityCheck
     private StringBuilder getFileName(IIpsSrcFile srcFile) {
         StringBuilder sb = new StringBuilder();
-        IFile file = srcFile.getCorrespondingFile();
+        AFile file = srcFile.getCorrespondingFile();
         if (file != null) {
             sb.append(Messages.ProductCmptCompareItem_SourceFile).append(COLON_BLANK);
             sb.append(QUOTE).append(file.getName()).append(QUOTE);

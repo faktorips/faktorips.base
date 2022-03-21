@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
@@ -185,7 +184,7 @@ public class CustomValidationsMapTest {
         }
 
         @Override
-        public MessageList validate(Attribute objectToValidate, IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(Attribute objectToValidate, IIpsProject ipsProject) {
             return null;
         }
 
@@ -210,7 +209,7 @@ public class CustomValidationsMapTest {
 
         @Override
         public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                throws CoreException {
+                {
             return null;
         }
 

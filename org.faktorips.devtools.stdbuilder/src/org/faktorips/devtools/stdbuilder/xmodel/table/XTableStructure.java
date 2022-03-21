@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
@@ -34,30 +32,22 @@ public abstract class XTableStructure extends XClass {
     }
 
     public List<XColumn> getValidColumns() {
-        try {
-            IColumn[] columns = ((ITableStructure)getIpsObjectPartContainer()).getColumns();
-            List<XColumn> result = new ArrayList<>();
-            for (int i = 0; i < columns.length; i++) {
-                if (columns[i].isValid(getIpsProject())) {
-                    XColumn xColumn = getModelNode(columns[i], XColumn.class);
-                    xColumn.setIndexInList(i);
-                    result.add(xColumn);
+        IColumn[] columns = ((ITableStructure)getIpsObjectPartContainer()).getColumns();
+        List<XColumn> result = new ArrayList<>();
+        for (int i = 0; i < columns.length; i++) {
+            if (columns[i].isValid(getIpsProject())) {
+                XColumn xColumn = getModelNode(columns[i], XColumn.class);
+                xColumn.setIndexInList(i);
+                result.add(xColumn);
 
-                }
             }
-            return result;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        return result;
     }
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            return getIpsObjectPartContainer().isValid(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsObjectPartContainer().isValid(getIpsProject());
     }
 
     @Override

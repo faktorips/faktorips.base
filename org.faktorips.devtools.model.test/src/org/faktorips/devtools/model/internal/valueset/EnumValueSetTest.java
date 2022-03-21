@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -694,7 +693,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_CheckDuplicates() throws CoreException {
+    public void testValidate_CheckDuplicates() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.size());
@@ -734,7 +733,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateValue() throws CoreException {
+    public void testValidateValue() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("2EUR");
         set.addValue("3EUR");

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -28,6 +27,8 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
@@ -172,10 +173,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     @Override
-    public void initialize(IPath containerPath, IJavaProject project) throws CoreException {
+    public void initialize(IPath containerPath, IJavaProject project) {
         IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
                 containerPath) };
-        JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
+        try {
+            JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);
+        } catch (JavaModelException e) {
+            throw new IpsException(e);
+        }
     }
 
     static class IpsClasspathContainer implements IClasspathContainer {

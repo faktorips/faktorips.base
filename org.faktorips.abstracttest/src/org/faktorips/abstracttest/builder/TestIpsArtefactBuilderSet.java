@@ -16,11 +16,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.GenericBuilderKindId;
 import org.faktorips.devtools.model.internal.builder.flidentifier.AbstractIdentifierResolver;
@@ -58,11 +57,11 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
      */
     public Map<Object, Object> testObjectsMap = new HashMap<>();
 
-    public TestIpsArtefactBuilderSet() throws CoreException {
+    public TestIpsArtefactBuilderSet() {
         this(new IIpsArtefactBuilder[0]);
     }
 
-    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) throws CoreException {
+    public TestIpsArtefactBuilderSet(IIpsArtefactBuilder[] builders) {
         super();
         ipsArtefactBuilders = new LinkedHashMap<>();
         for (IIpsArtefactBuilder ipsArtefactBuilder : builders) {
@@ -75,7 +74,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) {
         if (getConfig() == null) {
             super.initialize(config);
         }
@@ -87,7 +86,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
         return ipsArtefactBuilders;
     }
 
@@ -157,7 +156,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) {
         return null;
     }
 
@@ -168,13 +167,13 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) {
         return new TestParameterIdentifierResolver(formula, exprCompiler);
     }
 
     @Override
-    public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
-        return (IFile)testObjectsMap.get(root);
+    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
+        return (AFile)testObjectsMap.get(root);
     }
 
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) {

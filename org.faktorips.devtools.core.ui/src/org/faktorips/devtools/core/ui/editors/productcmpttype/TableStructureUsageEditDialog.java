@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,6 +36,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -257,7 +257,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
                 viewer.getTable().setFocus();
                 updateButtonsEnabledState();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -310,7 +310,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
      * Displays a dialog to select a table structure. Returns the selected table structure or
      * <code>null</code> if the user select nothing.
      */
-    private ITableStructure selectTableStructureByDialog() throws CoreException {
+    private ITableStructure selectTableStructureByDialog() {
         ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                 new DefaultLabelProvider());
         selectDialog.setTitle(Messages.TblsStructureUsageEditDialog_selectStructurDialogTitle);

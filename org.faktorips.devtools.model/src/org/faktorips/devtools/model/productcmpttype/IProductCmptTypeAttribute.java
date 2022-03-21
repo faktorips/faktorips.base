@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.productcmpttype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
@@ -109,10 +109,10 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
      * attribute's data type.
      * 
-     * @throws CoreException if an error occurs.
+     * @throws IpsException if an error occurs.
      */
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a copy of the given value set and assigns it to this attribute.

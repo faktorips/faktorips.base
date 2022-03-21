@@ -14,8 +14,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -89,11 +87,7 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
     }
 
     private IPolicyCmptTypeAssociation getDerviedUnionAssociation() {
-        try {
-            return getAssociation().findInverseAssociation(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAssociation().findInverseAssociation(getIpsProject());
     }
 
     /**
@@ -115,28 +109,24 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             List<IPolicyCmptTypeAssociation> associations = currentType.getPolicyCmptTypeAssociations();
-            try {
-                for (IPolicyCmptTypeAssociation asso : associations) {
-                    if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
-                        if (asso.isSharedAssociation()) {
-                            IPolicyCmptTypeAssociation sharedAssociationHost = asso
-                                    .findSharedAssociationHost(getIpsProject());
-                            if (sharedAssociationHost.equals(detailToMasterDU)) {
-                                foundSubset = true;
-                                return false;
-                            }
-                        } else {
-                            IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(getIpsProject());
-                            if (!masterToDetail.isDerivedUnion() && masterToDetail.getSubsettedDerivedUnion()
-                                    .equals(detailToMasterDU.getInverseAssociation())) {
-                                foundSubset = true;
-                                return false;
-                            }
+            for (IPolicyCmptTypeAssociation asso : associations) {
+                if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
+                    if (asso.isSharedAssociation()) {
+                        IPolicyCmptTypeAssociation sharedAssociationHost = asso
+                                .findSharedAssociationHost(getIpsProject());
+                        if (sharedAssociationHost.equals(detailToMasterDU)) {
+                            foundSubset = true;
+                            return false;
+                        }
+                    } else {
+                        IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(getIpsProject());
+                        if (!masterToDetail.isDerivedUnion() && masterToDetail.getSubsettedDerivedUnion()
+                                .equals(detailToMasterDU.getInverseAssociation())) {
+                            foundSubset = true;
+                            return false;
                         }
                     }
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
             if (currentType.equals(detailToMasterDU.getType())) {
                 return false;

@@ -13,21 +13,20 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.ImportPreviewPage;
 import org.faktorips.devtools.core.ui.wizards.ipsimport.IpsObjectImportWizard;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -93,11 +92,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
-            try {
-                newTableContentsPage.validatePage();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            newTableContentsPage.validatePage();
             return newTableContentsPage;
         }
 
@@ -163,7 +158,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
 
-            IWorkspaceRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
+            ICoreRunnable runnable = $ -> format.executeTableImport(structure, new Path(filename), tableRows,
                     getNullRepresentation(),
                     ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
             IIpsModel.get().runAndQueueChangeEvents(runnable, null);
@@ -214,11 +209,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     }
 
     private int getRowCountNewTable() {
-        try {
-            return getTableContents().getTableRows().getNumOfRows();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getTableContents().getTableRows().getNumOfRows();
     }
 
     /**
@@ -232,7 +223,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
             } else {
                 return newTableContentsPage.getTableStructure();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -241,7 +232,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
     /**
      * @return The table contents to import into.
      */
-    private ITableContents getTableContents() throws CoreException {
+    private ITableContents getTableContents() {
         if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (ITableContents)selectContentsPage.getTargetForImport();
         }

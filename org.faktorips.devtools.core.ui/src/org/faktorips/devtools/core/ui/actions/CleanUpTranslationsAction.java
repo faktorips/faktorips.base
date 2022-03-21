@@ -20,10 +20,10 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.action.IAction;
@@ -37,6 +37,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsElement;
@@ -110,10 +112,12 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             if (adaptable instanceof IIpsElement) {
                 ipsProject = ((IIpsElement)adaptable).getIpsProject();
             } else if (adaptable instanceof IResource) {
-                ipsProject = IIpsModel.get().getIpsProject(((IResource)adaptable).getProject());
+                ipsProject = IIpsModel.get()
+                        .getIpsProject(Wrappers.wrap(((IResource)adaptable).getProject()).as(AProject.class));
             } else if (adaptable instanceof IJavaElement) {
                 ipsProject = IIpsModel.get()
-                        .getIpsProject(((IJavaElement)adaptable).getJavaProject().getProject());
+                        .getIpsProject(Wrappers.wrap(((IJavaElement)adaptable).getJavaProject().getProject())
+                                .as(AProject.class));
             }
             if (!(ipsProjects.contains(ipsProject)) && ipsProject != null) {
                 ipsProjects.add(ipsProject);
@@ -163,10 +167,10 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
         }
 
-        private class CleanUpTranslationsWorkspaceRunnable implements IWorkspaceRunnable {
+        private class CleanUpTranslationsWorkspaceRunnable implements ICoreRunnable {
 
             @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
+            public void run(IProgressMonitor monitor) {
                 for (IIpsProject ipsProject : ipsProjects) {
                     List<IIpsSrcFile> ipsSrcFiles = new ArrayList<>();
                     IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
@@ -219,15 +223,11 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             }
 
             private void cleanUpChildren(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
-                try {
-                    IIpsElement[] children = ipsObjectPartContainer.getChildren();
-                    for (IIpsElement child : children) {
-                        if (child instanceof IIpsObjectPartContainer) {
-                            cleanUp((IIpsObjectPartContainer)child, supportedLocales);
-                        }
+                IIpsElement[] children = ipsObjectPartContainer.getChildren();
+                for (IIpsElement child : children) {
+                    if (child instanceof IIpsObjectPartContainer) {
+                        cleanUp((IIpsObjectPartContainer)child, supportedLocales);
                     }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
                 }
             }
 

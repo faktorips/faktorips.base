@@ -19,10 +19,10 @@ import java.util.List;
 
 import com.opencsv.CSVWriter;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
@@ -69,7 +69,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         IProgressMonitor localMonitor = monitor;
         if (localMonitor == null) {
             localMonitor = new NullProgressMonitor();
@@ -169,14 +169,14 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
      * @param monitor The monitor to display the progress.
      * @param exportColumnHeaderRow column header names included or not.
      * 
-     * @throws CoreException thrown if an error occurs during the search for the datatypes of the
+     * @throws IpsException thrown if an error occurs during the search for the datatypes of the
      *             structure.
      */
     private void exportDataCells(CSVWriter writer,
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException {
+            boolean exportColumnHeaderRow) {
 
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
 

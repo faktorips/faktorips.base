@@ -21,10 +21,9 @@ import java.io.IOException;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.service.resolver.VersionRange;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.internal.versionmanager.util.ManifestUtil.ManifestFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class ManifestUtilTest {
     private Attributes attributes;
 
     @Mock
-    private IFile file;
+    private AFile file;
 
     @Mock
     private ManifestFactory manifestFactory;
@@ -139,13 +138,13 @@ public class ManifestUtilTest {
     }
 
     @Test
-    public void testWriteManifest() throws IOException, CoreException {
+    public void testWriteManifest() throws IOException {
         ManifestUtil migrationUtil = createMigrationManifestUtil();
         when(attributes.getValue(Constants.REQUIRE_BUNDLE)).thenReturn(MY_REQUIRE_BUNDLE_WITH_VERSION);
         migrationUtil.setPluginDependency(MY_REQUIRE_BUNDLE, RANGE1);
         migrationUtil.writeManifest();
         verify(manifest).write(any(ByteArrayOutputStream.class));
-        verify(file).setContents(any(ByteArrayInputStream.class), eq(true), eq(true), any(NullProgressMonitor.class));
+        verify(file).setContents(any(ByteArrayInputStream.class), eq(true), any(NullProgressMonitor.class));
     }
 
     private ManifestUtil createMigrationManifestUtil() throws IOException {

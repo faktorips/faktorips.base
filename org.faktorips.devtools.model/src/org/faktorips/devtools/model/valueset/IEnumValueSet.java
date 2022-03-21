@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.valueset;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 
@@ -116,7 +116,7 @@ public interface IEnumValueSet extends IValueSet {
      * index as the position holding the invalid value. So the other duplicates are NOT returned as
      * invalid!
      */
-    public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException;
+    public MessageList validateValue(int index, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Getting a copy of the list of values

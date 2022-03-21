@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
@@ -58,11 +56,7 @@ public class IpsSrcFileModification {
      * @return The modification instance holding the state of the {@link IIpsSrcFile}
      */
     public static IpsSrcFileModification createBeforeModification(IIpsSrcFile ipsSrcFile) {
-        try {
-            return new IpsSrcFileModification(ipsSrcFile, ipsSrcFile.newMemento());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return new IpsSrcFileModification(ipsSrcFile, ipsSrcFile.newMemento());
     }
 
     /**
@@ -75,11 +69,7 @@ public class IpsSrcFileModification {
      * @return The modification instance to undo the changes you want to make.
      */
     public static IpsSrcFileModification createBeforeRename(IIpsSrcFile source, IIpsSrcFile target) {
-        try {
-            return new IpsSrcFileModification(source, target, source.newMemento());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return new IpsSrcFileModification(source, target, source.newMemento());
     }
 
     /**
@@ -140,26 +130,18 @@ public class IpsSrcFileModification {
             resetChanges(originalIpsSrcFile);
         }
         if (!targetIpsSrcFile.equals(originalIpsSrcFile) && targetIpsSrcFile.exists()) {
-            try {
-                targetIpsSrcFile.discardChanges();
-                move(targetIpsSrcFile, originalIpsSrcFile);
-                resetChanges(originalIpsSrcFile);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            targetIpsSrcFile.discardChanges();
+            move(targetIpsSrcFile, originalIpsSrcFile);
+            resetChanges(originalIpsSrcFile);
         }
     }
 
-    protected void move(IIpsSrcFile from, IIpsSrcFile to) throws CoreException {
+    protected void move(IIpsSrcFile from, IIpsSrcFile to) {
         RefactorUtil.moveIpsSrcFile(from, to.getIpsPackageFragment(), to.getIpsObjectName(), new NullProgressMonitor());
     }
 
-    protected void resetChanges(IIpsSrcFile iIpsSrcFile) {
-        try {
-            iIpsSrcFile.setMemento(getOriginalContent());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    protected void resetChanges(IIpsSrcFile ipsSrcFile) {
+        ipsSrcFile.setMemento(getOriginalContent());
     }
 
 }

@@ -11,15 +11,16 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
 
 /**
  * This class simply creates a JarFile for a previously specified path. After creating a
@@ -40,13 +41,13 @@ public class JarFileFactory {
     private static final boolean TRACE_JAR_FILES = Boolean
             .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")).booleanValue(); //$NON-NLS-1$
 
-    private static final Map<IPath, OpenedJar> CACHE = new ConcurrentHashMap<>();
+    private static final Map<Path, OpenedJar> CACHE = new ConcurrentHashMap<>();
 
     private static final int DEFAULT_DELAY_TIME = 5000;
 
     private static int closeDelay = DEFAULT_DELAY_TIME;
 
-    private final IPath jarPath;
+    private final Path jarPath;
 
     /**
      * Create the {@link JarFileFactory}, the jarPath is the absolute path to the jar file this
@@ -54,7 +55,7 @@ public class JarFileFactory {
      * 
      * @param jarPath The absolute path to a jar file
      */
-    public JarFileFactory(IPath jarPath) {
+    public JarFileFactory(Path jarPath) {
         this.jarPath = jarPath;
     }
 
@@ -67,7 +68,7 @@ public class JarFileFactory {
      * 
      * @return The absolute jar file path
      */
-    public IPath getJarPath() {
+    public Path getJarPath() {
         return jarPath;
     }
 
@@ -101,7 +102,7 @@ public class JarFileFactory {
         }
     }
 
-    /* private */IPath getAbsolutePath(IPath bundlePath) {
+    /* private */Path getAbsolutePath(Path bundlePath) {
         if (isWorkspaceRelativePath(bundlePath)) {
             return getWorkspaceRelativePath(bundlePath);
         } else {
@@ -109,12 +110,12 @@ public class JarFileFactory {
         }
     }
 
-    private boolean isWorkspaceRelativePath(IPath bundlePath) {
-        return ResourcesPlugin.getWorkspace().getRoot().exists(bundlePath);
+    private boolean isWorkspaceRelativePath(Path bundlePath) {
+        return Abstractions.getWorkspace().getRoot().getFile(bundlePath).exists();
     }
 
-    private IPath getWorkspaceRelativePath(IPath bundlePath) {
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(bundlePath);
+    private Path getWorkspaceRelativePath(Path bundlePath) {
+        AFile file = Abstractions.getWorkspace().getRoot().getFile(bundlePath);
         return file.getLocation();
     }
 

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
@@ -74,7 +75,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptNamingStrategy() throws CoreException {
+    public void testValidate_ProductCmptNamingStrategy() {
         ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
         MessageList result = properties.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
@@ -97,35 +98,35 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RequiredFeatures() throws CoreException {
+    public void testValidate_RequiredFeatures() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         props.setMinRequiredVersionNumber("org.faktorips.feature", "1.0.0");
         ml = props.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         IIpsFeatureVersionManager versionManager = mock(IIpsFeatureVersionManager.class);
         when(versionManager.getFeatureId()).thenReturn("my.feature");
         when(versionManager.isRequiredForAllProjects()).thenReturn(false);
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setFeatureVersionManagers(versionManager);
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             when(versionManager.isRequiredForAllProjects()).thenReturn(true);
             ml = props.validate(ipsProject);
-            assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             props.setMinRequiredVersionNumber("my.feature", "1.0.0");
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
         }
     }
 
     @Test
-    public void testValidate_DefinedDatatypes() throws CoreException {
+    public void testValidate_DefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -140,7 +141,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_PredefinedDatatypes() throws CoreException {
+    public void testValidate_PredefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -157,7 +158,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
+    public void testValidate_SupportedLanguagesIsoConformity() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -175,7 +176,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
+    public void testValidate_SupportedLanguagesDefaultLanguage() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -196,7 +197,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_FeatureConfiguration_UnknownFeature() throws CoreException {
+    public void testValidate_FeatureConfiguration_UnknownFeature() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();

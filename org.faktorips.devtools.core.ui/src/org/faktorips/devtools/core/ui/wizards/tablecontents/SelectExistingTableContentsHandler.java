@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
@@ -18,7 +17,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
@@ -41,11 +39,7 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
                 IIpsSrcFile selectedObject = (IIpsSrcFile)selectDialog.getSelectedObject();
                 setToUsage.setTableContentName(selectedObject.getQualifiedNameType().getName());
                 if (autoSave && !dirtyState) {
-                    try {
-                        setToUsage.getIpsSrcFile().save(true, null);
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    setToUsage.getIpsSrcFile().save(true, null);
                 }
             }
         }
@@ -69,11 +63,7 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
         private ITableStructureUsage tableStructureUsage;
 
         public TableContentsViewerFilter(ITableContentUsage setToUsage) {
-            try {
-                tableStructureUsage = setToUsage.findTableStructureUsage(setToUsage.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            tableStructureUsage = setToUsage.findTableStructureUsage(setToUsage.getIpsProject());
         }
 
         @Override

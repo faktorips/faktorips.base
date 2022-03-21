@@ -10,20 +10,19 @@
 
 package org.faktorips.devtools.model.decorators.internal.test;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.internal.IpsElement;
 
 public class TestSampleIpsElement extends IpsElement implements ITestSampleIpsElement {
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         // not needed for these tests
         return null;
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() {
         // nothing to do
     }
 

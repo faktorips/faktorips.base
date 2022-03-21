@@ -14,15 +14,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipant;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 
@@ -72,15 +71,13 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
             callParticipants(ipsSrcFile, monitor);
             saveIpsSrcFile(ipsSrcFile, monitor);
             postProcess(ipsSrcFile, monitor);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         } finally {
             monitor.done();
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void createIpsPackageFragmentIfNonExistent(IProgressMonitor monitor) throws CoreException {
+    private void createIpsPackageFragmentIfNonExistent(IProgressMonitor monitor) {
         IIpsPackageFragment ipsPackage = pmo.getIpsPackage();
         if (!ipsPackage.exists()) {
             pmo.getPackageRoot().createPackageFragment(ipsPackage.getName(), true,
@@ -89,7 +86,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
     }
 
     @SuppressWarnings("deprecation")
-    private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+    private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
         ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
     }
 
@@ -104,10 +101,10 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * @param monitor progress monitor to show progress to the user
      * @return the new {@link IIpsSrcFile}
      * 
-     * @throws CoreException in case of exceptions during file creation
+     * @throws IpsException in case of exceptions during file creation
      */
     @SuppressWarnings("deprecation")
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         // @formatter:off
         return pmo.getIpsPackage().createIpsFile(
                 pmo.getIpsObjectType(),
@@ -127,9 +124,10 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * @param ipsSrcFile the newly created source file
      * @param monitor progress monitor to show progress with
      * 
-     * @throws CoreException thrown in case of any error
+     * @throws IpsException thrown in case of any error
      */
-    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException;
+    protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor)
+            throws IpsException;
 
     /**
      * This method may put the new {@link IIpsSrcFile} in context to other objects. It is called

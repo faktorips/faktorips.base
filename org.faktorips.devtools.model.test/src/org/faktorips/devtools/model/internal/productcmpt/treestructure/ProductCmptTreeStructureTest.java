@@ -20,8 +20,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -182,7 +182,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testReferencesProductCmpt() throws CoreException, CycleInProductStructureException {
+    public void testReferencesProductCmpt() throws IpsException, CycleInProductStructureException {
         IProductCmpt unReferencedProductCmpt = newProductCmpt(productCmptType, "products.TestProductUnReferenced");
 
         assertThat(structure.referencesProductCmptQualifiedName(productCmpt.getQualifiedName()), is(true));
@@ -198,7 +198,7 @@ public class ProductCmptTreeStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindReferencesFor() throws CoreException {
+    public void testFindReferencesFor() {
         List<IProductCmptReference> result;
         List<IProductCmpt> cmpts = new ArrayList<>();
 

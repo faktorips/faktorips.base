@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.datatype.Datatype;
@@ -64,7 +63,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidatePMO_configElement() throws CoreException {
+    public void testValidatePMO_configElement() {
 
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
@@ -81,7 +80,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidatePMO_overwrittenAttribute() throws CoreException {
+    public void testValidatePMO_overwrittenAttribute() {
         IProductCmptTypeAttribute attr = superProductCmptType.newProductCmptTypeAttribute("attr");
         IProductCmptTypeAttribute overwritingAttr = productCmptType.newProductCmptTypeAttribute("attr");
         attr.setDatatype("Integer");
@@ -179,7 +178,7 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
     }
 
-    private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) throws CoreException {
+    private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) {
         MessageList messageList = new ValueSetSpecificationControl.ValueSetPmo(valueSetOwner).validate(ipsProject);
         assertNotNull(messageList.getMessageByCode(ValueSetPmo.MSG_CODE_NULL_NOT_ALLOWED));
     }

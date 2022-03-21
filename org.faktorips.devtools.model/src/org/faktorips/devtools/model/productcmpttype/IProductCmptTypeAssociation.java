@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.productcmpttype;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -145,10 +145,10 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * @return the list of all {@link IPolicyCmptTypeAssociation} that could potentially be
      *         configured by this {@link IProductCmptTypeAssociation}
      * 
-     * @throws CoreException In case of a core exception while loading the objects and resources
+     * @throws IpsException In case of a core exception while loading the objects and resources
      */
     Set<IPolicyCmptTypeAssociation> findPossiblyMatchingPolicyCmptTypeAssociations(IIpsProject ipsProject)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Setting the name of the explicitly specified matching association. If the matching

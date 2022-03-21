@@ -18,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -52,7 +51,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         configureBuilderSetToGenerateJaxbSupport();
     }
 
-    private void configureBuilderSetToGenerateJaxbSupport() throws CoreException {
+    private void configureBuilderSetToGenerateJaxbSupport() {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
         configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
@@ -151,7 +150,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected IEnumType createEnumType(String name,
             IEnumType superEnumType,
             String idAttributeName,
-            String nameAttributeName) throws CoreException {
+            String nameAttributeName) {
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
@@ -182,7 +181,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String literalNameDefaultValueProviderAttribute,
             String idAttributeValue,
             String nameAttributeValue,
-            String literalNameAttributeValue) throws CoreException {
+            String literalNameAttributeValue) {
 
         IEnumType enumType = createEnumType(name, superEnumType, idAttributeName, nameAttributeName);
 
@@ -197,17 +196,17 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         return enumType;
     }
 
-    protected ITableStructure createTableStructure(String name) throws CoreException {
+    protected ITableStructure createTableStructure(String name) {
         ITableStructure tableStructure = newTableStructure(ipsProject, name);
         tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
         return tableStructure;
     }
 
-    protected ITestCaseType createTestCaseType(String name) throws CoreException {
+    protected ITestCaseType createTestCaseType(String name) {
         return newTestCaseType(ipsProject, name);
     }
 
-    protected void saveIpsSrcFile(IIpsObject ipsObject) throws CoreException {
+    protected void saveIpsSrcFile(IIpsObject ipsObject) {
         ipsObject.getIpsSrcFile().save(true, null);
     }
 

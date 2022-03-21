@@ -24,12 +24,13 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
@@ -40,7 +41,6 @@ import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.BeanUtil;
-import org.faktorips.devtools.model.util.EclipseIOUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -289,7 +289,7 @@ public class IpsSrcFileContent {
             clearRootPropertyCache();
             modificationStamp = file.getEnclosingResource().getModificationStamp();
             rootProperties = IpsSrcFileSaxHelper.getHeaderAttributes(file);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.logAndShowErrorDialog(e);
         }
     }
@@ -339,11 +339,11 @@ public class IpsSrcFileContent {
         }
     }
 
-    public void save(final boolean force, final IProgressMonitor monitor) throws CoreException {
+    public void save(final boolean force, final IProgressMonitor monitor) {
         if (!modified) {
             return;
         }
-        IWorkspaceRunnable runnable = monitor1 -> {
+        ICoreRunnable runnable = monitor1 -> {
             try {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
@@ -353,8 +353,8 @@ public class IpsSrcFileContent {
                 String newXml = XmlUtil.nodeToString(getIpsObject().toXml(doc), encoding,
                         ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
-                IFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
-                EclipseIOUtil.writeToFile(file, is, force, true, monitor1);
+                AFile file = ipsObject.getIpsSrcFile().getCorrespondingFile();
+                file.setContents(is, true, monitor1);
                 modificationStamp = file.getModificationStamp();
                 if (modStampsAfterSave == null) {
                     modStampsAfterSave = new ArrayList<>(1);
@@ -375,7 +375,7 @@ public class IpsSrcFileContent {
                 throw new CoreException(new IpsStatus(e));
             }
         };
-        ResourcesPlugin.getWorkspace().run(runnable, monitor);
+        Abstractions.getWorkspace().run(runnable, monitor);
     }
 
     /**

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -91,7 +90,7 @@ public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements
     }
 
     @Override
-    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) {
         return ((ProductCmptType)getProductCmptType()).findProductCmptProperty(this, ipsProject);
     }
 

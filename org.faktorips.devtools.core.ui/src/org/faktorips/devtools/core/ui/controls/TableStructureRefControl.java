@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -32,14 +32,14 @@ public class TableStructureRefControl extends IpsObjectRefControl {
      * Returns the table structure entered in this control. Returns <code>null</code> if the text in
      * the control does not identify a table structure.
      * 
-     * @throws CoreException if an exception occurs while searching for the table structure.
+     * @throws IpsException if an exception occurs while searching for the table structure.
      */
-    public ITableStructure findTableStructure() throws CoreException {
+    public ITableStructure findTableStructure() {
         return (ITableStructure)findIpsObject(IpsObjectType.TABLE_STRUCTURE);
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
         return findIpsSrcFilesByType(IpsObjectType.TABLE_STRUCTURE);
     }
 }

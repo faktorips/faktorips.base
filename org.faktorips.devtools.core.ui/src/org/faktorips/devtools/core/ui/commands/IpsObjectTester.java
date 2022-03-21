@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.expressions.PropertyTester;
 import org.eclipse.core.resources.IResource;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -25,7 +27,8 @@ public class IpsObjectTester extends PropertyTester {
             return true;
         }
         if (receiver instanceof IResource) {
-            IIpsElement ipsElement = IIpsModel.get().getIpsElement((IResource)receiver);
+            IIpsElement ipsElement = IIpsModel.get()
+                    .getIpsElement(Wrappers.wrap(receiver).as(AResource.class));
             return ipsElement instanceof IIpsSrcFile;
         }
         return false;

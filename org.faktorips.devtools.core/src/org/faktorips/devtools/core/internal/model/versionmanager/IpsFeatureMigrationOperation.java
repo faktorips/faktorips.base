@@ -18,10 +18,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -31,7 +32,6 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
-import org.osgi.framework.Version;
 
 /**
  * Operation to migrate the content created with one version of FaktorIps to match the needs of
@@ -59,7 +59,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     @Override
-    public final void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    public final void execute(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException {
         IProgressMonitor theMonitor = monitor != null ? monitor : new NullProgressMonitor();
 
@@ -73,7 +73,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
     }
 
     @SuppressWarnings("deprecation")
-    private void executeInternal(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    private void executeInternal(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException {
 
         try {
@@ -85,7 +85,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
                 }
                 result.add(operation.migrate(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000)));
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             rollback();
             throw (e);
         } catch (InvocationTargetException e) {
@@ -97,7 +97,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             // CSOFF: IllegalCatch
         } catch (Throwable t) {
             rollback();
-            throw new CoreException(new IpsStatus(t));
+            throw new IpsException(new IpsStatus(t));
             // CSON: IllegalCatch
         }
 
@@ -125,7 +125,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         ArrayList<IIpsSrcFile> files = new ArrayList<>();
         try {
             projectToMigrate.findAllIpsSrcFiles(files);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(new IpsStatus("Error during rollback of migration. Rollback might have failed", e)); //$NON-NLS-1$
         }
         for (IIpsSrcFile element : files) {
@@ -138,7 +138,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
 
     }
 
-    private void updateIpsProject() throws CoreException {
+    private void updateIpsProject() {
         if (isEmpty()) {
             return;
         }
@@ -150,8 +150,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             String version = features.get(operation.getFeatureId());
             if (version == null) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
-            } else if (Version.parseVersion(version)
-                    .compareTo(Version.parseVersion(operation.getTargetVersion())) < 0) {
+            } else if (AVersion.parse(version)
+                    .compareTo(AVersion.parse(operation.getTargetVersion())) < 0) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }

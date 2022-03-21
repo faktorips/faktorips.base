@@ -16,9 +16,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -259,10 +257,6 @@ public class AggregateRootFinderTest extends AbstractIpsPluginTest {
     }
 
     private void save(ProductCmpt prodCmpt) {
-        try {
-            prodCmpt.getIpsSrcFile().save(false, null);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        prodCmpt.getIpsSrcFile().save(false, null);
     }
 }

@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -26,6 +25,7 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
 import org.faktorips.devtools.core.internal.refactor.NonIPSMoveOperation;
@@ -119,12 +119,12 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
 
             moveNonIPSObjects(sources, target, shell);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             logCoreException(shell, e);
         }
     }
 
-    private void logCoreException(Shell shell, CoreException e) {
+    private void logCoreException(Shell shell, IpsException e) {
         IStatus status = e.getStatus();
         if (status instanceof IpsStatus) {
             MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());
@@ -133,7 +133,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
     }
 
-    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreException {
+    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) {
         try {
             NonIPSMoveOperation moveOp = null;
             if (target instanceof IIpsPackageFragment) {
@@ -190,7 +190,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
 
         @Override
-        protected void execute(final IProgressMonitor monitor) throws CoreException, InterruptedException {
+        protected void execute(final IProgressMonitor monitor) throws IpsException, InterruptedException {
             try {
                 move.run(monitor);
             } catch (InvocationTargetException e) {

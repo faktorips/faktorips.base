@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.MoveArguments;
@@ -51,7 +50,7 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
      * not equal the {@link IIpsObject}'s original {@link IIpsPackageFragment}.
      */
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         if (targetIpsPackageFragment.equals(originalIpsPackageFragment)) {
             status.addFatalError(Messages.IpsMoveProcessor_msgTargetLocationEqualsOriginalLocation);
         }
@@ -59,7 +58,7 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
 
     @Override
     public RefactoringParticipant[] loadParticipants(RefactoringStatus status, SharableParticipants sharedParticipants)
-            throws CoreException {
+            {
 
         RefactoringProcessor processor = this;
         Object elementToMove = getIpsElement();

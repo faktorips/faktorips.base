@@ -16,10 +16,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import java.nio.file.Path;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -52,8 +52,8 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
         originalType.getIpsSrcFile().save(true, null);
 
         project = newIpsProject();
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
-        IPath archivePath = archiveFile.getFullPath();
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
+        Path archivePath = archiveFile.getWorkspaceRelativePath();
         createArchive(archiveProject, archiveFile);
 
         IIpsObjectPath path = project.getIpsObjectPath();
@@ -102,7 +102,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContentFromEnclosingResource() throws CoreException {
+    public void testGetContentFromEnclosingResource() {
         assertNotNull(srcFile.getContentFromEnclosingResource());
     }
 
@@ -112,7 +112,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreException {
+    public void testDelete() {
         srcFile.delete();
     }
 

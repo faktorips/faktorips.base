@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -40,6 +38,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
@@ -288,7 +290,7 @@ public class BuilderSetContainer {
     }
 
     private void initializeTimeStamps() {
-        IFile file = ipsProject.getProject().getFile(".ipsproject"); //$NON-NLS-1$
+        AFile file = ipsProject.getProject().getFile(".ipsproject"); //$NON-NLS-1$
         ipsprojectFileTimeStamp = file.getModificationStamp();
         builderSettingsSnapshot = getEncodedSettings();
     }
@@ -308,7 +310,8 @@ public class BuilderSetContainer {
         List<IIpsArtefactBuilderSetInfo> builderSetInfos = new ArrayList<>();
 
         IIpsModel ipsModel = ipsProject.getIpsModel();
-        IpsArtefactBuilderSetInfo.loadExtensions(Platform.getExtensionRegistry(), IpsPlugin.getDefault().getLog(),
+        IpsArtefactBuilderSetInfo.loadExtensions(Platform.getExtensionRegistry(),
+                Wrappers.wrap(IpsPlugin.getDefault().getLog()).as(ALog.class),
                 builderSetInfos, ipsModel);
 
         return builderSetInfos;
@@ -330,7 +333,7 @@ public class BuilderSetContainer {
      *         was opened.
      */
     public boolean hasChangesInIpsprojectFile() {
-        IFile file = ipsProject.getProject().getFile(".ipsproject"); //$NON-NLS-1$
+        AFile file = ipsProject.getProject().getFile(".ipsproject"); //$NON-NLS-1$
         return ipsprojectFileTimeStamp != file.getModificationStamp();
     }
 
@@ -363,7 +366,7 @@ public class BuilderSetContainer {
             validateBuilderSetConfig();
             ipsProjectProperties.setBuilderSetConfig(builderSetConfigModel);
             ipsProject.setProperties(ipsProjectProperties);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

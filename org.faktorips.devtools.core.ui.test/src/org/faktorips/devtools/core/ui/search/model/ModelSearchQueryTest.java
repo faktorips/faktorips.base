@@ -21,10 +21,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.search.ui.ISearchQuery;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.faktorips.devtools.model.IIpsElement;
@@ -73,7 +73,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheKlassenName() throws CoreException {
+    public void testSucheKlassenName() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
 
@@ -114,10 +114,10 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testCoreException() throws CoreException {
+    public void testCoreException() {
 
         IStatus exceptionStatus = new IpsStatus(IStatus.ERROR, "xyz");
-        when(scope.getSelectedIpsSrcFiles()).thenThrow(new CoreException(exceptionStatus));
+        when(scope.getSelectedIpsSrcFiles()).thenThrow(new IpsException(exceptionStatus));
 
         IStatus status = query.run(new NullProgressMonitor());
 
@@ -125,7 +125,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheAttribute() throws CoreException {
+    public void testSucheAttribute() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingAttr");
@@ -192,7 +192,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheMethoden() throws CoreException {
+    public void testSucheMethoden() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
@@ -259,7 +259,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheAssoziationen() throws CoreException {
+    public void testSucheAssoziationen() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
@@ -326,7 +326,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheTableStructureUsages() throws CoreException {
+    public void testSucheTableStructureUsages() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
@@ -393,7 +393,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheRules() throws CoreException {
+    public void testSucheRules() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("MatchingMet");
@@ -459,7 +459,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSucheLabels() throws CoreException {
+    public void testSucheLabels() {
 
         when(searchModel.getSrcFilePattern()).thenReturn("SrcF");
         when(searchModel.getSearchTerm()).thenReturn("Matching");
@@ -514,7 +514,7 @@ public class ModelSearchQueryTest {
     }
 
     @Test
-    public void testSearchExtensionPropertyOfType() throws CoreException {
+    public void testSearchExtensionPropertyOfType() {
         String propertyId = "FSPM";
 
         IExtensionPropertyDefinition extensionPropertyDefinition = mock(IExtensionPropertyDefinition.class);

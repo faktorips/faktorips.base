@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -23,6 +24,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
@@ -161,10 +164,10 @@ public class ProductReleaseProcessor {
         return result;
     }
 
-    private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
+    private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) {
         try {
-            if (!ipsProject.getProject().isSynchronized(IResource.DEPTH_INFINITE)) {
-                ipsProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+            if (!ipsProject.getProject().isSynchronized(AResourceTreeTraversalDepth.INFINITE)) {
+                ipsProject.getProject().refreshLocal(AResourceTreeTraversalDepth.INFINITE, monitor);
             }
         } finally {
             monitor.done();
@@ -172,20 +175,20 @@ public class ProductReleaseProcessor {
     }
 
     private void checkSynchronization(IIpsProject ipsProject, IProgressMonitor monitor) throws InterruptedException {
-        if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
+        if (!teamOperation.isProjectSynchronized(ipsProject.getProject().unwrap(), monitor)) {
             throw new InterruptedException(NLS.bind(Messages.ReleaseAndDeploymentOperation_exception_notSynchron,
                     teamOperation.getVersionControlSystem()));
         }
     }
 
-    private void updateVersionProperty(IIpsProject ipsProject, String newVersion) throws CoreException {
+    private void updateVersionProperty(IIpsProject ipsProject, String newVersion) {
         IIpsProjectProperties projectProperties = ipsProject.getProperties();
         projectProperties.setVersion(newVersion);
         ipsProject.setProperties(projectProperties);
         observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_new_version_set, newVersion));
     }
 
-    private void validateIpsProject(IIpsProject ipsProject) throws CoreException, InterruptedException {
+    private void validateIpsProject(IIpsProject ipsProject) throws IpsException, InterruptedException {
         MessageList messages = ipsProject.validate();
         if (messages.containsErrorMsg()) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_fipsErrors);
@@ -193,7 +196,7 @@ public class ProductReleaseProcessor {
     }
 
     private void checkProblemMarkers(IIpsProject ipsProject) throws CoreException, InterruptedException {
-        if (ipsProject.getProject().findMaxProblemSeverity(IMarker.PROBLEM, true,
+        if (((IProject)ipsProject.getProject().unwrap()).findMaxProblemSeverity(IMarker.PROBLEM, true,
                 IResource.DEPTH_INFINITE) == IMarker.SEVERITY_ERROR) {
             throw new InterruptedException(Messages.ReleaseAndDeploymentOperation_exception_errors);
         } else {
@@ -205,9 +208,9 @@ public class ProductReleaseProcessor {
     private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
             InterruptedException {
         List<IResource> resources = new ArrayList<>();
-        resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
+        resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT).unwrap());
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
-            IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
+            IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root).unwrap();
             if (tocFile != null) {
                 resources.add(tocFile);
             }
@@ -216,11 +219,11 @@ public class ProductReleaseProcessor {
         resources.addAll(getReleaseAndDeploymentOperation().additionalResourcesToCommit(ipsProject));
 
         teamOperation
-                .commitFiles(ipsProject.getProject(), resources.toArray(new IResource[0]),
+                .commitFiles(ipsProject.getProject().unwrap(), resources.toArray(new IResource[0]),
                         Messages.ReleaseAndDeploymentOperation_commit_comment + newVersion,
                         new org.eclipse.core.runtime.SubProgressMonitor(
                                 monitor, 10));
-        if (!teamOperation.isProjectSynchronized(ipsProject.getProject(), monitor)) {
+        if (!teamOperation.isProjectSynchronized(ipsProject.getProject().unwrap(), monitor)) {
             throw new InterruptedException(NLS.bind(Messages.ReleaseAndDeploymentOperation_exception_noLongerSynchron,
                     teamOperation.getVersionControlSystem()));
         }
@@ -229,13 +232,14 @@ public class ProductReleaseProcessor {
     private String tagProject(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
         String tagName = getReleaseAndDeploymentOperation().getTagName(newVersion, ipsProject);
-        teamOperation.tagProject(tagName, ipsProject.getProject(), monitor);
+        teamOperation.tagProject(tagName, ipsProject.getProject().unwrap(), monitor);
         return tagName;
     }
 
     private void buildProject(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {
-        ipsProject.getProject().build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, monitor);
+        IProject project = ipsProject.getProject().unwrap();
+        project.build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
+        project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
     }
 
     public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {

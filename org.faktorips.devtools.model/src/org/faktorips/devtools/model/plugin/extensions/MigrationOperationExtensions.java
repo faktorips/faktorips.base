@@ -14,16 +14,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.osgi.framework.Version;
 
 /**
- * {@link IIpsProjectMigrationOperationFactory}-by-{@link Version}-{@link Map}-supplier for all
- * implementations of the extension point {@value #EXTENSION_POINT_ID_MIGRATION_OPERATION}.
+ * {@link IIpsProjectMigrationOperationFactory}-by-{@link AVersion version}-{@link Map}-supplier for
+ * all implementations of the extension point {@value #EXTENSION_POINT_ID_MIGRATION_OPERATION}.
  */
 public class MigrationOperationExtensions extends
-        LazyCollectionExtension<IIpsProjectMigrationOperationFactory, Map<String, Map<Version, IIpsProjectMigrationOperationFactory>>> {
+        LazyCollectionExtension<IIpsProjectMigrationOperationFactory, Map<String, Map<AVersion, IIpsProjectMigrationOperationFactory>>> {
 
     /**
      * The extension point id of the extension point
@@ -45,10 +45,10 @@ public class MigrationOperationExtensions extends
                 IIpsProjectMigrationOperationFactory.class,
                 LinkedHashMap::new,
                 (configElement, factory, factoryByVersionByContributorMap) -> {
-                    Map<Version, IIpsProjectMigrationOperationFactory> factoryByVersionMap = factoryByVersionByContributorMap
+                    Map<AVersion, IIpsProjectMigrationOperationFactory> factoryByVersionMap = factoryByVersionByContributorMap
                             .computeIfAbsent(configElement.getContributor().getName(), $ -> new LinkedHashMap<>());
                     factoryByVersionMap.put(
-                            Version.parseVersion(configElement.getAttribute(CONFIG_ELEMENT_PROPERTY_TARGET_VERSION)),
+                            AVersion.parse(configElement.getAttribute(CONFIG_ELEMENT_PROPERTY_TARGET_VERSION)),
                             factory);
                 });
     }

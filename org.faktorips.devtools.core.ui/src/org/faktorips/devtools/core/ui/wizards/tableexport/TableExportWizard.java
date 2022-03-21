@@ -14,7 +14,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -26,6 +25,7 @@ import org.eclipse.jface.operation.ModalContext;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
@@ -90,7 +90,7 @@ public class TableExportWizard extends IpsObjectExportWizard {
     @Override
     public boolean performFinish() {
         try {
-            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource();
+            ISchedulingRule schedulingRule = exportPage.getIpsProject().getCorrespondingResource().unwrap();
             final ITableContents exportContents = exportPage.getTableContents();
             final String exportFilename = exportPage.getFilename();
             final ITableFormat format = exportPage.getFormat();
@@ -113,7 +113,7 @@ public class TableExportWizard extends IpsObjectExportWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
                 @Override
                 protected void execute(IProgressMonitor monitor)
-                        throws CoreException, InvocationTargetException, InterruptedException {
+                        throws IpsException, InvocationTargetException, InterruptedException {
                     MessageList messageList = new MessageList();
                     format.executeTableExport(exportContents, new Path(exportFilename), nullRepresentation,
                             exportColumnHeaderRow, messageList);

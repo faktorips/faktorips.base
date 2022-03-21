@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
@@ -46,7 +46,6 @@ import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
@@ -119,7 +118,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultAndValuesItem.setText(Messages.AttributeEditDialog_defaultAndValuesGroup);
         try {
             defaultAndValuesItem.setControl(createDefaultAndValuesPage(folder));
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return folder;
@@ -200,7 +199,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         createCategoryCombo(workArea);
     }
 
-    private Control createDefaultAndValuesPage(TabFolder folder) throws CoreException {
+    private Control createDefaultAndValuesPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
@@ -297,44 +296,40 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     @Override
     protected void contentsChangedInternal(ContentChangeEvent event) {
         super.contentsChangedInternal(event);
-        try {
-            if (isOverwriteEvent(event)) {
-                final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
-                        .findOverwrittenAttribute(ipsProject);
-                if (overwrittenAttribute != null) {
-                    ((IpsModel)IIpsModel.get())
-                            .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<>(attribute.getIpsSrcFile()) {
+        if (isOverwriteEvent(event)) {
+            final IProductCmptTypeAttribute overwrittenAttribute = (IProductCmptTypeAttribute)attribute
+                    .findOverwrittenAttribute(ipsProject);
+            if (overwrittenAttribute != null) {
+                ((IpsModel)IIpsModel.get())
+                        .executeModificationsWithSingleEvent(
+                                new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
-                                        @Override
-                                        protected boolean execute() throws CoreException {
-                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                            attribute.setModifier(overwrittenAttribute.getModifier());
-                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                            attribute.setMultiValueAttribute(overwrittenAttribute
-                                                    .isMultiValueAttribute());
-                                            attribute.setCategory(overwrittenAttribute.getCategory());
-                                            return true;
-                                        }
-                                    });
-                }
+                                    @Override
+                                    protected boolean execute() {
+                                        attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                        attribute.setModifier(overwrittenAttribute.getModifier());
+                                        attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                        attribute.setMultiValueAttribute(overwrittenAttribute
+                                                .isMultiValueAttribute());
+                                        attribute.setCategory(overwrittenAttribute.getCategory());
+                                        return true;
+                                    }
+                                });
             }
-            ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
-            if (defaultValueField != null) {
-                if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-                    return;
-                }
-
-                currentDatatype = newDatatype;
-                getBindingContext().removeBindings(defaultValueField.getControl());
-                disposeChildrenOf(defaultEditFieldPlaceholder);
-            }
-
-            createDefaultValueEditField();
-            updateValueSetTypes();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
+        if (defaultValueField != null) {
+            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
+                return;
+            }
+
+            currentDatatype = newDatatype;
+            getBindingContext().removeBindings(defaultValueField.getControl());
+            disposeChildrenOf(defaultEditFieldPlaceholder);
+        }
+
+        createDefaultValueEditField();
+        updateValueSetTypes();
 
     }
 
@@ -349,7 +344,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 && event.isPropertyAffected(IAttribute.PROPERTY_OVERWRITES);
     }
 
-    private void updateValueSetTypes() throws CoreException {
+    private void updateValueSetTypes() {
         if (valueSetEditControl == null) {
             return;
         }

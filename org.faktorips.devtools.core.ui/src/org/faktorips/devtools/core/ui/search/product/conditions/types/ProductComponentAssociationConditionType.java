@@ -17,12 +17,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -50,11 +49,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
 
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType) {
-        try {
-            return new ArrayList<>(productCmptType.findAllAssociations(productCmptType.getIpsProject()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return new ArrayList<>(productCmptType.findAllAssociations(productCmptType.getIpsProject()));
     }
 
     @Override
@@ -95,7 +90,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
                 }
             }
 
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // TODO Exception Handling
             throw new RuntimeException(e);
         }
@@ -142,7 +137,7 @@ public class ProductComponentAssociationConditionType extends AbstractConditionT
                     if (linkOfAssociation) {
                         targetNames.add(link.getTarget());
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     // TODO handle exception
                     e.printStackTrace();
                 }

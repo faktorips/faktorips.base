@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 
 /**
  * The {@link IpsJarBundleContentIndex} reads the list of entries of a {@link JarFile} and caches
@@ -38,7 +38,7 @@ public class IpsJarBundleContentIndex extends AbstractIpsBundleContentIndex {
      * @param modelFolders The list of model folders, the paths are relativ to the root of the jar
      *            file
      */
-    public IpsJarBundleContentIndex(JarFile jarFile, List<IPath> modelFolders) {
+    public IpsJarBundleContentIndex(JarFile jarFile, List<Path> modelFolders) {
 
         Assert.isNotNull(jarFile, "jarFile must not be null"); //$NON-NLS-1$
         Assert.isNotNull(modelFolders, "modelFolders must not be null"); //$NON-NLS-1$
@@ -52,20 +52,18 @@ public class IpsJarBundleContentIndex extends AbstractIpsBundleContentIndex {
         }
     }
 
-    private final void registerJarEntry(JarEntry jarEntry, List<IPath> modelFolders) {
+    private final void registerJarEntry(JarEntry jarEntry, List<Path> modelFolders) {
         String pathToFile = jarEntry.getName();
 
-        IPath path = new Path(pathToFile);
+        Path path = Path.of(pathToFile);
 
         registerPath(path, modelFolders);
     }
 
-    protected final void registerPath(IPath path, List<IPath> modelFolders) {
-        for (IPath modelPath : modelFolders) {
-            if (modelPath.isPrefixOf(path)) {
-
-                IPath relativePath = path.makeRelativeTo(modelPath);
-
+    protected final void registerPath(Path path, List<Path> modelFolders) {
+        for (Path modelPath : modelFolders) {
+            if (path.startsWith(modelPath)) {
+                Path relativePath = PathUtil.makeRelativeTo(path, modelPath);
                 registerPath(modelPath, relativePath);
                 return;
             }

@@ -11,11 +11,10 @@
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
@@ -31,7 +30,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject> {
 
     @Override
-    public Object[] getChildren(IIpsProject project) throws CoreException {
+    public Object[] getChildren(IIpsProject project) {
 
         List<Object> result = new ArrayList<>();
 
@@ -41,7 +40,8 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
         List<IIpsPackageFragmentRoot> existingRoots = getExistingRoots(project);
         result.addAll(existingRoots);
 
-        List<IResource> nonIpsResources = Arrays.asList(project.getNonIpsResources());
+        List<IResource> nonIpsResources = Wrappers.unwrap(project.getNonIpsResources()).asList();
+
         result.addAll(nonIpsResources);
 
         return result.toArray();

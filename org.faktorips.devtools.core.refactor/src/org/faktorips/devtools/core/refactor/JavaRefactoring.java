@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * Abstract base class for refactorings that modify Java code.
@@ -32,9 +32,9 @@ public abstract class JavaRefactoring {
      * @param pm The progress monitor to report progress to or null if no progress reporting is
      *            needed
      * 
-     * @throws CoreException If an error occurs during condition checking
+     * @throws IpsException If an error occurs during condition checking
      */
-    public abstract RefactoringStatus checkAllConditions(final IProgressMonitor pm) throws CoreException;
+    public abstract RefactoringStatus checkAllConditions(final IProgressMonitor pm) throws IpsException;
 
     /**
      * Executes this Java refactoring.
@@ -42,8 +42,8 @@ public abstract class JavaRefactoring {
      * @param pm The progress monitor to report progress to or null if no progress reporting is
      *            needed
      * 
-     * @throws CoreException If an error occurs during the refactoring
+     * @throws IpsException If an error occurs during the refactoring
      */
-    public abstract void perform(final IProgressMonitor pm) throws CoreException;
+    public abstract void perform(final IProgressMonitor pm) throws IpsException;
 
 }

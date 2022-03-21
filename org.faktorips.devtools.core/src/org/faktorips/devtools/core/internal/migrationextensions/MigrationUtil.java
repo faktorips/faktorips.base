@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -33,7 +32,7 @@ public class MigrationUtil {
      * This migration simply updates the .ipsproject Property file with the default values for the
      * {@link IIpsArtefactBuilderSetConfigModel}.
      */
-    public static void updateBuilderSetDefaults(IIpsProject ipsProject) throws CoreException {
+    public static void updateBuilderSetDefaults(IIpsProject ipsProject) {
         IIpsProjectProperties properties = ipsProject.getProperties();
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
                 .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());

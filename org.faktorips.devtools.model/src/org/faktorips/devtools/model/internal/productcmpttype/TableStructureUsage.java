@@ -10,14 +10,13 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -242,13 +241,13 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check the correct name format
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            String text = NLS.bind(Messages.TableStructureUsage_msgInvalidRoleName, name);
+            String text = MessageFormat.format(Messages.TableStructureUsage_msgInvalidRoleName, name);
             Message msg = new Message(MSGCODE_INVALID_ROLE_NAME, text, Message.ERROR, this, PROPERTY_ROLENAME);
             list.add(msg);
         }
@@ -272,7 +271,8 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         }
         ITableStructureUsage tsu = supertype.findTableStructureUsage(name, getIpsProject());
         if (tsu != null) {
-            String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
+            String msg = MessageFormat.format(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype,
+                    getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, msg, Message.ERROR));
         }
     }
@@ -315,7 +315,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmptType();
     }
 
@@ -371,10 +371,11 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         }
 
         @Override
-        protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        protected void validateThis(MessageList list, IIpsProject ipsProject) {
             super.validateThis(list, ipsProject);
             if (getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getTableStructure()) == null) {
-                String text = NLS.bind(Messages.TableStructureUsage_msgTableStructureNotExists, getTableStructure());
+                String text = MessageFormat.format(Messages.TableStructureUsage_msgTableStructureNotExists,
+                        getTableStructure());
                 Message msg = new Message(ITableStructureUsage.MSGCODE_TABLE_STRUCTURE_NOT_FOUND, text, Message.ERROR,
                         this);
                 list.add(msg);

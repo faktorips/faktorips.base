@@ -17,8 +17,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
@@ -200,7 +200,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         for (IIpsSrcFile srcFile : srcFiles) {
             try {
                 ml.add(srcFile.getIpsObject().validate(getProject()));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error validating " + srcFile.getName(), e)); //$NON-NLS-1$
             }
         }

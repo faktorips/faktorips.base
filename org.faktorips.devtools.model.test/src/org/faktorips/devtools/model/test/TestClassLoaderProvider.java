@@ -28,8 +28,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IClassLoaderProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -88,7 +90,7 @@ public class TestClassLoaderProvider implements IClassLoaderProvider {
                                 | IResourceChangeEvent.PRE_DELETE);
 
             } catch (IOException e) {
-                throw new CoreRuntimeException(new IpsStatus(e));
+                throw new IpsException(new IpsStatus(e));
             }
         }
         return classLoader;
@@ -111,7 +113,7 @@ public class TestClassLoaderProvider implements IClassLoaderProvider {
     private void classpathContentsChanged() {
         classLoader = null;
         for (IClasspathContentsChangeListener listener : classpathContentsChangeListeners) {
-            listener.classpathContentsChanges(javaProject);
+            listener.classpathContentsChanges(Wrappers.wrap(javaProject).as(AJavaProject.class));
         }
     }
 
@@ -123,7 +125,7 @@ public class TestClassLoaderProvider implements IClassLoaderProvider {
         try {
             classPathEntries = JavaRuntime.computeDefaultRuntimeClassPath(project);
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
         URL[] urls = new URL[classPathEntries.length];
         for (int i = 0; i < classPathEntries.length; i++) {
@@ -153,7 +155,9 @@ public class TestClassLoaderProvider implements IClassLoaderProvider {
             }
             if (event.getType() == IResourceChangeEvent.PRE_DELETE) {
                 try {
-                    classLoader.close();
+                    if (classLoader != null) {
+                        classLoader.close();
+                    }
                 } catch (IOException e) {
                     IpsLog.log(e);
                 }

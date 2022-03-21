@@ -16,9 +16,8 @@ import static org.junit.Assert.fail;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -210,7 +209,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultCaptionNoDefaultLanguage() throws CoreException {
+    public void testGetDefaultCaptionNoDefaultLanguage() {
         removeDefaultLanguage();
         assertEquals("Caption for " + Locale.ENGLISH.getLanguage(), support.getDefaultCaption(testContainer));
 
@@ -245,7 +244,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultPluralCaptionNoDefaultLanguage() throws CoreException {
+    public void testGetDefaultPluralCaptionNoDefaultLanguage() {
         removeDefaultLanguage();
         assertEquals("Plural Caption for " + Locale.ENGLISH.getLanguage(),
                 support.getDefaultPluralCaption(testContainer));
@@ -397,7 +396,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultLabelNoDefaultLanguage() throws CoreException {
+    public void testGetDefaultLabelNoDefaultLanguage() {
         removeDefaultLanguage();
         assertEquals(US_LABEL, support.getDefaultLabel(testContainer));
     }
@@ -438,7 +437,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
+    public void testGetDefaultPluralLabelNoDefaultLanguage() {
         removeDefaultLanguage();
         assertEquals(US_PLURAL_LABEL, support.getDefaultPluralLabel(testContainer));
     }
@@ -473,7 +472,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetDefaultLabelNoDefaultLanguage() throws CoreException {
+    public void testSetDefaultLabelNoDefaultLanguage() {
         removeDefaultLanguage();
         support.setDefaultLabel(testContainer, "foo");
         assertEquals(GERMAN_LABEL, germanLabel.getValue());
@@ -519,7 +518,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetDefaultPluralLabelNoDefaultLanguage() throws CoreException {
+    public void testSetDefaultPluralLabelNoDefaultLanguage() {
         removeDefaultLanguage();
         support.setDefaultLabel(testContainer, "foos");
         assertEquals(GERMAN_PLURAL_LABEL, germanLabel.getPluralValue());
@@ -607,7 +606,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefaultDescriptionNoDefaultLanguage() throws CoreException {
+    public void testGetDefaultDescriptionNoDefaultLanguage() {
         removeDefaultLanguage();
         assertEquals(US_DESCRIPTION, support.getDefaultDescription(testContainer));
     }
@@ -646,7 +645,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetDefaultDescriptionNoDefaultLanguage() throws CoreException {
+    public void testSetDefaultDescriptionNoDefaultLanguage() {
         removeDefaultLanguage();
         support.setDefaultDescription(testContainer, "foo");
         assertEquals(GERMAN_DESCRIPTION, germanDescription.getText());
@@ -657,7 +656,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testDefaultConstructor() {
         support = new MultiLanguageSupport();
         Locale localizationLocale = support.getLocalizationLocale();
-        String nl = Platform.getNL();
+        String nl = Abstractions.getLocale().getLanguage();
         if (nl.length() > 2) {
             nl = nl.substring(0, 2);
         }
@@ -751,7 +750,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
         return localizedDescription;
     }
 
-    private void removeDefaultLanguage() throws CoreException {
+    private void removeDefaultLanguage() {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.removeSupportedLanguage(properties.getSupportedLanguage(Locale.GERMAN));
         ipsProject.setProperties(properties);

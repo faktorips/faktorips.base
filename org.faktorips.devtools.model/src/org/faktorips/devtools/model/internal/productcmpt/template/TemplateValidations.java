@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.template;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.Messages;
@@ -39,7 +40,7 @@ public class TemplateValidations {
         TemplateCycleDetectionVisitor visitor = new TemplateCycleDetectionVisitor(ipsProject);
         visitor.start(template);
         if (visitor.cycleDetected()) {
-            String text = NLS.bind(Messages.TemplateValidations_error_templateCycle, template);
+            String text = MessageFormat.format(Messages.TemplateValidations_error_templateCycle, template);
             list.newError(IProductCmpt.MSGCODE_TEMPLATE_CYCLE, text, template, IProductCmpt.PROPERTY_TEMPLATE);
         }
     }

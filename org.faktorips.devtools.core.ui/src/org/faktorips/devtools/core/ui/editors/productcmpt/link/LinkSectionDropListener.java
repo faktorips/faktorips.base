@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -26,6 +25,7 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Item;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -112,7 +112,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             try {
                 boolean result = canCreateLinks(draggedCmpts, target);
                 return result;
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return false;
             }
@@ -128,7 +128,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                     .executeModificationsWithSingleEvent(modification);
             linksSection.setSelection(result);
             return !result.isEmpty();
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -154,13 +154,13 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 result = canCreateLinks(draggedCmpts, target);
             }
             return result;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
     }
 
-    private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
+    private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) {
         // should only return true if all dragged cmpts are valid
         IProductCmptTypeAssociation association = getAssociation(target);
         boolean result = false;
@@ -263,7 +263,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
 
         @Override
-        protected boolean execute() throws CoreException {
+        protected boolean execute() {
             if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
                 return moveLinks();
             } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
@@ -341,7 +341,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             }
         }
 
-        private boolean createLinks() throws CoreException {
+        private boolean createLinks() {
             List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
             /*
              * If you drop a set of components you expect them in the same order as they were
@@ -357,7 +357,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
 
         private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target)
-                throws CoreException {
+                {
             if (!canCreateLinks(draggedCmpts, target)) {
                 return Collections.emptyList();
             }

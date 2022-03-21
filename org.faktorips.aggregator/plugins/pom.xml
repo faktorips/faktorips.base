@@ -18,6 +18,7 @@
 
     <modules>
         <!-- plugins of feature org.faktorips.feature -->
+        <module>../../org.faktorips.devtools.abstraction</module>
         <module>../../org.faktorips.devtools.ant</module>
         <module>../../org.faktorips.devtools.core</module>
         <module>../../org.faktorips.devtools.core.refactor</module>

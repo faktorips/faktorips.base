@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,26 +28,15 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaModelMarker;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
@@ -55,6 +45,17 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AMarker;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -66,7 +67,6 @@ import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -104,7 +104,6 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.model.util.EclipseIOUtil;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
@@ -112,10 +111,13 @@ import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Implementation of IIpsProject, see the corresponding interface for more details.
@@ -144,11 +146,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private final IJavaNamingConvention javaNamingConvention = new JavaNamingConvention();
 
     /** The underlying platform project */
-    private IProject project;
+    private AProject project;
 
     private IIpsProjectNamingConventions namingConventions = null;
 
-    private IFile propertyFile;
+    private AFile propertyFile;
 
     private final UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
     private final RuntimeIdCache runtimeIdCache = new RuntimeIdCache(this);
@@ -157,8 +159,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
      * <code>IProject.addNature()</code>.
-     * 
-     * @see #setProject(IProject)
      */
     public IpsProject() {
         // Provides default constructor
@@ -174,10 +174,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProject getProject() {
+    public AProject getProject() {
         if (project == null) {
-            // we don't have a threading problem here, as projects are only handles!
-            project = ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
+            project = Abstractions.getWorkspace().getRoot().getProject(getName());
         }
         return project;
     }
@@ -232,26 +231,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
         Element propertiesEl = ((IpsProjectProperties)properties).toXml(doc);
         doc.appendChild(propertiesEl);
-        IFile file = getIpsProjectPropertiesFile();
+        AFile file = getIpsProjectPropertiesFile();
         String charset = getXmlFileCharset();
         String contents;
         try {
             contents = XmlUtil.nodeToString(doc, charset);
         } catch (TransformerException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is = null;
         try {
             is = new ByteArrayInputStream(insertNewLineSeparatorsBeforeComment(contents).getBytes(charset));
             if (file.exists()) {
-                EclipseIOUtil.writeToFile(file, is, true, true, null);
+                file.setContents(is, true, null);
             } else {
-                file.create(is, true, null);
+                file.create(is, null);
             }
         } catch (UnsupportedEncodingException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
-        } catch (CoreException ce) {
-            throw new CoreRuntimeException(ce);
+            throw new IpsException(new IpsStatus("Error creating byte stream", e)); //$NON-NLS-1$
         } finally {
             IoUtil.close(is);
         }
@@ -278,7 +275,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IFile getIpsProjectPropertiesFile() {
+    public AFile getIpsProjectPropertiesFile() {
         if (propertyFile == null) {
             propertyFile = getProject().getFile(PROPERTY_FILE_EXTENSION_INCL_DOT);
         }
@@ -286,8 +283,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IJavaProject getJavaProject() {
-        return JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProject(getName());
+    public AJavaProject getJavaProject() {
+        return AJavaProject.from(getProject());
     }
 
     @Override
@@ -311,13 +308,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) throws CoreException {
+    public Boolean isJavaProjectErrorFree(boolean checkReferencedJavaProjects) {
         return isJavaProjectErrorFree(getJavaProject(), checkReferencedJavaProjects);
     }
 
-    private Boolean isJavaProjectErrorFree(IJavaProject javaProject, boolean checkReferencedJavaProjects)
-            throws CoreException {
-        IProject tmpProject = javaProject.getProject();
+    @CheckForNull
+    private Boolean isJavaProjectErrorFree(AJavaProject javaProject, boolean checkReferencedJavaProjects) {
+        AProject tmpProject = javaProject.getProject();
         if (!tmpProject.isAccessible()) {
             return null;
         }
@@ -329,17 +326,16 @@ public class IpsProject extends IpsElement implements IIpsProject {
         // so we first have to check for problems with the build path. We can't do this via markers
         // as the build path markers
         // are created on a resource change event, and we don't now if it has been executed so far.
-        if (getJavaProjectBuildPathProblemSeverity(javaProject) == IStatus.ERROR) {
+        if (getJavaProjectBuildPathProblemSeverity(javaProject) == Severity.ERROR) {
             return Boolean.FALSE;
         }
-        IMarker[] markers = tmpProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
-                IResource.DEPTH_INFINITE);
+        Set<AMarker> markers = tmpProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
+                AResourceTreeTraversalDepth.INFINITE);
         if (containsErrorMarker(markers)) {
             return Boolean.FALSE;
         }
         if (checkReferencedJavaProjects) {
-            List<IJavaProject> refProjectcs = getJavaProjectsReferencedInClasspath(javaProject);
-            for (IJavaProject refProject : refProjectcs) {
+            for (AJavaProject refProject : getJavaProjectsReferencedInClasspath(javaProject)) {
                 Boolean errorFree = isJavaProjectErrorFree(refProject, true);
                 if (errorFree != null && !errorFree.booleanValue()) {
                     return errorFree;
@@ -352,28 +348,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return Boolean.TRUE;
     }
 
-    private boolean containsErrorMarker(IMarker[] markers) {
-        for (IMarker marker : markers) {
-            if (marker.getAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR) == IMarker.SEVERITY_ERROR) {
-                return true;
-            }
-        }
-
-        return false;
+    private boolean containsErrorMarker(Set<AMarker> markers) {
+        return markers.stream().anyMatch(AMarker::isError);
     }
 
-    private List<IJavaProject> getJavaProjectsReferencedInClasspath(IJavaProject javaProject)
-            throws JavaModelException {
-        List<IJavaProject> result = new ArrayList<>();
-        IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (IClasspathEntry entrie : entries) {
-            if (entrie.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-                IJavaProject refProject = javaProject.getJavaModel().getJavaProject(entrie.getPath().lastSegment());
-                result.add(refProject);
-            }
-        }
-
-        return result;
+    private Set<AJavaProject> getJavaProjectsReferencedInClasspath(AJavaProject javaProject) {
+        return javaProject.getReferencedJavaProjects();
     }
 
     /**
@@ -464,7 +444,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public boolean canBeBuild() {
         try {
             return !validate().containsErrorMsg();
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return false;
         }
@@ -504,7 +484,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IFolder[] getOutputFolders() {
+    public AFolder[] getOutputFolders() {
         return getIpsObjectPathInternal().getOutputFolders();
     }
 
@@ -541,7 +521,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (!getNamingConventions().validateIpsPackageRootName(name).containsErrorMsg()) {
                 return new IpsPackageFragmentRoot(this, name);
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // nothing to do,
             return null;
         }
@@ -589,57 +569,31 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IResource[] getNonIpsResources() throws CoreException {
-        IContainer cont = (IContainer)getCorrespondingResource();
+    public AResource[] getNonIpsResources() {
+        AContainer cont = (AContainer)getCorrespondingResource();
         if (!cont.isAccessible()) {
-            return new IResource[0];
+            return new AResource[0];
         }
-        List<IResource> childResources = new ArrayList<>();
-        IResource[] children = cont.members();
-        for (IResource child : children) {
+        List<AResource> childResources = new ArrayList<>();
+        for (AResource child : cont) {
             if (!isPackageFragmentRoot(child) & !isJavaFolder(child)) {
                 childResources.add(child);
             }
         }
-        IResource[] resArray = new IResource[childResources.size()];
+        AResource[] resArray = new AResource[childResources.size()];
 
         return childResources.toArray(resArray);
     }
 
-    /**
-     * Examins the <code>JavaProject</code> corresponding to this <code>IpsProject</code> and its
-     * relation to the given <code>IResource</code>. Returns true if the given resource corresponds
-     * to a classpath entry of the javaproject. Returns true if the given resource corresponds to a
-     * folder that is either the javaprojects default output location or the output location of one
-     * of the projects classpathentries. False otherwise.
-     */
-    private boolean isJavaFolder(IResource resource) {
-        try {
-            IPath outputPath = getJavaProject().getOutputLocation();
-            IClasspathEntry[] entries = getJavaProject().getResolvedClasspath(true);
-            if (resource.getFullPath().equals(outputPath)) {
-                return true;
-            }
-            for (IClasspathEntry entrie : entries) {
-                if (resource.getFullPath().equals(entrie.getOutputLocation())) {
-                    return true;
-                }
-                if (resource.getFullPath().equals(entrie.getPath())) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (JavaModelException e) {
-            IpsLog.log(e);
-            return false;
-        }
+    private boolean isJavaFolder(AResource resource) {
+        return getJavaProject().isJavaFolder(resource);
     }
 
     /**
-     * Returns true if the given IResource is a folder that corresponds to an IpsPackageFragmentRoot
+     * Returns true if the given AResource is a folder that corresponds to an IpsPackageFragmentRoot
      * of this IpsProject, false otherwise.
      */
-    private boolean isPackageFragmentRoot(IResource res) {
+    private boolean isPackageFragmentRoot(AResource res) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
             if (res.equals(root.getCorrespondingResource())) {
@@ -652,23 +606,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public boolean exists() {
-        if (!getCorrespondingResource().exists()) {
-            return false;
-        }
-        try {
-            String[] natures = getProject().getDescription().getNatureIds();
-            for (String nature : natures) {
-                if (nature.equals(IIpsProject.NATURE_ID)) {
-                    return true;
-                }
-            }
-        } catch (CoreException e) {
-            // if we can't get the project nature, the project is not in a state we would consider
-            // full existance
-            return false;
-        }
-
-        return false;
+        return getCorrespondingResource().exists();
     }
 
     @Override
@@ -684,7 +622,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return getProject();
     }
 
@@ -696,59 +634,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsProject getIpsProject() {
         return this;
-    }
-
-    @Override
-    public void configure() throws CoreException {
-        IProjectDescription description = getProject().getDescription();
-        ICommand command = getIpsBuildCommand();
-        if (command == null) {
-            // Add a product definition build command to the build spec
-            ICommand newBuildCommand = description.newCommand();
-            newBuildCommand.setBuilderName(IpsBuilder.BUILDER_ID);
-            addCommandAtFirstPosition(description, newBuildCommand);
-        }
-    }
-
-    @Override
-    public void deconfigure() {
-        // Nothing to do
-    }
-
-    @Override
-    public void setProject(IProject project) {
-        name = project.getName();
-    }
-
-    /**
-     * Finds the specific command for product definition builder.
-     */
-    private ICommand getIpsBuildCommand() throws CoreException {
-        ICommand[] commands = getProject().getDescription().getBuildSpec();
-        for (ICommand command : commands) {
-            if (command.getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
-                return command;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Adds the command to the build spec
-     */
-    private void addCommandAtFirstPosition(IProjectDescription description, ICommand newCommand) {
-        ICommand[] oldCommands = description.getBuildSpec();
-        ICommand[] newCommands = new ICommand[oldCommands.length + 1];
-        System.arraycopy(oldCommands, 0, newCommands, 1, oldCommands.length);
-        newCommands[0] = newCommand;
-        // Commit the spec change into the project
-        description.setBuildSpec(newCommands);
-        try {
-            getProject().setDescription(description, null);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     //
@@ -839,7 +724,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws CoreException {
+    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) {
         if (runtimeId == null) {
             return null;
         }
@@ -1316,7 +1201,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws CoreException {
+    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.TEST_CASE);
         if (testCaseType == null) {
             return ipsSrcFiles;
@@ -1332,8 +1217,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
-            throws CoreException {
+    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes) {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.ENUM_CONTENT);
         if (enumType == null) {
             return ipsSrcFiles;
@@ -1408,9 +1292,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList validate() throws CoreException {
-        MessageList result = new MessageList();
-        validateJavaProjectBuildPath(result);
+    public MessageList validate() {
+        MessageList result = getJavaProject().validateJavaProjectBuildPath();
         if (!getIpsProjectPropertiesFile().exists()) {
             String text = Messages.IpsProject_msgMissingDotIpsprojectFile;
             Message msg = new Message(IIpsProject.MSGCODE_MISSING_PROPERTY_FILE, text, Message.ERROR, this);
@@ -1463,52 +1346,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private void validateMarkerEnumProperties(IEnumType markerEnum, MessageList result) {
         if (markerEnum.isAbstract()) {
-            String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
+            String msg = MessageFormat.format(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
                     markerEnum.getQualifiedName());
             result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
                     getIpsProjectPropertiesFile()));
         }
         if (markerEnum.isExtensible()) {
-            String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
+            String msg = MessageFormat.format(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
                     markerEnum.getQualifiedName());
             result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
                     getIpsProjectPropertiesFile()));
         }
     }
 
-    private void validateJavaProjectBuildPath(MessageList result) throws JavaModelException {
-        IJavaProject javaProject = getJavaProject();
-        if (!javaProject.exists()) {
-            return;
-        }
-
-        IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (IClasspathEntry entry : entries) {
-            if (JavaConventions.validateClasspathEntry(javaProject, entry, false).getSeverity() == IStatus.ERROR) {
-                String text = NLS.bind(Messages.IpsProject_javaProjectHasInvalidBuildPath, entry.getPath());
-                Message msg = new Message(IIpsProject.MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS, text, Message.WARNING,
-                        this);
-                result.add(msg);
-                return;
-            }
-        }
-    }
-
-    private int getJavaProjectBuildPathProblemSeverity(IJavaProject javaProject) throws JavaModelException {
-        if (!javaProject.exists()) {
-            return IStatus.OK;
-        }
-
-        int severity = IStatus.OK;
-        IClasspathEntry[] entries = javaProject.getRawClasspath();
-        for (IClasspathEntry entrie : entries) {
-            int entrySeverity = JavaConventions.validateClasspathEntry(javaProject, entrie, false).getSeverity();
-            if (entrySeverity > severity) {
-                severity = entrySeverity;
-            }
-        }
-
-        return severity;
+    private Severity getJavaProjectBuildPathProblemSeverity(AJavaProject javaProject) {
+        return javaProject.validateJavaProjectBuildPath().getSeverity();
     }
 
     private void validateIpsObjectPathCycle(MessageList result) {
@@ -1527,7 +1379,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             } catch (Exception e) {
                 // CSON: IllegalCatch
                 IpsLog.log(e);
-                String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, manager.getFeatureId());
+                String msg = MessageFormat.format(Messages.IpsProject_msgInvalidMigrationInformation,
+                        manager.getFeatureId());
                 result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
             }
         }
@@ -1539,22 +1392,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (String feature : features) {
             IIpsFeatureVersionManager manager = IIpsModelExtensions.get().getIpsFeatureVersionManager(feature);
             if (manager == null) {
-                String msg = NLS.bind(Messages.IpsProject_msgNoFeatureManager, feature);
+                String msg = MessageFormat.format(Messages.IpsProject_msgNoFeatureManager, feature);
                 ml.add(new Message(MSGCODE_NO_VERSIONMANAGER, msg, Message.ERROR, this));
                 continue;
             }
             String minVersion = props.getMinRequiredVersionNumber(feature);
             if (manager.compareToCurrentVersion(minVersion) > 0
                     && !manager.isCurrentVersionCompatibleWith(minVersion)) {
-                String[] params = { manager.getCurrentVersion(), minVersion, feature };
-                String msg = NLS.bind(Messages.IpsProject_msgVersionTooLow, params);
+                String msg = MessageFormat.format(Messages.IpsProject_msgVersionTooLow, manager.getCurrentVersion(),
+                        minVersion, feature);
                 ml.add(new Message(MSGCODE_VERSION_TOO_LOW, msg, Message.ERROR, this));
             }
 
             if (manager.compareToCurrentVersion(minVersion) < 0
                     && !manager.isCurrentVersionCompatibleWith(minVersion)) {
-                String[] params = { manager.getCurrentVersion(), minVersion, feature };
-                String msg = NLS.bind(Messages.IpsProject_msgIncompatibleVersions, params);
+                String msg = MessageFormat.format(Messages.IpsProject_msgIncompatibleVersions,
+                        manager.getCurrentVersion(), minVersion, feature);
                 ml.add(new Message(MSGCODE_INCOMPATIBLE_VERSIONS, msg, Message.ERROR, this));
             }
         }
@@ -1573,7 +1426,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
             for (IPath tocPath : tocPathsInRefProject) {
                 if (tocPaths.contains(tocPath)) {
-                    String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath,
+                    String msg = MessageFormat.format(Messages.IpsProject_msgDuplicateTocFilePath, tocPath,
                             referencedProject.getName());
                     result.add(new Message(MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS, msg, Message.ERROR,
                             this));
@@ -1586,7 +1439,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         String versionProviderId = getReadOnlyProperties().getVersionProviderId();
         if (StringUtils.isNotEmpty(versionProviderId)
                 && !IIpsModelExtensions.get().getVersionProviderFactories().containsKey(versionProviderId)) {
-            String text = NLS.bind(Messages.VersionProviderExtensionPoint_error_invalidVersionProvider,
+            String text = MessageFormat.format(Messages.VersionProviderExtensionPoint_error_invalidVersionProvider,
                     getReadOnlyProperties().getVersionProviderId());
             result.newError(IIpsProjectProperties.MSGCODE_INVALID_VERSION_SETTING, text, getProperties(),
                     IIpsProjectProperties.PROPERTY_VERSION_PROVIDER_ID);
@@ -1624,7 +1477,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws CoreException {
+    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) {
         MessageList result = new MessageList();
         for (IIpsSrcFile cmptToCheck : cmptsToCheck) {
             if (!cmptToCheck.exists()) {
@@ -1640,8 +1493,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                         invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
                                 IProductCmpt.PROPERTY_RUNTIME_ID);
 
-                        String msg = NLS.bind(Messages.IpsProject_msgRuntimeIDCollision, new String[] {
-                                cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName() });
+                        String msg = MessageFormat.format(Messages.IpsProject_msgRuntimeIDCollision,
+                                cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName());
                         result.add(
                                 new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
                     });
@@ -1650,7 +1503,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public boolean isResourceExcludedFromProductDefinition(IResource resource) {
+    public boolean isResourceExcludedFromProductDefinition(AResource resource) {
         if (resource == null) {
             return false;
         }
@@ -1660,7 +1513,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (resourcePath.length() <= projectPath.length()) {
             return false;
         }
-        String location = resource.getProjectRelativePath().toString();
+        String location = PathUtil.toPortableString(resource.getProjectRelativePath());
         return props.isResourceExcludedFromProductDefinition(location);
     }
 
@@ -1705,11 +1558,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() {
         for (IIpsPackageFragmentRoot root : getIpsPackageFragmentRoots()) {
             root.delete();
         }
-        getCorrespondingResource().delete(true, null);
+        getCorrespondingResource().delete(null);
         unqualifiedNameCache.dispose();
         runtimeIdCache.dispose();
         tableContentsStructureCache.dispose();
@@ -1727,4 +1580,117 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getIpsModel().getMarkerEnums(this);
     }
 
+    public static class EclipseIpsProject extends IpsProject {
+
+        /** The underlying platform project */
+        private IProject project;
+
+        public EclipseIpsProject(IProject project) {
+            super(IIpsModel.get(), project.getName());
+        }
+
+        public EclipseIpsProject(IIpsModel model, String name) {
+            super(model, name);
+        }
+
+        public IProject getEclipseProject() {
+            if (project == null) {
+                // we don't have a threading problem here, as projects are only handles!
+                project = ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
+            }
+            return project;
+        }
+
+        @Override
+        public boolean exists() {
+            if (!super.exists()) {
+                return false;
+            }
+            try {
+                String[] natures = getEclipseProject().getDescription().getNatureIds();
+                for (String nature : natures) {
+                    if (nature.equals(IIpsProject.NATURE_ID)) {
+                        return true;
+                    }
+                }
+            } catch (CoreException e) {
+                // if we can't get the project nature, the project is not in a state we would
+                // consider full existence
+                return false;
+            }
+
+            return false;
+        }
+    }
+
+    public static class EclipseProjectNature implements IProjectNature {
+
+        private EclipseIpsProject ipsProject;
+
+        @Override
+        public IProject getProject() {
+            return ipsProject.getEclipseProject();
+        }
+
+        @Override
+        public void setProject(IProject project) {
+            ipsProject = new EclipseIpsProject(project);
+        }
+
+        @Override
+        public void configure() {
+            try {
+                IProjectDescription description = getProject().getDescription();
+                ICommand command = getIpsBuildCommand();
+                if (command == null) {
+                    // Add a product definition build command to the build spec
+                    ICommand newBuildCommand = description.newCommand();
+                    newBuildCommand.setBuilderName(IpsBuilder.BUILDER_ID);
+                    addCommandAtFirstPosition(description, newBuildCommand);
+                }
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
+        }
+
+        @Override
+        public void deconfigure() {
+            // Nothing to do
+        }
+
+        /**
+         * Finds the specific command for product definition builder.
+         */
+        private ICommand getIpsBuildCommand() {
+            try {
+                ICommand[] commands = getProject().getDescription().getBuildSpec();
+                for (ICommand command : commands) {
+                    if (command.getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
+                        return command;
+                    }
+                }
+
+                return null;
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
+        }
+
+        /**
+         * Adds the command to the build spec
+         */
+        private void addCommandAtFirstPosition(IProjectDescription description, ICommand newCommand) {
+            ICommand[] oldCommands = description.getBuildSpec();
+            ICommand[] newCommands = new ICommand[oldCommands.length + 1];
+            System.arraycopy(oldCommands, 0, newCommands, 1, oldCommands.length);
+            newCommands[0] = newCommand;
+            // Commit the spec change into the project
+            description.setBuildSpec(newCommands);
+            try {
+                getProject().setDescription(description, null);
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
+        }
+    }
 }

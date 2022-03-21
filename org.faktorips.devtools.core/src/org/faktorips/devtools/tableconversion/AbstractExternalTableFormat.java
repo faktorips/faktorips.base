@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -161,7 +160,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         return datatypes;
     }
 
-    protected Datatype[] getDatatypes(IEnumType structure) throws CoreException {
+    protected Datatype[] getDatatypes(IEnumType structure) {
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
         Datatype[] datatypes = new Datatype[enumAttributes.size()];
         for (int i = 0; i < datatypes.length; i++) {

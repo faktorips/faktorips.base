@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -27,12 +28,10 @@ import java.util.jar.Manifest;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -129,7 +128,7 @@ public class IpsBundleManifest {
      * Returning the base package for the specified objectDir. If there is no special setting for
      * the specified objectDir the default base package is returned.
      * <p>
-     * Note that there is no possibility to configure different base packages for the mergable and
+     * Note that there is no possibility to configure different base packages for the mergeable and
      * derived artifacts.
      * 
      * @param objectDir The name of the model folder for which you want to know the base package
@@ -201,11 +200,11 @@ public class IpsBundleManifest {
      * 
      * @return A list of all configured objectDirs
      */
-    public List<IPath> getObjectDirs() {
-        ArrayList<IPath> result = new ArrayList<>();
+    public List<Path> getObjectDirs() {
+        ArrayList<Path> result = new ArrayList<>();
         ManifestElement[] objectDirElements = getObjectDirElements();
         for (ManifestElement manifestElement : objectDirElements) {
-            result.add(new Path(manifestElement.getValue()));
+            result.add(Path.of(manifestElement.getValue()));
         }
         return result;
     }
@@ -309,12 +308,12 @@ public class IpsBundleManifest {
             });
             attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
         }
-        IFile manifestFileInProject = ipsProject.getProject().getFile(MANIFEST_NAME);
+        AFile manifestFileInProject = ipsProject.getProject().getFile(MANIFEST_NAME);
         File manifestFile = manifestFileInProject.getLocation().toFile();
         try (FileOutputStream outputStream = new FileOutputStream(manifestFile)) {
             manifest.write(outputStream);
         } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus("Can't write " + manifestFileInProject, e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Can't write " + manifestFileInProject, e)); //$NON-NLS-1$
         }
     }
 

@@ -10,17 +10,15 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAttributeInfo;
 import org.faktorips.devtools.model.internal.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.model.internal.type.Attribute;
@@ -157,7 +155,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(computationMethodSignature)) {
             return null;
         }
@@ -221,7 +219,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) {
         ValueDatatype datatype = findDatatype(ipsProject);
         List<ValueSetType> types = ipsProject.getValueSetTypes(datatype);
         if (isEnumValueSetIllegal(datatype)) {
@@ -267,7 +265,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         validateProductRelevant(result, ipsProject);
         validateOverwrite(result, ipsProject);
@@ -278,7 +276,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         validateAbstractDatatype(result);
     }
 
-    private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void validateProductRelevant(MessageList result, IIpsProject ipsProject) {
         if (isProductRelevant()) {
             if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
                 String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
@@ -287,7 +285,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             }
             if (isDerived()) {
                 if (StringUtils.isEmpty(computationMethodSignature)) {
-                    String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
+                    String text = MessageFormat.format(
+                            Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
                             getName());
                     result.add(new Message(MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED, text, Message.ERROR, this,
                             PROPERTY_COMPUTATION_METHOD_SIGNATURE));
@@ -328,14 +327,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (valueSet == null) {
             return false;
         }
-        try {
-            return getAllowedValueSetTypes(getIpsProject()).contains(valueSet.getValueSetType());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAllowedValueSetTypes(getIpsProject()).contains(valueSet.getValueSetType());
     }
 
-    private void validateOverwrite(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void validateOverwrite(MessageList result, IIpsProject ipsProject) {
         if (isOverwrite()) {
             IPolicyCmptTypeAttribute superAttr = (IPolicyCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
@@ -361,7 +356,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     private void validateValueSetType(MessageList result) {
         if (!isAllowedValueSet(getValueSet())) {
-            String messageText = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
+            String messageText = MessageFormat.format(Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
                     getValueSet() == null ? StringUtils.EMPTY
                             : org.faktorips.devtools.model.internal.util.StringUtils
                                     .quote(getValueSet().getValueSetType().getName()));
@@ -371,8 +366,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject)
-            throws CoreException {
+    protected void validateDefaultValue(ValueDatatype valueDatatype, MessageList result, IIpsProject ipsProject) {
         super.validateDefaultValue(valueDatatype, result, ipsProject);
         if (isDefaultValueForbidden(valueDatatype)) {
             expectNoDefaultValue(result);
@@ -400,7 +394,8 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             }
             if (isProductRelevant()) {
                 result.newError(MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT,
-                        NLS.bind(Messages.PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant, getName(),
+                        MessageFormat.format(Messages.PolicyCmptTypeAttribute_msg_AbstractCantBeProductRelevant,
+                                getName(),
                                 datatype.getName()),
                         this, productRelevantProperties(PROPERTY_DATATYPE));
             }
@@ -451,13 +446,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     protected void initPropertyDefaultChangingOverTime() {
-        try {
-            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-            boolean changingOverTime = productCmptType == null ? true : productCmptType.isChangingOverTime();
-            setProperty(AttributeProperty.CHANGING_OVER_TIME, changingOverTime);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+        boolean changingOverTime = productCmptType == null ? true : productCmptType.isChangingOverTime();
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, changingOverTime);
     }
 
     @Override
@@ -557,12 +548,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public String getProposalValueSetRuleName() {
-        return NLS.bind(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
+        return MessageFormat.format(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
     }
 
     @Override
     public String getProposalMsgCodeForValueSetRule() {
-        return NLS.bind(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
+        return MessageFormat.format(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
     }
 
     @Override
@@ -589,7 +580,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
 

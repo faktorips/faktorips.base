@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.binding;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
@@ -45,17 +45,17 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+    public boolean isValid(IIpsProject ipsProject) {
         return !validate(ipsProject).containsErrorMsg();
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 
     @Override
-    public abstract MessageList validate(IIpsProject ipsProject) throws CoreException;
+    public abstract MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     @Override
     public abstract IIpsProject getIpsProject();

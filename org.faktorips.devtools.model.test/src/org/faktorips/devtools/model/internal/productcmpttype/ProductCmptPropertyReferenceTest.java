@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -138,7 +138,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
      * {@link IProductCmptProperty} nevertheless.
      */
     @Test
-    public void testIsReferencedProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
+    public void testIsReferencedProperty_PropertyWithSameIdInSupertype() throws IpsException, SecurityException,
             IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
         IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
@@ -158,7 +158,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptProperty() throws CoreException {
+    public void testFindProductCmptProperty() {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
 

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.ipsproject;
 import java.io.InputStream;
 import java.util.List;
 
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -171,7 +171,7 @@ public interface IIpsObjectPathEntry {
      * <p>
      * Callers of this method are responsible for closing the stream after use.
      * <p>
-     * This method may throw a {@link RuntimeException} or {@link CoreRuntimeException} if there
+     * This method may throw a {@link RuntimeException} or {@link IpsException} if there
      * occur any exception while searching the requested resource. To avoid exceptions first check
      * whether the resource exists in this entry by calling {@link #containsResource(String)}. As
      * {@link IIpsProjectRefEntry IpsProjectRefEntrys} and {@link IIpsContainerEntry} always return

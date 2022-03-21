@@ -30,7 +30,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private IValidationRule rule;
 
     // edit fields
-    private CheckboxField appliedToAllField;
     private CheckboxField specifiedInSrcField;
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());

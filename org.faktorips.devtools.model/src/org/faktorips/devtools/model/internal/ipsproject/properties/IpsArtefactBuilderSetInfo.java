@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
@@ -184,7 +185,8 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             String propertyValue) {
         IIpsBuilderSetPropertyDef propertyDef = propertyDefinitions.get(propertyName);
         if (propertyDef == null) {
-            String text = NLS.bind(Messages.IpsArtefactBuilderSetInfo_propertyNotSupported, builderSetId, propertyName);
+            String text = MessageFormat.format(Messages.IpsArtefactBuilderSetInfo_propertyNotSupported, builderSetId,
+                    propertyName);
             return new Message(MSG_CODE_PROPERTY_NOT_SUPPORTED, text, Message.ERROR);
         }
         Message msg = propertyDef.validateValue(ipsProject, propertyValue);
@@ -199,7 +201,7 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
             String builderSetId,
             IIpsModel ipsModel,
             IConfigurationElement element,
-            ILog logger) {
+            ALog logger) {
 
         IConfigurationElement[] builderSetPropertyDefElements = element.getChildren(BUILDER_SET_PROPERTY_DEF);
         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = new HashMap<>();
@@ -217,38 +219,39 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
      * Loads IpsArtefactBuilderSetInfos from the extension registry.
      */
     public static final void loadExtensions(IExtensionRegistry registry,
-            ILog logger,
+            ALog logger,
             List<IIpsArtefactBuilderSetInfo> builderSetInfoList,
             IIpsModel ipsModel) {
+        if (Abstractions.isEclipseRunning()) {
+            IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
+            IExtension[] extensions = point.getExtensions();
 
-        IExtensionPoint point = registry.getExtensionPoint(IpsModelActivator.PLUGIN_ID, "artefactbuilderset"); //$NON-NLS-1$
-        IExtension[] extensions = point.getExtensions();
-
-        for (IExtension extension : extensions) {
-            IConfigurationElement[] configElements = extension.getConfigurationElements();
-            if (configElements.length > 0) {
-                IConfigurationElement element = configElements[0];
-                if (element.getName().equals("builderSet")) { //$NON-NLS-1$
-                    if (StringUtils.isEmpty(extension.getUniqueIdentifier())) {
-                        logger.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
-                        continue;
-                    }
-                    String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
-                    if (StringUtils.isEmpty(builderSetClassName)) {
-                        logger.log(new IpsStatus(
-                                "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
+            for (IExtension extension : extensions) {
+                IConfigurationElement[] configElements = extension.getConfigurationElements();
+                if (configElements.length > 0) {
+                    IConfigurationElement element = configElements[0];
+                    if (element.getName().equals("builderSet")) { //$NON-NLS-1$
+                        if (StringUtils.isEmpty(extension.getUniqueIdentifier())) {
+                            logger.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
+                            continue;
+                        }
+                        String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
+                        if (StringUtils.isEmpty(builderSetClassName)) {
+                            logger.log(new IpsStatus(
+                                    "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
                                         + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
                         continue;
                     }
 
-                    Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
-                            registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
-                    builderSetInfoList
-                            .add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(), builderSetClassName,
-                                    extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
+                        Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
+                                registry, extension.getUniqueIdentifier(), ipsModel, element, logger);
+                        builderSetInfoList
+                                .add(new IpsArtefactBuilderSetInfo(extension.getNamespaceIdentifier(),
+                                        builderSetClassName,
+                                        extension.getUniqueIdentifier(), extension.getLabel(), builderSetPropertyDefs));
+                    }
                 }
             }
         }
     }
-
 }

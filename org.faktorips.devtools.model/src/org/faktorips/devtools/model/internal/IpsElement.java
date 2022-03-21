@@ -10,9 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -70,8 +69,8 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     @Override
-    public IResource getEnclosingResource() {
-        IResource resource = getCorrespondingResource();
+    public AResource getEnclosingResource() {
+        AResource resource = getCorrespondingResource();
         if (resource != null) {
             return resource;
         }
@@ -92,12 +91,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     }
 
     @Override
-    public IIpsElement[] getChildren() throws CoreException {
+    public IIpsElement[] getChildren() {
         return NO_CHILDREN;
     }
 
     @Override
-    public boolean hasChildren() throws CoreException {
+    public boolean hasChildren() {
         return getChildren().length > 0;
     }
 

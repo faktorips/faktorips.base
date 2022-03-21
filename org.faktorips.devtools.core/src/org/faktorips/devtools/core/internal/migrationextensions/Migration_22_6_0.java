@@ -22,13 +22,12 @@ import java.util.jar.Manifest;
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.pctype.ValidationRule;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -83,7 +82,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws InvocationTargetException {
         IIpsProject ipsProject = getIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
 
@@ -104,7 +103,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    protected void migrate(IIpsSrcFile srcFile) throws CoreException {
+    protected void migrate(IIpsSrcFile srcFile) {
         if (srcFile.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             try {
                 boolean changed = false;
@@ -131,16 +130,16 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
                     writeToFile(srcFile, doc);
                 }
             } catch (SAXException | IOException e) {
-                throw new CoreException(new IpsStatus(e));
+                throw new IpsException(new IpsStatus(e));
             }
         }
         super.migrate(srcFile);
     }
 
     @Override
-    protected boolean migrate(IFile file) throws CoreException {
-        if ("ipsbf".equals(file.getFileExtension()) || "ipsbusinessfunction".equals(file.getFileExtension())) { //$NON-NLS-1$ //$NON-NLS-2$
-            file.delete(true, null);
+    protected boolean migrate(AFile file) {
+        if ("ipsbf".equals(file.getExtension()) || "ipsbusinessfunction".equals(file.getExtension())) { //$NON-NLS-1$ //$NON-NLS-2$
+            file.delete(null);
             return true;
         }
         return false;
@@ -160,25 +159,25 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
             String xmlFileCharset = srcFile.getIpsProject().getXmlFileCharset();
             String nodeToString = XmlUtil.nodeToString(doc, xmlFileCharset,
                     srcFile.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
-            EclipseIOUtil.writeToFile(srcFile.getCorrespondingFile(),
+            EclipseIOUtil.writeToFile(srcFile.getCorrespondingFile().unwrap(),
                     new ByteArrayInputStream(nodeToString.getBytes(xmlFileCharset)), true, true,
                     new NullProgressMonitor());
-        } catch (TransformerException | UnsupportedEncodingException | CoreException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+        } catch (TransformerException | UnsupportedEncodingException e) {
+            throw new IpsException(new IpsStatus(e));
         }
 
     }
 
     private void updateManifest() {
         IIpsProject ipsProject = getIpsProject();
-        IFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        AFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
         if (manifestFile.exists()) {
             try {
                 Manifest manifest = new Manifest(manifestFile.getContents());
                 IpsBundleManifest ipsBundleManifest = new IpsBundleManifest(manifest);
                 ipsBundleManifest.writeBuilderSettings(ipsProject);
-            } catch (IOException | CoreException e) {
-                throw new CoreRuntimeException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
+            } catch (IOException e) {
+                throw new IpsException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
             }
 
         }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,13 +27,14 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
-import org.faktorips.devtools.model.util.ProjectUtil;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
@@ -40,7 +42,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
 
     @Test
     public void testMigrate_TooOld() throws Exception {
-        IProject project = newPlatformProject("TooOldIpsProject");
+        IProject project = newPlatformProject("TooOldIpsProject").unwrap();
         addJavaCapabilities(project);
         project.getFolder("model").create(true, true, null);
         copy(project, ".project");
@@ -48,34 +50,34 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
         copy(project, ".ipsproject");
         NullProgressMonitor monitor = new NullProgressMonitor();
         Migration_21_6_0.update(project.getFile(".ipsproject"), c -> c.replace("20.12.0", "19.12.0"), monitor);
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
-        assertFalse(ProjectUtil.hasIpsNature(project));
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(wrap(project).as(AProject.class));
+        assertFalse(EclipseProjectUtil.hasIpsNature(project));
         Migration_21_6_0 migration_21_6_0 = new Migration_21_6_0(ipsProject, "irrelevant");
 
         MessageList messageList = migration_21_6_0.migrate(monitor);
 
         assertFalse(messageList.isEmpty());
         assertTrue(messageList.containsErrorMsg());
-        assertFalse(ProjectUtil.hasIpsNature(project));
+        assertFalse(EclipseProjectUtil.hasIpsNature(project));
     }
 
     @Test
     public void testMigrate() throws Exception {
-        IProject project = newPlatformProject("OldIpsProject");
+        IProject project = newPlatformProject("OldIpsProject").unwrap();
         addJavaCapabilities(project);
         project.getFolder("model").create(true, true, null);
         copy(project, ".project");
         copy(project, ".classpath");
         copy(project, ".ipsproject");
-        IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
-        assertFalse(ProjectUtil.hasIpsNature(project));
+        IIpsProject ipsProject = IIpsModel.get().getIpsProject(wrap(project).as(AProject.class));
+        assertFalse(EclipseProjectUtil.hasIpsNature(project));
         Migration_21_6_0 migration_21_6_0 = new Migration_21_6_0(ipsProject, "irrelevant");
 
         try {
             MessageList messageList = migration_21_6_0.migrate(new NullProgressMonitor());
 
             assertTrue(messageList.isEmpty());
-            assertTrue(ProjectUtil.hasIpsNature(project));
+            assertTrue(EclipseProjectUtil.hasIpsNature(project));
             IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
             assertThat(ipsProjectProperties.getProductCmptNamingStrategy(),
                     is(instanceOf(DateBasedProductCmptNamingStrategy.class)));

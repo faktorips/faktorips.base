@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,8 +38,6 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -77,7 +76,7 @@ public class IpsJarBundleTest {
     @Before
     public void createIpsJarBundle() throws Exception {
         when(jarFileFactory.createJarFile()).thenReturn(jarFile);
-        Path path = new Path(JAR_NAME);
+        Path path = Path.of(JAR_NAME);
         when(jarFileFactory.getJarPath()).thenReturn(path);
         ipsJarBundle = new IpsJarBundle(ipsProject, jarFileFactory);
         ipsJarBundle.setBundleContentIndex(bundleContentIndex);
@@ -108,8 +107,8 @@ public class IpsJarBundleTest {
     private void mockObjectDirs() {
         IpsBundleManifest bundleManifest = spy(new IpsBundleManifest(mock(Manifest.class)));
         ipsJarBundle.setBundleManifest(bundleManifest);
-        List<IPath> pathList = new ArrayList<>();
-        pathList.add(new Path(ANY_PATH));
+        List<Path> pathList = new ArrayList<>();
+        pathList.add(Path.of(ANY_PATH));
         doReturn(pathList).when(bundleManifest).getObjectDirs();
     }
 
@@ -161,8 +160,8 @@ public class IpsJarBundleTest {
     }
 
     private void mockJarFileWithResource() throws IOException {
-        IPath rootPath = new Path(ANY_PATH);
-        when(bundleContentIndex.getModelPath(rootPath)).thenReturn(new Path(ROOT_PATH));
+        Path rootPath = Path.of(ANY_PATH);
+        when(bundleContentIndex.getModelPath(rootPath)).thenReturn(Path.of(ROOT_PATH));
         ZipEntry zipEntry = mock(ZipEntry.class);
         when(jarFile.getEntry(ROOT_PATH + "/" + ANY_PATH)).thenReturn(zipEntry);
         InputStream inputStream = new ByteArrayInputStream("Foo".getBytes());
@@ -171,26 +170,26 @@ public class IpsJarBundleTest {
 
     @Test
     public void testGetLocation() throws Exception {
-        IPath location = ipsJarBundle.getLocation();
+        Path location = ipsJarBundle.getLocation();
 
-        assertEquals(new Path(JAR_NAME), location);
+        assertEquals(Path.of(JAR_NAME), location);
     }
 
     @Test
     public void testGetArchivePath() throws Exception {
-        IPath location = ipsJarBundle.getLocation();
+        Path location = ipsJarBundle.getLocation();
 
-        assertEquals(new Path(JAR_NAME), location);
+        assertEquals(Path.of(JAR_NAME), location);
     }
 
     @Test
     public void testGetRootFolder() throws Exception {
-        IPath myPath = new Path("myTestPath");
-        IPath objectDir = new Path("myObjectDir");
+        Path myPath = Path.of("myTestPath");
+        Path objectDir = Path.of("myObjectDir");
         when(bundleContentIndex.getModelPath(objectDir)).thenReturn(myPath);
         ipsJarBundle.setBundleContentIndex(bundleContentIndex);
 
-        IPath rootFolder = ipsJarBundle.getRootFolder(objectDir);
+        Path rootFolder = ipsJarBundle.getRootFolder(objectDir);
 
         assertEquals(myPath, rootFolder);
     }
@@ -351,11 +350,11 @@ public class IpsJarBundleTest {
     }
 
     private void mockQualifiedNameTypes() {
-        when(qualifiedNameType.toPath()).thenReturn(new Path(ANY_PATH));
+        when(qualifiedNameType.toPath()).thenReturn(Path.of(ANY_PATH));
         HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         qnameTypes.add(qualifiedNameType);
         when(bundleContentIndex.getQualifiedNameTypes()).thenReturn(qnameTypes);
-        when(bundleContentIndex.getModelPath(qualifiedNameType.toPath())).thenReturn(new Path("modelPath"));
+        when(bundleContentIndex.getModelPath(qualifiedNameType.toPath())).thenReturn(Path.of("modelPath"));
     }
 
     @Test

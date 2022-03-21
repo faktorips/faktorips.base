@@ -22,9 +22,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -42,7 +41,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     private IpsSrcFileImmutable srcFileImmutable;
     private IProductCmpt product;
     private IProductCmpt productImmutable;
-    private IFile file;
+    private AFile file;
 
     @Override
     @Before
@@ -88,7 +87,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObject() throws CoreException {
+    public void testGetIpsObject() {
         IpsSrcFileImmutable srcFileImm2 = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct",
                 file.getContents());
         IProductCmpt prodImm2 = (IProductCmpt)srcFileImm2.getIpsObject();
@@ -137,7 +136,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSave() throws CoreException {
+    public void testSave() {
         productImmutable.newGeneration();
         srcFileImmutable.save(true, null);
 
@@ -158,7 +157,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsContentParsable() throws CoreException {
+    public void testIsContentParsable() {
         IpsSrcFileImmutable srcFile = new IpsSrcFileImmutable("TestSrcFileImmutable.ipsproduct", file.getContents());
         assertTrue(srcFile.isContentParsable());
 
@@ -190,7 +189,7 @@ public class IpsSrcFileImmutableTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testDelete() throws CoreException {
+    public void testDelete() {
         srcFileImmutable.delete();
     }
 

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.PartInitException;
@@ -66,7 +65,7 @@ public class TestCaseTypeEditor extends IpsObjectEditor implements IModelDescrip
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() {
         return new TestCaseDescriptionPage(getTestCaseType());
     }
 }

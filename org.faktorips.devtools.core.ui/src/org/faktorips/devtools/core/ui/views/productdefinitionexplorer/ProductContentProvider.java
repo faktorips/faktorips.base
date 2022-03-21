@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.views.modelexplorer.LayoutStyle;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelContentProvider;
 import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerConfiguration;
@@ -33,7 +32,7 @@ public class ProductContentProvider extends ModelContentProvider {
      * as children of the given PackageFragmentRoot. {@inheritDoc}
      */
     @Override
-    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) throws CoreException {
+    protected Object[] getPackageFragmentRootContent(IIpsPackageFragmentRoot root) {
         if (getLayoutStyle() == LayoutStyle.FLAT) {
             IIpsPackageFragment[] fragments = root.getIpsPackageFragments();
             // filter out empty packagefragments if their IFolders do not contain files and at the

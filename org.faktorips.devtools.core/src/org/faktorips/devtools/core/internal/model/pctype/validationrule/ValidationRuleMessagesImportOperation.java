@@ -17,8 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -33,7 +32,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.values.LocalizedString;
 
-public abstract class ValidationRuleMessagesImportOperation implements IWorkspaceRunnable {
+public abstract class ValidationRuleMessagesImportOperation implements ICoreRunnable {
 
     public static final int MSG_CODE_MISSING_MESSAGE = 1;
 
@@ -105,7 +104,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     @Override
-    public void run(IProgressMonitor progressMonitor) throws CoreException {
+    public void run(IProgressMonitor progressMonitor) {
         if (progressMonitor != null) {
             this.setMonitor(progressMonitor);
         }
@@ -138,7 +137,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
         this.contentMap = keyValueMap;
     }
 
-    protected IStatus importContentMap() throws CoreException {
+    protected IStatus importContentMap() {
         List<IIpsSrcFile> allPolicyCmptFiled = getPackageFragmentRoot().findAllIpsSrcFiles(
                 IpsObjectType.POLICY_CMPT_TYPE);
         try {
@@ -164,7 +163,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     @SuppressWarnings("deprecation")
-    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
+    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
                 continue;

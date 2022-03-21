@@ -13,15 +13,15 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /** Base class for operations that modify templated values. */
-public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunnable {
+public abstract class AbstractTemplatedValueOperation implements ICoreRunnable {
 
     private Set<IIpsSrcFile> filesToSave = new HashSet<>();
 
@@ -41,7 +41,7 @@ public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunna
         for (IIpsSrcFile ipsSrcFile : filesToSave) {
             try {
                 ipsSrcFile.save(true, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }

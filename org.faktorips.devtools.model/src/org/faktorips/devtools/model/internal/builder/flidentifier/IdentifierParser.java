@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -18,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
@@ -124,7 +124,8 @@ public class IdentifierParser {
         }
         return new IdentifierNodeFactory(matcher.getTextRegion(), parsingContext.getIpsProject())
                 .createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                        NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, matcher.getIdentifierPart())));
+                        MessageFormat.format(Messages.IdentifierParser_msgErrorInvalidIdentifier,
+                                matcher.getIdentifierPart())));
     }
 
     /**

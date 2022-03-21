@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
 
@@ -44,9 +44,9 @@ public interface IMethod extends ITypePart, IBaseMethod {
      * 
      * @param otherMethod The method that overrides this one.
      * 
-     * @throws CoreException If there is an error in type hierarchy check.
+     * @throws IpsException If there is an error in type hierarchy check.
      */
-    public boolean overrides(IMethod otherMethod) throws CoreException;
+    public boolean overrides(IMethod otherMethod) throws IpsException;
 
     /**
      * Returns the method overriding this one or <code>null</code> if no such method is found. The
@@ -56,17 +56,17 @@ public interface IMethod extends ITypePart, IBaseMethod {
      *            method belongs to.
      * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException;
+    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first method, that is overridden by this method.
      * 
      * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException;
+    public IMethod findOverriddenMethod(IIpsProject ipsProject) throws IpsException;
 
 }

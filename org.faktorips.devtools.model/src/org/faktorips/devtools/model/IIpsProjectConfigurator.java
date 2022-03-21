@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
@@ -41,20 +42,20 @@ public interface IIpsProjectConfigurator {
      * @param javaProject the project to be configured
      * @return whether this configurator can configure the project
      */
-    boolean canConfigure(IJavaProject javaProject);
+    boolean canConfigure(AJavaProject javaProject);
 
     /**
      * Checks whether Groovy is supported for the given project by this extension.
      * 
      * @return {@code true} if Groovy is supported by the extension, else {@code false}
      */
-    boolean isGroovySupported(IJavaProject javaProject);
+    boolean isGroovySupported(AJavaProject javaProject);
 
     /**
      * Validates whether the given {@link IpsProjectCreationProperties} are set to values this
      * configurator can use to configure the given {@link IJavaProject}.
      * <p>
-     * This method will only be called if {@link #canConfigure(IJavaProject)} returns {@code true}
+     * This method will only be called if {@link #canConfigure(AJavaProject)} returns {@code true}
      * for the given {@link IJavaProject}.
      * 
      * @param javaProject the {@link IJavaProject} to be configured
@@ -63,7 +64,7 @@ public interface IIpsProjectConfigurator {
      *         given properties, otherwise a {@link MessageList} that
      *         {@link MessageList#containsErrorMsg() contains an error message}
      */
-    default MessageList validate(IJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
+    default MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
         return MessageList.of();
     }
 
@@ -74,8 +75,8 @@ public interface IIpsProjectConfigurator {
      * @param ipsProject the existing {@link IIpsProject}
      * @param creationProperties the required {@link IpsProjectCreationProperties properties for
      *            creating a Faktor-IPS project}
-     * @throws CoreException if configuring the Faktor-IPS project failed
+     * @throws IpsException if configuring the Faktor-IPS project failed
      */
     void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            throws CoreException;
+            throws IpsException;
 }

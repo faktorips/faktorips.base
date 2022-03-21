@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -242,7 +241,7 @@ public class EnumTypePage extends IpsObjectPage {
 
     @Override
     protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+            {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 
@@ -288,7 +287,7 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() {
         super.validatePageExtension();
 
         MessageList validationMessages = new MessageList();

@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -195,7 +194,7 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     @Test
-    public void testfindAttributes() throws CoreException {
+    public void testfindAttributes() {
         AttributeParser spy = spy(attributeParser);
         ArrayList<IAttribute> arrayList = new ArrayList<>();
         arrayList.add(attribute);
@@ -226,7 +225,7 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     @Test
-    public void testfindAttributes_NoProductCmpt() throws CoreException {
+    public void testfindAttributes_NoProductCmpt() {
         AttributeParser spy = spy(attributeParser);
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
@@ -284,7 +283,7 @@ public class AttributeParserTest extends AbstractParserTest {
         assertEquals(attribute2.getName(), proposals.get(1).getText());
     }
 
-    private AbstractIdentifierNodeParser mockAttributesForProposal() throws CoreException {
+    private AbstractIdentifierNodeParser mockAttributesForProposal() {
         AttributeParser spy = spy(attributeParser);
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);

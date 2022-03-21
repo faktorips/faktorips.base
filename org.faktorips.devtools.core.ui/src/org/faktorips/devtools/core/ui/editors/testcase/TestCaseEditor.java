@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.IIpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
@@ -47,7 +48,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    protected void addPagesForParsableSrcFile() throws CoreException {
+    protected void addPagesForParsableSrcFile() throws IpsException, PartInitException {
         IIpsObjectEditorSettings settings = getSettings();
         // open the select template dialog if the templ. is missing and the data is changeable
         if (getTestCase().findTestCaseType(getIpsProject()) == null && couldDataBeChangedIfTestCaseTypeWasntMissing()
@@ -87,7 +88,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+    protected Dialog createDialogToFixDifferencesToModel() {
         return new TestCaseDeltaDialog(getTestCase().computeDeltaToModel(getIpsProject()), getSite().getShell());
     }
 
@@ -99,7 +100,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
         } else {
             try {
                 datachangeable = getTestCase().findTestCaseType(getIpsProject()) != null;
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 datachangeable = false;
             }
@@ -116,7 +117,7 @@ public class TestCaseEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() {
         ITestCaseType testCaseType = getTestCase().findTestCaseType(getIpsProject());
         if (testCaseType != null) {
             return new TestCaseDescriptionPage(testCaseType);

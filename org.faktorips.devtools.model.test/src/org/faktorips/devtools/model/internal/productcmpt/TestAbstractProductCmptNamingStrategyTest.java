@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -72,7 +71,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetNextName() throws CoreException {
+    public void testGetNextName() {
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct - id");
         assertEquals("TestProduct - nextId", namingStrategy.getNextName(pc, null));
     }
@@ -157,7 +156,7 @@ public class TestAbstractProductCmptNamingStrategyTest extends AbstractIpsPlugin
         }
 
         @Override
-        public String getUniqueRuntimeId(IIpsProject project, String productCmptName) throws CoreException {
+        public String getUniqueRuntimeId(IIpsProject project, String productCmptName) {
             throw new UnsupportedOperationException();
         }
     }

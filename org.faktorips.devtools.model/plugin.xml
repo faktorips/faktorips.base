@@ -58,7 +58,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.faktorips.devtools.model.internal.ipsproject.IpsProject">
+               class="org.faktorips.devtools.model.internal.ipsproject.IpsProject$EclipseProjectNature">
             <parameter
                   name="installBuilder"
                   value="true">
@@ -76,7 +76,7 @@
       <builder
             hasNature="true">
          <run
-               class="org.faktorips.devtools.model.builder.IpsBuilder">
+               class="org.faktorips.devtools.model.builder.IpsBuilder$EclipseIpsBuilder">
          </run>
       </builder>
    </extension>

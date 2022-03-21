@@ -31,10 +31,10 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IJavaBuilderSet;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -143,56 +143,58 @@ public abstract class RefactoringParticipantHelper {
      * 
      * @see RefactoringParticipant#createChange(IProgressMonitor)
      */
-    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public final Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException {
         /*
          * The Java elements need to be sorted in such a way that types are processed after
          * everything else because otherwise members may not be found anymore (because the type they
          * refer to does no longer exist).
          */
         List<IJavaElement> sortedOriginalJavaElements = sortJavaElements(originalJavaElements);
+        try {
+            for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
+                IJavaElement originalJavaElement = sortedOriginalJavaElements.get(i);
 
-        for (int i = 0; i < getNumberOfJavaElementsToRefactor(); i++) {
-            IJavaElement originalJavaElement = sortedOriginalJavaElements.get(i);
-
-            /*
-             * Do not try to refactor non-existing Java elements as the user may want to try to
-             * start the refactoring when there is no source code at all. This also solves the
-             * problem of what should happen when there is a Java element that occurs in the
-             * implementation as well as in the published interface. If for example a setter method
-             * occurs in the implementation as well as in the published interface then the first
-             * encountered will be refactored. The second no longer exists then because the JDT
-             * rename method refactoring renamed it already.
-             */
-            if (!(originalJavaElement.exists())) {
-                continue;
-            }
-
-            // Do not refactor constructors
-            if (originalJavaElement instanceof IMethod) {
-                if (((IMethod)originalJavaElement).isConstructor()) {
+                /*
+                 * Do not try to refactor non-existing Java elements as the user may want to try to
+                 * start the refactoring when there is no source code at all. This also solves the
+                 * problem of what should happen when there is a Java element that occurs in the
+                 * implementation as well as in the published interface. If for example a setter
+                 * method occurs in the implementation as well as in the published interface then
+                 * the first encountered will be refactored. The second no longer exists then
+                 * because the JDT rename method refactoring renamed it already.
+                 */
+                if (!(originalJavaElement.exists())) {
                     continue;
                 }
-            }
 
-            IJavaElement targetJavaElement = getTargetJavaElementForOriginalJavaElement(originalJavaElement);
-            if (targetJavaElement == null) {
-                // The element does not need to be refactored
-                continue;
-            }
+                // Do not refactor constructors
+                if (originalJavaElement instanceof IMethod) {
+                    if (((IMethod)originalJavaElement).isConstructor()) {
+                        continue;
+                    }
+                }
 
-            /*
-             * We can't use the refactoring instances created during condition checking because the
-             * Java references are build upon creation of the refactoring instance. These might
-             * become invalid when refactorings are performed. Because of that new instances are
-             * created here.
-             */
-            JavaRefactoring javaRefactoring = createJavaRefactoring(originalJavaElement, targetJavaElement,
-                    new RefactoringStatus(), pm);
-            if (javaRefactoring != null) {
-                javaRefactoring.perform(pm);
+                IJavaElement targetJavaElement = getTargetJavaElementForOriginalJavaElement(originalJavaElement);
+                if (targetJavaElement == null) {
+                    // The element does not need to be refactored
+                    continue;
+                }
+
+                /*
+                 * We can't use the refactoring instances created during condition checking because
+                 * the Java references are build upon creation of the refactoring instance. These
+                 * might become invalid when refactorings are performed. Because of that new
+                 * instances are created here.
+                 */
+                JavaRefactoring javaRefactoring = createJavaRefactoring(originalJavaElement, targetJavaElement,
+                        new RefactoringStatus(), pm);
+                if (javaRefactoring != null) {
+                    javaRefactoring.perform(pm);
+                }
             }
+        } catch (CoreException e) {
+            throw new IpsException(e);
         }
-
         return new NullChange();
     }
 
@@ -308,8 +310,6 @@ public abstract class RefactoringParticipantHelper {
                 modificationSet = processor.refactorIpsModel(new NullProgressMonitor());
                 targetJavaElements = initializeJavaElements(
                         (IIpsObjectPartContainer)modificationSet.getTargetElement(), javaBuilderSet);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             } finally {
                 if (modificationSet != null) {
                     modificationSet.undo();
@@ -359,7 +359,7 @@ public abstract class RefactoringParticipantHelper {
      * @param progressMonitor The {@link IProgressMonitor} to report progress to should that be
      *            necessary
      * 
-     * @throws CoreException If an error occurs during creation of the refactoring instance
+     * @throws IpsException If an error occurs during creation of the refactoring instance
      */
     protected abstract JavaRefactoring createJavaRefactoring(IJavaElement originalJavaElement,
             IJavaElement targetJavaElement,

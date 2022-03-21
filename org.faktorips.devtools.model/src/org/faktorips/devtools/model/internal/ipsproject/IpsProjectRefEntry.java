@@ -11,15 +11,14 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -98,7 +97,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) {
         if (referencedIpsProject == null) {
             return false;
         }
@@ -111,7 +110,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
+    public void initFromXml(Element element, AProject project) {
         super.initFromXml(element, project);
         initUseNWDITrackPrefix(element);
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
@@ -218,7 +217,8 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
             return result;
         }
         if (!project.exists()) {
-            String text = NLS.bind(Messages.IpsProjectRefEntry_msgMissingReferencedProject, project.getName());
+            String text = MessageFormat.format(Messages.IpsProjectRefEntry_msgMissingReferencedProject,
+                    project.getName());
             Message msg = new Message(MSGCODE_MISSING_PROJECT, text, Message.ERROR, this);
             result.add(msg);
         }

@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -100,12 +100,12 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws CoreException {
+    public ITestParameter findTestParameter(IIpsProject ipsProject) {
         return findTestRuleParameter(ipsProject);
     }
 
     @Override
-    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws CoreException {
+    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(testRuleParameter)) {
             return null;
         }
@@ -134,7 +134,7 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException {
+    public IValidationRule findValidationRule(IIpsProject ipsProject) {
         ITestCase testCase = (ITestCase)getParent();
         return testCase.findValidationRule(validationRule, ipsProject);
     }
@@ -152,13 +152,14 @@ public class TestRule extends TestObject implements ITestRule {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         // check if the validation rule is inside the test case type structure (one rule of the test
         // policy cmpt type parameter)
         if (findValidationRule(ipsProject) == null) {
-            String text = NLS.bind(Messages.TestRule_ValidationError_ValidationRuleNotAvailable, validationRule);
+            String text = MessageFormat.format(Messages.TestRule_ValidationError_ValidationRuleNotAvailable,
+                    validationRule);
             Message msg = new Message(MSGCODE_VALIDATION_RULE_NOT_EXISTS, text, Message.ERROR, this,
                     PROPERTY_VALIDATIONRULE);
             list.add(msg);
@@ -169,7 +170,8 @@ public class TestRule extends TestObject implements ITestRule {
         ITestRule[] rules = testCase.getTestRuleObjects();
         for (ITestRule rule : rules) {
             if (rule != this && rule.getValidationRule().equals(validationRule)) {
-                String text = NLS.bind(Messages.TestRule_ValidationError_DuplicateValidationRule, validationRule);
+                String text = MessageFormat.format(Messages.TestRule_ValidationError_DuplicateValidationRule,
+                        validationRule);
                 Message msg = new Message(MSGCODE_DUPLICATE_VALIDATION_RULE, text, Message.ERROR, this,
                         PROPERTY_VALIDATIONRULE);
                 list.add(msg);
@@ -180,7 +182,8 @@ public class TestRule extends TestObject implements ITestRule {
         // check if the test rule parameter exists
         ITestParameter param = findTestRuleParameter(ipsProject);
         if (param == null) {
-            String text = NLS.bind(Messages.TestRule_ValidationError_TestRuleParameterNotFound, getTestRuleParameter());
+            String text = MessageFormat.format(Messages.TestRule_ValidationError_TestRuleParameterNotFound,
+                    getTestRuleParameter());
             Message msg = new Message(MSGCODE_TEST_RULE_PARAM_NOT_FOUND, text, Message.ERROR, this,
                     PROPERTY_TEST_RULE_PARAMETER);
             list.add(msg);

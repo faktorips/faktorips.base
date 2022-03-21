@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -54,7 +54,7 @@ public class CategoryPmo extends IpsObjectPartPmo {
         IProductCmptType productCmptType = null;
         try {
             productCmptType = getProperty().findProductCmptType(getProperty().getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // Recover by not displaying any categories
             IpsPlugin.log(e);
         }
@@ -62,7 +62,7 @@ public class CategoryPmo extends IpsObjectPartPmo {
         if (productCmptType != null) {
             try {
                 categories.addAll(productCmptType.findCategories(getProperty().getIpsProject()));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // Recover by not displaying any categories
                 IpsPlugin.log(e);
             }

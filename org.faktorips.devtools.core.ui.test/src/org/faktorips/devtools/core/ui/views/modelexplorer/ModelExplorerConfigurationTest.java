@@ -21,11 +21,11 @@ import java.util.List;
 import org.eclipse.core.internal.resources.WorkspaceRoot;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -88,7 +88,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         allowedTypes.remove(IpsObjectType.TABLE_CONTENTS);
         config = new ModelExplorerConfiguration(allowedTypes.toArray(new IpsObjectType[0]));
 
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder = ((EclipseProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
         folder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
@@ -98,7 +98,6 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
 
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testShouldDisplayChildrenFor() {
         assertTrue(config.shouldDisplayChildrenFor(IpsObjectType.POLICY_CMPT_TYPE));
@@ -146,14 +145,14 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     public void testIsAllowedResourceType() {
         assertTrue(config.isAllowedResourceType(folder.getClass()));
         assertTrue(config.isAllowedResourceType(file.getClass()));
-        assertTrue(config.isAllowedResourceType(proj.getCorrespondingResource().getClass()));
+        assertTrue(config.isAllowedResourceType(((IResource)proj.getCorrespondingResource().unwrap()).getClass()));
         assertFalse(config.isAllowedResourceType(failRessource.getClass()));
     }
 
     @Test
     public void testRepresentsProject() {
         assertTrue(config.representsProject(proj));
-        assertTrue(config.representsProject(proj.getCorrespondingResource()));
+        assertTrue(config.representsProject(proj.getCorrespondingResource().unwrap()));
         assertFalse(config.representsProject(folder));
         assertFalse(config.representsProject(root));
         assertFalse(config.representsProject(defaultPackage));
@@ -164,7 +163,7 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     @Test
     public void testRepresentsFolder() {
         assertFalse(config.representsFolder(proj));
-        assertFalse(config.representsFolder(proj.getCorrespondingResource()));
+        assertFalse(config.representsFolder(proj.getCorrespondingResource().unwrap()));
         assertTrue(config.representsFolder(folder));
         assertTrue(config.representsFolder(root));
         assertTrue(config.representsFolder(defaultPackage));
@@ -173,9 +172,9 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRepresentsFile() throws CoreException {
+    public void testRepresentsFile() {
         assertFalse(config.representsFile(proj));
-        assertFalse(config.representsFile(proj.getCorrespondingResource()));
+        assertFalse(config.representsFile(proj.getCorrespondingResource().unwrap()));
         assertFalse(config.representsFile(folder));
         assertFalse(config.representsFile(root));
         assertFalse(config.representsFile(defaultPackage));
@@ -183,8 +182,8 @@ public class ModelExplorerConfigurationTest extends AbstractIpsPluginTest {
         assertTrue(config.representsFile(pcType));
 
         IIpsObjectPath path = proj.getIpsObjectPath();
-        IFile file = proj.getProject().getFile("Archive.ipsar");
-        file.create(new ByteArrayInputStream("".getBytes()), true, null);
+        AFile file = proj.getProject().getFile("Archive.ipsar");
+        file.create(new ByteArrayInputStream("".getBytes()), null);
         path.newArchiveEntry(proj.getProject().getFile("Archive.ipsar").getLocation());
         proj.setIpsObjectPath(path);
         IIpsPackageFragmentRoot archiveRoot = proj.findIpsPackageFragmentRoot("Archive.ipsar");

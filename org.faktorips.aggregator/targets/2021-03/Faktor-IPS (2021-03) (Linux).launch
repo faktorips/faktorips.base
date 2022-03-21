@@ -283,6 +283,8 @@
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest.core*1.3.0.zz-NO-SPLIT_PCK-v201303031735@default:default"/>
+        <setEntry value="org.junit*4.13.0.v20200204-1500@default:default"/>
+        <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
         <setEntry value="org.junit.jupiter.api@default:default"/>
         <setEntry value="org.junit.jupiter.engine@default:default"/>
         <setEntry value="org.junit.jupiter.migrationsupport@default:default"/>
@@ -293,7 +295,6 @@
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
-        <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
         <setEntry value="org.objenesis*1.4.0@default:default"/>
         <setEntry value="org.objenesis*2.1.0@default:default"/>
@@ -308,6 +309,7 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>

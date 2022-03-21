@@ -12,13 +12,13 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -62,13 +62,13 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * while running the platform.
      */
     @Override
-    public boolean isAffectedBy(IResourceDelta delta) {
+    public boolean isAffectedBy(AResourceDelta delta) {
         return false;
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
-        String objectDir = getRootFolder(qnt.toPath()).toPortableString();
+    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) {
+        String objectDir = PathUtil.toPortableString(getRootFolder(qnt.toPath()));
         return bundleManifest.getBasePackage(objectDir);
     }
 
@@ -86,7 +86,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * {@link #getBasePackageNameForMergableArtefacts(QualifiedNameType)}
      */
     @Override
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) {
         return getBasePackageNameForMergableArtefacts(qnt);
     }
 
@@ -101,47 +101,47 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     /**
      * returns the root folder
      */
-    IPath getRootFolder(IPath path) {
+    Path getRootFolder(Path path) {
         return bundleContentIndex.getModelPath(path);
     }
 
     @Override
-    public String[] getNonEmptyPackages() throws CoreException {
+    public String[] getNonEmptyPackages() {
         Set<String> nonEmptyPackagePaths = bundleContentIndex.getNonEmptyPackagePaths();
         String[] result = nonEmptyPackagePaths.toArray(new String[nonEmptyPackagePaths.size()]);
         return result;
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes() throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes() {
         return bundleContentIndex.getQualifiedNameTypes();
     }
 
     @Override
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws CoreException {
+    public Set<QualifiedNameType> getQNameTypes(String packName) {
         return bundleContentIndex.getQualifiedNameTypes(packName);
     }
 
     @Override
-    public boolean contains(IPath path) {
+    public boolean contains(Path path) {
         return bundleContentIndex.getModelPath(path) != null;
     }
 
     @Override
-    public InputStream getContent(IPath path) {
+    public InputStream getContent(Path path) {
         if (path == null) {
             return null;
         }
-        IPath rootFolder = getRootFolder(path);
-        IPath entryPath = rootFolder.append(path);
+        Path rootFolder = getRootFolder(path);
+        Path entryPath = rootFolder.resolve(path);
         return getResourceAsStream(entryPath);
     }
 
     @Override
     public InputStream getResourceAsStream(String pathName) {
-        Path path = new Path(pathName);
-        IPath rootFolder = getRootFolder(path);
-        return getResourceAsStream(rootFolder.append(path));
+        Path path = Path.of(pathName);
+        Path rootFolder = getRootFolder(path);
+        return getResourceAsStream(rootFolder.resolve(path));
     }
 
     /**
@@ -154,11 +154,11 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * 
      * @return An InputStream that represents the content of the requested resource.
      */
-    protected abstract InputStream getResourceAsStream(IPath resourcePath);
+    protected abstract InputStream getResourceAsStream(Path resourcePath);
 
     @Override
     public String getName() {
-        return getLocation().lastSegment();
+        return PathUtil.lastSegment(getLocation());
     }
 
     /**
@@ -171,8 +171,8 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * name this strategy cannot run into conflicts.
      */
     @Override
-    public IResource getCorrespondingResource() {
-        return getIpsProject().getProject().getFile(getLocation().lastSegment());
+    public AResource getCorrespondingResource() {
+        return getIpsProject().getProject().getFile(PathUtil.lastSegment(getLocation()));
     }
 
     AbstractIpsBundleContentIndex getBundleContentIndex() {

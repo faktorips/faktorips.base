@@ -16,12 +16,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -44,9 +44,9 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IWorkspaceRunnable action = $ -> {
+        ICoreRunnable action = $ -> {
             IIpsProject project = newIpsProject("TestProject");
-            IFolder folder = (IFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
+            AFolder folder = (AFolder)project.getIpsPackageFragmentRoots()[0].getCorrespondingResource();
             folder.getFile("A.ipspct");
             type = newPolicyCmptType(project, "A");
             type.newPolicyCmptTypeAssociation();
@@ -73,7 +73,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         // different timestamp, otherwise refreshLocal won't refresh!
         // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!
         String encoding = type.getIpsProject().getXmlFileCharset();
-        IFile file = type.getIpsSrcFile().getCorrespondingFile();
+        AFile file = type.getIpsSrcFile().getCorrespondingFile();
         String content = StringUtil.readFromInputStream(file.getContents(), encoding);
         content = content.replaceAll("Blabla", "NewBlabla");
         File ioFile = file.getLocation().toFile();
@@ -83,7 +83,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         writer.close();
 
         // now refresh the file from disk
-        file.refreshLocal(IResource.DEPTH_INFINITE, null);
+        file.refreshLocal(AResourceTreeTraversalDepth.INFINITE, null);
 
         type = (IPolicyCmptType)ipsFile.getIpsObject(); // forces a reload
         assertEquals("NewBlabla", type.getDescriptionText(Locale.US));

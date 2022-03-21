@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -51,7 +51,7 @@ public class Migration_21_12_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         IIpsProject ipsProject = getIpsProject();
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setValidateIpsSchema(addSchemasOption.getSelectedValue());

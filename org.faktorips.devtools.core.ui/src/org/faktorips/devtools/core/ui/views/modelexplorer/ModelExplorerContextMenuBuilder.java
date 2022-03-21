@@ -14,7 +14,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.actions.OpenProjectAction;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
@@ -37,6 +36,7 @@ import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.actions.CloseResourceAction;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -265,7 +265,6 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(newMenu);
     }
 
-    @SuppressWarnings("deprecation")
     private void addModelMenueItems(MenuManager newMenu, IWorkbenchWindow workbenchWindow) {
         // Model side elements
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
@@ -344,7 +343,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createRefreshAction(IMenuManager manager, Object selected) {
         boolean open = false;
         if (selected instanceof IIpsElement) {
-            open = ((IIpsElement)selected).getIpsProject().getProject().isOpen();
+            open = ((IProject)((IIpsElement)selected).getIpsProject().getProject().unwrap()).isOpen();
         } else if (selected instanceof IResource) {
             open = ((IResource)selected).getProject().isOpen();
         }
@@ -377,7 +376,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
         if (selected instanceof IIpsProject) {
             IIpsProject ipsProject = (IIpsProject)selected;
-            manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource()));
+            manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource().unwrap()));
 
             try {
                 AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
@@ -393,7 +392,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                         manager.add(migrateAction);
                     }
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         } else {

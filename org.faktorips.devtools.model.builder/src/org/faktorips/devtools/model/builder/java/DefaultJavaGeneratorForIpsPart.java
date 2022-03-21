@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.builder.java;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -36,7 +36,7 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * Generates the source code for the IPS object part this is a generator for.
      */
     public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
-            throws CoreException {
+            {
         generateConstants(mainSection.getConstantBuilder(), ipsProject, generatesInterface);
         if (!generatesInterface) {
             generateMemberVariables(mainSection.getMemberVarBuilder(), ipsProject, generatesInterface);
@@ -49,11 +49,11 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * 
      * @param builder The builder for the type's method section.
      * 
-     * @throws CoreException if an error occurs while generating the member variables.
+     * @throws IpsException if an error occurs while generating the member variables.
      */
     protected abstract void generateMethods(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException;
+            boolean generatesInterface) throws IpsException;
 
     /**
      * Subclasses have to implement generation of the member variables here. This method is only
@@ -61,21 +61,21 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
      * 
      * @param builder The builder for the type's member variables section.
      * 
-     * @throws CoreException if an error occurs while generating the member variables
+     * @throws IpsException if an error occurs while generating the member variables
      */
     protected abstract void generateMemberVariables(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException;
+            boolean generatesInterface) throws IpsException;
 
     /**
      * Subclasses have to implement generation of the constants (static finals) here.
      * 
      * @param builder The builder for the type's constants section.
      * 
-     * @throws CoreException if an error occurs while generating the member variables
+     * @throws IpsException if an error occurs while generating the member variables
      */
     protected abstract void generateConstants(JavaCodeFragmentBuilder builder,
             IIpsProject ipsProject,
-            boolean generatesInterface) throws CoreException;
+            boolean generatesInterface) throws IpsException;
 
 }

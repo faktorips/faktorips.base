@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
@@ -120,7 +120,7 @@ public interface IIpsProjectProperties {
     /**
      * Validates the project properties.
      */
-    public MessageList validate(IIpsProject ipsProject) throws CoreException;
+    public MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns id of the builder set used to generate sourcecode from the model / product

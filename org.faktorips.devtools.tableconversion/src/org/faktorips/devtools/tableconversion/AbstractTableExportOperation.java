@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.tableconversion;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
 import org.faktorips.runtime.MessageList;
@@ -26,7 +26,7 @@ import org.faktorips.runtime.MessageList;
  * 
  * @author Roman Grutza
  */
-public abstract class AbstractTableExportOperation implements IWorkspaceRunnable {
+public abstract class AbstractTableExportOperation implements ICoreRunnable {
 
     /**
      * The IPS object to export
@@ -59,7 +59,7 @@ public abstract class AbstractTableExportOperation implements IWorkspaceRunnable
     protected MessageList messageList;
 
     @Override
-    public abstract void run(IProgressMonitor monitor) throws CoreException;
+    public abstract void run(IProgressMonitor monitor) throws IpsException;
 
     protected char getFieldSeparatorCSV(ITableFormat tableFormat) {
         String fieldSeparator = tableFormat.getProperty(CSVTableFormat.PROPERTY_FIELD_DELIMITER);

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import java.text.MessageFormat;
+
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
@@ -87,7 +89,7 @@ public class Messages extends NLS {
     }
 
     public static String bind(String message, String... bindings) {
-        return NLS.bind(message, bindings);
+        return MessageFormat.format(message, (Object[])bindings);
     }
 
 }

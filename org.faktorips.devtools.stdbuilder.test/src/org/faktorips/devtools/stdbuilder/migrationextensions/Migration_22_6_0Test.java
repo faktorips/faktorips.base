@@ -32,7 +32,6 @@ import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Test;
@@ -43,7 +42,7 @@ public class Migration_22_6_0Test extends AbstractStdBuilderTest {
     @Test
     public void testMigrate() throws Exception {
         IIpsProject ipsProject = newIpsProject("Migration_22_6_0Test");
-        IProject project = ipsProject.getProject();
+        IProject project = ipsProject.getProject().unwrap();
         copy("ipsproject", project);
         project.getFile(".ipsproject").delete(true, null);
         project.getFile("ipsproject").move(Path.fromPortableString(".ipsproject"), true, null);

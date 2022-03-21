@@ -13,10 +13,8 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
@@ -130,12 +128,8 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @param derivedUnionAssociation the derived union to test against.
      */
     public boolean isSubsetOf(XDerivedUnionAssociation derivedUnionAssociation) {
-        try {
-            if (getAssociation().isSubsetOfDerivedUnion(derivedUnionAssociation.getAssociation(), getIpsProject())) {
-                return true;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (getAssociation().isSubsetOfDerivedUnion(derivedUnionAssociation.getAssociation(), getIpsProject())) {
+            return true;
         }
         return false;
     }
@@ -172,16 +166,12 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
                     "The association {0} is not a subset of a derived union. Unable to determine derived union.",
                     getAssociation()));
         }
-        try {
-            IAssociation derivedUnion = getAssociation().findSubsettedDerivedUnion(getIpsProject());
-            if (derivedUnion == null) {
-                throw new NullPointerException(
-                        NLS.bind("No derived union found for association {0}.", getAssociation()));
-            }
-            return getModelNode(derivedUnion, XDerivedUnionAssociation.class);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IAssociation derivedUnion = getAssociation().findSubsettedDerivedUnion(getIpsProject());
+        if (derivedUnion == null) {
+            throw new NullPointerException(
+                    NLS.bind("No derived union found for association {0}.", getAssociation()));
         }
+        return getModelNode(derivedUnion, XDerivedUnionAssociation.class);
     }
 
     public boolean isConstrain() {
@@ -224,11 +214,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      * @return The IType that is the parent of the association
      */
     protected IType getTargetType() {
-        try {
-            return getAssociation().findTarget(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getAssociation().findTarget(getIpsProject());
     }
 
     public String getTargetName() {

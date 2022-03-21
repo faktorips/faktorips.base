@@ -16,7 +16,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.Description;
 import org.faktorips.devtools.model.internal.ipsobject.DescriptionHelper;
@@ -109,7 +109,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
             try {
                 this.tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 this.tableStructure = null;
             }
             tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));

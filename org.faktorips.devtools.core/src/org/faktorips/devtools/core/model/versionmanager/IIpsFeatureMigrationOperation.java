@@ -14,8 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
@@ -62,7 +62,7 @@ public interface IIpsFeatureMigrationOperation {
      *
      * @param monitor the progress monitor to use to display progress and field user requests to
      *            cancel
-     * @exception CoreException if the operation fails due to a CoreException
+     * @exception IpsException if the operation fails due to a CoreException
      * @exception InvocationTargetException if the operation fails due to an exception other than
      *                CoreException
      * @exception InterruptedException if the operation detects a request to cancel, using
@@ -73,7 +73,7 @@ public interface IIpsFeatureMigrationOperation {
      */
     // CSOFF: ThrowsCount
     abstract void execute(IProgressMonitor monitor)
-            throws CoreException, InvocationTargetException,
+            throws IpsException, InvocationTargetException,
             InterruptedException;
     // CSON: ThrowsCount
 

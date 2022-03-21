@@ -20,7 +20,6 @@
     <url>http://faktorzehn.org</url>
 
     <build>
-        <sourceDirectory>../src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.moditect</groupId>

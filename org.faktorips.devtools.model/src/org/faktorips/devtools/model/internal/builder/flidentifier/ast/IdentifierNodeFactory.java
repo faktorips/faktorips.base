@@ -10,11 +10,12 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier.ast;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.Messages;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -62,7 +63,7 @@ public class IdentifierNodeFactory {
                 return createInvalidNoDatatype(parameter.getDatatype());
             }
             return parameterNode;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return createInvalidDatatypeError(parameter.getDatatype());
         }
@@ -90,13 +91,13 @@ public class IdentifierNodeFactory {
     }
 
     private IdentifierNode createInvalidNoDatatype(String datatypeName) {
-        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, MessageFormat.format(
                 Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, datatypeName,
                 textRegion.getTextRegionString())));
     }
 
     private IdentifierNode createInvalidDatatypeError(String datatypeName) {
-        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, MessageFormat.format(
                 Messages.AbstractParameterIdentifierResolver_msgErrorDatatypeResolving, datatypeName,
                 textRegion.getTextRegionString())));
     }
@@ -113,7 +114,7 @@ public class IdentifierNodeFactory {
     public IdentifierNode createAssociationNode(IAssociation association, boolean listOfType) {
         try {
             return new AssociationNode(association, listOfType, textRegion, ipsProject);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return createInvalidAssociationTargetNode(association.getTarget());
         }
@@ -137,7 +138,7 @@ public class IdentifierNodeFactory {
 
     private InvalidIdentifierNode createInvalidQualifierMessage(String qualifier) {
         return createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
-                NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifier, qualifier)));
+                MessageFormat.format(Messages.AssociationParser_msgErrorAssociationQualifier, qualifier)));
     }
 
     private boolean checkProductCmpt(IProductCmpt productCmpt) {
@@ -159,7 +160,7 @@ public class IdentifierNodeFactory {
     private IdentifierNode createInvalidAssociationTargetNode(String targetName) {
         return createInvalidIdentifier(Message.newError(
                 ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, targetName,
+                MessageFormat.format(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, targetName,
                         textRegion.getTextRegionString())));
     }
 

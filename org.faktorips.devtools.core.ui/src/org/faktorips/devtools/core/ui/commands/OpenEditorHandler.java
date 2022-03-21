@@ -14,13 +14,11 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -67,20 +65,16 @@ public class OpenEditorHandler extends AbstractHandler {
 
     private IProductCmptGeneration getTargetProductCmptGeneration(IProductCmptLink link) {
         IProductCmptGeneration targetProductCmptGeneration = null;
-        try {
-            IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
-            if (targetProductCmpt != null) {
-                IProductCmptLinkContainer productCmptLinkContainer = link.getProductCmptLinkContainer();
-                if (productCmptLinkContainer instanceof IProductCmptGeneration) {
-                    IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmptLinkContainer;
-                    targetProductCmptGeneration = targetProductCmpt
-                            .getBestMatchingGenerationEffectiveOn(productCmptGeneration.getValidFrom());
-                } else {
-                    targetProductCmptGeneration = targetProductCmpt.getLatestProductCmptGeneration();
-                }
+        IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
+        if (targetProductCmpt != null) {
+            IProductCmptLinkContainer productCmptLinkContainer = link.getProductCmptLinkContainer();
+            if (productCmptLinkContainer instanceof IProductCmptGeneration) {
+                IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmptLinkContainer;
+                targetProductCmptGeneration = targetProductCmpt
+                        .getBestMatchingGenerationEffectiveOn(productCmptGeneration.getValidFrom());
+            } else {
+                targetProductCmptGeneration = targetProductCmpt.getLatestProductCmptGeneration();
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
         return targetProductCmptGeneration;
     }

@@ -13,12 +13,11 @@ package org.faktorips.devtools.model.enums;
 import java.util.List;
 import java.util.Objects;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -101,25 +100,21 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             return null;
         }
 
-        try {
-            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
-            IEnumValue enumValue = getEnumValueContainer().findEnumValue(id, ipsProject);
-            if (enumValue == null) {
-                return null;
-            }
-
-            IEnumAttribute displayNameAttribute = getNameAttribute(ipsProject);
-            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
-            if (enumAttributeValue != null) {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
-                        ipsProject);
-            } else {
-                return null;
-            }
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+        IEnumValue enumValue = getEnumValueContainer().findEnumValue(id, ipsProject);
+        if (enumValue == null) {
+            return null;
         }
+
+        IEnumAttribute displayNameAttribute = getNameAttribute(ipsProject);
+        IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
+        if (enumAttributeValue != null) {
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
+                    ipsProject);
+        } else {
+            return null;
+        }
+
     }
 
     private IEnumAttribute getNameAttribute(IIpsProject ipsProject) {
@@ -131,16 +126,12 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public Object getValue(String value) {
-        try {
-            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
-            IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
-            if (enumValue == null) {
-                return null;
-            }
-            return enumValue;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+        IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
+        if (enumValue == null) {
+            return null;
         }
+        return enumValue;
     }
 
     /**
@@ -165,7 +156,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     private boolean isIdentifierAttributeValues(String value) {
         try {
             return getEnumValueContainer().findEnumValue(value, getEnumValueContainer().getIpsProject()) != null;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             return false;
         }
     }
@@ -214,23 +205,19 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
      */
     @Override
     public int compare(String valueA, String valueB) {
-        try {
-            IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
-            IEnumValue enumValueA = getEnumValueContainer().findEnumValue(valueA, ipsProject);
-            IEnumValue enumValueB = getEnumValueContainer().findEnumValue(valueB, ipsProject);
-            if (enumValueA == null) {
-                return enumValueB == null ? 0 : 1;
-            } else {
-                if (enumValueB == null) {
-                    return -1;
-                }
+        IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+        IEnumValue enumValueA = getEnumValueContainer().findEnumValue(valueA, ipsProject);
+        IEnumValue enumValueB = getEnumValueContainer().findEnumValue(valueB, ipsProject);
+        if (enumValueA == null) {
+            return enumValueB == null ? 0 : 1;
+        } else {
+            if (enumValueB == null) {
+                return -1;
             }
-            int indexA = getEnumValueContainer().getIndexOfEnumValue(enumValueA);
-            int indexB = getEnumValueContainer().getIndexOfEnumValue(enumValueB);
-            return indexA - indexB;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        int indexA = getEnumValueContainer().getIndexOfEnumValue(enumValueA);
+        int indexB = getEnumValueContainer().getIndexOfEnumValue(enumValueB);
+        return indexA - indexB;
     }
 
     /**

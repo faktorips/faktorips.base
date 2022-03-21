@@ -13,17 +13,16 @@ package org.faktorips.devtools.core.ui.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.AssociationSelectionDialog;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -72,7 +71,7 @@ public class LinkCreatorUtil {
                 ipsSrcFile.save(false, null);
             }
             return result;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -131,20 +130,16 @@ public class LinkCreatorUtil {
     private boolean canCreateValidLink(IProductCmptGeneration generation,
             IProductCmpt draggedCmpt,
             IProductCmptTypeAssociation aAssoziation) {
-        try {
-            if (generation == null) {
-                return false;
-            }
-            IProductCmptLinkContainer container;
-            if (generation.isContainerFor(aAssoziation)) {
-                container = generation;
-            } else {
-                container = generation.getProductCmpt();
-            }
-            return container.canCreateValidLink(draggedCmpt, aAssoziation, container.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (generation == null) {
+            return false;
         }
+        IProductCmptLinkContainer container;
+        if (generation.isContainerFor(aAssoziation)) {
+            container = generation;
+        } else {
+            container = generation.getProductCmpt();
+        }
+        return container.canCreateValidLink(draggedCmpt, aAssoziation, container.getIpsProject());
     }
 
     /**
