@@ -82,7 +82,9 @@ class ProductAssociationTmpl {
                                «ELSE»
                                    «List_(targetInterfaceName)» result = new «ArrayList»(«fieldName».size());
                                    for («IProductComponentLink(targetInterfaceName)» «getterLoopVarName» : «fieldName».values()) {
-                                       result.add(«getterLoopVarName».«getTarget»);
+                                       if(!«getterLoopVarName».«getCardinality».«isEmpty»){
+                                           result.add(«getterLoopVarName».«getTarget»);
+                                       }
                                    }
                                    return result;
                            «ENDIF»
