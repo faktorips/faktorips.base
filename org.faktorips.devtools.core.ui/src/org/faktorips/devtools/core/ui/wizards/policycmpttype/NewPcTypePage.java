@@ -137,8 +137,7 @@ public class NewPcTypePage extends NewTypePage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 

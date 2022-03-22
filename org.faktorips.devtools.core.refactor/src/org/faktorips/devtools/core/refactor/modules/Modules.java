@@ -53,8 +53,8 @@ public class Modules {
      *
      * @param javaProject a Java project that has a {@value #MODULE_INFO_JAVA_FILE_NAME} file
      * @param requiredModules a list of fully qualified module names
-     * @throws IpsException if the Java project has no valid
-     *             {@value #MODULE_INFO_JAVA_FILE_NAME} file or its modification fails
+     * @throws IpsException if the Java project has no valid {@value #MODULE_INFO_JAVA_FILE_NAME}
+     *             file or its modification fails
      */
     public static void addRequired(IJavaProject javaProject, boolean transitive, List<String> requiredModules)
             throws CoreException {

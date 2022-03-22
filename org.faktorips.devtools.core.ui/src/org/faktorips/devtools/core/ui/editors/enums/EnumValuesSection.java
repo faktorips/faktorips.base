@@ -174,8 +174,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws IpsException If an error occurs while searching for the
-     *             <code>IEnumType</code> referenced by the IPS object being edited.
+     * @throws IpsException If an error occurs while searching for the <code>IEnumType</code>
+     *             referenced by the IPS object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,

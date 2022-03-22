@@ -127,8 +127,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         return ipsElementsToFix;
     }
 
-    /* private */ void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected)
-            {
+    /* private */ void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected) {
         if (selected instanceof AAbstraction) {
             addElementToFix(ipsElementsToFix, ((AAbstraction)selected).unwrap());
         }
@@ -159,8 +158,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         return IIpsModel.get().getIpsProject(Wrappers.wrap(jProject.getProject()).as(AProject.class));
     }
 
-    private void addIpsElements(IIpsProject ipsProject, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            {
+    private void addIpsElements(IIpsProject ipsProject, Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         if (ipsProject == null) {
             return;
         }
@@ -175,8 +173,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         }
     }
 
-    private void addIpsElements(IIpsPackageFragmentRoot element, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            {
+    private void addIpsElements(IIpsPackageFragmentRoot element, Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         if (element == null) {
             return;
         }
@@ -187,8 +184,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         addElementToFix(ipsElementsToFix, pack);
     }
 
-    private void addIpsElements(IIpsPackageFragment pack, Set<IFixDifferencesToModelSupport> ipsElementsToFix)
-            {
+    private void addIpsElements(IIpsPackageFragment pack, Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
         IIpsSrcFile[] ipsSrcFiles = pack.getIpsSrcFiles();
         for (IIpsElement element : ipsSrcFiles) {
             addElementToFix(ipsElementsToFix, element);

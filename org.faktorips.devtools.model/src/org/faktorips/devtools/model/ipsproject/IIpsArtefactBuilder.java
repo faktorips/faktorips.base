@@ -45,9 +45,9 @@ public interface IIpsArtefactBuilder {
      * @param buildKind One of the build kinds defined in
      *            org.eclipse.core.resources.IncrementalProjectBuilder
      * 
-     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
-     *             Throwing a CoreException or RuntimeException will stop the current build cycle of
-     *             this builder.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. Throwing a
+     *             CoreException or RuntimeException will stop the current build cycle of this
+     *             builder.
      */
     public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
 
@@ -71,12 +71,12 @@ public interface IIpsArtefactBuilder {
      *            interrupt the current build cycle. The exception will be reported to the used by
      *            means of a dialog at the end of the build routine. In addition the exception will
      *            be logged to the eclipse log file.
-     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
-     *             Throwing a CoreException or a RuntimeException will stop the current build cycle
-     *             of this builder. Only the afterBuild(IpsSrcFile) method is called to be able to
-     *             clean up a builder implementation. The exception will be reported to the used by
-     *             means of a dialog at the end of the build routine. In addition the exception will
-     *             be logged to the eclipse log file.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. Throwing a
+     *             CoreException or a RuntimeException will stop the current build cycle of this
+     *             builder. Only the afterBuild(IpsSrcFile) method is called to be able to clean up
+     *             a builder implementation. The exception will be reported to the used by means of
+     *             a dialog at the end of the build routine. In addition the exception will be
+     *             logged to the eclipse log file.
      */
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws IpsException;
 
@@ -97,12 +97,12 @@ public interface IIpsArtefactBuilder {
      * the provided IpsSrcFile.
      * 
      * @param ipsSrcFile the IpsSrcFile that is used by this artifact builder
-     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
-     *             Throwing a CoreException or a RuntimeException will stop the current build cycle
-     *             of this builder. Only the afterBuild(IpsSrcFile) method is called to be able to
-     *             clean up a builder implementation. The exception will be reported to the used by
-     *             means of a dialog at the end of the build routine. In addition the exception will
-     *             be logged to the eclipse log file.
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. Throwing a
+     *             CoreException or a RuntimeException will stop the current build cycle of this
+     *             builder. Only the afterBuild(IpsSrcFile) method is called to be able to clean up
+     *             a builder implementation. The exception will be reported to the used by means of
+     *             a dialog at the end of the build routine. In addition the exception will be
+     *             logged to the eclipse log file.
      */
     public void build(IIpsSrcFile ipsSrcFile) throws IpsException;
 

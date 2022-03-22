@@ -553,8 +553,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @throws IpsException if the factory class could not be created.
      */
-    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat)
-            {
+    public TableFormatConfigurationCompositeFactory getTableFormatPropertiesControlFactory(ITableFormat tableFormat) {
 
         ArgumentCheck.notNull(tableFormat);
 
@@ -791,8 +790,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @param propertyId the id that identifies an extension property. For it the edit field factory
      *            will be returned.
      */
-    public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId)
-            {
+    public IExtensionPropertyEditFieldFactory getExtensionPropertyEditFieldFactory(String propertyId) {
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         if (extensionPropertyEditFieldFactoryMap == null) {
             extensionPropertyEditFieldFactoryMap = new HashMap<>();
@@ -830,8 +828,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @param propertyId the id that identifies an extension property for which the section factory
      *            will be returned.
      */
-    public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId)
-            {
+    public IExtensionPropertySectionFactory getExtensionPropertySectionFactory(String propertyId) {
 
         if (extensionPropertySectionFactoriesMap == null) {
             // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions

@@ -45,8 +45,7 @@ public class PullUpRefactoringParticipantTest extends RefactoringParticipantTest
         performTestPullUpPolicyCmptTypeAttribute(ValueSetType.UNRESTRICTED, true);
     }
 
-    private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType, boolean useSuperTarget)
-            {
+    private void performTestPullUpPolicyCmptTypeAttribute(ValueSetType valueSetType, boolean useSuperTarget) {
 
         // Create target product component type configuring a policy component type
         IPolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "TargetPolicy", "TargetProduct",

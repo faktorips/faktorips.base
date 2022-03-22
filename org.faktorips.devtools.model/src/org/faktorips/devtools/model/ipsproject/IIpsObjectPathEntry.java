@@ -171,9 +171,9 @@ public interface IIpsObjectPathEntry {
      * <p>
      * Callers of this method are responsible for closing the stream after use.
      * <p>
-     * This method may throw a {@link RuntimeException} or {@link IpsException} if there
-     * occur any exception while searching the requested resource. To avoid exceptions first check
-     * whether the resource exists in this entry by calling {@link #containsResource(String)}. As
+     * This method may throw a {@link RuntimeException} or {@link IpsException} if there occur any
+     * exception while searching the requested resource. To avoid exceptions first check whether the
+     * resource exists in this entry by calling {@link #containsResource(String)}. As
      * {@link IIpsProjectRefEntry IpsProjectRefEntrys} and {@link IIpsContainerEntry} always return
      * <code>false</code> when calling calling {@link #containsResource(String)}, this method
      * returns null for those entries.

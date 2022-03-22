@@ -208,8 +208,7 @@ public class CustomValidationsMapTest {
         }
 
         @Override
-        public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                {
+        public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject) {
             return null;
         }
 

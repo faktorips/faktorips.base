@@ -91,8 +91,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * 
      * @throws IpsException May be thrown at any time
      */
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm)
-            {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) {
         // Empty base implementation that may be overwritten by subclasses.
     }
 
@@ -106,8 +105,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            {
+    public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context) {
 
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
@@ -200,8 +198,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     public abstract IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws IpsException;
 
-    private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm)
-            {
+    private void saveIpsSourceFiles(IpsRefactoringModificationSet modificationSet, IProgressMonitor pm) {
         for (IpsSrcFileModification modification : modificationSet.getModifications()) {
             if (modification.getTargetIpsSrcFile().exists()) {
                 modification.getTargetIpsSrcFile().save(true, pm);
@@ -273,33 +270,36 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
             // this would reload the content or simply returns the existing one
             return ipsObject.getIpsSrcFile().getIpsObject();
         }
-        ArrayList<String> ids = new ArrayList<>();
-        IIpsElement element = ipsElement;
-        if (element instanceof IIpsObjectPartContainer) {
-            IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
-            while (!(ipsObjectPartContainer instanceof IIpsObject)) {
-                ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
-                ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
-            }
-            ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
-            for (String id : ids) {
-                for (IIpsElement child : ipsObjectPartContainer.getChildren()) {
-                    IIpsObjectPart childIpsObjectPart = (IIpsObjectPart)child;
-                    if (childIpsObjectPart.getId().equals(id)) {
-                        ipsObjectPartContainer = childIpsObjectPart;
-                        break;
-                    }
-                }
-                if (!(ipsObjectPartContainer instanceof IIpsObjectPart)
-                        || !((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
-                    throw new RuntimeException(
-                            "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
-                }
-            }
-            return ipsObjectPartContainer;
+        if (ipsElement instanceof IIpsObjectPartContainer) {
+            return findInContainer(ipsElement);
         } else {
             return ipsElement;
         }
+    }
+
+    private IIpsElement findInContainer(IIpsElement element) {
+        ArrayList<String> ids = new ArrayList<>();
+        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
+        while (!(ipsObjectPartContainer instanceof IIpsObject)) {
+            ids.add(0, ((IIpsObjectPart)ipsObjectPartContainer).getId());
+            ipsObjectPartContainer = (IIpsObjectPartContainer)ipsObjectPartContainer.getParent();
+        }
+        ipsObjectPartContainer = ipsObjectPartContainer.getIpsSrcFile().getIpsObject();
+        for (String id : ids) {
+            for (IIpsElement child : ipsObjectPartContainer.getChildren()) {
+                IIpsObjectPart childIpsObjectPart = (IIpsObjectPart)child;
+                if (childIpsObjectPart.getId().equals(id)) {
+                    ipsObjectPartContainer = childIpsObjectPart;
+                    break;
+                }
+            }
+            if (!(ipsObjectPartContainer instanceof IIpsObjectPart)
+                    || !((IIpsObjectPart)ipsObjectPartContainer).getId().equals(id)) {
+                throw new RuntimeException(
+                        "Cannot find element with id " + id + " in " + ipsObjectPartContainer); //$NON-NLS-1$//$NON-NLS-2$
+            }
+        }
+        return ipsObjectPartContainer;
     }
 
     /**
@@ -312,8 +312,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * @throws IpsException If an error occurs while searching for the source files
      * @throws NullPointerException If the parameter is null
      */
-    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType)
-            {
+    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType) {
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<>(25);

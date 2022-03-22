@@ -190,8 +190,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         IEnumContent newEnumContent = (IEnumContent)newIpsObject;
         newEnumContent.setEnumType(enumTypeField.getText());

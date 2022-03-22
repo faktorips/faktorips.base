@@ -56,8 +56,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
         return new Object[0];
     }
 
-    public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor)
-            {
+    public List<GenerationDate> collectGenerationDates(IProductCmpt productCmpt, IProgressMonitor monitor) {
         IProgressMonitor theMonitor = monitor;
         if (theMonitor == null) {
             theMonitor = new NullProgressMonitor();

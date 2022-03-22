@@ -117,8 +117,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Returns the product component's version id. The version id is extracted from the components
      * name with the product component naming strategy defined in the project.
      * 
-     * @throws IpsException if an exception occurs while accessing the project properties to get
-     *             the naming strategy or the version id can't be derived from the component's name.
+     * @throws IpsException if an exception occurs while accessing the project properties to get the
+     *             naming strategy or the version id can't be derived from the component's name.
      */
     public String getVersionId() throws IpsException;
 

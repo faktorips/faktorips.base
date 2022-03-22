@@ -198,8 +198,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * implicitly assigned to the corresponding default {@link IProductCmptCategory}.
      */
     @Test
-    public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory()
-            {
+    public void testFindIsContainingProperty_DefaultCategoryContainsPropertiesThatHaveNoCategory() {
         IProductCmptCategory defaultAttributeCategory = productType.newCategory("defaultAttribute");
         defaultAttributeCategory.setDefaultForProductCmptTypeAttributes(true);
 
@@ -814,8 +813,7 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
      * configuring {@link IProductCmptType} is saved.
      */
     @Test
-    public void testInsertProductCmptProperty_DoChangeCategoryStoredInPolicyPropertyOnSaveOfConfiguringProductCmptType()
-            {
+    public void testInsertProductCmptProperty_DoChangeCategoryStoredInPolicyPropertyOnSaveOfConfiguringProductCmptType() {
 
         IProductCmptType superProductType = createSuperProductType(productType, "Super");
         IProductCmptCategory category = superProductType.newCategory("testCategory");

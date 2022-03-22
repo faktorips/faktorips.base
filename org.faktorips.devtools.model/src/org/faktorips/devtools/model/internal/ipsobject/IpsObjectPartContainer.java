@@ -837,8 +837,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
      * 
-     * @throws IpsException Subclasses may wrap any occurring exceptions into a
-     *             CoreException and propagate it trough this method.
+     * @throws IpsException Subclasses may wrap any occurring exceptions into a CoreException and
+     *             propagate it trough this method.
      * @throws NullPointerException if list is <code>null</code>.
      */
     protected void validateThis(MessageList list, IIpsProject ipsProject) {

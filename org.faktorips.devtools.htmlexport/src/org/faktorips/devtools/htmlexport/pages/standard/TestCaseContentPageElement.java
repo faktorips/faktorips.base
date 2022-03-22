@@ -131,8 +131,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject)
-            {
+    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(

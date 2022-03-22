@@ -52,8 +52,7 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
         return checkIIPsSrcFileDependencies(resultSet, ipsSrcFiles);
     }
 
-    protected Set<IIpsElement> checkIIPsSrcFileDependencies(Set<IIpsElement> resultSet, List<IIpsSrcFile> ipsSrcFiles)
-            {
+    protected Set<IIpsElement> checkIIPsSrcFileDependencies(Set<IIpsElement> resultSet, List<IIpsSrcFile> ipsSrcFiles) {
         for (IIpsSrcFile iIpsSrcFile : ipsSrcFiles) {
             IIpsObject object = iIpsSrcFile.getIpsObject();
             IDependency[] dependencies = object.dependsOn();
@@ -67,14 +66,12 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
         return resultSet;
     }
 
-    private void fillResultSet(Set<IIpsElement> resultSet, IIpsObject object, IDependency dependency)
-            {
+    private void fillResultSet(Set<IIpsElement> resultSet, IIpsObject object, IDependency dependency) {
         addDependencyDetails(resultSet, object, dependency);
         resultSet.add(object);
     }
 
-    protected void addDependencyDetails(Set<IIpsElement> set, IIpsObject object, IDependency dependency)
-            {
+    protected void addDependencyDetails(Set<IIpsElement> set, IIpsObject object, IDependency dependency) {
         List<IDependencyDetail> dependencyDetails = object.getDependencyDetails(dependency);
 
         for (IDependencyDetail dependencyIPSObjPart : dependencyDetails) {

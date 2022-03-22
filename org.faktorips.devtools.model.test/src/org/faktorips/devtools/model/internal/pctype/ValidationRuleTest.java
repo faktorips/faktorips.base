@@ -160,8 +160,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_ChangingOverTimeDefaultsToFalseIfNotConfiguredAndProductTypeNotChanging()
-            {
+    public void testInitFromXml_ChangingOverTimeDefaultsToFalseIfNotConfiguredAndProductTypeNotChanging() {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("Prod");
@@ -173,8 +172,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfNotConfiguredAndProductTypeChanging()
-            {
+    public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfNotConfiguredAndProductTypeChanging() {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("Prod");
@@ -371,8 +369,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() {
         IPolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "PolicyWithoutProductCmptType");
         policyWithoutProductCmptType.setConfigurableByProductCmptType(true);
@@ -386,8 +383,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_ValidationRuleIsNotConfigurable()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_ValidationRuleIsNotConfigurable() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -402,8 +398,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsConfigurable()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsConfigurable() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -418,8 +413,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsNotConfigurable()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsNotConfigurable() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         policyCmptType.setProductCmptType("ProductType");
@@ -434,8 +428,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("ProductType");
@@ -450,8 +443,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
-            {
+    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         policyCmptType.setProductCmptType("ProductType");

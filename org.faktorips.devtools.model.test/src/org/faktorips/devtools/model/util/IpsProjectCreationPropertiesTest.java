@@ -285,8 +285,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                {
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
             fail("should never be called");
         }
 
@@ -310,8 +309,7 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                {
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
             fail("should never be called");
         }
 

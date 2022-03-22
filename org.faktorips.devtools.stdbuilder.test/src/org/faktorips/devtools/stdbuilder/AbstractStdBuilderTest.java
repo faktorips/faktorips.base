@@ -57,8 +57,7 @@ public abstract class AbstractStdBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Override
-    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project)
-            {
+    protected void setTestArtefactBuilderSet(IIpsProjectProperties properties, IIpsProject project) {
 
         properties.setBuilderSetId(StandardBuilderSet.ID);
     }

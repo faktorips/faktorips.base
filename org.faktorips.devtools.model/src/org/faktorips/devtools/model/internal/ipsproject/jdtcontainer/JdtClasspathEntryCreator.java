@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject.jdtcontainer;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -116,7 +117,11 @@ public class JdtClasspathEntryCreator {
         private IpsBundleEntry createBundleEntry(IPath path) {
             IpsBundleEntry ipsJarBundleEntry = referenceFactory.createIpsBundleEntry();
             try {
-                ipsJarBundleEntry.initStorage(PathMapping.toJavaPath(path));
+                Path javaPath = PathMapping.toJavaPath(path);
+                if (javaPath == null) {
+                    return null;
+                }
+                ipsJarBundleEntry.initStorage(javaPath);
             } catch (IOException e) {
                 // this seem to be no jar bundle
                 return null;

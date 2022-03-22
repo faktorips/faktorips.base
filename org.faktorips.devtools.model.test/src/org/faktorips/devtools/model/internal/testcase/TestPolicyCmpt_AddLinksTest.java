@@ -717,8 +717,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
      * policy component link must be added from policy 2 to policy 3.
      */
     @Test
-    public void testAddPcTypeLink_NonAmbiguousProductComponents_LinkOptionalInTestParameterButMandatoryInProductComponent()
-            {
+    public void testAddPcTypeLink_NonAmbiguousProductComponents_LinkOptionalInTestParameterButMandatoryInProductComponent() {
 
         // Create model types
         IPolicyCmptType policyType1 = newPolicyAndProductCmptType(ipsProject, "PolicyType1", "ProductType1");

@@ -247,8 +247,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * 
      * @throws IpsException if an exception occurs during finishing
      */
-    public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
     }
@@ -264,8 +263,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * 
      * @throws IpsException if an exception occurs during finishing
      */
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         // Empty default implementation, subclasses may override
     }

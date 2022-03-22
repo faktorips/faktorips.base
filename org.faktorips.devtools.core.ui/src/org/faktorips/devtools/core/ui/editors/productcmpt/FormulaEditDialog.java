@@ -54,8 +54,7 @@ public class FormulaEditDialog extends IpsPartEditDialog2 {
      * 
      * @param parentShell The shell as parent for the dialog.
      * 
-     * @throws IpsException if the config element is invalid (e.g. no datatype can be found for
-     *             it).
+     * @throws IpsException if the config element is invalid (e.g. no datatype can be found for it).
      */
     public FormulaEditDialog(IFormula formula, Shell parentShell) {
         super(formula, parentShell, Messages.FormulaEditDialog_editFormula, true);

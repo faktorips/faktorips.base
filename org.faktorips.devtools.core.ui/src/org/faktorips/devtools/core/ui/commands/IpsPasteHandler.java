@@ -438,8 +438,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * Creates a new package fragment and childs in the parent package fragment based on the given
      * source package fragment.
      */
-    private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment)
-            {
+    private void createPackageFragmentAndChilds(IIpsPackageFragment parent, IIpsPackageFragment sourcePackageFragment) {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IIpsPackageFragment destination = parent.createSubPackage(packageName, true, null);
@@ -515,8 +514,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      * Create a new folder in the parent folder, based on the given source package fragment. Creates
      * all children of the given source package fragment .
      */
-    private IFolder createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment)
-            {
+    private IFolder createFolderAndFiles(IFolder targetParentFolder, IIpsPackageFragment sourcePackageFragment) {
 
         String packageName = sourcePackageFragment.getLastSegmentName();
         IPath targetPath = targetParentFolder.getFullPath();

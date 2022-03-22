@@ -127,8 +127,7 @@ public class IpsFeatureVersionManagerSorterTest {
         }
 
         @Override
-        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-                {
+        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
             return null;
         }
 

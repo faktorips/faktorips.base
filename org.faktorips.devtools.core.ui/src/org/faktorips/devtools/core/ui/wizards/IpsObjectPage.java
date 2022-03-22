@@ -354,8 +354,8 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * This method is empty by default. Subclasses might override it to add specific validations.
      * This method is called by the validatePage() method before the page will be updated.
      * 
-     * @throws IpsException if these exceptions are thrown by subclasses they will be logged
-     *             and displayed in an error dialog
+     * @throws IpsException if these exceptions are thrown by subclasses they will be logged and
+     *             displayed in an error dialog
      */
     protected void validatePageExtension() {
         // may be override by subclasses

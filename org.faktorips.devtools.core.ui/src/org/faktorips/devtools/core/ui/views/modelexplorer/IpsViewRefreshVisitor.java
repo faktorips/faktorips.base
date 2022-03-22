@@ -210,7 +210,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         if (ipsProject == null) {
             return false;
         }
-        return resource.equals(ipsProject.getIpsProjectPropertiesFile());
+        return resource.equals(ipsProject.getIpsProjectPropertiesFile().unwrap());
     }
 
     private void registerForRefresh(Object resourceOrIpsElement) {

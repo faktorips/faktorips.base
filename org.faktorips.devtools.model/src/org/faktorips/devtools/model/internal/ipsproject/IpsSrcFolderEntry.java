@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
@@ -443,11 +444,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     public String getFullTocPath() {
-        String path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses()).toString();
-        if (StringUtils.isEmpty(path)) {
+        Path path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses());
+        String pathString = path == null ? null : path.toString();
+        if (StringUtils.isEmpty(pathString)) {
             return tocPath;
         }
-        return path + IPath.SEPARATOR + tocPath;
+        return pathString + IPath.SEPARATOR + tocPath;
     }
 
     @Override

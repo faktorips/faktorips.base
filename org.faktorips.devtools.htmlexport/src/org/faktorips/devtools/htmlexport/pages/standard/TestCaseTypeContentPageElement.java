@@ -125,8 +125,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 getContext()).addStyles(Style.BIG).addStyles(Style.BOLD);
     }
 
-    private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
-            {
+    private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter) {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),

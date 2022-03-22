@@ -146,8 +146,7 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());

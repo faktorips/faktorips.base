@@ -162,8 +162,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
      * any element of the source-project. Such root elements should be omitted.
      */
     @Test
-    public void testGetProjectRootElements_OmitBranchesNotContainingSoureceProjectElementsWithoutAnyHierarchy()
-            {
+    public void testGetProjectRootElements_OmitBranchesNotContainingSoureceProjectElementsWithoutAnyHierarchy() {
         // setup
         IIpsProject project = newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(project, "AnyElement");
@@ -425,8 +424,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testGetAssociationsForAssociationTypes_HasAggregationAndMasterToDetailAssociation()
-            {
+    public void testGetAssociationsForAssociationTypes_HasAggregationAndMasterToDetailAssociation() {
         // setup
         IIpsProject project = newIpsProject();
         IType hausratVertrag = newPolicyCmptTypeWithoutProductCmptType(project, "HausratVertrag");
@@ -530,8 +528,7 @@ public class AbstractModelStructureContentProviderTest extends AbstractIpsPlugin
     }
 
     @Test
-    public void testRemoveDescendants_removeElementsFromInheritanceHierarchyAndKeepSecondRootElement()
-            {
+    public void testRemoveDescendants_removeElementsFromInheritanceHierarchyAndKeepSecondRootElement() {
         // setup
         IIpsProject project = newIpsProject();
         IType root = newPolicyCmptTypeWithoutProductCmptType(project, "RootType");

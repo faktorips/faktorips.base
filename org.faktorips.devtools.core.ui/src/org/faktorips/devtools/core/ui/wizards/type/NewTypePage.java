@@ -158,8 +158,7 @@ public abstract class NewTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         IType type = (IType)newIpsObject;
         String supertypeName = getSuperType();

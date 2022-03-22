@@ -78,8 +78,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return packs;
     }
 
-    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor)
-            {
+    protected void migrate(IIpsPackageFragment pack, MessageList list, IProgressMonitor monitor) {
         AFolder folder = (AFolder)pack.getCorrespondingResource();
         SortedSet<? extends AResource> members = folder.getMembers();
         monitor.beginTask("Migrate package " + pack.getName(), members.size()); //$NON-NLS-1$

@@ -198,8 +198,8 @@ public interface ITestPolicyCmpt extends ITestObject {
      *            requires a product component otherwise empty
      * @param targetName name of the target if the new link should be an association otherwise empty
      * 
-     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and
-     *             the policyCmptType are both given
+     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
+     *             policyCmptType are both given
      */
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
@@ -223,8 +223,8 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @param recursivelyAddRequired flag indicating whether further links shall be recursively
      *            added where required and possible
      * 
-     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and
-     *             the policyCmptType are both given.
+     * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
+     *             policyCmptType are both given.
      */
     public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,

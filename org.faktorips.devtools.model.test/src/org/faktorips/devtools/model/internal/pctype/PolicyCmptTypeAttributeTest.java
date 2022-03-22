@@ -496,8 +496,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllowedValueSetTypes_allowEnumValueSetForExtensibleEnumDatatypes_dependingOnProductRelevance()
-            {
+    public void testGetAllowedValueSetTypes_allowEnumValueSetForExtensibleEnumDatatypes_dependingOnProductRelevance() {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
 
@@ -537,8 +536,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitChangingOverTimeDefault_Attribute_isChangingOverTime_IfProductCmptType_IsChangingOverTime()
-            {
+    public void testInitChangingOverTimeDefault_Attribute_isChangingOverTime_IfProductCmptType_IsChangingOverTime() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         pcType.setProductCmptType("ProductType");
@@ -549,8 +547,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitChangingOverTimeDefault_Attribute_isNotChangingOverTime_IfProductCmptType_IsNotChangingOverTime()
-            {
+    public void testInitChangingOverTimeDefault_Attribute_isNotChangingOverTime_IfProductCmptType_IsNotChangingOverTime() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(false);
         pcType.setProductCmptType("ProductType");
@@ -571,8 +568,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotProductRelevant()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotProductRelevant() {
         newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setValueSetConfiguredByProduct(false);
@@ -618,8 +614,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsNotProductRelevant()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsNotProductRelevant() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         productCmptType.setChangingOverTime(true);
@@ -633,8 +628,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsProductRelevant()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsProductRelevant() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");
@@ -648,8 +642,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsNotProductRelevant()
-            {
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsNotProductRelevant() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");
@@ -663,8 +656,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsProductRelevant()
-            {
+    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsProductRelevant() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         pcType.setProductCmptType("ProductType");
         attribute.setName("name");

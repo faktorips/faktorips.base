@@ -276,7 +276,7 @@ public class CustomIconSection extends IpsSection {
             try {
                 if (project.isOpen() && project.hasNature(IIpsProject.NATURE_ID)) {
                     // the ipsProject itself
-                    if (project.equals(type.getIpsProject().getProject())) {
+                    if (project.equals(type.getIpsProject().getProject().unwrap())) {
                         return true;
                     }
                     // referenced ipsProjects

@@ -22,9 +22,9 @@ import org.eclipse.core.runtime.Path;
 /**
  * {@link IWorkspaceRoot#getFileForLocation(IPath)} may return unexpected results if there are
  * nested projects. If a file is found in multiple (e.g. parent and child) projects, the one in the
- * alphabetically first project is returned. {@link NestedEclipseProjectFileUtil#getFile(String)} searches
- * for all files and returns the one with the shortest path, thus the one from the innermost nested
- * project.
+ * alphabetically first project is returned. {@link NestedEclipseProjectFileUtil#getFile(String)}
+ * searches for all files and returns the one with the shortest path, thus the one from the
+ * innermost nested project.
  */
 public enum NestedEclipseProjectFileUtil {
     /* no instances */;

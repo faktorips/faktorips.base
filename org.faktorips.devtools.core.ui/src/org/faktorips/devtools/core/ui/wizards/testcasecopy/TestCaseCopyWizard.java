@@ -121,8 +121,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     /**
      * Replace all product cmpt (including children)
      */
-    private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt, IProductCmpt newProductCmpt)
-            {
+    private void replaceAllProductCmpts(ITestPolicyCmpt testPolicyCmpt, IProductCmpt newProductCmpt) {
 
         testPolicyCmpt.setProductCmptAndNameAfterIfApplicable(newProductCmpt.getQualifiedName());
 

@@ -240,8 +240,7 @@ public class EnumTypePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         IEnumType newEnumType = (IEnumType)newIpsObject;
 

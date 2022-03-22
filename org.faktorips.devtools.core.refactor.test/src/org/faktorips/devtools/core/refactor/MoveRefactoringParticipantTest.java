@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment;
@@ -56,7 +55,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMovePolicyCmptType() throws CoreException {
+    public void testMovePolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 ORIGINAL_PACKAGE_NAME + '.' + "Policy");
 
@@ -69,7 +68,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmptType() throws CoreException {
+    public void testMoveProductCmptType() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         productCmptType.setConfigurationForPolicyCmptType(false);
 
@@ -82,7 +81,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveProductCmpt() throws CoreException {
+    public void testMoveProductCmpt() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, ORIGINAL_PACKAGE_NAME + '.' + "Product");
         saveIpsSrcFile(productCmptType);
         productCmptType.setConfigurationForPolicyCmptType(false);
@@ -106,7 +105,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveEnumType() throws CoreException {
+    public void testMoveEnumType() {
         IEnumType enumType = createEnumType(ORIGINAL_PACKAGE_NAME + '.' + "EnumType", null, "id", "name");
         enumType.newEnumLiteralNameAttribute();
         enumType.setExtensible(true);
@@ -121,7 +120,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTableStructure() throws CoreException {
+    public void testMoveTableStructure() {
         ITableStructure tableStructure = createTableStructure(ORIGINAL_PACKAGE_NAME + '.' + "TableStructure");
 
         saveIpsSrcFile(tableStructure);
@@ -134,7 +133,7 @@ public class MoveRefactoringParticipantTest extends RefactoringParticipantTest {
     }
 
     @Test
-    public void testMoveTestCaseType() throws CoreException {
+    public void testMoveTestCaseType() {
         ITestCaseType testCaseType = createTestCaseType(ORIGINAL_PACKAGE_NAME + '.' + "TestCaseType");
 
         saveIpsSrcFile(testCaseType);

@@ -147,8 +147,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         return getProductCmptImageNameByProductCmptType(productCmptType);
     }
 
-    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType)
-            {
+    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType) {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }

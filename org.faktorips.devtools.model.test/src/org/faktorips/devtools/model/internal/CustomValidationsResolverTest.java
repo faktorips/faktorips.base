@@ -199,8 +199,7 @@ public class CustomValidationsResolverTest {
         }
 
         @Override
-        public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                {
+        public MessageList validate(PolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject) {
             return null;
         }
 
@@ -214,8 +213,7 @@ public class CustomValidationsResolverTest {
         }
 
         @Override
-        public MessageList validate(IPolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject)
-                {
+        public MessageList validate(IPolicyCmptTypeAttribute objectToValidate, IIpsProject ipsProject) {
             return null;
         }
 

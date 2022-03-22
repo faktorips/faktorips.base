@@ -308,8 +308,7 @@ class DropToLinkHelper {
                 getTestCaseSection().selectInTreeByObject(newTestPolicyCmpt, true);
             }
 
-            private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    {
+            private ITestPolicyCmpt dropOnTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation) {
 
                 if (testCaseTypeAssociation.isRoot()) {
                     return dropOnRootTestCaseTypeAssociation(testCaseTypeAssociation);
@@ -318,8 +317,7 @@ class DropToLinkHelper {
                 }
             }
 
-            private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation)
-                    {
+            private ITestPolicyCmpt dropOnRootTestCaseTypeAssociation(TestCaseTypeAssociation testCaseTypeAssociation) {
 
                 ITestPolicyCmpt rootTestPolicyCmpt = ((TestCase)getTestCaseSection().getTestCase())
                         .addRootTestPolicyCmpt((testCaseTypeAssociation).getTestPolicyCmptTypeParam());

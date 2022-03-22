@@ -224,8 +224,8 @@ public interface IIpsArtefactBuilderSet {
      * @param buildKind One of the build kinds defined in
      *            <code>org.eclipse.core.resources.IncrementalProjectBuilder</code>
      * 
-     * @throws IpsException implementations can throw or delegate rising CoreExceptions.
-     *             Throwing a CoreException or RuntimeException will interrupt the build cycle
+     * @throws IpsException implementations can throw or delegate rising CoreExceptions. Throwing a
+     *             CoreException or RuntimeException will interrupt the build cycle
      */
     public void beforeBuildProcess(ABuildKind buildKind) throws IpsException;
 

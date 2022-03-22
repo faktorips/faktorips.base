@@ -141,8 +141,7 @@ public class ModelStructureInheritAssociationsContentProviderTest extends Abstra
      * TODO noschinski2 13.09.2012: Explain expected test outcome
      */
     @Test
-    public void testCollectElements_FindMultipleRootElementFromTwoProjectsOnSameLevelButFromDifferentSupertypes()
-            {
+    public void testCollectElements_FindMultipleRootElementFromTwoProjectsOnSameLevelButFromDifferentSupertypes() {
         // setup
         IIpsProject baseProject = newIpsProject();
         PolicyCmptType superType = newPolicyCmptTypeWithoutProductCmptType(baseProject, "Supertype");

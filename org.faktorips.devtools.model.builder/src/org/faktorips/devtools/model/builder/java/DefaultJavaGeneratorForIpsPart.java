@@ -35,8 +35,7 @@ public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIps
     /**
      * Generates the source code for the IPS object part this is a generator for.
      */
-    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection)
-            {
+    public void generate(boolean generatesInterface, IIpsProject ipsProject, TypeSection mainSection) {
         generateConstants(mainSection.getConstantBuilder(), ipsProject, generatesInterface);
         if (!generatesInterface) {
             generateMemberVariables(mainSection.getMemberVarBuilder(), ipsProject, generatesInterface);

@@ -239,9 +239,9 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                         if (StringUtils.isEmpty(builderSetClassName)) {
                             logger.log(new IpsStatus(
                                     "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
-                                        + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
-                        continue;
-                    }
+                                            + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$
+                            continue;
+                        }
 
                         Map<String, IIpsBuilderSetPropertyDef> builderSetPropertyDefs = retrieveBuilderSetProperties(
                                 registry, extension.getUniqueIdentifier(), ipsModel, element, logger);

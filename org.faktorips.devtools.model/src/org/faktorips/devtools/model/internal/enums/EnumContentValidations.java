@@ -97,8 +97,7 @@ public abstract class EnumContentValidations {
      *            <code>IEnumContent</code> is based upon.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws IpsException If an error occurs while searching for the
-     *             <code>IEnumType</code>.
+     * @throws IpsException If an error occurs while searching for the <code>IEnumType</code>.
      * @throws NullPointerException If <code>validationMessageList</code>,
      *             <code>enumTypeQualifiedName</code> or <code>ipsProject</code> is
      *             <code>null</code>.

@@ -623,8 +623,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * should be returned.
      */
     @Test
-    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate_ForProductAttribute()
-            {
+    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate_ForProductAttribute() {
         IProductCmptCategory category = productCmptType.newCategory("myCategory");
         IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
         productAttribute.setCategory(category.getName());
@@ -649,8 +648,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * should be returned.
      */
     @Test
-    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDateForPolicyAttribute()
-            {
+    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDateForPolicyAttribute() {
         IProductCmptCategory category = productCmptType.newCategory("myCategory");
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);

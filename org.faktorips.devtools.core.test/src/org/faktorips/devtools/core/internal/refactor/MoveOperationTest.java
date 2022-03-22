@@ -99,8 +99,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
      * @param referencingProject The project that is referencing the referencedProject
      * @param referencedProject The project that is referenced by the referencingProject
      */
-    private void createProjectReference(IIpsProject referencingProject, IIpsProject referencedProject)
-            {
+    private void createProjectReference(IIpsProject referencingProject, IIpsProject referencedProject) {
         IIpsObjectPath path = referencingProject.getIpsObjectPath();
         path.newIpsProjectRefEntry(referencedProject);
         referencingProject.setIpsObjectPath(path);

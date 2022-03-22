@@ -266,8 +266,7 @@ public class TestCaseDetailArea {
      * If the element is a child then the link name could be given as input to display it in the
      * section title beside the test policy component.
      */
-    private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details)
-            {
+    private void createPolicyCmptSection(final ITestPolicyCmpt testPolicyCmpt, Composite details) {
         if (testPolicyCmpt == null || details.isDisposed()) {
             return;
         }
@@ -367,8 +366,7 @@ public class TestCaseDetailArea {
         return editField;
     }
 
-    private ValueDatatype findDatatype(final ITestAttributeValue attributeValue, ITestAttribute testAttribute)
-            {
+    private ValueDatatype findDatatype(final ITestAttributeValue attributeValue, ITestAttribute testAttribute) {
         if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
             // the attribute is an extension attribute
             return testAttribute.findDatatype(ipsProject);
@@ -512,8 +510,7 @@ public class TestCaseDetailArea {
     /**
      * Recursive create the sections for the links and all their childs.
      */
-    private void createPolicyCmptAndLinkSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details)
-            {
+    private void createPolicyCmptAndLinkSection(ITestPolicyCmpt currTestPolicyCmpt, Composite details) {
 
         createPolicyCmptSection(currTestPolicyCmpt, details);
         ITestPolicyCmptLink[] links = currTestPolicyCmpt.getTestPolicyCmptLinks();

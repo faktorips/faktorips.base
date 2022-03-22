@@ -142,8 +142,7 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar()
-            {
+    public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar() {
 
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
         verify(testProcessorSpy).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
@@ -151,8 +150,7 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar()
-            {
+    public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar() {
 
         testProcessorSpy.invalid = true;
 
@@ -184,8 +182,7 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm)
-                {
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
             if (invalid) {
                 status.addFatalError("foo");
             }

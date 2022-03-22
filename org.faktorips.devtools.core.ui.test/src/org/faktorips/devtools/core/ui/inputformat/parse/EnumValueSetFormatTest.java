@@ -218,8 +218,7 @@ public class EnumValueSetFormatTest {
     }
 
     @Test
-    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum_EmptyString()
-            {
+    public void testIsResponsibleFor_ReturnTrueIfEnumValeSetTypeIsAllowedAndTextLooksLikeEnum_EmptyString() {
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
 

@@ -57,8 +57,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
     }
 
     @Override
-    public void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages)
-            {
+    public void loadTocTreeFromDependencyManager(IIpsProject ipsProject, List<String> repositoryPackages) {
         try {
             List<IIpsPackageFragmentRoot> ipsRootsList = Arrays.asList(ipsProject.getIpsPackageFragmentRoots());
             Collections.reverse(ipsRootsList);

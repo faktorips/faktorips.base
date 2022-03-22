@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 
 /**
@@ -94,13 +96,14 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
 
     @Override
     public void run(IProgressMonitor monitor) {
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
+        IProgressMonitor theMonitor = monitor;
+        if (theMonitor == null) {
+            theMonitor = new NullProgressMonitor();
         }
         try {
-            monitor.beginTask(Messages.CreateIpsArchiveOperation_Task_CreateArchive, 100);
+            theMonitor.beginTask(Messages.CreateIpsArchiveOperation_Task_CreateArchive, 100);
             @SuppressWarnings("deprecation")
-            IProgressMonitor exportMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 98);
+            IProgressMonitor exportMonitor = new org.eclipse.core.runtime.SubProgressMonitor(theMonitor, 98);
             exportMonitor.beginTask(null, getWorkload());
 
             AFile workspaceFile = getWorkspaceFile();
@@ -141,14 +144,16 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             createIpsObjectsPropertiesEntry(os, ipsObjectsProperties);
             try {
                 os.close();
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 throw new IpsException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
             }
+            // CSON: IllegalCatch
             @SuppressWarnings("deprecation")
-            IProgressMonitor refreshMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 2);
+            IProgressMonitor refreshMonitor = new org.eclipse.core.runtime.SubProgressMonitor(theMonitor, 2);
             refreshInWorkspaceIfNecessary(refreshMonitor);
         } finally {
-            monitor.done();
+            theMonitor.done();
         }
     }
 
@@ -247,7 +252,8 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) {
 
         InputStream content = file.getContentFromEnclosingResource();
-        String path = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath()).toPortableString();
+        IPath eclipsePath = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath());
+        String path = eclipsePath == null ? IpsStringUtils.EMPTY : eclipsePath.toPortableString();
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR
                 + path;
         if (isDuplicateEntry(entryName)) {
@@ -350,12 +356,17 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
         if (inclJavaBinaries) {
             Path path = javaRoot.getOutputLocation();
             if (path == null) {
-                path = javaRoot.getJavaProject().getOutputLocation();
+                AJavaProject javaProject = javaRoot.getJavaProject();
+                if (javaProject != null) {
+                    path = javaProject.getOutputLocation();
+                }
             }
-            AFolder outFolder = Abstractions.getWorkspace().getRoot().getFolder(path);
-            if (!handledRootFolders.contains(outFolder)) {
-                addFiles(outFolder, outFolder, os, monitor);
-                handledRootFolders.add(outFolder);
+            if (path != null) {
+                AFolder outFolder = Abstractions.getWorkspace().getRoot().getFolder(path);
+                if (!handledRootFolders.contains(outFolder)) {
+                    addFiles(outFolder, outFolder, os, monitor);
+                    handledRootFolders.add(outFolder);
+                }
             }
         }
         // Java sourcen

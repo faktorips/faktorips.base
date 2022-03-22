@@ -75,8 +75,7 @@ public class IpsApplication implements IApplication, IExecutableExtension {
     }
 
     @Override
-    public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-            {
+    public void setInitializationData(IConfigurationElement config, String propertyName, Object data) {
         // nothing to do
     }
 

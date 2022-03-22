@@ -99,8 +99,9 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
     }
 
     private boolean ipsProjectPropertiesChanged(IResource resource) {
-        IIpsProject ipsProject = ipsModel.getIpsProject(wrap(resource).as(AResource.class).getProject());
-        return resource.equals(ipsProject.getIpsProjectPropertiesFile().unwrap());
+        AProject project = wrap(resource).as(AResource.class).getProject();
+        IIpsProject ipsProject = project == null ? null : ipsModel.getIpsProject(project);
+        return ipsProject != null && resource.equals(ipsProject.getIpsProjectPropertiesFile().unwrap());
     }
 
     private boolean manifestChanged(IResource resource) {

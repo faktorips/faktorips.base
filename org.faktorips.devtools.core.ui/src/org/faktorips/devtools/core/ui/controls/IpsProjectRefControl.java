@@ -62,9 +62,11 @@ public class IpsProjectRefControl extends TextButtonControl {
                 IIpsProject selectedProject = (IIpsProject)dialog.getResult()[0];
                 setIpsProject(selectedProject);
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        // CSON: IllegalCatch
     }
 
     /**
@@ -114,8 +116,7 @@ public class IpsProjectRefControl extends TextButtonControl {
      * hand, if {@link #isOnlyProductDefinitionProjects()} returns {@code true}, only product
      * definition projects are returned.
      * 
-     * @throws IpsException if an error occurs while collecting the {@link IIpsProject IPS
-     *             projects}
+     * @throws IpsException if an error occurs while collecting the {@link IIpsProject IPS projects}
      */
     protected IIpsProject[] collectIpsProjects() {
         if (isOnlyProductDefinitionProjects()) {

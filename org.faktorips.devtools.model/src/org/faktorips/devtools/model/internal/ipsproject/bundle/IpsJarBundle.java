@@ -105,7 +105,8 @@ public class IpsJarBundle extends AbstractIpsBundle {
     protected InputStream getResourceAsStream(Path path) {
         JarFile jarFile = getJarFileThrowingRuntimeException();
         try {
-            ZipEntry zipEntry = jarFile.getEntry(PathUtil.toPortableString(path));
+            String portablePath = PathUtil.toPortableString(path);
+            ZipEntry zipEntry = portablePath == null ? null : jarFile.getEntry(portablePath);
             throwExceptionWhenNotFound(zipEntry, path);
             return getInputStream(jarFile, zipEntry);
         } finally {

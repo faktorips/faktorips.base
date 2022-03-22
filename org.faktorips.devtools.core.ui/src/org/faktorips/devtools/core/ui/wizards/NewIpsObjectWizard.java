@@ -158,8 +158,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         return true;
     }
 
-    private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor)
-            {
+    private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor) {
         IIpsSrcFile srcFile = page.createIpsSrcFile(SubMonitor.convert(monitor, 2));
         if (srcFile == null) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(

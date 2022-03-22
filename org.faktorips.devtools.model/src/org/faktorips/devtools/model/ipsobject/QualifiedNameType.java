@@ -23,6 +23,8 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.util.ArgumentCheck;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * Combines the qualified name and IPS object type.
  * 
@@ -75,7 +77,10 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         return new QualifiedNameType(qName, type);
     }
 
-    public static final boolean representsQualifiedNameType(String pathToFile) {
+    public static final boolean representsQualifiedNameType(@CheckForNull String pathToFile) {
+        if (pathToFile == null) {
+            return false;
+        }
         int index = pathToFile.lastIndexOf(FILE_EXTENSION_SEPERATOR);
         if (index == -1 || index == pathToFile.length() - 1) {
             return false;

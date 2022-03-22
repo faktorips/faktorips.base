@@ -360,8 +360,7 @@ public class TestCaseStructurePage extends WizardPage {
      * Collect all messages for the given element and all its child's. If an element isn't checked
      * then this element will be ignored.
      */
-    private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container)
-            {
+    private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container) {
         boolean checked = treeViewer.getChecked(container);
         if (checked) {
             result.add(msgList.getMessagesFor(container));

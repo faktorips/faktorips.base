@@ -88,8 +88,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     }
 
     @Test
-    public void testIsBuilderFor_trueIf_ProductCmptType_NotChangingOverTime_ProductCmptGenerationSrcFileExist()
-            {
+    public void testIsBuilderFor_trueIf_ProductCmptType_NotChangingOverTime_ProductCmptGenerationSrcFileExist() {
         ipsProject.getProject().build(ABuildKind.FULL, null);
         productCmptType.setChangingOverTime(false);
 
@@ -107,8 +106,7 @@ public class ProductCmptGenerationClassBuilderTest extends AbstractStdBuilderTes
     }
 
     @Test
-    public void testIsBuilderFor_trueIf_ProductCmptType_ChangingOverTime_ProductCmptGenerationSrcFileExist_ProductCmptTypeSrcFileExists()
-            {
+    public void testIsBuilderFor_trueIf_ProductCmptType_ChangingOverTime_ProductCmptGenerationSrcFileExist_ProductCmptTypeSrcFileExists() {
         ipsProject.getProject().build(ABuildKind.FULL, null);
         productCmptType.setChangingOverTime(true);
 

@@ -781,7 +781,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         // unidirectional derived union
         ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        // assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        // assertThat(ml,
+        // lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
 
         IPolicyCmptTypeAssociation invDerivedUnion = superPcType.newPolicyCmptTypeAssociation();
         invDerivedUnion.setTarget(policyCmptType.getQualifiedName());

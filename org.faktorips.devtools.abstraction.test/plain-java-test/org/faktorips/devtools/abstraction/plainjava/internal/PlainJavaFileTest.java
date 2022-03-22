@@ -64,7 +64,8 @@ public class PlainJavaFileTest extends PlainJavaAbstractionTestSetup {
         newFile.create(writeTo("TestString"), monitor);
 
         assertThat(testProject.getLocation().resolve("newFile").toFile().exists(), is(true));
-        assertThat(FileUtils.readFileToString(newFile.getLocation().toFile(), Charset.defaultCharset()), is("TestString"));
+        assertThat(FileUtils.readFileToString(newFile.getLocation().toFile(), Charset.defaultCharset()),
+                is("TestString"));
         assertThat(monitor.isDone(), is(true));
         assertThat(monitor.getTotalWork(), is(1));
         assertThat(monitor.getName(), is("Creating " + newFile.getLocation()));

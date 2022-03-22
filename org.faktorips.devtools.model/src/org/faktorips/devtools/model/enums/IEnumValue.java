@@ -52,8 +52,8 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
     /**
      * Creates a new <code>IEnumAttributeValue</code> and returns it.
      * 
-     * @throws IpsException If the <code>IEnumType</code> this <code>IEnumValue</code> is based
-     *             upon cannot be found.
+     * @throws IpsException If the <code>IEnumType</code> this <code>IEnumValue</code> is based upon
+     *             cannot be found.
      */
     public IEnumAttributeValue newEnumAttributeValue() throws IpsException;
 

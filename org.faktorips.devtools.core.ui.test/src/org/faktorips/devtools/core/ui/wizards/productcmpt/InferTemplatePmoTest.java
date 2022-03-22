@@ -49,8 +49,7 @@ public class InferTemplatePmoTest extends AbstractIpsPluginTest {
         assertThat(pmo.getEarliestValidFrom(), is(new GregorianCalendar(2014, Calendar.DECEMBER, 31)));
     }
 
-    private IProductCmpt newProductCmpt(IProductCmptType type, String qName, int year, int month, int day)
-            {
+    private IProductCmpt newProductCmpt(IProductCmptType type, String qName, int year, int month, int day) {
         IProductCmpt cmpt = newProductCmpt(type, qName);
         cmpt.setValidFrom(new GregorianCalendar(year, month, day));
         return cmpt;

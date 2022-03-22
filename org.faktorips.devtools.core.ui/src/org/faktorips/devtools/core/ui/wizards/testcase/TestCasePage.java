@@ -93,8 +93,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;

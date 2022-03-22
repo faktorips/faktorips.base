@@ -81,8 +81,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
      * 
      * 
      */
-    public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context)
-            {
+    public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context) {
         super(context);
         this.productCmpt = productCmpt;
         this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());

@@ -118,8 +118,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         return numberRows;
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor)
-            {
+    private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor) {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());

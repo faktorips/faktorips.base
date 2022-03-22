@@ -59,8 +59,8 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * 
      * @param target The new location/name.
      * 
-     * @throws IpsException If the source does not exist or is modified or if the target
-     *             already exists.
+     * @throws IpsException If the source does not exist or is modified or if the target already
+     *             exists.
      */
     public NonIPSMoveOperation(Object[] sources, IIpsPackageFragment target) {
         sourceObjects = prepare(sources);
@@ -95,8 +95,8 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
      * Converts any contained IIpsSrcFiles to the objects contained within.
      * 
      * @param rawSources The IIpsElements to prepare.
-     * @throws IpsException If an IIpsSrcFile is contained which can not return the
-     *             IIpsObject stored within.
+     * @throws IpsException If an IIpsSrcFile is contained which can not return the IIpsObject
+     *             stored within.
      */
     private Object[] prepare(Object[] rawSources) {
         Object[] result = new Object[rawSources.length];

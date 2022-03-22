@@ -88,7 +88,7 @@ public class FolderExplorer {
         }
 
         File[] listFiles = file.listFiles();
-        if (listFiles.length == 0) {
+        if (listFiles == null || listFiles.length == 0) {
             return true;
         }
 

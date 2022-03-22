@@ -177,8 +177,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * 
      * @throws IpsException if an error occurs
      */
-    private void buildMemberVariables(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            {
+    private void buildMemberVariables(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         buildMemberForTestRuleParameter(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getInputTestValueParameters(), inputPrefix);
         buildMemberForTestValueParameter(codeBuilder, testCaseType.getExpectedResultTestValueParameters(),
@@ -298,8 +297,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Returns the qualified name of the policy component where the given test policy component type
      * parameter points to.
      */
-    protected String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam)
-            {
+    protected String getQualifiedNameFromTestPolicyCmptParam(ITestPolicyCmptTypeParameter testPolicyTypeParam) {
         IPolicyCmptType policyCmptType = testPolicyTypeParam.findPolicyCmptType(getIpsProject());
         if (policyCmptType == null) {
             throw new IpsException(
@@ -335,8 +333,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     /*
      * Generates the super method implenetations.
      */
-    private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            {
+    private void buildSuperMethodImplementation(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         buildMethodExecuteBusinessLogic(codeBuilder);
         buildMethodExecuteAsserts(codeBuilder);
         buildMethodsForAssertRules(codeBuilder, testCaseType.getTestRuleParameters(), expectedResultPrefix);
@@ -348,8 +345,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the method initInputFromXml. <p> Example: <p> <pre> protected void
      * initInputFromXml(Element element) { ... } </pre>
      */
-    private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            {
+    private void buildMethodInitInputFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         String javaDoc = getLocalizedText(INITINPUTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -364,8 +360,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generates the method initExpectedResultFromXml. <p> Example: <p> <pre> protected void
      * initExpectedResultFromXml(Element element) { Element inputElement; ... } </pre>
      */
-    private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType)
-            {
+    private void buildMethodInitExpectedResultFromXml(JavaCodeFragmentBuilder codeBuilder, ITestCaseType testCaseType) {
         String javaDoc = getLocalizedText(INITEXPECTEDRESULTFROMXML_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -759,8 +754,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * Generate XML callback classes for each root policy cmpt type parameter containing at least
      * one extension attribute.
      */
-    private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType)
-            {
+    private void buildXmlCallbackClasses(JavaCodeFragmentBuilder memberVarBuilder, ITestCaseType testCaseType) {
         ITestPolicyCmptTypeParameter[] testPolicyCmptTypeParameters = testCaseType.getTestPolicyCmptTypeParameters();
         for (ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter : testPolicyCmptTypeParameters) {
             if (!testPolicyCmptTypeParameter.isValid(getIpsProject())) {

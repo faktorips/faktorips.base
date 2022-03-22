@@ -172,8 +172,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         }
     }
 
-    private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association)
-            {
+    private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;

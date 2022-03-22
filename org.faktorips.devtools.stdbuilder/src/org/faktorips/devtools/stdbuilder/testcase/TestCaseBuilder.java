@@ -411,8 +411,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput)
-            {
+    private boolean associationsParentSameType(ITestPolicyCmptLink association, boolean isInput) {
         ITestPolicyCmptTypeParameter param = association.findTestPolicyCmptTypeParameter(getIpsProject());
         if (param == null) {
             return false;

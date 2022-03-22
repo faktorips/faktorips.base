@@ -137,8 +137,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final ITestPolicyCmptTypeParameter testParameterChild3;
 
-        protected PolicyCmptTypeReferences(IPolicyCmptType policyCmptType, boolean createInverseAssociation)
-                {
+        protected PolicyCmptTypeReferences(IPolicyCmptType policyCmptType, boolean createInverseAssociation) {
 
             this.policyCmptType = policyCmptType;
             productCmptType = createProductCmptType();
@@ -576,8 +575,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final IProductCmpt otherProductCmpt;
 
-        protected ProductCmptReferences(IProductCmpt productCmpt, IProductCmptType productCmptType)
-                {
+        protected ProductCmptReferences(IProductCmpt productCmpt, IProductCmptType productCmptType) {
 
             this.productCmptType = productCmptType;
             this.productCmpt = productCmpt;

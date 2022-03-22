@@ -764,9 +764,8 @@ public interface IIpsProject extends IIpsElement {
      * {@link ValueSetType#UNRESTRICTED} is always returned and is the first element in the array.
      * If data type is <code>null</code> then an array with <code>UNRESTRICTED</code> is returned.
      * 
-     * @throws IpsException if an error occurs while retrieving the value set types,
-     *             possible reasons are that the data types files can't be read or the XML can't be
-     *             parsed.
+     * @throws IpsException if an error occurs while retrieving the value set types, possible
+     *             reasons are that the data types files can't be read or the XML can't be parsed.
      */
     public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws IpsException;
 

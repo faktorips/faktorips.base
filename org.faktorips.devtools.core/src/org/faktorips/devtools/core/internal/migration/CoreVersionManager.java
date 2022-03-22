@@ -98,8 +98,7 @@ public class CoreVersionManager implements IIpsFeatureVersionManager {
     }
 
     @Override
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
         String minRequiredVersion = projectToMigrate.getReadOnlyProperties()
                 .getMinRequiredVersionNumber(getFeatureId());
         if (minRequiredVersion == null) {

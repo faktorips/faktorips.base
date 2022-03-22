@@ -206,8 +206,7 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         return newEnumAttribute(abstractGrandParent, name, false);
     }
 
-    private IEnumAttribute newEnumAttribute(EnumType abstractGrandParent, String name, boolean inherited)
-            {
+    private IEnumAttribute newEnumAttribute(EnumType abstractGrandParent, String name, boolean inherited) {
         IEnumAttribute attribute = abstractGrandParent.newEnumAttribute();
         attribute.setName(name);
         if (inherited) {

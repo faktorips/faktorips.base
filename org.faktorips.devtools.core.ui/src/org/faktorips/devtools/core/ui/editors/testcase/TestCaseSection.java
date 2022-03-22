@@ -1271,8 +1271,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(ipsProject) : null);
     }
 
-    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam)
-            {
+    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) {
 
         IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(testTypeParam.getPolicyCmptType());
         if (policyCmptType == null) {
@@ -2554,8 +2553,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * selected test case type association object or <code>null</code> if the user select
          * nothing.
          */
-        private TestCaseTypeAssociation selectTestCaseTypeAssociationByDialog(ITestPolicyCmpt parentTestPolicyCmpt)
-                {
+        private TestCaseTypeAssociation selectTestCaseTypeAssociationByDialog(ITestPolicyCmpt parentTestPolicyCmpt) {
 
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                     new TestCaseTypeAssociationLabelProvider());

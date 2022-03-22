@@ -69,8 +69,7 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
     }
 
     @Override
-    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            {
+    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
         AJavaProject javaProject = ipsProject.getJavaProject();
         if (IpsProjectConfigurators.applicableTo(javaProject).allMatch((IIpsProjectConfigurator c) -> c == this)) {
             new StandardJavaProjectConfigurator().configureIpsProject(ipsProject, creationProperties);

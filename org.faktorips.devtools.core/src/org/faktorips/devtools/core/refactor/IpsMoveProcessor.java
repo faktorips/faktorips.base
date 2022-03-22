@@ -57,8 +57,8 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
     }
 
     @Override
-    public RefactoringParticipant[] loadParticipants(RefactoringStatus status, SharableParticipants sharedParticipants)
-            {
+    public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
+            SharableParticipants sharedParticipants) {
 
         RefactoringProcessor processor = this;
         Object elementToMove = getIpsElement();

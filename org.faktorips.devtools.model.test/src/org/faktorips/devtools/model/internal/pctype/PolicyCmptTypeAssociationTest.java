@@ -837,8 +837,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInverseOfSubsettedDerivedUnionMustExistsIfInverseOfDerivedUnionExists()
-            {
+    public void testInverseOfSubsettedDerivedUnionMustExistsIfInverseOfDerivedUnionExists() {
         IPolicyCmptType policy = newPolicyCmptType(ipsProject, "my.Policy");
         IPolicyCmptType coverage = newPolicyCmptType(ipsProject, "my.Coverage");
 

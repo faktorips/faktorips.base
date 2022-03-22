@@ -51,14 +51,15 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
             final String mode,
             final ILaunch launch,
             IProgressMonitor monitor) {
-        if (monitor == null) {
-            monitor = new NullProgressMonitor();
+        IProgressMonitor theMonitor = monitor;
+        if (theMonitor == null) {
+            theMonitor = new NullProgressMonitor();
         }
 
         if (IpsPlugin.getDefault().getIpsTestRunner().isRunningTestRunner()) {
-            monitor.worked(1);
-            monitor.done();
-            monitor.setCanceled(true);
+            theMonitor.worked(1);
+            theMonitor.done();
+            theMonitor.setCanceled(true);
             return;
         }
 
@@ -91,8 +92,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
     /*
      * Delegate the test start to the ips test runner
      */
-    private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch)
-            {
+    private void startTest(final ILaunchConfiguration configuration, final String mode, final ILaunch launch) {
         String packageFragment;
         String testCases;
         try {

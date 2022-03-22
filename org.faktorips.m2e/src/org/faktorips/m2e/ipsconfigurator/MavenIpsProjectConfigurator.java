@@ -88,8 +88,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
     }
 
     @Override
-    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            {
+    public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
         IProject project = ipsProject.getProject().unwrap();
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
 
@@ -172,8 +171,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      *            creating a Faktor-IPS project
      * @throws IpsException If creating the manifest file failed
      */
-    private void createManifestFile(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-            {
+    private void createManifestFile(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
         AProject project = ipsProject.getProject();
         AFolder metaInfFolder = project.getFolder(META_INF_FOLDER);
         if (!metaInfFolder.exists()) {
@@ -310,8 +308,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * @param creationProperties The {@link IpsProjectCreationProperties} containing information
      *            about the required dependencies
      */
-    private void addMavenDependencies(Model mavenModel, IpsProjectCreationProperties creationProperties)
-            {
+    private void addMavenDependencies(Model mavenModel, IpsProjectCreationProperties creationProperties) {
         String ipsVersion = String.format("${%s}", MAVEN_PROPERTY_IPS_VERSION);
 
         Set<String> dependencies = mavenModel.getDependencies().stream()

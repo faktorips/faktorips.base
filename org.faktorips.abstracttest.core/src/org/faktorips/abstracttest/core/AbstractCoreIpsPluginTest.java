@@ -44,8 +44,7 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
      * Performs the Faktor-IPS 'Rename' refactoring for the given {@link IIpsPackageFragment} and
      * provided new name.
      */
-    protected final RefactoringStatus performRenameRefactoring(IIpsPackageFragment ipsPackageFragment, String newName)
-            {
+    protected final RefactoringStatus performRenameRefactoring(IIpsPackageFragment ipsPackageFragment, String newName) {
         IIpsRefactoring ipsRenameRefactoring = IpsPlugin.getIpsRefactoringFactory()
                 .createRenameRefactoring(ipsPackageFragment, newName, null, false);
 

@@ -344,8 +344,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         }
     }
 
-    private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects)
-            {
+    private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects) {
 
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
         List<ComboCellEditor> cellEditors = new ArrayList<>(10);

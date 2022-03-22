@@ -300,8 +300,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testcreateMessage_DifferentITypesAndDifferentObjectPartContainer_ProdCmptValidator()
-            {
+    public void testcreateMessage_DifferentITypesAndDifferentObjectPartContainer_ProdCmptValidator() {
         ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
         productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
         IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();

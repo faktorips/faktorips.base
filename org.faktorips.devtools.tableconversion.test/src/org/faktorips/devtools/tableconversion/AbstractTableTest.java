@@ -155,8 +155,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
      *            generated file.
      */
-    public void createValidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow)
-            {
+    public void createValidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow) {
 
         ITableContents contents = createValidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
@@ -172,8 +171,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
      *            generated file.
      */
-    public void createInvalidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow)
-            {
+    public void createInvalidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow) {
 
         ITableContents contents = createInvalidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",

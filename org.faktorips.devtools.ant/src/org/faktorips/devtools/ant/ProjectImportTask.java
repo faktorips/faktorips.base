@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
@@ -109,7 +110,8 @@ public class ProjectImportTask extends AbstractIpsTask {
         }
 
         if (!copy) {
-            description.setLocation(PathMapping.toEclipsePath(Path.of(getDir())).makeAbsolute());
+            IPath eclipsePath = PathMapping.toEclipsePath(Path.of(getDir()));
+            description.setLocation(eclipsePath == null ? null : eclipsePath.makeAbsolute());
         }
 
         // create new project with name provided in description

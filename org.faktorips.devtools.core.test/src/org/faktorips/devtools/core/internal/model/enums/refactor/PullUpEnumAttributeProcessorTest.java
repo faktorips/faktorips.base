@@ -122,8 +122,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisEnumAttributeInheritedButBaseAttributeNotFoundInTargetSupertypeHierarchy()
-            {
+    public void testValidateUserInputThisEnumAttributeInheritedButBaseAttributeNotFoundInTargetSupertypeHierarchy() {
 
         when(enumAttribute.isInherited()).thenReturn(true);
 
@@ -139,8 +138,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisEnumAttributeInheritedBaseAttributeFoundInTargetSupertypeHierarchy()
-            {
+    public void testValidateUserInputThisEnumAttributeInheritedBaseAttributeFoundInTargetSupertypeHierarchy() {
 
         when(enumAttribute.isInherited()).thenReturn(true);
 

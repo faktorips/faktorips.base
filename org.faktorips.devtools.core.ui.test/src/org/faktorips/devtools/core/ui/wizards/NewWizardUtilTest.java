@@ -43,8 +43,7 @@ public class NewWizardUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateDefaultCategoriesIfNecessary_DoNotCreateCategoriesIfProductCmptTypeHasSupertype()
-            {
+    public void testCreateDefaultCategoriesIfNecessary_DoNotCreateCategoriesIfProductCmptTypeHasSupertype() {
 
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");

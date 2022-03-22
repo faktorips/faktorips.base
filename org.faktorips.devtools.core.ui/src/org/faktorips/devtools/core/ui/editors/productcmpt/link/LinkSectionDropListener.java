@@ -356,8 +356,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             return !createdCmptLinks.isEmpty();
         }
 
-        private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target)
-                {
+        private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target) {
             if (!canCreateLinks(draggedCmpts, target)) {
                 return Collections.emptyList();
             }

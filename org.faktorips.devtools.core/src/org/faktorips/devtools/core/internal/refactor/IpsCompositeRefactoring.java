@@ -118,8 +118,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
         return status;
     }
 
-    private void checkConditions(IIpsElement element, RefactoringStatus status, int checkConditionOperation)
-            {
+    private void checkConditions(IIpsElement element, RefactoringStatus status, int checkConditionOperation) {
         IIpsRefactoring refactoring = createRefactoring(element);
         CheckConditionsOperation checkConditionsOperation = new CheckConditionsOperation(
                 refactoring.toLtkRefactoring(), checkConditionOperation);
