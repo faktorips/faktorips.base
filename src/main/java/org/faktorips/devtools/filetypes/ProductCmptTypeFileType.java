@@ -1,3 +1,8 @@
+/*******************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.com
+ *
+ * All Rights Reserved - Alle Rechte vorbehalten.
+ ******************************************************/
 package org.faktorips.devtools.filetypes;
 
 import com.intellij.lang.xml.XMLLanguage;
@@ -15,7 +20,7 @@ import javax.swing.Icon;
 public class ProductCmptTypeFileType extends LanguageFileType {
 
     public static final LanguageFileType INSTANCE = new ProductCmptTypeFileType();
-    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/ProductCmptType.png", ProductCmptTypeFileType.class);
+    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/ProductCmptType.svg", ProductCmptTypeFileType.class);
     private static final String FILE_EXTENSION = "ipsproductcmpttype";
 
     public ProductCmptTypeFileType() {

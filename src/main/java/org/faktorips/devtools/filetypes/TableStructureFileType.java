@@ -1,3 +1,8 @@
+/*******************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.com
+ *
+ * All Rights Reserved - Alle Rechte vorbehalten.
+ ******************************************************/
 package org.faktorips.devtools.filetypes;
 
 import com.intellij.lang.xml.XMLLanguage;
@@ -15,7 +20,7 @@ import javax.swing.*;
 public class TableStructureFileType extends LanguageFileType {
 
     public static final LanguageFileType INSTANCE = new TableStructureFileType();
-    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/TableStructure.png", TableStructureFileType.class);
+    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/TableStructure.svg", TableStructureFileType.class);
     private static final String FILE_EXTENSION = "ipstablestructure";
 
     public TableStructureFileType() {

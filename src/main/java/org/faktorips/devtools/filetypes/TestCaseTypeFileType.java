@@ -1,3 +1,8 @@
+/*******************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.com
+ *
+ * All Rights Reserved - Alle Rechte vorbehalten.
+ ******************************************************/
 package org.faktorips.devtools.filetypes;
 
 import com.intellij.lang.xml.XMLLanguage;
@@ -15,7 +20,7 @@ import javax.swing.*;
 public class TestCaseTypeFileType extends LanguageFileType {
 
     public static final LanguageFileType INSTANCE = new TestCaseTypeFileType();
-    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/TestCaseType.png", TestCaseTypeFileType.class);
+    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/TestCaseType.svg", TestCaseTypeFileType.class);
     private static final String FILE_EXTENSION = "ipstestcasetype";
 
     public TestCaseTypeFileType() {

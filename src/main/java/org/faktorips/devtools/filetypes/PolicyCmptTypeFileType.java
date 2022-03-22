@@ -1,3 +1,8 @@
+/*******************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.com
+ *
+ * All Rights Reserved - Alle Rechte vorbehalten.
+ ******************************************************/
 package org.faktorips.devtools.filetypes;
 
 import com.intellij.ide.highlighter.XmlLikeFileType;
@@ -16,7 +21,7 @@ import javax.swing.Icon;
 public class PolicyCmptTypeFileType extends LanguageFileType {
 
     public static final LanguageFileType INSTANCE = new PolicyCmptTypeFileType();
-    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/PolicyCmptType.png", PolicyCmptTypeFileType.class);
+    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/PolicyCmptType.svg", PolicyCmptTypeFileType.class);
     private static final String FILE_EXTENSION = "ipspolicycmpttype";
 
     public PolicyCmptTypeFileType() {

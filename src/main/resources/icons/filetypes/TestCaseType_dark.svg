@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16px"
+   height="16px"
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="SVGRoot"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="TestCaseType_dark.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2126" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="90.509672"
+     inkscape:cx="5.2314851"
+     inkscape:cy="5.4137861"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="2508"
+     inkscape:window-height="1403"
+     inkscape:window-x="1972"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:grid-bbox="true"
+     inkscape:pagecheckerboard="0" />
+  <metadata
+     id="metadata2129">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#634fca;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-opacity:1"
+       id="rect1368"
+       width="12"
+       height="12"
+       x="2"
+       y="2"
+       ry="1" />
+    <g
+       aria-label="T"
+       id="text87673"
+       style="font-size:9.33333px;line-height:1.25;fill:#f2f2f2">
+      <path
+         d="M 7.2440004,5.9653339 H 5.1533344 V 4.7333344 H 10.846666 V 5.9653339 H 8.7559999 V 11.266665 H 7.2440004 Z"
+         style="font-weight:bold;font-family:Montserrat;-inkscape-font-specification:'Montserrat Bold'"
+         id="path825" />
+    </g>
+  </g>
+</svg>

@@ -1,3 +1,8 @@
+/*******************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.com
+ *
+ * All Rights Reserved - Alle Rechte vorbehalten.
+ ******************************************************/
 package org.faktorips.devtools.filetypes;
 
 import com.intellij.lang.xml.XMLLanguage;
@@ -15,7 +20,7 @@ import javax.swing.*;
 public class EnumContentFileType extends LanguageFileType {
 
     public static final LanguageFileType INSTANCE = new EnumContentFileType();
-    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/EnumContent.png", EnumContentFileType.class);
+    private static final Icon ICON = IconLoader.getIcon("/icons/filetypes/EnumContent.svg", EnumContentFileType.class);
     private static final String FILE_EXTENSION = "ipsenumcontent";
 
     public EnumContentFileType() {
