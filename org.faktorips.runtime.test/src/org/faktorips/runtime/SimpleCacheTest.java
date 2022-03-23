@@ -24,7 +24,7 @@ public class SimpleCacheTest {
         assertThat(1, is(computedObjectOneAgain));
     }
 
-    private Object getNotCachedNumber(Object key) {
+    private Object getNotCachedNumber(@SuppressWarnings("unused") Object key) {
         return number++;
     }
 }
