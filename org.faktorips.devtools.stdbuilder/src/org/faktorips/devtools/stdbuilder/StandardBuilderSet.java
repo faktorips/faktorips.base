@@ -244,6 +244,12 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "valueSetMethods";
 
+    /**
+     * Configuration property that defines whether the getEffectiveFromAsCalendar() method should
+     * always be generated.
+     */
+    public static final String CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR = "generateGetEffectiveFromAsCalendar"; //$NON-NLS-1$
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;

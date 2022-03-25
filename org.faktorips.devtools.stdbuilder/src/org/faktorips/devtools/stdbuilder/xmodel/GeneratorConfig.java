@@ -196,6 +196,12 @@ public class GeneratorConfig {
                 || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT.equals(propertyValue));
     }
 
+    public boolean isGenerateGetEffectiveFromAsCalendar() {
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
+    }
+
     public String getBaseClassPolicyCmptType() {
         String baseClass = config
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);

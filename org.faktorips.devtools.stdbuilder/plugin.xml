@@ -231,6 +231,14 @@
                defaultValue=""
                type="string">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+            defaultValue="true"
+            description="%generateGetEffectiveFromAsCalendarDescription"
+            disableValue="true"
+            label="%generateGetEffectiveFromAsCalendarLabel"
+            name="generateGetEffectiveFromAsCalendar"
+            type="boolean">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension
