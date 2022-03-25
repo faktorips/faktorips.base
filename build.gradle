@@ -4,7 +4,6 @@ plugins {
 }
 
 group 'org.faktorips'
-version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -17,7 +16,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.2.3'
+    version = '2021.3.3'
 }
 patchPluginXml {
     changeNotes = """
@@ -26,4 +25,15 @@ patchPluginXml {
 }
 test {
     useJUnitPlatform()
+}
+
+signPlugin {
+    certificateChain = System.getenv("INTELLIJ_CERTIFICATE_CHAIN")!=null?new File(System.getenv("INTELLIJ_CERTIFICATE_CHAIN")).getText('UTF-8'):""
+    privateKey = System.getenv("INTELLIJ_PRIVATE_KEY")!=null?new File(System.getenv("INTELLIJ_PRIVATE_KEY")).getText('UTF-8'):""
+    password = System.getenv("INTELLIJ_PRIVATE_KEY_PASSWORD")?:""
+}
+
+publishPlugin {
+    token = System.getenv("INTELLIJ_PUBLISH_TOKEN")?:""
+    channels = ['Alpha']
 }

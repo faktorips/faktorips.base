@@ -7,6 +7,7 @@
     <p>Using the product system Faktor-IPS for insurance and finance applications you design your business model, generate java code and define products very easy.</p>
     <p>Find out more about Faktor-IPS in this short 3-minute video <a title="What is Faktor-IPS?" href="https://youtu.be/ygE5LjJoxG0">What is Faktor-IPS?</a>.</p>
     <p>More videos and tutorials are available in our <a title="Documentation" href="https://www.faktorzehn.org/en/dokumentation/">Documentation</a>.</p>
+    <p><em>This IntelliJ-Version of Faktor-IPS is still in early development and does not offer most of the features of the Eclipse plugin.</em></p>
     ]]></description>
 
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html

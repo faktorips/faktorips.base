@@ -1,0 +1,64 @@
+library 'f10-jenkins-library@1.0_patches'
+include prepareGroovyRelease
+
+pipeline {
+    agent { label 'linux' }
+
+    environment {
+        PROJECT_NAME = 'faktorips.intellij'
+        BUILD_NAME = 'main'
+     }
+
+    options {
+        skipDefaultCheckout true
+    }
+
+    stages {
+        stage('Prepare Release') {
+            steps {
+                withGradle {
+                    prepareGroovyRelease
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                script {
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}"
+                }
+
+                withGradle {
+                    sh './gradlew clean build'
+                }
+            }
+        }
+        stage('Release') {
+            steps {
+                withGradle {
+                    sh './gradlew signPlugin publishPlugin'
+                }
+            }
+        }
+        stage('Upload Release') {
+            steps {
+                withGradle {
+                    uploadRelease
+                }
+            }
+        }
+    }
+
+    post {
+        unsuccessful {
+            emailext to: env.TEAM_EMAIL, mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
+                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
+                <br>
+                $BUILD_URL
+            '''
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
+    }
+}
