@@ -33,7 +33,6 @@
         <module>../../org.faktorips.dtflcommon.test</module>
         <module>../../org.faktorips.fl.test</module>
         <module>../../org.faktorips.m2e.test</module>
-        <module>../../org.faktorips.runtime.test</module>
         <module>../../org.faktorips.runtime.groovy.test</module>
         <module>../../org.faktorips.testextensions</module>
         <module>../../org.faktorips.util.test</module>

@@ -3,6 +3,7 @@ target/
 
 org.faktorips.valuetypes/.*
 org.faktorips.valuetypes.joda/.*
+org.faktorips.runtime/.*
 
 # files generated (temporary) by the tycho maven builds
 .polyglot.*

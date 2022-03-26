@@ -32,7 +32,6 @@
 
     <modules>
         <module>../../org.faktorips.runtime/client</module>
-        <module>../../org.faktorips.runtime/nexus</module>
         <module>../../org.faktorips.runtime.groovy/nexus</module>
         <module>../../org.faktorips.testsupport/nexus</module>
     </modules>
