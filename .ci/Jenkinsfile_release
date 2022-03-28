@@ -10,6 +10,7 @@ pipeline {
 
     options {
         skipDefaultCheckout true
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
     }
 
     stages {
@@ -49,8 +50,5 @@ pipeline {
             '''
         }
     }
-
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14'))
-    }
 }
+
