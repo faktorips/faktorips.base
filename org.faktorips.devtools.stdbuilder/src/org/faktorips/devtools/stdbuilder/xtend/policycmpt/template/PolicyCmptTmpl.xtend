@@ -402,37 +402,39 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
         }
     «ENDIF»
  
-    «IF firstDependantConfiguredTypeInHierarchy»
-        /**
-         * «inheritDoc»
-         *
-         * @generated
-         */
-        @Override
-        public «Calendar()» «getEffectiveFromAsCalendar()» {
-            «IModelObject()» parent = «getParentModelObject()»;
-            if (parent instanceof «IConfigurableModelObject()») {
-                return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+    «IF isGenerateGetEffectiveFromAsCalendar»
+        «IF firstDependantConfiguredTypeInHierarchy»
+            /**
+             * «inheritDoc»
+             *
+             * @generated
+             */
+            @Override
+            public «Calendar()» «getEffectiveFromAsCalendar()» {
+                «IModelObject()» parent = «getParentModelObject()»;
+                if (parent instanceof «IConfigurableModelObject()») {
+                    return ((«IConfigurableModelObject()»)parent).«getEffectiveFromAsCalendar()»;
+                }
+                return null;
             }
-            return null;
-        }
-    «ELSEIF aggregateRoot»
-        /**
-         * «inheritDoc»
-         *
-         * @generated
-         */
-        @Override
-        public «Calendar()» «getEffectiveFromAsCalendar()» {
-               «IF hasConfiguredSupertype()»
-                   return super.«getEffectiveFromAsCalendar()»;
-        «ELSE»
-            «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
-            «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
-            «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
-            return null;
+        «ELSEIF aggregateRoot»
+            /**
+             * «inheritDoc»
+             *
+             * @generated
+             */
+            @Override
+            public «Calendar()» «getEffectiveFromAsCalendar()» {
+                   «IF hasConfiguredSupertype()»
+                       return super.«getEffectiveFromAsCalendar()»;
+            «ELSE»
+                «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
+                «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
+                «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
+                return null;
+            «ENDIF»
+            }
         «ENDIF»
-        }
     «ENDIF»
 '''
 

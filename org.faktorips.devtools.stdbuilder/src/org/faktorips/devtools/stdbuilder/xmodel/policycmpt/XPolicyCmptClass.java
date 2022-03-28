@@ -627,6 +627,14 @@ public class XPolicyCmptClass extends XType {
         return !supertype.isDependantType() || !supertype.isConfigurableByProductCmptType();
     }
 
+    public boolean isGenerateGetEffectiveFromAsCalendar() {
+        if (!getGeneratorConfig().isGenerateGetEffectiveFromAsCalendar()
+                && getGeneratorConfig().getBaseClassPolicyCmptType() != null) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Returns <code>true</code> if this class contains at least on association with type
      * {@link AssociationType#ASSOCIATION}, <code>false</code> else.

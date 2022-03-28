@@ -453,6 +453,7 @@
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>
+        <setEntry value="org.faktorips.m2e@default:default"/>
         <setEntry value="org.faktorips.nls.devtools.core.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.core.ui.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.model.nl1@default:false"/>

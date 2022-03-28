@@ -676,6 +676,34 @@ public class XPolicyCmptClassTest {
         assertFalse(policyCmptClass.isGenerateGenerationAccessMethods());
     }
 
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_true() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(true);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertTrue(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
+    }
+
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_noBaseClass() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(false);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertTrue(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
+    }
+
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_false() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(false);
+        when(generatorConfig.getBaseClassPolicyCmptType()).thenReturn("BaseClass");
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertFalse(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
+    }
+
     private XPolicyCmptClass createXPolicyCmptClassSpy() {
         return spy(new XPolicyCmptClass(type, modelContext, modelService));
     }
