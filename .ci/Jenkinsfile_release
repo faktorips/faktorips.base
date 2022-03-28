@@ -17,7 +17,7 @@ pipeline {
         stage('Prepare Release') {
             steps {
                 withGradle {
-                    prepareGradleRelease
+                    prepareGradleRelease()
                 }
             }
         }
@@ -51,4 +51,3 @@ pipeline {
         }
     }
 }
-
