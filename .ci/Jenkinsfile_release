@@ -1,5 +1,4 @@
 library 'f10-jenkins-library@1.0_patches'
-include prepareGroovyRelease
 
 pipeline {
     agent { label 'linux' }
@@ -17,7 +16,7 @@ pipeline {
         stage('Prepare Release') {
             steps {
                 withGradle {
-                    prepareGroovyRelease
+                    prepareGradleRelease
                 }
             }
         }
@@ -35,14 +34,7 @@ pipeline {
         stage('Release') {
             steps {
                 withGradle {
-                    sh './gradlew signPlugin publishPlugin'
-                }
-            }
-        }
-        stage('Upload Release') {
-            steps {
-                withGradle {
-                    uploadRelease
+                    uploadRelease commands: ['./gradlew signPlugin publishPlugin']
                 }
             }
         }
