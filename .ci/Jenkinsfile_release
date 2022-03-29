@@ -33,6 +33,12 @@ pipeline {
             }
         }
         stage('Release') {
+            environment {
+                INTELLIJ_CERTIFICATE_CHAIN = credentials('INTELLIJ_CERTIFICATE_CHAIN')
+                INTELLIJ_PRIVATE_KEY = credentials('INTELLIJ_PRIVATE_KEY')
+                INTELLIJ_PRIVATE_KEY_PASSWORD = credentials('INTELLIJ_PRIVATE_KEY_PASSWORD')
+                INTELLIJ_PUBLISH_TOKEN = credentials('INTELLIJ_PUBLISH_TOKEN')
+            }
             steps {
                 withGradle {
                     uploadRelease commands: ['./gradlew signPlugin publishPlugin --stacktrace --debug']
