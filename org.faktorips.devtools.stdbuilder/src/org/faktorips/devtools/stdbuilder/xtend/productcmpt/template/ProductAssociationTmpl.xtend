@@ -236,9 +236,13 @@ class ProductAssociationTmpl {
     '''
 
     def private static addMethodWithCardinality(XProductAssociation it) '''
-        «IF oneToMany && matchingAssociation!==null»
+        «IF oneToMany»
             /**
+            «IF matchingAssociation!==null»
              * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
+            «ELSE»
+             * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION")»
+            «ENDIF»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -302,9 +306,13 @@ class ProductAssociationTmpl {
     '''
 
     def private static setterMethodForToOneWithCardinality(XProductAssociation it) '''
-        «IF !oneToMany && matchingAssociation!==null»
+        «IF !oneToMany»
             /**
+            «IF matchingAssociation!==null»
              * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY", name)»
+            «ELSE»
+             * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION", name)»
+            «ENDIF»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
