@@ -23,10 +23,6 @@ pipeline {
         }
         stage('Build') {
             steps {
-                script {
-                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}"
-                }
-
                 withGradle {
                     sh './gradlew clean build'
                 }
