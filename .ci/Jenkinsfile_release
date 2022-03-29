@@ -35,7 +35,7 @@ pipeline {
         stage('Release') {
             steps {
                 withGradle {
-                    uploadRelease commands: ['./gradlew signPlugin publishPlugin']
+                    uploadRelease commands: ['./gradlew signPlugin publishPlugin --stacktrace --debug']
                 }
             }
         }
