@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model.versionmanager;
 
+import static org.faktorips.runtime.internal.IpsStringUtils.isBlank;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -188,8 +190,9 @@ public class ExtendableVersionManager implements IExtendableVersionManager {
 
     @Override
     public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
-        AVersion projectsVersion = AVersion.parse(projectToMigrate.getReadOnlyProperties()
-                .getMinRequiredVersionNumber(getFeatureId()));
+        String minRequiredVersionNumber = projectToMigrate.getReadOnlyProperties()
+                .getMinRequiredVersionNumber(getFeatureId());
+        AVersion projectsVersion = isBlank(minRequiredVersionNumber) ? NONE : AVersion.parse(minRequiredVersionNumber);
         List<AbstractIpsProjectMigrationOperation> result = getMigrationOperations(projectToMigrate, projectsVersion);
         return result.toArray(new AbstractIpsProjectMigrationOperation[result.size()]);
     }

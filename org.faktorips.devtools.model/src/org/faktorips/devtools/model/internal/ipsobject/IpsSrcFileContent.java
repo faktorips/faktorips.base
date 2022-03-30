@@ -58,7 +58,7 @@ import org.xml.sax.SAXParseException;
  */
 public class IpsSrcFileContent {
 
-    private final static Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
+    private static final Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
 
     private final IpsObject ipsObject;
 
