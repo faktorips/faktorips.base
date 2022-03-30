@@ -40,17 +40,17 @@ jobs:
     - name: build config
       run: mvn -B install --settings settings.xml --file org.faktorips.codequality.config/pom.xml
     - name: Check compiles
-      run: mvn -B clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests
+      run: mvn -B clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests -Dtycho.p2.transport.min-cache-minutes=1440
       if: ${{ matrix.eclipse-release != env.integration-test-release }}
     - name: Run Integration Tests
       uses: GabrielBB/xvfb-action@v1
       with:
-       run: mvn -B clean verify --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -Dmaven.test.failure.ignore=true
+       run: mvn -B clean verify --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -Dmaven.test.failure.ignore=true -Dtycho.p2.transport.min-cache-minutes=1440
       if: ${{ matrix.eclipse-release == env.integration-test-release }}
     - name: Upload Test Results
       uses: actions/upload-artifact@v2
       with:
-        name: test-results
+        name: test-results-${{ matrix.eclipse-release }}
         if-no-files-found: error
         path: |
           ${{ github.workspace }}/**/target/surefire-reports/*.xml
