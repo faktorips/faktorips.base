@@ -24,24 +24,24 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  */
 public class AVersion implements Comparable<AVersion> {
 
-    public static final AVersion VERSION_ZERO = new AVersion(new int[] { 0 }, IpsStringUtils.EMPTY);
+    public static final AVersion VERSION_ZERO = new AVersion(new long[] { 0L }, IpsStringUtils.EMPTY);
 
     private static final String DELIMITER = "."; //$NON-NLS-1$
     private static final Pattern NUMERIC = Pattern.compile("\\d+"); //$NON-NLS-1$
     private static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
 
     private final String versionString;
-    private final int[] numericParts;
+    private final long[] numericParts;
     private final String qualifier;
 
-    private AVersion(int[] numericParts, String qualifier) {
+    private AVersion(long[] numericParts, String qualifier) {
         this.numericParts = numericParts;
         this.qualifier = qualifier;
         this.versionString = toString(numericParts, qualifier);
     }
 
-    private static final String toString(int[] numericParts, String qualifier) {
-        Stream<String> parts = Arrays.stream(numericParts).mapToObj(i -> Integer.toString(i));
+    private static final String toString(long[] numericParts, String qualifier) {
+        Stream<String> parts = Arrays.stream(numericParts).mapToObj(l -> Long.toString(l));
         if (IpsStringUtils.isNotBlank(qualifier)) {
             parts = Stream.concat(parts, Stream.of(qualifier));
         }
@@ -54,7 +54,11 @@ public class AVersion implements Comparable<AVersion> {
      */
     public static AVersion parse(String versionString) {
         requireNonNull(versionString, "versionString must not be null"); //$NON-NLS-1$
-        LinkedList<Integer> numericParts = new LinkedList<>();
+        if (IpsStringUtils.isBlank(versionString)) {
+            return VERSION_ZERO;
+        }
+
+        LinkedList<Long> numericParts = new LinkedList<>();
         String qualifier = IpsStringUtils.EMPTY;
 
         for (int lastIndex = 0, index = getNextDelimiterPosition(versionString, lastIndex);
@@ -64,19 +68,19 @@ public class AVersion implements Comparable<AVersion> {
                 lastIndex = index + 1, index = getNextDelimiterPosition(versionString, lastIndex)) {
             String part = versionString.substring(lastIndex, index);
             if (NUMERIC.matcher(part).matches()) {
-                numericParts.add(Integer.parseInt(part));
+                numericParts.add(Long.parseLong(part));
             } else {
                 qualifier = versionString.substring(lastIndex);
                 break;
             }
         }
-        while (numericParts.size() > 1 && numericParts.getLast().equals(0)) {
+        while (numericParts.size() > 1 && numericParts.getLast().equals(0L)) {
             numericParts.removeLast();
         }
         if (QUALIFIER.equals(qualifier)) {
             qualifier = IpsStringUtils.EMPTY;
         }
-        return new AVersion(numericParts.stream().mapToInt(i -> i).toArray(), qualifier);
+        return new AVersion(numericParts.stream().mapToLong(i -> i).toArray(), qualifier);
     }
 
     private static int getNextDelimiterPosition(String versionString, int lastIndex) {
@@ -90,9 +94,10 @@ public class AVersion implements Comparable<AVersion> {
     @Override
     public int compareTo(AVersion o) {
         for (int i = 0; i < Math.min(numericParts.length, o.numericParts.length); i++) {
-            int diff = numericParts[i] - o.numericParts[i];
+            long diff = numericParts[i] - o.numericParts[i];
             if (diff != 0) {
-                return diff;
+                return diff > Integer.MAX_VALUE ? Integer.MAX_VALUE
+                        : diff < Integer.MIN_VALUE ? Integer.MIN_VALUE : (int)diff;
             }
         }
         if (numericParts.length == o.numericParts.length) {
@@ -149,7 +154,7 @@ public class AVersion implements Comparable<AVersion> {
      * returned.
      */
     public String getMajor() {
-        return numericParts.length >= 1 ? Integer.toString(numericParts[0]) : "0"; //$NON-NLS-1$
+        return numericParts.length >= 1 ? Long.toString(numericParts[0]) : "0"; //$NON-NLS-1$
     }
 
     /**
@@ -158,7 +163,7 @@ public class AVersion implements Comparable<AVersion> {
      * is returned.
      */
     public String getMinor() {
-        return numericParts.length >= 2 ? Integer.toString(numericParts[1]) : "0"; //$NON-NLS-1$
+        return numericParts.length >= 2 ? Long.toString(numericParts[1]) : "0"; //$NON-NLS-1$
     }
 
 }
