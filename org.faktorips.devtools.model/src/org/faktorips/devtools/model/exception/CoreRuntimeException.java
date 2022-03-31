@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.exception;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * The {@link CoreRuntimeException} is intended to replace the {@link CoreException}. Checked
@@ -27,8 +28,10 @@ import org.eclipse.core.runtime.IStatus;
  * throws a {@link CoreRuntimeException}, document that it does and in which cases this happens.
  * 
  * @author Stefan Widmaier, FaktorZehn AG
+ * @deprecated use {@link org.faktorips.devtools.abstraction.exception.IpsException} instead
  */
-public class CoreRuntimeException extends RuntimeException {
+@Deprecated(forRemoval = true, since = "22.6")
+public class CoreRuntimeException extends IpsException {
 
     private static final long serialVersionUID = -2861599541541109752L;
 
@@ -45,7 +48,7 @@ public class CoreRuntimeException extends RuntimeException {
      * {@link CoreException} internally.
      */
     public CoreRuntimeException(IStatus status) {
-        super(new CoreException(status));
+        super(status);
     }
 
     public CoreRuntimeException(String message, CoreException cause) {
@@ -63,5 +66,9 @@ public class CoreRuntimeException extends RuntimeException {
      */
     public CoreRuntimeException(String message) {
         super(message);
+    }
+
+    public CoreRuntimeException(String message, CoreRuntimeException cause) {
+        super(message, cause);
     }
 }

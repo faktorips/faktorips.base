@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
@@ -34,6 +33,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IDecoratorManager;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -88,7 +90,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     private IResource getSelectedResource(Object selectedObject) {
         if (selectedObject instanceof IIpsElement) {
-            return ((IIpsElement)selectedObject).getEnclosingResource();
+            return ((IIpsElement)selectedObject).getEnclosingResource().unwrap();
         } else if (selectedObject instanceof IAdaptable) {
             IAdaptable adaptable = (IAdaptable)selectedObject;
             return adaptable.getAdapter(IResource.class);
@@ -172,7 +174,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             setIpsPackageFragment(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
             roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
@@ -257,13 +259,13 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
      * 
-     * @throws CoreException if the contents of the resource can't be parsed.
+     * @throws IpsException if the contents of the resource can't be parsed.
      */
-    public IIpsObject getSelectedIpsObject() throws CoreException {
+    public IIpsObject getSelectedIpsObject() {
         if (selectedResource == null) {
             return null;
         }
-        IIpsElement el = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement el = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }
@@ -280,7 +282,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             // don't validate during control creating!
             try {
                 validatePage();
-            } catch (CoreException coreEx) {
+            } catch (IpsException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 
@@ -292,7 +294,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
      * Validates the page and generates error messages if needed. Can be overridden in subclasses to
      * add specific validation logic.s
      */
-    protected void validatePage() throws CoreException {
+    protected void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage(null);
         IIpsProject project = getIpsProject();
@@ -380,7 +382,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
         IIpsPackageFragment pack = getParentPackageFragment();
         IIpsPackageFragment ipsPackage = pack.getRoot().getIpsPackageFragment(
                 pack.isDefaultPackage() ? name : (pack.getName() + "." + name)); //$NON-NLS-1$
-        IFolder folder = (IFolder)ipsPackage.getCorrespondingResource();
+        IFolder folder = (IFolder)ipsPackage.getCorrespondingResource().unwrap();
         if (folder != null) {
             if (folder.exists()) {
                 setErrorMessage(NLS.bind(Messages.IpsPackagePage_PackageAllreadyExists, ipsPackage.getName()));
@@ -422,7 +424,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                 IIpsPackageFragment ipsPackageFragment = (IIpsPackageFragment)parentElement;
                 try {
                     return ipsPackageFragment.getChildIpsPackageFragments();
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     e.printStackTrace();
                 }
             }

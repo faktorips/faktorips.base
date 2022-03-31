@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IAttribute;
@@ -41,7 +39,7 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
     }
 
     @Override
-    public boolean containsValue(String value, IIpsProject ipsProject) throws CoreException {
+    public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             return false;
@@ -87,13 +85,9 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
         if (getValueSetOwner() instanceof IPolicyCmptTypeAttribute) {
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)getValueSetOwner();
             if (policyCmptTypeAttribute.isOverwrite()) {
-                try {
-                    IAttribute overwrittenAttribute = policyCmptTypeAttribute.findOverwrittenAttribute(getIpsProject());
-                    if (overwrittenAttribute != null) {
-                        return overwrittenAttribute.getValueSet().isContainsNull();
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                IAttribute overwrittenAttribute = policyCmptTypeAttribute.findOverwrittenAttribute(getIpsProject());
+                if (overwrittenAttribute != null) {
+                    return overwrittenAttribute.getValueSet().isContainsNull();
                 }
             }
         }

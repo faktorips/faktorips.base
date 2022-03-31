@@ -116,10 +116,9 @@ public class DecimalTest {
         assertTrue(d1.compareTo(Decimal.valueOf("3.45")) == 0);
     }
 
-    @Test
-    public void testCompareTo_DecimalNull() {
-        Decimal d1 = Decimal.valueOf(1);
-        assertTrue(d1.compareTo(Decimal.NULL) > 0);
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCompareTo_ShouldThrowExceptionForDecimalNull() {
+        Decimal.valueOf(1).compareTo(Decimal.NULL);
     }
 
     @Test(expected = NullPointerException.class)
@@ -289,9 +288,16 @@ public class DecimalTest {
         assertFalse(d.greaterThan(Decimal.valueOf("10.12")));
         assertFalse(d.greaterThan(Decimal.valueOf("10.11")));
         assertFalse(d.greaterThan(Decimal.valueOf("10.1101")));
+    }
 
-        assertFalse(d.greaterThan(Decimal.NULL));
-        assertFalse(d.greaterThan(null));
+    @Test(expected = NullPointerException.class)
+    public void testGreaterThan_ShouldThrowExceptionForNull() {
+        Decimal.valueOf("10.11").greaterThan(null);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGreaterThan_ShouldThrowExceptionForDecimalNull() {
+        Decimal.valueOf("10.11").greaterThan(Decimal.NULL);
     }
 
     @Test
@@ -305,9 +311,16 @@ public class DecimalTest {
 
         assertFalse(d.greaterThanOrEqual(Decimal.valueOf("10.12")));
         assertFalse(d.greaterThanOrEqual(Decimal.valueOf("10.1101")));
+    }
 
-        assertFalse(d.greaterThanOrEqual(Decimal.NULL));
-        assertFalse(d.greaterThanOrEqual(null));
+    @Test(expected = NullPointerException.class)
+    public void testGreaterThanOrEquals_ShouldThrowExceptionForNull() {
+        Decimal.valueOf("10.11").greaterThanOrEqual(null);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGreaterThanOrEquals_ShouldThrowExceptionForDecimalNull() {
+        Decimal.valueOf("10.11").greaterThanOrEqual(Decimal.NULL);
     }
 
     @Test
@@ -318,9 +331,16 @@ public class DecimalTest {
 
         assertFalse(d.lessThan(Decimal.valueOf("3.45")));
         assertFalse(d.lessThan(Decimal.valueOf("3.44")));
+    }
 
-        assertFalse(d.lessThan(Decimal.NULL));
-        assertFalse(d.lessThan(null));
+    @Test(expected = NullPointerException.class)
+    public void testGLessThan_ShouldThrowExceptionForNull() {
+        Decimal.valueOf("3.45").lessThan(null);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testLessThan_ShouldThrowExceptionForDecimalNull() {
+        Decimal.valueOf("3.45").lessThan(Decimal.NULL);
     }
 
     @Test
@@ -332,9 +352,16 @@ public class DecimalTest {
         assertTrue(d.lessThanOrEqual(Decimal.valueOf("3.4500")));
 
         assertFalse(d.lessThanOrEqual(Decimal.valueOf("3.44")));
+    }
 
-        assertFalse(d.lessThanOrEqual(Decimal.NULL));
-        assertFalse(d.lessThanOrEqual(null));
+    @Test(expected = NullPointerException.class)
+    public void testLessThanOrEquals_ShouldThrowExceptionForNull() {
+        Decimal.valueOf("3.45").lessThanOrEqual(null);
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testLessThanOrEquals_ShouldThrowExceptionForDecimalNull() {
+        Decimal.valueOf("3.45").lessThanOrEqual(Decimal.NULL);
     }
 
     @SuppressWarnings("deprecation")

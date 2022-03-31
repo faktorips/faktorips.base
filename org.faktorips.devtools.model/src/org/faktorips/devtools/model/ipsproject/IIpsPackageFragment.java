@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.ipsproject;
 import java.io.InputStream;
 import java.util.Comparator;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -47,9 +47,9 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Returns all IPS source files in the package. Returns an empty array if the package is empty.
      * 
-     * @throws CoreException if an error occurs while searching for the files.
+     * @throws IpsException if an error occurs while searching for the files.
      */
-    IIpsSrcFile[] getIpsSrcFiles() throws CoreException;
+    IIpsSrcFile[] getIpsSrcFiles() throws IpsException;
 
     /**
      * Returns the package fragment which contains this one or null if this one is the
@@ -60,7 +60,7 @@ public interface IIpsPackageFragment extends IIpsElement {
     /**
      * Returns all package fragments which are contained in this one.
      */
-    IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException;
+    IIpsPackageFragment[] getChildIpsPackageFragments() throws IpsException;
 
     /**
      * Returns the {@link Comparator} to be used when displaying this package fragment's contents in
@@ -73,9 +73,9 @@ public interface IIpsPackageFragment extends IIpsElement {
      * <code>IIpsPackageFragment</code>s contained in this PackageFragment. Returns an empty array
      * if no such resources are found.
      * 
-     * @throws CoreException if the members of the corresponding resource cannot be accessed.
+     * @throws IpsException if the members of the corresponding resource cannot be accessed.
      */
-    IResource[] getNonIpsResources() throws CoreException;
+    AResource[] getNonIpsResources() throws IpsException;
 
     /**
      * Returns the package fragment root this package fragment belongs to.
@@ -112,7 +112,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *            local file system
      * @param monitor the given progress monitor
      * 
-     * @throws CoreException if the element could not be created. Reasons include:
+     * @throws IpsException if the element could not be created. Reasons include:
      *             <ul>
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
@@ -121,7 +121,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             </ul>
      */
     IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Creates the IpsSrcFile with the indicated name.
@@ -132,7 +132,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *            local file system
      * @param monitor the given progress monitor
      * 
-     * @throws CoreException if the element could not be created. Reasons include:
+     * @throws IpsException if the element could not be created. Reasons include:
      *             <ul>
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
@@ -141,7 +141,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             </ul>
      */
     IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Creates a IpsSrcFile that contains an IpsObject of the indicated type and with the indicated
@@ -154,7 +154,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *            local file system
      * @param monitor the given progress monitor
      * 
-     * @throws CoreException if the element could not be created. Reasons include:
+     * @throws IpsException if the element could not be created. Reasons include:
      *             <ul>
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
@@ -163,7 +163,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             </ul>
      */
     IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Creates a IpsPackageFragment below this one with the indicated name.
@@ -173,7 +173,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      *            local file system
      * @param monitor the given progress monitor
      * 
-     * @throws CoreException if the element could not be created. Reasons include:
+     * @throws IpsException if the element could not be created. Reasons include:
      *             <ul>
      *             <li>This folder does not exist</li>
      *             <li>A <code>CoreException</code> occurred while creating an underlying resource
@@ -181,7 +181,8 @@ public interface IIpsPackageFragment extends IIpsElement {
      *             <li>The name is not a valid package name
      *             </ul>
      */
-    IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) throws CoreException;
+    IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
+            throws IpsException;
 
     /**
      * Returns an {@link IIpsPackageFragment} that is located in this package and is identified by
@@ -212,7 +213,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Returns <code>true</code> if this IIpsPackageFragement has at least one IIpsPackageFragement
      * as a child.
      */
-    boolean hasChildIpsPackageFragments() throws CoreException;
+    boolean hasChildIpsPackageFragments() throws IpsException;
 
     /**
      * Deletes this package fragment by deleting
@@ -225,6 +226,6 @@ public interface IIpsPackageFragment extends IIpsElement {
      * @throws UnsupportedOperationException If the package fragment is stored in an archive
      */
     @Override
-    void delete() throws CoreException;
+    void delete() throws IpsException;
 
 }

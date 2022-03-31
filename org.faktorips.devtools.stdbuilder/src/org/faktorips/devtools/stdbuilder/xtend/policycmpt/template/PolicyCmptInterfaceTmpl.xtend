@@ -1,14 +1,15 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
-
+import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAssociationTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.ValidationRuleTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.template.PolicyCmptCreateBuilderTmpl
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class PolicyCmptInterfaceTmpl {
 
@@ -51,10 +52,21 @@ class PolicyCmptInterfaceTmpl {
 
                 «FOR it : attributesIncludingAbstract»
                     «IF published»
-                        «allowedValuesMethod»
+                        «FOR rule : AllowedValuesForAttributeRule.getGenerateValueSetTypeRulesFor(it)»
+                            «allowedValuesMethod(rule)»
+                        «ENDFOR»
+                        «allowedValuesMethodWithMoreConcreteTypeForByType»
+                        «allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent»
                         «getter»
                         «setter»
                     «ENDIF»
+                «ENDFOR»
+
+                «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_BY_TYPE)»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_BY_TYPE)»
+                «ENDFOR»
+                «FOR attributeSuperType : attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(GenerateValueSetType.GENERATE_UNIFIED)»
+                    «allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(it, attributeSuperType, GenerateValueSetType.GENERATE_UNIFIED)»
                 «ENDFOR»
 
                 «FOR it : associations» «methods» «ENDFOR»

@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -95,7 +94,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         if (StringUtils.isEmpty(parameterName)) {
@@ -132,7 +131,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     protected void validateColumn(String column, String propertyName, String propertyDisplayName, MessageList list) {
         if (ValidationUtils.checkStringPropertyNotEmpty(column, propertyDisplayName, this, propertyName, "", list)) { //$NON-NLS-1$
             if (getTableStructure().getColumn(column) == null) {
-                String text = NLS.bind(Messages.ColumnRange_msgMissingColumn, column);
+                String text = MessageFormat.format(Messages.ColumnRange_msgMissingColumn, column);
                 list.add(new Message("", text, Message.ERROR, this, propertyName)); //$NON-NLS-1$
             }
         }
@@ -141,7 +140,8 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     protected void validateTwoColumnSameDatatype(MessageList list, String fromColumnDatatype, String toColumnDatatype) {
         if (rangeType.isTwoColumn() && toColumnDatatype != null && fromColumnDatatype != null) {
             if (!toColumnDatatype.equals(fromColumnDatatype)) {
-                String text = NLS.bind(Messages.ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype, to);
+                String text = MessageFormat
+                        .format(Messages.ColumnRange_msgTwoColumnRangeFromToColumnWithDifferentDatatype, to);
                 list.add(new Message(IColumnRange.MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE,
                         text, Message.ERROR, this));
             }

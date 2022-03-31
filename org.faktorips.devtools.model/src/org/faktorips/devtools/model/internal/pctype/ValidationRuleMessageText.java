@@ -11,10 +11,10 @@
 package org.faktorips.devtools.model.internal.pctype;
 
 import java.beans.PropertyChangeListener;
+import java.text.MessageFormat;
 import java.util.LinkedHashSet;
 import java.util.regex.Matcher;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -54,7 +54,7 @@ public class ValidationRuleMessageText extends InternationalString implements IV
             LinkedHashSet<String> thisLocaleParameters = extractParameters(localizedString.getValue());
             for (String param : thisLocaleParameters) {
                 if (defaultLocalParameters.add(param)) {
-                    list.add(new Message(IValidationRule.MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID, NLS.bind(
+                    list.add(new Message(IValidationRule.MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID, MessageFormat.format(
                             Messages.ValidationRuleMessageText_warning_invalidParameter, param, localizedString
                                     .getLocale().getDisplayLanguage()),
                             Message.WARNING));

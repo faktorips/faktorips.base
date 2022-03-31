@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -33,14 +32,14 @@ import org.junit.Test;
 public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
-    public void testCheckInitialConditionsValid() throws OperationCanceledException, CoreException {
+    public void testCheckInitialConditionsValid() throws OperationCanceledException {
         IpsRefactoringProcessor ipsRefactoringProcessor = new RenameEnumAttributeProcessor(enumAttribute);
         RefactoringStatus status = ipsRefactoringProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
-    public void testCheckFinalConditionsValid() throws OperationCanceledException, CoreException {
+    public void testCheckFinalConditionsValid() throws OperationCanceledException {
         IpsRenameProcessor ipsRenameProcessor = new RenameEnumAttributeProcessor(enumAttribute);
         ipsRenameProcessor.setNewName("test");
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
@@ -49,7 +48,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testCheckFinalConditionsInvalidAttributeName() throws OperationCanceledException, CoreException {
+    public void testCheckFinalConditionsInvalidAttributeName() throws OperationCanceledException {
         // Create another enumeration attribute to test against
         IEnumAttribute otherEnumAttribute = enumType.newEnumAttribute();
         otherEnumAttribute.setName("otherEnumAttribute");
@@ -62,7 +61,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttribute() throws CoreException {
+    public void testRenameEnumAttribute() {
         enumType.setAbstract(true);
 
         IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
@@ -88,7 +87,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeReferencedByEnumContent() throws CoreException {
+    public void testRenameEnumAttributeReferencedByEnumContent() {
         String newAttributeName = "foo";
         performRenameRefactoring(enumAttribute, newAttributeName);
 
@@ -98,7 +97,7 @@ public class RenameEnumAttributeProcessorTest extends AbstractIpsRefactoringTest
     }
 
     @Test
-    public void testRenameEnumAttributeUsedInLiteralName() throws CoreException {
+    public void testRenameEnumAttributeUsedInLiteralName() {
         IEnumType modelEnumType = newEnumType(ipsProject, "ModelEnumType");
         modelEnumType.setExtensible(false);
 

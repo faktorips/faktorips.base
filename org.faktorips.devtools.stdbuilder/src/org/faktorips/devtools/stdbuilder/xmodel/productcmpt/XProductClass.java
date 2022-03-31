@@ -19,9 +19,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -33,6 +31,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -46,18 +45,14 @@ public abstract class XProductClass extends XType {
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            if (!getType().isValid(getIpsProject())) {
-                return false;
+        if (!getType().isValid(getIpsProject())) {
+            return false;
+        } else {
+            if (isConfigurationForPolicyCmptType()) {
+                return getPolicyCmptClass().getType().isValid(getPolicyCmptClass().getIpsProject());
             } else {
-                if (isConfigurationForPolicyCmptType()) {
-                    return getPolicyCmptClass().getType().isValid(getPolicyCmptClass().getIpsProject());
-                } else {
-                    return true;
-                }
+                return true;
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -145,7 +140,23 @@ public abstract class XProductClass extends XType {
             attributes = nodesForParts;
         }
         return attributes.stream().filter(filter)
-                .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    public Set<XPolicyAttribute> attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(
+            Predicate<XPolicyAttribute> filter,
+            GenerateValueSetType valueSetType) {
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
+            if (policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
+                return policyCmptClass.attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(valueSetType)
+                        .stream()
+                        .filter(a -> a.isProductRelevant())
+                        .filter(filter)
+                        .collect(Collectors.toCollection(LinkedHashSet::new));
+            }
+        }
+        return Set.of();
     }
 
     /**
@@ -162,7 +173,7 @@ public abstract class XProductClass extends XType {
             }
             return policyCmptClass.getAttributes().stream()
                     .filter(a -> a.isProductRelevant() && a.isGenerateGetAllowedValuesForAndGetDefaultValue())
-                    .collect(Collectors.toCollection(LinkedHashSet<XPolicyAttribute>::new));
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
 
         }
         return resultingAttributes;

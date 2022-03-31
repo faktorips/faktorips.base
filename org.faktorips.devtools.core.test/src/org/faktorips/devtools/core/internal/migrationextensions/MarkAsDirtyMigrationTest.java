@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -34,21 +33,21 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private MarkAsDirtyMigration migration;
 
-    private void setUpMigration() throws CoreException {
+    private void setUpMigration() {
         ipsProject = newIpsProject();
         migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", ImmutableSet.of(IpsObjectType.POLICY_CMPT_TYPE,
                 IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.ENUM_TYPE), "47.11", "Lorem Ipsum");
     }
 
     @Test
-    public void testTargetVersion() throws CoreException {
+    public void testTargetVersion() {
         setUpMigration();
 
         assertThat(migration.getTargetVersion(), is("47.11"));
     }
 
     @Test
-    public void testDescription() throws CoreException {
+    public void testDescription() {
         setUpMigration();
 
         assertThat(migration.getDescription(), is("Lorem Ipsum"));
@@ -58,7 +57,7 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     public void testMigrate_SrcFilesAreDirty() throws Exception {
         setUpMigration();
         IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicy1");
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProduct");
         ITableStructure tableStructure = newTableStructure(ipsProject, "TestStructure");
         IEnumType enumType = newEnumType(ipsProject, "TestEnum");

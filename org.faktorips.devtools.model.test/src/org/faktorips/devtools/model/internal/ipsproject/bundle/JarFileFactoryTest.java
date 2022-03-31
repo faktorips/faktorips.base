@@ -18,14 +18,13 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -37,7 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class JarFileFactoryTest extends AbstractIpsPluginTest {
 
-    private IFile jarFile;
+    private AFile jarFile;
 
     @Override
     @Before
@@ -45,17 +44,17 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         super.setUp();
         String folder = getClass().getPackage().getName().replace(".", "/");
         InputStream is = getClass().getClassLoader().getResourceAsStream(folder + "/helloWorld.jar");
-        IProject root = newIpsProject("TestJarLoading").getProject();
-        jarFile = root.getFile(new Path("helloWorld.jar"));
-        jarFile.create(is, true, null);
+        AProject root = newIpsProject("TestJarLoading").getProject();
+        jarFile = root.getFile(Path.of("helloWorld.jar"));
+        jarFile.create(is, null);
     }
 
     @Test
     public void testGetAbsolutePath_inFileSystem() throws Exception {
-        IPath jarPath = new Path("/any/where/file.jar");
+        Path jarPath = Path.of("/any/where/file.jar");
         JarFileFactory jarFileFactory = new JarFileFactory(jarPath);
 
-        IPath absolutePath = jarFileFactory.getAbsolutePath(jarPath);
+        Path absolutePath = jarFileFactory.getAbsolutePath(jarPath);
 
         assertEquals(jarPath, absolutePath);
     }
@@ -64,18 +63,18 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
     public void testGetAbsolutePath_inWorkspace() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         IIpsObject newObject = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT, "anyName");
-        IResource resource = newObject.getEnclosingResource();
-        IPath path = resource.getFullPath();
+        AResource resource = newObject.getEnclosingResource();
+        Path path = resource.getWorkspaceRelativePath();
         JarFileFactory jarFileFactory = new JarFileFactory(path);
 
-        IPath absolutePath = jarFileFactory.getAbsolutePath(path);
+        Path absolutePath = jarFileFactory.getAbsolutePath(path);
 
         assertEquals(resource.getLocation(), absolutePath);
     }
 
     @Test
     public void testLoadAndCloseJar() throws Exception {
-        JarFileFactory jarFileFactory = new JarFileFactory(jarFile.getFullPath());
+        JarFileFactory jarFileFactory = new JarFileFactory(jarFile.getLocation());
         jarFileFactory.setCloseDelay(500);
         JarFile openJar = jarFileFactory.createJarFile();
 
@@ -88,8 +87,11 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         Thread.sleep(1100);
 
         try {
-            openJar.entries();
-            fail("expected an exception");
+            int i = 0;
+            while (openJar.entries() != null && i++ < 10) {
+                Thread.sleep(500);
+            }
+            fail("expected an IllegalStateException because the jar should be closed");
         } catch (IllegalStateException e) {
             // is expected
         }
@@ -97,7 +99,7 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testLoadAndLoadAgainJar() throws Exception {
-        JarFileFactory jarFileFactory = new JarFileFactory(jarFile.getFullPath());
+        JarFileFactory jarFileFactory = new JarFileFactory(jarFile.getLocation());
         jarFileFactory.setCloseDelay(500);
         JarFile openJar = jarFileFactory.createJarFile();
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -31,6 +30,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.ui.CompletionUtil;
@@ -168,9 +168,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             newConstrainedAssociation.setMatchingAssociationSource(association.getPolicyCmptType().getQualifiedName());
             if (needToSave) {
                 try {
-                    newConstrainedAssociation.getProductCmptType().getIpsSrcFile().save(false,
-                            new NullProgressMonitor());
-                } catch (CoreException e) {
+                    newConstrainedAssociation.getProductCmptType().getIpsSrcFile().save(new NullProgressMonitor());
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -188,8 +187,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             oldMatchingAssociation.setMatchingAssociationSource(StringUtils.EMPTY);
             if (needToSave) {
                 try {
-                    oldMatchingAssociation.getProductCmptType().getIpsSrcFile().save(false, new NullProgressMonitor());
-                } catch (CoreException e) {
+                    oldMatchingAssociation.getProductCmptType().getIpsSrcFile().save(new NullProgressMonitor());
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -480,7 +479,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 if (StringUtils.isNotEmpty(productCmptType)) {
                     label = label + NLS.bind(Messages.AssociationEditDialog_qualifiedByType, productCmptType);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
             return StringUtils.rightPad(label, 80);
@@ -497,7 +496,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     } else {
                         note = note + Messages.AssociationEditDialog_multiplicityIsDefineddPerQualifier;
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -507,7 +506,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public boolean isQualificationPossible() {
             try {
                 return getAssociation().isQualificationPossible(ipsProject);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return false;
             }
@@ -603,7 +602,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getAssociation()
                         .findDefaultMatchingProductCmptTypeAssociation(ipsProject);
                 return matchingProductCmptTypeAssociation;
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return null;
             }

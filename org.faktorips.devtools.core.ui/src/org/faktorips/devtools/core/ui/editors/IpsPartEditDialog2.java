@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.ContentChangeEvent;
@@ -272,7 +272,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             MessageList objMsgList = part.getIpsObject().validate(part.getIpsProject());
             msgList.add(objMsgList.getMessagesFor(part));
             addAdditionalDialogMessages(msgList);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return;
         }

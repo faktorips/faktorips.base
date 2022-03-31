@@ -17,7 +17,6 @@ import java.util.Map;
 
 import com.google.common.primitives.Ints;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
@@ -26,7 +25,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueTypeMismatch;
 
@@ -49,7 +47,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
     }
 
     @Override
-    public void setContentType(String enumType) throws CoreException {
+    public void setContentType(String enumType) {
         enumContent.setEnumType(enumType);
     }
 
@@ -98,11 +96,7 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
         for (int currentPosition : columnOrder) {
             if (currentPosition == 0) {
                 for (IEnumValue currentEnumValue : getContentValues()) {
-                    try {
-                        currentEnumValue.newEnumAttributeValue();
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    currentEnumValue.newEnumAttributeValue();
                 }
             }
         }

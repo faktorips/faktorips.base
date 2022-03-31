@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.treestructure.ProductCmptReference;
@@ -139,7 +138,7 @@ public class DeepCopyPreviewTest extends AbstractIpsPluginTest {
         assertEquals("XSuper 2015-09", newName);
     }
 
-    private void setVersionAndStrategy() throws CoreException {
+    private void setVersionAndStrategy() {
         IIpsProjectProperties properties = suPerIpsProject.getProperties();
         DateBasedProductCmptNamingStrategy productCmptNamingStrategy = (DateBasedProductCmptNamingStrategy)new DateBasedProductCmptNamingStrategyFactory()
                 .newProductCmptNamingStrategy(suPerIpsProject);

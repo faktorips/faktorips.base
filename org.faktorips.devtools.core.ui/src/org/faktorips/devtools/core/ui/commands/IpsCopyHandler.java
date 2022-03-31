@@ -82,7 +82,7 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
                     }
                 }
 
-                IResource resource = selected.getEnclosingResource();
+                IResource resource = selected.getEnclosingResource().unwrap();
                 if (resource != null) {
                     copiedResources.add(resource);
                 }

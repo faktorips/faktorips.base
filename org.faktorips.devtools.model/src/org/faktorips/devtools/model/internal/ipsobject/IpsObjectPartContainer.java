@@ -11,21 +11,22 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.beans.PropertyChangeEvent;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
@@ -54,6 +55,7 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
@@ -445,13 +447,25 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * 
      */
     protected void initPartContainersFromXml(Element element) {
-        HashMap<String, IIpsObjectPart> idPartMap = createIdPartMap();
+        Map<String, IIpsObjectPart> idPartMap = createIdPartMap();
         reinitPartCollections();
-        initPartContainersFromXml(element, idPartMap);
+        Map<String, IIpsObjectPart> newIdPartMap = initPartContainersFromXml(element, idPartMap);
+        deleteOldParts(idPartMap, newIdPartMap);
     }
 
-    protected void initPartContainersFromXml(Element element, Map<String, IIpsObjectPart> idPartMap) {
-        Set<String> idSet = new HashSet<>();
+    private void deleteOldParts(Map<String, IIpsObjectPart> oldIdPartMap, Map<String, IIpsObjectPart> newIdPartMap) {
+        for (Iterator<Entry<String, IIpsObjectPart>> iterator = oldIdPartMap.entrySet().iterator(); iterator
+                .hasNext();) {
+            Entry<String, IIpsObjectPart> entry = iterator.next();
+            if (!newIdPartMap.containsKey(entry.getKey())) {
+                ((IpsObjectPart)entry.getValue()).markAsDeleted();
+            }
+        }
+    }
+
+    protected Map<String, IIpsObjectPart> initPartContainersFromXml(Element element,
+            Map<String, IIpsObjectPart> idPartMap) {
+        Map<String, IIpsObjectPart> newIdPartMap = new HashMap<>();
 
         NodeList nl = element.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
@@ -464,7 +478,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                 continue;
             }
             String id = partEl.getAttribute(IIpsObjectPart.PROPERTY_ID).trim();
-            IIpsObjectPart part = idPartMap.get(id);
+            IIpsObjectPart part = null;
+            if (IpsStringUtils.isNotEmpty(id)) {
+                part = idPartMap.get(id);
+            }
             if (part == null) {
                 part = newPart(partEl, getNextPartId());
             } else {
@@ -476,12 +493,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             // part might be null if the partEl does not represent a IpsObjectPart!
             if (part != null) {
                 part.initFromXml(partEl);
-                if (!idSet.add(part.getId())) {
+                if (newIdPartMap.put(part.getId(), part) != null) {
                     throw new RuntimeException("Duplicated Part-ID in Object " + part.getParent().getName() + ", ID: " //$NON-NLS-1$ //$NON-NLS-2$
                             + part.getId());
                 }
             }
         }
+        return newIdPartMap;
     }
 
     private HashMap<String, IIpsObjectPart> createIdPartMap() {
@@ -653,7 +671,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     protected abstract IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType);
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         if (isNotInIpsRoot()) {
             return new MessageList();
         }
@@ -698,7 +716,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             boolean isCorrectFormat = versionProvider.isCorrectVersionFormat(sinceVersion);
             if (!isCorrectFormat) {
-                String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidVersionFormat,
+                String text = MessageFormat.format(Messages.IpsObjectPartContainer_msgInvalidVersionFormat,
                         versionProvider.getVersionFormat());
                 Message message = Message.newError(IIpsObjectPartContainer.MSGCODE_INVALID_VERSION_FORMAT, text, this,
                         IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
@@ -710,7 +728,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void validateDescriptionCount(MessageList result, int languageCount) {
         int descriptionCount = descriptions.size();
         if (descriptionCount != languageCount) {
-            String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidDescriptionCount, descriptionCount,
+            String text = MessageFormat.format(Messages.IpsObjectPartContainer_msgInvalidDescriptionCount,
+                    descriptionCount,
                     languageCount);
             Message message = Message.newWarning(IIpsObjectPartContainer.MSGCODE_INVALID_DESCRIPTION_COUNT, text, this);
             result.add(message);
@@ -720,13 +739,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     private void validateLabelCount(MessageList result, int languageCount) {
         int labelCount = labels.size();
         if (labelCount != languageCount) {
-            String text = NLS.bind(Messages.IpsObjectPartContainer_msgInvalidLabelCount, labelCount, languageCount);
+            String text = MessageFormat.format(Messages.IpsObjectPartContainer_msgInvalidLabelCount, labelCount,
+                    languageCount);
             Message message = Message.newWarning(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT, text, this);
             result.add(message);
         }
     }
 
-    private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void execCustomValidations(MessageList result, IIpsProject ipsProject) {
         Class<? extends IpsObjectPartContainer> thisClass = getClass();
         Set<ICustomValidation<? extends IIpsObjectPartContainer>> customValidations = getIpsModel()
                 .getCustomModelExtensions().getCustomValidations(thisClass);
@@ -746,7 +766,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This is not possible. We'll have to content ourselves with the unsafe cast.
      */
     private MessageList getValidationMessages(IIpsProject ipsProject,
-            ICustomValidation<? extends IIpsObjectPartContainer> validation) throws CoreException {
+            ICustomValidation<? extends IIpsObjectPartContainer> validation) {
         @SuppressWarnings("unchecked")
         MessageList msgList = ((ICustomValidation<IIpsObjectPartContainer>)validation).validate(this, ipsProject);
         return msgList;
@@ -777,7 +797,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * After validation method. Perform operations which will be executed after validation of this
      * object part container.
      */
-    protected void afterValidateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void afterValidateThis(MessageList result, IIpsProject ipsProject) {
         result.add(extensionProperties.validate());
         validateChildren(result, ipsProject);
         if (IpsModel.TRACE_VALIDATION) {
@@ -797,7 +817,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Validates part container's children.
      */
-    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) {
         IIpsElement[] children = getChildren();
         for (IIpsElement element : children) {
             MessageList childResult = ((IpsObjectPartContainer)element).validate(ipsProject);
@@ -835,11 +855,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
      * 
-     * @throws CoreException Subclasses may wrap any occurring exceptions into a CoreException and
+     * @throws IpsException Subclasses may wrap any occurring exceptions into a CoreException and
      *             propagate it trough this method.
      * @throws NullPointerException if list is <code>null</code>.
      */
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         // empty default method
     }
 
@@ -1080,7 +1100,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct caption.
      */
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }
@@ -1090,7 +1110,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * provide the correct plural caption.
      */
     @Override
-    public String getPluralCaption(Locale locale) throws CoreException {
+    public String getPluralCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
         return ""; //$NON-NLS-1$
     }

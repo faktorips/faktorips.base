@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.type;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
@@ -175,9 +175,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * this attribute instance will be in the returned array all attributes in the supertype
      * hierarchy with the same name will be neglected.
      * 
-     * @throws CoreException If an exception occurs while collecting the attributes.
+     * @throws IpsException If an exception occurs while collecting the attributes.
      */
-    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws CoreException;
+    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this type's associations within the supertype hierarchy.
@@ -185,9 +185,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Constrained associations are not added to the result if a constraining association is already
      * added.
      * 
-     * @throws CoreException If an exception occurs while collecting the associations.
+     * @throws IpsException If an exception occurs while collecting the associations.
      */
-    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws CoreException;
+    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -277,10 +277,10 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
     public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Returns all associations that have the indicated target and association type in the current
@@ -298,7 +298,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject ipsProject,
-            boolean includeSupertypes) throws CoreException;
+            boolean includeSupertypes) throws IpsException;
 
     /**
      * Returns the type's associations.
@@ -356,9 +356,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param ipsProject The IPS project that is used to determine the types within the supertype
      *            hierarchy.
-     * @throws CoreException If an exception occurs during the execution of this method.
+     * @throws IpsException If an exception occurs during the execution of this method.
      */
-    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws CoreException;
+    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the type's methods.
@@ -393,9 +393,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException If project is <code>null</code>.
-     * @throws CoreException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findMethod(String signature, IIpsProject ipsProject) throws CoreException;
+    public IMethod findMethod(String signature, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches a method with the given name and the given parameters in the type and its supertype
@@ -407,9 +407,9 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException If project is <code>null</code>.
-     * @throws CoreException If an error occurs while searching.
+     * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws CoreException;
+    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new method and returns it.
@@ -446,7 +446,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      */
     public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Creates new methods in this type that override the given methods. Note that it is not checked
@@ -538,11 +538,11 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Returns an array of all associations of all super types not yet overwritten by this component
      * type.
      */
-    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws CoreException;
+    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new sub type hierarchy for the type and returns it.
      */
-    public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
+    public ITypeHierarchy getSubtypeHierarchy() throws IpsException;
 
 }

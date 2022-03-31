@@ -84,11 +84,11 @@ public class IpsElementDragListener implements DragSourceListener {
             list.add(((IResource)selected).getLocation().toOSString());
         } else if (selected instanceof IIpsElement) {
             if (((IIpsElement)selected).getEnclosingResource() != null) {
-                list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toOSString());
+                list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toString());
             }
         } else if (selected instanceof IIpsSrcFileWrapper) {
             IIpsSrcFileWrapper ipsSrcFileWrapper = (IIpsSrcFileWrapper)selected;
-            list.add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toOSString());
+            list.add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toString());
         }
     }
 

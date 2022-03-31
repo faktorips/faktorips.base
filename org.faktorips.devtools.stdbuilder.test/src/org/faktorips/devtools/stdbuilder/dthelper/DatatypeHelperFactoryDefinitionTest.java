@@ -31,8 +31,8 @@ public class DatatypeHelperFactoryDefinitionTest {
         IConfigurationElement configElement = mock(IConfigurationElement.class);
 
         when(configElement.getName()).thenReturn(DatatypeHelperFactoryDefinition.FACTORY_DEFINTIION);
-        when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.DATATYPE_CLASS)).thenReturn(
-                datatype);
+        when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.DATATYPE_CLASS))
+                .thenReturn(datatype);
         when(configElement.createExecutableExtension(DatatypeHelperFactoryDefinition.FACTORY_CLASS))
                 .thenReturn(factory);
 

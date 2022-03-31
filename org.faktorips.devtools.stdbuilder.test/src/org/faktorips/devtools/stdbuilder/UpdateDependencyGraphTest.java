@@ -39,7 +39,7 @@ public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
         IPolicyCmptType typeA = newPolicyCmptTypeWithoutProductCmptType(project, "A");
         IPolicyCmptType typeB = newPolicyCmptTypeWithoutProductCmptType(project, "B");
         typeB.setSupertype(typeA.getQualifiedName());
-        typeB.getIpsSrcFile().save(true, null);
+        typeB.getIpsSrcFile().save(null);
 
         // B depends on A
         fullBuild();
@@ -52,14 +52,14 @@ public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
 
         // delete the dependency
         typeB.setSupertype("");
-        typeB.getIpsSrcFile().save(true, null);
+        typeB.getIpsSrcFile().save(null);
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(0, dependency.length);
 
         // recreate the dependency
         typeB.setSupertype(typeA.getQualifiedName());
-        typeB.getIpsSrcFile().save(true, null);
+        typeB.getIpsSrcFile().save(null);
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
@@ -68,7 +68,7 @@ public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
                 dependency[0]);
 
         typeB.setSupertype("");
-        typeB.getIpsSrcFile().save(true, null);
+        typeB.getIpsSrcFile().save(null);
         incrementalBuild();
         dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(0, dependency.length);

@@ -22,12 +22,11 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.abstracttest.matcher.FluentAssert.SetUp;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -35,18 +34,18 @@ import org.junit.Test;
 
 public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
-    private IJavaProject javaProject;
+    private AJavaProject javaProject;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        IProject project = newPlatformProject(UUID.randomUUID().toString());
+        AProject project = newPlatformProject(UUID.randomUUID().toString());
         javaProject = addJavaCapabilities(project);
     }
 
     @Test
     public void testApplicableTo() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             testIpsModelExtensions.setIpsProjectConfigurators(
@@ -62,7 +61,7 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsGroovySupported() throws Exception {
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             GroovyIpsProjectConfigurator groovyIpsProjectConfigurator = new GroovyIpsProjectConfigurator();
             NonGroovyIpsProjectConfigurator nonGroovyIpsProjectConfigurator = new NonGroovyIpsProjectConfigurator();
@@ -82,18 +81,17 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class NonApplicableIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return false;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
             fail("should never be called");
         }
 
@@ -102,18 +100,17 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class GroovyIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
             fail("should never be called");
         }
 
@@ -122,18 +119,17 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     private static class NonGroovyIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         @Override
-        public boolean canConfigure(IJavaProject javaProject) {
+        public boolean canConfigure(AJavaProject javaProject) {
             return true;
         }
 
         @Override
-        public boolean isGroovySupported(IJavaProject javaProject) {
+        public boolean isGroovySupported(AJavaProject javaProject) {
             return false;
         }
 
         @Override
-        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties)
-                throws CoreException {
+        public void configureIpsProject(IIpsProject ipsProject, IpsProjectCreationProperties creationProperties) {
             fail("should never be called");
         }
 

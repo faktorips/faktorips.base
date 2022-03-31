@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
@@ -52,13 +51,13 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     @Override
-    protected void searchDetails() throws CoreException {
+    protected void searchDetails() {
         Set<IType> searchedTypes = getTypes(getMatchingSrcFiles());
 
         addMatches(searchedTypes);
     }
 
-    private void addMatches(Set<IType> searchedTypes) throws CoreException {
+    private void addMatches(Set<IType> searchedTypes) {
         WildcardMatcher stringMatcher = new WildcardMatcher(getSearchModel().getSearchTerm());
         ClassMatcher classMatcher = new ClassMatcher(getSearchModel().getSearchedClazzes());
         ExtensionPropertyMatcher extensionPropertyMatcher = new ExtensionPropertyMatcher(stringMatcher);

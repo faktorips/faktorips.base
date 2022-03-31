@@ -10,14 +10,12 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.ParameterNode;
@@ -64,16 +62,13 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
     }
 
     String getDescription(IParameter parameter) {
-        try {
-            Datatype datatype = parameter.findDatatype(getIpsProject());
-            if (datatype instanceof IIpsElement) {
-                IMultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
-                return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
-            } else {
-                return NLS.bind(Messages.ParameterParser_description, parameter.getName(), parameter.getDatatype());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        Datatype datatype = parameter.findDatatype(getIpsProject());
+        if (datatype instanceof IIpsElement) {
+            IMultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+            return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
+        } else {
+            return MessageFormat.format(Messages.ParameterParser_description, parameter.getName(),
+                    parameter.getDatatype());
         }
     }
 

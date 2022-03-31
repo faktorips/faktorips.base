@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -69,7 +68,7 @@ public class AttributeValueEditComposite
     }
 
     @Override
-    protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
+    protected void createEditFields(List<EditField<?>> editFields) {
         createValueEditField(editFields);
         createEditFieldsForExtensionProperties();
     }

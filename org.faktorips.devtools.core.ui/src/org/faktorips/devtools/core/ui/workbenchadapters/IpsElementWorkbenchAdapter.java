@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 
@@ -27,7 +27,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
             IIpsElement ipsElement = (IIpsElement)o;
             try {
                 return ipsElement.getChildren();
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return new Object[0];
             }

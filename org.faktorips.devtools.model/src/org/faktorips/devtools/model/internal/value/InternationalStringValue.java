@@ -11,12 +11,12 @@
 package org.faktorips.devtools.model.internal.value;
 
 import java.beans.PropertyChangeListener;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.internal.InternationalString;
@@ -141,7 +141,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
                 LocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
                 if (StringUtils.isEmpty(iLocalizedString.getValue())) {
-                    newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, NLS.bind(
+                    newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, MessageFormat.format(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
                                     .getDisplayLanguage()),
                             Message.WARNING, objectProperty));

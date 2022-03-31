@@ -36,6 +36,12 @@ public class CardinalityRange extends IntegerRange {
     public static final CardinalityRange FULL_RANGE = new CardinalityRange(0, Integer.MAX_VALUE, 0);
 
     /**
+     * A cardinality that describes the empty range. It is used to mark associations as excluded in
+     * product variants.
+     */
+    public static final CardinalityRange EXCLUDED = new CardinalityRange();
+
+    /**
      * <code>serialVersionUID</code> for {@link CardinalityRange}s
      */
     private static final long serialVersionUID = -6655684714703290189L;
@@ -61,6 +67,16 @@ public class CardinalityRange extends IntegerRange {
             throw new IllegalArgumentException(
                     "The default cardinality is out of range. The default value must be in between the lower and upper bound or equal to one of them (though not Integer.MAX_VALUE).");
         }
+    }
+
+    /**
+     * Creates a new empty {@link CardinalityRange}. These are only used to mark associations as
+     * excluded in product variants.
+     */
+    @SuppressWarnings("deprecation")
+    private CardinalityRange() {
+        super();
+        defaultCardinality = 0;
     }
 
     public Integer getDefaultCardinality() {

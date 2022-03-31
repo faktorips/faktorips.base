@@ -15,9 +15,9 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.swt.widgets.Display;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.TestUtil;
@@ -52,7 +52,7 @@ public class HtmlExportOperationTest extends AbstractHtmlExportPluginTest {
         Display.getDefault().syncExec(() -> {
             try {
                 operation.run(new NullProgressMonitor());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 fail(e.getMessage());
             }
         });

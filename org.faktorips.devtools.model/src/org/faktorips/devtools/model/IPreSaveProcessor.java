@@ -15,7 +15,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
  * Implementations of this interface are called whenever an {@link IpsSrcFile} is
- * {@link IpsSrcFile#save(boolean, org.eclipse.core.runtime.IProgressMonitor) saved} to allow
+ * {@link IpsSrcFile#save(org.eclipse.core.runtime.IProgressMonitor) saved} to allow
  * additional processing.
  * <p>
  * Every {@link IPreSaveProcessor} is responsible for a specific {@link IpsObjectType}, which it

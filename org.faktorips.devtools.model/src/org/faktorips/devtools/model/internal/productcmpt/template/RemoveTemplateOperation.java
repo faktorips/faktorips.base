@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.template;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
@@ -31,7 +30,7 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
  * 
  * @author dirmeier
  */
-public class RemoveTemplateOperation implements IWorkspaceRunnable {
+public class RemoveTemplateOperation implements ICoreRunnable {
 
     private final IProductCmpt productCmpt;
 
@@ -40,7 +39,7 @@ public class RemoveTemplateOperation implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         RemoveTemplateModification modification = new RemoveTemplateModification(productCmpt);
         ((IpsModel)productCmpt.getIpsModel()).executeModificationsWithSingleEvent(modification);
     }
@@ -55,7 +54,7 @@ public class RemoveTemplateOperation implements IWorkspaceRunnable {
         }
 
         @Override
-        protected boolean execute() throws CoreException {
+        protected boolean execute() {
             processPropertyValues(productCmpt);
             processLinks(productCmpt);
             for (IProductCmptGeneration container : productCmpt.getProductCmptGenerations()) {

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-nexus-base-11</artifactId>
+    <version>22.6.0-SNAPSHOT</version>
+    <relativePath>../../org.faktorips.aggregator/nexus11/pom.xml</relativePath>
+  </parent>
+
+  <properties>
+    <revapi.skip>true</revapi.skip>
+  </properties>
+
+  <groupId>org.faktorips</groupId>
+  <artifactId>faktorips-abstraction</artifactId>
+
+  <packaging>jar</packaging>
+
+  <name>Faktor-IPS Abstractions</name>
+  <description>Abstractions used in the Faktor-IPS design time tools</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.faktorips</groupId>
+      <artifactId>faktorips-fl</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <!--        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.common</artifactId>
+            <version>3.10.300</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+            <version>3.15.200</version>
+        </dependency> 
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.resources</artifactId>
+            <version>3.13.300</version>
+        </dependency>-->
+    <dependency>
+      <groupId>org.eclipse.jdt</groupId>
+      <artifactId>org.eclipse.jdt.core</artifactId>
+      <version>3.28.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+  </dependencies>
+</project>

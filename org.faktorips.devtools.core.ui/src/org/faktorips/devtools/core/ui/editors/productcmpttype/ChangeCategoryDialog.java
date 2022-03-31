@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
@@ -59,7 +59,7 @@ public class ChangeCategoryDialog extends ElementListSelectionDialog {
     private void setElements() {
         try {
             categories.addAll(productCmptType.findCategories(productCmptType.getIpsProject()));
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // Recover by not showing any categories, just log the exception
             IpsPlugin.log(e);
         }

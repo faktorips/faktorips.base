@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
@@ -72,7 +72,7 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
         } else {
             msg = Messages.MultilingualMismatchEntry_convertToStringValue;
         }
-        return NLS.bind(msg, new String[] { getPropertyName(), defaultLanguage });
+        return MessageFormat.format(msg, getPropertyName(), defaultLanguage);
     }
 
     @Override

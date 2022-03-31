@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -47,7 +48,7 @@ public class ColumnTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         column = table.newColumn();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test
@@ -106,15 +107,15 @@ public class ColumnTest extends AbstractIpsPluginTest {
         column.setName("Boolean");
         column.setDatatype(Datatype.STRING.getQualifiedName());
         MessageList ml = column.validate(ipsSrcFile.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+        assertThat(ml, hasMessageCode(IColumn.MSGCODE_INVALID_NAME));
 
         column.setName("integer");
         ml = column.validate(ipsSrcFile.getIpsProject());
-        assertNull(ml.getMessageByCode(IColumn.MSGCODE_INVALID_NAME));
+        assertThat(ml, lacksMessageCode(IColumn.MSGCODE_INVALID_NAME));
     }
 
     @Test
-    public void testFindValueDatatype() throws CoreException {
+    public void testFindValueDatatype() {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 

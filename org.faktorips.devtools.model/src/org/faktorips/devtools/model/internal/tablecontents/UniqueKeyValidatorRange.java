@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,7 +21,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IIndex;
@@ -404,7 +404,7 @@ public class UniqueKeyValidatorRange {
     }
 
     private void createValidationErrorTooManyUniqueKeyViolations(MessageList list, int numberOfValidationErrors) {
-        String text = NLS.bind(Messages.UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations,
+        String text = MessageFormat.format(Messages.UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations,
                 numberOfValidationErrors, uniqueKey.getName());
         list.add(new Message(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS, text, Message.ERROR));
     }

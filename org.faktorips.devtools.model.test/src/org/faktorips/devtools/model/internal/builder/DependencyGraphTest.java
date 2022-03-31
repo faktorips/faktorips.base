@@ -91,8 +91,8 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
         cMethod.setModifier(Modifier.PUBLIC);
         cMethod.setName("cMethod");
 
-        a.getIpsSrcFile().save(true, null);
-        c.getIpsSrcFile().save(true, null);
+        a.getIpsSrcFile().save(null);
+        c.getIpsSrcFile().save(null);
         graph = new DependencyGraph(ipsProject);
     }
 
@@ -152,7 +152,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     @Test
     public void testUpdate() throws Exception {
         a.getPolicyCmptTypeAssociations().get(0).delete();
-        a.getIpsSrcFile().save(true, null);
+        a.getIpsSrcFile().save(null);
 
         IDependency[] dependants = graph.getDependants(a.getQualifiedNameType());
         // not only the changed IpsObject has to be updated in the dependency graph but also all

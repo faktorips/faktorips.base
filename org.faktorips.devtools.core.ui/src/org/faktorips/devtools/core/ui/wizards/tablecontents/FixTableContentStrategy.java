@@ -19,11 +19,9 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.IRow;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -50,7 +48,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
     }
 
     @Override
-    public void setContentType(String tableStructure) throws CoreException {
+    public void setContentType(String tableStructure) {
         tableContents.setTableStructure(tableStructure);
     }
 
@@ -70,11 +68,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
 
     @Override
     public ITableStructure findContentType(IIpsProject ipsProject) {
-        try {
-            return tableContents.findTableStructure(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return tableContents.findTableStructure(getIpsProject());
     }
 
     @Override
@@ -92,19 +86,15 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
     public void createNewContentAttributeValues(
             AssignContentAttributesPage<ITableStructure, IColumn> assignEnumAttributesPage) {
         ITableStructure structure;
-        try {
-            structure = tableContents.findTableStructure(getIpsProject());
-            if (structure != null) {
-                int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
-                for (int currentPosition = 0; currentPosition < columnOrder.length; currentPosition++) {
-                    if (columnOrder[currentPosition] == 0) {
-                        String columnName = structure.getColumn(currentPosition).getName();
-                        tableContents.newColumn(StringUtils.EMPTY, columnName);
-                    }
+        structure = tableContents.findTableStructure(getIpsProject());
+        if (structure != null) {
+            int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
+            for (int currentPosition = 0; currentPosition < columnOrder.length; currentPosition++) {
+                if (columnOrder[currentPosition] == 0) {
+                    String columnName = structure.getColumn(currentPosition).getName();
+                    tableContents.newColumn(StringUtils.EMPTY, columnName);
                 }
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
 
     }

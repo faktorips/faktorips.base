@@ -16,8 +16,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -121,7 +122,7 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) {
         ArgumentCheck.notNull(config);
         this.config = config;
         builders = createBuilders();
@@ -156,15 +157,15 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     /**
      * Template method to create the set's builders.
      */
-    protected abstract LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException;
+    protected abstract LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws IpsException;
 
     @Override
-    public void afterBuildProcess(int buildKind) throws CoreException {
+    public void afterBuildProcess(ABuildKind buildKind) {
         // could be implemented in subclass
     }
 
     @Override
-    public void beforeBuildProcess(int buildKind) throws CoreException {
+    public void beforeBuildProcess(ABuildKind buildKind) {
         // could be implemented in subclass
     }
 

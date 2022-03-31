@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 
 /**
@@ -42,7 +42,7 @@ public class ShowTemplatePropertyUsageViewAction extends Action {
                     .getActiveWorkbenchWindow().getActivePage().showView(TemplatePropertyUsageView.VIEW_ID);
             viewPart.setTemplateValue(templateValue);
         } catch (PartInitException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

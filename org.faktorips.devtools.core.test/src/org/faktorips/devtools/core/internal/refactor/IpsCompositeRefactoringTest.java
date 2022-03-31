@@ -199,7 +199,7 @@ public class IpsCompositeRefactoringTest {
     }
 
     @Test
-    public void testIgnoreCheckInitialConditionsForSkippedElement() throws OperationCanceledException, CoreException {
+    public void testIgnoreCheckInitialConditionsForSkippedElement() throws OperationCanceledException {
         ipsCompositeRefactoring.skipElement(ipsElement2);
 
         IpsCompositeRefactoring spyIpsCompositeRefactoring = spy(ipsCompositeRefactoring);
@@ -210,7 +210,7 @@ public class IpsCompositeRefactoringTest {
     }
 
     @Test
-    public void testClearSkippedElements() throws OperationCanceledException, CoreException {
+    public void testClearSkippedElements() throws OperationCanceledException {
         ipsCompositeRefactoring.skipElement(ipsElement1);
         ipsCompositeRefactoring.skipElement(ipsElement2);
 
@@ -246,7 +246,7 @@ public class IpsCompositeRefactoringTest {
         }
 
         @Override
-        public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+        public RefactoringStatus validateUserInput(IProgressMonitor pm) {
             return null;
         }
 

@@ -80,7 +80,7 @@ public class OutputFolderEditDialog extends StatusDialog {
 
         folderSelectionControl = new FolderSelectionControl(group, new UIToolkit(null),
                 Messages.OutputFolderEditDialog_button_title_browse);
-        folderSelectionControl.setRoot(srcFolderEntry.getIpsProject().getProject());
+        folderSelectionControl.setRoot(srcFolderEntry.getIpsProject().getProject().unwrap());
 
         // initialize specific output folder
         if (srcFolderEntry.getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
@@ -156,18 +156,18 @@ public class OutputFolderEditDialog extends StatusDialog {
     private IFolder getDefaultOutputFolder() {
         IFolder outputFolder;
         if (attribute.isFolderForDerivedSources()) {
-            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForDerivedSources();
+            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForDerivedSources().unwrap();
         } else {
-            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForMergableSources();
+            outputFolder = srcFolderEntry.getIpsObjectPath().getOutputFolderForMergableSources().unwrap();
         }
         return outputFolder;
     }
 
     private IFolder getSpecificFolder() {
         if (attribute.isFolderForDerivedSources()) {
-            return srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles();
+            return srcFolderEntry.getSpecificOutputFolderForDerivedJavaFiles().unwrap();
         } else {
-            return srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles();
+            return srcFolderEntry.getSpecificOutputFolderForMergableJavaFiles().unwrap();
         }
     }
 

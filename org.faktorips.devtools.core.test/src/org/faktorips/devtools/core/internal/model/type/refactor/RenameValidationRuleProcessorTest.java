@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -52,13 +51,13 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testCheckInitialConditionsValid() throws CoreException {
+    public void testCheckInitialConditionsValid() {
         RefactoringStatus status = ipsRenameProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
-    public void testCheckFinalConditionsValid() throws CoreException {
+    public void testCheckFinalConditionsValid() {
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
@@ -76,7 +75,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testRefactorIpsModel() throws CoreException {
+    public void testRefactorIpsModel() {
         performRenameRefactoring(validationRule, NEW_NAME);
 
         assertEquals(NEW_NAME, validationRule.getName());
@@ -89,7 +88,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testRefactorIpsModel_MultipleProductCmptGen() throws CoreException {
+    public void testRefactorIpsModel_MultipleProductCmptGen() {
         IProductCmptGeneration productCmptGeneration2 = (IProductCmptGeneration)productCmpt.newGeneration();
         productCmptGeneration2.newPropertyValues(validationRule);
         performRenameRefactoring(validationRule, NEW_NAME);
@@ -104,7 +103,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testValidateUserInputInvalid() throws CoreException {
+    public void testValidateUserInputInvalid() {
         validationRule.setMessageCode(StringUtils.EMPTY);
         ipsRenameProcessor.setNewName("noMsgCode");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
@@ -112,7 +111,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     }
 
     @Test
-    public void testValidateUserInputValid() throws CoreException {
+    public void testValidateUserInputValid() {
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
         assertTrue(status.isOK());

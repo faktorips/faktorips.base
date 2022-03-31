@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
@@ -25,7 +24,7 @@ import org.junit.Test;
 public class NewWizardUtilTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testCreateDefaultCategoriesIfNecessary() throws CoreException {
+    public void testCreateDefaultCategoriesIfNecessary() {
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
         List<IProductCmptCategory> categories = productCmptType.getCategories();
@@ -44,8 +43,7 @@ public class NewWizardUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateDefaultCategoriesIfNecessary_DoNotCreateCategoriesIfProductCmptTypeHasSupertype()
-            throws CoreException {
+    public void testCreateDefaultCategoriesIfNecessary_DoNotCreateCategoriesIfProductCmptTypeHasSupertype() {
 
         IIpsProject ipsProject = newIpsProject();
         IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");

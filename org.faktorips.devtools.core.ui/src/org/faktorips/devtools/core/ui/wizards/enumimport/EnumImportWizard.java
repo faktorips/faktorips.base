@@ -12,8 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import java.util.HashSet;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -24,6 +23,7 @@ import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
@@ -36,7 +36,6 @@ import org.faktorips.devtools.core.ui.wizards.ipsimport.SelectImportTargetPage;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -100,11 +99,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                 selectContentsPage.validatePage();
                 return selectContentsPage;
             }
-            try {
-                newEnumContentPage.validatePage();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            newEnumContentPage.validatePage();
             return newEnumContentPage;
         }
 
@@ -173,7 +168,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
 
-            IWorkspaceRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
+            ICoreRunnable runnable = $ -> format.executeEnumImport(enumTypeOrContent,
                     new Path(startingPage.getFilename()),
                     startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
                     messageList, startingPage.isImportIntoExisting());
@@ -184,9 +179,9 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                         new ResultDisplayer(getShell(), Messages.EnumImportWizard_operationName, messageList));
             }
 
-            enumTypeOrContent.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
+            enumTypeOrContent.getIpsObject().getIpsSrcFile().save(new NullProgressMonitor());
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } finally {
             // save the dialog settings
@@ -219,11 +214,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     }
 
     private int getEnumCountNewTable() {
-        try {
-            return getEnumValueContainer().getEnumValuesCount();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getEnumValueContainer().getEnumValuesCount();
     }
 
     /**
@@ -240,7 +231,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             } else {
                 return newEnumContentPage.getEnumType();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -249,7 +240,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     /**
      * Returns the enumeration type or enumeration content as a target for import.
      */
-    private IEnumValueContainer getEnumValueContainer() throws CoreException {
+    private IEnumValueContainer getEnumValueContainer() {
         if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (IEnumValueContainer)selectContentsPage.getTargetForImport();
         }

@@ -11,14 +11,15 @@
 package org.faktorips.devtools.stdbuilder.enumtype;
 
 import java.lang.reflect.Modifier;
+import java.nio.charset.Charset;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
@@ -84,13 +85,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         if (!GeneratorConfig.forIpsSrcFile(ipsSrcFile).isGenerateJaxbSupport()) {
             return;
         }
-        IFile javaFile = getJavaFile(ipsSrcFile);
+        AFile javaFile = getJavaFile(ipsSrcFile);
         if (javaFile.exists()) {
-            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            Charset charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             String oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
             if (oldJavaFileContentsStr.contains('@' + JavaSourceFileBuilder.ANNOTATION_GENERATED)) {
                 setMergeEnabled(true);
@@ -100,7 +101,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE) && ipsSrcFile.exists()) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
             return enumType.isExtensible() && !enumType.isAbstract();
@@ -109,7 +110,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
     }
 
     @Override
-    protected void generateCodeForJavatype() throws CoreException {
+    protected void generateCodeForJavatype() {
         TypeSection mainSection = getMainTypeSection();
         mainSection.getJavaDocForTypeBuilder()
                 .javaDoc(getLocalizedText("CLASS_JAVADOC", getEnumType().getQualifiedName()),
@@ -122,7 +123,13 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
         if (idAttribute == null || !idAttribute.isValid(getIpsProject())) {
             return;
         }
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttribute.findDatatype(getIpsProject()));
+
+        ValueDatatype idAttributeDatatype = idAttribute.findDatatype(getIpsProject());
+        if (idAttributeDatatype.isPrimitive()) {
+            idAttributeDatatype = idAttributeDatatype.getWrapperType();
+        }
+
+        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttributeDatatype);
 
         StringBuilder superClassName = new StringBuilder();
         superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$
@@ -160,7 +167,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *      }
      * </pre>
      */
-    private void generateConstructor(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateConstructor(JavaCodeFragmentBuilder builder) {
         builder.javaDoc(getLocalizedText("CONSTRUCTOR_JAVADOC"), JavaSourceFileBuilder.ANNOTATION_GENERATED);
         builder.methodBegin(Modifier.PUBLIC, null, getUnqualifiedClassName(getEnumType().getIpsSrcFile()),
                 new String[] { "repository" }, new Class[] { IRuntimeRepository.class }); //$NON-NLS-1$

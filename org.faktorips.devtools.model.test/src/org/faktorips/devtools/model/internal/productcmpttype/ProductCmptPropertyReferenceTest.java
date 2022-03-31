@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -33,6 +33,11 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
+ *             instead.
+ */
+@Deprecated(forRemoval = true, since = "22.6")
 public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -138,7 +143,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
      * {@link IProductCmptProperty} nevertheless.
      */
     @Test
-    public void testIsReferencedProperty_PropertyWithSameIdInSupertype() throws CoreException, SecurityException,
+    public void testIsReferencedProperty_PropertyWithSameIdInSupertype() throws IpsException, SecurityException,
             IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
         IProductCmptType superProductType = newProductCmptType(ipsProject, "SuperProductCmptType");
@@ -158,7 +163,7 @@ public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindProductCmptProperty() throws CoreException {
+    public void testFindProductCmptProperty() {
         IPolicyCmptTypeAttribute policyAttribute = policyType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setValueSetConfiguredByProduct(true);
 

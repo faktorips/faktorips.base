@@ -10,12 +10,15 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -26,22 +29,21 @@ import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -53,7 +55,6 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.util.EclipseIOUtil;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -68,7 +69,7 @@ import org.w3c.dom.Element;
 public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     private final IPath path;
-    private IFolder correspondingResourceFolder;
+    private AFolder correspondingResourceFolder;
     private final ChildOrderComparatorCache childOrderComparatorCache = new ChildOrderComparatorCache();
 
     IpsPackageFragment(IIpsElement parent, String name) {
@@ -77,10 +78,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         if (this.correspondingResourceFolder == null) {
-            IFolder folder = (IFolder)getParent().getCorrespondingResource();
-            this.correspondingResourceFolder = folder.getFolder(path);
+            AFolder folder = (AFolder)getParent().getCorrespondingResource();
+            this.correspondingResourceFolder = folder.getFolder(toJavaPath(path));
         }
         return this.correspondingResourceFolder;
     }
@@ -98,7 +99,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * {@link IpsProject} or not.
      */
     @Override
-    public IIpsPackageFragment[] getChildIpsPackageFragments() throws CoreException {
+    public IIpsPackageFragment[] getChildIpsPackageFragments() {
         List<IIpsPackageFragment> list = getChildIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
@@ -118,14 +119,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     /**
      * Get all child IIpsPackageFragments as List.
      */
-    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getChildIpsPackageFragmentsAsList() {
         List<IIpsPackageFragment> list = new ArrayList<>();
-
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] content = folder.members();
-
-        for (IResource element : content) {
-            if (element.getType() == IResource.FOLDER) {
+        AFolder folder = (AFolder)getCorrespondingResource();
+        for (AResource element : folder) {
+            if (element.getType() == AResourceType.FOLDER) {
                 if (!getIpsProject().getNamingConventions().validateIpsPackageName(element.getName())
                         .containsErrorMsg()) {
                     String packageName = getSubPackageName(element.getName());
@@ -138,16 +136,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IResource[] getNonIpsResources() throws CoreException {
-        IContainer cont = (IContainer)getCorrespondingResource();
-        List<IResource> childResources = new ArrayList<>();
-        IResource[] children = cont.members();
-        for (IResource child : children) {
+    public AResource[] getNonIpsResources() {
+        AContainer cont = (AContainer)getCorrespondingResource();
+        List<AResource> childResources = new ArrayList<>();
+        for (AResource child : cont) {
             if (!isIpsContent(child)) {
                 childResources.add(child);
             }
         }
-        IResource[] resArray = new IResource[childResources.size()];
+        AResource[] resArray = new AResource[childResources.size()];
         return childResources.toArray(resArray);
     }
 
@@ -155,7 +152,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * Returns <code>true</code> if the given IResource is a file or folder that corresponds to an
      * IpsObject or IpsPackageFragment contained in this IpsPackageFragment, false otherwise.
      */
-    private boolean isIpsContent(IResource res) throws CoreException {
+    private boolean isIpsContent(AResource res) {
         IIpsElement[] children = getChildIpsPackageFragments();
         for (IIpsElement element : children) {
             if (element.getCorrespondingResource().equals(res)) {
@@ -172,15 +169,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] members = folder.members();
+    public IIpsSrcFile[] getIpsSrcFiles() {
+        AFolder folder = (AFolder)getCorrespondingResource();
+        AResource[] members = folder.getMembers().toArray(AResource[]::new);
         IIpsSrcFile[] children = new IIpsSrcFile[members.length];
         int counter = 0;
         for (int i = 0; i < children.length; i++) {
-            if (members[i].getType() == IResource.FILE) {
-                IFile file = (IFile)members[i];
-                if (IpsObjectType.getTypeForExtension(file.getFileExtension()) != null) {
+            if (members[i].getType() == AResourceType.FILE) {
+                AFile file = (AFile)members[i];
+                if (IpsObjectType.getTypeForExtension(file.getExtension()) != null) {
                     children[counter] = new IpsSrcFile(this, file.getName());
                     counter++;
                 }
@@ -195,20 +192,19 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+    public IIpsSrcFile createIpsFile(String name, InputStream source, boolean force, IProgressMonitor monitor) {
 
         IIpsSrcFile ipsSrcFile = getIpsSrcFile(name);
         IpsModel model = (IpsModel)getIpsModel();
         model.removeIpsSrcFileContent(ipsSrcFile);
 
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IFile file = folder.getFile(name);
+        AFolder folder = (AFolder)getCorrespondingResource();
+        AFile file = folder.getFile(name);
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsPackageFragment.createIpsFile - begin: pack=" + this + ", newFile=" + name //$NON-NLS-1$ //$NON-NLS-2$
                     + ", Thead: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
-        file.create(source, force, monitor);
+        file.create(source, monitor);
 
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsPackageFragment.createIpsFile - finished: pack=" + this + ", newFile=" + name //$NON-NLS-1$ //$NON-NLS-2$
@@ -224,7 +220,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 String runtimeId = project.getProductCmptNamingStrategy().getUniqueRuntimeId(project,
                         productCmpt.getName());
                 productCmpt.setRuntimeId(runtimeId);
-                ipsSrcFile.save(force, monitor);
+                ipsSrcFile.save(monitor);
             } finally {
                 model.resumeBroadcastingChangesMadeByCurrentThread();
             }
@@ -234,19 +230,20 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+    public IIpsSrcFile createIpsFile(String name, String content, boolean force, IProgressMonitor monitor) {
         try {
             InputStream is = new ByteArrayInputStream(content.getBytes(getIpsProject().getXmlFileCharset()));
             return createIpsFile(name, is, force, monitor);
         } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
     @Override
-    public IIpsSrcFile createIpsFile(IpsObjectType type, String ipsObjectName, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+    public IIpsSrcFile createIpsFile(IpsObjectType type,
+            String ipsObjectName,
+            boolean force,
+            IProgressMonitor monitor) {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
@@ -262,17 +259,16 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) throws CoreException {
+    public void findIpsObjects(IpsObjectType type, List<IIpsObject> result) {
         if (!exists()) {
             return;
         }
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] members = folder.members();
+        AFolder folder = (AFolder)getCorrespondingResource();
         String extension = type.getFileExtension();
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE) {
-                IFile file = (IFile)member;
-                if (extension.equals(file.getFileExtension())) {
+        for (AResource member : folder) {
+            if (member.getType() == AResourceType.FILE) {
+                AFile file = (AFile)member;
+                if (extension.equals(file.getExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
                         result.add(srcFile.getIpsObject());
@@ -282,23 +278,21 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         }
     }
 
-    public void findIpsObjects(List<IIpsObject> result) throws CoreException {
+    public void findIpsObjects(List<IIpsObject> result) {
         if (!exists()) {
             return;
         }
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] members = folder.members();
-
+        AFolder folder = (AFolder)getCorrespondingResource();
         IpsObjectType[] types = getIpsModel().getIpsObjectTypes();
 
         Set<String> fileExtensionNames = new HashSet<>();
         for (IpsObjectType type : types) {
             fileExtensionNames.add(type.getFileExtension());
         }
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE) {
-                IFile file = (IFile)member;
-                if (fileExtensionNames.contains(file.getFileExtension())) {
+        for (AResource member : folder) {
+            if (member.getType() == AResourceType.FILE) {
+                AFile file = (AFile)member;
+                if (fileExtensionNames.contains(file.getExtension())) {
                     IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
                     if (srcFile.getIpsObject() != null) {
                         result.add(srcFile.getIpsObject());
@@ -309,16 +303,15 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) throws CoreException {
+    public void findIpsSourceFiles(IpsObjectType type, List<IIpsSrcFile> result) {
         if (!exists()) {
             return;
         }
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] members = folder.members();
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE) {
-                IFile file = (IFile)member;
-                if (type.getFileExtension().equals(file.getFileExtension())) {
+        AFolder folder = (AFolder)getCorrespondingResource();
+        for (AResource member : folder) {
+            if (member.getType() == AResourceType.FILE) {
+                AFile file = (AFile)member;
+                if (type.getFileExtension().equals(file.getExtension())) {
                     IpsSrcFile ipsSrcFile = new IpsSrcFile(this, file.getName());
                     result.add(ipsSrcFile);
                 }
@@ -331,12 +324,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * result.
      * 
      * @throws NullPointerException if either type, prefix or result is null.
-     * @throws CoreException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
     public void findIpsSourceFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
-            List<IIpsSrcFile> result) throws CoreException {
+            List<IIpsSrcFile> result) {
 
         ArgumentCheck.notNull(type);
         ArgumentCheck.notNull(prefix);
@@ -344,13 +337,12 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         if (!exists()) {
             return;
         }
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] members = folder.members();
+        AFolder folder = (AFolder)getCorrespondingResource();
         String newPrefix = ignoreCase ? prefix.toLowerCase() : prefix;
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE) {
-                IFile file = (IFile)member;
-                if (type.getFileExtension().equals(file.getFileExtension())) {
+        for (AResource member : folder) {
+            if (member.getType() == AResourceType.FILE) {
+                AFile file = (AFile)member;
+                if (type.getFileExtension().equals(file.getExtension())) {
                     String filename = ignoreCase ? file.getName().toLowerCase() : file.getName();
                     if (filename.startsWith(newPrefix)) {
                         IIpsSrcFile srcFile = new IpsSrcFile(this, file.getName());
@@ -362,22 +354,19 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+    public IIpsPackageFragment createSubPackage(String name, boolean force, IProgressMonitor monitor) {
         if (getIpsProject().getNamingConventions().validateIpsPackageName(name).containsErrorMsg()) {
-            throw new CoreException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, IStatus.ERROR,
-                    NLS.bind("{0} is not a valid package name.", name), null)); //$NON-NLS-1$
+            throw new IpsException(new Status(IStatus.ERROR, IpsModelActivator.PLUGIN_ID, IStatus.ERROR,
+                    MessageFormat.format("{0} is not a valid package name.", name), null)); //$NON-NLS-1$
         }
         return getRoot().createPackageFragment(getSubPackageName(name), true, null);
     }
 
     @Override
-    public boolean hasChildIpsPackageFragments() throws CoreException {
-        IFolder folder = (IFolder)getCorrespondingResource();
-        IResource[] content = folder.members();
-
-        for (IResource element : content) {
-            if (element.getType() == IResource.FOLDER) {
+    public boolean hasChildIpsPackageFragments() {
+        AFolder folder = (AFolder)getCorrespondingResource();
+        for (AResource element : folder) {
+            if (element.getType() == AResourceType.FOLDER) {
                 if (!getIpsProject().getNamingConventions().validateIpsPackageName(element.getName())
                         .containsErrorMsg()) {
                     return true;
@@ -389,28 +378,28 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() {
         for (IIpsPackageFragment childPackage : getChildIpsPackageFragments()) {
             childPackage.delete();
         }
         for (IIpsSrcFile childSrcFile : getIpsSrcFiles()) {
             childSrcFile.delete();
         }
-        getCorrespondingResource().delete(true, null);
+        getCorrespondingResource().delete(null);
     }
 
-    private IFile getSortOrderFile() {
+    private AFile getSortOrderFile() {
         return childOrderComparatorCache.getSortOrderFile();
     }
 
     private class ChildOrderComparatorCache {
 
-        private IFile sortOrderFile;
+        private AFile sortOrderFile;
         private long lastModification = -1;
         private Comparator<IIpsElement> childOrderComparator;
 
         private Comparator<IIpsElement> get() {
-            IFile file = getSortOrderFile();
+            AFile file = getSortOrderFile();
             if (file.exists()) {
                 long modificationStamp = file.getModificationStamp();
                 if (lastModification == modificationStamp) {
@@ -429,11 +418,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             return AbstractIpsPackageFragment.DEFAULT_CHILD_ORDER_COMPARATOR;
         }
 
-        private IFile getSortOrderFile() {
+        private AFile getSortOrderFile() {
             if (sortOrderFile == null) {
                 IIpsElement parent = isDefaultPackage() ? getRoot() : IpsPackageFragment.this;
-                IFolder folder = (IFolder)parent.getCorrespondingResource();
-                sortOrderFile = folder.getFile(new Path(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
+                AFolder folder = (AFolder)parent.getCorrespondingResource();
+                sortOrderFile = folder.getFile(java.nio.file.Path.of(IIpsPackageFragment.SORT_ORDER_FILE_NAME));
             }
             return sortOrderFile;
         }
@@ -445,11 +434,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                 lastModification = sortOrderFile.getModificationStamp();
             } else {
                 if (sortOrderFile != null && sortOrderFile.exists()) {
-                    try {
-                        sortOrderFile.delete(true, null);
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    sortOrderFile.delete(null);
                 }
             }
             childOrderComparator = newChildOrderComparator;
@@ -524,7 +509,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         private static class Persistence {
 
             static Map<IIpsElement, Integer> read(IpsPackageFragment parentPackage) {
-                IFile sortOrderFile = parentPackage.getSortOrderFile();
+                AFile sortOrderFile = parentPackage.getSortOrderFile();
                 String charsetName = parentPackage.getIpsProject().getPlainTextFileCharset();
                 if (sortOrderFile != null && sortOrderFile.exists()) {
                     try {
@@ -543,8 +528,8 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
                         }
                         return sortOrder;
                     } catch (IOException e) {
-                        throw new CoreRuntimeException(new IpsStatus(e));
-                    } catch (CoreException e) {
+                        throw new IpsException(new IpsStatus(e));
+                    } catch (IpsException e) {
                         IpsLog.log(e);
                         return null;
                     }
@@ -589,31 +574,23 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             }
 
             static void write(IpsPackageFragment parentPackage, Map<IIpsElement, Integer> sortOrder) {
-                final IFile sortOrderFile = parentPackage.getSortOrderFile();
+                final AFile sortOrderFile = parentPackage.getSortOrderFile();
                 final String charsetName = parentPackage.getIpsProject().getPlainTextFileCharset();
                 final String content = toPersistenceContent(sortOrder);
 
-                IWorkspaceRunnable runnable = $ -> {
+                ICoreRunnable runnable = $ -> {
 
                     byte[] bytes = content.getBytes(Charset.forName(charsetName));
 
                     ByteArrayInputStream is = new ByteArrayInputStream(bytes);
-                    try {
-                        // overwrite existing files
-                        if (sortOrderFile.exists()) {
-                            EclipseIOUtil.writeToFile(sortOrderFile, is, true, true, null);
-                        } else {
-                            sortOrderFile.create(is, true, null);
-                        }
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
+                    // overwrite existing files
+                    if (sortOrderFile.exists()) {
+                        sortOrderFile.setContents(is, true, null);
+                    } else {
+                        sortOrderFile.create(is, null);
                     }
                 };
-                try {
-                    ResourcesPlugin.getWorkspace().run(runnable, null);
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                Abstractions.getWorkspace().run(runnable, null);
 
             }
 

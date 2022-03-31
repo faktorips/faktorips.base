@@ -14,11 +14,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.IPath;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -46,10 +46,10 @@ public abstract class AbstractValidationMessagesBuilderTest {
     }
 
     protected IIpsPackageFragment mockPackageFragment() {
-        IFile file = mock(IFile.class);
+        AFile file = mock(AFile.class);
 
-        IFolder derivedFolder = mock(IFolder.class);
-        when(derivedFolder.getFile(any(IPath.class))).thenReturn(file);
+        AFolder derivedFolder = mock(AFolder.class);
+        when(derivedFolder.getFile(any(Path.class))).thenReturn(file);
 
         IIpsSrcFolderEntry ipsSrcFolderEntry = mock(IIpsSrcFolderEntry.class);
         when(ipsSrcFolderEntry.getOutputFolderForDerivedJavaFiles()).thenReturn(derivedFolder);

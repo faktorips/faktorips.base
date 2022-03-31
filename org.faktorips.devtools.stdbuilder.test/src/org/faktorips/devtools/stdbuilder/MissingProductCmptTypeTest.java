@@ -37,7 +37,7 @@ public class MissingProductCmptTypeTest extends AbstractStdBuilderTest {
         type.setConfigurableByProductCmptType(true);
         type.setProductCmptType("Product"); // missing product component type!
 
-        type.getIpsSrcFile().save(true, null);
+        type.getIpsSrcFile().save(null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 

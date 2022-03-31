@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -46,7 +46,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         table = (TableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "TestTable");
         ipsSrcFile = table.getIpsSrcFile();
         range = (ColumnRange)table.newRange();
-        ipsSrcFile.save(true, null);
+        ipsSrcFile.save(null);
     }
 
     @Test
@@ -239,13 +239,13 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
             if (list.containsErrorMsg()) {
                 fail();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             fail();
         }
     }
 
     @Test
-    public void testValidateRangeDatatype() throws CoreException {
+    public void testValidateRangeDatatype() {
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setParameterName("egon");
         IColumn from = table.newColumn();
@@ -258,14 +258,14 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
         range.setFromColumn("from");
         range.setToColumn("to");
 
-        table.getIpsSrcFile().save(true, null);
+        table.getIpsSrcFile().save(null);
 
         MessageList ml = range.validate(ipsSrcFile.getIpsProject());
         assertTrue(ml.isEmpty());
     }
 
     @Test
-    public void testValidate_FromColumnRange() throws CoreException {
+    public void testValidate_FromColumnRange() {
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_FROM);
         range.setParameterName("egon");
         IColumn from = table.newColumn();
@@ -279,7 +279,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ToColumnRange() throws CoreException {
+    public void testValidate_ToColumnRange() {
         range.setColumnRangeType(ColumnRangeType.ONE_COLUMN_RANGE_TO);
         range.setParameterName("egon");
         IColumn to = table.newColumn();
@@ -293,7 +293,7 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateTwoColumnRangeWithSameDatatype() throws CoreException {
+    public void testValidateTwoColumnRangeWithSameDatatype() {
         // test two column rage with same datatypes
         IColumn c0 = table.newColumn();
         c0.setName("c0");

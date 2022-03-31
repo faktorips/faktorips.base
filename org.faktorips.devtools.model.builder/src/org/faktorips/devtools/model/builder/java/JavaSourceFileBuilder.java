@@ -13,32 +13,26 @@ package org.faktorips.devtools.model.builder.java;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Modifier;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.codegen.merge.java.JControlModel;
 import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -50,6 +44,14 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
@@ -171,12 +173,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) {
         model = null;
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
         initJControlModel(project);
     }
 
@@ -260,12 +262,12 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Implementations of this class must override this method to provide the content of the java
      * source file.
      * 
-     * @throws CoreException implementations can wrap rising checked exceptions into a
-     *             CoreException. If an exception is thrown by this method the current build of this
-     *             builder is interrupted. Alternatively the exception can be reported to the
-     *             buildStatus to avoid interrupting the build process of this builder.
+     * @throws IpsException implementations can wrap rising checked exceptions into an
+     *             {@link IpsException}. If an exception is thrown by this method the current build
+     *             of this builder is interrupted. Alternatively the exception can be reported to
+     *             the buildStatus to avoid interrupting the build process of this builder.
      */
-    protected abstract String generate() throws CoreException;
+    protected abstract String generate() throws IpsException;
 
     /**
      * Returns the IpsObject provided to this builder. It returns the IpsObject only during the
@@ -301,9 +303,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param ipsSrcFile The source file to get the package from
      * 
-     * @throws CoreException is delegated from calls to other methods
+     * @throws IpsException is delegated from calls to other methods
      */
-    public final String getPackage(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public final String getPackage(IIpsSrcFile ipsSrcFile) {
         return getPackageStructure().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
     }
@@ -318,9 +320,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @return the package string
      * 
-     * @throws CoreException is delegated from calls to other methods
+     * @throws IpsException is delegated from calls to other methods
      */
-    public final String getPackage() throws CoreException {
+    public final String getPackage() {
         return getPackage(getIpsSrcFile());
     }
 
@@ -368,9 +370,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param ipsSrcFile the IPS source file
      * 
-     * @throws CoreException is delegated from calls to other methods
+     * @throws IpsException is delegated from calls to other methods
      */
-    public final String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public final String getUnqualifiedClassName(IIpsSrcFile ipsSrcFile) {
         return getJavaClassNaming().getUnqualifiedClassName(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
                 getJavaClassNameProvider());
     }
@@ -379,9 +381,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Calls getUnqualifiedClassName(IpsObject). It is only allowed to call this method during the
      * build cycle of this builder.
      * 
-     * @throws CoreException is delegated from calls to other methods
+     * @throws IpsException is delegated from calls to other methods
      */
-    public String getUnqualifiedClassName() throws CoreException {
+    public String getUnqualifiedClassName() {
         return getUnqualifiedClassName(getIpsSrcFile());
     }
 
@@ -392,7 +394,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * @see org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder#afterBuild(org.faktorips.devtools.model.ipsobject.IIpsSrcFile)
      */
     @Override
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) {
         facadeHelper.reset();
         this.ipsSrcFile = null;
         ipsObject = null;
@@ -408,7 +410,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      *      org.eclipse.core.runtime.MultiStatus)
      */
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         this.ipsSrcFile = ipsSrcFile;
         buildStatus = status;
         if (ipsSrcFile.isContentParsable()) {
@@ -703,14 +705,14 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * Implementation of the build procedure of this builder.
      */
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         if (!isBuilderFor(ipsSrcFile)) {
             return;
         }
         if (!getBuilderSet().isGeneratePublishedInterfaces() && generatesInterface()) {
             return;
         }
-        IFile javaFile = getJavaFile(ipsSrcFile);
+        AFile javaFile = getJavaFile(ipsSrcFile);
         String content = generate();
         if (content == null || generationCanceled) {
             return;
@@ -720,7 +722,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         String oldJavaFileContentsStr = null;
         if (!newFileCreated) {
-            String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+            Charset charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
         }
         if (isMergeEnabled()) {
@@ -741,18 +743,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /* private */ void writeToFile(IIpsSrcFile ipsSrcFile, IFile javaFile, String content) throws CoreException {
+    /* private */ void writeToFile(IIpsSrcFile ipsSrcFile, AFile javaFile, String content) {
         ByteArrayInputStream inputStream = transform(ipsSrcFile, content);
         writeToFile(javaFile, inputStream, true, false);
     }
 
-    /* private */ protected String getJavaFileContents(IFile javaFile, String charset) throws CoreException {
+    /* private */ protected String getJavaFileContents(AFile javaFile, Charset charset) {
         InputStream javaFileContents = null;
         try {
-            javaFileContents = javaFile.getContents(true);
+            javaFileContents = javaFile.getContents();
             return StringUtil.readFromInputStream(javaFileContents, charset);
         } catch (IOException e) {
-            throw new CoreException(
+            throw new IpsException(
                     new IpsStatus("An exception ocurred while trying to read the contents of the java file " //$NON-NLS-1$
                             + javaFile, e));
         } finally {
@@ -771,16 +773,16 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IFile file = getJavaFile(ipsSrcFile);
-        IContainer parent = file.getParent();
-        IResource destination = getArtefactDestination(ipsSrcFile).getResource();
+    public void delete(IIpsSrcFile ipsSrcFile) {
+        AFile file = getJavaFile(ipsSrcFile);
+        AContainer parent = file.getParent();
+        AResource destination = getArtefactDestination(ipsSrcFile).getResource();
         if (file.exists()) {
-            file.delete(true, null);
-            if (!parent.equals(destination) && parent instanceof IFolder) {
-                IFolder parentFolder = (IFolder)parent;
-                if (parentFolder.members().length == 0) {
-                    parentFolder.delete(true, null);
+            file.delete(null);
+            if (!parent.equals(destination) && parent instanceof AFolder) {
+                AFolder parentFolder = (AFolder)parent;
+                if (parentFolder.getMembers().size() == 0) {
+                    parentFolder.delete(null);
                 }
             }
         }
@@ -809,10 +811,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (content == null) {
             return content;
         }
-        IJavaProject javaProject = getIpsProject().getJavaProject();
+        AJavaProject javaProject = getIpsProject().getJavaProject();
         CodeFormatter formatter;
         if (javaProject != null) {
-            formatter = ToolFactory.createCodeFormatter(javaProject.getOptions(true));
+            formatter = ToolFactory.createCodeFormatter(javaProject.getOptions());
         } else {
             formatter = ToolFactory.createCodeFormatter(null);
         }
@@ -851,26 +853,26 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     /**
-     * Returns the IFile for the provided IIpsSrcFile.
+     * Returns the AFile for the provided IIpsSrcFile.
      */
     /**
-     * Returns the IFile for the provided IIpsSrcFile.
+     * Returns the AFile for the provided IIpsSrcFile.
      */
-    public IFile getJavaFile(IIpsSrcFile ipsSrcFile) throws CoreException {
-        IPackageFragmentRoot destinationFolder = getArtefactDestination(ipsSrcFile);
+    public AFile getJavaFile(IIpsSrcFile ipsSrcFile) {
+        APackageFragmentRoot destinationFolder = getArtefactDestination(ipsSrcFile);
 
-        IPath javaFile = getRelativeJavaFile(ipsSrcFile);
+        Path javaFile = getRelativeJavaFile(ipsSrcFile);
 
-        return ((IContainer)destinationFolder.getResource()).getFile(javaFile);
+        return ((AContainer)destinationFolder.getResource()).getFile(javaFile);
     }
 
     /**
      * Return the path to the java file relative to the destination folder.
      * <p>
-     * If the java class name is org.example.MyExample this method would return an {@link IPath} of
+     * If the java class name is org.example.MyExample this method would return a {@link Path} of
      * <em>/org/example/MyExample.java</em>
      */
-    public IPath getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
+    public Path getRelativeJavaFile(IIpsSrcFile ipsSrcFile) {
         return getJavaClassNaming().getRelativeJavaFile(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
                 getJavaClassNameProvider());
     }
@@ -886,7 +888,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         return model;
     }
 
-    private String merge(IFile javaFile, String oldContent, String newContent) throws CoreException {
+    private String merge(AFile javaFile, String oldContent, String newContent) {
         // CSOFF: IllegalCatch
         JMerger merger;
         try {
@@ -897,18 +899,18 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             List<String> retainedAnnotations = getBuilderSet().getRetainedAnnotations();
             merger.setRetainedAnnotations(retainedAnnotations);
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
         }
         try {
             merger.setSourceCompilationUnit(merger.createCompilationUnitForContents(newContent));
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     "Can't create JDT Compilation Unit for the new generated Java source: " + javaFile, e)); //$NON-NLS-1$
         }
         try {
             merger.setTargetCompilationUnit(merger.createCompilationUnitForContents(oldContent));
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     "Can't create JDT Compilation Unit for the Java source existing Java Source. Probably the code does not compile. " //$NON-NLS-1$
                             + javaFile,
                     e));
@@ -917,13 +919,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
             merger.merge();
             return merger.getTargetCompilationUnitContents();
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus("An error occurred while trying to merge " //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("An error occurred while trying to merge " //$NON-NLS-1$
                     + "the generated content with the old content of the file: " + javaFile, e)); //$NON-NLS-1$
         }
         // CSON: IllegalCatch
     }
 
-    private void initJControlModel(IIpsProject project) throws CoreException {
+    private void initJControlModel(IIpsProject project) {
         // CSOFF: IllegalCatch
         model = new JControlModel();
         ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
@@ -932,20 +934,20 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         try {
             model.initialize(facadeHelper, getJMergeConfigLocation(project));
         } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
         // CSON: IllegalCatch
     }
 
     private void configureDefaults(Map<String, String> javaCoreOptions, IIpsProject project) {
-        IJavaProject javaProject = project.getJavaProject();
-        javaCoreOptions.putAll(javaProject.getOptions(true));
+        AJavaProject javaProject = project.getJavaProject();
+        javaCoreOptions.putAll(javaProject.getOptions());
     }
 
     private String getJMergeConfigLocation(IIpsProject ipsProject) {
-        IFile mergeFile = ipsProject.getJavaProject().getProject().getFile("merge.java5.xml"); //$NON-NLS-1$
+        AFile mergeFile = ipsProject.getJavaProject().getProject().getFile("merge.java5.xml"); //$NON-NLS-1$
         if (mergeFile.exists()) {
-            return mergeFile.getLocation().toPortableString();
+            return mergeFile.getLocation().toString();
         }
         StringBuilder mergeFileDefault = new StringBuilder();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
@@ -963,18 +965,13 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 throw new IllegalArgumentException("Cannot find jmerge configuration " + mergeFileName); //$NON-NLS-1$
             }
         } else {
-            throw new IllegalStateException("Cannot accedd Ips Plugin."); //$NON-NLS-1$
+            throw new IllegalStateException("Cannot access Ips Plugin."); //$NON-NLS-1$
         }
     }
 
-    private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile, String content) throws CoreException {
-        String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
-        try {
-            return new ByteArrayInputStream(content.getBytes(charset));
-        } catch (UnsupportedEncodingException e) {
-            throw new CoreException(new Status(IStatus.ERROR, "org.faktorips.std.builder", IStatus.OK, //$NON-NLS-1$
-                    "The charset is not supported: " + charset, e)); //$NON-NLS-1$
-        }
+    private ByteArrayInputStream transform(IIpsSrcFile ipsSrcFile, String content) {
+        Charset charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
+        return new ByteArrayInputStream(content.getBytes(charset));
     }
 
     /**
@@ -1000,7 +997,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
                 if (isBuilderFor(ipsObjectPartContainer.getIpsSrcFile())) {
                     javaElements.addAll(getGeneratedJavaTypes((IIpsObject)ipsObjectPartContainer));
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 return new ArrayList<>();
             }
         }
@@ -1021,7 +1018,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         try {
             IPackageFragmentRoot javaRoot = ipsObject.getIpsPackageFragment().getRoot()
-                    .getArtefactDestination(buildsDerivedArtefacts());
+                    .getArtefactDestination(buildsDerivedArtefacts()).unwrap();
             String packageName = getPackage(ipsObject.getIpsSrcFile());
             IPackageFragment fragment = javaRoot.getPackageFragment(packageName);
             List<IType> javaTypes = new ArrayList<>(1);

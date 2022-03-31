@@ -97,7 +97,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         }
 
         @Override
-        public boolean visit(IResourceDelta delta) throws CoreException {
+        public boolean visit(IResourceDelta delta) {
             IResource res = delta.getResource();
             if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {
                 IProject project = (IProject)res;

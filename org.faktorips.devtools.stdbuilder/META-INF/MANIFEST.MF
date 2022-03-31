@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.xtend.lib,
  org.faktorips.devtools.model.builder;bundle-version="21.6.0";visibility:=reexport
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.stdbuilder,
- org.faktorips.devtools.stdbuilder.bf,
  org.faktorips.devtools.stdbuilder.enumtype,
  org.faktorips.devtools.stdbuilder.labels,
  org.faktorips.devtools.stdbuilder.persistence,

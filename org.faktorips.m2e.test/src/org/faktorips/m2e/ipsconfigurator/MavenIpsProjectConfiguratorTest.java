@@ -37,13 +37,13 @@ import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -111,7 +111,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(mavenIpsProjectConfigurator.isGroovySupported(ipsProject.getJavaProject()), is(true));
     }
 
-    @Test(expected = CoreException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProjectMissingMergableOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForMergableSources(null);
@@ -120,7 +120,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
     }
 
-    @Test(expected = CoreException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_missingDerivedOutputFolder() throws Exception {
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForDerivedSources(null);
@@ -129,7 +129,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
     }
 
-    @Test(expected = CoreException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_noMavenProject() throws Exception {
         ipsProject = newIpsProject();
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
@@ -139,7 +139,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     public void testConfigureIpsProject_groovyDisabled() throws Exception {
         projectCreationProperties.setGroovySupport(false);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         boolean containsGroovyDependency = mavenProject.getDependencies().stream()
@@ -152,7 +152,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
@@ -168,7 +168,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
@@ -184,7 +184,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_GENERIC_JPA_2);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
@@ -200,7 +200,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_GENERIC_JPA_2_1);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
@@ -216,7 +216,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2);
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
@@ -227,7 +227,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(eclipseLink11.get().getVersion(), is("2.2.3"));
     }
 
-    @Test(expected = CoreException.class)
+    @Test(expected = IpsException.class)
     public void testConfigureIpsProject_persistenceMalformed() throws Exception {
         projectCreationProperties.setPersistentProject(true);
         projectCreationProperties.setPersistenceSupport("Malformed name");
@@ -237,7 +237,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     @Test
     public void testConfigureIpsProject_emptyPom() throws Exception {
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         checkIpsProjectProperties();
@@ -258,15 +258,15 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         initIpsProject(ipsProject);
         initMaven(ipsProject, pomScenario1);
-        IFolder metaInf = ipsProject.getProject().getFolder("META-INF");
-        metaInf.create(true, true, new NullProgressMonitor());
-        IFile manifest = metaInf.getFile(MANIFEST_NAME);
+        AFolder metaInf = ipsProject.getProject().getFolder("META-INF");
+        metaInf.create(new NullProgressMonitor());
+        AFile manifest = metaInf.getFile(MANIFEST_NAME);
         try (InputStream in = getResourceInputStream(MANIFEST_NAME)) {
-            manifest.create(in, true, new NullProgressMonitor());
+            manifest.create(in, new NullProgressMonitor());
         }
 
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         checkIpsProjectProperties();
@@ -293,7 +293,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         initMaven(ipsProject, pomScenario2);
 
         mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
-        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject())
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
         checkMavenResources(mavenProject.getBuild());
@@ -327,8 +327,8 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     }
 
     private void initIpsProject(IIpsProject ipsProject) throws Exception {
-        IFolder folder = ipsProject.getProject().getFolder(OBJECT_PATH_FOLDER);
-        folder.create(true, true, null);
+        AFolder folder = ipsProject.getProject().getFolder(OBJECT_PATH_FOLDER);
+        folder.create(null);
         IIpsObjectPath objectPath = ipsProject.getProperties().getIpsObjectPath();
         objectPath.setOutputFolderForMergableSources(folder);
         objectPath.setOutputFolderForDerivedSources(folder);
@@ -337,8 +337,8 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private void initMaven(IIpsProject ipsProject, String pomContent) throws Exception {
         ipsProject.getProject().getFile(POM_NAME).create(
-                new ByteArrayInputStream(pomContent.getBytes()), true, null);
-        MavenPlugin.getProjectConfigurationManager().enableMavenNature(ipsProject.getProject(),
+                new ByteArrayInputStream(pomContent.getBytes()), null);
+        MavenPlugin.getProjectConfigurationManager().enableMavenNature(ipsProject.getProject().unwrap(),
                 new ResolverConfiguration(),
                 new NullProgressMonitor());
     }
@@ -362,7 +362,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     }
 
     private void checkManifestFile() throws Exception {
-        IFile file = ipsProject.getProject().getFile(MANIFEST_PATH);
+        AFile file = ipsProject.getProject().getFile(MANIFEST_PATH);
         try (InputStream in = file.getContents()) {
             Manifest manifest = new Manifest(in);
             Attributes mainAttributes = manifest.getMainAttributes();
@@ -481,7 +481,7 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
     }
 
     private void checkExistingManifestFile() throws Exception {
-        IFile file = ipsProject.getProject().getFile(MANIFEST_PATH);
+        AFile file = ipsProject.getProject().getFile(MANIFEST_PATH);
         try (InputStream in = file.getContents()) {
             Manifest manifest = new Manifest(in);
             Attributes mainAttributes = manifest.getMainAttributes();

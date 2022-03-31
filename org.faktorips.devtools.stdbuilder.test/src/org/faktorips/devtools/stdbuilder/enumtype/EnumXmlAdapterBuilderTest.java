@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -50,7 +49,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testIsBuilderFor() throws CoreException {
+    public void testIsBuilderFor() {
         assertThat(builder.isBuilderFor(enumType.getIpsSrcFile()), is(true));
 
         enumType.setExtensible(false);

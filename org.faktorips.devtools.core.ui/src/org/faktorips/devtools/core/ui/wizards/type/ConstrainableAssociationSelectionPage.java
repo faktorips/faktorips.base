@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.type;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -115,11 +114,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
         @Override
         public List<? extends IAssociation> getAvailableParts(IIpsObject ipsObject) {
             IType cmptType = (IType)ipsObject;
-            try {
-                return cmptType.findConstrainableAssociationCandidates(cmptType.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return cmptType.findConstrainableAssociationCandidates(cmptType.getIpsProject());
         }
 
         @Override

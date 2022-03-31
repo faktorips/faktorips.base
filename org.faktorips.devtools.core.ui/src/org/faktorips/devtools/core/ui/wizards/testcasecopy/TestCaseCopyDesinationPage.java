@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -39,6 +38,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -294,7 +294,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             List<ITestPolicyCmpt> relevantTestPolicyCmpts = getRelevantRootTestPolicyCmpts();
             tableViewer.setInput(relevantTestPolicyCmpts.toArray(new ITestPolicyCmpt[relevantTestPolicyCmpts.size()]));
             delegateCellEditor = createCellEditor(tableViewer, relevantTestPolicyCmpts);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -315,7 +315,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         });
     }
 
-    private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() throws CoreException {
+    private List<ITestPolicyCmpt> getRelevantRootTestPolicyCmpts() {
         ITestPolicyCmpt[] testPolicyCmpts = getTestCaseCopyWizard().getSourceTestCase().getTestPolicyCmpts();
         List<ITestPolicyCmpt> result = new ArrayList<>(testPolicyCmpts.length);
         for (ITestPolicyCmpt testPolicyCmpt : testPolicyCmpts) {
@@ -339,13 +339,12 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             if (!productCmpt.equals(productCmptToReplace)) {
                 setMessage(NLS.bind(Messages.TestCaseCopyDesinationPage_InfoMessageReplacedVersion, versionId));
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
-    private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects)
-            throws CoreException {
+    private CellEditor createCellEditor(TableViewer tableViewer, List<ITestPolicyCmpt> testObjects) {
 
         ILabelProvider provider = DefaultLabelProvider.createWithIpsSourceFileMapping();
         List<ComboCellEditor> cellEditors = new ArrayList<>(10);
@@ -443,7 +442,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         try {
             messageList = namingConventions.validateUnqualifiedIpsObjectName(IpsObjectType.TEST_CASE,
                     targetTestCaseName);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

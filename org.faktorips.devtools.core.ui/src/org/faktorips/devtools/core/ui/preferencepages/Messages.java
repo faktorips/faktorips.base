@@ -45,7 +45,6 @@ public class Messages extends NLS {
     public static String IpsObjectPathContainer_tab_archives;
     public static String IpsObjectPathContainer_tab_path_order;
     public static String IpsObjectPathContainer_tab_source;
-    public static String IpsObjectPathLabelProvider_base_package_derived;
     public static String IpsObjectPathLabelProvider_default;
     public static String IpsObjectPathLabelProvider_output_folder_derived;
     public static String IpsObjectPathLabelProvider_output_folder_mergable;

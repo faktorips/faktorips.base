@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -35,7 +35,6 @@ import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -107,7 +106,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         SupertypeHierarchieVisitor hier = new SupertypeHierarchieVisitor(getDocumentedIpsObject().getIpsProject());
         try {
             hier.start(getDocumentedIpsObject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
@@ -180,7 +179,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         IEnumContent enumContent;
         try {
             enumContent = getDocumentedIpsObject().findEnumContent(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find EnumContent for EnumType  " //$NON-NLS-1$
                     + getDocumentedIpsObject().getQualifiedName(), e));
             return;
@@ -208,7 +207,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
         EnumValuesTablePageElement enumValuesTable;
         try {
             enumValuesTable = new EnumValuesTablePageElement(getDocumentedIpsObject(), getContext());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
                     "Error creating EnumValuesTable of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
             getContext().addStatus(status);

@@ -12,6 +12,21 @@
         "new" : "(class|enum|interface) org.eclipse.core.*",
         "justification" : "Reexported Eclipse Core API"
       }, {
+        "regex" : false,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "missing-class org.eclipse.core.runtime.IPluginDescriptor",
+        "justification" : "Reexported Eclipse Core Runtime API"
+      }, {
+        "regex" : false,
+        "code" : "java.missing.newClass",
+        "new" : "missing-class org.eclipse.core.runtime.IPluginDescriptor",
+        "justification" : "Reexported Eclipse Core Runtime API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.eclipse.core.runtime.*",
+        "justification" : "Reexported Eclipse Core Runtime API"
+      }, {
         "regex" : true,
         "code" : "java.class.externalClassExposedInAPI",
         "new" : "(class|enum|interface) org.eclipse.emf.common.*",

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,8 +23,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -34,7 +33,6 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -237,12 +235,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumAttribute newEnumAttribute() throws CoreException {
+    public IEnumAttribute newEnumAttribute() {
         return createNewEnumAttribute(EnumAttribute.class);
     }
 
     @Override
-    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws CoreException {
+    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() {
         IEnumLiteralNameAttribute literalNameAttribute = (IEnumLiteralNameAttribute)createNewEnumAttribute(
                 EnumLiteralNameAttribute.class);
         literalNameAttribute.setName(IEnumLiteralNameAttribute.DEFAULT_NAME);
@@ -251,16 +249,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return literalNameAttribute;
     }
 
-    private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass)
-            throws CoreException {
-
+    private IEnumAttribute createNewEnumAttribute(final Class<? extends IEnumAttribute> attributeClass) {
         return ((IpsModel)getIpsModel())
                 .executeModificationsWithSingleEvent(new SingleEventModification<IEnumAttribute>(getIpsSrcFile()) {
 
                     private IEnumAttribute newEnumAttribute;
 
                     @Override
-                    public boolean execute() throws CoreException {
+                    public boolean execute() {
                         newEnumAttribute = createNewEnumAttributeSingleEvent(attributeClass);
                         return newEnumAttribute != null;
                     }
@@ -272,8 +268,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                 });
     }
 
-    private IEnumAttribute createNewEnumAttributeSingleEvent(final Class<? extends IEnumAttribute> attributeClass)
-            throws CoreException {
+    private IEnumAttribute createNewEnumAttributeSingleEvent(final Class<? extends IEnumAttribute> attributeClass) {
         IEnumAttribute newEnumAttribute = newPart(attributeClass);
 
         // Create new EnumAttributeValue objects on the EnumValues of this EnumType.
@@ -304,8 +299,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
-            throws CoreException {
+    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject) {
 
         List<IEnumAttribute> uniqueEnumAttributes = new ArrayList<>(2);
         for (IEnumAttribute currentEnumAttribute : getEnumAttributesIncludeSupertypeCopies(includeLiteralName)) {
@@ -349,7 +343,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public int moveEnumAttribute(final IEnumAttribute enumAttribute, final boolean up) throws CoreException {
+    public int moveEnumAttribute(final IEnumAttribute enumAttribute, final boolean up) {
         ArgumentCheck.notNull(enumAttribute);
         if (enumAttribute.getEnumType() != this) {
             throw new NoSuchElementException();
@@ -371,7 +365,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
                     private int[] newIndex = {};
 
                     @Override
-                    public boolean execute() throws CoreException {
+                    public boolean execute() {
                         int indexToMove = getIndexOfEnumAttribute(enumAttribute, true);
                         // Move the EnumAttribute.
                         newIndex = enumAttributes.moveParts(new int[] { indexToMove }, up);
@@ -480,7 +474,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         if (hasSuperEnumType()) {
@@ -587,7 +581,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
         IEnumContent enumContent = findEnumContent(ipsProject);
         if (enumContent != null && !enumContent.getEnumType().equals(getQualifiedName())) {
-            String text = NLS.bind(Messages.EnumType_EnumContentAlreadyUsedByAnotherEnumType,
+            String text = MessageFormat.format(Messages.EnumType_EnumContentAlreadyUsedByAnotherEnumType,
                     enumContentPackageFragment, enumContent.getEnumType());
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED, text, Message.ERROR,
                     this, IEnumType.PROPERTY_ENUM_CONTENT_NAME);
@@ -603,13 +597,9 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private boolean isIdentifierAttributeComparable() {
         IEnumAttribute identiferAttribute = findIdentiferAttribute(getIpsProject());
         if (identiferAttribute != null) {
-            try {
-                ValueDatatype datatype = identiferAttribute.findDatatype(getIpsProject());
-                if (datatype != null) {
-                    return datatype.supportsCompare();
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            ValueDatatype datatype = identiferAttribute.findDatatype(getIpsProject());
+            if (datatype != null) {
+                return datatype.supportsCompare();
             }
         }
         return false;
@@ -619,7 +609,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return identifierBoundaryString != null && !(identifierBoundaryString.isEmpty());
     }
 
-    private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) throws CoreException {
+    private void validateIdentifierBoundaryOnDatatype(MessageList validationMessageList) {
         IEnumAttribute identifierAttribute = getIdentifierAttribute();
         if (identifierAttribute != null) {
             ValueDatatype identifierAttributeDatatype = identifierAttribute.findDatatype(getIpsProject());
@@ -651,7 +641,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     private void validateLiteralNameAttributeCount(MessageList validationMessageList) {
         int literalNameAttributesCount = getEnumLiteralNameAttributesCount();
         if (literalNameAttributesCount > 1) {
-            String text = NLS.bind(Messages.EnumType_MultipleLiteralNameAttributes, literalNameAttributesCount);
+            String text = MessageFormat.format(Messages.EnumType_MultipleLiteralNameAttributes,
+                    literalNameAttributesCount);
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES, text,
                     Message.ERROR, this);
             validationMessageList.add(message);
@@ -665,8 +656,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Adds validation messages to the given message list. The validation will pass immediately if
      * the <code>IEnumType</code> is abstract.
      */
-    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateInheritedAttributes(MessageList validationMessageList, IIpsProject ipsProject) {
         ArgumentCheck.notNull(new Object[] { validationMessageList, ipsProject });
 
         // Pass validation on abstract EnumType.
@@ -676,8 +666,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         validateInheritedAttributesNonAbstract(validationMessageList, ipsProject);
     }
 
-    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateInheritedAttributesNonAbstract(MessageList validationMessageList, IIpsProject ipsProject) {
         List<IEnumAttribute> notInheritedAttributes = findInheritEnumAttributeCandidates(ipsProject);
         int notInheritedAttributesCount = notInheritedAttributes.size();
         if (notInheritedAttributesCount > 0) {
@@ -685,9 +674,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
             String showFirst = firstNotInheritedAttribute.getName() + " (" + firstNotInheritedAttribute.getDatatype() //$NON-NLS-1$
                     + ')';
             String text = (notInheritedAttributesCount > 1)
-                    ? NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural,
+                    ? MessageFormat.format(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchyPlural,
                             notInheritedAttributesCount, showFirst)
-                    : NLS.bind(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular, showFirst);
+                    : MessageFormat.format(Messages.EnumType_NotInheritedAttributesInSupertypeHierarchySingular,
+                            showFirst);
             Message message = new Message(IEnumType.MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY,
                     text, Message.ERROR, this);
             validationMessageList.add(message);
@@ -751,7 +741,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public Set<IEnumType> searchSubclassingEnumTypes() throws CoreException {
+    public Set<IEnumType> searchSubclassingEnumTypes() {
         Set<IEnumType> collectedEnumTypes = new HashSet<>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
@@ -790,18 +780,14 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     protected boolean removePartThis(final IIpsObjectPart part) {
         if (part instanceof IEnumAttribute) {
             final IEnumAttribute enumAttributeToDelete = (IEnumAttribute)part;
-            try {
-                ((IpsModel)getIpsModel())
-                        .executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
-                            @Override
-                            public boolean execute() throws CoreException {
-                                deleteEnumAttributeValues(enumAttributeToDelete, getEnumValues());
-                                return EnumType.super.removePartThis(part);
-                            }
-                        });
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            ((IpsModel)getIpsModel())
+                    .executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
+                        @Override
+                        public boolean execute() {
+                            deleteEnumAttributeValues(enumAttributeToDelete, getEnumValues());
+                            return EnumType.super.removePartThis(part);
+                        }
+                    });
             return part.isDeleted();
         } else {
             return super.removePartThis(part);
@@ -860,7 +846,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws CoreException {
+    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         List<IEnumAttribute> inheritedEnumAttributes = new ArrayList<>();
@@ -897,7 +883,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws CoreException {
+    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) {
         List<IEnumAttribute> newEnumAttributes = new ArrayList<>();
         for (IEnumAttribute currentSuperEnumAttribute : superEnumAttributes) {
             String currentSuperEnumAttributeName = currentSuperEnumAttribute.getName();
@@ -973,7 +959,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) {
 
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();

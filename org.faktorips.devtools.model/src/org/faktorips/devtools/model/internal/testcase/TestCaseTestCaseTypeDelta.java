@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -81,7 +81,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /** ipsproject used to search */
     private IIpsProject ipsProject;
 
-    public TestCaseTestCaseTypeDelta(ITestCase testCase, ITestCaseType testCaseType) throws CoreException {
+    public TestCaseTestCaseTypeDelta(ITestCase testCase, ITestCaseType testCaseType) {
         ArgumentCheck.notNull(testCase);
         ArgumentCheck.notNull(testCaseType);
         this.testCase = testCase;
@@ -287,9 +287,8 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
      * Computes all missing test policy cmpts, test policy cmpt links and test attribute values
      * (test case side)
      */
-    private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(List<ITestPolicyCmpt> testCaseSideObjects)
-            throws CoreException {
-
+    private void computeTestPolicyCmptTypeParameterWithMissingTestPolicyCmpt(
+            List<ITestPolicyCmpt> testCaseSideObjects) {
         List<ITestPolicyCmptTypeParameter> missingTestPolicyCmptTypeParameter = new ArrayList<>();
         missingTestPolicyCmptTypeParameter.addAll(Arrays.asList(testCaseType.getTestPolicyCmptTypeParameters()));
         List<ITestAttribute> missingTestAttributes = new ArrayList<>();
@@ -351,7 +350,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
      */
     private void computeTestAttributeWithMissingTestAttributeValue(ITestPolicyCmptTypeParameter param,
             ITestPolicyCmpt cmpt,
-            List<ITestAttribute> missingTestAttributes) throws CoreException {
+            List<ITestAttribute> missingTestAttributes) {
 
         List<ITestAttribute> testAttributes = new ArrayList<>();
         testAttributes.addAll(Arrays.asList(param.getTestAttributes()));
@@ -389,7 +388,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /**
      * Computes all missing test value parameters (test case type side).
      */
-    private void computeTestValueWithMissingTestParameter() throws CoreException {
+    private void computeTestValueWithMissingTestParameter() {
         List<ITestValue> missing = new ArrayList<>();
         ITestValue[] testValues = testCase.getTestValues();
         for (ITestValue testValue : testValues) {
@@ -408,7 +407,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /**
      * Computes all missing test value parameters (test case type side).
      */
-    private void computeTestRuleWithMissingTestParameter() throws CoreException {
+    private void computeTestRuleWithMissingTestParameter() {
         List<ITestRule> missing = new ArrayList<>();
         ITestRule[] testRules = testCase.getTestRuleObjects();
         for (ITestRule testRule : testRules) {
@@ -427,7 +426,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     /**
      * Computes all missing test case type side objects.
      */
-    private List<ITestPolicyCmpt> computeTestPolicyCmptStructWithMissingTestParameter() throws CoreException {
+    private List<ITestPolicyCmpt> computeTestPolicyCmptStructWithMissingTestParameter() {
         List<ITestPolicyCmpt> missingTestPolicyCmpts = new ArrayList<>();
         List<ITestPolicyCmptLink> missingTestPolicyCmptLinks = new ArrayList<>();
         List<ITestAttributeValue> missingTestAttributeValues = new ArrayList<>();
@@ -463,7 +462,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
             List<ITestPolicyCmpt> missingTestPolicyCmpts,
             List<ITestPolicyCmptLink> missingTestPolicyCmptLinks,
             List<ITestAttributeValue> missingTestAttributeValues,
-            List<ITestPolicyCmpt> allTestPolicyCmpt) throws CoreException {
+            List<ITestPolicyCmpt> allTestPolicyCmpt) {
 
         ITestPolicyCmptTypeParameter param = cmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (param == null) {
@@ -511,7 +510,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
             List<ITestPolicyCmpt> missingTestPolicyCmpt,
             List<ITestPolicyCmptLink> missingTestPolicyCmptLink,
             List<ITestAttributeValue> missingTestAttributeValue,
-            List<ITestPolicyCmpt> allTestPolicyCmpt) throws CoreException {
+            List<ITestPolicyCmpt> allTestPolicyCmpt) {
 
         // TODO mit Joerg besprechen: Wieso reichen wir die ganzen Listen durch die Gegend.
         List<ITestPolicyCmptLink> objects = new ArrayList<>();
@@ -572,7 +571,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
      * Computes the missing test attribues (test case type side).
      */
     private void computeTestAttributeValuesWithMissingTestAttribute(ITestPolicyCmpt cmpt,
-            List<ITestAttributeValue> missingTestAttributeValue) throws CoreException {
+            List<ITestAttributeValue> missingTestAttributeValue) {
 
         ITestAttributeValue[] testAttributeValues = cmpt.getTestAttributeValues();
         for (ITestAttributeValue testAttributeValue : testAttributeValues) {
@@ -694,7 +693,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
     protected void fix() {
         try {
             testCase.fixDifferences(this);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
         }
     }

@@ -17,7 +17,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
@@ -74,7 +73,7 @@ public class NewTableContentsValidatorTest {
         return ipsProject;
     }
 
-    private void mockNamingConventions(IIpsProject ipsProject) throws CoreException {
+    private void mockNamingConventions(IIpsProject ipsProject) {
         IIpsProjectNamingConventions namingConventions = mock(IIpsProjectNamingConventions.class);
         when(namingConventions.validateUnqualifiedIpsObjectName(any(IpsObjectType.class), anyString())).thenReturn(
                 new MessageList());

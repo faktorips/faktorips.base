@@ -14,7 +14,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -46,7 +45,7 @@ public class CopyProductCmptOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_CopySrcFileIfCopyMode() throws InvocationTargetException, InterruptedException, CoreException {
+    public void testRun_CopySrcFileIfCopyMode() throws InvocationTargetException, InterruptedException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute attribute = createProductCmptTypeAttribute(productCmptType, "testAttribute",
                 Datatype.STRING, "");
@@ -57,7 +56,7 @@ public class CopyProductCmptOperationTest extends AbstractIpsPluginTest {
         IIpsPackageFragment targetIpsPackageFragment = ipsProject.getIpsPackageFragmentRoots()[0]
                 .createPackageFragment("targetPackage", true, null);
 
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
 
         NewProductCmptPMO pmo = new NewProductCmptPMO();
         pmo.setIpsProject(ipsProject);

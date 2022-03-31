@@ -48,9 +48,7 @@ public class LazyCollectionExtension<P, C> extends AbstractLazyExtension<P, P, C
     protected C initializeExtension() {
         C collection = collectionCreator.get();
         getConfigElements().forEach(configElement -> {
-            P element = ExtensionPoints.createExecutableExtension(getExtensionPointId(), configElement,
-                    getConfigElementAttribute(),
-                    getExtensionClass());
+            P element = create(configElement);
             if (element != null) {
                 elementCollector.accept(configElement, element, collection);
             }

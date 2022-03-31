@@ -18,7 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -46,6 +45,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -210,7 +210,7 @@ public class SourcePage extends WizardPage {
         String masterVersionId = ""; //$NON-NLS-1$
         try {
             masterVersionId = rootProductCmpt.getVersionId();
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 
@@ -230,7 +230,8 @@ public class SourcePage extends WizardPage {
         createLabel(toolkit, masterComposite, changeOverTimeLabel, masterVersionId, height[2]);
 
         createLabel(toolkit, masterComposite, Messages.SourcePage_labelTargetRoot, rootProductCmpt
-                .getIpsPackageFragment().getRoot().getCorrespondingResource().getFullPath().toString().substring(1),
+                .getIpsPackageFragment().getRoot().getCorrespondingResource().getWorkspaceRelativePath().toString()
+                .substring(1),
                 height[3]);
 
         createLabel(toolkit, masterComposite, Messages.ReferenceAndPreviewPage_labelTargetPackage,
@@ -334,17 +335,19 @@ public class SourcePage extends WizardPage {
         createBindings();
 
         getShell().getDisplay().asyncExec(() -> {
-            newWorkingDateControl.setFocus();
-            // run async to ensure that the buttons state (enabled/disabled)
-            // can be updated
-            refreshPageAfterValueChange();
-            updateCheckedAndGrayedStatus(getStructure());
-            updateColumnWidth();
+            if (!newWorkingDateControl.isDisposed()) {
+                newWorkingDateControl.setFocus();
+                // run async to ensure that the buttons state (enabled/disabled)
+                // can be updated
+                refreshPageAfterValueChange();
+                updateCheckedAndGrayedStatus(getStructure());
+                updateColumnWidth();
 
-            getWizard().getDeepCopyPreview().getErrorElements().clear();
-            setErrorMessage(null);
-            tree.refresh(true);
-            setMessagePleaseEnterWorkingDate();
+                getWizard().getDeepCopyPreview().getErrorElements().clear();
+                setErrorMessage(null);
+                tree.refresh(true);
+                setMessagePleaseEnterWorkingDate();
+            }
         });
     }
 

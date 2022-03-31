@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
@@ -21,7 +20,6 @@ import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributes
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.Messages;
 import org.faktorips.devtools.model.IPartReference;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IColumn;
@@ -42,11 +40,7 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
 
     @Override
     public ITableStructure findContentType(IIpsProject ipsProject) {
-        try {
-            return tableContents.findTableStructure(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return tableContents.findTableStructure(getIpsProject());
     }
 
     @Override
@@ -82,11 +76,7 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
     @Override
     public int getContentAttributesCountIncludeSupertypeCopies(ITableStructure newContentType,
             boolean includeLiteralName) {
-        try {
-            return tableContents.findTableStructure(getIpsProject()).getNumOfColumns();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return tableContents.findTableStructure(getIpsProject()).getNumOfColumns();
     }
 
     @Override

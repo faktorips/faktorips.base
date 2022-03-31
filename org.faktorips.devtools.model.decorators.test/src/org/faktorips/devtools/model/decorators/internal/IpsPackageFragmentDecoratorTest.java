@@ -18,8 +18,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -45,9 +45,9 @@ public class IpsPackageFragmentDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_GetChildrenFails() throws CoreException {
+    public void testGetImageDescriptor_GetChildrenFails() {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(packageFragment).getChildren();
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(packageFragment).getChildren();
 
         ImageDescriptor imageDescriptor = ipsPackageFragmentDecorator.getImageDescriptor(packageFragment);
 
@@ -65,7 +65,7 @@ public class IpsPackageFragmentDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_EmptyChildren() throws CoreException {
+    public void testGetImageDescriptor_EmptyChildren() {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
         when(packageFragment.getChildren()).thenReturn(new IIpsElement[0]);
 
@@ -76,7 +76,7 @@ public class IpsPackageFragmentDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor() throws CoreException {
+    public void testGetImageDescriptor() {
         IIpsPackageFragment packageFragment = mock(IIpsPackageFragment.class);
         when(packageFragment.getChildren()).thenReturn(new IIpsElement[] { mock(IIpsElement.class) });
 

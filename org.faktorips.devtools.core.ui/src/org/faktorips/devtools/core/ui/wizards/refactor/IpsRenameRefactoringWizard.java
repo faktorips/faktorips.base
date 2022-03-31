@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
@@ -131,7 +130,7 @@ public final class IpsRenameRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status) {
             getIpsRenameProcessor().setNewName(newNameTextField.getText());
 
             if (getIpsRenameProcessor().isPluralNameRefactoringRequired()) {

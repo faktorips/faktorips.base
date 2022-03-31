@@ -21,7 +21,6 @@ import static org.junit.Assert.fail;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -52,7 +51,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         Element xmlElement = literalNameAttribute.toXml(createXmlDocument(IEnumLiteralNameAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
         assertEquals("name",
@@ -77,12 +76,12 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() {
         assertEquals(0, literalNameAttribute.validate(ipsProject).size());
     }
 
     @Test
-    public void testValidateIsNeeded() throws CoreException {
+    public void testValidateIsNeeded() {
         paymentMode.setAbstract(true);
         assertOneValidationMessage(literalNameAttribute);
         assertTrue(hasLiteralNameNotNeededMessage(literalNameAttribute));
@@ -98,12 +97,11 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
         assertFalse(hasLiteralNameNotNeededMessage(literalNameAttribute));
     }
 
-    private void assertOneValidationMessage(IEnumLiteralNameAttribute literalNameAttribute2) throws CoreException {
+    private void assertOneValidationMessage(IEnumLiteralNameAttribute literalNameAttribute2) {
         assertOneValidationMessage(literalNameAttribute2.validate(ipsProject));
     }
 
-    private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2)
-            throws CoreException {
+    private boolean hasLiteralNameNotNeededMessage(IEnumLiteralNameAttribute literalNameAttribute2) {
         MessageList validationMessageList = literalNameAttribute2.validate(ipsProject);
         Message notNeededMessage = validationMessageList
                 .getMessageByCode(IEnumLiteralNameAttribute.MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED);
@@ -111,14 +109,14 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributePassValidationIfAttributeNotSpecified() throws CoreException {
+    public void testValidateDefaultValueProviderAttributePassValidationIfAttributeNotSpecified() {
         literalNameAttribute.setDefaultValueProviderAttribute("");
         assertTrue(literalNameAttribute.isValid(ipsProject));
 
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeNotExistingProviderAttribute() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeNotExistingProviderAttribute() {
         literalNameAttribute.setDefaultValueProviderAttribute("foo");
         getIpsModel().clearValidationCache();
         MessageList validationMessageList = literalNameAttribute.validate(ipsProject);
@@ -130,7 +128,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeProviderAttributeNotString() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeProviderAttributeNotString() {
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("invalidProviderAttribute");
         invalidProviderAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
@@ -146,7 +144,7 @@ public class EnumLiteralNameAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDefaultValueProviderAttributeUniquePossible() throws CoreException {
+    public void testValidateDefaultValueProviderAttributeUniquePossible() {
         IEnumAttribute invalidProviderAttribute = paymentMode.newEnumAttribute();
         invalidProviderAttribute.setName("notUniqueProviderAttribute");
         invalidProviderAttribute.setUnique(false);

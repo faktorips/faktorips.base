@@ -11,9 +11,7 @@
 package org.faktorips.devtools.model.builder.naming;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.util.QNameUtil;
@@ -61,15 +59,11 @@ public class JavaPackageStructure implements IJavaPackageStructure {
     protected String getPackageNameForGeneratedArtefacts(IIpsSrcFile ipsSrcFile,
             boolean internalArtifacts,
             boolean mergableArtifacts) {
-        try {
-            String basePackName = mergableArtifacts ? ipsSrcFile.getBasePackageNameForMergableArtefacts()
-                    : ipsSrcFile
-                            .getBasePackageNameForDerivedArtefacts();
-            String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
-            return getPackageName(internalArtifacts, basePackName, packageFragName);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        String basePackName = mergableArtifacts ? ipsSrcFile.getBasePackageNameForMergableArtefacts()
+                : ipsSrcFile
+                        .getBasePackageNameForDerivedArtefacts();
+        String packageFragName = ipsSrcFile.getIpsPackageFragment().getName().toLowerCase();
+        return getPackageName(internalArtifacts, basePackName, packageFragName);
     }
 
     private String getPackageName(boolean internalArtifacts, String basePackName, String packageFragName) {

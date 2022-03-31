@@ -15,7 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -26,7 +26,7 @@ import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessagesGenerator extends AbstractPropertiesGenerator {
 
-    public ValidationRuleMessagesGenerator(IFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
+    public ValidationRuleMessagesGenerator(AFile messagesPropertiesFile, ISupportedLanguage supportedLanguage,
             ValidationRuleMessagesPropertiesBuilder builder) {
         super(messagesPropertiesFile, supportedLanguage, builder, new ValidationRuleMessageProperties(
                 supportedLanguage.isDefaultLanguage()));

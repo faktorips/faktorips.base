@@ -309,8 +309,14 @@
                         </goals>
                         <configuration>
                             <excludes>
+                                <!-- exclude test classes -->
                                 <exclude>**/*Test.class</exclude>
-                                <exclude>**/test*.class</exclude>
+                                <exclude>**/Test*.class</exclude>
+                                <!-- exclude inner classes of test classes -->
+                                <exclude>**/*Test$*</exclude>
+                                <exclude>**/Test*$*</exclude>
+                                <!-- exclude classes within JARs -->
+                                <exclude>**/*.jar/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

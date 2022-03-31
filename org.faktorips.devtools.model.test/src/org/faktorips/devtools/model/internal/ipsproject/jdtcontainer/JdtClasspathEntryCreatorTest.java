@@ -12,12 +12,16 @@ package org.faktorips.devtools.model.internal.ipsproject.jdtcontainer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.resources.IProject;
+import java.io.File;
+import java.nio.file.Path;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
@@ -56,7 +60,7 @@ public class JdtClasspathEntryCreatorTest {
     private IIpsProject refProject;
 
     @Mock
-    private IProject project;
+    private AProject project;
 
     @Mock
     private IpsProjectRefEntry expectedProjectReference;
@@ -158,6 +162,10 @@ public class JdtClasspathEntryCreatorTest {
 
     private void mockEntryAndPath() {
         when(entry.getPath()).thenReturn(path);
+        File file = mock(File.class);
+        when(path.toFile()).thenReturn(file);
+        Path filePath = mock(Path.class);
+        when(file.toPath()).thenReturn(filePath);
         when(path.lastSegment()).thenReturn("myProjectName");
         when(referenceFactory.getIpsProject(path)).thenReturn(refProject);
     }

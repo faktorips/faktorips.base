@@ -15,7 +15,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.layout.GridData;
@@ -326,19 +325,15 @@ public class ComponentPropertiesSection extends IpsSection {
         protected void buttonClicked() {
             IIpsProject ipsProject = product.getIpsProject();
             IProductCmptNamingStrategy namingStrategy = ipsProject.getProductCmptNamingStrategy();
-            try {
-                /*
-                 * First set the runtime ID to "" so that in fact nothing happens when the button is
-                 * clicked while the runtime ID equals the runtime ID that would be generated. If
-                 * the old value remains here, the naming strategy would find it and create a new
-                 * name with added 1.
-                 */
-                product.setRuntimeId(IpsStringUtils.EMPTY);
-                String generatedRuntimeId = namingStrategy.getUniqueRuntimeId(ipsProject, product.getName());
-                product.setRuntimeId(generatedRuntimeId);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            /*
+             * First set the runtime ID to "" so that in fact nothing happens when the button is
+             * clicked while the runtime ID equals the runtime ID that would be generated. If the
+             * old value remains here, the naming strategy would find it and create a new name with
+             * added 1.
+             */
+            product.setRuntimeId(IpsStringUtils.EMPTY);
+            String generatedRuntimeId = namingStrategy.getUniqueRuntimeId(ipsProject, product.getName());
+            product.setRuntimeId(generatedRuntimeId);
         }
 
     }

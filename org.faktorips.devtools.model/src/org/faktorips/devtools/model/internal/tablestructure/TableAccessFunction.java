@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IIndex;
@@ -54,7 +54,7 @@ public class TableAccessFunction implements ITableAccessFunction {
             tmpArgTypes.add(item.getDatatype());
         }
         argTypeNames = Collections.unmodifiableList(tmpArgTypes);
-        description = NLS.bind(Messages.TableAccessFunctionDescription, params, column.getName());
+        description = MessageFormat.format(Messages.TableAccessFunctionDescription, params, column.getName());
     }
 
     @Override

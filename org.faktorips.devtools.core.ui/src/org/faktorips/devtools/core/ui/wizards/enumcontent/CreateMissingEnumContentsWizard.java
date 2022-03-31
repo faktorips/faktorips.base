@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -511,25 +510,21 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                     return;
                 }
                 if (checkedObj instanceof IEnumType) {
-                    try {
-                        IEnumType currentEnumType = (IEnumType)checkedObj;
-                        String enumContentQualifiedName = currentEnumType.getEnumContentName();
-                        String enumContentPackageName = StringUtil.getPackageName(enumContentQualifiedName);
-                        String enumContentName = StringUtil.unqualifiedName(enumContentQualifiedName);
-                        IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(enumContentPackageName);
-                        if (!pack.exists()) {
-                            pack = targetRoot.createPackageFragment(enumContentPackageName, true, null);
-                        }
-                        if (monitor.isCanceled()) {
-                            return;
-                        }
-                        IIpsSrcFile file = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, enumContentName, true, null);
-                        IEnumContent enumContent = (IEnumContent)file.getIpsObject();
-                        enumContent.setEnumType(currentEnumType.getQualifiedName());
-                        file.save(true, null);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
+                    IEnumType currentEnumType = (IEnumType)checkedObj;
+                    String enumContentQualifiedName = currentEnumType.getEnumContentName();
+                    String enumContentPackageName = StringUtil.getPackageName(enumContentQualifiedName);
+                    String enumContentName = StringUtil.unqualifiedName(enumContentQualifiedName);
+                    IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(enumContentPackageName);
+                    if (!pack.exists()) {
+                        pack = targetRoot.createPackageFragment(enumContentPackageName, true, null);
                     }
+                    if (monitor.isCanceled()) {
+                        return;
+                    }
+                    IIpsSrcFile file = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, enumContentName, true, null);
+                    IEnumContent enumContent = (IEnumContent)file.getIpsObject();
+                    enumContent.setEnumType(currentEnumType.getQualifiedName());
+                    file.save(null);
                 }
                 monitor.worked(1);
             }

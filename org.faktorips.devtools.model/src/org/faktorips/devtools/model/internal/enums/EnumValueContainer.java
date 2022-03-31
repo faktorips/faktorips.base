@@ -17,14 +17,12 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
@@ -102,7 +100,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) throws CoreException {
+    public IEnumValue findEnumValue(String identifierAttributeValue, IIpsProject ipsProject) {
         if (identifierAttributeValue == null) {
             return null;
         }
@@ -196,7 +194,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public IEnumValue newEnumValue() throws CoreException {
+    public IEnumValue newEnumValue() {
         final IEnumType enumType = findEnumType(getIpsProject());
 
         // Creation not possible if enumeration type can't be found.
@@ -210,7 +208,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     private IEnumValue newEnumValue;
 
                     @Override
-                    public boolean execute() throws CoreException {
+                    public boolean execute() {
                         newEnumValue = createEnumValueSingleEvent(enumType);
                         return newEnumValue != null;
                     }
@@ -227,7 +225,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                 });
     }
 
-    private IEnumValue createEnumValueSingleEvent(final IEnumType enumType) throws CoreException {
+    private IEnumValue createEnumValueSingleEvent(final IEnumType enumType) {
         IEnumValue newEnumValue = newPart(EnumValue.class);
 
         boolean includeLiteralNames = EnumValueContainer.this instanceof IEnumType;
@@ -247,7 +245,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     }
 
     @Override
-    public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) throws CoreException {
+    public int[] moveEnumValues(final List<IEnumValue> enumValuesToMove, final boolean up) {
         ArgumentCheck.notNull(enumValuesToMove);
         final int numberToMove = enumValuesToMove.size();
         if (numberToMove == 0) {
@@ -259,7 +257,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                     private int[] indices = new int[numberToMove];
 
                     @Override
-                    public boolean execute() throws CoreException {
+                    public boolean execute() {
                         for (int i = 0; i < numberToMove; i++) {
                             IEnumValue currentEnumValue = enumValuesToMove.get(i);
                             int index = getIndexOfEnumValue(currentEnumValue);
@@ -298,31 +296,27 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
             return false;
         }
 
-        try {
-            return ((IpsModel)getIpsModel()).executeModificationsWithSingleEvent(
-                    new SingleEventModification<Boolean>(getIpsSrcFile()) {
+        return ((IpsModel)getIpsModel()).executeModificationsWithSingleEvent(
+                new SingleEventModification<Boolean>(getIpsSrcFile()) {
 
-                        private Boolean changed = false;
+                    private Boolean changed = false;
 
-                        @Override
-                        protected boolean execute() throws CoreException {
-                            for (IEnumValue currentEnumValue : enumValuesToDelete) {
-                                if ((enumValues.contains(currentEnumValue))) {
-                                    currentEnumValue.delete();
-                                    changed = true;
-                                }
+                    @Override
+                    protected boolean execute() {
+                        for (IEnumValue currentEnumValue : enumValuesToDelete) {
+                            if ((enumValues.contains(currentEnumValue))) {
+                                currentEnumValue.delete();
+                                changed = true;
                             }
-                            return changed;
                         }
+                        return changed;
+                    }
 
-                        @Override
-                        protected Boolean getResult() {
-                            return changed;
-                        }
-                    });
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+                    @Override
+                    protected Boolean getResult() {
+                        return changed;
+                    }
+                });
     }
 
     @Override

@@ -19,10 +19,10 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -143,7 +143,7 @@ public class DeepCopyPreview {
         validateAlreadyExistingFile(packageName, newName, ipsObjectType.getFileExtension(), modified);
         if (targetPackage.exists()) {
             IIpsSrcFile newIpsSrcFile = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
-            String newFileName = newIpsSrcFile.getEnclosingResource().getFullPath().toString();
+            String newFileName = newIpsSrcFile.getEnclosingResource().getWorkspaceRelativePath().toString();
             IProductCmptStructureReference node = filename2referenceMap.get(newFileName);
             if (node != null) {
                 IIpsObject wrappedIpsObject = node.getWrappedIpsObject();
@@ -382,10 +382,10 @@ public class DeepCopyPreview {
      * Returns the handles for all files to be created to do the deep copy. Note that all handles
      * point to non-existing resources
      * 
-     * @throws CoreException if any error exists (e.g. naming collisions).
+     * @throws IpsException if any error exists (e.g. naming collisions).
      */
     public Map<IProductCmptStructureReference, IIpsSrcFile> getHandles(IProgressMonitor progressMonitor,
-            Set<IProductCmptStructureReference> toCopy) throws CoreException {
+            Set<IProductCmptStructureReference> toCopy) {
         if (!isValid(progressMonitor)) {
             StringBuilder message = new StringBuilder();
             Collection<String> errors = getErrorElements().values();
@@ -393,7 +393,7 @@ public class DeepCopyPreview {
                 message.append(element);
             }
             IpsStatus status = new IpsStatus(message.toString());
-            throw new CoreException(status);
+            throw new IpsException(status);
         }
 
         Map<IProductCmptStructureReference, IIpsSrcFile> result = new HashMap<>();

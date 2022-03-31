@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.dialogs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
@@ -31,7 +31,7 @@ public abstract class CachingOpenIpsObjectContext implements ISelectIpsObjectCon
     private volatile List<IIpsSrcFile> srcFiles;
 
     @Override
-    public final List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException {
+    public final List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) {
         List<IIpsSrcFile> result = srcFiles;
         if (result != null) {
             return result;
@@ -54,6 +54,6 @@ public abstract class CachingOpenIpsObjectContext implements ISelectIpsObjectCon
      *            files
      * @return the list of {@link IIpsSrcFile} to show in the select dialog
      */
-    public abstract List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws CoreException;
+    public abstract List<IIpsSrcFile> loadIpsSrcFiles(IProgressMonitor progressMonitor) throws IpsException;
 
 }

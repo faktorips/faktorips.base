@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,6 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -88,7 +88,7 @@ class AssociationPersistenceTab {
     private void searchInverseAssociation() {
         try {
             inverseAssociation = association.findInverseAssociation(getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }
@@ -163,7 +163,7 @@ class AssociationPersistenceTab {
                             getToolkit().setDataChangeable(groupForeignKey,
                                     persistEnabled && ownerOfManyToManyAssociation && !joinTableRequired);
                             enableOrDisableForeignKeyColumn();
-                        } catch (CoreException e) {
+                        } catch (IpsException e) {
                             IpsPlugin.logAndShowErrorDialog(e);
                         }
                     }
@@ -319,7 +319,7 @@ class AssociationPersistenceTab {
             if (persistentAssociationInfo.isJoinTableRequired()) {
                 return;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         getToolkit().setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);

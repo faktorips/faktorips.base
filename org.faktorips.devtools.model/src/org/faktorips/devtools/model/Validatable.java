@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
@@ -33,13 +33,13 @@ public interface Validatable {
      *            used within the implementation of this method.
      * @return Flag indicating whether this object is valid.
      * 
-     * @throws CoreException If an exception occurs while validating the object.
+     * @throws IpsException If an exception occurs while validating the object.
      * 
      * @see #validate(IIpsProject)
      * 
      * @since 3.0.0
      */
-    public boolean isValid(IIpsProject ipsProject) throws CoreException;
+    public boolean isValid(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the resulting severity of the validation. The returned severity is equal to the
@@ -52,14 +52,14 @@ public interface Validatable {
      * 
      * @return the resulting validation severity.
      * 
-     * @throws CoreException If an exception occurs while obtaining the resulting validation
+     * @throws IpsException If an exception occurs while obtaining the resulting validation
      *             severity.
      * 
      * @see #validate(IIpsProject)
      * 
      * @since 3.0.0
      */
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException;
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws IpsException;
 
     /**
      * <p>
@@ -76,11 +76,11 @@ public interface Validatable {
      * @return A ValidationMessageList containing a list of messages describing errors, warnings and
      *         information. If no messages are created, an empty list is returned.
      * 
-     * @throws CoreException If an exception occurs while validating the object.
+     * @throws IpsException If an exception occurs while validating the object.
      * 
      * @see org.faktorips.devtools.model.IIpsModel#clearValidationCache()
      */
-    public MessageList validate(IIpsProject ipsProject) throws CoreException;
+    public MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the project this validatable object belongs to. This project is used to validate the

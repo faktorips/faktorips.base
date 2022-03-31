@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -78,7 +77,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class A extends StubJavaSourceFileBuilder {
 
-        public A() throws CoreException {
+        public A() {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -86,7 +85,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class B extends StubJavaSourceFileBuilder {
 
-        public B() throws CoreException {
+        public B() {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -94,7 +93,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class C extends StubJavaSourceFileBuilder {
 
-        public C() throws CoreException {
+        public C() {
             super(new TestIpsArtefactBuilderSet());
         }
 
@@ -102,7 +101,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class DExtendsC extends C {
 
-        public DExtendsC() throws CoreException {
+        public DExtendsC() {
             super();
         }
 
@@ -110,7 +109,7 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
 
     static class EExtendsC extends C {
 
-        public EExtendsC() throws CoreException {
+        public EExtendsC() {
             super();
         }
 
@@ -148,13 +147,13 @@ public class AbstractBuilderSetTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public void build(IIpsSrcFile ipsSrcFile) {
             // Auto-generated method stub
 
         }
 
         @Override
-        public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public void delete(IIpsSrcFile ipsSrcFile) {
             // Auto-generated method stub
 
         }

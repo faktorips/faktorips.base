@@ -10,14 +10,12 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
@@ -96,11 +94,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private List<IAssociation> getAllAssociations() {
-        try {
-            return getContextType().findAllAssociations(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getContextType().findAllAssociations(getIpsProject());
     }
 
     private List<IdentifierProposal> getProposalsFor(String prefixSuffix) {
@@ -129,7 +123,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     private String getAssociationTarget(IAssociation association, boolean oneToMany) {
         String associationTarget = ASSOCIATION_TARGET_SEPERATOR;
         if (oneToMany) {
-            associationTarget += NLS.bind(Messages.AssociationParser_ListDatatypeDescriptionPrefix,
+            associationTarget += MessageFormat.format(Messages.AssociationParser_ListDatatypeDescriptionPrefix,
                     getUnqualifiedTargetName(association));
         } else {
             associationTarget += getUnqualifiedTargetName(association);

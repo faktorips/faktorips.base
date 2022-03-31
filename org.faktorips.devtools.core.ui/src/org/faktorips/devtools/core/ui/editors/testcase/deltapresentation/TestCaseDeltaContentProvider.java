@@ -14,11 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseContentProvider;
 import org.faktorips.devtools.core.ui.editors.testcase.TestCaseTypeAssociation;
@@ -261,7 +261,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                     }
 
                     return false;
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                     return false;
                 }
@@ -275,7 +275,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
          * Returns <code>true</code> if the object itself or a child of the object is visible for
          * the given delta type aspect.
          */
-        private boolean isFilterFor(Object object, TestCaseDeltaType deltaType) throws CoreException {
+        private boolean isFilterFor(Object object, TestCaseDeltaType deltaType) {
             // the object is visible
             if (checkVisibility(object, deltaType)) {
                 return true;

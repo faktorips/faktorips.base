@@ -31,10 +31,10 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
@@ -77,7 +77,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     @Test
     public void testLoadMessagesFromFile() throws Exception {
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        IFile propertyFile = mock(IFile.class);
+        AFile propertyFile = mock(AFile.class);
         InputStream inputStream = mock(InputStream.class);
         when(propertyFile.getContents()).thenReturn(inputStream);
 
@@ -99,7 +99,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     public void testGenerate() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        IFile propertyFile = mock(IFile.class);
+        AFile propertyFile = mock(AFile.class);
         InputStream inputStream = mock(InputStream.class);
         LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
@@ -129,7 +129,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
 
         reset(propertyFile);
         reset(inputStream);
@@ -147,7 +147,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     public void testSafeIfModified() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        IFile propertyFile = mock(IFile.class);
+        AFile propertyFile = mock(AFile.class);
         LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
@@ -164,14 +164,14 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
     }
 
     @Test
     public void testSafeIfModified_notModified() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        IFile propertyFile = mock(IFile.class);
+        AFile propertyFile = mock(AFile.class);
         LabelAndDescriptionGenerator messagesGenerator = new LabelAndDescriptionGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
 
@@ -188,13 +188,13 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), anyBoolean(), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(), anyBoolean(),
+        verify(propertyFile, never()).setContents(any(InputStream.class), anyBoolean(),
                 any(NullProgressMonitor.class));
     }
 
@@ -202,7 +202,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     public void testDeleteAllMessagesFor() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(IFile.class),
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         setLabel(pcType, "foo");
@@ -228,7 +228,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     public void testAddLabelsAndDescriptions_emptyMessage() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(IFile.class),
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
                 new SupportedLanguage(Locale.GERMAN), builder);
 
         labelAndDescriptionGenerator.addLabelAndDescription(pcType);
@@ -241,7 +241,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
     public void testGeneratePluralLabel() throws Exception {
         setUpPcType();
         AbstractLocalizedPropertiesBuilder builder = mock(LabelAndDescriptionPropertiesBuilder.class);
-        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(IFile.class),
+        LabelAndDescriptionGenerator labelAndDescriptionGenerator = new LabelAndDescriptionGenerator(mock(AFile.class),
                 new SupportedLanguage(Locale.GERMAN), builder);
         IAssociation association = pcType.newAssociation();
         setLabel(association, "asso", "assos");

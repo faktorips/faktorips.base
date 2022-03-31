@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -83,6 +82,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -105,7 +105,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -695,7 +694,7 @@ public class TestCaseTypeSection extends IpsSection {
                 }
                 return (Image)resourceManager
                         .get(IpsProblemOverlayIcon.createOverlayIcon(baseImage, msgList.getSeverity()));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return null;
             }
@@ -730,7 +729,7 @@ public class TestCaseTypeSection extends IpsSection {
                             } else {
                                 return testAttribute.getDatatype();
                             }
-                        } catch (CoreRuntimeException e) {
+                        } catch (IpsException e) {
                             // ignore exception, display datatype name stored in test parameter
                             // instead
                             return testAttribute.getDatatype();
@@ -1152,7 +1151,7 @@ public class TestCaseTypeSection extends IpsSection {
         MessageList msgList = null;
         try {
             msgList = testParam.validate(testParam.getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return section;
         }
@@ -1355,7 +1354,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
         new TableMessageHoverService(viewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     return validateElement(element);
                 } else {
@@ -1465,7 +1464,7 @@ public class TestCaseTypeSection extends IpsSection {
                     return true;
                 }
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // ignore exception, inconsitence are displayed as validation errors
         }
         return false;
@@ -1648,7 +1647,7 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * Performs and returns validation messages on the given element.
      */
-    private MessageList validateElement(Object element) throws CoreException {
+    private MessageList validateElement(Object element) {
         MessageList messageList = new MessageList();
         // validate element
         if (element instanceof IIpsObjectPartContainer) {
@@ -1684,7 +1683,7 @@ public class TestCaseTypeSection extends IpsSection {
         });
         new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     return validateElement(element);
                 } else {

@@ -20,10 +20,10 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -60,11 +60,11 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindIsUniqueFails() throws CoreException {
+    public void testGetImageDescriptor_FindIsUniqueFails() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute)
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute)
                 .findIsUnique(ipsProject);
 
         ImageDescriptor imageDescriptor = enumAttributeDecorator.getImageDescriptor(enumAttribute);
@@ -74,7 +74,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Unique() throws CoreException {
+    public void testGetImageDescriptor_Unique() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -98,7 +98,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_OverrideUnique() throws CoreException {
+    public void testGetImageDescriptor_OverrideUnique() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
@@ -128,13 +128,13 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_FindDatatypeFails() throws CoreException {
+    public void testGetLabel_FindDatatypeFails() {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
         when(enumAttribute.getName()).thenReturn("Foo");
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute).findDatatype(ipsProject);
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(enumAttribute).findDatatype(ipsProject);
 
         String label = enumAttributeDecorator.getLabel(enumAttribute);
 
@@ -142,7 +142,7 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
-    public void testGetLabel() throws CoreException {
+    public void testGetLabel() {
         IIpsProject ipsProject = mock(IIpsProject.class);
 
         ValueDatatype datatype = mock(ValueDatatype.class);

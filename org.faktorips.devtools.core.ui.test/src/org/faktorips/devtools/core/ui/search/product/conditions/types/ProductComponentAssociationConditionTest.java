@@ -18,7 +18,6 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
@@ -64,7 +63,7 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testGetValueDatatypeAndValueSet() throws CoreException {
+    public void testGetValueDatatypeAndValueSet() {
         IProductCmptTypeAssociation link = productCmptType.newProductCmptTypeAssociation();
         String linkedProduct = "bbb.LinkedProduct";
         newProductCmpt(linkedProductCmptType, linkedProduct);
@@ -106,7 +105,7 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testOperandProvider() throws CoreException {
+    public void testOperandProvider() {
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
 
         ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.newGeneration();
@@ -137,7 +136,7 @@ public class ProductComponentAssociationConditionTest extends AbstractIpsPluginT
     }
 
     @Test
-    public void testOperandProvider_staticLinks() throws CoreException {
+    public void testOperandProvider_staticLinks() {
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
 
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();

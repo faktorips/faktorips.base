@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -23,6 +22,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -52,12 +54,12 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         }
 
         Control result;
-        if (!ipsProject.getProject().isOpen()) {
+        if (!((IProject)ipsProject.getProject().unwrap()).isOpen()) {
             result = createForClosedProject(parent);
         } else {
             try {
                 result = createForIpsProject(parent, ipsProject);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
                 return null;
             }
@@ -75,7 +77,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         return label;
     }
 
-    private Control createForIpsProject(Composite parent, IIpsProject ipsProject) throws CoreException {
+    private Control createForIpsProject(Composite parent, IIpsProject ipsProject) {
         objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX));
         objectPathsContainer.init(ipsProject);
         return objectPathsContainer.createControl(parent);
@@ -89,7 +91,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         IIpsProject ipsProject = null;
 
         if (project != null) {
-            ipsProject = IIpsModel.get().getIpsProject(project);
+            ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
         }
         return ipsProject;
     }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
@@ -21,6 +20,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -81,9 +83,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             } else if (element instanceof IJavaElement) {
                 return ((IJavaElement)element).getCorrespondingResource();
             } else if (element instanceof IIpsElement) {
-                return ((IIpsElement)element).getEnclosingResource();
+                return ((IIpsElement)element).getEnclosingResource().unwrap();
             } else if (element instanceof IProductCmptReference) {
-                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource();
+                return ((IProductCmptReference)element).getProductCmpt().getEnclosingResource().unwrap();
             }
         } catch (JavaModelException e) {
             /*
@@ -101,13 +103,13 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) {
         setDefaultsExtension(selectedResource);
         if (selectedResource == null) {
             setIpsPackageFragmentRoot(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsProject) {
             IIpsPackageFragmentRoot[] roots;
             roots = ((IIpsProject)element).getIpsPackageFragmentRoots();
@@ -134,9 +136,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * Subclasses may override to set default values based upon the user selection.
      * 
      * @param selectedResource the selected resource
-     * @throws CoreException in any case of exception
+     * @throws IpsException in any case of exception
      */
-    protected void setDefaultsExtension(IResource selectedResource) throws CoreException {
+    protected void setDefaultsExtension(IResource selectedResource) {
         // subclasses may override
     }
 
@@ -144,13 +146,13 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
      * 
-     * @throws CoreException if the contents of the resource can't be parsed.
+     * @throws IpsException if the contents of the resource can't be parsed.
      */
-    public IIpsObject getSelectedIpsObject() throws CoreException {
+    public IIpsObject getSelectedIpsObject() {
         if (selectedResource == null) {
             return null;
         }
-        IIpsElement el = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement el = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (el instanceof IIpsSrcFile) {
             return ((IIpsSrcFile)el).getIpsObject();
         }
@@ -163,7 +165,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
         Control control = createControlInternal(parent);
         try {
             setDefaults(selectedResource);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         setControl(control);
@@ -182,9 +184,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * This method is called when the page is entered. By default it calls the setDefaultFocus()
      * method.
      * 
-     * @throws CoreException in any case of exception
+     * @throws IpsException in any case of exception
      */
-    protected void pageEntered() throws CoreException {
+    protected void pageEntered() {
         setDefaultFocus();
     }
 
@@ -221,9 +223,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      * 
      * @param monitor the wizards progress monitor
      * @return the new {@link IIpsSrcFile}
-     * @throws CoreException when an exception ocurrs during creation
+     * @throws IpsException when an exception ocurrs during creation
      */
-    protected abstract IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException;
+    protected abstract IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws IpsException;
 
     /**
      * Implementations must provide an {@link IIpsPackageFragment} for the wizard by this method.
@@ -243,10 +245,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      *            of the new {@link IIpsObject} need to be registered in this set so that the wizard
      *            can also save the changed state of these objects.
      * 
-     * @throws CoreException if an exception occurs during finishing
+     * @throws IpsException if an exception occurs during finishing
      */
-    public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+    public final void finishIpsObjects(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
     }
@@ -260,10 +261,9 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
      *            finishing of the new {@link IIpsObject} need to be registered in this set so that
      *            the wizard can also save the changed state of these objects.
      * 
-     * @throws CoreException if an exception occurs during finishing
+     * @throws IpsException if an exception occurs during finishing
      */
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         // Empty default implementation, subclasses may override
     }

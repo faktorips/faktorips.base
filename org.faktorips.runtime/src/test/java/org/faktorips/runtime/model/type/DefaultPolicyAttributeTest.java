@@ -927,7 +927,6 @@ public class DefaultPolicyAttributeTest {
             this.attrWithValueSetWithTooManyArgs = attrWithValueSetWithTooManyArgs;
         }
 
-        @SuppressWarnings("unused")
         @IpsAllowedValues("attrWithValueSetWithTooManyArgs")
         public ValueSet<String> getAllowedValuesForAttrWithValueSetWithTooManyArgs(IValidationContext context,
                 boolean includeNull) {

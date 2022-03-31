@@ -20,7 +20,6 @@ import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -74,7 +73,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation.newRow();
 
         srcFile = table.getIpsSrcFile();
-        correspondingFile = srcFile.getCorrespondingFile();
+        correspondingFile = srcFile.getCorrespondingFile().unwrap();
 
         // initialized compareItem
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
@@ -116,7 +115,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEqualsObject() throws CoreException {
+    public void testEqualsObject() {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");
@@ -145,7 +144,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
-        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile().unwrap();
         TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
 
@@ -197,7 +196,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testHashCode() throws CoreException {
+    public void testHashCode() {
         // set Row values of default Table
         row1.setValue(0, "65");
         row1.setValue(1, "69");
@@ -225,7 +224,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         generation2.newRow();
         generation2.newRow();
         IIpsSrcFile srcFile2 = table2.getIpsSrcFile();
-        IFile correspondingFile2 = srcFile2.getCorrespondingFile();
+        IFile correspondingFile2 = srcFile2.getCorrespondingFile().unwrap();
         TableContentsCompareItem compareItemRoot2 = (TableContentsCompareItem)structureCreator
                 .getStructure(new ResourceNode(correspondingFile2));
 

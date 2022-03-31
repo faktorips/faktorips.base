@@ -22,7 +22,6 @@ import static org.mockito.Mockito.verify;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
@@ -49,7 +48,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     @Override
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
@@ -186,7 +185,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+        protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
             finishIpsSrcFileCalled = true;
             // simulate doing some stuff
             ipsSrcFile.markAsDirty();

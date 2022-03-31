@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -84,11 +85,11 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateTestCaseTypeParamNotFound() throws Exception {
         MessageList ml = testPcTypeAssociation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
 
         testPcTypeAssociation.setTestPolicyCmptTypeParameter("x");
         ml = testPcTypeAssociation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 
     @Test
@@ -96,11 +97,11 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         testCase.newTestPolicyCmpt().setName("testPolicyCmptTarget");
 
         MessageList ml = testPcTypeAssociation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
 
         testPcTypeAssociation.setTarget("x");
         ml = testPcTypeAssociation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptLink.MSGCODE_ASSOZIATION_TARGET_NOT_IN_TEST_CASE));
     }
 
     @Test
@@ -114,10 +115,10 @@ public class TestPcTypeLinkTest extends AbstractIpsPluginTest {
         paramChild.setAssociation("modelAssociation");
 
         MessageList ml = testPcTypeAssociation.validate(project);
-        assertNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
 
         paramChild.setAssociation("x");
         ml = testPcTypeAssociation.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
     }
 }

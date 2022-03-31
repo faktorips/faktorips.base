@@ -25,10 +25,10 @@ import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -103,7 +103,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         staticAssociation.setChangingOverTime(false);
         staticAssociation.setTarget(productCmptType.getQualifiedName());
 
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
 
         productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
@@ -126,8 +126,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
 
         gen.newAttributeValue(internationalStringAttribute);
 
-        productCmpt.getIpsSrcFile().save(true, null);
-        refTarget.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
+        refTarget.getIpsSrcFile().save(null);
 
         assertFalse(productCmpt.validate(productCmpt.getIpsProject()).containsErrorMsg());
     }
@@ -161,21 +161,21 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         // change the runtime id of product D and assert that the target runtime id in product C
         // was updated after rebuild
         productCmptD.setRuntimeId("newRuntimeId");
-        productCmptD.getIpsSrcFile().save(true, null);
+        productCmptD.getIpsSrcFile().save(null);
 
         incrementalBuild();
 
-        IFile file = getXmlFile(productCmptC);
+        AFile file = getXmlFile(productCmptC);
         assertTargetRuntimeID(file, "newRuntimeId", true);
     }
 
-    private IFile getXmlFile(IProductCmpt productCmpt) {
+    private AFile getXmlFile(IProductCmpt productCmpt) {
         String packageName = ((DefaultBuilderSet)ipsProject.getIpsArtefactBuilderSet()).getPackageName(
                 productCmpt.getIpsSrcFile(), true, false);
         String productXmlFile = packageName + "." + productCmpt.getName();
         productXmlFile = productXmlFile.replaceAll("\\.", "/");
         productXmlFile += ".xml";
-        IFile file = ipsProject.getProject().getFile("bin//" + productXmlFile);
+        AFile file = ipsProject.getProject().getFile("bin//" + productXmlFile);
         return file;
     }
 
@@ -183,11 +183,11 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     public void testSetRuntimeIdForStaticLinks() throws CoreException, IOException, SAXException,
             ParserConfigurationException {
         incrementalBuild();
-        IFile xmlFile = getXmlFile(productCmpt);
+        AFile xmlFile = getXmlFile(productCmpt);
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
 
         refTarget.setRuntimeId("CornelisMussDasCodeReviewMachen_hahahahahaaa!=)");
-        refTarget.getIpsSrcFile().save(true, null);
+        refTarget.getIpsSrcFile().save(null);
         incrementalBuild();
 
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
@@ -200,7 +200,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertNumberOfGenerations(productCmpt, 1);
 
         productCmptType.setChangingOverTime(false);
-        productCmptType.getIpsSrcFile().save(true, null);
+        productCmptType.getIpsSrcFile().save(null);
         incrementalBuild();
         assertNumberOfGenerations(productCmpt, 0);
     }
@@ -222,24 +222,24 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         staticLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        template.getIpsSrcFile().save(true, null);
+        template.getIpsSrcFile().save(null);
         incrementalBuild();
 
-        IFile file = getXmlFile(productCmpt);
+        AFile file = getXmlFile(productCmpt);
         assertNoLinks(file);
     }
 
     private void assertNumberOfGenerations(IProductCmpt productCmpt, int expectedGenerationCount) throws SAXException,
-            IOException, ParserConfigurationException, CoreException {
-        IFile xmlFile = getXmlFile(productCmpt);
+            IOException, ParserConfigurationException {
+        AFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         Element prodCmptElement = document.getDocumentElement();
         List<Element> generationElements = getChildElementsByTagName(prodCmptElement, IProductCmptGeneration.TAG_NAME);
         assertEquals(expectedGenerationCount, generationElements.size());
     }
 
-    private void assertTargetRuntimeID(IFile file, String expectedRuntimeId, boolean changingLinks)
-            throws SAXException, IOException, ParserConfigurationException, CoreException {
+    private void assertTargetRuntimeID(AFile file, String expectedRuntimeId, boolean changingLinks)
+            throws SAXException, IOException, ParserConfigurationException {
         Document document = getDocumentBuilder().parse(file.getContents());
         Element prodCmptElement = document.getDocumentElement();
         List<Element> linkElements;
@@ -255,8 +255,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertEquals(expectedRuntimeId, linkElements.get(0).getAttribute("targetRuntimeId"));
     }
 
-    private void assertNoLinks(IFile file) throws SAXException, IOException, ParserConfigurationException,
-            CoreException {
+    private void assertNoLinks(AFile file) throws SAXException, IOException, ParserConfigurationException {
         Document document = getDocumentBuilder().parse(file.getContents());
         Element prodCmpt = document.getDocumentElement();
 
@@ -281,16 +280,16 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuild() throws CoreException {
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    public void testBuild() {
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test
-    public void testDelete() throws CoreException {
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+    public void testDelete() {
+        ipsProject.getProject().build(ABuildKind.FULL, null);
 
-        productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        productCmpt.getIpsSrcFile().getCorrespondingFile().delete(null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test
@@ -340,7 +339,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setValidateIpsSchema(true);
         productCmpt.getIpsSrcFile().markAsDirty();
-        productCmpt.getIpsSrcFile().save(true, null);
+        productCmpt.getIpsSrcFile().save(null);
         ipsProject.setProperties(properties);
 
         fullBuild();
@@ -350,9 +349,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertThat(root.hasAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation"), is(false));
     }
 
-    private Element parseProductCmptElement()
-            throws SAXException, IOException, ParserConfigurationException, CoreException {
-        IFile xmlFile = getXmlFile(productCmpt);
+    private Element parseProductCmptElement() throws SAXException, IOException, ParserConfigurationException {
+        AFile xmlFile = getXmlFile(productCmpt);
         Document document = getDocumentBuilder().parse(xmlFile.getContents());
         return document.getDocumentElement();
     }

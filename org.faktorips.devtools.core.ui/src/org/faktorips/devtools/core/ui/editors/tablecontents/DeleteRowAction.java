@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -21,7 +20,6 @@ import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -61,13 +59,9 @@ public class DeleteRowAction extends IpsAction {
     @Override
     public void run(final IStructuredSelection selection) {
         IpsModel model = (IpsModel)IIpsModel.get();
-        try {
-            model.executeModificationsWithSingleEvent(new DeleteSelectedRowsModification(
-                    getIpsSrcFileForSelection(selection), selection, tableViewer, contentPage));
-            tableViewer.refresh(false);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        model.executeModificationsWithSingleEvent(new DeleteSelectedRowsModification(
+                getIpsSrcFileForSelection(selection), selection, tableViewer, contentPage));
+        tableViewer.refresh(false);
     }
 
     private static class DeleteSelectedRowsModification extends SingleEventModification<Object> {
@@ -85,7 +79,7 @@ public class DeleteRowAction extends IpsAction {
         }
 
         @Override
-        protected boolean execute() throws CoreException {
+        protected boolean execute() {
             if (selection.isEmpty()) {
                 return false;
             }

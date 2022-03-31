@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FeatureConfiguration featureId="org.faktorips.test">
+  <Property name="foo" value="bar" />
+  <Property name="x" value="y" />
+</FeatureConfiguration>
+

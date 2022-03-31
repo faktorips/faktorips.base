@@ -13,12 +13,10 @@ package org.faktorips.devtools.core.ui.views.modelstructure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -260,11 +258,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         List<IAssociation> associations = sourceElement.getAssociations(types);
         List<IType> associatingTypes = new ArrayList<>(associations.size());
         for (IAssociation association : associations) {
-            try {
-                associatingTypes.add(association.findTarget(sourceElement.getIpsProject()));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            associatingTypes.add(association.findTarget(sourceElement.getIpsProject()));
         }
         return associatingTypes;
     }

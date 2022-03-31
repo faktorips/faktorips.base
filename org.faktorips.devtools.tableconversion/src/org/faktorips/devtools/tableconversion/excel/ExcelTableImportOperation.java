@@ -16,11 +16,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -68,7 +68,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitorParameter) throws CoreException {
+    public void run(IProgressMonitor monitorParameter) {
         IProgressMonitor monitor;
         if (monitorParameter == null) {
             monitor = new NullProgressMonitor();
@@ -92,7 +92,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             monitor.worked(1);
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(
+            throw new IpsException(
                     new IpsStatus(NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }

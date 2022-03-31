@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
@@ -44,18 +43,14 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
     }
 
     private void selectAbstractMethods(IType type) {
-        try {
-            List<IMethod> selected = new ArrayList<>();
-            List<IMethod> method = type.findOverrideMethodCandidates(false, type.getIpsProject());
-            for (IMethod element : method) {
-                if (element.isAbstract()) {
-                    selected.add(element);
-                }
+        List<IMethod> selected = new ArrayList<>();
+        List<IMethod> method = type.findOverrideMethodCandidates(false, type.getIpsProject());
+        for (IMethod element : method) {
+            if (element.isAbstract()) {
+                selected.add(element);
             }
-            setInitialElementSelections(selected);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
         }
+        setInitialElementSelections(selected);
     }
 
     private static class CandidatesContentProvider extends SupertypeHierarchyPartsContentProvider {
@@ -67,11 +62,7 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
         @Override
         protected List<? extends IIpsObjectPart> getAvailableParts(IIpsObject ipsObject) {
             IType type = (IType)ipsObject;
-            try {
-                return type.findOverrideMethodCandidates(false, type.getIpsProject());
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return type.findOverrideMethodCandidates(false, type.getIpsProject());
         }
 
         @Override

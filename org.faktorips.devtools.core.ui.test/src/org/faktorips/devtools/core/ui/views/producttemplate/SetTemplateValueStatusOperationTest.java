@@ -17,7 +17,6 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -33,7 +32,7 @@ import org.junit.Test;
 public class SetTemplateValueStatusOperationTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testRun() throws CoreException {
+    public void testRun() {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType type = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = type.newProductCmptTypeAttribute("attribute");

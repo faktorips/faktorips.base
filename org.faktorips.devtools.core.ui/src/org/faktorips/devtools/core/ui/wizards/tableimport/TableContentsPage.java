@@ -13,13 +13,13 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -94,7 +94,7 @@ public class TableContentsPage extends IpsObjectPage {
             } else if (selectedObject instanceof ITableContents) {
                 return ((ITableContents)selectedObject).getTableStructure();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return null;
@@ -114,13 +114,13 @@ public class TableContentsPage extends IpsObjectPage {
     public ITableStructure getTableStructure() {
         try {
             return structureControl.findTableStructure();
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             return null;
         }
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() {
         if (getErrorMessage() != null) {
             return;
         }
@@ -139,15 +139,14 @@ public class TableContentsPage extends IpsObjectPage {
     }
 
     @Override
-    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    public IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         IIpsSrcFile createdIpsSrcFile = super.createIpsSrcFile(monitor);
         createdTableContents = (ITableContents)createdIpsSrcFile.getIpsObject();
         return createdIpsSrcFile;
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());

@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -22,12 +21,14 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.versionmanager.IpsMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -86,6 +87,14 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         // Nothing to do
     }
 
+    /**
+     * We blindly trust that the id of a migration is unique for a version.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> void setSelectedValue(IpsMigrationOption<T> option, Object value) {
+        option.setSelectedValue((T)value);
+    }
+
     class MigrateProjects implements IRunnableWithProgress {
 
         private MessageList messageList;
@@ -104,7 +113,7 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
                         setSelectedMigrationOptions(migrationOperation);
                         migrationOperation.run(subMonitor);
                         messageList = migrationOperation.getMessageList();
-                    } catch (CoreException e) {
+                    } catch (IpsException e) {
                         IpsPlugin.log(e);
                     }
                 }
@@ -114,10 +123,17 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         }
 
         private void setSelectedMigrationOptions(AbstractIpsFeatureMigrationOperation migrationOperation) {
-            Map<String, IpsMigrationOption> options = migrationPage.getOptions();
+            Map<String, IpsMigrationOption<?>> optionsFromUI = migrationPage.getOptions();
             migrationOperation.getOptions().forEach(o -> {
-                if (options.containsKey(o.getId())) {
-                    o.setActive(options.get(o.getId()).isActive());
+                if (optionsFromUI.containsKey(o.getId())) {
+                    IpsMigrationOption<?> ipsMigrationOption = optionsFromUI.get(o.getId());
+                    if (o instanceof IpsEnumMigrationOption<?>) {
+                        IpsEnumMigrationOption<? extends Enum<?>> enumOption = (IpsEnumMigrationOption<?>)o;
+                        enumOption.setSelectedEnumValue((Enum<?>)ipsMigrationOption.getSelectedValue());
+                    } else {
+                        setSelectedValue(o, ipsMigrationOption.getSelectedValue());
+                    }
+
                 }
             });
         }

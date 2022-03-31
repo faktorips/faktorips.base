@@ -7,5 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
+/**
+ * Eclipse Plugin extensions of the Faktor-IPS model.
+ */
 package org.faktorips.devtools.model.plugin;

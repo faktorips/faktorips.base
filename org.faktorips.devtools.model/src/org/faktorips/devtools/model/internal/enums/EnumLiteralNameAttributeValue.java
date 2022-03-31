@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
@@ -31,12 +31,12 @@ import org.w3c.dom.Element;
  */
 public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements IEnumLiteralNameAttributeValue {
 
-    public EnumLiteralNameAttributeValue(EnumValue parent, String id) throws CoreException {
+    public EnumLiteralNameAttributeValue(EnumValue parent, String id) {
         super(parent, id);
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
         if (isNullValue()) {
@@ -49,7 +49,8 @@ public class EnumLiteralNameAttributeValue extends EnumAttributeValue implements
                     : Character
                             .isJavaIdentifierPart(characters[i]);
             if (!validCharacter) {
-                String text = NLS.bind(Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
+                String text = MessageFormat.format(
+                        Messages.EnumLiteralNameAttributeValue_ValueIsNotAValidJavaIdentifier,
                         getValue());
                 Message msg = new Message(MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER, text,
                         Message.ERROR, this, PROPERTY_VALUE);

@@ -19,15 +19,16 @@ import java.io.InputStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("TestProject");
-        javaProject = ipsProject.getJavaProject();
+        javaProject = ipsProject.getJavaProject().unwrap();
         provider = new ClassLoaderProvider(javaProject, ClassLoader.getSystemClassLoader());
     }
 
@@ -66,7 +67,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         IClasspathContentsChangeListener l1 = new IClasspathContentsChangeListener() {
 
             @Override
-            public void classpathContentsChanges(IJavaProject project) {
+            public void classpathContentsChanges(AJavaProject project) {
                 provider.removeClasspathChangeListener(this);
             }
 
@@ -169,7 +170,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     }
 
     private void deleteClassFile() throws Exception {
-        IWorkspaceRunnable runnable = $ -> {
+        ICoreRunnable runnable = $ -> {
             IFolder outFolder = (IFolder)javaProject.getProject().getWorkspace().getRoot()
                     .findMember(javaProject.getOutputLocation());
             IFile file = outFolder.getFile("SomeClass.class");
@@ -188,7 +189,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
 
     private void createJarFileAndAppendToClasspath() throws Exception {
         final IFile jarFile = createJarFile();
-        IWorkspaceRunnable runnable = $ -> {
+        ICoreRunnable runnable = $ -> {
             IClasspathEntry[] entries = javaProject.getRawClasspath();
             IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
             System.arraycopy(entries, 0, newEntries, 0, entries.length);
@@ -202,7 +203,7 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
     private void deleteJarFile() throws Exception {
         waitForIndexer();
 
-        IWorkspaceRunnable runnable = $ -> {
+        ICoreRunnable runnable = $ -> {
             IFile jarFile = javaProject.getProject().getFile("Test.jar");
             jarFile.delete(true, false, null);
         };
@@ -214,8 +215,8 @@ public class ClassLoaderProviderTest extends AbstractIpsPluginTest {
         private IJavaProject project = null;
 
         @Override
-        public void classpathContentsChanges(IJavaProject project) {
-            this.project = project;
+        public void classpathContentsChanges(AJavaProject project) {
+            this.project = project.unwrap();
         }
 
     }

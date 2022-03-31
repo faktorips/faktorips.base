@@ -15,12 +15,14 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -128,7 +130,8 @@ public class ProductReleaserBuilderWizard extends Wizard {
         try {
             // save all
             if (!IpsPlugin.getDefault().getWorkbench().saveAllEditors(true)
-                    || selectionPage.getSelectedProject().getJavaProject().hasUnsavedChanges()) {
+                    || ((IJavaProject)selectionPage.getSelectedProject().getJavaProject().unwrap())
+                            .hasUnsavedChanges()) {
                 throw new InterruptedException(Messages.ProductReleaserBuilderWizard_exception_unsavedChanges);
             }
 
@@ -179,10 +182,15 @@ public class ProductReleaserBuilderWizard extends Wizard {
         }
 
         @Override
-        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+        protected void execute(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
                 InterruptedException {
             if (productReleaseProcessor != null) {
-                returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems, monitor);
+                try {
+                    returnState = productReleaseProcessor.startReleaseBuilder(newVersion, selectedTargetSystems,
+                            monitor);
+                } catch (CoreException e) {
+                    throw new IpsException(e);
+                }
             } else {
                 throw new InterruptedException(Messages.ReleaserBuilderWizard_exception_NotReady);
             }

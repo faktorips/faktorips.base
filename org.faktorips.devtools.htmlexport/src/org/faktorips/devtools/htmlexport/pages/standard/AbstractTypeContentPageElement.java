@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAssoc
 import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeAttributesPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.InheritedTypeMethodsPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.MethodsTablePageElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -184,7 +184,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         SupertypeHierarchyVisitor hier = new SupertypeHierarchyVisitor(getDocumentedIpsObject().getIpsProject());
         try {
             hier.start(getDocumentedIpsObject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Error getting Supertype Hierarchy of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$

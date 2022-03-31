@@ -18,6 +18,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -103,12 +105,12 @@ public class BuilderSetPropertyPage extends PropertyPage {
     private IIpsProject getIpsProject() {
         IIpsProject ipsProject = null;
         if (element instanceof IProject) {
-            ipsProject = IIpsModel.get().getIpsProject((IProject)element);
+            ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(element).as(AProject.class));
         } else {
             IJavaElement javaElement = element.getAdapter(IJavaElement.class);
             if (javaElement instanceof IJavaProject) {
                 IProject project = ((IJavaProject)javaElement).getProject();
-                ipsProject = IIpsModel.get().getIpsProject(project);
+                ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
             }
         }
         return ipsProject;

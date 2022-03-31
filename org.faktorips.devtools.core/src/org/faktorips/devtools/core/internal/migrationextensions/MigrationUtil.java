@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.migrationextensions;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -33,7 +32,7 @@ public class MigrationUtil {
      * This migration simply updates the .ipsproject Property file with the default values for the
      * {@link IIpsArtefactBuilderSetConfigModel}.
      */
-    public static void updateBuilderSetDefaults(IIpsProject ipsProject) throws CoreException {
+    public static void updateBuilderSetDefaults(IIpsProject ipsProject) {
         IIpsProjectProperties properties = ipsProject.getProperties();
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel()
                 .getIpsArtefactBuilderSetInfo(properties.getBuilderSetId());
@@ -66,4 +65,18 @@ public class MigrationUtil {
         }
     }
 
+    /**
+     * This migration refreshes the {@link IIpsArtefactBuilderSetConfigModel} section of the
+     * .ipsproject Property file with the default descriptions.
+     *
+     * @param builderSetInfo the configured IpsArtefactBuilderSetInfo for the project
+     * @param builderSetConfig the configured IpsArtefactBuilderSetConfigModel for the project
+     */
+    public static void updateAllIpsArtefactBuilderSetDescriptions(IIpsArtefactBuilderSetInfo builderSetInfo,
+            IIpsArtefactBuilderSetConfigModel builderSetConfig) {
+        for (String property : builderSetConfig.getPropertyNames()) {
+            String newDescription = builderSetInfo.getPropertyDefinition(property).getDescription();
+            builderSetConfig.setPropertyValue(property, builderSetConfig.getPropertyValue(property), newDescription);
+        }
+    }
 }

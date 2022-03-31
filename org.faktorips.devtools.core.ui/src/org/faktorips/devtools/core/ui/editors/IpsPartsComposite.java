@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
@@ -41,6 +40,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPartSite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
@@ -52,7 +52,6 @@ import org.faktorips.devtools.core.ui.dialogs.DialogMementoHelper;
 import org.faktorips.devtools.core.ui.refactor.IpsPullUpHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringHandler;
 import org.faktorips.devtools.core.ui.refactor.IpsRenameHandler;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -373,7 +372,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         new TableMessageHoverService(tableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 return messageCueLabelProvider.getMessages(element);
             }
 
@@ -689,7 +688,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
                 newPartConfirmed(newPart);
             }
-        } catch (CoreRuntimeException ex) {
+        } catch (IpsException ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }
 
@@ -766,7 +765,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
                 tableViewer.setSelection(new StructuredSelection(selected), true);
             }
             fireDeleted(part);
-        } catch (CoreRuntimeException ex) {
+        } catch (IpsException ex) {
             IpsPlugin.logAndShowErrorDialog(ex);
         }
 

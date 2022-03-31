@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
@@ -77,7 +78,8 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
                 name = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
                         .getGenerationConceptNameSingular() + ' ' + name;
             }
-            description.append(NLS.bind(Messages.MissingPropertyValueEntry_valueTransferedInformation, name));
+            description
+                    .append(MessageFormat.format(Messages.MissingPropertyValueEntry_valueTransferedInformation, name));
         }
         return description.toString();
     }

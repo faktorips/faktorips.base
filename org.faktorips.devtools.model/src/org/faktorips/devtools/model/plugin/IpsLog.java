@@ -11,8 +11,9 @@
 package org.faktorips.devtools.model.plugin;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.ALog;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 
 public class IpsLog {
@@ -23,17 +24,21 @@ public class IpsLog {
         // no instances
     }
 
-    public static ILog get() {
-        return IpsModelActivator.getLog();
+    public static ALog get() {
+        return Abstractions.getLog();
     }
 
     /**
      * Logs the status.
      */
     public static final void log(IStatus status) {
-        if (IpsModelActivator.isStarted() && !suppressLoggingDuringTestExecution) {
+        if (isStarted() && !suppressLoggingDuringTestExecution) {
             get().log(status);
         }
+    }
+
+    private static boolean isStarted() {
+        return !Abstractions.isEclipseRunning() || IpsModelActivator.isStarted();
     }
 
     /**
@@ -54,7 +59,7 @@ public class IpsLog {
      * Logs the status and shows the status in a standard error dialog.
      */
     public static final void logAndShowErrorDialog(final IStatus status) {
-        get().log(status);
+        log(status);
         IIpsModelExtensions.get().getWorkspaceInteractions().showErrorDialog(status);
     }
 

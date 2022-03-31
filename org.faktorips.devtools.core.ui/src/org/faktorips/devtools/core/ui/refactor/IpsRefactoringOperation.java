@@ -154,11 +154,7 @@ public class IpsRefactoringOperation {
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
             dialog.run(true, refactoring.isCancelable(), monitor -> {
-                try {
-                    checkConditionsOperation.run(monitor);
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                checkConditionsOperation.run(monitor);
             });
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
@@ -180,11 +176,7 @@ public class IpsRefactoringOperation {
     private boolean checkConditionsWizardInteraction(RefactoringStatus status) {
         IpsCheckConditionsOperation checkConditionsOperation = new IpsCheckConditionsOperation(refactoring,
                 IpsCheckConditionsOperation.INITIAL_CONDITIONS, refactoring.isSourceFilesSavedRequired());
-        try {
-            checkConditionsOperation.run(null);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        checkConditionsOperation.run(null);
         if (refactoring.isSourceFilesSavedRequired()) {
             if (!(checkConditionsOperation.getEditorsSaved())) {
                 return false;

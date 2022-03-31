@@ -12,8 +12,8 @@ package org.faktorips.devtools.htmlexport.context;
 
 import java.util.Properties;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
 
@@ -32,6 +32,6 @@ public interface IPluginResourceFacade {
 
     public IDatatypeFormatter getDatatypeFormatter();
 
-    public Properties getMessageProperties(String resourceName) throws CoreException;
+    public Properties getMessageProperties(String resourceName) throws IpsException;
 
 }

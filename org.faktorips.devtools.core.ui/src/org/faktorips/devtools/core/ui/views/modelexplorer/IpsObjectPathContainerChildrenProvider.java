@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.views.modelexplorer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -22,7 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectRefEntry;
 public class IpsObjectPathContainerChildrenProvider implements IChildrenProvider<IIpsObjectPathContainer> {
 
     @Override
-    public Object[] getChildren(IIpsObjectPathContainer element) throws CoreException {
+    public Object[] getChildren(IIpsObjectPathContainer element) {
         List<Object> children = new ArrayList<>();
         List<IIpsObjectPathEntry> resolveEntries = element.resolveEntries();
         for (IIpsObjectPathEntry entry : resolveEntries) {

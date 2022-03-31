@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,11 +19,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.IRow;
@@ -350,7 +349,7 @@ public class UniqueKeyValidator {
         try {
             cachedValueDatatypes = ((TableContents)tableContentsGeneration.getTableContents()).findColumnDatatypes(
                     cachedTableStructure, tableContentsGeneration.getIpsProject());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsLog.log(new IpsStatus(
                     "Error searching value datatypes: " //$NON-NLS-1$
                             + tableContentsGeneration.getTableContents().getTableStructure()));
@@ -362,7 +361,7 @@ public class UniqueKeyValidator {
         try {
             cachedTableStructure = tableContentsGeneration.getTableContents().findTableStructure(
                     tableContentsGeneration.getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(new IpsStatus(
                     "Error searching TableStructure: " //$NON-NLS-1$
                             + tableContentsGeneration.getTableContents().getTableStructure()));
@@ -396,7 +395,7 @@ public class UniqueKeyValidator {
      * Creates a unique key validation error and adds it to the give message list.
      */
     void createValidationErrorUniqueKeyViolation(MessageList list, IIndex uniqueKey, Row row) {
-        String text = NLS.bind(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber() + 1,
+        String text = MessageFormat.format(Messages.UniqueKeyValidator_msgUniqueKeyViolation, row.getRowNumber() + 1,
                 uniqueKey.getName());
         List<ObjectProperty> objectProperties = new ArrayList<>();
         createObjectProperties(uniqueKey, row, objectProperties);

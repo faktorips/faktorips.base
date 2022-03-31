@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -24,7 +25,6 @@ import static org.mockito.Mockito.when;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
@@ -110,7 +110,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void updateAllMappingsOnContentChange() throws CoreException {
+    public void updateAllMappingsOnContentChange() {
         IProductCmpt prodCmpt = newProductCmpt(newIpsProject(), "ProdCmpt");
         FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
         // valid
@@ -230,6 +230,17 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         verify(textControl).removeFocusListener(any(FocusListener.class));
     }
 
+    public static class DummyControlPropertyBinding extends ControlPropertyBinding {
+        private DummyControlPropertyBinding(Control control) {
+            super(control, null, null, null);
+        }
+
+        @Override
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+            // don't
+        }
+    }
+
     public class TestPMO extends PresentationModelObject {
         public static final String PROPERTY_ENABLED = "enabled";
         public static final String PROPERTY_OTHER_PROPERTY = "otherProperty";
@@ -275,10 +286,10 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void removeBindingIfControlIsDisposed() {
-        ControlPropertyBinding binding = mock(ControlPropertyBinding.class);
         Control control = mock(Control.class);
+        ControlPropertyBinding binding = spy(new DummyControlPropertyBinding(control));
 
-        when(binding.getControl()).thenReturn(control);
+        doReturn(control).when(binding).getControl();
         when(control.isDisposed()).thenReturn(true);
 
         bindingContext.add(binding);
@@ -307,7 +318,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testErrorBinding_WithValidatable() throws CoreException {
+    public void testErrorBinding_WithValidatable() {
         Validatable validatable = mockValidatable();
         EditField<?> field = mockField();
         Validatable validatableWithError = mockValidatable();
@@ -362,7 +373,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
      * Both fields have the same message list set.
      */
     @Test
-    public void testErrorBinding_WithIpsObject() throws CoreException {
+    public void testErrorBinding_WithIpsObject() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsObject ipsObject = mock(IIpsObject.class);
         IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);
@@ -397,7 +408,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
      * Both fields receive the message directed to them.
      */
     @Test
-    public void testErrorBinding_WithIpsObject_DifferentParts() throws CoreException {
+    public void testErrorBinding_WithIpsObject_DifferentParts() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsObject ipsObject = mock(IIpsObject.class);
         IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);

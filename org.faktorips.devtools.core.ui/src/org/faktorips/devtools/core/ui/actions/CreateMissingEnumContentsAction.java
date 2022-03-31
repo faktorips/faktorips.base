@@ -16,6 +16,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.CreateMissingEnumContentsWizard;
 import org.faktorips.devtools.model.IIpsElement;
@@ -52,7 +54,7 @@ public class CreateMissingEnumContentsAction extends IpsAction {
             Object selected = iter.next();
             if (selected instanceof IJavaProject) {
                 preselectedIpsElement = IIpsModel.get()
-                        .getIpsProject(((IJavaProject)selected).getProject());
+                        .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));
                 break;
             } else if (selected instanceof IIpsElement) {
                 preselectedIpsElement = (IIpsElement)selected;

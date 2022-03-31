@@ -23,7 +23,7 @@
     </xsd:complexType>
 
     <xsd:attributeGroup name="id">
-        <xsd:attribute name="id" type="uuid" use="required" />
+        <xsd:attribute name="id" type="uuid" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="name">
@@ -52,6 +52,7 @@
 
     <xsd:attributeGroup name="category">
         <xsd:attribute name="category" type="string" use="required" />
+        <xsd:attribute name="categoryPosition" type="int" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="modifier">
@@ -189,7 +190,7 @@
 
     <xsd:complexType name="MethodParameter">
         <xsd:attribute name="datatype" type="string" use="required" />
-        <xsd:attribute name="id" type="uuid" use="required" />
+        <xsd:attribute name="id" type="uuid" />
         <xsd:attribute name="name" type="javaIdentifier" use="required" />
     </xsd:complexType>
 
@@ -202,7 +203,7 @@
             <xsd:element name="StringLength" minOccurs="1" maxOccurs="1" type="StringLengthValueSet" />
         </xsd:choice>
         <xsd:attribute name="abstract" type="boolean" use="required" />
-        <xsd:attribute name="id" type="uuid" use="required" />
+        <xsd:attribute name="id" type="uuid" />
     </xsd:complexType>
 
     <xsd:complexType name="AllValuesValueSet">

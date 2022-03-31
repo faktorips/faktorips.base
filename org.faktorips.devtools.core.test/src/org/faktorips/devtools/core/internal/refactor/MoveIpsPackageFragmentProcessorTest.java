@@ -17,13 +17,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -90,31 +89,31 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         staticAssociation.setTargetRoleSingular(COVERAGE_TYPE_STATIC_NAME);
         staticAssociation.setTargetRolePlural(COVERAGE_TYPE_STATIC_NAME + "s");
         staticAssociation.setChangingOverTime(false);
-        productCmptType1.getIpsSrcFile().save(true, null);
-        productCmptType2.getIpsSrcFile().save(true, null);
+        productCmptType1.getIpsSrcFile().save(null);
+        productCmptType2.getIpsSrcFile().save(null);
 
         coverage = newProductCmpt(productCmptType2, COVERAGE_QNAME);
 
         productA = newProductCmpt(productCmptType1, PRODUCT_A_QNAME);
         productAGen = productA.getProductCmptGeneration(0);
         productAGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
-        productA.getIpsSrcFile().save(true, null);
+        productA.getIpsSrcFile().save(null);
 
         productB = newProductCmpt(productCmptType1, PRODUCT_B_QNAME);
         productBGen = productB.getProductCmptGeneration(0);
         productBGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
-        productB.getIpsSrcFile().save(true, null);
+        productB.getIpsSrcFile().save(null);
 
         productC = newProductCmpt(productCmptType1, PRODUCT_C_QNAME);
         IProductCmptGeneration productCGen = productC.getProductCmptGeneration(0);
         productCGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
-        productC.getIpsSrcFile().save(true, null);
+        productC.getIpsSrcFile().save(null);
 
         policyCmptType = newPolicyCmptType(ipsProject, POLICY_CMPT_TYPE_QNAME);
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
-        IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
-        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), true, null);
+        AFile file = ((AFolder)source.getCorrespondingResource()).getFile("test.unknown");
+        file.create(StringUtil.getInputStreamForString("Test content for file.", "UTF-8"), null);
         assertTrue(file.exists());
     }
 
@@ -168,14 +167,14 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis() throws CoreException {
+    public void testValidateUserInputThis() {
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
         assertTrue(status.isOK());
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameFolder() {
         processor.setTargetIpsPackageFragment(source);
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -184,7 +183,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveToSameParentFolder() throws CoreException {
+    public void testValidateUserInputThis_MoveToSameParentFolder() {
         processor.setTargetIpsPackageFragment(ipsRoot.getIpsPackageFragment("data"));
         RefactoringStatus status = new RefactoringStatus();
         processor.validateUserInputThis(status, new NullProgressMonitor());
@@ -193,7 +192,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() throws CoreException {
+    public void testValidateUserInputThis_MoveDefaultPackageToSameProject() {
         processor = new MoveIpsPackageFragmentProcessor(ipsRoot.getIpsPackageFragment(""));
         processor.setTargetIpsPackageFragment(target);
         RefactoringStatus status = new RefactoringStatus();
@@ -213,7 +212,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         IIpsPackageFragment newTarget = ipsRoot.getIpsPackageFragment("target.products");
         assertTrue(newTarget.exists());
 
-        IFile newFile = ((IFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
+        AFile newFile = ((AFolder)newTarget.getCorrespondingResource()).getFile("test.unknown");
         assertTrue(newFile.exists());
 
         IIpsSrcFile newIpsSrcFileProductA = newTarget.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT);

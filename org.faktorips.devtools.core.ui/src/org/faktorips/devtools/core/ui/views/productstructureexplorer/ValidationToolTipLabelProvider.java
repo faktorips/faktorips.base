@@ -11,12 +11,10 @@
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.faktorips.devtools.model.Validatable;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptReference;
@@ -41,23 +39,19 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
 
     @Override
     public String getToolTipText(Object element) {
-        try {
-            if (element instanceof IProductCmptReference) {
-                IProductCmpt productCmpt = ((IProductCmptReference)element).getProductCmpt();
-                return validateAndReturnErrorMessages(productCmpt);
-            } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)element)
-                        .getTableContentUsage();
-                return validateAndReturnErrorMessages(tableContentUsage);
-            } else {
-                return super.getToolTipText(element);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (element instanceof IProductCmptReference) {
+            IProductCmpt productCmpt = ((IProductCmptReference)element).getProductCmpt();
+            return validateAndReturnErrorMessages(productCmpt);
+        } else if (element instanceof IProductCmptStructureTblUsageReference) {
+            ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)element)
+                    .getTableContentUsage();
+            return validateAndReturnErrorMessages(tableContentUsage);
+        } else {
+            return super.getToolTipText(element);
         }
     }
 
-    private String validateAndReturnErrorMessages(Validatable validatable) throws CoreException {
+    private String validateAndReturnErrorMessages(Validatable validatable) {
         MessageList msgList = validatable.validate(validatable.getIpsProject());
         String text = msgList.getMessagesBySeverity(Severity.ERROR).getText();
         if (!StringUtils.isEmpty(text)) {

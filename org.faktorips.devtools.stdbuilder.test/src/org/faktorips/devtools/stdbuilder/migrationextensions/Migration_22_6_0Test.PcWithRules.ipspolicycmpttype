@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PolicyCmptType xmlns="http://www.faktorzehn.org" abstract="false" configurableByProductCmptType="true" forceExtensionCompilationUnitGeneration="false" generateValidatorClass="false" productCmptType="" supertype="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/21.12/PolicyCmptType.xsd" xml:space="preserve">
+ <Label id="3ecfa7af-5c86-406a-8c3b-5a032451f6c6" locale="en" pluralValue="" value=""/>
+ <Description id="4042afeb-66ff-4b73-bf0f-b83f510ec925" locale="en"/>
+ <ValidationRuleDef activatedByDefault="true" appliedForAllBusinessFunctions="true" category="" changingOverTime="false" checkValueAgainstValueSetRule="false" configurableByProductComponent="false" id="6261bbfb-4d27-4e57-82d2-51caae4a49ff" messageCode="error.PcWithRules.ruleAllBFs" messageSeverity="error" modifier="published" name="ruleAllBFs" since="1.0" validatedAttrSpecifiedInSrc="false">
+  <MessageText>
+   <InternationalString/>
+  </MessageText>
+  <Label id="9e589d82-5b40-4389-aa5b-a1bcd9e27188" locale="en" pluralValue="" value=""/>
+  <Description id="883044b2-c5bc-4c63-ac2b-6ab0b6fe1456" locale="en"/>
+ </ValidationRuleDef>
+ <ValidationRuleDef activatedByDefault="true" appliedForAllBusinessFunctions="false" category="" changingOverTime="false" checkValueAgainstValueSetRule="false" configurableByProductComponent="false" id="a9e936bd-5fc1-467e-9d86-07401d5a2d1d" messageCode="error.PcWithRules.ruleMultipleBFs" messageSeverity="error" modifier="published" name="ruleMultipleBFs" since="1.0" validatedAttrSpecifiedInSrc="false">
+  <BusinessFunction name="BusinessProcess1"/>
+  <BusinessFunction name="BusinessProcess2"/>
+  <MessageText>
+   <InternationalString/>
+  </MessageText>
+  <Label id="cdadfe1f-3629-4919-bcc0-a1ef4d4ac31a" locale="en" pluralValue="" value=""/>
+  <Description id="6559f4d7-ce40-4ef9-89c7-58a068722115" locale="en"/>
+ </ValidationRuleDef>
+ <ValidationRuleDef activatedByDefault="true" appliedForAllBusinessFunctions="false" category="" changingOverTime="false" checkValueAgainstValueSetRule="false" configurableByProductComponent="false" id="493856af-fe45-4d7b-adac-7f04c01ceb98" messageCode="error.PcWithRules.ruleSingleBf" messageSeverity="error" modifier="published" name="ruleSingleBf" since="1.0" validatedAttrSpecifiedInSrc="false">
+  <BusinessFunction name="BusinessProcess2"/>
+  <MessageText>
+   <InternationalString/>
+  </MessageText>
+  <Label id="aa42a725-90a8-47c5-bfe9-d2bb84910d78" locale="en" pluralValue="" value=""/>
+  <Description id="83ac9dd7-c4af-4f39-943c-b1c562b61e67" locale="en"/>
+ </ValidationRuleDef>
+</PolicyCmptType>

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsimport;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.TableFormatConfigurationCompositeFactory;
@@ -151,7 +151,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
                 configCompositeFactory.createPropertyComposite(parent, toolkit);
                 configCompositeFactory.addValueChangedListener(this);
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
     }

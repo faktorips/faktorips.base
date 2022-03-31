@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipsexport;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -59,14 +58,10 @@ public class TableFormatPropertiesPage extends WizardPage implements ValueChange
             ((GridData)layoutData).grabExcessVerticalSpace = true;
         }
 
-        try {
-            formatCompositeFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
-            if (formatCompositeFactory != null) {
-                formatCompositeFactory.createPropertyComposite(configurationGroup, toolkit);
-                formatCompositeFactory.addValueChangedListener(this);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        formatCompositeFactory = IpsUIPlugin.getDefault().getTableFormatPropertiesControlFactory(tableFormat);
+        if (formatCompositeFactory != null) {
+            formatCompositeFactory.createPropertyComposite(configurationGroup, toolkit);
+            formatCompositeFactory.addValueChangedListener(this);
         }
 
         pageControl.layout();

@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -90,7 +89,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.MONEY.getQualifiedName());
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
         productCmptType = newProductCmptType(ipsProject, "test.Product", policyCmptType);
 
@@ -239,7 +238,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
         attr2.setName("attr2");
         attr2.setDatatype(Datatype.STRING.getQualifiedName());
-        policyCmptType.getIpsSrcFile().save(true, null);
+        policyCmptType.getIpsSrcFile().save(null);
 
         IConfiguredValueSet cValueSet2 = generation.newPropertyValue(attr2, IConfiguredValueSet.class);
 
@@ -664,7 +663,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute attr = cValueSet.findPcTypeAttribute(ipsProject);
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        attr.getIpsObject().getIpsSrcFile().save(true, null);
+        attr.getIpsObject().getIpsSrcFile().save(null);
 
         list.clear();
         list = set.validate(ipsProject);
@@ -694,7 +693,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_CheckDuplicates() throws CoreException {
+    public void testValidate_CheckDuplicates() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         MessageList list = set.validate(ipsProject);
         assertEquals(0, list.size());
@@ -734,7 +733,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateValue() throws CoreException {
+    public void testValidateValue() {
         EnumValueSet set = new EnumValueSet(cValueSet, "1");
         set.addValue("2EUR");
         set.addValue("3EUR");

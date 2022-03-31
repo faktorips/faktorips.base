@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.productcmpt.IExpression;
@@ -63,7 +62,7 @@ public class ExpressionDependencyDetail extends DependencyDetail implements IExp
     }
 
     @Override
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws CoreException {
+    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) {
         String expressionText = getPart().getExpression();
         int offset = 0;
         for (TextRegion textRegion : getTextRegions()) {

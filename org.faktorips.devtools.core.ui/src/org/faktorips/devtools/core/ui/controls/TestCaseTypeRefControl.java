@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -32,7 +32,7 @@ public class TestCaseTypeRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
         ArrayList<IIpsSrcFile> srcFiles = new ArrayList<>();
         for (IIpsProject p : getIpsProjects()) {
             srcFiles.addAll(Arrays.asList(p.findIpsSrcFiles(IpsObjectType.TEST_CASE_TYPE)));
@@ -44,9 +44,9 @@ public class TestCaseTypeRefControl extends IpsObjectRefControl {
      * Returns the test case type identified by the qualified name found in this control's text
      * value. Returns <code>null</code> if the text value does not identify a test case type.
      * 
-     * @throws CoreException if an error occurs while searching for the test case type.
+     * @throws IpsException if an error occurs while searching for the test case type.
      */
-    public Object findTestCaseType() throws CoreException {
+    public Object findTestCaseType() {
         List<IIpsProject> ipsProjects = getIpsProjects();
         if (ipsProjects.isEmpty()) {
             return null;

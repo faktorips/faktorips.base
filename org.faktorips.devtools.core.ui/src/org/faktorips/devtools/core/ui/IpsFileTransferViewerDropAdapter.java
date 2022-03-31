@@ -17,12 +17,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 
@@ -79,11 +81,11 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
         List<IProductCmpt> result = new ArrayList<>();
 
         for (String filename : filenames) {
-            IFile file = NestedProjectFileUtil.getFile(filename);
+            IFile file = NestedEclipseProjectFileUtil.getFile(filename);
             if (file == null) {
                 return null;
             }
-            IIpsElement element = IIpsModel.get().getIpsElement(file);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(file).as(AFile.class));
             if (element == null || !element.exists()) {
                 return null;
             }

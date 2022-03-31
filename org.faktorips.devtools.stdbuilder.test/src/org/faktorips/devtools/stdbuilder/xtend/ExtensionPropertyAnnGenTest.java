@@ -220,7 +220,7 @@ public class ExtensionPropertyAnnGenTest {
         return modelNode;
     }
 
-    public static abstract class MockExtensionPropertyDefinition implements IExtensionPropertyDefinition {
+    public abstract static class MockExtensionPropertyDefinition implements IExtensionPropertyDefinition {
 
         @Override
         public void valueToXml(Element valueElement, Object value) {

@@ -13,13 +13,12 @@ package org.faktorips.devtools.core.internal.model.enums.refactor;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttributeValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
@@ -43,7 +42,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getEnumLiteralNameAttributeValue().validate(getIpsProject()));
     }
 
@@ -53,7 +52,7 @@ public class RenameEnumLiteralNameAttributeValueProcessor extends IpsRenameProce
         try {
             addAffectedSrcFiles(modificationSet);
             getEnumLiteralNameAttributeValue().setValue(ValueFactory.createStringValue(getNewName()));
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             modificationSet.undo();
             throw e;
         }

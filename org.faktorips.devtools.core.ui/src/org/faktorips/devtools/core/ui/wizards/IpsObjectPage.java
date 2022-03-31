@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -24,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
@@ -293,7 +293,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
         try {
             valueChangedExtension(e);
-        } catch (CoreException exception) {
+        } catch (IpsException exception) {
             IpsPlugin.log(exception);
         }
 
@@ -301,7 +301,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
             // don't validate during control creating!
             try {
                 validatePage();
-            } catch (CoreException coreEx) {
+            } catch (IpsException coreEx) {
                 IpsPlugin.logAndShowErrorDialog(coreEx);
             }
 
@@ -316,9 +316,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * 
      * @param e the event containing the changed field
      * 
-     * @throws CoreException in case of exception
+     * @throws IpsException in case of exception
      */
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         // may be override by subclasses
     }
 
@@ -329,7 +329,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * before the page get updated. This method is protected because subclasses might need to call
      * it within event scenarios implemented within the subclass.
      */
-    public final void validatePage() throws CoreException {
+    public final void validatePage() {
         setMessage("", IMessageProvider.NONE); //$NON-NLS-1$
         setErrorMessage((String)null);
         validateSourceRoot();
@@ -354,10 +354,10 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * This method is empty by default. Subclasses might override it to add specific validations.
      * This method is called by the validatePage() method before the page will be updated.
      * 
-     * @throws CoreException if these exceptions are thrown by subclasses they will be logged and
+     * @throws IpsException if these exceptions are thrown by subclasses they will be logged and
      *             displayed in an error dialog
      */
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() {
         // may be override by subclasses
     }
 
@@ -397,9 +397,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * Subclasses may extend this method to perform their own validation.
      * </p>
      * 
-     * @throws CoreException in case of exception
+     * @throws IpsException in case of exception
      */
-    protected void validateName() throws CoreException {
+    protected void validateName() {
         if (getIpsProject() == null) {
             return;
         }
@@ -423,7 +423,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
                     setMessage(msgText, IMessageProvider.NONE);
                 }
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // an error occurred while validating the name
             IpsPlugin.logAndShowErrorDialog(e);
         }
@@ -455,7 +455,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
-    private IIpsSrcFile findExistingIpsSrcFile() throws CoreException {
+    private IIpsSrcFile findExistingIpsSrcFile() {
         IIpsSrcFile[] ipsSrcFiles = getIpsPackageFragment().getIpsSrcFiles();
         IIpsSrcFile file = null;
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
@@ -479,7 +479,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
 
     @SuppressWarnings("deprecation")
     @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) throws CoreException {
+    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
                 new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
     }

@@ -17,16 +17,11 @@ import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.internal.TestTableRow;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.values.Decimal;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class TableColumnTest {
 
     private final TableStructure tableStructure = IpsModel.getTableStructure(TestTable.class);
-
-    @Rule
-    public ExpectedException expectedEx = ExpectedException.none();
 
     @Test
     public void testGetValue() throws NoSuchMethodException, SecurityException {

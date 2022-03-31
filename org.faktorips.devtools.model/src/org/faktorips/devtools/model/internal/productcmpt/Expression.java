@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,15 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.dependency.IDependency;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.fl.TableUsageFunctionsResolver;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -88,11 +86,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     public List<IAttribute> findMatchingProductCmptTypeAttributes() {
         final IProductCmptType productCmptType = findProductCmptType(getIpsProject());
         if (productCmptType != null) {
-            try {
-                return productCmptType.findAllAttributes(getIpsProject());
-            } catch (final CoreException e) {
-                throw new CoreRuntimeException(e.getMessage(), e);
-            }
+            return productCmptType.findAllAttributes(getIpsProject());
         }
         return Collections.emptyList();
     }
@@ -113,13 +107,9 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         IBaseMethod signature = findFormulaSignature(ipsProject);
         if (signature != null) {
-            try {
-                Datatype datatype = signature.findDatatype(ipsProject);
-                if (datatype.isValueDatatype()) {
-                    return (ValueDatatype)datatype;
-                }
-            } catch (final CoreException e) {
-                throw new CoreRuntimeException(e.getMessage(), e);
+            Datatype datatype = signature.findDatatype(ipsProject);
+            if (datatype.isValueDatatype()) {
+                return (ValueDatatype)datatype;
             }
         }
         return null;
@@ -163,11 +153,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             return compiler;
         }
         IdentifierResolver<JavaCodeFragment> resolver;
-        try {
-            resolver = builderSet.createFlIdentifierResolver(this, compiler);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        resolver = builderSet.createFlIdentifierResolver(this, compiler);
         if (resolver == null) {
             return compiler;
         }
@@ -229,11 +215,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
-        try {
-            super.validateThis(list, ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        super.validateThis(list, ipsProject);
 
         IBaseMethod method = findFormulaSignature(ipsProject);
         if (method == null) {
@@ -249,16 +231,12 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             if (!isFormulaMandatory()) {
                 return;
             }
-            String text = NLS.bind(Messages.Formula_msgExpressionMissing, getFormulaSignature());
+            String text = MessageFormat.format(Messages.Formula_msgExpressionMissing, getFormulaSignature());
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
         Datatype signatureDatatype = null;
-        try {
-            signatureDatatype = method.findDatatype(ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        signatureDatatype = method.findDatatype(ipsProject);
         validateDatatype(list, signatureDatatype, method);
         if (list.containsErrorMsg()) {
             return;
@@ -275,13 +253,15 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (compiler.getConversionCodeGenerator().canConvert(result.getDatatype(), signatureDatatype)) {
             return;
         }
-        String text = NLS.bind(Messages.Formula_msgWrongReturntype, signatureDatatype, result.getDatatype().getName());
+        String text = MessageFormat.format(Messages.Formula_msgWrongReturntype, signatureDatatype,
+                result.getDatatype().getName());
         list.add(new Message(MSGCODE_WRONG_FORMULA_DATATYPE, text, Message.ERROR, this, PROPERTY_EXPRESSION));
     }
 
     private void validateDatatype(MessageList list, Datatype signatureDatatype, IBaseMethod method) {
         if (signatureDatatype == null) {
-            String text = NLS.bind(Messages.FormulaElement_msgDatatypeMissing, method.getDatatype(), formulaSignature);
+            String text = MessageFormat.format(Messages.FormulaElement_msgDatatypeMissing, method.getDatatype(),
+                    formulaSignature);
             list.add(new Message(MSGCODE_UNKNOWN_DATATYPE_FORMULA, text, Message.ERROR, this, PROPERTY_EXPRESSION));
         }
     }

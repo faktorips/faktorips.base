@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model.builder;
 
+import java.lang.Runtime.Version;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
-import org.faktorips.values.Decimal;
 
 /**
  * A collection of static helper methods.
@@ -24,6 +23,8 @@ import org.faktorips.values.Decimal;
  * @author Jan Ortmann
  */
 public class BuilderHelper {
+
+    private static final Version VERSION_1_5 = Runtime.Version.parse("1.5"); //$NON-NLS-1$
 
     private BuilderHelper() {
         super();
@@ -91,15 +92,11 @@ public class BuilderHelper {
     }
 
     /**
-     * Returns true if the compliance level of the java project that is associated with the provided
-     * IPS project is equal or greater that 1.5. Otherwise false is returned.
+     * Returns {@code true} if the compliance level of the java project that is associated with the
+     * provided IPS project is equal or greater than 1.5. Otherwise {@code false} is returned.
      */
     public static final boolean javaComplianceGreateEqual5(IIpsProject ipsProject) {
-        Decimal complianceLevel = Decimal.valueOf(ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE,
-                true));
-        if (complianceLevel.greaterThanOrEqual(Decimal.valueOf(15, 1))) {
-            return true;
-        }
-        return false;
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        return sourceVersion.compareToIgnoreOptional(VERSION_1_5) >= 0;
     }
 }

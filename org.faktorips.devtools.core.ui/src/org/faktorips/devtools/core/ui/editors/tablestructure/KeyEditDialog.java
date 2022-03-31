@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -36,6 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -183,7 +183,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         itemsViewer.setLabelProvider(new KeyItemLabelProvider());
         new TableMessageHoverService(itemsViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 MessageList list = key.validate(key.getIpsProject());
                 return list.getMessagesFor(key, IKey.PROPERTY_KEY_ITEMS, key.getIndexForKeyItemName((String)element));
             }
@@ -378,7 +378,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             }
             Message msg = msgList.getMessage(0);
             setMessage(msg.getText(), UIToolkit.convertToJFaceSeverity(msg.getSeverity()));
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
     }
@@ -403,7 +403,7 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
             MessageList list;
             try {
                 list = key.validate(key.getIpsProject());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return image;
             }

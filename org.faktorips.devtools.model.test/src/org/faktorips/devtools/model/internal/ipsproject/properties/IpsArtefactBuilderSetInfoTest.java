@@ -45,6 +45,9 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
@@ -66,112 +69,129 @@ public class IpsArtefactBuilderSetInfoTest {
 
     @Before
     public void setUp() {
+        if (Abstractions.isEclipseRunning()) {
+            TestConfigurationElement propertyDef1 = builderSetPropertyDef(name(LOGGING_CONNECTORS), type("boolean"),
+                    label("Logging Connectors"), defaultValue("true"), disableValue("false"), description("Hello"));
 
-        TestConfigurationElement propertyDef1 = builderSetPropertyDef(name(LOGGING_CONNECTORS), type("boolean"),
-                label("Logging Connectors"), defaultValue("true"), disableValue("false"), description("Hello"));
+            TestConfigurationElement propertyDef2 = builderSetPropertyDef(name(USE_CHANGE_LISTENER), type("boolean"),
+                    label("Use Change Listener"), defaultValue("true"), disableValue("false"), description("Hello"));
 
-        TestConfigurationElement propertyDef2 = builderSetPropertyDef(name(USE_CHANGE_LISTENER), type("boolean"),
-                label("Use Change Listener"), defaultValue("true"), disableValue("false"), description("Hello"));
+            TestConfigurationElement propertyDef3 = builderSetPropertyDef(name(COPY_SUPPORT), type("boolean"),
+                    label("Copy Support"), defaultValue("true"), disableValue("false"), description("Hello"),
+                    // restricted availability
+                    child(configElement("jdkComplianceLevels", name("jdkComplianceLevels"),
+                            child(configElement("jdkComplianceLevel", value("1.4"))))));
 
-        TestConfigurationElement propertyDef3 = builderSetPropertyDef(name(COPY_SUPPORT), type("boolean"),
-                label("Copy Support"), defaultValue("true"), disableValue("false"), description("Hello"),
-                // restricted availability
-                child(configElement("jdkComplianceLevels", name("jdkComplianceLevels"),
-                        child(configElement("jdkComplianceLevel", value("1.4"))))));
+            IExtension extension = TestMockingUtils.mockExtension("mybuilderset",
+                    configElement("builderSet", clazz(DefaultBuilderSet.class.getName()), child(propertyDef1),
+                            child(propertyDef2), child(propertyDef3)));
 
-        IExtension extension = TestMockingUtils.mockExtension("mybuilderset",
-                configElement("builderSet", clazz(DefaultBuilderSet.class.getName()), child(propertyDef1),
-                        child(propertyDef2), child(propertyDef3)));
+            IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
+                    "artefactbuilderset",
+                    extension);
 
-        IExtensionPoint extensionPoint = TestMockingUtils.mockExtensionPoint(IpsModelActivator.PLUGIN_ID,
-                "artefactbuilderset",
-                extension);
+            registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
 
-        registry = new TestExtensionRegistry(new IExtensionPoint[] { extensionPoint });
+            logger = new TestLogger();
+            ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<>();
+            IIpsModel ipsModel = mock(IIpsModel.class);
 
-        logger = new TestLogger();
-        ArrayList<IIpsArtefactBuilderSetInfo> builderSetInfoList = new ArrayList<>();
-        IIpsModel ipsModel = mock(IIpsModel.class);
-
-        IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
-        builderSetInfo = (IpsArtefactBuilderSetInfo)builderSetInfoList.get(0);
+            IpsArtefactBuilderSetInfo.loadExtensions(registry, logger, builderSetInfoList, ipsModel);
+            builderSetInfo = (IpsArtefactBuilderSetInfo)builderSetInfoList.get(0);
+        }
 
     }
 
     @Test
     public void testLoadExtensions() {
-        assertEquals(3, builderSetInfo.getPropertyDefinitions().length);
-        assertEquals("mybuilderset", builderSetInfo.getBuilderSetId());
+        if (Abstractions.isEclipseRunning()) {
+            assertEquals(3, builderSetInfo.getPropertyDefinitions().length);
+            assertEquals("mybuilderset", builderSetInfo.getBuilderSetId());
+        }
     }
 
     @Test
     public void testValidateIpsBuilderSetPropertyValue_OK() {
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "true"));
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mock(IIpsProject.class);
+            assertNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "true"));
+        }
     }
 
     @Test
     public void testValidateIpsBuilderSetPropertyValue_WrongDatatype() {
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "hallo"));
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mock(IIpsProject.class);
+            assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, LOGGING_CONNECTORS, "hallo"));
+        }
     }
 
     @Test
     public void testValidateIpsBuilderSetPropertyValue_UnknownProperty() {
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "hanswurst", "hallo"));
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mock(IIpsProject.class);
+            assertNotNull(builderSetInfo.validateIpsBuilderSetPropertyValue(ipsProject, "hanswurst", "hallo"));
+        }
     }
 
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_OK() {
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        Map<String, String> properties = new HashMap<>();
-        properties.put(LOGGING_CONNECTORS, "true");
-        properties.put(USE_CHANGE_LISTENER, "false");
-        IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mock(IIpsProject.class);
+            Map<String, String> properties = new HashMap<>();
+            properties.put(LOGGING_CONNECTORS, "true");
+            properties.put(USE_CHANGE_LISTENER, "false");
+            IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
 
-        MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
+            MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
 
-        assertTrue(msgList.isEmpty());
+            assertTrue(msgList.isEmpty());
+        }
     }
 
     @Test
     public void testValidateIpsArtefactBuilderSetConfig_UnknownProperty() {
-        IIpsProject ipsProject = mock(IIpsProject.class);
-        Map<String, String> properties = new HashMap<>();
-        properties.put(LOGGING_CONNECTORS, "true");
-        properties.put(USE_CHANGE_LISTENER, "false");
-        properties.put("hanswurst", "false");
-        IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mock(IIpsProject.class);
+            Map<String, String> properties = new HashMap<>();
+            properties.put(LOGGING_CONNECTORS, "true");
+            properties.put(USE_CHANGE_LISTENER, "false");
+            properties.put("hanswurst", "false");
+            IpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel(properties);
 
-        MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
+            MessageList msgList = builderSetInfo.validateIpsArtefactBuilderSetConfig(ipsProject, builderSetConfig);
 
-        assertFalse(msgList.isEmpty());
+            assertFalse(msgList.isEmpty());
+        }
     }
 
     @Test
     public void testCreateDefaultConfiguration() {
-        IIpsProject ipsProject = mockIpsAndJavaProject("1.4");
-        IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
-        assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
-        assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
-        assertThat(configuration.getPropertyValue(COPY_SUPPORT), is("true"));
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mockIpsAndJavaProject("1.4");
+            IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
+            assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
+            assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
+            assertThat(configuration.getPropertyValue(COPY_SUPPORT), is("true"));
+        }
     }
 
     @Test
     public void testCreateDefaultConfiguration_OnlyAvailable() {
-        IIpsProject ipsProject = mockIpsAndJavaProject("1.5");
-        IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
-        assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
-        assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
-        // only available for compliance level 1.4
-        assertThat(configuration.getPropertyValue(COPY_SUPPORT), is(nullValue()));
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = mockIpsAndJavaProject("1.5");
+            IIpsArtefactBuilderSetConfigModel configuration = builderSetInfo.createDefaultConfiguration(ipsProject);
+            assertThat(configuration.getPropertyValue(USE_CHANGE_LISTENER), is("true"));
+            assertThat(configuration.getPropertyValue(LOGGING_CONNECTORS), is("true"));
+            // only available for compliance level 1.4
+            assertThat(configuration.getPropertyValue(COPY_SUPPORT), is(nullValue()));
+        }
     }
 
     private IIpsProject mockIpsAndJavaProject(String complianceLevel) {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IJavaProject javaProject = mock(IJavaProject.class);
-        when(ipsProject.getJavaProject()).thenReturn(javaProject);
+        when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
         when(javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true)).thenReturn(complianceLevel);
         return ipsProject;
     }

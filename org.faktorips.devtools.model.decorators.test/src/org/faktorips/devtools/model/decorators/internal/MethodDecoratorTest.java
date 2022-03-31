@@ -20,9 +20,9 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
@@ -72,7 +72,7 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Overwrite() throws CoreException {
+    public void testGetImageDescriptor_Overwrite() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwrittenMethod = mock(IMethod.class);
         IMethod overwritingMethod = mock(IMethod.class);
@@ -86,11 +86,11 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_FindOverwrittenFails() throws CoreException {
+    public void testGetImageDescriptor_FindOverwrittenFails() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwritingMethod = mock(IMethod.class);
         when(overwritingMethod.getIpsProject()).thenReturn(ipsProject);
-        doThrow(new CoreException(new IpsStatus("CAN'T FIND IT"))).when(overwritingMethod)
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(overwritingMethod)
                 .findOverriddenMethod(ipsProject);
 
         ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(overwritingMethod);
@@ -100,7 +100,7 @@ public class MethodDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_AbstractOverwrite() throws CoreException {
+    public void testGetImageDescriptor_AbstractOverwrite() {
         IIpsProject ipsProject = mock(IIpsProject.class);
         IMethod overwrittenMethod = mock(IMethod.class);
         IMethod overwritingMethod = mock(IMethod.class);

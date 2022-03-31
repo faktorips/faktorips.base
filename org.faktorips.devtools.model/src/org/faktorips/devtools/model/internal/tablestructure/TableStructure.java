@@ -20,12 +20,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.dependency.DatatypeDependency;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.util.TreeSetHelper;
@@ -161,7 +160,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new CoreRuntimeException("Can't get index for column " + column); //$NON-NLS-1$
+        throw new IpsException("Can't get index for column " + column); //$NON-NLS-1$
     }
 
     @Override
@@ -171,7 +170,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
                 return i;
             }
         }
-        throw new CoreRuntimeException("Can't get index for column " + columnName); //$NON-NLS-1$
+        throw new IpsException("Can't get index for column " + columnName); //$NON-NLS-1$
     }
 
     @Override
@@ -507,7 +506,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
     }
 
     @Override
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) {
         TreeSet<IIpsSrcFile> result = TreeSetHelper.newIpsSrcFileTreeSet();
         IIpsProject[] searchProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject project : searchProjects) {
@@ -536,11 +535,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
         ValueDatatype[] datatypes = new ValueDatatype[columns.size()];
         int i = 0;
         for (IColumn column : columns) {
-            try {
-                datatypes[i++] = column.findValueDatatype(ipsProject);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            datatypes[i++] = column.findValueDatatype(ipsProject);
         }
         return datatypes;
     }

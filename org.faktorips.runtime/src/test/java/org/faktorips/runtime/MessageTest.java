@@ -240,6 +240,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(expected, msg.toString());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEqualsObject() {
         // different class

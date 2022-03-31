@@ -22,9 +22,9 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectChangedListener;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -39,7 +39,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
     private final IMavenProjectChangedListener mavenUpdateListener;
 
     public MavenVersionProvider(IIpsProject ipsProject) {
-        project = ipsProject.getProject();
+        project = ipsProject.getProject().unwrap();
         mavenProject = findMavenProject();
         mavenUpdateListener = (events, $) -> mavenProjectChanged(events);
         MavenPlugin.getMavenProjectRegistry().addMavenProjectChangedListener(mavenUpdateListener);
@@ -56,7 +56,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
             // need to use the version with monitor to search the project if it's not in the cache
             return mavenProjectFacade.getMavenProject(new NullProgressMonitor());
         } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
     }
 

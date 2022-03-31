@@ -20,10 +20,6 @@
     <name>Faktor-IPS Model Builder</name>
     <description>Model builder for the Faktor-IPS design time tools</description>
 
-    <build>
-        <sourceDirectory>../src</sourceDirectory>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>

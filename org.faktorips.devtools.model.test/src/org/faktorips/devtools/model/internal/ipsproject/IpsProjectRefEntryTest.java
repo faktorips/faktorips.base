@@ -10,16 +10,18 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -31,6 +33,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -100,33 +103,36 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(entry.isReexported());
     }
 
+    @Category(EclipseImplementation.class)
     @Test
-    public void testValidate() throws CoreException {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        path = (IpsObjectPath)props.getIpsObjectPath();
-        IIpsProject refProject = this.newIpsProject("TestProject2");
-        path.newIpsProjectRefEntry(refProject);
-        ipsProject.setProperties(props);
-        IpsProjectTest.updateSrcFolderEntryQalifiers(refProject, "2");
+    public void testValidate() {
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProjectProperties props = ipsProject.getProperties();
+            path = (IpsObjectPath)props.getIpsObjectPath();
+            IIpsProject refProject = this.newIpsProject("TestProject2");
+            path.newIpsProjectRefEntry(refProject);
+            ipsProject.setProperties(props);
+            IpsProjectTest.updateSrcFolderEntryQualifiers(refProject, "2");
 
-        MessageList ml = ipsProject.validate();
-        assertEquals(0, ml.size());
+            MessageList ml = ipsProject.validate();
+            assertEquals(0, ml.size());
 
-        // validate missing project reference
-        refProject = IIpsModel.get().getIpsProject("none");
-        path.newIpsProjectRefEntry(refProject);
-        ipsProject.setProperties(props);
-        ml = ipsProject.validate();
-        assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT));
+            // validate missing project reference
+            refProject = IIpsModel.get().getIpsProject("none");
+            path.newIpsProjectRefEntry(refProject);
+            ipsProject.setProperties(props);
+            ml = ipsProject.validate();
+            assertEquals(1, ml.size());
+            assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_PROJECT));
 
-        // validate empty project name
-        path.removeProjectRefEntry(refProject);
-        path.newIpsProjectRefEntry(null);
-        ipsProject.setProperties(props);
-        ml = ipsProject.validate();
-        assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
+            // validate empty project name
+            path.removeProjectRefEntry(refProject);
+            path.newIpsProjectRefEntry(null);
+            ipsProject.setProperties(props);
+            ml = ipsProject.validate();
+            assertEquals(1, ml.size());
+            assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
+        }
     }
 
     @Test

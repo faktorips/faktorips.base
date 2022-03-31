@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
@@ -58,12 +57,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
         if (value == null) {
             return new JavaCodeFragment("null");
         }
-        try {
-            return enumType.getNewInstanceCodeFragement(enumTypeAdapter, value, null);
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return enumType.getNewInstanceCodeFragement(enumTypeAdapter, value, null);
     }
 
     @Override

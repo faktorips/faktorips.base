@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -42,7 +41,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     private static final String NEW_NAME = "NewName";
 
     @Test
-    public void testCheckFinalConditionsValid() throws CoreException {
+    public void testCheckFinalConditionsValid() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
         ipsRenameProcessor.setNewName("test");
@@ -54,7 +53,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testCheckFinalConditionsFileAlreadyExists() throws CoreException {
+    public void testCheckFinalConditionsFileAlreadyExists() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
         ipsRenameProcessor.setNewName(policyCmptType.getName());
@@ -66,7 +65,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testCheckFinalConditionsInvalidTypeName() throws CoreException {
+    public void testCheckFinalConditionsInvalidTypeName() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         IpsRenameProcessor ipsRenameProcessor = new RenameIpsObjectProcessor(policyCmptType);
         ipsRenameProcessor.setNewName("$§§  $");
@@ -78,7 +77,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testCheckFinalConditionsInvalidTypeName_NoChangesPersist() throws CoreException {
+    public void testCheckFinalConditionsInvalidTypeName_NoChangesPersist() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
@@ -94,7 +93,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testCheckFinalConditionsIllegalTypeName_NoChangesPersist() throws CoreException {
+    public void testCheckFinalConditionsIllegalTypeName_NoChangesPersist() {
         IPolicyCmptType policyCmptType = newPolicyAndProductCmptType(ipsProject, "Policy", "Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
 
@@ -110,13 +109,13 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenamePolicyCmptType() throws CoreException {
+    public void testRenamePolicyCmptType() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         performTestRenamePolicyCmptType(policyCmptType, NEW_NAME, false);
     }
 
     @Test
-    public void testRenameSuperPolicyCmptType() throws CoreException {
+    public void testRenameSuperPolicyCmptType() {
         IPolicyCmptType superPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "SuperPolicy");
         superPolicyCmptType.setAbstract(true);
         SuperPolicyCmptTypeReferences superPolicyCmptTypeReferences = new SuperPolicyCmptTypeReferences(
@@ -129,13 +128,13 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenamePolicyCmptTypeWithInverseAssociation() throws CoreException {
+    public void testRenamePolicyCmptTypeWithInverseAssociation() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
         performTestRenamePolicyCmptType(policyCmptType, NEW_NAME, true);
     }
 
     @Test
-    public void testRenameProductCmptType() throws CoreException {
+    public void testRenameProductCmptType() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
         ProductCmptTypeReferences productCmptTypeReferences = new ProductCmptTypeReferences(productCmptType);
 
@@ -148,7 +147,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameSuperProductCmptType() throws CoreException {
+    public void testRenameSuperProductCmptType() {
         IProductCmptType superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
         superProductCmptType.setAbstract(true);
         SuperProductCmptTypeReferences superProductCmptTypeReferences = new SuperProductCmptTypeReferences(
@@ -161,7 +160,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameTestCaseType() throws CoreException {
+    public void testRenameTestCaseType() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "TestCaseType");
         TestCaseTypeReferences testCaseTypeReferences = new TestCaseTypeReferences(testCaseType);
 
@@ -174,7 +173,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameEnumType() throws CoreException {
+    public void testRenameEnumType() {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.newEnumLiteralNameAttribute();
         EnumTypeReferences enumTypeReferences = new EnumTypeReferences(enumType);
@@ -188,7 +187,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameTableStructure() throws CoreException {
+    public void testRenameTableStructure() {
         ITableStructure tableStructure = newTableStructure(ipsProject, "TableStructure");
         TableStructureReferences tableStructureReferences = new TableStructureReferences(tableStructure);
 
@@ -200,21 +199,8 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
         tableStructureReferences.check(NEW_NAME);
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void testRenameBusinessFunction() throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = createBusinessFunction("BusinessFunction");
-
-        saveIpsSrcFile(businessFunction);
-        performRenameRefactoring(businessFunction, NEW_NAME);
-
-        checkIpsSourceFile(businessFunction.getName(), NEW_NAME, businessFunction.getIpsPackageFragment(),
-                businessFunction.getIpsPackageFragment(),
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance());
-    }
-
-    @Test
-    public void testRenameProductCmpt() throws CoreException {
+    public void testRenameProductCmpt() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         ProductCmptReferences productCmptReferences = new ProductCmptReferences(productCmpt, productCmptType);
@@ -229,7 +215,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameProductCmptAdaptRuntimeId() throws CoreException {
+    public void testRenameProductCmptAdaptRuntimeId() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         ProductCmptReferences productCmptReferences = new ProductCmptReferences(productCmpt, productCmptType);
@@ -244,7 +230,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameTestCase() throws CoreException {
+    public void testRenameTestCase() {
         ITestCaseType testCaseType = newTestCaseType(ipsProject, "TestCaseType");
         ITestCase testCase = newTestCase(testCaseType, "TestCase");
 
@@ -257,7 +243,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameEnumContent() throws CoreException {
+    public void testRenameEnumContent() {
         IEnumType enumType = createEnumType("EnumType", null, "id", "name");
         enumType.setExtensible(true);
         enumType.setEnumContentName("EnumContent");
@@ -272,7 +258,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameTableContent() throws CoreException {
+    public void testRenameTableContent() {
         ITableStructure tableStructure = newTableStructure(ipsProject, "TableStructure");
         ITableContents tableContents = newTableContents(tableStructure, "TableContents");
 
@@ -285,7 +271,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameOnlyLetterCaseChanged() throws CoreException {
+    public void testRenameOnlyLetterCaseChanged() {
         IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
 
         String newName = "Policy".toLowerCase();
@@ -295,7 +281,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
 
     private void performTestRenamePolicyCmptType(IPolicyCmptType policyCmptType,
             String newName,
-            boolean createInverseAssociation) throws CoreException {
+            boolean createInverseAssociation) {
 
         PolicyCmptTypeReferences policyCmptTypeReferences = new PolicyCmptTypeReferences(policyCmptType,
                 createInverseAssociation);
@@ -309,7 +295,7 @@ public class RenameIpsObjectProcessorTest extends AbstractMoveRenameIpsObjectTes
     }
 
     @Test
-    public void testRenameProductCmptThatReferencesItself() throws CoreException {
+    public void testRenameProductCmptThatReferencesItself() {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "MyProductType");
         IProductCmptTypeAssociation toSelfAssociation = productCmptType.newProductCmptTypeAssociation();
         toSelfAssociation.setTarget(productCmptType.getQualifiedName());

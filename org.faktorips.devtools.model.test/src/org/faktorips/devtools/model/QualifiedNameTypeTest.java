@@ -18,8 +18,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.junit.Test;
@@ -90,11 +90,11 @@ public class QualifiedNameTypeTest {
     @Test
     public void testToPath() {
         QualifiedNameType qnt = new QualifiedNameType("Policy", IpsObjectType.POLICY_CMPT_TYPE);
-        Path expectedPath = new Path("Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        Path expectedPath = Path.of("Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         assertEquals(expectedPath, qnt.toPath());
 
         qnt = new QualifiedNameType("mycompany.motor.Policy", IpsObjectType.POLICY_CMPT_TYPE);
-        expectedPath = new Path("mycompany/motor/Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
+        expectedPath = Path.of("mycompany/motor/Policy." + IpsObjectType.POLICY_CMPT_TYPE.getFileExtension());
         assertEquals(expectedPath, qnt.toPath());
     }
 

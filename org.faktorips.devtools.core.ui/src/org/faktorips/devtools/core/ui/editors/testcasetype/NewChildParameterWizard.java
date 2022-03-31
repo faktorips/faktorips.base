@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.Wizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -128,7 +128,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
                     newTestParameter.setPolicyCmptType(pcType.getQualifiedName());
                 }
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -161,7 +161,7 @@ public class NewChildParameterWizard extends Wizard implements IBlockedValidatio
 
         try {
             return newTestParameter.isValid(newTestParameter.getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return false;

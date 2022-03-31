@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -232,9 +232,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
-            throws CoreException {
-
+    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject) {
         boolean reqProductCmpt = ((ITestPolicyCmptTypeParameter)getParent()).isRequiresProductCmpt();
         if (!reqProductCmpt) {
             return true;
@@ -252,7 +250,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
     }
 
     @Override
-    protected void validateThis(MessageList messageList, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList messageList, IIpsProject ipsProject) {
         super.validateThis(messageList, ipsProject);
 
         // check if the name is not empty
@@ -266,7 +264,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check if the attribute exists
         IPolicyCmptTypeAttribute modelAttribute = findAttribute(ipsProject);
         if (isBasedOnModelAttribute() && modelAttribute == null) {
-            String text = NLS.bind(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
+            String text = MessageFormat.format(Messages.TestAttribute_Error_AttributeNotFound, getAttribute());
             Message msg = new Message(MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.ERROR, this,
                     ITestAttribute.PROPERTY_ATTRIBUTE);
             messageList.add(msg);
@@ -288,7 +286,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
         // check the correct type
         if (!isInputAttribute() && !isExpextedResultAttribute()) {
-            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowed, type, name);
+            String text = MessageFormat.format(Messages.TestAttribute_Error_TypeNotAllowed, type, name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
         }
@@ -296,7 +294,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // check if the type of the attribute matches the type of the parent
         TestParameterType parentType = ((ITestPolicyCmptTypeParameter)getParent()).getTestParameterType();
         if (!TestParameterType.isChildTypeMatching(type, parentType)) {
-            String text = NLS.bind(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type, parentType.getName());
+            String text = MessageFormat.format(Messages.TestAttribute_Error_TypeNotAllowedIfParent, type,
+                    parentType.getName());
             Message msg = new Message(MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE, text, Message.ERROR, this,
                     PROPERTY_TEST_ATTRIBUTE_TYPE);
             messageList.add(msg);
@@ -308,7 +307,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         for (ITestAttribute testAttribute : testAttributes) {
             if (testAttribute != this && testAttribute.getName().equals(name)) {
                 // duplicate name
-                String text = NLS.bind(Messages.TestAttribute_Error_DuplicateName, name);
+                String text = MessageFormat.format(Messages.TestAttribute_Error_DuplicateName, name);
                 Message msg = new Message(MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME, text, Message.ERROR, this,
                         PROPERTY_NAME);
                 messageList.add(msg);
@@ -316,7 +315,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             } else if (isBasedOnModelAttribute() && testAttribute != this
                     && testAttribute.getAttribute().equals(attribute) && testAttribute.getTestAttributeType() == type) {
                 // duplicate attribute and type
-                String text = NLS.bind(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType, attribute,
+                String text = MessageFormat.format(Messages.TestAttribute_ValidationError_DuplicateAttributeAndType,
+                        attribute,
                         type.getName());
                 Message msg = new Message(MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE, text, Message.ERROR, this,
                         PROPERTY_ATTRIBUTE);
@@ -337,7 +337,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
             if (isBasedOnModelAttribute()) {
                 ValueDatatype valueDatatype = findDatatype(getIpsProject());
                 if (valueDatatype != null && valueDatatype.isAbstract()) {
-                    String text = NLS.bind(Messages.TestAttribute_ValidationError_AbstractAttribute, attribute,
+                    String text = MessageFormat.format(Messages.TestAttribute_ValidationError_AbstractAttribute,
+                            attribute,
                             valueDatatype);
                     Message msg = new Message(MSGCODE_ABSTRACT_ATTRIBUTES_NOT_SUPPORTED, text, Message.ERROR,
                             this);
@@ -360,7 +361,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME,
-                    NLS.bind(Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name), Message.ERROR,
+                    MessageFormat.format(Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name),
+                    Message.ERROR,
                     this, PROPERTY_NAME));
         }
     }

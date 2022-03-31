@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -40,11 +41,11 @@ public class RemovedTemplateLinkEntry extends AbstractDeltaEntryForLinks {
         String linkCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getLink());
         String linkTarget = StringUtil.unqualifiedName(getLink().getTarget());
         if (getLink().getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
-            return NLS.bind(Messages.DeletedTemplateLinkEntry_removeUndefinedTemplateLink, new String[] { linkCaption,
-                    linkTarget });
+            return MessageFormat.format(Messages.DeletedTemplateLinkEntry_removeUndefinedTemplateLink, linkCaption,
+                    linkTarget);
         } else {
-            return NLS.bind(Messages.DeletedTemplateLinkEntry_removeInheritedTemplateLink, new String[] { linkCaption,
-                    linkTarget });
+            return MessageFormat.format(Messages.DeletedTemplateLinkEntry_removeInheritedTemplateLink, linkCaption,
+                    linkTarget);
         }
     }
 

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
@@ -66,10 +66,10 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the test policy component type
+     * @throws IpsException if an error occurs while searching for the test policy component type
      *             parameter.
      */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws CoreException;
+    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the target.

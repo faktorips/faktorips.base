@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views;
 
 import java.util.Collection;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 import org.faktorips.devtools.model.IIpsMetaClass;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -63,11 +62,7 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * @return the name of the meta class, defining the internal source file
      */
     public String getDefiningMetaClass() {
-        try {
-            return collection.getDefiningMetaClass(getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return collection.getDefiningMetaClass(getIpsSrcFile());
     }
 
     /**
@@ -75,11 +70,7 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * @return the true if duplicateName is set
      */
     public boolean isDuplicateName() {
-        try {
-            return collection.isDuplicateName(getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return collection.isDuplicateName(getIpsSrcFile());
     }
 
     /**
@@ -88,11 +79,7 @@ public class InstanceIpsSrcFileViewItem extends IpsSrcFileViewItem {
      * otherwise.
      */
     public boolean isInstanceOfMetaClass() {
-        try {
-            return collection.isInstanceOfMetaClass(getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return collection.isInstanceOfMetaClass(getIpsSrcFile());
     }
 
 }

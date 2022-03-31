@@ -21,8 +21,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.WritableValue;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -78,6 +78,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Form;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -97,7 +98,6 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.Validatable;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -672,7 +672,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // test case type or model association not found
                 // no add and removed allowed, because the test case type definition is wrong
                 // }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // disable add and enable remove button and ignore exception
                 // maybe the test case type model and test case are inconsistent
                 // in this case the whole association could be deleted but no new children could be
@@ -707,7 +707,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         && testPolicyCmpt.hasProductCmpt();
                 // open in new editor is always enabled for ITestPolicyCmpt
                 actionEnableState.openInNewEditorEnable = true;
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // disable add and remove button and ignore exception
                 // maybe the test case type model and test case are inconsistent
                 // in this case the parent link could be removed but not this child element
@@ -749,7 +749,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         });
         new TreeMessageHoverService(getTreeViewer()) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element instanceof Validatable) {
                     return ((Validatable)element).validate(ipsProject);
                 } else {
@@ -880,12 +880,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         if (selected instanceof ITestRule) {
             ITestRule rule = (ITestRule)selected;
-            try {
-                IValidationRule validationRule = rule.findValidationRule(ipsProject);
-                uniquePath = validationRule == null ? null : validationRule.getMessageCode();
-            } catch (CoreException e1) {
-                // ignore exception while seraching the validation rule object
-            }
+            IValidationRule validationRule = rule.findValidationRule(ipsProject);
+            uniquePath = validationRule == null ? null : validationRule.getMessageCode();
             if (uniquePath == null) {
                 // validation rule not found use rule name as identifier
                 uniquePath = rule.getValidationRule();
@@ -938,7 +934,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private void addRootTestPolicyCmptObject(final TestCaseTypeAssociation associationType,
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
 
-        final IWorkspaceRunnable runnable = $ -> {
+        final ICoreRunnable runnable = $ -> {
             ITestPolicyCmpt newTestPolicyCmpt = ((TestCase)getTestCase())
                     .addRootTestPolicyCmpt(testPolicyCmptTypeParam);
             if (testPolicyCmptTypeParam.isRequiresProductCmpt()) {
@@ -977,14 +973,10 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          */
         if (parentItem instanceof ITestPolicyCmpt && !contentProvider.isWithoutAssociations()) {
             for (Object child : contentProvider.getChildren(parentItem)) {
-                try {
-                    if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject)
-                            .equals(((TestCaseTypeAssociation)child).getTestPolicyCmptTypeParam())) {
-                        parentItem = child;
-                        break;
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject)
+                        .equals(((TestCaseTypeAssociation)child).getTestPolicyCmptTypeParam())) {
+                    parentItem = child;
+                    break;
                 }
             }
         }
@@ -1003,23 +995,23 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     private ITestPolicyCmptLink addNewLink(TestCaseTypeAssociation associationType,
             String productCmptQualifiedName,
             String policyCmptTypeQualifiedName,
-            String targetName) throws CoreException {
+            String targetName) {
 
         ITestPolicyCmptLink newAssociation = associationType.getParentTestPolicyCmpt().addTestPcTypeLink(
                 associationType.getTestPolicyCmptTypeParam(), productCmptQualifiedName, policyCmptTypeQualifiedName,
                 targetName, true);
         ITestPolicyCmpt newTestPolicyCmpt = newAssociation.findTarget();
         if (newTestPolicyCmpt == null) {
-            throw new CoreException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
+            throw new IpsException(new IpsStatus(Messages.TestCaseSection_Error_CreatingAssociation));
         }
         return newAssociation;
     }
 
-    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private boolean changeProductCmpt(ITestPolicyCmpt testPolicyCmpt) {
         ITestPolicyCmptTypeParameter testTypeParam;
         try {
             testTypeParam = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // ignored, the validation shows the unknown type failure message
             return false;
         }
@@ -1056,7 +1048,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         return true;
     }
 
-    private void changeProductCmpt() throws CoreException {
+    private void changeProductCmpt() {
         ISelection selection = getTreeViewer().getSelection();
         if (selection instanceof IStructuredSelection) {
             Object selectedObj = ((IStructuredSelection)selection).getFirstElement();
@@ -1198,7 +1190,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         Messages.TestCaseSection_MessageDialog_TextInfoTestNotExecuted);
                 return true;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return true;
         }
@@ -1227,11 +1219,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Shows the select product component dialog and returns the selected product component
      * qualified names. Returns <code>null</code> if no selection or an unsupported type was chosen.
      * 
-     * @throws CoreException If an error occurs
+     * @throws IpsException If an error occurs
      */
     private String[] selectProductCmptsDialog(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent,
-            boolean multiSelectiion) throws CoreException {
+            boolean multiSelectiion) {
 
         return selectIpsSrcFileDialog(multiSelectiion, getProductCmptSrcFiles(testTypeParam, testPolicyCmptParent),
                 Messages.TestCaseSection_DialogSelectProductCmpt_Title,
@@ -1275,15 +1267,11 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     IIpsSrcFile[] getProductCmptSrcFiles(ITestPolicyCmptTypeParameter testTypeParam,
             ITestPolicyCmpt testPolicyCmptParent) {
 
-        try {
-            return testTypeParam.getAllowedProductCmpt(ipsProject,
-                    testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(ipsProject) : null);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return testTypeParam.getAllowedProductCmpt(ipsProject,
+                testPolicyCmptParent != null ? testPolicyCmptParent.findProductCmpt(ipsProject) : null);
     }
 
-    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) throws CoreException {
+    private IIpsSrcFile[] getPolicyCmptTypesSrcFiles(ITestPolicyCmptTypeParameter testTypeParam) {
 
         IPolicyCmptType policyCmptType = ipsProject.findPolicyCmptType(testTypeParam.getPolicyCmptType());
         if (policyCmptType == null) {
@@ -2189,7 +2177,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 ITestCaseType type = null;
                 try {
                     type = getTestCase().findTestCaseType(ipsProject);
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                     return;
                 }
@@ -2278,7 +2266,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         public void run() {
             try {
                 policyCmptTypesSrcFiles = TestCaseSection.this.getPolicyCmptTypesSrcFiles(testTypeParam);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -2328,7 +2316,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     return null;
                 }
                 return IpsUIPlugin.getImageHandling().getImage(association);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 return null;
             }
         }
@@ -2540,7 +2528,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                         addTestRule(((TestCaseTypeRule)selectedObject).getTestRuleParameter(), validationRule);
                     }
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }
@@ -2565,8 +2553,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          * selected test case type association object or <code>null</code> if the user select
          * nothing.
          */
-        private TestCaseTypeAssociation selectTestCaseTypeAssociationByDialog(ITestPolicyCmpt parentTestPolicyCmpt)
-                throws CoreException {
+        private TestCaseTypeAssociation selectTestCaseTypeAssociationByDialog(ITestPolicyCmpt parentTestPolicyCmpt) {
 
             ElementListSelectionDialog selectDialog = new ElementListSelectionDialog(getShell(),
                     new TestCaseTypeAssociationLabelProvider());
@@ -2624,7 +2611,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         /**
          * Add a new link based an the given test case type association.
          */
-        private void addAssociation(final TestCaseTypeAssociation associationType) throws CoreException {
+        private void addAssociation(final TestCaseTypeAssociation associationType) {
             String[] selectedTargetsQualifiedNames = null;
             boolean chooseProductCmpts = false;
             final ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = associationType.getTestPolicyCmptTypeParam();
@@ -2675,7 +2662,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // reduce the processing time
             final String[] finalSelectedTargetsQualifiedNames = selectedTargetsQualifiedNames;
             final boolean finalChooseProductCmpts = chooseProductCmpts;
-            final IWorkspaceRunnable runnable = monitor -> {
+            final ICoreRunnable runnable = monitor -> {
                 // add a new child based on the selected association
 
                 if (association.isAssoziation()) {
@@ -2732,7 +2719,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 try {
                     runnable.run(null);
                 } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                    throw new IpsException(e);
                 }
             });
         }
@@ -2748,7 +2735,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // sort the test objects to ensure that the test rule is in the correct order
             try {
                 getTestCase().sortTestObjects();
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
 
@@ -2772,7 +2759,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
         @Override
         public void run() {
-            IWorkspaceRunnable runnable = monitor -> {
+            ICoreRunnable runnable = monitor -> {
                 if (getSelection() instanceof IStructuredSelection) {
                     Object nextItemToSelect = null;
                     for (Iterator<?> iterator = ((IStructuredSelection)getSelection()).iterator(); iterator
@@ -2973,7 +2960,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                             IpsUIPlugin.getDefault().openEditor(type);
                         }
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             } else if (canNavigateToModelOrSourceCode && firstElement instanceof TestCaseTypeAssociation) {
@@ -2983,7 +2970,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 try {
                     IPolicyCmptTypeAssociation association = ta.findAssociation(ipsProject);
                     IpsUIPlugin.getDefault().openEditor(association.findTarget(ipsProject));
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

@@ -651,59 +651,45 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      */
     @Override
     public int compareTo(Decimal d) {
-        if (d.isNull()) {
-            return 1;
-        }
+        throwExceptionIfNullValue(d);
         return value.compareTo(d.value);
     }
 
     /**
      * Returns true if the indicated Decimal is greater than this one. Two Decimals that are equal
      * in value but have a different scale (like 2.0 and 2.00) are considered equal by this method.
-     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      */
     public boolean greaterThan(Decimal d) {
-        if (d == null || d.isNull()) {
-            return false;
-        }
+        throwExceptionIfNullValue(d);
         return value.compareTo(d.value) > 0;
     }
 
     /**
      * Returns true if the indicated Decimal is greater or equal than this one. Two Decimals that
      * are equal in value but have a different scale (like 2.0 and 2.00) are considered equal by
-     * this method. If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method
-     * returns false.
+     * this method.
      */
     public boolean greaterThanOrEqual(Decimal d) {
-        if (d == null || d.isNull()) {
-            return false;
-        }
+        throwExceptionIfNullValue(d);
         return value.compareTo(d.value) >= 0;
     }
 
     /**
      * Returns true if the indicated Decimal is smaller than this one. Two Decimals that are equal
      * in value but have a different scale (like 2.0 and 2.00) are considered equal by this method.
-     * If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method returns false.
      */
     public boolean lessThan(Decimal d) {
-        if (d == null || d.isNull()) {
-            return false;
-        }
+        throwExceptionIfNullValue(d);
         return value.compareTo(d.value) < 0;
     }
 
     /**
      * Returns true if the indicated Decimal is smaller than or equal to this one. Two Decimals that
      * are equal in value but have a different scale (like 2.0 and 2.00) are considered equal by
-     * this method. If <code>d</code> is <code>null</code> or {@link Decimal#NULL} the method
-     * returns false.
+     * this method.
      */
     public boolean lessThanOrEqual(Decimal d) {
-        if (d == null || d.isNull()) {
-            return false;
-        }
+        throwExceptionIfNullValue(d);
         return value.compareTo(d.value) <= 0;
     }
 
@@ -773,4 +759,11 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
         return value.toString();
     }
 
+    private void throwExceptionIfNullValue(Decimal d) throws UnsupportedOperationException {
+        if (d == null) {
+            throw new NullPointerException("Decimal should never be null. Use Decimal.NULL instead.");
+        } else if (d.isNull()) {
+            throw new UnsupportedOperationException("Method not applicable for parameter Decimal.NULL.");
+        }
+    }
 }

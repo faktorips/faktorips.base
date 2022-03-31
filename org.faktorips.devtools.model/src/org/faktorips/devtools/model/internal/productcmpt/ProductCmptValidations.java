@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.Messages;
@@ -53,13 +54,13 @@ public class ProductCmptValidations {
             IIpsProject ipsProject) {
         IProductCmptType type = findProductCmptType(productCmptTypeName, ipsProject);
         if (type == null) {
-            String text = NLS.bind(Messages.ProductCmptValidations_typeDoesNotExist, productCmptTypeName);
+            String text = MessageFormat.format(Messages.ProductCmptValidations_typeDoesNotExist, productCmptTypeName);
             list.add(new Message(IProductCmpt.MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE, text, Message.ERROR, productCmpt,
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
         }
         if (!productCmpt.isProductTemplate() && type.isAbstract()) {
-            String text = NLS.bind(Messages.ProductCmptValidations_typeIsAbstract, productCmptTypeName);
+            String text = MessageFormat.format(Messages.ProductCmptValidations_typeIsAbstract, productCmptTypeName);
             list.add(new Message(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE, text, Message.ERROR, productCmpt,
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
@@ -95,7 +96,7 @@ public class ProductCmptValidations {
                 validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
                 validateValidFrom(list, template, productCmpt);
             } else {
-                String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
+                String text = MessageFormat.format(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
                 list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
             }
             return template;

@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -356,7 +356,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Returns the value of the underlying IIpsProjectProperties instance.
      */
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         return propertiesInternal.validate(ipsProject);
     }
 
@@ -541,16 +541,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isBusinessFunctionsForValidationRulesEnabled() {
-        return propertiesInternal.isBusinessFunctionsForValidationRulesEnabled();
-    }
-
-    @Override
-    public void setBusinessFunctionsForValidationRules(boolean enabled) {
-        throw new RuntimeException(ERROR_READ_ONLY);
-    }
-
-    @Override
     public boolean isChangingOverTimeDefaultEnabled() {
         return propertiesInternal.isChangingOverTimeDefaultEnabled();
     }
@@ -578,6 +568,11 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public Decimal getInferredTemplateLinkThreshold() {
         return propertiesInternal.getInferredTemplateLinkThreshold();
+    }
+
+    @Override
+    public IIpsFeatureConfiguration getFeatureConfiguration(String featureId) {
+        return propertiesInternal.getFeatureConfiguration(featureId);
     }
 
     @Override

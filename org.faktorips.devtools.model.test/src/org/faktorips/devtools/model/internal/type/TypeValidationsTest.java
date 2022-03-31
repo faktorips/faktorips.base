@@ -21,9 +21,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -117,7 +116,7 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUniqueQualifiedName_DependantProject() throws CoreException {
+    public void testValidateUniqueQualifiedName_DependantProject() {
         IIpsProject dependantIpsProject = newIpsProject("p2");
         IIpsObjectPath ipsObjectPath = dependantIpsProject.getIpsObjectPath();
         ipsObjectPath.newIpsProjectRefEntry(ipsProject);
@@ -153,19 +152,15 @@ public class TypeValidationsTest extends AbstractIpsPluginTest {
                 try {
                     return hasMessages(matchers).matches(TypeValidations.validateUniqueQualifiedName(ipsObject)
                             .getMessagesByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     return false;
                 }
             }
 
             @Override
             protected void describeMismatchSafely(IIpsObject ipsObject, Description mismatchDescription) {
-                try {
-                    mismatchDescription.appendValue(TypeValidations.validateUniqueQualifiedName(ipsObject)
-                            .getMessagesByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                mismatchDescription.appendValue(TypeValidations.validateUniqueQualifiedName(ipsObject)
+                        .getMessagesByCode(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS));
             }
         };
     }

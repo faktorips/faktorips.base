@@ -14,6 +14,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -21,6 +22,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -77,6 +79,27 @@ public class GeneratorConfig {
             // if the value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
+    }
+
+    /**
+     * Returns whether the method names should be unified ({@link ValueSetMethods#Unified}), should
+     * reflect the {@link ValueSetType} in their name ({@link ValueSetMethods#ByValueSetType}) or
+     * both ({@link ValueSetMethods#Both}).
+     * 
+     * @see StandardBuilderSet#CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS
+     */
+    public ValueSetMethods getValueSetMethods() {
+        String kind = config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS);
+        try {
+            return ValueSetMethods.valueOf(kind);
+        } catch (IllegalArgumentException e) {
+            // when in doubt use both
+            return ValueSetMethods.Both;
+        }
+    }
+
+    public boolean isGenerateBothMethodsForAllowedValues() {
+        return getValueSetMethods().isBoth();
     }
 
     /**
@@ -171,6 +194,12 @@ public class GeneratorConfig {
         String propertyValue = config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR);
         return (StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_ALL.equals(propertyValue)
                 || StandardBuilderSet.CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT.equals(propertyValue));
+    }
+
+    public boolean isGenerateGetEffectiveFromAsCalendar() {
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
     public String getBaseClassPolicyCmptType() {

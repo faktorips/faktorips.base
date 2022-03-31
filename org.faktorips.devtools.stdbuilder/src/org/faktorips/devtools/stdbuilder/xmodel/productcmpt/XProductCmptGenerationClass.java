@@ -20,6 +20,7 @@ import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -123,4 +124,9 @@ public class XProductCmptGenerationClass extends XProductClass {
         return getConfiguredAttributes(XPolicyAttribute::isChangingOverTime);
     }
 
+    public Set<XPolicyAttribute> attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(
+            GenerateValueSetType valueSetType) {
+        return attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(XPolicyAttribute::isChangingOverTime,
+                valueSetType);
+    }
 }

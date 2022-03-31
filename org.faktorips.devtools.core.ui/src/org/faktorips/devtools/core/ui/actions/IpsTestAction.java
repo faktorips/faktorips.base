@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -75,7 +78,7 @@ public class IpsTestAction extends IpsAction {
      * Adds all test path elements depending on the given object
      */
     private IIpsPackageFragmentRoot addPathElementFromObject(List<String> pathElements, Object object)
-            throws CoreException {
+            throws IpsException, CoreException {
 
         IIpsPackageFragmentRoot root = null;
         if (object instanceof IIpsPackageFragmentRoot) {
@@ -115,7 +118,7 @@ public class IpsTestAction extends IpsAction {
             String name = productCmpt.getQualifiedName();
             addElement(pathElements, root, name);
         } else if (object instanceof IResource) {
-            IIpsElement ipsElem = IIpsModel.get().getIpsElement((IResource)object);
+            IIpsElement ipsElem = IIpsModel.get().getIpsElement(Wrappers.wrap(object).as(AResource.class));
             root = addPathElementFromObject(pathElements, ipsElem);
         } else if (object instanceof IIpsSrcFile) {
             IIpsObject ipsObject = ((IIpsSrcFile)object).getIpsObject();
@@ -150,13 +153,22 @@ public class IpsTestAction extends IpsAction {
                     for (Iterator<Object> iterator = getSelectionIterator((StructuredSelection)element); iterator
                             .hasNext();) {
                         Object selStructObj = iterator.next();
-                        IIpsPackageFragmentRoot currRoot = addPathElementFromObject(selectedPathElements, selStructObj);
+                        IIpsPackageFragmentRoot currRoot;
+                        try {
+                            currRoot = addPathElementFromObject(selectedPathElements, selStructObj);
+                        } catch (CoreException e) {
+                            throw new IpsException(e);
+                        }
                         if (currRoot != null) {
                             root = currRoot;
                         }
                     }
                 } else {
-                    root = addPathElementFromObject(selectedPathElements, element);
+                    try {
+                        root = addPathElementFromObject(selectedPathElements, element);
+                    } catch (CoreException e) {
+                        throw new IpsException(e);
+                    }
                 }
             }
 
@@ -175,7 +187,7 @@ public class IpsTestAction extends IpsAction {
                     runTest(selectedPathElements, root.getIpsProject());
                 }
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -273,7 +285,7 @@ public class IpsTestAction extends IpsAction {
     /**
      * Run the test.
      */
-    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) throws CoreException {
+    private void runTest(List<String> selectedPathElements, IIpsProject ipsProject) {
         if (selectedPathElements.size() > 0) {
             String testRootsString = ""; //$NON-NLS-1$
             String testPackagesString = ""; //$NON-NLS-1$
@@ -300,7 +312,11 @@ public class IpsTestAction extends IpsAction {
             // run the test
             IIpsTestRunner testRunner = IpsPlugin.getDefault().getIpsTestRunner();
             testRunner.setIpsProject(ipsProject);
-            testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode, launch);
+            try {
+                testRunner.startTestRunnerJob(testRootsString, testPackagesString, mode, launch);
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
         }
     }
 
