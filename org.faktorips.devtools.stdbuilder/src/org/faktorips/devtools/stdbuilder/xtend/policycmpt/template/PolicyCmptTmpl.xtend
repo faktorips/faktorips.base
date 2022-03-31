@@ -50,6 +50,7 @@ def static String body(XPolicyCmptClass it) '''
             «IF !published || !generatePublishedInterfaces»
                 «PolicyCmptAttributeTmpl.constantForPropertyName(it)»
                 «PolicyCmptAttributeTmpl.constantForValueSet(it)»
+                «PolicyCmptAttributeTmpl.constantForDefaultValue(it)»
             «ENDIF»
         «ENDFOR»
 

@@ -108,7 +108,8 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
 
             processor.setDestinationType(targetJavaMember.getDeclaringType());
             // Pull up all members within a type at once to avoid JDT errors
-            IMember[] membersToMove = getOriginalJavaMembersByType().get(originalType).toArray(new IMember[0]);
+            IMember[] membersToMove = getOriginalJavaMembersByType().get(originalType).stream().distinct()
+                    .toArray(IMember[]::new);
             processor.setMembersToMove(membersToMove);
             List<IMethod> deletedMethods = determineDeletedMethods(membersToMove);
             processor.setDeletedMethods(deletedMethods.toArray(new IMethod[deletedMethods.size()]));

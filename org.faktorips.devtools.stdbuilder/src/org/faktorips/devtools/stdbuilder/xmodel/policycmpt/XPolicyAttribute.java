@@ -676,11 +676,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getConstantNameValueSet() {
-        String name = getName();
-        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
-            name = StringUtil.camelCaseToUnderscore(name, false);
-        }
-        String constName = StringUtils.upperCase(name);
+        String constName = convertNameForConstant(getName());
         if (isValueSetRange()) {
             return "MAX_ALLOWED_RANGE_FOR_" + constName;
         } else if (isValueSetStringLength()) {
@@ -688,6 +684,18 @@ public class XPolicyAttribute extends XAttribute {
         } else {
             return "MAX_ALLOWED_VALUES_FOR_" + constName;
         }
+    }
+
+    public String getConstantNameDefaultValue() {
+        return "DEFAULT_VALUE_FOR_" + convertNameForConstant(getFieldName());
+    }
+
+    private String convertNameForConstant(String name) {
+        String constName = name;
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        return StringUtils.upperCase(constName);
     }
 
     /**

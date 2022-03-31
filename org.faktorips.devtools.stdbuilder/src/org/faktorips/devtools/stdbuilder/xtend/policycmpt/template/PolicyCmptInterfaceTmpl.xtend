@@ -40,6 +40,7 @@ class PolicyCmptInterfaceTmpl {
                         «constantForPropertyName»
                         «IF !abstract»
                           «constantForValueSet»
+                          «constantForDefaultValue»
                         «ENDIF»
                     «ENDIF»
                 «ENDFOR»

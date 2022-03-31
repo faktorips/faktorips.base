@@ -38,6 +38,19 @@ class PolicyCmptAttributeTmpl {
       public static final «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
   '''
+  
+    def package static constantForDefaultValue(XPolicyAttribute it) '''
+    «IF generateField»
+      /**
+       * «localizedJDoc("FIELD_DEFAULTVALUE_CONSTANT", name)»
+      «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+       *
+       * @generated
+       */
+      «getAnnotations(AnnotatedJavaElementType.PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT)»
+      public static final «javaClassName» «field(constantNameDefaultValue)» = «defaultValueCode»;
+    «ENDIF»
+  '''
 
   def package static constantField(XPolicyAttribute it) '''
     «IF constant»
@@ -62,7 +75,7 @@ class PolicyCmptAttributeTmpl {
        */
       «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)»
       «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)»
-      private «javaClassName» «field(fieldName)» = «defaultValueCode»;
+      private «javaClassName» «field(fieldName)» = «constantNameDefaultValue»;
     «ENDIF»
   '''
 
