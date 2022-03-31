@@ -21,6 +21,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -45,6 +46,7 @@ import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -139,6 +141,8 @@ public class XmlUtil {
     private static final String NARROW_NO_BREAK = "\u202F"; //$NON-NLS-1$
     private static final String NO_BREAK_ESC = "&#160;"; //$NON-NLS-1$
     private static final String NO_BREAK = "\u00A0"; //$NON-NLS-1$
+
+    private static final Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
 
     private static final Map<IpsObjectType, ThreadLocal<DocumentBuilder>> VALIDATORS = new ConcurrentHashMap<>();
 
@@ -732,6 +736,27 @@ public class XmlUtil {
                 version.majorMinor().toString(),
                 ipsObjectType.getXmlElementName());
         return schemaLocation;
+    }
+
+    /**
+     * Removes the ID-Attribute from the given element and all its children.
+     */
+    public static void removeIds(Element element) {
+        if (isElementWithChildrenExcludedFromRemove(element)) {
+            return;
+        }
+        element.removeAttribute(IIpsObjectPart.PROPERTY_ID);
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            if (childNodes.item(i) instanceof Element) {
+                Element child = (Element)childNodes.item(i);
+                removeIds(child);
+            }
+        }
+    }
+
+    private static boolean isElementWithChildrenExcludedFromRemove(Element element) {
+        return ELEMENTS_AND_CHILDREN_WITH_ID.contains(element.getNodeName());
     }
 
     private static final class DocBuilderHolder extends ThreadLocal<DocumentBuilder> {

@@ -35,7 +35,6 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
 import org.faktorips.devtools.model.internal.IpsModel;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
@@ -47,7 +46,6 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -57,8 +55,6 @@ import org.xml.sax.SAXParseException;
  * @author Jan Ortmann
  */
 public class IpsSrcFileContent {
-
-    private static final Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
 
     private final IpsObject ipsObject;
 
@@ -355,7 +351,7 @@ public class IpsSrcFileContent {
                 Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
                 String encoding = ipsObject.getIpsProject().getXmlFileCharset();
                 Element xml = getIpsObject().toXml(doc);
-                removeIds(xml);
+                XmlUtil.removeIds(xml);
                 String newXml = XmlUtil.nodeToString(xml, encoding,
                         ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
@@ -382,24 +378,6 @@ public class IpsSrcFileContent {
             }
         };
         Abstractions.getWorkspace().run(runnable, monitor);
-    }
-
-    private void removeIds(Element element) {
-        if (isElementWithChildrenExcludedFromRemove(element)) {
-            return;
-        }
-        element.removeAttribute(IIpsObjectPart.PROPERTY_ID);
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            if (childNodes.item(i) instanceof Element) {
-                Element child = (Element)childNodes.item(i);
-                removeIds(child);
-            }
-        }
-    }
-
-    private boolean isElementWithChildrenExcludedFromRemove(Element element) {
-        return ELEMENTS_AND_CHILDREN_WITH_ID.contains(element.getNodeName());
     }
 
     /**
