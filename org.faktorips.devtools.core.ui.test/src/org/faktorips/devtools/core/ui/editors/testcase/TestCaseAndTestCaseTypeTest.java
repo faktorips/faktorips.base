@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.testcase.TestCaseHierarchyPath;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -107,35 +107,35 @@ public class TestCaseAndTestCaseTypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateTestPolicyCmptAssociation() throws CoreException {
+    public void testValidateTestPolicyCmptAssociation() {
         ITestPolicyCmpt pc = testCase.findTestPolicyCmpt(pathToTestPolicyCmptInput);
         ITestPolicyCmptLink pcr = (ITestPolicyCmptLink)pc.getParent();
         MessageList ml = pcr.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptTypeParameter.MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS));
 
         ITestPolicyCmptTypeParameter param = pcr.findTestPolicyCmptTypeParameter(project);
         ITestPolicyCmpt pcParent = (ITestPolicyCmpt)pcr.getParent();
         param.setMinInstances(2);
         param.setMaxInstances(3);
         ml = pcParent.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_MIN_INSTANCES_NOT_REACHED));
 
         ITestPolicyCmpt parent = (ITestPolicyCmpt)pcr.getParent();
         parent.addTestPcTypeLink(param, "", "", "");
         parent.addTestPcTypeLink(param, "", "", "");
         parent.addTestPcTypeLink(param, "", "", "");
         ml = pcParent.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
+        assertThat(ml, hasMessageCode(ITestPolicyCmpt.MSGCODE_MAX_INSTANCES_REACHED));
 
         String prevAssociation = param.getAssociation();
         param.setAssociation("none");
         ml = pcr.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptLink.MSGCODE_MODEL_LINK_NOT_FOUND));
 
         param.setAssociation(prevAssociation);
 
         pcr.setTestPolicyCmptTypeParameter("none");
         ml = pcr.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestPolicyCmptLink.MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND));
     }
 }

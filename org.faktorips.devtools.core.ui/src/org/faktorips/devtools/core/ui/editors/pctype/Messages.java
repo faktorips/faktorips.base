@@ -299,8 +299,6 @@ public class Messages extends NLS {
     public static String RuleEditDialog_ChangingOverTime_CheckboxLabel;
     public static String RuleEditDialog_Configurable_CheckboxLabel;
     public static String RuleEditDialog_contains;
-    public static String RuleEditDialog_functionTitle;
-    public static String RuleEditDialog_labelApplyInAllBusinessFunctions;
     public static String RuleEditDialog_labelCode;
     public static String RuleEditDialog_labelName;
     public static String RuleEditDialog_labelCategory;
@@ -310,9 +308,6 @@ public class Messages extends NLS {
     public static String RuleEditDialog_generalTitle;
 
     public static String RuleEditDialog_title;
-    public static String RuleFunctionsControl_title;
-    public static String RuleFunctionsControl_titleColum1;
-    public static String RuleFunctionsControl_titleColumn2;
     public static String ValidatedAttributesControl_description;
     public static String ValidatedAttributesControl_label;
 

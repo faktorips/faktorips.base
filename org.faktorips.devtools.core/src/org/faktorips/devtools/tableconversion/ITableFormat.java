@@ -12,9 +12,9 @@ package org.faktorips.devtools.tableconversion;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
@@ -128,7 +128,7 @@ public interface ITableFormat {
      * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
-     * @throws CoreException If the file could not be imported. This can happen for instance if the
+     * @throws IpsException If the file could not be imported. This can happen for instance if the
      *             file referenced by <code>filename</code> is an Excel file and one tries to import
      *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
      * 
@@ -139,7 +139,7 @@ public interface ITableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException;
+            boolean importIntoExisting) throws IpsException;
 
     /**
      * The file to import can either contain attributes of an enumeration (therefore defining a
@@ -160,7 +160,7 @@ public interface ITableFormat {
      * @param importIntoExisting <code>true</code> if the import method chosen was replace or append
      *            (the file won't be saved in this case after the import).
      * 
-     * @throws CoreException If the file could not be imported. This can happen for instance if the
+     * @throws IpsException If the file could not be imported. This can happen for instance if the
      *             file referenced by <code>filename</code> is an Excel file and one tries to import
      *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
      * 
@@ -175,7 +175,7 @@ public interface ITableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException;
+            boolean importIntoExisting) throws IpsException;
 
     /**
      * The file to export can either contain attributes of an enumeration (therefore defining a

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.controls;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -80,7 +79,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
         List<IIpsSrcFile> resultSrcFiles = new ArrayList<>(0);
         if (getIpsProjects().isEmpty() || getIpsProjects().get(0) == null) {
             return new IIpsSrcFile[0];

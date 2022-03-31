@@ -18,11 +18,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.IControlFlow;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -54,7 +51,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         configureBuilderSetToGenerateJaxbSupport();
     }
 
-    private void configureBuilderSetToGenerateJaxbSupport() throws CoreException {
+    private void configureBuilderSetToGenerateJaxbSupport() {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
         configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
@@ -150,20 +147,10 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         assertThat(getJavaType(targetPackageName, newName, false, false, ipsProject), exists());
     }
 
-    protected void checkJavaSourceFilesBusinessFunction(String originalPackageName,
-            String originalName,
-            String targetPackageName,
-            String newName) {
-
-        assertThat(getJavaType(originalPackageName, originalName, true, false, ipsProject), not(exists()));
-
-        assertThat(getJavaType(targetPackageName, newName, true, false, ipsProject), exists());
-    }
-
     protected IEnumType createEnumType(String name,
             IEnumType superEnumType,
             String idAttributeName,
-            String nameAttributeName) throws CoreException {
+            String nameAttributeName) {
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
@@ -194,7 +181,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
             String literalNameDefaultValueProviderAttribute,
             String idAttributeValue,
             String nameAttributeValue,
-            String literalNameAttributeValue) throws CoreException {
+            String literalNameAttributeValue) {
 
         IEnumType enumType = createEnumType(name, superEnumType, idAttributeName, nameAttributeName);
 
@@ -209,32 +196,18 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         return enumType;
     }
 
-    protected ITableStructure createTableStructure(String name) throws CoreException {
+    protected ITableStructure createTableStructure(String name) {
         ITableStructure tableStructure = newTableStructure(ipsProject, name);
         tableStructure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
         return tableStructure;
     }
 
-    protected ITestCaseType createTestCaseType(String name) throws CoreException {
+    protected ITestCaseType createTestCaseType(String name) {
         return newTestCaseType(ipsProject, name);
     }
 
-    @SuppressWarnings("deprecation")
-    protected org.faktorips.devtools.model.bf.IBusinessFunction createBusinessFunction(String name)
-            throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
-                ipsProject,
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(), name);
-        businessFunction.newStart(new Location(0, 0));
-        businessFunction.newEnd(new Location(10, 10));
-        IControlFlow controlFlow = businessFunction.newControlFlow();
-        controlFlow.setSource(businessFunction.getStart());
-        controlFlow.setTarget(businessFunction.getEnd());
-        return businessFunction;
-    }
-
-    protected void saveIpsSrcFile(IIpsObject ipsObject) throws CoreException {
-        ipsObject.getIpsSrcFile().save(true, null);
+    protected void saveIpsSrcFile(IIpsObject ipsObject) {
+        ipsObject.getIpsSrcFile().save(null);
     }
 
 }

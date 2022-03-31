@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
@@ -31,7 +30,7 @@ public abstract class AbstractDependencyTest extends AbstractIpsPluginTest {
     protected void assertSingleDependencyDetail(IIpsObject object,
             IDependency dependency,
             IIpsObjectPartContainer part,
-            String propertyName) throws CoreException {
+            String propertyName) {
 
         List<IDependencyDetail> details = object.getDependencyDetails(dependency);
         DependencyDetail detail = new DependencyDetail(part, propertyName);
@@ -42,7 +41,7 @@ public abstract class AbstractDependencyTest extends AbstractIpsPluginTest {
     protected void assertDependencyDetailContained(IIpsObject object,
             IDependency dependency,
             IIpsObjectPartContainer part,
-            String propertyName) throws CoreException {
+            String propertyName) {
 
         List<IDependencyDetail> details = object.getDependencyDetails(dependency);
         DependencyDetail detail = new DependencyDetail(part, propertyName);

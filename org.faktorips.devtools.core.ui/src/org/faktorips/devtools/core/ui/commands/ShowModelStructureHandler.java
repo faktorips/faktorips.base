@@ -18,10 +18,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.type.IType;
@@ -55,7 +55,7 @@ public class ShowModelStructureHandler extends IpsAbstractHandler {
             } else if (ipsSrcFile != null) {
                 ((ModelStructure)modelOverviewView).showStructure((IType)ipsSrcFile.getIpsObject());
             } else {
-                throw new CoreRuntimeException(
+                throw new IpsException(
                         "The selection must be of type IType, IpsProject or ComponentNode, but was " //$NON-NLS-1$
                                 + selection.getFirstElement().getClass());
             }

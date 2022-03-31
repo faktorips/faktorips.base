@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
@@ -28,7 +28,6 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.InternationalString;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.xmodel.MethodParameter;
@@ -66,11 +65,7 @@ public class XEnumType extends XClass {
 
     @Override
     public boolean isValidForCodeGeneration() {
-        try {
-            return getIpsObjectPartContainer().isValid(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsObjectPartContainer().isValid(getIpsProject());
     }
 
     @Override
@@ -239,13 +234,13 @@ public class XEnumType extends XClass {
      * repository.getEnumValue(Gender.class, &quot;m&quot;)
      * </pre>
      * 
-     * @throws CoreException If an exception occurs while processing.
+     * @throws IpsException If an exception occurs while processing.
      * @throws NullPointerException If <code>enumType</code> or <code>enumValue</code> is
      *             <code>null</code>.
      */
     public JavaCodeFragment getNewInstanceCodeFragement(EnumTypeDatatypeAdapter enumTypeAdapter,
             String value,
-            ExtendedExprCompiler exprCompiler) throws CoreException {
+            ExtendedExprCompiler exprCompiler) {
 
         ArgumentCheck.notNull(enumTypeAdapter, this);
 

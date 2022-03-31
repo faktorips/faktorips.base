@@ -24,9 +24,9 @@ import java.util.stream.Collectors;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -58,7 +58,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         String minRequiredVersionNumber = getIpsProject().getProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
         int majorVersion = Integer
@@ -83,7 +83,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     private void updatePluginId(String fileName, IProgressMonitor monitor) {
-        IFile file = getIpsProject().getProject().getFile(fileName);
+        IFile file = getIpsProject().getProject().getFile(fileName).unwrap();
         update(file, c -> c.replace(IpsPlugin.PLUGIN_ID, IpsModelActivator.PLUGIN_ID), monitor);
     }
 
@@ -98,7 +98,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
                 new InputStreamReader(file.getContents(), file.getCharset()));) {
             return bufferedReader.lines().collect(Collectors.joining("\n")); //$NON-NLS-1$
         } catch (IOException | CoreException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -106,7 +106,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(content.getBytes(file.getCharset()));) {
             EclipseIOUtil.writeToFile(file, inputStream, true, true, monitor);
         } catch (IOException | CoreException e) {
-            throw new CoreRuntimeException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 

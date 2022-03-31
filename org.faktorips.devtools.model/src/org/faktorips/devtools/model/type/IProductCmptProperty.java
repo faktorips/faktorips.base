@@ -106,4 +106,8 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      */
     public void setCategory(String category);
 
+    public int getCategoryPosition();
+
+    public void setCategoryPosition(int categoryPosition);
+
 }

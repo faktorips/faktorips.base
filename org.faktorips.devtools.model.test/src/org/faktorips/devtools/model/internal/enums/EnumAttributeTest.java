@@ -25,7 +25,6 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -62,7 +61,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindSuperEnumAttribute() throws CoreException {
+    public void testFindSuperEnumAttribute() {
         try {
             genderEnumAttributeId.findSuperEnumAttribute(null);
             fail();
@@ -75,20 +74,20 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testSearchInheritedCopiesOneSubtype() throws CoreException {
+    public void testSearchInheritedCopiesOneSubtype() {
         List<IEnumAttribute> attributes = genderEnumAttributeId.searchInheritedCopies(ipsProject);
         assertEquals(1, attributes.size());
         assertEquals(inheritedEnumAttributeId, attributes.get(0));
     }
 
     @Test
-    public void testSearchInheritedCopiesNoSubtypes() throws CoreException {
+    public void testSearchInheritedCopiesNoSubtypes() {
         List<IEnumAttribute> attributes = inheritedEnumAttributeId.searchInheritedCopies(ipsProject);
         assertEquals(0, attributes.size());
     }
 
     @Test
-    public void testSearchInheritedCopiesTwoSubtypes() throws CoreException {
+    public void testSearchInheritedCopiesTwoSubtypes() {
         IEnumType deepEnumType = newEnumType(ipsProject, "DeepEnumType");
         deepEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
         IEnumAttribute deepEnumAttributeId = deepEnumType.newEnumAttribute();
@@ -147,7 +146,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testXml() throws ParserConfigurationException, CoreException {
+    public void testXml() throws ParserConfigurationException {
         Element xmlElement = genderEnumAttributeId.toXml(createXmlDocument(IEnumAttribute.XML_TAG));
         NamedNodeMap attributes = xmlElement.getAttributes();
         assertEquals(GENDER_ENUM_ATTRIBUTE_ID_NAME,
@@ -171,12 +170,12 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateThis() throws CoreException {
+    public void testValidateThis() {
         assertTrue(genderEnumAttributeId.isValid(ipsProject));
     }
 
     @Test
-    public void testValidateName() throws CoreException {
+    public void testValidateName() {
         IIpsModel ipsModel = getIpsModel();
 
         // Test name missing.
@@ -201,7 +200,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDuplicateName() throws CoreException {
+    public void testValidateDuplicateName() {
         genderEnumAttributeId.setName(GENDER_ENUM_ATTRIBUTE_NAME_NAME);
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -209,7 +208,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDuplicateNameInSupertypeHierarchy() throws CoreException {
+    public void testValidateDuplicateNameInSupertypeHierarchy() {
         inheritedEnumAttributeId.setInherited(false);
         MessageList validationMessageList = inheritedEnumAttributeId.validate(ipsProject);
         assertNotNull(validationMessageList
@@ -217,7 +216,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateDatatype() throws CoreException {
+    public void testValidateDatatype() {
         IIpsModel ipsModel = getIpsModel();
 
         // Test data type missing.
@@ -286,7 +285,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateInheritedNoSuchAttributeInSupertypeHierarchy() throws CoreException {
+    public void testValidateInheritedNoSuchAttributeInSupertypeHierarchy() {
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
@@ -301,7 +300,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateInheritedNoSupertype() throws CoreException {
+    public void testValidateInheritedNoSupertype() {
         IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
         inheritedAttribute.setName("foo");
         inheritedAttribute.setInherited(true);
@@ -313,7 +312,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateInheritedNoExistingSupertype() throws CoreException {
+    public void testValidateInheritedNoExistingSupertype() {
         genderEnumType.setSuperEnumType("foo");
         IEnumAttribute inheritedAttribute = genderEnumType.newEnumAttribute();
         inheritedAttribute.setName("foo");
@@ -323,7 +322,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateInherited() throws CoreException {
+    public void testValidateInherited() {
         IEnumType superEnumType = newEnumType(ipsProject, "SuperEnumType");
         superEnumType.setAbstract(true);
         genderEnumType.setSuperEnumType(superEnumType.getQualifiedName());
@@ -339,7 +338,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateUsedAsNameInFaktorIpsUi() throws CoreException {
+    public void testValidateUsedAsNameInFaktorIpsUi() {
         genderEnumAttributeId.setUsedAsNameInFaktorIpsUi(true);
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -348,7 +347,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testValidateUsedAsIdInFaktorIpsUi() throws CoreException {
+    public void testValidateUsedAsIdInFaktorIpsUi() {
         genderEnumAttributeName.setIdentifier(true);
         MessageList validationMessageList = genderEnumAttributeId.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
@@ -362,7 +361,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindDatatype() throws CoreException {
+    public void testFindDatatype() {
         ValueDatatype datatype = genderEnumAttributeId.findDatatype(ipsProject);
         assertEquals(Datatype.STRING.getQualifiedName(), datatype.getName());
 
@@ -384,7 +383,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindIsUniqueIdentifier() throws CoreException {
+    public void testFindIsUniqueIdentifier() {
         try {
             inheritedEnumAttributeId.findIsUnique(null);
             fail();
@@ -400,7 +399,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
-    public void testFindIsIdentifier() throws CoreException {
+    public void testFindIsIdentifier() {
         try {
             inheritedEnumAttributeId.findIsIdentifier(null);
             fail();

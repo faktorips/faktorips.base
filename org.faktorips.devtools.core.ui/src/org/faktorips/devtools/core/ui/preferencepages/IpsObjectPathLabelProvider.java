@@ -20,6 +20,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;
@@ -60,13 +61,15 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
             text = ((IIpsProjectRefEntry)element).getReferencedIpsProject().getName();
         } else if (element instanceof IIpsArchiveEntry) {
             IIpsArchiveEntry entry = (IIpsArchiveEntry)element;
-            IPath archivePath = entry.getArchiveLocation();
+            IPath archivePath = PathMapping.toEclipsePath(entry.getArchiveLocation());
             IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
 
-            text = archivePath.lastSegment()
-                    + " - " //$NON-NLS-1$
-                    + (archiveFileInWorkspace != null ? archiveFileInWorkspace.getParent().getFullPath().toString()
-                            : archivePath.removeLastSegments(1).toString());
+            text = archivePath == null ? "/" //$NON-NLS-1$
+                    : archivePath.lastSegment()
+                            + " - " //$NON-NLS-1$
+                            + (archiveFileInWorkspace != null
+                                    ? archiveFileInWorkspace.getParent().getFullPath().toString()
+                                    : archivePath.removeLastSegments(1).toString());
         } else if (element instanceof IIpsObjectPathEntryAttribute) {
             IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
             String label = getLabelFromAttributeType(att);
@@ -108,35 +111,26 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
     private String getLabelFromAttributeType(IIpsObjectPathEntryAttribute attribute) {
         String result = ""; //$NON-NLS-1$
 
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
-                || attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED)) {
-            result = Messages.IpsObjectPathLabelProvider_base_package_derived;
-        }
-
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)
-                || attribute.getType()
-                        .equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES)) {
-            result = Messages.IpsObjectPathLabelProvider_output_folder_derived;
-        }
-
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)
-                || attribute.getType()
-                        .equals(IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES)) {
-            result = Messages.IpsObjectPathLabelProvider_output_folder_mergable;
-        }
-
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED)
-                || attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED)) {
-            result = Messages.IpsObjectPathLabelProvider_package_name_derived;
-        }
-
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE)
-                || attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE)) {
-            result = Messages.IpsObjectPathLabelProvider_package_name_mergable;
-        }
-
-        if (attribute.getType().equals(IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH)) {
-            result = Messages.IpsObjectPathLabelProvider_toc_file;
+        switch (attribute.getType()) {
+            case IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES:
+            case IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES:
+                result = Messages.IpsObjectPathLabelProvider_output_folder_derived;
+                break;
+            case IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES:
+            case IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES:
+                result = Messages.IpsObjectPathLabelProvider_output_folder_mergable;
+                break;
+            case IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_DERIVED:
+            case IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_DERIVED:
+                result = Messages.IpsObjectPathLabelProvider_package_name_derived;
+                break;
+            case IIpsObjectPathEntryAttribute.DEFAULT_BASE_PACKAGE_MERGABLE:
+            case IIpsObjectPathEntryAttribute.SPECIFIC_BASE_PACKAGE_MERGABLE:
+                result = Messages.IpsObjectPathLabelProvider_package_name_mergable;
+                break;
+            case IIpsObjectPathEntryAttribute.SPECIFIC_TOC_PATH:
+                result = Messages.IpsObjectPathLabelProvider_toc_file;
+                break;
         }
 
         return result;

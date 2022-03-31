@@ -10,9 +10,8 @@
 
 package org.faktorips.abstracttest;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 
@@ -46,7 +45,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
 
     @Override
     public String getCurrentVersion() {
-        return IpsModelActivator.getInstalledFaktorIpsVersion();
+        return Abstractions.getVersion().toString();
     }
 
     @Override
@@ -60,8 +59,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     }
 
     @Override
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-            throws CoreException {
+    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate) {
         return new AbstractIpsProjectMigrationOperation[0];
     }
 

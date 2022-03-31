@@ -38,6 +38,11 @@
       }, {
         "regex" : true,
         "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|enum|interface) org.faktorips.devtools.abstraction..*",
+        "justification" : "Reexported abstraction API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
         "new" : "(class|enum|interface) org.faktorips.devtools.model..*",
         "justification" : "Reexported model API"
       }, {

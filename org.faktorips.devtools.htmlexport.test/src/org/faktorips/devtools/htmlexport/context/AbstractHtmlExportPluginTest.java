@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.htmlexport.HtmlExportOperation;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
@@ -81,155 +80,145 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
     }
 
     protected void createStandardProjekt() {
-        try {
-            newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
-            newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
-            newPolicyCmptType(ipsProject, "BVB");
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
+        newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
+        newPolicyCmptType(ipsProject, "BVB");
     }
 
     protected void createMassivProjekt() {
-        try {
-            IPolicyCmptType vertrag = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
-            IPolicyCmptType lvb = newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
-            IPolicyCmptType baseBVB = newPolicyAndProductCmptType(ipsProject, "base.BVB", "base.BVBArt");
-            IPolicyCmptType versObj = newPolicyAndProductCmptType(ipsProject, "base.versobj.VersObj",
-                    "base.versobj.VersObjArt");
+        IPolicyCmptType vertrag = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
+        IPolicyCmptType lvb = newPolicyAndProductCmptType(ipsProject, "LVB", "StandardLVB");
+        IPolicyCmptType baseBVB = newPolicyAndProductCmptType(ipsProject, "base.BVB", "base.BVBArt");
+        IPolicyCmptType versObj = newPolicyAndProductCmptType(ipsProject, "base.versobj.VersObj",
+                "base.versobj.VersObjArt");
 
-            IPolicyCmptTypeAssociation assoLvbBvb = lvb.newPolicyCmptTypeAssociation();
-            assoLvbBvb.setTarget(baseBVB.getQualifiedName());
-            assoLvbBvb.setQualified(true);
-            assoLvbBvb.setMinCardinality(2);
-            assoLvbBvb.setMaxCardinality(5);
-            assoLvbBvb.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-            assoLvbBvb.setTargetRolePlural("BVBs");
-            assoLvbBvb.setTargetRoleSingular("BVB");
+        IPolicyCmptTypeAssociation assoLvbBvb = lvb.newPolicyCmptTypeAssociation();
+        assoLvbBvb.setTarget(baseBVB.getQualifiedName());
+        assoLvbBvb.setQualified(true);
+        assoLvbBvb.setMinCardinality(2);
+        assoLvbBvb.setMaxCardinality(5);
+        assoLvbBvb.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assoLvbBvb.setTargetRolePlural("BVBs");
+        assoLvbBvb.setTargetRoleSingular("BVB");
 
-            IPolicyCmptTypeAssociation assoBvbLvb = assoLvbBvb.newInverseAssociation();
-            assoBvbLvb.setTargetRoleSingular("LVB");
-            assoBvbLvb.setTargetRolePlural("LVBs");
+        IPolicyCmptTypeAssociation assoBvbLvb = assoLvbBvb.newInverseAssociation();
+        assoBvbLvb.setTargetRoleSingular("LVB");
+        assoBvbLvb.setTargetRolePlural("LVBs");
 
-            IPolicyCmptTypeAssociation assoLvbVersObj = lvb.newPolicyCmptTypeAssociation();
-            assoLvbVersObj.setTarget(versObj.getQualifiedName());
-            assoLvbVersObj.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
-            assoLvbVersObj.newDescription().setText("Das übliche Blabla");
-            assoLvbVersObj.setTargetRoleSingular("Versichertes Objekt");
+        IPolicyCmptTypeAssociation assoLvbVersObj = lvb.newPolicyCmptTypeAssociation();
+        assoLvbVersObj.setTarget(versObj.getQualifiedName());
+        assoLvbVersObj.setAssociationType(AssociationType.COMPOSITION_DETAIL_TO_MASTER);
+        assoLvbVersObj.newDescription().setText("Das übliche Blabla");
+        assoLvbVersObj.setTargetRoleSingular("Versichertes Objekt");
 
-            IPolicyCmptTypeAssociation assoVersObjLvb = assoLvbVersObj.newInverseAssociation();
-            assoVersObjLvb.setTargetRoleSingular("LVB");
-            assoVersObjLvb.setTargetRolePlural("LVBs");
+        IPolicyCmptTypeAssociation assoVersObjLvb = assoLvbVersObj.newInverseAssociation();
+        assoVersObjLvb.setTargetRoleSingular("LVB");
+        assoVersObjLvb.setTargetRolePlural("LVBs");
 
-            IPolicyCmptTypeAssociation assoVertragLvb = vertrag.newPolicyCmptTypeAssociation();
-            assoVertragLvb.setTarget(lvb.getQualifiedName());
-            assoVertragLvb.setTargetRoleSingular("LVB");
-            assoVertragLvb.setTargetRolePlural("LVBs");
+        IPolicyCmptTypeAssociation assoVertragLvb = vertrag.newPolicyCmptTypeAssociation();
+        assoVertragLvb.setTarget(lvb.getQualifiedName());
+        assoVertragLvb.setTargetRoleSingular("LVB");
+        assoVertragLvb.setTargetRolePlural("LVBs");
 
-            IPolicyCmptTypeAssociation assoLvbVertrag = assoVertragLvb.newInverseAssociation();
-            assoLvbVertrag.setTargetRoleSingular("Vertrag");
-            assoLvbVertrag.setTargetRolePlural("Verträge");
+        IPolicyCmptTypeAssociation assoLvbVertrag = assoVertragLvb.newInverseAssociation();
+        assoLvbVertrag.setTargetRoleSingular("Vertrag");
+        assoLvbVertrag.setTargetRolePlural("Verträge");
 
-            IPolicyCmptType baseSubBVB = newPolicyAndProductCmptType(ipsProject, "base.sub.SubBVB",
-                    "base.sub.SubBVBArt");
-            baseSubBVB.setSupertype(baseBVB.getQualifiedName());
+        IPolicyCmptType baseSubBVB = newPolicyAndProductCmptType(ipsProject, "base.sub.SubBVB",
+                "base.sub.SubBVBArt");
+        baseSubBVB.setSupertype(baseBVB.getQualifiedName());
 
-            IPolicyCmptType krankenBVB = newPolicyAndProductCmptType(ipsProject, "kranken.KrankenBVB",
-                    "kranken.KrankenBVBArt");
-            krankenBVB.setSupertype(baseSubBVB.getQualifiedName());
+        IPolicyCmptType krankenBVB = newPolicyAndProductCmptType(ipsProject, "kranken.KrankenBVB",
+                "kranken.KrankenBVBArt");
+        krankenBVB.setSupertype(baseSubBVB.getQualifiedName());
 
-            krankenBVB.newDescription().setText(
-                    "blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
-            // krankenBVB.setAbstract(true);
+        krankenBVB.newDescription().setText(
+                "blablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
+        // krankenBVB.setAbstract(true);
 
-            addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Text1", "String", Modifier.PUBLISHED,
-                    AttributeType.CHANGEABLE);
-            addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Geld2", "Money", Modifier.PUBLIC,
-                    AttributeType.CONSTANT);
-            addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Zahl3", "Integer", Modifier.PUBLIC,
-                    AttributeType.DERIVED_ON_THE_FLY);
-            IPolicyCmptTypeAttribute attributeZahl3 = krankenBVB.getPolicyCmptTypeAttribute("Zahl3");
+        addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Text1", "String", Modifier.PUBLISHED,
+                AttributeType.CHANGEABLE);
+        addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Geld2", "Money", Modifier.PUBLIC,
+                AttributeType.CONSTANT);
+        addPolicyCmptTypeAttribute(krankenBVB.newPolicyCmptTypeAttribute(), "Zahl3", "Integer", Modifier.PUBLIC,
+                AttributeType.DERIVED_ON_THE_FLY);
+        IPolicyCmptTypeAttribute attributeZahl3 = krankenBVB.getPolicyCmptTypeAttribute("Zahl3");
 
-            IValidationRule rule1 = krankenBVB.newRule();
-            rule1.setName("Regel1");
-            rule1.newDescription().setText("Beschreibung der Regel");
-            rule1.setMessageCode("xyz");
-            rule1.setMessageSeverity(MessageSeverity.WARNING);
+        IValidationRule rule1 = krankenBVB.newRule();
+        rule1.setName("Regel1");
+        rule1.newDescription().setText("Beschreibung der Regel");
+        rule1.setMessageCode("xyz");
+        rule1.setMessageSeverity(MessageSeverity.WARNING);
 
-            String msgText = "Hallo, Fehler!";
-            rule1.getMessageText().add(new LocalizedString(context.getDocumentationLocale(), msgText));
-            rule1.addValidatedAttribute("Text1");
-            rule1.addValidatedAttribute("Geld2");
+        String msgText = "Hallo, Fehler!";
+        rule1.getMessageText().add(new LocalizedString(context.getDocumentationLocale(), msgText));
+        rule1.addValidatedAttribute("Text1");
+        rule1.addValidatedAttribute("Geld2");
 
-            IProductCmptTypeMethod methodCompZahl3 = ipsProject.findProductCmptType(krankenBVB.getProductCmptType())
-                    .newProductCmptTypeMethod();
-            String methodNameZahl3 = "berechneZahl3";
-            methodCompZahl3.setName(methodNameZahl3);
-            methodCompZahl3.setDatatype("Integer");
-            methodCompZahl3.setFormulaSignatureDefinition(true);
-            methodCompZahl3.setFormulaName("Formelname");
-            methodCompZahl3.newDescription().setText("Die Methode berechneZahl3 ...");
-            attributeZahl3.setComputationMethodSignature(methodNameZahl3 + "()");
+        IProductCmptTypeMethod methodCompZahl3 = ipsProject.findProductCmptType(krankenBVB.getProductCmptType())
+                .newProductCmptTypeMethod();
+        String methodNameZahl3 = "berechneZahl3";
+        methodCompZahl3.setName(methodNameZahl3);
+        methodCompZahl3.setDatatype("Integer");
+        methodCompZahl3.setFormulaSignatureDefinition(true);
+        methodCompZahl3.setFormulaName("Formelname");
+        methodCompZahl3.newDescription().setText("Die Methode berechneZahl3 ...");
+        attributeZahl3.setComputationMethodSignature(methodNameZahl3 + "()");
 
-            IProductCmptTypeMethod methodCompXyz = ipsProject.findProductCmptType(krankenBVB.getProductCmptType())
-                    .newProductCmptTypeMethod();
-            String methodNameXyz = "berechneXyz";
-            methodCompXyz.setName(methodNameXyz);
-            methodCompXyz.setDatatype("String");
-            methodCompXyz.setFormulaSignatureDefinition(false);
-            methodCompXyz.newDescription().setText("Die Methode berechneXyz ...");
-            methodCompXyz.newParameter("Integer", "zahl");
-            methodCompXyz.newParameter("String", "name");
+        IProductCmptTypeMethod methodCompXyz = ipsProject.findProductCmptType(krankenBVB.getProductCmptType())
+                .newProductCmptTypeMethod();
+        String methodNameXyz = "berechneXyz";
+        methodCompXyz.setName(methodNameXyz);
+        methodCompXyz.setDatatype("String");
+        methodCompXyz.setFormulaSignatureDefinition(false);
+        methodCompXyz.newDescription().setText("Die Methode berechneXyz ...");
+        methodCompXyz.newParameter("Integer", "zahl");
+        methodCompXyz.newParameter("String", "name");
 
-            IProductCmptType krankenBVBArt = (ProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE,
-                    krankenBVB.getProductCmptType());
-            krankenBVBArt.setPolicyCmptType(krankenBVB.getQualifiedName());
-            krankenBVBArt.setSupertype(baseSubBVB.getProductCmptType());
+        IProductCmptType krankenBVBArt = (ProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE,
+                krankenBVB.getProductCmptType());
+        krankenBVBArt.setPolicyCmptType(krankenBVB.getQualifiedName());
+        krankenBVBArt.setSupertype(baseSubBVB.getProductCmptType());
 
-            IProductCmptTypeAttribute geld1Attribute = krankenBVBArt.newProductCmptTypeAttribute();
-            addAttribute(geld1Attribute, "Geld1", "Money", Modifier.PUBLIC);
-            IProductCmptTypeAttribute zahl2Attribute = krankenBVBArt.newProductCmptTypeAttribute();
-            addAttribute(zahl2Attribute, "Zahl2", "Integer", Modifier.PUBLISHED);
-            IProductCmptTypeAttribute text3Attribute = krankenBVBArt.newProductCmptTypeAttribute();
-            addAttribute(text3Attribute, "Text3", "String", Modifier.PUBLIC);
-            krankenBVBArt.newDescription().setText(
-                    "Produkt blabla\nblablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
+        IProductCmptTypeAttribute geld1Attribute = krankenBVBArt.newProductCmptTypeAttribute();
+        addAttribute(geld1Attribute, "Geld1", "Money", Modifier.PUBLIC);
+        IProductCmptTypeAttribute zahl2Attribute = krankenBVBArt.newProductCmptTypeAttribute();
+        addAttribute(zahl2Attribute, "Zahl2", "Integer", Modifier.PUBLISHED);
+        IProductCmptTypeAttribute text3Attribute = krankenBVBArt.newProductCmptTypeAttribute();
+        addAttribute(text3Attribute, "Text3", "String", Modifier.PUBLIC);
+        krankenBVBArt.newDescription().setText(
+                "Produkt blabla\nblablablabla sdfishiurgh sdfiugfughs \n\nodfiug sodufhgosdfzgosdfgsdfg \nENDE");
 
-            IProductCmpt krankenBvbBeitragXyz = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Xyz");
-            krankenBvbBeitragXyz.newDescription().setText("Ich bin also die BVB für den Beitrag!");
+        IProductCmpt krankenBvbBeitragXyz = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Xyz");
+        krankenBvbBeitragXyz.newDescription().setText("Ich bin also die BVB für den Beitrag!");
 
-            GregorianCalendar cal = new GregorianCalendar(2010, 0, 1);
-            IProductCmptGeneration krankenBvbBeitragXyzGeneration = (IProductCmptGeneration)krankenBvbBeitragXyz
-                    .newGeneration(cal);
-            IAttributeValue newAttributeValue = krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute);
-            newAttributeValue.setValueHolder(new SingleValueHolder(newAttributeValue,
-                    "Ich bin der Text meiner Generation"));
-            IAttributeValue newAttributeValue2 = krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute);
-            newAttributeValue2.setValueHolder(new SingleValueHolder(newAttributeValue2, "234"));
-            IAttributeValue newAttributeValue3 = krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute);
-            newAttributeValue3.setValueHolder(new SingleValueHolder(newAttributeValue3, "120 EUR"));
-            krankenBvbBeitragXyzGeneration.newFormula(methodCompZahl3);
+        GregorianCalendar cal = new GregorianCalendar(2010, 0, 1);
+        IProductCmptGeneration krankenBvbBeitragXyzGeneration = (IProductCmptGeneration)krankenBvbBeitragXyz
+                .newGeneration(cal);
+        IAttributeValue newAttributeValue = krankenBvbBeitragXyzGeneration.newAttributeValue(text3Attribute);
+        newAttributeValue.setValueHolder(new SingleValueHolder(newAttributeValue,
+                "Ich bin der Text meiner Generation"));
+        IAttributeValue newAttributeValue2 = krankenBvbBeitragXyzGeneration.newAttributeValue(zahl2Attribute);
+        newAttributeValue2.setValueHolder(new SingleValueHolder(newAttributeValue2, "234"));
+        IAttributeValue newAttributeValue3 = krankenBvbBeitragXyzGeneration.newAttributeValue(geld1Attribute);
+        newAttributeValue3.setValueHolder(new SingleValueHolder(newAttributeValue3, "120 EUR"));
+        krankenBvbBeitragXyzGeneration.newFormula(methodCompZahl3);
 
-            IProductCmpt krankenBvbBeitragZyx = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Zyx");
-            krankenBvbBeitragZyx.newDescription().setText(("Ich bin die andere BVB für den Beitrag!"));
+        IProductCmpt krankenBvbBeitragZyx = newProductCmpt(krankenBVBArt, "kranken.KrankenBVB-Beitrag-Zyx");
+        krankenBvbBeitragZyx.newDescription().setText(("Ich bin die andere BVB für den Beitrag!"));
 
-            IProductCmptGeneration krankenBvbBeitragZyxGeneration = (IProductCmptGeneration)krankenBvbBeitragZyx
-                    .newGeneration(cal);
-            IAttributeValue newAttributeValue4 = krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute);
-            newAttributeValue4.setValueHolder(new SingleValueHolder(newAttributeValue4,
-                    "Ich bin der Text meiner Generation"));
-            IAttributeValue newAttributeValue5 = krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute);
-            newAttributeValue5.setValueHolder(new SingleValueHolder(newAttributeValue5, "254"));
-            IAttributeValue newAttributeValue6 = krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute);
-            newAttributeValue6.setValueHolder(new SingleValueHolder(newAttributeValue6, "125 EUR"));
-            krankenBvbBeitragZyxGeneration.newFormula(methodCompZahl3);
+        IProductCmptGeneration krankenBvbBeitragZyxGeneration = (IProductCmptGeneration)krankenBvbBeitragZyx
+                .newGeneration(cal);
+        IAttributeValue newAttributeValue4 = krankenBvbBeitragZyxGeneration.newAttributeValue(text3Attribute);
+        newAttributeValue4.setValueHolder(new SingleValueHolder(newAttributeValue4,
+                "Ich bin der Text meiner Generation"));
+        IAttributeValue newAttributeValue5 = krankenBvbBeitragZyxGeneration.newAttributeValue(zahl2Attribute);
+        newAttributeValue5.setValueHolder(new SingleValueHolder(newAttributeValue5, "254"));
+        IAttributeValue newAttributeValue6 = krankenBvbBeitragZyxGeneration.newAttributeValue(geld1Attribute);
+        newAttributeValue6.setValueHolder(new SingleValueHolder(newAttributeValue6, "125 EUR"));
+        krankenBvbBeitragZyxGeneration.newFormula(methodCompZahl3);
 
-            newPolicyAndProductCmptType(ipsProject, "kranken.sub.KrankenSubBVB", "kranken.sub.KrankenSubBVBArt");
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        newPolicyAndProductCmptType(ipsProject, "kranken.sub.KrankenSubBVB", "kranken.sub.KrankenSubBVBArt");
     }
 
     private void addPolicyCmptTypeAttribute(IPolicyCmptTypeAttribute policyAttribute,

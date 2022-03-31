@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.Signature;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -54,7 +53,7 @@ public class StdBuilderHelperTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetJavaTypeSignaturePolicyCmptTypeNotResolveToPublished() throws CoreException {
+    public void testGetJavaTypeSignaturePolicyCmptTypeNotResolveToPublished() {
         String packageName = "bar";
         String name = "Foo";
         String qualifiedName = packageName + '.' + name;
@@ -71,7 +70,7 @@ public class StdBuilderHelperTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetJavaTypeSignaturePolicyCmptTypeResolveToPublished() throws CoreException {
+    public void testGetJavaTypeSignaturePolicyCmptTypeResolveToPublished() {
         String packageName = "bar";
         String name = "Foo";
         String qualifiedName = packageName + '.' + name;

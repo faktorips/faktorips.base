@@ -17,18 +17,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
 import org.junit.Test;
 
 public class ModulesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddRequired() throws Exception {
-        IProject project = newPlatformProject("p");
-        IJavaProject javaProject = addJavaCapabilities(project);
+        AProject project = newPlatformProject("p");
+        IJavaProject javaProject = addJavaCapabilities(project).unwrap();
         convertToModuleProject(javaProject);
         Modules.addRequired(javaProject, false, List.of("foo.bar"));
 
@@ -39,8 +39,8 @@ public class ModulesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddRequired_Transitive() throws Exception {
-        IProject project = newPlatformProject("p");
-        IJavaProject javaProject = addJavaCapabilities(project);
+        AProject project = newPlatformProject("p");
+        IJavaProject javaProject = addJavaCapabilities(project).unwrap();
         convertToModuleProject(javaProject);
         Modules.addRequired(javaProject, true, List.of("foo.bar"));
 
@@ -51,8 +51,8 @@ public class ModulesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddRequired_AlreadyContained() throws Exception {
-        IProject project = newPlatformProject("p");
-        IJavaProject javaProject = addJavaCapabilities(project);
+        AProject project = newPlatformProject("p");
+        IJavaProject javaProject = addJavaCapabilities(project).unwrap();
         convertToModuleProject(javaProject);
         Modules.addRequired(javaProject, false, List.of("foo.bar"));
 
@@ -64,8 +64,8 @@ public class ModulesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddRequired_AlreadyContained_AddTransitive() throws Exception {
-        IProject project = newPlatformProject("p");
-        IJavaProject javaProject = addJavaCapabilities(project);
+        AProject project = newPlatformProject("p");
+        IJavaProject javaProject = addJavaCapabilities(project).unwrap();
         convertToModuleProject(javaProject);
         Modules.addRequired(javaProject, false, List.of("foo.bar", "foo.baz"));
 
@@ -78,8 +78,8 @@ public class ModulesTest extends AbstractIpsPluginTest {
 
     @Test(expected = CoreException.class)
     public void testAddRequired_NoModule() throws Exception {
-        IProject project = newPlatformProject("p");
-        IJavaProject javaProject = addJavaCapabilities(project);
+        AProject project = newPlatformProject("p");
+        IJavaProject javaProject = addJavaCapabilities(project).unwrap();
 
         Modules.addRequired(javaProject, false, List.of("foo.bar"));
     }

@@ -18,10 +18,6 @@
     <name>Faktor-IPS DT/FL Common</name>
     <description>Common code for Faktor-IPS devtools and formula language</description>
 
-    <build>
-        <sourceDirectory>../src</sourceDirectory>
-    </build>
-
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>

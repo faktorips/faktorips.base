@@ -14,8 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -66,17 +65,25 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
 
     @Override
     public void delete() {
+        deleteInternal();
+        ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
+        objectHasChanged(event);
+    }
+
+    private void deleteInternal() {
         if (isDeleted()) {
             throw new RuntimeException("Object has already been deleted!"); //$NON-NLS-1$
         }
 
-        deleted = true;
+        markAsDeleted();
+
         if (getContainer() != null) {
             getContainer().removePart(this);
         }
+    }
 
-        ContentChangeEvent event = ContentChangeEvent.newPartRemovedEvent(this);
-        objectHasChanged(event);
+    void markAsDeleted() {
+        deleted = true;
     }
 
     @Override
@@ -105,17 +112,17 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return null;
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 

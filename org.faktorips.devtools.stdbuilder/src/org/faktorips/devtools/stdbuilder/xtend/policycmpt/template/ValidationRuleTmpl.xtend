@@ -1,6 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.policycmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XValidationRule
 
@@ -71,13 +72,6 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
      */
     «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_VALIDATION_RULE)»
     protected boolean «method(methodNameExecRule, MessageList, "ml", IValidationContext, "context")» {
-        «IF specificBusinessFunctions»
-              if (
-              «FOR bf : specifiedBusinessFunctions SEPARATOR  " || "»
-              "«bf»".equals(context.getValue("businessFunction"))
-              «ENDFOR»
-              ) {
-        «ENDIF»
         «IF configured»
             if («modelObject»«IF changingOverTime»«getProductCmptGeneration()»«ELSE»«getProductComponent()»«ENDIF».«isValidationRuleActivated(constantNameRuleName)») {
         «ENDIF»
@@ -93,8 +87,9 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
             // end-user-code
         «ELSE»
             «val attribute = checkedAttribute»
-            if (!«modelObject»«attribute.methodNameGetAllowedValuesFor»(context).contains(«modelObject»«attribute.methodNameGetter»())) {
-
+            «val valueSetMethods = generatorConfig.valueSetMethods»
+            «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
+            if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
                 // end-user-code
@@ -102,10 +97,6 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
               return «CONTINUE_VALIDATION»;
         «ENDIF»
         «IF configured»
-        }
-        return «CONTINUE_VALIDATION»;
-        «ENDIF»
-        «IF specificBusinessFunctions»
         }
         return «CONTINUE_VALIDATION»;
         «ENDIF»

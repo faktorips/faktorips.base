@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.fixcontent;
 
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.wizards.enumcontent.FixEnumContentStrategy;
 import org.faktorips.devtools.core.ui.wizards.tablecontents.FixTableContentStrategy;
 import org.faktorips.devtools.model.enums.IEnumContent;
@@ -46,10 +46,10 @@ public interface TabularContentStrategy<T extends IIpsObject, E extends ILabeled
      * 
      * @param contentType The qualified name of the {@code ContentType} this {@code Content} shall
      *            be based upon.
-     * @throws CoreException If an error occurs while searching for the new {@code IEnumType}.
+     * @throws IpsException If an error occurs while searching for the new {@code IEnumType}.
      * @throws NullPointerException If {@code ContentType} is {@code null}.
      */
-    void setContentType(String contentType) throws CoreException;
+    void setContentType(String contentType) throws IpsException;
 
     /**
      * Cleans the content after performing the moving of values beetwen columns.

@@ -15,12 +15,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -48,6 +49,8 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -198,12 +201,13 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         String title = ipsSrcFile.getIpsObjectName();
         setPartName(title);
-        setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getFullPath().toOSString());
+        setContentDescription(ipsSrcFile.getParent().getEnclosingResource().getWorkspaceRelativePath().toString());
 
-        if (ipsSrcFile.isMutable() && !ipsSrcFile.getEnclosingResource().isSynchronized(0)) {
+        if (ipsSrcFile.isMutable()
+                && !ipsSrcFile.getEnclosingResource().isSynchronized(AResourceTreeTraversalDepth.RESOURCE_ONLY)) {
             try {
-                ipsSrcFile.getEnclosingResource().refreshLocal(0, null);
-            } catch (CoreException e) {
+                ipsSrcFile.getEnclosingResource().refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
+            } catch (IpsException e) {
                 throw new PartInitException("Error refreshing resource " + ipsSrcFile.getEnclosingResource()); //$NON-NLS-1$
             }
         }
@@ -216,7 +220,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         if (!ipsSrcFile.exists()) {
             Runnable closeRunnable = () -> {
                 IpsObjectEditor.this.close(false);
-                IpsUIPlugin.getDefault().openEditor(ipsSrcFile.getCorrespondingFile());
+                IpsUIPlugin.getDefault().openEditor((IFile)ipsSrcFile.getCorrespondingFile().unwrap());
             };
             getSite().getShell().getDisplay().syncExec(closeRunnable);
         } else {
@@ -298,9 +302,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * subclasses by adding the pages to edit the ips object with.
      * 
      * @throws PartInitException if there is an exception while initializing a part
-     * @throws CoreException in case of other core exceptions
+     * @throws IpsException in case of other core exceptions
      */
-    protected abstract void addPagesForParsableSrcFile() throws CoreException;
+    protected abstract void addPagesForParsableSrcFile() throws PartInitException, IpsException;
 
     protected void updatePageStructure(boolean forceRefreshInclStructuralChanges) {
         logMethodStarted("updatePageStructure"); //$NON-NLS-1$
@@ -331,7 +335,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             // also triggers the refresh
             super.setActivePage(0);
             logMethodFinished("updatePageStructure"); //$NON-NLS-1$
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             updatingPageStructure = false;
             IpsPlugin.log(e);
             return;
@@ -398,7 +402,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
              * contain the correct state.
              */
             ipsSrcFile.getIpsObject();
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 
@@ -536,8 +540,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     @Override
     public void doSave(IProgressMonitor monitor) {
         try {
-            ipsSrcFile.save(true, monitor);
-        } catch (CoreException e) {
+            ipsSrcFile.save(monitor);
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 
@@ -559,7 +563,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     @Override
     public void resourceChanged(IResourceChangeEvent event) {
-        IResource enclResource = ipsSrcFile.getEnclosingResource();
+        IResource enclResource = ipsSrcFile.getEnclosingResource().unwrap();
         if (enclResource == null || event.getDelta() == null
                 || event.getDelta().findMember(enclResource.getFullPath()) == null) {
             return;
@@ -580,7 +584,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     protected boolean isSrcFileUsable() {
         return ipsSrcFile != null && ipsSrcFile.exists()
-                && ipsSrcFile.getEnclosingResource().isSynchronized(IResource.DEPTH_ONE);
+                && ipsSrcFile.getEnclosingResource()
+                        .isSynchronized(AResourceTreeTraversalDepth.RESOURCE_AND_DIRECT_MEMBERS);
     }
 
     /**
@@ -611,11 +616,11 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         try {
-
             isCheckingForChangesMadeOutsideEclipse = true;
             logMethodStarted("checkForChangesMadeOutsideEclipse()"); //$NON-NLS-1$
 
-            if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource().isSynchronized(0)) {
+            if (getIpsSrcFile().isMutable() && !getIpsSrcFile().getEnclosingResource()
+                    .isSynchronized(AResourceTreeTraversalDepth.RESOURCE_ONLY)) {
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
                         Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION,
@@ -624,13 +629,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                         0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
-                    try {
-                        log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
-                        getIpsSrcFile().getEnclosingResource().refreshLocal(0, null);
-                        updatePageStructure(true);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+                    log("checkForChangesMadeOutsideEclipse(): Change found, sync file with filesystem (refreshLocal)"); //$NON-NLS-1$
+                    getIpsSrcFile().getEnclosingResource().refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY,
+                            null);
+                    updatePageStructure(true);
                 } else {
                     dontLoadChanges = true;
                 }
@@ -695,7 +697,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             Dialog dialog = createDialogToFixDifferencesToModel();
             if (dialog.open() == Window.OK) {
                 log("checkForInconsistenciesToModel - differences found, start fixing differenced."); //$NON-NLS-1$
-                IWorkspaceRunnable fix = $ -> toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
+                ICoreRunnable fix = $ -> toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                 IpsUIPlugin.getDefault().runWorkspaceModification(fix);
                 refreshIncludingStructuralChanges();
             } else {
@@ -704,7 +706,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
 
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return;
         }
@@ -714,9 +716,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * Creates a dialog to disblay the differences to the model and ask the user if the
      * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
      * 
-     * @throws CoreException May be thrown if any error occurs.
+     * @throws IpsException May be thrown if any error occurs.
      */
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+    protected Dialog createDialogToFixDifferencesToModel() {
         throw new UnsupportedOperationException();
     }
 
@@ -903,22 +905,25 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     protected List<IMessage> getMessages() {
         try {
-            MessageList msgList = getIpsObject().validate(getIpsProject());
-            MessageList subList = msgList.getSubList(MAX_MSG_LIST_SIZE);
-            List<IMessage> messages = getUiMessages(subList);
+            IIpsObject ipsObject = getIpsObject();
+            if (ipsObject != null) {
+                MessageList msgList = ipsObject.validate(getIpsProject());
+                MessageList subList = msgList.getSubList(MAX_MSG_LIST_SIZE);
+                List<IMessage> messages = getUiMessages(subList);
 
-            int oneMore = MAX_MSG_LIST_SIZE + 1;
-            if (msgList.size() == oneMore) {
-                messages.add(new UiMessage(msgList.getMessage(msgList.size() - 1)));
-            } else if (msgList.size() > oneMore) {
-                messages.add(new UiMessage(NLS.bind(Messages.IpsPartEditDialog_moreMessagesInTooltip,
-                        (msgList.size() - MAX_MSG_LIST_SIZE))));
+                int oneMore = MAX_MSG_LIST_SIZE + 1;
+                if (msgList.size() == oneMore) {
+                    messages.add(new UiMessage(msgList.getMessage(msgList.size() - 1)));
+                } else if (msgList.size() > oneMore) {
+                    messages.add(new UiMessage(NLS.bind(Messages.IpsPartEditDialog_moreMessagesInTooltip,
+                            (msgList.size() - MAX_MSG_LIST_SIZE))));
+                }
+                return messages;
             }
-            return messages;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
 
     }
 
@@ -1059,7 +1064,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 // can happen during editor init
                 return;
             }
-            IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource();
+            IResource correspondingResource = ipsObjectEditor.getIpsSrcFile().getCorrespondingResource().unwrap();
             if (correspondingResource != null) {
                 for (IResource changedResource : changedResources) {
                     if (changedResource.equals(correspondingResource)) {

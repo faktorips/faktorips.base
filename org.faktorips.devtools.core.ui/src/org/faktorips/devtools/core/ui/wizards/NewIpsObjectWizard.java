@@ -14,9 +14,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
@@ -118,7 +117,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
     @Override
     public final boolean performFinish() {
         final IIpsPackageFragment pack = objectPage.getIpsPackageFragment();
-        IWorkspaceRunnable op = monitor -> {
+        ICoreRunnable op = monitor -> {
             IWizardPage[] pages = getPages();
             if (pages.length > 1) {
                 monitor.beginTask(Messages.NewIpsObjectWizard_creatingObjects, pages.length * 4);
@@ -159,8 +158,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         return true;
     }
 
-    private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor)
-            throws CoreException {
+    private void createIpsObject(AbstractIpsObjectNewWizardPage page, IProgressMonitor monitor) {
         IIpsSrcFile srcFile = page.createIpsSrcFile(SubMonitor.convert(monitor, 2));
         if (srcFile == null) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus(
@@ -168,9 +166,9 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
         } else {
             Set<IIpsObject> modifiedIpsObjects = new HashSet<>(0);
             page.finishIpsObjects(srcFile.getIpsObject(), modifiedIpsObjects);
-            srcFile.save(true, SubMonitor.convert(monitor, 1));
+            srcFile.save(SubMonitor.convert(monitor, 1));
             for (IIpsObject modifiedIpsObject : modifiedIpsObjects) {
-                modifiedIpsObject.getIpsSrcFile().save(true, SubMonitor.convert(monitor, 1));
+                modifiedIpsObject.getIpsSrcFile().save(SubMonitor.convert(monitor, 1));
             }
         }
     }

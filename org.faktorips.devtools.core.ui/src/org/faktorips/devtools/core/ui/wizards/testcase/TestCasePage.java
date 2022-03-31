@@ -14,7 +14,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -73,7 +72,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
         IIpsObject obj = getSelectedIpsObject();
         if (obj instanceof ITestCaseType) {
@@ -84,7 +83,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void validatePageExtension() throws CoreException {
+    protected void validatePageExtension() {
         if (getErrorMessage() != null) {
             return;
         }
@@ -94,8 +93,7 @@ public class TestCasePage extends IpsObjectPage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         // fill the default content of the test case bases on the test case type
         ITestCase testCase = (ITestCase)newIpsObject;
@@ -108,7 +106,7 @@ public class TestCasePage extends IpsObjectPage {
      * Generate the default content for the given test case. All test value parameter will be
      * created, because for this kind of parameter there is no add functionality.
      */
-    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) throws CoreException {
+    private void generateDefaultContent(ITestParameter[] parameter, ITestCase testCase) {
         for (ITestParameter element : parameter) {
             if (element instanceof ITestValueParameter) {
                 ITestValue testValue = testCase.newTestValue();

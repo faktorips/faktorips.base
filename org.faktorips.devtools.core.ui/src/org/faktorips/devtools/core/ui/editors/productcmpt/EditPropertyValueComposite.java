@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -31,6 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -40,7 +40,6 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
@@ -172,7 +171,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
         try {
             createEditFields(editFields);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // Log exception and do not add any edit fields
             IpsPlugin.log(e);
         }
@@ -232,9 +231,9 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * 
      * @param editFields the {@link List} to which each created {@link EditField} should be added to
      * 
-     * @throws CoreException if an error occurs while creating the edit fields
+     * @throws IpsException if an error occurs while creating the edit fields
      */
-    protected abstract void createEditFields(List<EditField<?>> editFields) throws CoreException;
+    protected abstract void createEditFields(List<EditField<?>> editFields) throws IpsException;
 
     /**
      * Adds a "S"-decoration to the editcomposite's field if the propertyValue is <em>not</em>
@@ -274,11 +273,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private IProductCmptType findProductCmptType() {
         IProductCmptType productCmptType = null;
         if (getProperty() != null) {
-            try {
-                productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
         }
         return productCmptType;
     }

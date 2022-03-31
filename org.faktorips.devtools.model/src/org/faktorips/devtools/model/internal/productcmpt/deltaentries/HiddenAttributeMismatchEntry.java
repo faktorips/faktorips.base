@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
@@ -43,8 +44,8 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc,
-                new String[] { getPropertyName(), getCurrentAttributeValue(), attribute.getDefaultValue() });
+        return MessageFormat.format(Messages.HiddenAttributeMismatchEntry_desc,
+                getPropertyName(), getCurrentAttributeValue(), attribute.getDefaultValue());
     }
 
     public String getCurrentAttributeValue() {

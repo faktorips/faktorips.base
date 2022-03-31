@@ -13,12 +13,12 @@ package org.faktorips.devtools.stdbuilder;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
+import java.nio.file.Path;
+
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -30,7 +30,7 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
 
     private ITableStructure structure;
     private ITableContents contents;
-    private IPackageFragmentRoot destination;
+    private APackageFragmentRoot destination;
     private String filePath;
 
     @Override
@@ -46,14 +46,14 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
         destination = contents.getIpsPackageFragment().getRoot().getArtefactDestination(true);
     }
 
-    private IFile getContentsFile() {
-        return ((IFolder)destination.getResource()).getFile(new Path(filePath));
+    private AFile getContentsFile() {
+        return ((AFolder)destination.getResource()).getFile(Path.of(filePath));
     }
 
     @Test
-    public void testBuild() throws CoreException {
+    public void testBuild() {
         assertFalse(getContentsFile().exists());
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertTrue(getContentsFile().exists());
     }
 
@@ -62,12 +62,12 @@ public class XmlContentFileCopyBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testDelete() throws CoreException {
+    public void testDelete() {
         assertFalse(getContentsFile().exists());
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertTrue(getContentsFile().exists());
-        contents.getIpsSrcFile().getCorrespondingFile().delete(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+        contents.getIpsSrcFile().getCorrespondingFile().delete(null);
+        ipsProject.getProject().build(ABuildKind.INCREMENTAL, null);
         assertFalse(getContentsFile().exists());
     }
 

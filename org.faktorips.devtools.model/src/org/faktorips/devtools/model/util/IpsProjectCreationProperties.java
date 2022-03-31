@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
@@ -203,9 +204,9 @@ public class IpsProjectCreationProperties {
      * @return an empty {@link MessageList} if all validation succeeds, one containing at least one
      *         error message otherwise
      * @see #validateRequiredProperties()
-     * @see IIpsProjectConfigurator#validate(IJavaProject, IpsProjectCreationProperties)
+     * @see IIpsProjectConfigurator#validate(AJavaProject, IpsProjectCreationProperties)
      */
-    public MessageList validate(IJavaProject javaProject) {
+    public MessageList validate(AJavaProject javaProject) {
         MessageList errorMessages = validateRequiredProperties();
         IpsProjectConfigurators.applicableTo(javaProject)
                 .map(c -> c.validate(javaProject, this))

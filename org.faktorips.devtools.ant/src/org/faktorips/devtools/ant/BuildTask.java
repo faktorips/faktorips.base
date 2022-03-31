@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -96,7 +97,7 @@ public class BuildTask extends AbstractIpsTask {
         }
     }
 
-    private IProject[] buildEclipseProjects(IWorkspace workspace) throws CoreException {
+    private IProject[] buildEclipseProjects(IWorkspace workspace) {
         List<IProject> existingProjects = new ArrayList<>();
         for (EclipseProject eclipseProject : eclipseProjects) {
             String name = eclipseProject.getName();
@@ -112,26 +113,30 @@ public class BuildTask extends AbstractIpsTask {
                     } else {
                         System.out.println();
                     }
-                    if (fullBuild) {
-                        System.out.println("Perform full build");
-                        if (ipsOnly) {
-                            project.build(IncrementalProjectBuilder.FULL_BUILD,
-                                    IpsBuilder.BUILDER_ID,
-                                    Collections.emptyMap(),
-                                    null);
+                    try {
+                        if (fullBuild) {
+                            System.out.println("Perform full build");
+                            if (ipsOnly) {
+                                project.build(IncrementalProjectBuilder.FULL_BUILD,
+                                        IpsBuilder.BUILDER_ID,
+                                        Collections.emptyMap(),
+                                        null);
+                            } else {
+                                project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+                            }
                         } else {
-                            project.build(IncrementalProjectBuilder.FULL_BUILD, null);
+                            System.out.println("Perform incremental build");
+                            if (ipsOnly) {
+                                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
+                                        IpsBuilder.BUILDER_ID,
+                                        Collections.emptyMap(),
+                                        null);
+                            } else {
+                                project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
+                            }
                         }
-                    } else {
-                        System.out.println("Perform incremental build");
-                        if (ipsOnly) {
-                            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD,
-                                    IpsBuilder.BUILDER_ID,
-                                    Collections.emptyMap(),
-                                    null);
-                        } else {
-                            project.build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-                        }
+                    } catch (CoreException e) {
+                        throw new IpsException(e);
                     }
                     System.out.println("finished building project " + project.getName());
                 } else {

@@ -10,21 +10,13 @@
 
 package org.faktorips.values;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Test;
 
 public class DecimalNullTest {
 
-    @Test
-    public void testCompareTo() {
-        assertEquals(0, Decimal.NULL.compareTo(Decimal.NULL));
-        assertEquals(-1, Decimal.NULL.compareTo(Decimal.ZERO));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testCompareTo_ShouldThrowExceptionForNull() {
-        Decimal.NULL.compareTo(null);
+    @Test(expected = UnsupportedOperationException.class)
+    public void testCompareTo_ShouldThrowException() {
+        Decimal.NULL.compareTo(Decimal.NULL);
     }
 
 }

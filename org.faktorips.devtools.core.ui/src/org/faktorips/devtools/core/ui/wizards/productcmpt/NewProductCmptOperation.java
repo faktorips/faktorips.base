@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -36,7 +35,7 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
      * model are fixed.
      */
     @Override
-    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException {
+    protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
         IProductCmpt newProductCmpt = initProductCmpt(ipsSrcFile);
         IProductCmptGeneration generation = (IProductCmptGeneration)newProductCmpt.newGeneration();
         generation.setValidFrom(getPmo().getEffectiveDate());

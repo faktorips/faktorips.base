@@ -14,11 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.core.AbstractCoreIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.bf.IControlFlow;
-import org.faktorips.devtools.model.bf.Location;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -79,14 +76,14 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
         assertEquals(targetIpsPackageFragment, newIpsObject.getIpsPackageFragment());
     }
 
-    protected final void saveIpsSrcFile(IIpsObject ipsObject) throws CoreException {
-        ipsObject.getIpsSrcFile().save(true, null);
+    protected final void saveIpsSrcFile(IIpsObject ipsObject) {
+        ipsObject.getIpsSrcFile().save(null);
     }
 
     protected final IEnumType createEnumType(String name,
             IEnumType superEnumType,
             String idAttributeName,
-            String nameAttributeName) throws CoreException {
+            String nameAttributeName) {
 
         IEnumType enumType = newEnumType(ipsProject, name);
         enumType.setAbstract(false);
@@ -108,20 +105,6 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
         idAttribute.setInherited(superEnumType != null);
 
         return enumType;
-    }
-
-    @SuppressWarnings("deprecation")
-    protected final org.faktorips.devtools.model.bf.IBusinessFunction createBusinessFunction(String name)
-            throws CoreException {
-        org.faktorips.devtools.model.bf.IBusinessFunction businessFunction = (org.faktorips.devtools.model.bf.IBusinessFunction)newIpsObject(
-                ipsProject,
-                org.faktorips.devtools.model.bf.BusinessFunctionIpsObjectType.getInstance(), name);
-        businessFunction.newStart(new Location(0, 0));
-        businessFunction.newEnd(new Location(10, 10));
-        IControlFlow controlFlow = businessFunction.newControlFlow();
-        controlFlow.setSource(businessFunction.getStart());
-        controlFlow.setTarget(businessFunction.getEnd());
-        return businessFunction;
     }
 
     protected final class PolicyCmptTypeReferences {
@@ -154,8 +137,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final ITestPolicyCmptTypeParameter testParameterChild3;
 
-        protected PolicyCmptTypeReferences(IPolicyCmptType policyCmptType, boolean createInverseAssociation)
-                throws CoreException {
+        protected PolicyCmptTypeReferences(IPolicyCmptType policyCmptType, boolean createInverseAssociation) {
 
             this.policyCmptType = policyCmptType;
             productCmptType = createProductCmptType();
@@ -173,7 +155,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             testParameterChild3 = createTestParameterChild3();
         }
 
-        private IProductCmptType createProductCmptType() throws CoreException {
+        private IProductCmptType createProductCmptType() {
             IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
             productCmptType.setConfigurationForPolicyCmptType(true);
             productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -182,7 +164,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return productCmptType;
         }
 
-        private IPolicyCmptType createOtherPolicyCmptType() throws CoreException {
+        private IPolicyCmptType createOtherPolicyCmptType() {
             return newPolicyCmptTypeWithoutProductCmptType(ipsProject, "OtherPolicy");
         }
 
@@ -241,7 +223,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return policyToSelfAssociation;
         }
 
-        private ITestCaseType createTestCaseType() throws CoreException {
+        private ITestCaseType createTestCaseType() {
             return newTestCaseType(ipsProject, "TestCaseType");
         }
 
@@ -253,7 +235,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return testPolicyCmptTypeParameter;
         }
 
-        private ITestAttribute createTestAttribute() throws CoreException {
+        private ITestAttribute createTestAttribute() {
             ITestAttribute testAttribute = testPolicyCmptTypeParameter.newInputTestAttribute();
             testAttribute.setAttribute(policyCmptTypeAttribute);
             testAttribute.setName("testAttribute");
@@ -286,7 +268,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return testParameterChild2;
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(otherPolicyCmptType);
@@ -324,24 +306,24 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final ITestAttribute superTestAttribute;
 
-        protected SuperPolicyCmptTypeReferences(IPolicyCmptType superPolicyCmptType) throws CoreException {
+        protected SuperPolicyCmptTypeReferences(IPolicyCmptType superPolicyCmptType) {
             this.superPolicyCmptType = superPolicyCmptType;
             policyCmptType = createPolicyCmptType();
             testCaseType = createTestCaseType();
             superTestAttribute = createSuperTestAttribute();
         }
 
-        private IPolicyCmptType createPolicyCmptType() throws CoreException {
+        private IPolicyCmptType createPolicyCmptType() {
             IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
             policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
             return policyCmptType;
         }
 
-        private ITestCaseType createTestCaseType() throws CoreException {
+        private ITestCaseType createTestCaseType() {
             return newTestCaseType(ipsProject, "TestCaseType");
         }
 
-        private ITestAttribute createSuperTestAttribute() throws CoreException {
+        private ITestAttribute createSuperTestAttribute() {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = testCaseType
                     .newCombinedPolicyCmptTypeParameter();
             testPolicyCmptTypeParameter.setPolicyCmptType(policyCmptType.getQualifiedName());
@@ -360,7 +342,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return superTestAttribute;
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(superPolicyCmptType);
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(testCaseType);
@@ -392,7 +374,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final IProductCmptTypeAssociation productCmptTypeAssociation;
 
-        protected ProductCmptTypeReferences(IProductCmptType productCmptType) throws CoreException {
+        protected ProductCmptTypeReferences(IProductCmptType productCmptType) {
             this.productCmptType = productCmptType;
             policyCmptType = createPolicyCmptType();
             otherProductCmptType = createOtherProductCmptType();
@@ -402,7 +384,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             productCmptTypeAssociation = createProductCmptTypeAssociation();
         }
 
-        private IPolicyCmptType createPolicyCmptType() throws CoreException {
+        private IPolicyCmptType createPolicyCmptType() {
             IPolicyCmptType policyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "Policy");
             policyCmptType.setConfigurableByProductCmptType(true);
             policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
@@ -411,11 +393,11 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return policyCmptType;
         }
 
-        private IProductCmptType createOtherProductCmptType() throws CoreException {
+        private IProductCmptType createOtherProductCmptType() {
             return newProductCmptType(ipsProject, "OtherProduct");
         }
 
-        private IProductCmpt createProductCmpt() throws CoreException {
+        private IProductCmpt createProductCmpt() {
             return newProductCmpt(productCmptType, "ProductCmpt");
         }
 
@@ -447,7 +429,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return productCmptTypeAssociation;
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(otherProductCmptType);
@@ -477,18 +459,18 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final IProductCmptType productCmptType;
 
-        protected SuperProductCmptTypeReferences(IProductCmptType superProductCmptType) throws CoreException {
+        protected SuperProductCmptTypeReferences(IProductCmptType superProductCmptType) {
             this.superProductCmptType = superProductCmptType;
             productCmptType = createProductCmptType();
         }
 
-        private IProductCmptType createProductCmptType() throws CoreException {
+        private IProductCmptType createProductCmptType() {
             IProductCmptType productCmptType = newProductCmptType(ipsProject, "Product");
             productCmptType.setSupertype(superProductCmptType.getQualifiedName());
             return productCmptType;
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(superProductCmptType);
             saveIpsSrcFile(productCmptType);
         }
@@ -506,16 +488,16 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final ITestCase testCase;
 
-        protected TestCaseTypeReferences(ITestCaseType testCaseType) throws CoreException {
+        protected TestCaseTypeReferences(ITestCaseType testCaseType) {
             this.testCaseType = testCaseType;
             testCase = createTestCase();
         }
 
-        private ITestCase createTestCase() throws CoreException {
+        private ITestCase createTestCase() {
             return newTestCase(testCaseType, "TestCase");
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(testCaseType);
             saveIpsSrcFile(testCase);
         }
@@ -533,16 +515,16 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final IEnumContent enumContent;
 
-        protected EnumTypeReferences(IEnumType enumType) throws CoreException {
+        protected EnumTypeReferences(IEnumType enumType) {
             this.enumType = enumType;
             enumContent = createEnumContent();
         }
 
-        private IEnumContent createEnumContent() throws CoreException {
+        private IEnumContent createEnumContent() {
             return newEnumContent(enumType, "EnumContent");
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(enumType);
             saveIpsSrcFile(enumContent);
         }
@@ -560,16 +542,16 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final ITableContents tableContents;
 
-        protected TableStructureReferences(ITableStructure tableStructure) throws CoreException {
+        protected TableStructureReferences(ITableStructure tableStructure) {
             this.tableStructure = tableStructure;
             tableContents = createTableContents();
         }
 
-        private ITableContents createTableContents() throws CoreException {
+        private ITableContents createTableContents() {
             return newTableContents(tableStructure, "TableContents");
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(tableStructure);
             saveIpsSrcFile(tableContents);
         }
@@ -593,8 +575,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
 
         private final IProductCmpt otherProductCmpt;
 
-        protected ProductCmptReferences(IProductCmpt productCmpt, IProductCmptType productCmptType)
-                throws CoreException {
+        protected ProductCmptReferences(IProductCmpt productCmpt, IProductCmptType productCmptType) {
 
             this.productCmptType = productCmptType;
             this.productCmpt = productCmpt;
@@ -603,7 +584,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             otherProductCmpt = createOtherProductCmpt();
         }
 
-        private IProductCmptType createOtherProductCmptType() throws CoreException {
+        private IProductCmptType createOtherProductCmptType() {
             return newProductCmptType(ipsProject, "OtherProduct");
         }
 
@@ -615,7 +596,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return productCmptTypeAssociation;
         }
 
-        private IProductCmpt createOtherProductCmpt() throws CoreException {
+        private IProductCmpt createOtherProductCmpt() {
             IProductCmpt otherProductCmpt = newProductCmpt(productCmptType, "OtherProductCmpt");
             IProductCmptGeneration productCmptGeneration = otherProductCmpt.getFirstGeneration();
             IProductCmptLink productCmptLink = productCmptGeneration.newLink(productCmptTypeAssociation);
@@ -623,7 +604,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return otherProductCmpt;
         }
 
-        protected final void saveIpsSrcFiles() throws CoreException {
+        protected final void saveIpsSrcFiles() {
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(otherProductCmptType);
             saveIpsSrcFile(productCmpt);

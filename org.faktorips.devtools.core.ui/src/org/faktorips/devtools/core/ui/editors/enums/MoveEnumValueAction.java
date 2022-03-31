@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -104,12 +103,7 @@ public class MoveEnumValueAction extends Action {
                 return;
             }
 
-            // Perform moving starting with first selected EnumValue.
-            try {
-                enumValueContainer.moveEnumValues(enumValuesToMove, true);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            enumValueContainer.moveEnumValues(enumValuesToMove, true);
 
         } else {
             // Move all selected EnumValues downwards.
@@ -127,11 +121,7 @@ public class MoveEnumValueAction extends Action {
             for (int i = numberToMove - 1; i >= 0; i--) {
                 orderedValues.add(enumValuesToMove.get(i));
             }
-            try {
-                enumValueContainer.moveEnumValues(orderedValues, false);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            enumValueContainer.moveEnumValues(orderedValues, false);
         }
 
         enumValuesTableViewer.refresh(true);

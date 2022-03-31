@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaClass;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -57,9 +57,9 @@ public class IpsSrcFileCollection {
      * Get the name of defining meta class
      * 
      * @return the name of the meta class, defining the given source file
-     * @throws CoreException If the given {@link IIpsSrcFile} is not part of this collection.
+     * @throws IpsException If the given {@link IIpsSrcFile} is not part of this collection.
      */
-    public String getDefiningMetaClass(IIpsSrcFile srcFile) throws CoreException {
+    public String getDefiningMetaClass(IIpsSrcFile srcFile) {
         return getItem(srcFile).getDefiningMetaClass();
     }
 
@@ -67,9 +67,9 @@ public class IpsSrcFileCollection {
      * 
      * @return <code>true</code> if the unqualified name of this src file is at least used by one
      *         other {@link IIpsSrcFile} in this collection.
-     * @throws CoreException If the given {@link IIpsSrcFile} is not part of this collection.
+     * @throws IpsException If the given {@link IIpsSrcFile} is not part of this collection.
      */
-    public boolean isDuplicateName(IIpsSrcFile srcFile) throws CoreException {
+    public boolean isDuplicateName(IIpsSrcFile srcFile) {
         return getItem(srcFile).isDuplicateName();
     }
 
@@ -78,16 +78,16 @@ public class IpsSrcFileCollection {
      * identified by this item is an instance of a sub type of this type. Returns <code>false</code>
      * otherwise.
      * 
-     * @throws CoreException If the given {@link IIpsSrcFile} is not part of this collection.
+     * @throws IpsException If the given {@link IIpsSrcFile} is not part of this collection.
      */
-    public boolean isInstanceOfMetaClass(IIpsSrcFile srcFile) throws CoreException {
+    public boolean isInstanceOfMetaClass(IIpsSrcFile srcFile) {
         return getItem(srcFile).isInstanceOfMetaClass();
     }
 
-    private CollectionItem getItem(IIpsSrcFile srcFile) throws CoreException {
+    private CollectionItem getItem(IIpsSrcFile srcFile) {
         CollectionItem item = collection.get(srcFile);
         if (item == null) {
-            throw new CoreException(new IpsStatus("The given source file " + srcFile //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("The given source file " + srcFile //$NON-NLS-1$
                     + " is not part of this collection")); //$NON-NLS-1$
         }
 

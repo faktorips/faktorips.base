@@ -10,23 +10,21 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -60,9 +58,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetOutputFolderForGeneratedJavaFiles() {
-        IFolder src = ipsProject.getProject().getFolder("src");
-        IFolder out1 = ipsProject.getProject().getFolder("out1");
-        IFolder out2 = ipsProject.getProject().getFolder("out2");
+        AFolder src = ipsProject.getProject().getFolder("src");
+        AFolder out1 = ipsProject.getProject().getFolder("out1");
+        AFolder out2 = ipsProject.getProject().getFolder("out2");
         path.setOutputFolderForMergableSources(out1);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
         entry.setSpecificOutputFolderForMergableJavaFiles(out2);
@@ -76,7 +74,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetBasePackageNameForGeneratedJavaClasses() {
-        IFolder src = ipsProject.getProject().getFolder("src");
+        AFolder src = ipsProject.getProject().getFolder("src");
         path.setBasePackageNameForMergableJavaClasses("pack1");
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
         entry.setSpecificBasePackageNameForMergableJavaClasses("pack2");
@@ -90,9 +88,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetOutputFolderForExtensionJavaFiles() {
-        IFolder src = ipsProject.getProject().getFolder("src");
-        IFolder out1 = ipsProject.getProject().getFolder("out1");
-        IFolder out2 = ipsProject.getProject().getFolder("out2");
+        AFolder src = ipsProject.getProject().getFolder("src");
+        AFolder out1 = ipsProject.getProject().getFolder("out1");
+        AFolder out2 = ipsProject.getProject().getFolder("out2");
         path.setOutputFolderForDerivedSources(out1);
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
         entry.setSpecificOutputFolderForDerivedJavaFiles(out2);
@@ -106,7 +104,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetBasePackageNameForExtensionJavaClasses() {
-        IFolder src = ipsProject.getProject().getFolder("src");
+        AFolder src = ipsProject.getProject().getFolder("src");
         path.setBasePackageNameForDerivedJavaClasses("pack1");
         IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
         entry.setSpecificBasePackageNameForDerivedJavaClasses("pack2");
@@ -120,7 +118,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml() {
-        IProject project = ipsProject.getProject();
+        AProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path);
         Document doc = getTestDocument();
         NodeList nl = doc.getDocumentElement().getElementsByTagName("Entry");
@@ -145,7 +143,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        IProject project = ipsProject.getProject();
+        AProject project = ipsProject.getProject();
         IpsSrcFolderEntry entry = new IpsSrcFolderEntry(path, project.getFolder("ipssrc").getFolder("modelclasses"));
         entry.setSpecificOutputFolderForMergableJavaFiles(project.getFolder("javasrc").getFolder("modelclasses"));
         entry.setSpecificBasePackageNameForMergableJavaClasses("org.faktorips.sample.model");
@@ -178,7 +176,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.size());
 
@@ -191,15 +189,15 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
+        assertThat(ml, hasMessageCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING));
 
         // validate missing outputFolderGenerated
-        IFolder folder1 = ipsProject.getProject().getFolder("none");
+        AFolder folder1 = ipsProject.getProject().getFolder("none");
         srcEntries[0].setSpecificOutputFolderForMergableJavaFiles(folder1);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
         assertEquals(1, ml.size());
-        assertNotNull(ml.getMessageByCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
+        assertThat(ml, hasMessageCode(IIpsSrcFolderEntry.MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST));
 
         // validate missing outputFolderDerived
         srcEntries[0].setSpecificOutputFolderForDerivedJavaFiles(folder1);
@@ -215,7 +213,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_ValidInSameProject() throws CoreException {
+    public void testValidate_UniqueBasePackage_ValidInSameProject() {
         IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
 
         MessageList ml = path.validate();
@@ -227,7 +225,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_SameMergableBasePackageInSameProject() throws CoreException {
+    public void testValidate_UniqueBasePackage_SameMergableBasePackageInSameProject() {
         IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
         entry.setSpecificBasePackageNameForMergableJavaClasses(path.getSourceFolderEntries()[0]
                 .getBasePackageNameForMergableJavaClasses());
@@ -238,7 +236,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_SameDerivedBasePackageInSameProject() throws CoreException {
+    public void testValidate_UniqueBasePackage_SameDerivedBasePackageInSameProject() {
         IIpsSrcFolderEntry entry = setUpPathForUniqueBasePackageTest();
         entry.setSpecificBasePackageNameForDerivedJavaClasses(path.getSourceFolderEntries()[0]
                 .getBasePackageNameForDerivedJavaClasses());
@@ -249,7 +247,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_DefinedInObjectPathInSameProject() throws CoreException {
+    public void testValidate_UniqueBasePackage_DefinedInObjectPathInSameProject() {
         path.setOutputDefinedPerSrcFolder(false);
         setUpPathForUniqueBasePackageTest();
 
@@ -259,7 +257,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_SameInDifferentProjects() throws CoreException {
+    public void testValidate_UniqueBasePackage_SameInDifferentProjects() {
         IIpsProject ipsProject2 = newIpsProject();
         path.newIpsProjectRefEntry(ipsProject2);
 
@@ -269,7 +267,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_UniqueBasePackage_DiffInDifferentProjects() throws CoreException {
+    public void testValidate_UniqueBasePackage_DiffInDifferentProjects() {
         IIpsProject ipsProject2 = newIpsProject();
         path.newIpsProjectRefEntry(ipsProject2);
         path.getSourceFolderEntries()[0].setSpecificBasePackageNameForMergableJavaClasses("asd");
@@ -280,10 +278,10 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertThat(ml, isEmpty());
     }
 
-    protected IIpsSrcFolderEntry setUpPathForUniqueBasePackageTest() throws CoreException {
-        IFolder testFolder = ipsProject.getProject().getFolder("test");
-        ipsProject.getProject().getFolder("derived").create(true, true, null);
-        testFolder.create(false, true, null);
+    protected IIpsSrcFolderEntry setUpPathForUniqueBasePackageTest() {
+        AFolder testFolder = ipsProject.getProject().getFolder("test");
+        ipsProject.getProject().getFolder("derived").create(null);
+        testFolder.create(null);
         IIpsSrcFolderEntry folderEntry = path.newSourceFolderEntry(testFolder);
         folderEntry.setSpecificOutputFolderForMergableJavaFiles(ipsProject.getProject().getFolder("src"));
         folderEntry.setSpecificOutputFolderForDerivedJavaFiles(ipsProject.getProject().getFolder("derived"));
@@ -291,10 +289,10 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetResourceAsStream() throws CoreException, IOException {
-        IFolder projectSubFolder = ipsProject.getProject().getFolder(new Path("subFolder"));
+    public void testGetResourceAsStream() throws IpsException, IOException {
+        AFolder projectSubFolder = ipsProject.getProject().getFolder("subFolder");
         if (!projectSubFolder.exists()) {
-            projectSubFolder.create(true, true, null);
+            projectSubFolder.create(null);
         }
         createFileWithContent(projectSubFolder, "file.txt", "CCC");
 
@@ -307,8 +305,8 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot rootOne = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
         IIpsPackageFragmentRoot rootTwo = newIpsPackageFragmentRoot(ipsProject, null, "rootTwo");
 
-        createFileWithContent((IFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
-        createFileWithContent((IFolder)rootTwo.getCorrespondingResource(), "file.txt", "222");
+        createFileWithContent((AFolder)rootOne.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((AFolder)rootTwo.getCorrespondingResource(), "file.txt", "222");
         assertEquals("111", getFileContent("rootOne", "file.txt"));
         assertEquals("222", getFileContent("rootTwo", "file.txt"));
     }
@@ -321,7 +319,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     @Test
     public void testContainsResource_true() throws Exception {
         IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
-        createFileWithContent((IFolder)root.getCorrespondingResource(), MY_RESOURCE_PATH, "asdfasf");
+        createFileWithContent((AFolder)root.getCorrespondingResource(), MY_RESOURCE_PATH, "asdfasf");
 
         assertTrue(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
     }

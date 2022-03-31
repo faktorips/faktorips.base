@@ -16,13 +16,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,14 +60,10 @@ public class FixEnumContentStrategyTest extends AbstractIpsEnumPluginTest {
         int[] notAssignedColumnsList = { 1, 2, 0 };
         when(assignEnumAttributesPage.getColumnOrder()).thenReturn(notAssignedColumnsList);
 
-        try {
-            newEnumAttribute = genderEnumType.newEnumAttribute();
-            newEnumAttribute.setName("Deutsch");
-            newEnumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
-            enumStrategy.createNewContentAttributeValues(assignEnumAttributesPage);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        newEnumAttribute = genderEnumType.newEnumAttribute();
+        newEnumAttribute.setName("Deutsch");
+        newEnumAttribute.setDatatype(Datatype.STRING.getQualifiedName());
+        enumStrategy.createNewContentAttributeValues(assignEnumAttributesPage);
         assertNotNull(genderEnumContent.getEnumValues().get(0).getEnumAttributeValues().get(2));
         assertNotNull(genderEnumContent.getEnumValues().get(1).getEnumAttributeValues().get(2));
     }

@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.search.ui.text.Match;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
@@ -64,7 +64,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
             } else {
                 searchDetails();
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             return new IpsStatus(e);
         }
 
@@ -80,7 +80,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * <p>
      * The method should not be called by clients.
      */
-    protected abstract void searchDetails() throws CoreException;
+    protected abstract void searchDetails() throws IpsException;
 
     /**
      * Returns true, if only the name of an {@link IIpsSrcFile} is part of the search.
@@ -96,7 +96,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * {@link IpsSrcFile}.
      * 
      */
-    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getMatchingSrcFiles() {
         Set<IIpsSrcFile> searchedSrcFiles = getSelectedSrcFiles();
 
         if (StringUtils.isBlank(getSearchModel().getSrcFilePattern())) {
@@ -119,7 +119,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
      * Returns a Set with the selected {@link IIpsSrcFile IIpsSrcFiles}
      * 
      */
-    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getSelectedSrcFiles() {
         Set<IIpsSrcFile> ipsSrcFilesInScope = getSearchModel().getSearchScope().getSelectedIpsSrcFiles();
 
         Set<IIpsSrcFile> selectedSrcFiles = new HashSet<>();

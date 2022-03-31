@@ -17,12 +17,12 @@ import java.util.Locale;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -70,13 +70,13 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         IProgressMonitor progressMonitor;
         if (monitor == null) {
             progressMonitor = new NullProgressMonitor();
@@ -98,7 +98,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
             progressMonitor.worked(1);
             progressMonitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     NLS.bind(Messages.AbstractXlsTableImportOperation_errRead, sourceFile), e));
         }
     }
@@ -118,8 +118,7 @@ public class ExcelEnumImportOperation extends AbstractExcelImportOperation {
         return numberRows;
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor)
-            throws CoreException {
+    private void fillEnum(IEnumValueContainer valueContainer, Sheet sheet, IProgressMonitor monitor) {
 
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         IEnumType enumType = valueContainer.findEnumType(valueContainer.getIpsProject());

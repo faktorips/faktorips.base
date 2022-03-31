@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -40,7 +39,6 @@ import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -241,6 +239,17 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
      */
     public static final String CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC = "minimalJavadoc"; //$NON-NLS-1$
 
+    /**
+     * Configuration property for the unify value set methods option.
+     */
+    public static final String CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS = "valueSetMethods";
+
+    /**
+     * Configuration property that defines whether the getEffectiveFromAsCalendar() method should
+     * always be generated.
+     */
+    public static final String CONFIG_PROPERTY_GENERATE_GET_EFFECTIVE_FROM_AS_CALENDAR = "generateGetEffectiveFromAsCalendar"; //$NON-NLS-1$
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;
@@ -302,7 +311,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
@@ -330,7 +339,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
-            ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
+            ExprCompiler<JavaCodeFragment> exprCompiler) {
         if (exprCompiler instanceof ExtendedExprCompiler) {
             return new StandardIdentifierResolver(formula, (ExtendedExprCompiler)exprCompiler, this);
         } else {
@@ -346,14 +355,14 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     }
 
     @Override
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+    public void initialize(IIpsArtefactBuilderSetConfig config) {
         modelService = new ModelService();
         generatorModelContext = new GeneratorModelContext(config, this, getIpsProject());
         super.initialize(config);
     }
 
     @Override
-    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
+    protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() {
         // create policy component type builders
         LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> builders = new LinkedHashMap<>();
         builders.put(BuilderKindIds.POLICY_CMPT_TYPE_INTERFACE,
@@ -388,10 +397,6 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         // toc file builder
         builders.put(BuilderKindIds.TOC_FILE, new TocFileBuilder(this));
 
-        @SuppressWarnings("deprecation")
-        org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder businessFunctionBuilder = new org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder(
-                this);
-        builders.put(BuilderKindIds.BUSINESS_FUNCTION, businessFunctionBuilder);
         // New enum type builder
         builders.put(BuilderKindIds.ENUM_TYPE, new EnumTypeBuilderFactory().createBuilder(this));
         builders.put(BuilderKindIds.ENUM_XML_ADAPTER, new EnumXmlAdapterBuilder(this));
@@ -539,17 +544,13 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             }
             JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
             IIpsSrcFile ipsSrcFile = ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
-            try {
-                if (javaBuilder.isBuilderFor(ipsSrcFile)) {
-                    javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                } else if (javaBuilder instanceof XtendBuilder<?>) {
-                    XtendBuilder<?> xtendBuilder = (XtendBuilder<?>)javaBuilder;
-                    if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
-                        javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-                    }
+            if (javaBuilder.isBuilderFor(ipsSrcFile)) {
+                javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
+            } else if (javaBuilder instanceof XtendBuilder<?>) {
+                XtendBuilder<?> xtendBuilder = (XtendBuilder<?>)javaBuilder;
+                if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
+                    javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
 

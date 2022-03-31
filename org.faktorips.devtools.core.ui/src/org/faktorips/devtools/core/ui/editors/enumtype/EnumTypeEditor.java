@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.IPage;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditor;
 import org.faktorips.devtools.core.ui.views.modeldescription.EnumsDescriptionPage;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -40,12 +40,12 @@ public class EnumTypeEditor extends IpsObjectEditor implements IModelDescription
     }
 
     @Override
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+    protected void addPagesForParsableSrcFile() throws PartInitException, IpsException {
         addPage(new EnumTypeEditorPage(this));
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() {
         return new EnumsDescriptionPage(getEnumType());
     }
 

@@ -17,8 +17,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -138,7 +138,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
         Collection<IIpsSrcFile> tableContentsSrcFiles;
         try {
             tableContentsSrcFiles = getDocumentedIpsObject().searchMetaObjectSrcFiles(true);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING,
                             "Could not find TableContents for " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
@@ -200,7 +200,7 @@ public class TableStructureContentPageElement extends AbstractIpsObjectContentPa
             ITableStructure findReferencedTableStructure;
             try {
                 findReferencedTableStructure = foreignKey.findReferencedTableStructure(getContext().getIpsProject());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(
                         new IpsStatus(IStatus.WARNING,
                                 "Could not find referenced TableStructure for foreignKey" + foreignKey.getName())); //$NON-NLS-1$

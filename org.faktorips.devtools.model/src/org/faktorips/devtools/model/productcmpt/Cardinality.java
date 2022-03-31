@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.productcmpt;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -135,7 +136,8 @@ public class Cardinality implements Comparable<Cardinality> {
             result.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, link,
                     IProductCmptLink.PROPERTY_MIN_CARDINALITY, IProductCmptLink.PROPERTY_MAX_CARDINALITY));
         } else if (defaultCard > max || min > defaultCard || defaultCard == Integer.MAX_VALUE) {
-            String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer.toString(min),
+            String text = MessageFormat.format(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange,
+                    Integer.toString(min),
                     isToMany() ? "*" : Integer.toString(max) //$NON-NLS-1$
             );
             result.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, link,

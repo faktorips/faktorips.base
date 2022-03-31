@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -27,6 +26,7 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -147,7 +147,7 @@ public class ValidatedAttributesControl extends EditTableControl {
             IndexedValidatedAttributeWrapper wrapper = (IndexedValidatedAttributeWrapper)element;
             return rule.validate(rule.getIpsProject()).getMessagesFor(rule,
                     IValidationRule.PROPERTY_VALIDATED_ATTRIBUTES, wrapper.index);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return new MessageList();
         }
@@ -260,7 +260,7 @@ public class ValidatedAttributesControl extends EditTableControl {
         }
 
         @Override
-        protected MessageList getMessagesFor(Object element) throws CoreException {
+        protected MessageList getMessagesFor(Object element) {
             return validate(element);
         }
     }

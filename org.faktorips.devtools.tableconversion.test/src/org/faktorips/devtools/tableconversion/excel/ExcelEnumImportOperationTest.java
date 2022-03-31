@@ -109,7 +109,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         assertEquals(8, ml.size());
     }
 
-    private IEnumType createExternalEnumType() throws Exception, CoreException {
+    private IEnumType createExternalEnumType() throws Exception {
         // create ips src file
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 

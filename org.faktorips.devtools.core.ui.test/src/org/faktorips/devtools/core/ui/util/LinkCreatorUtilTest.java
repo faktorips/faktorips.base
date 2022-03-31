@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -228,10 +227,10 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSaveFile() throws CoreException {
+    public void testSaveFile() {
         IIpsSrcFile ipsSrcFile = cmptA.getIpsSrcFile();
         assertTrue(ipsSrcFile.isMutable());
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
         assertFalse(ipsSrcFile.isDirty());
 
         // test with cmpt reference target
@@ -245,11 +244,11 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // test with link target
         IProductCmptLink link = cmptA.getFirstGeneration().newLink(associationToC);
         link.setTarget(cmptC3.getQualifiedName());
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
         checkSaveFile(ipsSrcFile, structure.getRoot());
     }
 
-    private void checkSaveFile(IIpsSrcFile ipsSrcFile, IProductCmptStructureReference target) throws CoreException {
+    private void checkSaveFile(IIpsSrcFile ipsSrcFile, IProductCmptStructureReference target) {
         linkCreator = new MyLinkCreator(false);
         assertFalse(ipsSrcFile.isDirty());
         assertTrue(linkCreator.createLinks(getList(cmptC1), target));
@@ -272,7 +271,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         // reset for next test
         links = cmptA.getFirstGeneration().getLinks();
         links[0].delete();
-        ipsSrcFile.save(false, null);
+        ipsSrcFile.save(null);
     }
 
     /**

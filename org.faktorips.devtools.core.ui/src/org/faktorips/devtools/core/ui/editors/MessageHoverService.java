@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
@@ -21,6 +20,7 @@ import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -56,7 +56,7 @@ public abstract class MessageHoverService {
     /**
      * Returns the messages that for the given element.
      */
-    protected abstract MessageList getMessagesFor(Object element) throws CoreException;
+    protected abstract MessageList getMessagesFor(Object element) throws IpsException;
 
     /**
      * Returns the Element of user-data represented by the control at the given position
@@ -105,7 +105,7 @@ public abstract class MessageHoverService {
             MessageList list;
             try {
                 list = getMessagesFor(element);
-            } catch (CoreException coreE) {
+            } catch (IpsException coreE) {
                 IpsPlugin.log(coreE);
                 list = new MessageList();
             }

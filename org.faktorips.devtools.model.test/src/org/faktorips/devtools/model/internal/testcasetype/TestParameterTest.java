@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -46,47 +47,47 @@ public class TestParameterTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateDuplicateName() throws Exception {
         MessageList ml = testParam.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
 
         testCaseType.newExpectedResultPolicyCmptTypeParameter().setName(testParam.getName());
         ml = testParam.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, hasMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
 
         testParam.setName("param1");
         ml = testParam.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
 
         ITestPolicyCmptTypeParameter paramChild1 = testParam.newTestPolicyCmptTypeParamChild();
         ITestPolicyCmptTypeParameter paramChild2 = testParam.newTestPolicyCmptTypeParamChild();
         paramChild1.setName("child1");
         paramChild2.setName("child1");
         ml = paramChild1.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, hasMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
         ml = paramChild2.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, hasMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
 
         paramChild2.setName("child2");
         ml = paramChild1.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
         ml = paramChild2.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_DUPLICATE_NAME));
     }
 
     @Test
     public void testValidateInvalidName() throws Exception {
         MessageList ml = testParam.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_INVALID_NAME));
 
         testParam.setName("1");
         ml = testParam.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
+        assertThat(ml, hasMessageCode(ITestParameter.MSGCODE_INVALID_NAME));
 
         testParam.setName("param 1");
         ml = testParam.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
+        assertThat(ml, hasMessageCode(ITestParameter.MSGCODE_INVALID_NAME));
 
         testParam.setName("param1");
         ml = testParam.validate(project);
-        assertNull(ml.getMessageByCode(ITestParameter.MSGCODE_INVALID_NAME));
+        assertThat(ml, lacksMessageCode(ITestParameter.MSGCODE_INVALID_NAME));
     }
 }

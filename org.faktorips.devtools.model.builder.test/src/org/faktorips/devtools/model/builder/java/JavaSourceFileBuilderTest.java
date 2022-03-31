@@ -28,14 +28,13 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
@@ -70,7 +69,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true);
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
     }
 
     @Test
@@ -100,7 +99,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         verify(spyBuilder).generate();
 
         // check file creation
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         assertTrue(file.exists());
 
@@ -113,11 +112,11 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         spyBuilder.build(ipsSrcFile);
     }
 
-    private IFile getFile(String name, boolean derived) throws CoreException {
-        IPackageFragmentRoot artefactDestination = ipsProject.getIpsPackageFragmentRoots()[0]
+    private AFile getFile(String name, boolean derived) {
+        APackageFragmentRoot artefactDestination = ipsProject.getIpsPackageFragmentRoots()[0]
                 .getArtefactDestination(derived);
-        IFolder folder = (IFolder)artefactDestination.getResource();
-        IFile file = folder.getFile(name);
+        AFolder folder = (AFolder)artefactDestination.getResource();
+        AFile file = folder.getFile(name);
         return file;
     }
 
@@ -131,7 +130,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
 
         spyBuilder.build(ipsSrcFile);
 
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertTrue(file.exists());
         assertFalse(file.isDerived());
         assertFalse(file.getParent().isDerived());
@@ -173,7 +172,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         builder.build(ipsSrcFile);
         builder.afterBuild(ipsSrcFile);
         // check file creation
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         assertTrue(file.exists());
 
         // check file deletion
@@ -191,7 +190,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetQualifiedClassName() throws CoreException {
+    public void testGetQualifiedClassName() {
         builder = new StubJavaSourceFileBuilder(new TestIpsArtefactBuilderSet(),
                 new LocalizedStringsSet(JavaSourceFileBuilderTest.class), ipsSrcFile, false);
         IIpsProject ipsProject = mock(IIpsProject.class);
@@ -210,7 +209,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetQualifiedClassName_noPublishedInterfaces() throws CoreException {
+    public void testGetQualifiedClassName_noPublishedInterfaces() {
         TestIpsArtefactBuilderSet standardBuilderSetSpy = spy(new TestIpsArtefactBuilderSet());
         doReturn(false).when(standardBuilderSetSpy).isGeneratePublishedInterfaces();
         builder = new StubJavaSourceFileBuilder(standardBuilderSetSpy,
@@ -231,7 +230,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAdditionalAnnotations() throws CoreException {
+    public void testAdditionalAnnotations() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredAdditionalAnnotations() {
@@ -239,12 +238,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -260,12 +259,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 //@formatter:on
             }
         };
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
 
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
         String javaFileContents = builder.getJavaFileContents(file, ipsProject.getProject().getDefaultCharset());
 
         assertThat(javaFileContents, containsString("import foo.bar.Baz;"));
@@ -273,7 +272,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotations() throws CoreException {
+    public void testRetainedAnnotations() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -281,13 +280,13 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -322,7 +321,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -334,7 +333,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsWithAt() throws CoreException {
+    public void testRetainedAnnotationsWithAt() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -342,13 +341,13 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -383,7 +382,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -395,7 +394,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsQualified() throws CoreException {
+    public void testRetainedAnnotationsQualified() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -403,13 +402,13 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -444,7 +443,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -456,7 +455,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRetainedAnnotationsQualifiedVsUnqualified() throws CoreException {
+    public void testRetainedAnnotationsQualifiedVsUnqualified() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet() {
             @Override
             protected String getConfiguredRetainedAnnotations() {
@@ -464,13 +463,13 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
             }
         };
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -505,7 +504,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
                 "    }\n" +
                 "}");
         //@formatter:on
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
 
         builder.build(ipsSrcFile);
@@ -517,16 +516,16 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testLinebreaks_NewFile_Windows() throws CoreException {
+    public void testLinebreaks_NewFile_Windows() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\n" +
                         " * @generated\n" +
@@ -544,7 +543,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         };
 
         builder.setLineSeparatorPreference("\r\n");
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
         builder.build(ipsSrcFile);
 
@@ -556,16 +555,16 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testLinebreaks_NewFile_Linux() throws CoreException {
+    public void testLinebreaks_NewFile_Linux() {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet();
         builderSet.setIpsProject(ipsProject);
-        builderSet.beforeBuildProcess(IncrementalProjectBuilder.INCREMENTAL_BUILD);
-        IFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
+        builderSet.beforeBuildProcess(ABuildKind.INCREMENTAL);
+        AFile file = getFile("org/faktorips/sample/model/test/TestPolicy.java", false);
 
         builder = new StubJavaSourceFileBuilder(builderSet, new LocalizedStringsSet(JavaSourceFileBuilderTest.class),
                 ipsSrcFile, true) {
             @Override
-            protected String generate() throws CoreException {
+            protected String generate() {
                 //@formatter:off
                 return "/**\r\n" +
                         " * @generated\r\n" +
@@ -583,7 +582,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         };
 
         builder.setLineSeparatorPreference("\n");
-        builder.beforeBuildProcess(ipsProject, IncrementalProjectBuilder.INCREMENTAL_BUILD);
+        builder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
         builder.setMergeEnabled(true);
         builder.build(ipsSrcFile);
 
@@ -614,12 +613,12 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+        public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
             return this.ipsSrcFile.equals(ipsSrcFile);
         }
 
         @Override
-        protected String generate() throws CoreException {
+        protected String generate() {
             return "";
         }
 
@@ -649,7 +648,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        protected boolean createFileIfNotThere(IFile file) throws CoreException {
+        protected boolean createFileIfNotThere(AFile file) {
             return super.createFileIfNotThere(file);
         }
 

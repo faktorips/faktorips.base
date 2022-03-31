@@ -19,6 +19,7 @@
     <modules>
         <module>../../org.faktorips.abstracttest</module>
         <module>../../org.faktorips.abstracttest.core</module>
+        <module>../../org.faktorips.devtools.abstraction.test</module>
         <module>../../org.faktorips.devtools.ant.test</module>
         <module>../../org.faktorips.devtools.core.test</module>
         <module>../../org.faktorips.devtools.core.refactor.test</module>

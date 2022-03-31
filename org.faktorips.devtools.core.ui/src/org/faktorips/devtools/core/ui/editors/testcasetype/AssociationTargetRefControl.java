@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
@@ -43,7 +42,7 @@ public class AssociationTargetRefControl extends PcTypeRefControl {
         this.policyCmptTypeTarget = policyCmptTypeTarget;
     }
 
-    protected List<IIpsObject> getIpsObjects() throws CoreException {
+    protected List<IIpsObject> getIpsObjects() {
         if (policyCmptTypeTarget == null) {
             return new ArrayList<>();
         }

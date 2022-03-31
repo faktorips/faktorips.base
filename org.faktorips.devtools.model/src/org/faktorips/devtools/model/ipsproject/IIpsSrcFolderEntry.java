@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
-import org.eclipse.core.resources.IFolder;
+import org.faktorips.devtools.abstraction.AFolder;
 
 /**
  * An object path entry that defines a folder containing Faktor-IPS source files.
@@ -34,7 +34,7 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
     /**
      * Returns the folder containing the IPS source files.
      */
-    public IFolder getSourceFolder();
+    public AFolder getSourceFolder();
 
     /**
      * Returns the output folder for generated but mergeable Java source files. The content of the
@@ -42,18 +42,18 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * every build cycle . If a specific output folder is set for this entry, the specific output
      * folder is returned, otherwise the output folder defined in the object path is returned.
      */
-    public IFolder getOutputFolderForMergableJavaFiles();
+    public AFolder getOutputFolderForMergableJavaFiles();
 
     /**
      * Returns the entry's own output folder for generated but mergeable Java source files. This
      * output folder is used only for this entry.
      */
-    public IFolder getSpecificOutputFolderForMergableJavaFiles();
+    public AFolder getSpecificOutputFolderForMergableJavaFiles();
 
     /**
      * Sets the entry's output folder for generated but mergeable Java source files.
      */
-    public void setSpecificOutputFolderForMergableJavaFiles(IFolder outputFolder);
+    public void setSpecificOutputFolderForMergableJavaFiles(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for generated but mergeable Java source files. If a
@@ -102,19 +102,19 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * output folder is set for this entry, the specific output folder is returned, otherwise the
      * output folder defined in the object path is returned.
      */
-    public IFolder getOutputFolderForDerivedJavaFiles();
+    public AFolder getOutputFolderForDerivedJavaFiles();
 
     /**
      * Returns the entry's own output folder containing generated derived Java source files. This
      * output folder is used only for this entry.
      */
-    public IFolder getSpecificOutputFolderForDerivedJavaFiles();
+    public AFolder getSpecificOutputFolderForDerivedJavaFiles();
 
     /**
      * Sets the entry's output folder containing generated derived Java source files. This output
      * folder is used only for this entry.
      */
-    public void setSpecificOutputFolderForDerivedJavaFiles(IFolder outputFolder);
+    public void setSpecificOutputFolderForDerivedJavaFiles(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for the generated derived Java source files. If a

@@ -70,7 +70,7 @@ public class IpsObjectSelectionDialog extends TwoPaneElementSelector {
         @Override
         public String getText(Object element) {
             IIpsPackageFragment pck = ((IIpsSrcFile)element).getIpsPackageFragment();
-            return pck.getName() + " - " + pck.getEnclosingResource().getFullPath().toString(); //$NON-NLS-1$
+            return pck.getName() + " - " + pck.getEnclosingResource().getWorkspaceRelativePath().toString(); //$NON-NLS-1$
         }
     }
 }

@@ -24,10 +24,10 @@ import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
@@ -56,7 +56,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             excelTableExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -69,7 +69,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) {
 
         ExcelTableImportOperation excelTableImportOperation = new ExcelTableImportOperation(structure,
                 filename.toOSString(), targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list,
@@ -89,7 +89,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
                     filename.toOSString(), this, nullRepresentationString, exportColumnHeaderRow, list);
             enumExportOperation.run(new NullProgressMonitor());
             return true;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return false;
         }
@@ -101,7 +101,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) {
 
         ExcelEnumImportOperation enumImportOperation = new ExcelEnumImportOperation(valueContainer,
                 filename.toOSString(), this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
@@ -173,7 +173,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             }
 
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }

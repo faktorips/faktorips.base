@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.refactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
@@ -48,7 +47,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
 
     @Override
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-            SharableParticipants sharedParticipants) throws CoreException {
+            SharableParticipants sharedParticipants) {
 
         // TODO AW 03-06-2011: Move extension point properties to some central, published place
         List<RefactoringParticipant> participants = new ExtensionPoints(IpsPlugin.PLUGIN_ID)
@@ -66,7 +65,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         validationMessageList.add(getIpsObjectPart().validate(getIpsProject()));
         validationMessageList.add(getTarget().validate(getIpsProject()));
     }
@@ -76,7 +75,7 @@ public abstract class IpsPullUpProcessor extends IpsRefactoringProcessor {
      * specified and does not equal the current container.
      */
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         if (target == null) {
             status.addFatalError(NLS.bind(Messages.IpsPullUpProcessor_msgTargetNotSpecified,
                     getLocalizedContainerCaption()));

@@ -12,6 +12,8 @@ package org.faktorips.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,6 +34,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -314,7 +317,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         }
         Document doc;
         try {
-            doc = getDocumentBuilder().parse(is);
+            doc = getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,8 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -341,16 +343,16 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateDuplicateRelationTarget() throws Exception {
         MessageList ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association.getName()).setTarget(target.getQualifiedName());
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
 
         generation.newLink(association).setTarget(target.getQualifiedName());
 
         ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_DUPLICATE_RELATION_TARGET));
     }
 
     @Test
@@ -363,15 +365,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(2);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_NOT_ENOUGH_RELATIONS));
 
     }
 
@@ -385,15 +387,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         association.setMaxCardinality(1);
 
         MessageList ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, lacksMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
 
         baseGeneration.newLink(association.getTargetRoleSingular());
         ml = baseGeneration.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
+        assertThat(ml, hasMessageCode(IProductCmptLinkContainer.MSGCODE_TOO_MANY_RELATIONS));
     }
 
     @Test
@@ -406,7 +408,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         validateTooManyRelationsTest(getSubGenertation());
     }
 
-    private IProductCmptGeneration getSubGenertation() throws CoreException {
+    private IProductCmptGeneration getSubGenertation() {
         PolicyCmptType subPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy", "SubProduct");
         subPolicyCmptType.setSupertype(policyCmptType.getName());
         IProductCmptType subProductCmptType = subPolicyCmptType.findProductCmptType(ipsProject);
@@ -442,7 +444,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetChildren() throws CoreException {
+    public void testGetChildren() {
         IConfiguredDefault defaultValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
         IProductCmptLink link = generation.newLink("targetRole");
         ITableContentUsage usage = generation.newTableContentUsage();
@@ -503,7 +505,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     public void testValidateNoTemplate() throws Exception {
         generation.getProductCmpt().setProductCmptType("");
         MessageList ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
+        assertThat(ml, hasMessageCode(IProductCmptGeneration.MSGCODE_NO_TEMPLATE));
     }
 
     @Test
@@ -512,15 +514,15 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.setValidFrom(new GregorianCalendar(2000, 10, 2));
 
         MessageList ml = generation.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+        assertThat(ml, hasMessageCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
 
         generation.setValidFrom(new GregorianCalendar(2000, 9, 1));
         ml = generation.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+        assertThat(ml, lacksMessageCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
     }
 
     @Test
-    public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
+    public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws IpsException,
             Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
@@ -588,7 +590,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewValidationRule() throws CoreException {
+    public void testNewValidationRule() {
         assertEquals(0, generation.getNumOfValidationRules());
 
         newValidationRuleConfig();
@@ -731,7 +733,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsTemplate_true() throws CoreException {
+    public void testIsTemplate_true() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration gen = template.getProductCmptGeneration(0);
 
@@ -739,7 +741,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsUsingTemplate() throws CoreException {
+    public void testIsUsingTemplate() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
 
         productCmpt.setTemplate(template.getQualifiedName());
@@ -756,7 +758,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+    public void testIsPartOfTemplateHierarchy_prodCmpt() {
         IProductCmpt product = newProductCmpt(ipsProject, "product");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         product.setTemplate(null);
@@ -768,7 +770,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+    public void testIsPartOfTemplateHierarchy_template() {
         IProductCmpt product = newProductTemplate(ipsProject, "product");
         IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
         product.setTemplate(null);
@@ -780,7 +782,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddPartThis_ConfigElement() throws CoreException {
+    public void testAddPartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
         IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);
@@ -789,7 +791,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemovePartThis_ConfigElement() throws CoreException {
+    public void testRemovePartThis_ConfigElement() {
         ProductCmpt product = newProductCmpt(productCmptType, "product");
         ProductCmptGeneration generation = (ProductCmptGeneration)product.newGeneration();
         IConfiguredDefault configDefault = generation.newPropertyValue(attribute, IConfiguredDefault.class);

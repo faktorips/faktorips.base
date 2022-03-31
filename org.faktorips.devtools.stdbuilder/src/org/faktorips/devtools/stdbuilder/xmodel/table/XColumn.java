@@ -10,11 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.table;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
@@ -35,13 +33,9 @@ public class XColumn extends AbstractGeneratorModelNode {
     }
 
     protected DatatypeHelper getDatatypeHelper() {
-        try {
-            Datatype datatype = getColumn().findValueDatatype(getIpsProject());
-            DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-            return datatypeHelper;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        Datatype datatype = getColumn().findValueDatatype(getIpsProject());
+        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
+        return datatypeHelper;
     }
 
     public String getAttributeName() {

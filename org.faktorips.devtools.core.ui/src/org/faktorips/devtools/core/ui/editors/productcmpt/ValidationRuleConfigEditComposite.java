@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.function.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -23,7 +22,6 @@ import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 
@@ -63,13 +61,9 @@ public class ValidationRuleConfigEditComposite
     }
 
     private String getValidationRuleDescription() {
-        try {
-            IValidationRule validationRule = getPropertyValue().findValidationRule(getPropertyValue().getIpsProject());
-            if (validationRule != null) {
-                return IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(validationRule);
-            }
-        } catch (CoreException ex) {
-            throw new CoreRuntimeException(ex);
+        IValidationRule validationRule = getPropertyValue().findValidationRule(getPropertyValue().getIpsProject());
+        if (validationRule != null) {
+            return IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(validationRule);
         }
         return StringUtils.EMPTY;
     }

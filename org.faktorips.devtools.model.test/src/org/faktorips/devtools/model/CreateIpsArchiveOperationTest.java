@@ -19,13 +19,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchive;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -44,13 +43,13 @@ import org.junit.Test;
 public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testRun() throws CoreException {
+    public void testRun() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorCoverage", "mycompany.motor.MotorCoverageType");
         newPolicyAndProductCmptType(project, "mycompany.home.HomePolicy", "mycompany.home.HomeProduct");
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
-        archiveFile.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
+        archiveFile.getWorkspace().build(ABuildKind.FULL, null);
 
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
@@ -76,7 +75,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithIconFile() throws CoreException {
+    public void testRunWithIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -85,16 +84,16 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test123.ipsar");
+        AFile archiveFile = project.getProject().getFile("test123.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -122,7 +121,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
      * The same icon is used in two product component types
      */
     @Test
-    public void testRun_withDoubledIconFile() throws CoreException {
+    public void testRun_withDoubledIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy2", "mycompany.motor.MotorProduct2");
@@ -132,22 +131,22 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         IIpsSrcFile productSrcFile2 = project.findIpsSrcFile(new QualifiedNameType("mycompany.motor.MotorProduct2",
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType2 = (IProductCmptType)productSrcFile2.getIpsObject();
         prodType2.setInstancesIcon("test.gif");
-        productSrcFile2.save(true, new NullProgressMonitor());
+        productSrcFile2.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test123.ipsar");
+        AFile archiveFile = project.getProject().getFile("test123.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -157,7 +156,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRunWithErroneousIconFile() throws CoreException {
+    public void testRunWithErroneousIconFile() {
         IIpsProject project = newIpsProject();
         newPolicyAndProductCmptType(project, "mycompany.motor.MotorPolicy", "mycompany.motor.MotorProduct");
 
@@ -166,16 +165,16 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
                 IpsObjectType.PRODUCT_CMPT_TYPE));
         IProductCmptType prodType = (IProductCmptType)productSrcFile.getIpsObject();
         prodType.setInstancesIcon("test_doesNotExist.gif");
-        productSrcFile.save(true, new NullProgressMonitor());
+        productSrcFile.save(new NullProgressMonitor());
 
         // create fake icon file
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        IFolder folder = (IFolder)root.getEnclosingResource();
-        IFile iconFile = folder.getFile("test.gif");
+        AFolder folder = (AFolder)root.getEnclosingResource();
+        AFile iconFile = folder.getFile("test.gif");
         // fake content, this is not a valid gif-file
-        iconFile.create(new ByteArrayInputStream("test".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("test".getBytes()), new NullProgressMonitor());
 
-        IFile archiveFile = project.getProject().getFile("test.ipsar");
+        AFile archiveFile = project.getProject().getFile("test.ipsar");
         File file = archiveFile.getLocation().toFile();
         CreateIpsArchiveOperation operation = new CreateIpsArchiveOperation(project.getIpsPackageFragmentRoots(), file);
         operation.run(new NullProgressMonitor());
@@ -202,7 +201,7 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
         InputStream inputStream = null;
         try {
             inputStream = archive.getResourceAsStream("test.gif");
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             return true;
         } finally {
             IoUtil.close(inputStream);

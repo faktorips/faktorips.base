@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.jdtcontainer;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +22,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -94,7 +95,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         try {
             currentContainer = getClasspathContainer();
         } catch (JavaModelException e) {
-            throw new CoreRuntimeException(e);
+            throw new IpsException(e);
         }
         synchronized (this) {
             if (jdtClasspathContainer != null) {
@@ -113,7 +114,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
     }
 
     private IClasspathContainer getClasspathContainer() throws JavaModelException {
-        IJavaProject javaProject = getIpsProject().getJavaProject();
+        IJavaProject javaProject = getIpsProject().getJavaProject().unwrap();
         return jdtClasspathResolver.getClasspathContainer(javaProject, getOptionalPath());
     }
 
@@ -139,7 +140,11 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
     public IClasspathContainer findClasspathContainer() throws JavaModelException {
-        IJavaProject javaProject = getIpsProject().getJavaProject();
+        AJavaProject aJavaProject = getIpsProject().getJavaProject();
+        if (aJavaProject == null) {
+            return null;
+        }
+        IJavaProject javaProject = aJavaProject.unwrap();
         if (javaProject == null) {
             return null;
         }
@@ -167,7 +172,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         if (container != null) {
             return result;
         }
-        Message msg = new Message(MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH, NLS.bind(
+        Message msg = new Message(MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH, MessageFormat.format(
                 Messages.IpsContainer4JdtClasspathContainer_err_invalidClasspathContainer, getOptionalPath()),
                 Message.ERROR, this);
         result.add(msg);

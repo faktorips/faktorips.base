@@ -41,13 +41,13 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -448,6 +448,14 @@ public class XmlUtil {
         return VALIDATORS.computeIfAbsent(ipsObjectType, ValidatingDocumentBuilderHolder::new).get();
     }
 
+    public static final void resetValidatingDocumentBuilder(IpsObjectType ipsObjectType) {
+        VALIDATORS.remove(ipsObjectType);
+    }
+
+    public static final void resetValidatingDocumentBuilders() {
+        VALIDATORS.clear();
+    }
+
     /**
      * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. The
      * {@code customErrorHandler} will be used instead of the default one.
@@ -719,9 +727,9 @@ public class XmlUtil {
     }
 
     public static final String getSchemaLocation(IpsObjectType ipsObjectType) {
-        Version version = FrameworkUtil.getBundle(XmlUtil.class).getVersion();
+        AVersion version = Abstractions.getVersion();
         String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
-                version.getMajor() + "." + version.getMinor(), //$NON-NLS-1$
+                version.majorMinor().toString(),
                 ipsObjectType.getXmlElementName());
         return schemaLocation;
     }

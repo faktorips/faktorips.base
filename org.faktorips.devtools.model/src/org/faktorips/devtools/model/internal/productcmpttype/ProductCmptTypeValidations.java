@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -44,11 +45,11 @@ public class ProductCmptTypeValidations {
      *            <code>null</code> is an accepted value
      * @return a message instance if the validation fails otherwise <code>null</code>
      * 
-     * @throws CoreException delegates raised exceptions
+     * @throws IpsException delegates raised exceptions
      */
     public static Message validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(boolean isPolicyCmptTypeAbstract,
             boolean isProductCmptTypeAbstract,
-            IProductCmptType thisProductCmptType) throws CoreException {
+            IProductCmptType thisProductCmptType) {
 
         if (isPolicyCmptTypeAbstract && !isProductCmptTypeAbstract) {
             return new Message(IProductCmptType.MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT,
@@ -80,13 +81,13 @@ public class ProductCmptTypeValidations {
      *            string if no such supertype exists
      * @param ipsProject The IPS project that is used for the validation
      * 
-     * @throws CoreException If an error occurs during the validation
+     * @throws IpsException If an error occurs during the validation
      */
     public static Message validateSupertype(IProductCmptType productCmptType,
             IProductCmptType superProductCmptType,
             String policyCmptType,
             String superPolicyCmptType,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         Message message = null;
         ObjectProperty[] invalidObjectProperties = productCmptType == null ? new ObjectProperty[0]
@@ -135,7 +136,8 @@ public class ProductCmptTypeValidations {
             String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences()
                     .getChangesOverTimeNamingConvention()
                     .getGenerationConceptNamePlural();
-            String text = NLS.bind(Messages.ProductCmptType_error_settingChangingOverTimeDiffersFromSettingInSupertype,
+            String text = MessageFormat.format(
+                    Messages.ProductCmptType_error_settingChangingOverTimeDiffersFromSettingInSupertype,
                     changingOverTimePluralName, superProductCmptType.getQualifiedName());
             list.newError(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE, text,
                     productCmptType, IProductCmptType.PROPERTY_CHANGING_OVER_TIME);

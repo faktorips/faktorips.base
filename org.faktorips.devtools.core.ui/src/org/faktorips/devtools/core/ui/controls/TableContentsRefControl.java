@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.controls;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -39,14 +39,14 @@ public class TableContentsRefControl extends IpsObjectRefControl {
      * Returns the table contents entered in this control. Returns <code>null</code> if the text in
      * the control does not identify a table contents.
      * 
-     * @throws CoreException if an exception occurs while searching for the table contents.
+     * @throws IpsException if an exception occurs while searching for the table contents.
      */
-    public ITableContents findTableContents() throws CoreException {
+    public ITableContents findTableContents() {
         return (ITableContents)findIpsObject(IpsObjectType.TABLE_CONTENTS);
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
         return findIpsSrcFilesByType(IpsObjectType.TABLE_CONTENTS);
     }
 }

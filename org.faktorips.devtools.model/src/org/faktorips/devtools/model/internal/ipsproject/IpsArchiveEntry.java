@@ -11,12 +11,11 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -59,7 +58,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public IPath getArchiveLocation() {
+    public Path getArchiveLocation() {
         if (archive == null) {
             return null;
         }
@@ -67,7 +66,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public void initStorage(IPath newArchivePath) {
+    public void initStorage(Path newArchivePath) {
         if (newArchivePath == null) {
             archive = null;
             return;
@@ -81,11 +80,11 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
 
     @Override
     public String getIpsPackageFragmentRootName() {
-        return getIpsArchive().getArchivePath().lastSegment();
+        return PathUtil.lastSegment(getIpsArchive().getArchivePath());
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) {
         if (archive == null || qnt == null) {
             return false;
         }
@@ -108,13 +107,13 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     public MessageList validate() {
         MessageList result = new MessageList();
         if (archive == null || !archive.exists()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null
+            String text = MessageFormat.format(Messages.IpsArchiveEntry_archiveDoesNotExist, archive == null ? null
                     : archive
                             .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE, text, Message.ERROR, this);
             result.add(msg);
         } else if (archive != null && !archive.isValid()) {
-            String text = NLS.bind(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null
+            String text = MessageFormat.format(Messages.IpsArchiveEntry_archiveIsInvalid, archive == null ? null
                     : archive
                             .getArchivePath().toString());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_INVALID_ARCHVE, text, Message.ERROR, this);
@@ -129,13 +128,13 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public boolean isAffectedBy(IResourceDelta delta) {
+    public boolean isAffectedBy(AResourceDelta delta) {
         return archive.isAffectedBy(delta);
     }
 
     @Override
     public boolean containsResource(String resourcePath) {
-        return archive.contains(new Path(resourcePath));
+        return archive.contains(Path.of(resourcePath));
     }
 
     @Override
@@ -159,7 +158,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public IPath getPath() {
+    public Path getPath() {
         return archive.getArchivePath();
     }
 

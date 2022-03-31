@@ -14,13 +14,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -196,14 +195,10 @@ public class AssociationDerivedUnionGroup extends Composite {
             } else {
                 association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
                 if (association instanceof IProductCmptTypeAssociation) {
-                    try {
-                        IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
-                                .findSubsettedDerivedUnion(association.getIpsProject());
-                        ((IProductCmptTypeAssociation)association).setChangingOverTime(subsettedDerivedUnion
-                                .isChangingOverTime());
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    IProductCmptTypeAssociation subsettedDerivedUnion = (IProductCmptTypeAssociation)association
+                            .findSubsettedDerivedUnion(association.getIpsProject());
+                    ((IProductCmptTypeAssociation)association).setChangingOverTime(subsettedDerivedUnion
+                            .isChangingOverTime());
                 }
             }
             notifyListeners();
@@ -250,7 +245,7 @@ public class AssociationDerivedUnionGroup extends Composite {
                         setSubset(true);
                     }
                     derivedUnionsInitialized = true;
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }

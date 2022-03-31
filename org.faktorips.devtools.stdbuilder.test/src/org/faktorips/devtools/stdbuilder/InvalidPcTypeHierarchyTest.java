@@ -35,9 +35,9 @@ public class InvalidPcTypeHierarchyTest extends AbstractStdBuilderTest {
         type2.setSupertype(type1.getQualifiedName());
         type1.setSupertype(type3.getQualifiedName());
 
-        type1.getIpsSrcFile().save(true, null);
-        type2.getIpsSrcFile().save(true, null);
-        type3.getIpsSrcFile().save(true, null);
+        type1.getIpsSrcFile().save(null);
+        type2.getIpsSrcFile().save(null);
+        type3.getIpsSrcFile().save(null);
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

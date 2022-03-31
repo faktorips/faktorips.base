@@ -20,8 +20,8 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -224,7 +224,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
     }
 
     @Test
-    public void testCreateConstrainingAssociation_multipleCallsDoNotCreateErrors() throws CoreException {
+    public void testCreateConstrainingAssociation_multipleCallsDoNotCreateErrors() {
         setUpMatchingAssociations();
         setUpInverseAssociation();
         CreateConstrainingAssociationOperation operation = new CreateConstrainingAssociationOperation(subSourceProduct,
@@ -258,7 +258,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateConstrainingAssociation_illegalArgument_targetTypeMismatch() throws CoreException {
+    public void testCreateConstrainingAssociation_illegalArgument_targetTypeMismatch() {
         IProductCmptType otherProductClass = newProductCmptType(ipsProject, "OtherProduct");
 
         setUpMatchingAssociations();
@@ -282,14 +282,14 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
         new CreateConstrainingAssociationOperation(null, productAssociation, subTargetProduct);
     }
 
-    private void assertErrorFreeness() throws CoreException {
+    private void assertErrorFreeness() {
         assertNoErrorsIn(subSourcePolicy);
         assertNoErrorsIn(subTargetPolicy);
         assertNoErrorsIn(subSourceProduct);
         assertNoErrorsIn(subTargetProduct);
     }
 
-    private void assertNoErrorsIn(IType type) throws CoreException {
+    private void assertNoErrorsIn(IType type) {
         MessageList messageList = type.validate(ipsProject);
         assertEquals(0, messageList.size());
     }
@@ -317,7 +317,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
                     constrainedAssociation);
             IPolicyCmptTypeAssociation inverseAssociation = association.findInverseAssociation(ipsProject);
             assertNotNull(inverseAssociation);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             fail();
         }
     }

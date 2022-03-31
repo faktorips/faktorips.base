@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
@@ -84,6 +84,14 @@ public interface IIpsProjectProperties {
             + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the feature ID given for a
+     * {@link #getFeatureConfiguration(String) feature configuration} is not known, as it is not
+     * contained in the list of {@link #getRequiredIpsFeatureIds() required feature IDs}.
+     */
+    public static final String MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE = MSGCODE_PREFIX
+            + "FeatureConfigurationUnknownFeature"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that more than one supported language is marked as
      * default language.
      */
@@ -112,7 +120,7 @@ public interface IIpsProjectProperties {
     /**
      * Validates the project properties.
      */
-    public MessageList validate(IIpsProject ipsProject) throws CoreException;
+    public MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns id of the builder set used to generate sourcecode from the model / product
@@ -633,19 +641,6 @@ public interface IIpsProjectProperties {
     void setMarkerEnumsEnabled(boolean enabled);
 
     /**
-     * Check if the option to allow business functions for validation rules is enabled or not
-     * 
-     * @return <code>true</code> if the option is enabled, <code>false</code> if the option is
-     *         disabled or not configured in the .ipsproject file
-     */
-    boolean isBusinessFunctionsForValidationRulesEnabled();
-
-    /**
-     * @see #isBusinessFunctionsForValidationRulesEnabled()
-     */
-    void setBusinessFunctionsForValidationRules(boolean enabled);
-
-    /**
      * Check if the default state for changing over time flag on {@link IProductCmptType
      * IProductCmptTypes} is enabled or disabled.
      * 
@@ -679,6 +674,13 @@ public interface IIpsProjectProperties {
      * @see #getInferredTemplateLinkThreshold()
      */
     void setInferredTemplateLinkThreshold(Decimal inferredTemplateLinkThreshold);
+
+    /**
+     * Returns the {@link IIpsFeatureConfiguration} for the feature identified by the given ID.
+     *
+     * @see #getRequiredIpsFeatureIds()
+     */
+    IIpsFeatureConfiguration getFeatureConfiguration(String featureId);
 
     /**
      * Returns the severity for validation messages when two product components have the same kindId

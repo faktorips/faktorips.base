@@ -10,16 +10,15 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.hasSize;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
-import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
@@ -61,7 +60,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
         productCmpt = newProductCmpt(productCmptType, "ProductA");
     }
 
-    private IProductCmptTypeAttribute createProductAttribute() throws CoreException {
+    private IProductCmptTypeAttribute createProductAttribute() {
         IProductCmptTypeAttribute productAttribute = (IProductCmptTypeAttribute)productCmptType.newAttribute();
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
@@ -69,7 +68,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
         return productAttribute;
     }
 
-    private IPolicyCmptTypeAttribute createPolicyAttribute() throws CoreException {
+    private IPolicyCmptTypeAttribute createPolicyAttribute() {
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute();
         policyAttribute.setDatatype(Datatype.DECIMAL.getQualifiedName());
         policyAttribute.setValueSetConfiguredByProduct(true);
@@ -79,7 +78,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoney() throws CoreException {
+    public void testValidateDecimalToMoney() {
         IProductCmptTypeAttribute productAttribute = createProductAttribute();
         IAttributeValue attrValue = productCmpt.getLatestProductCmptGeneration().getAttributeValue("productAttribute");
         SingleValueHolder valueHolder = new SingleValueHolder(attrValue, "10.00");
@@ -102,7 +101,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyWithNotConvertibleInput() throws CoreException {
+    public void testValidateDecimalToMoneyWithNotConvertibleInput() {
         IProductCmptTypeAttribute productAttribute = createProductAttribute();
         IAttributeValue attrValue = productCmpt.getLatestProductCmptGeneration().getAttributeValue("productAttribute");
         SingleValueHolder valueHolder = new SingleValueHolder(attrValue, "10 00");
@@ -118,7 +117,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyMultiValueAllConvertible() throws CoreException {
+    public void testValidateDecimalToMoneyMultiValueAllConvertible() {
         IProductCmptTypeAttribute productAttribute = createProductAttribute();
         IAttributeValue attrValue = productCmpt.getLatestProductCmptGeneration().getAttributeValue("productAttribute");
         productAttribute.setMultiValueAttribute(true);
@@ -145,7 +144,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyMultiValueSomeNotConvertible() throws CoreException {
+    public void testValidateDecimalToMoneyMultiValueSomeNotConvertible() {
         IProductCmptTypeAttribute productAttribute = createProductAttribute();
         IAttributeValue attrValue = productCmpt.getLatestProductCmptGeneration().getAttributeValue("productAttribute");
         productAttribute.setMultiValueAttribute(true);
@@ -173,7 +172,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyConfiguredDefault() throws CoreException {
+    public void testValidateDecimalToMoneyConfiguredDefault() {
         IPolicyCmptTypeAttribute policyAttribute = createPolicyAttribute();
         IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(policyAttribute, IConfiguredDefault.class);
         configuredDefault.setValue("10.00");
@@ -191,7 +190,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyConfiguredDefaultNonConvertableValues() throws CoreException {
+    public void testValidateDecimalToMoneyConfiguredDefaultNonConvertableValues() {
         IPolicyCmptTypeAttribute policyAttribute = createPolicyAttribute();
         IConfiguredDefault configuredDefault = productCmpt.getPropertyValue(policyAttribute, IConfiguredDefault.class);
         configuredDefault.setValue("10.99999");
@@ -211,7 +210,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyConfiguredValueSetEnum() throws CoreException {
+    public void testValidateDecimalToMoneyConfiguredValueSetEnum() {
         IPolicyCmptTypeAttribute policyAttribute = createPolicyAttribute();
         IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyAttribute,
                 IConfiguredValueSet.class);
@@ -235,7 +234,7 @@ public class ValueConverterIntegrationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDecimalToMoneyConfiguredValueSetRange() throws CoreException {
+    public void testValidateDecimalToMoneyConfiguredValueSetRange() {
         IPolicyCmptTypeAttribute policyAttribute = createPolicyAttribute();
         IConfiguredValueSet configuredValueSet = productCmpt.getPropertyValue(policyAttribute,
                 IConfiguredValueSet.class);

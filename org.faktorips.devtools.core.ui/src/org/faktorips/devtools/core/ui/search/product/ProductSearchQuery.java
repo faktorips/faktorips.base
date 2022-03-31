@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
@@ -53,7 +52,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     }
 
     @Override
-    protected void searchDetails() throws CoreException {
+    protected void searchDetails() {
         ProductSearchQueryConditionMatcher resultBuilder = new ProductSearchQueryConditionMatcher(getSearchModel());
         Set<IProductPartsContainer> results = resultBuilder.getResults(getMatchingSrcFiles());
 
@@ -63,7 +62,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
     }
 
     @Override
-    protected Set<IIpsSrcFile> getSelectedSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getSelectedSrcFiles() {
         Set<IIpsSrcFile> selectedSrcFiles = super.getSelectedSrcFiles();
 
         if (selectedSrcFiles.isEmpty()) {
@@ -78,7 +77,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
         return selectedSrcFiles;
     }
 
-    private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) throws CoreException {
+    private Set<IIpsSrcFile> getAllInstancesOfProductCmptType(IProductCmptType productCmptType) {
         Set<IIpsSrcFile> instancesOfProductComponentType = new HashSet<>();
 
         IIpsProject[] ipsProjects = getIpsModel().getIpsProjects();
@@ -117,7 +116,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     // overwritten just for testing purposes
     @Override
-    protected Set<IIpsSrcFile> getMatchingSrcFiles() throws CoreException {
+    protected Set<IIpsSrcFile> getMatchingSrcFiles() {
         return super.getMatchingSrcFiles();
     }
 

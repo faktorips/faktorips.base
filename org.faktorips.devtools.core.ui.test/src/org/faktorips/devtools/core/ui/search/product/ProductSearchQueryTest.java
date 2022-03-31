@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.search.product.conditions.table.ProductSearchConditionPresentationModel;
 import org.faktorips.devtools.core.ui.search.scope.IIpsSearchScope;
 import org.faktorips.devtools.model.IIpsModel;
@@ -96,7 +95,7 @@ public class ProductSearchQueryTest {
     }
 
     @Test
-    public void testGetSelectedSrcFiles() throws CoreException {
+    public void testGetSelectedSrcFiles() {
         query = new ProductSearchQuery(model, ipsModel);
 
         IIpsSrcFile wrongObjectType = mock(IIpsSrcFile.class);
@@ -122,7 +121,7 @@ public class ProductSearchQueryTest {
     }
 
     @Test
-    public void testGetSelectedSrcFilesNoSelectedFiles() throws CoreException {
+    public void testGetSelectedSrcFilesNoSelectedFiles() {
         query = new ProductSearchQuery(model, ipsModel);
 
         IIpsSrcFile wrongObjectType = mock(IIpsSrcFile.class);

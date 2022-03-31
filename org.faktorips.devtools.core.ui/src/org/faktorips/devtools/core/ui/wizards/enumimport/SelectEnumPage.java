@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.enumimport;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -19,6 +18,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.EnumRefControl;
@@ -81,7 +82,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     @Override
-    public IIpsObject getTargetForImport() throws CoreException {
+    public IIpsObject getTargetForImport() {
         return ((EnumRefControl)importTargetControl).findEnum();
     }
 
@@ -92,7 +93,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
             setTargetForImport(null);
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile src = (IIpsSrcFile)element;
             setTargetForImport(src.getIpsObject());
@@ -115,32 +116,28 @@ public class SelectEnumPage extends SelectImportTargetPage {
             setErrorMessage(Messages.SelectEnumPage_msgEnumEmpty);
             return;
         }
-        try {
-            IEnumValueContainer enumValueContainer = (IEnumValueContainer)getTargetForImport();
-            if (!validateEnumValueContainerExists(enumValueContainer)) {
-                setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
+        IEnumValueContainer enumValueContainer = (IEnumValueContainer)getTargetForImport();
+        if (!validateEnumValueContainerExists(enumValueContainer)) {
+            setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
+            return;
+        }
+        if (enumValueContainer instanceof IEnumType) {
+            IEnumType enumType = (IEnumType)enumValueContainer;
+            if (enumType.isAbstract()) {
+                setErrorMessage(Messages.SelectEnumPage_msgAbstractEnumType);
                 return;
             }
-            if (enumValueContainer instanceof IEnumType) {
-                IEnumType enumType = (IEnumType)enumValueContainer;
-                if (enumType.isAbstract()) {
-                    setErrorMessage(Messages.SelectEnumPage_msgAbstractEnumType);
-                    return;
-                }
+        }
+        if (enumValueContainer instanceof IEnumContent) {
+            IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+            if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
+                setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotValid);
+                return;
             }
-            if (enumValueContainer instanceof IEnumContent) {
-                IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
-                if (enumType.validate(enumType.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
-                    setErrorMessage(Messages.SelectEnumPage_msgEnumTypeNotValid);
-                    return;
-                }
-            }
+        }
 
-            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
-                setMessage(Messages.SelectEnumPage_msgEnumNotValid, WARNING);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        if (enumValueContainer.validate(enumValueContainer.getIpsProject()).getNoOfMessages(Severity.ERROR) > 0) {
+            setMessage(Messages.SelectEnumPage_msgEnumNotValid, WARNING);
         }
     }
 

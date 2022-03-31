@@ -39,7 +39,7 @@ public class ProductCmptWithoutVersionIdTest extends AbstractStdBuilderTest {
 
         IPolicyCmptType type = newPolicyAndProductCmptType(project, "Policy", "Product");
         IProductCmpt cmpt = newProductCmpt(type.findProductCmptType(project), "Product-A");
-        cmpt.getIpsSrcFile().save(true, null);
+        cmpt.getIpsSrcFile().save(null);
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

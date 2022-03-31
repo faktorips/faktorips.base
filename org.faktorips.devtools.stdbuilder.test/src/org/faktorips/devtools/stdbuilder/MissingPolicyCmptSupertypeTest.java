@@ -25,7 +25,7 @@ public class MissingPolicyCmptSupertypeTest extends AbstractStdBuilderTest {
         IPolicyCmptType type = newPolicyCmptType(project, "Type1");
         type.setSupertype("MissingSupertype");
 
-        type.getIpsSrcFile().save(true, null);
+        type.getIpsSrcFile().save(null);
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }

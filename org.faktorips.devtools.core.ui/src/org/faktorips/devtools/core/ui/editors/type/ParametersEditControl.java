@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.type;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ColumnPixelData;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ICellEditorListener;
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -164,7 +164,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         uiToolkit.setDataChangeable(this, paramContainer != null);
     }
 
-    private MessageList validate(IParameter param) throws CoreException {
+    private MessageList validate(IParameter param) {
         MessageList result = paramContainer.validate(ipsProject);
         return result.getMessagesFor(param);
     }
@@ -222,7 +222,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         fTableViewer.setLabelProvider(new ParameterInfoLabelProvider());
         new TableMessageHoverService(fTableViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 return validate((IParameter)element);
             }
         };
@@ -674,7 +674,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                 MessageList list = validate((IParameter)element);
                 return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(list.getSeverity()),
                         false);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return null;
             }

@@ -10,13 +10,11 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -44,21 +42,17 @@ public class LinkViewItem extends PlatformObject implements ILinkSectionViewItem
     @Override
     public Image getImage() {
         IProductCmpt product;
-        try {
-            ImageDescriptor imageDescriptor;
-            product = link.findTarget(link.getIpsProject());
-            if (product == null) {
-                imageDescriptor = IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmpt.class);
-            } else {
-                imageDescriptor = IpsUIPlugin.getImageHandling().getImageDescriptor(product);
-            }
-            if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
-                return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
-            } else {
-                return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ImageDescriptor imageDescriptor;
+        product = link.findTarget(link.getIpsProject());
+        if (product == null) {
+            imageDescriptor = IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmpt.class);
+        } else {
+            imageDescriptor = IpsUIPlugin.getImageHandling().getImageDescriptor(product);
+        }
+        if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return IpsUIPlugin.getImageHandling().getDisabledSharedImage(imageDescriptor);
+        } else {
+            return IpsUIPlugin.getImageHandling().getImage(imageDescriptor);
         }
     }
 

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -28,7 +27,7 @@ public class NewPcTypeWizard extends NewIpsObjectWizard {
     }
 
     @Override
-    protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) throws CoreException {
+    protected IWizardPage[] createAdditionalPages(IStructuredSelection selection) {
         NewProductCmptTypePage page = new NewProductCmptTypePage(selection, pctypePage);
         pctypePage.setPageOfAssociatedType(page);
         return new IWizardPage[] { page };

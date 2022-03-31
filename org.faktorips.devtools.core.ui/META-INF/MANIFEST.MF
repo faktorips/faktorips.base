@@ -34,9 +34,6 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.actions,
- org.faktorips.devtools.core.ui.bf.commands,
- org.faktorips.devtools.core.ui.bf.edit,
- org.faktorips.devtools.core.ui.bf.properties,
  org.faktorips.devtools.core.ui.binding,
  org.faktorips.devtools.core.ui.commands,
  org.faktorips.devtools.core.ui.controlfactories,

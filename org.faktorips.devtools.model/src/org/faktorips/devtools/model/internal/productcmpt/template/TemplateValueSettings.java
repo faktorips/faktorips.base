@@ -13,7 +13,8 @@ package org.faktorips.devtools.model.internal.productcmpt.template;
 import static org.faktorips.devtools.model.productcmpt.template.ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
 import static org.faktorips.devtools.model.productcmpt.template.ITemplatedValue.PROPERTY_TEMPLATE_VALUE_STATUS;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.internal.productcmpt.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -63,7 +64,7 @@ public class TemplateValueSettings {
     public MessageList validate(IPropertyValue value, IIpsProject ipsProject) {
         MessageList messageList = new MessageList();
         if (isUndefinedInProductCmpt(value)) {
-            String message = NLS.bind(Messages.TemplateValueSettings_msgExcludeNotAllowedInProductCmpt,
+            String message = MessageFormat.format(Messages.TemplateValueSettings_msgExcludeNotAllowedInProductCmpt,
                     TemplateValueStatus.UNDEFINED, value);
             messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, value, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
@@ -81,11 +82,13 @@ public class TemplateValueSettings {
     public MessageList validate(IProductCmptLink link, IIpsProject ipsProject) {
         MessageList messageList = new MessageList();
         if (noInheritablePropertyFound(link, ipsProject)) {
-            String message = NLS.bind(Messages.TemplateValueSettings_msgNoInheritableLinkFound, link.getTarget());
+            String message = MessageFormat.format(Messages.TemplateValueSettings_msgNoInheritableLinkFound,
+                    link.getTarget());
             messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, link, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
         if (noDeletableLinkFound(link, ipsProject)) {
-            String message = NLS.bind(Messages.TemplateValueSettings_msgNoDeletableLinkFound, link.getTarget());
+            String message = MessageFormat.format(Messages.TemplateValueSettings_msgNoDeletableLinkFound,
+                    link.getTarget());
             messageList.newError(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS, message, link, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
         return messageList;

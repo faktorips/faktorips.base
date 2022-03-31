@@ -72,7 +72,7 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public boolean isEmpty() {
-        return containsNull() ? false : maximumLength != null && maximumLength == 0;
+        return maximumLength != null && maximumLength == 0;
     }
 
     @Override

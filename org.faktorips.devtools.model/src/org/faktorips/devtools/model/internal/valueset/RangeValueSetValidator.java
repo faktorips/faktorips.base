@@ -20,7 +20,8 @@ import static org.faktorips.devtools.model.valueset.IRangeValueSet.PROPERTY_STEP
 import static org.faktorips.devtools.model.valueset.IRangeValueSet.PROPERTY_UPPERBOUND;
 import static org.faktorips.devtools.model.valueset.IValueSet.MSGCODE_UNKNOWN_DATATYPE;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -84,8 +85,8 @@ public class RangeValueSetValidator extends AbstractValueSetValidator<RangeValue
         if (stepParsable && isNonNull(numDatatype, upperBound, lowerBound, step)) {
             String range = numDatatype.subtract(upperBound, lowerBound);
             if (!numDatatype.divisibleWithoutRemainder(range, step)) {
-                String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch,
-                        new String[] { lowerBound, upperBound, step });
+                String msg = MessageFormat.format(Messages.RangeValueSet_msgStepRangeMismatch,
+                        lowerBound, upperBound, step);
                 messages.newError(MSGCODE_STEP_RANGE_MISMATCH, msg, parentObjectProperty, lowerBoundProperty,
                         upperBoundProperty, stepProperty);
             }

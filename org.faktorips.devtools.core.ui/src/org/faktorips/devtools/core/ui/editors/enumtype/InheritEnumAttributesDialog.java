@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.enumtype;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.editors.SelectSupertypeHierarchyPartsDialog;
 import org.faktorips.devtools.core.ui.editors.SupertypeHierarchyPartsContentProvider;
@@ -52,12 +51,8 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         @Override
         protected List<IEnumAttribute> getAvailableParts(IIpsObject ipsObject) {
             IEnumType enumType = (IEnumType)ipsObject;
-            try {
-                List<IEnumAttribute> candiates = enumType.findInheritEnumAttributeCandidates(enumType.getIpsProject());
-                return candiates;
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            List<IEnumAttribute> candiates = enumType.findInheritEnumAttributeCandidates(enumType.getIpsProject());
+            return candiates;
         }
 
         @Override

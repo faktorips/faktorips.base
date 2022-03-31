@@ -10,13 +10,16 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.SortedSet;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
+import org.faktorips.devtools.abstraction.ABuildKind;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -56,32 +59,32 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void beforeBuildProcess(IIpsProject project, ABuildKind buildKind) {
         super.beforeBuildProcess(project, buildKind);
         productCmptCuBuilder.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
     @Override
-    public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
+    public void afterBuildProcess(IIpsProject project, ABuildKind buildKind) {
         super.afterBuildProcess(project, buildKind);
         productCmptCuBuilder.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         super.beforeBuild(ipsSrcFile, status);
         buildStatus = status;
     }
 
     @Override
-    public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void build(IIpsSrcFile ipsSrcFile) {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (productCmpt.isValid(getIpsProject())) {
             if (requiresJavaCompilationUnit(productCmpt)) {
@@ -96,11 +99,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    private void build(IProductCmpt productCmpt) throws CoreException {
+    private void build(IProductCmpt productCmpt) {
         productCmptCuBuilder.callBuildProcess(productCmpt, buildStatus);
     }
 
-    private void build(IProductCmptGeneration generation) throws CoreException {
+    private void build(IProductCmptGeneration generation) {
         generationBuilder.callBuildProcess(generation, buildStatus);
     }
 
@@ -127,22 +130,22 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     @Override
-    public void delete(IIpsSrcFile deletedFile) throws CoreException {
+    public void delete(IIpsSrcFile deletedFile) {
         // the problem here, is that the file is deleted and so we can't access the generations.
         // so we can get the exact file names, as the generation's valid from is part of the file
         // name
         // instead we delete all file that start with the common prefix.
         String prefix = generationBuilder.getJavaSrcFilePrefix(deletedFile);
         // get a file handle in the
-        IFile file = generationBuilder.getJavaFile(deletedFile);
+        AFile file = generationBuilder.getJavaFile(deletedFile);
         // target folder
-        IContainer folder = file.getParent();
+        AContainer folder = file.getParent();
         // now delete all files that start with the common
-        IResource[] members = folder.members();
+        SortedSet<? extends AResource> members = folder == null ? Collections.emptySortedSet() : folder.getMembers();
         // prefix
-        for (IResource member : members) {
-            if (member.getType() == IResource.FILE && member.getName().startsWith(prefix)) {
-                member.delete(true, null);
+        for (AResource member : members) {
+            if (member.getType() == AResourceType.FILE && member.getName().startsWith(prefix)) {
+                member.delete(null);
             }
         }
     }

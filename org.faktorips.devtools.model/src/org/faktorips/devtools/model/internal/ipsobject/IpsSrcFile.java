@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.io.InputStream;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IPreSaveProcessor;
@@ -37,16 +37,16 @@ import org.w3c.dom.Document;
  */
 public class IpsSrcFile extends AbstractIpsSrcFile {
 
-    private IFile correspondingFile;
+    private AFile correspondingFile;
 
     public IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
 
     @Override
-    public IFile getCorrespondingFile() {
+    public AFile getCorrespondingFile() {
         if (correspondingFile == null) {
-            IFolder folder = (IFolder)getParent().getCorrespondingResource();
+            AFolder folder = (AFolder)getParent().getCorrespondingResource();
             correspondingFile = folder.getFile(getName());
         }
         return correspondingFile;
@@ -54,6 +54,9 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public boolean isDirty() {
+        if (!getCorrespondingFile().exists()) {
+            return false;
+        }
         IpsSrcFileContent content = getContent();
         if (content == null) {
             return false;
@@ -86,9 +89,19 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public void save(boolean force, IProgressMonitor monitor) throws CoreException {
+    public void save(IProgressMonitor monitor) throws IpsException {
+        save(true, monitor);
+    }
+
+    /**
+     * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
+     *             {@code force} parameter is ignored anyways.
+     */
+    @Deprecated(forRemoval = true, since = "22.6")
+    @Override
+    public void save(boolean force, IProgressMonitor monitor) throws IpsException {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("File does not exist " + this)); //$NON-NLS-1$
         }
         IpsSrcFileContent content = getContent();
         List<IPreSaveProcessor> preSaveProcessors = getPreSaveProcessors();
@@ -97,7 +110,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
             preSaveProcessors.forEach(p -> p.process(ipsObject));
             content = ((AbstractIpsSrcFile)ipsObject.getIpsSrcFile()).getContent();
         }
-        content.save(force, monitor);
+        content.save(monitor);
     }
 
     /**
@@ -108,20 +121,20 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public InputStream getContentFromEnclosingResource() throws CoreException {
-        return getCorrespondingFile().getContents(true);
+    public InputStream getContentFromEnclosingResource() {
+        return getCorrespondingFile().getContents();
     }
 
     @Override
-    public IIpsSrcFileMemento newMemento() throws CoreException {
+    public IIpsSrcFileMemento newMemento() {
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
         return new IpsSrcFileMemento(this, getIpsObject().toXml(doc), isDirty());
     }
 
     @Override
-    public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
+    public void setMemento(IIpsSrcFileMemento memento) {
         if (!memento.getIpsSrcFile().equals(this)) {
-            throw new CoreException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException(new IpsStatus(this + ": Memento " + memento + " is from different object.")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         getContent().updateState(memento.getState(), memento.isDirty());
     }
@@ -137,7 +150,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public boolean isMutable() {
-        IFile file = (IFile)getEnclosingResource();
+        AFile file = (AFile)getEnclosingResource();
         return file.exists() && !file.isReadOnly();
     }
 
@@ -147,22 +160,22 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
     }
 
     @Override
-    public String getBasePackageNameForMergableArtefacts() throws CoreException {
+    public String getBasePackageNameForMergableArtefacts() {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForMergableJavaClasses();
     }
 
     @Override
-    public String getBasePackageNameForDerivedArtefacts() throws CoreException {
+    public String getBasePackageNameForDerivedArtefacts() {
         IIpsPackageFragmentRoot root = getIpsPackageFragment().getRoot();
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();
         return entry.getBasePackageNameForDerivedJavaClasses();
     }
 
     @Override
-    public void delete() throws CoreException {
-        getCorrespondingResource().delete(true, null);
+    public void delete() {
+        getCorrespondingResource().delete(null);
         ((IpsModel)getIpsModel()).removeIpsSrcFileContent(this);
     }
 

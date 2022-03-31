@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -44,7 +43,7 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     }
 
     @Override
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             return isChangingOverTime(ipsSrcFile) || isGenerateDeprecatedGeneration(ipsSrcFile);
         }
@@ -76,7 +75,7 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
      * currently is not changing over time. This is used to generate &#64;deprecated annotations in
      * the generation class files.
      */
-    private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) {
         return getJavaFile(ipsSrcFile).exists();
     }
 

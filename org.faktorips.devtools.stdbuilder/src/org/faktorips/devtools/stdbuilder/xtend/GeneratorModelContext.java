@@ -96,12 +96,20 @@ public class GeneratorModelContext {
         this.annotationGeneratorMap = annotationGeneratorMap;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
+
         for (IIpsPackageFragmentRoot packageFragmentRoot : ipsProject.getIpsPackageFragmentRoots()) {
             IIpsStorage ipsStorage = packageFragmentRoot.getIpsStorage();
             if (ipsStorage instanceof AbstractIpsBundle) {
                 generatorConfigs.put(packageFragmentRoot, createConfigWithOverrides(packageFragmentRoot, ipsStorage));
             } else {
                 generatorConfigs.put(packageFragmentRoot, baseGeneratorConfig);
+            }
+        }
+
+        for (IIpsProject referencedIpsProject : ipsProject.getAllReferencedIpsProjects()) {
+            for (IIpsPackageFragmentRoot referencedRoot : referencedIpsProject.getIpsPackageFragmentRoots()) {
+                generatorConfigs.put(referencedRoot, new GeneratorConfig(
+                        referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject));
             }
         }
     }

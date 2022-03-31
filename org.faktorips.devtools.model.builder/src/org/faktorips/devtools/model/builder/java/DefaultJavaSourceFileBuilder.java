@@ -14,8 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IImportContainer;
 import org.eclipse.jdt.core.IImportDeclaration;
@@ -25,6 +23,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.TypeSection;
@@ -75,7 +75,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * the content.
      */
     @Override
-    protected String generate() throws CoreException {
+    protected String generate() {
         IImportContainer importContainer = getImportContainer();
         StringBuilder content = new StringBuilder();
         String pack = getPackage();
@@ -97,11 +97,15 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
             innerClassesSections = null;
         }
         if (importContainer != null && importContainer.exists()) {
-            content.append(importContainer.getSource());
-            ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
-            if (newImports.getNoOfImports() > 0) {
-                content.append(System.lineSeparator());
-                content.append(newImports);
+            try {
+                content.append(importContainer.getSource());
+                ImportDeclaration newImports = getNewImports(importContainer, code.getImportDeclaration(pack));
+                if (newImports.getNoOfImports() > 0) {
+                    content.append(System.lineSeparator());
+                    content.append(newImports);
+                }
+            } catch (JavaModelException e) {
+                throw new IpsException(e);
             }
         } else {
             content.append(code.getImportDeclaration(pack));
@@ -135,8 +139,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
                         + DefaultJavaSourceFileBuilder.class);
     }
 
-    private JavaCodeFragment generateClassBody(TypeSection section, List<TypeSection> innerClassSections)
-            throws CoreException {
+    private JavaCodeFragment generateClassBody(TypeSection section, List<TypeSection> innerClassSections) {
         JavaCodeFragmentBuilder codeBuilder = new JavaCodeFragmentBuilder();
 
         codeBuilder.append(section.getJavaDocForTypeBuilder().getFragment());
@@ -197,10 +200,10 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * <code>getMainTypeSection()</code> method or to <code>TypeSection</code> objects retrieved by
      * the <code>createInnerClassTypeSection()</code> method.
      * 
-     * @throws CoreException exceptions that occur during the generation process can be wrapped into
+     * @throws IpsException exceptions that occur during the generation process can be wrapped into
      *             a CoreExceptions and are safely handled by the framework
      */
-    protected abstract void generateCodeForJavatype() throws CoreException;
+    protected abstract void generateCodeForJavatype() throws IpsException;
 
     private ImportDeclaration getNewImports(IImportContainer container, ImportDeclaration decl)
             throws JavaModelException {
@@ -217,9 +220,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         return existingImports.getUncoveredImports(decl);
     }
 
-    private IImportContainer getImportContainer() throws CoreException {
-        IFile file = getJavaFile(getIpsSrcFile());
-        ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file);
+    private IImportContainer getImportContainer() {
+        AFile file = getJavaFile(getIpsSrcFile());
+        ICompilationUnit cu = JavaCore.createCompilationUnitFrom(file.unwrap());
         if (cu == null || !cu.exists()) {
             return null;
         }
@@ -240,7 +243,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
         }
     }
 
-    private void generateLoggerConstantIfNecessary() throws CoreException {
+    private void generateLoggerConstantIfNecessary() {
         if (!loggerInstanceGenerated) {
             generateLoggerInstance(mainSection.getConstantBuilder());
             loggerInstanceGenerated = true;
@@ -248,7 +251,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    private void generateLoggerInstance(JavaCodeFragmentBuilder builder) throws CoreException {
+    private void generateLoggerInstance(JavaCodeFragmentBuilder builder) {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -269,8 +272,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    protected final void generateLoggingStmtForMessageExpression(int level, JavaCodeFragment frag, String messageExp)
-            throws CoreException {
+    protected final void generateLoggingStmtForMessageExpression(int level, JavaCodeFragment frag, String messageExp) {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -286,7 +288,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     @Deprecated(since = "21.12")
     protected final void generateLoggingStmtWithConditionForMessageExpression(int level,
             JavaCodeFragment frag,
-            String messageExp) throws CoreException {
+            String messageExp) {
 
         if (!checkLoggingGenerationConditions()) {
             return;
@@ -304,7 +306,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message) throws CoreException {
+    protected final void generateLoggingStmt(int level, JavaCodeFragment frag, String message) {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -318,7 +320,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    protected final void generateLoggingCondition(int level, JavaCodeFragment frag) throws CoreException {
+    protected final void generateLoggingCondition(int level, JavaCodeFragment frag) {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -330,8 +332,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     }
 
     @Deprecated(since = "21.12")
-    protected final void generateLoggingStmtWithCondition(int level, JavaCodeFragment frag, String message)
-            throws CoreException {
+    protected final void generateLoggingStmtWithCondition(int level, JavaCodeFragment frag, String message) {
         if (!checkLoggingGenerationConditions()) {
             return;
         }
@@ -351,7 +352,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     protected final void generateMethodEnteringLoggingStmt(JavaCodeFragment frag,
             String className,
             String methodName,
-            String[] parameters) throws CoreException {
+            String[] parameters) {
 
         if (!checkLoggingGenerationConditions()) {
             return;
@@ -390,7 +391,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
     protected final void generateMethodExitingLoggingStmt(JavaCodeFragment frag,
             String className,
             String methodName,
-            String returnVariable) throws CoreException {
+            String returnVariable) {
 
         if (!checkLoggingGenerationConditions()) {
             return;
@@ -421,7 +422,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateDebugLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
+    protected final void generateDebugLoggingStmt(JavaCodeFragment frag, String message) {
         generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag,
                 message);
     }
@@ -435,7 +436,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateDebugLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateDebugLoggingCondition(JavaCodeFragment frag) {
         generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG,
                 frag);
     }
@@ -450,8 +451,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateDebugLoggingStmtWithCondition(JavaCodeFragment frag, String message)
-            throws CoreException {
+    protected final void generateDebugLoggingStmtWithCondition(JavaCodeFragment frag, String message) {
         generateLoggingStmtWithCondition(
                 org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_DEBUG, frag, message);
     }
@@ -465,7 +465,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateInfoLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
+    protected final void generateInfoLoggingStmt(JavaCodeFragment frag, String message) {
         generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO, frag,
                 message);
     }
@@ -479,7 +479,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateInfoLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateInfoLoggingCondition(JavaCodeFragment frag) {
         generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO,
                 frag);
     }
@@ -494,8 +494,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateInfoLoggingStmtWithCondition(JavaCodeFragment frag, String message)
-            throws CoreException {
+    protected final void generateInfoLoggingStmtWithCondition(JavaCodeFragment frag, String message) {
         generateLoggingStmtWithCondition(
                 org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_INFO, frag, message);
     }
@@ -509,7 +508,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateWarningLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
+    protected final void generateWarningLoggingStmt(JavaCodeFragment frag, String message) {
         generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag,
                 message);
     }
@@ -523,7 +522,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateWarningLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateWarningLoggingCondition(JavaCodeFragment frag) {
         generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING,
                 frag);
     }
@@ -538,8 +537,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateWarningLoggingStmtWithCondition(JavaCodeFragment frag, String message)
-            throws CoreException {
+    protected final void generateWarningLoggingStmtWithCondition(JavaCodeFragment frag, String message) {
         generateLoggingStmtWithCondition(
                 org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_WARNING, frag, message);
     }
@@ -553,7 +551,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateErrorLoggingStmt(JavaCodeFragment frag, String message) throws CoreException {
+    protected final void generateErrorLoggingStmt(JavaCodeFragment frag, String message) {
         generateLoggingStmt(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag,
                 message);
     }
@@ -567,7 +565,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateErrorLoggingCondition(JavaCodeFragment frag) throws CoreException {
+    protected final void generateErrorLoggingCondition(JavaCodeFragment frag) {
         generateLoggingCondition(org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR,
                 frag);
     }
@@ -582,8 +580,7 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
-    protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message)
-            throws CoreException {
+    protected final void generateErrorLoggingStmtWithCondition(JavaCodeFragment frag, String message) {
         generateLoggingStmtWithCondition(
                 org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector.LEVEL_ERROR, frag, message);
     }

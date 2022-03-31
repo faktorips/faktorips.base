@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -23,7 +22,6 @@ import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -128,11 +126,7 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
 
     private boolean isValueAvailable(String valueID) {
         IValueSet valueSet = attribute.getValueSet();
-        try {
-            return valueSet.containsValue(valueID, attribute.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return valueSet.containsValue(valueID, attribute.getIpsProject());
     }
 
     @Override

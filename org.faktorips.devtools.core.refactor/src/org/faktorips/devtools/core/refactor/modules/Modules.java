@@ -35,6 +35,7 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.core.manipulation.SharedASTProviderCore;
 import org.eclipse.jdt.core.refactoring.CompilationUnitChange;
 import org.eclipse.text.edits.TextEdit;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
@@ -52,7 +53,7 @@ public class Modules {
      *
      * @param javaProject a Java project that has a {@value #MODULE_INFO_JAVA_FILE_NAME} file
      * @param requiredModules a list of fully qualified module names
-     * @throws CoreException if the Java project has no valid {@value #MODULE_INFO_JAVA_FILE_NAME}
+     * @throws IpsException if the Java project has no valid {@value #MODULE_INFO_JAVA_FILE_NAME}
      *             file or its modification fails
      */
     public static void addRequired(IJavaProject javaProject, boolean transitive, List<String> requiredModules)

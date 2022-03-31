@@ -11,8 +11,8 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.ipsproject.bundle.IIpsBundleEntry;
 
 /**
@@ -29,7 +29,7 @@ public interface IIpsLibraryEntry extends IIpsObjectPathEntry {
      * 
      * @throws IOException In case of an exception while IO operations when initializing the library
      */
-    public void initStorage(IPath path) throws IOException;
+    public void initStorage(Path path) throws IOException;
 
-    public IPath getPath();
+    public Path getPath();
 }

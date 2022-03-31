@@ -40,12 +40,12 @@ public class DecimalNull extends Decimal implements NullObject {
 
     @Override
     public int scale() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public int signum() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     /**
@@ -255,22 +255,22 @@ public class DecimalNull extends Decimal implements NullObject {
 
     @Override
     public double doubleValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public float floatValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public int intValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public long longValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     /**
@@ -283,53 +283,47 @@ public class DecimalNull extends Decimal implements NullObject {
 
     @Override
     public byte byteValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public short shortValue() {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public int compareTo(Decimal d) {
-        if (d == null) {
-            throw newNullPointerException();
-        }
-        if (d.isNull()) {
-            return 0;
-        }
-        return -1;
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean equalsIgnoreScale(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean greaterThan(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean greaterThanOrEqual(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean lessThan(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean lessThanOrEqual(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     @Override
     public boolean notEqualsIgnoreScale(Decimal d) {
-        throw newNullPointerException();
+        throw newUnsupportedOperationException();
     }
 
     /**
@@ -372,8 +366,8 @@ public class DecimalNull extends Decimal implements NullObject {
         return ((Decimal)o).isNull();
     }
 
-    private NullPointerException newNullPointerException() throws NullPointerException {
-        return new NullPointerException("Method not applicable to null.");
+    private UnsupportedOperationException newUnsupportedOperationException() throws UnsupportedOperationException {
+        return new UnsupportedOperationException("Method not applicable to Decimal.NULL.");
     }
 
 }

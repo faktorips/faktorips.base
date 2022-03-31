@@ -14,9 +14,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -88,7 +89,7 @@ public abstract class AbstractIpsProjectMigrationOperation {
      * @param monitor Progress monitor to report progress to, can be <code>null</code>.
      */
     // CSOFF: ThrowsCount
-    public abstract MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+    public abstract MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException;
     // CSON: ThrowsCount
 
@@ -96,7 +97,7 @@ public abstract class AbstractIpsProjectMigrationOperation {
      * Returns {@link IpsMigrationOption configuration options} for this migration operation or an
      * empty collection if this operation does not require configuration.
      */
-    public Collection<IpsMigrationOption> getOptions() {
+    public Collection<IpsMigrationOption<?>> getOptions() {
         return Collections.emptySet();
     }
 

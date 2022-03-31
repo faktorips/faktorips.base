@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -37,7 +36,6 @@ import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.Messages;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -96,31 +94,26 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
         ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
-        try {
-            AbstractAssociationViewItem associationViewItem = typedSelection.getFirstElement();
-            IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
-            IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
-                    associationViewItem.getAssociationName(), productCmpt.getIpsProject());
+        AbstractAssociationViewItem associationViewItem = typedSelection.getFirstElement();
+        IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType.findAssociation(
+                associationViewItem.getAssociationName(), productCmpt.getIpsProject());
 
-            IProductCmptType targetProductCmptType = association.findTargetProductCmptType(productCmpt.getIpsProject());
-            // Possible target product component source files
-            IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
-                    true);
+        IProductCmptType targetProductCmptType = association.findTargetProductCmptType(productCmpt.getIpsProject());
+        // Possible target product component source files
+        IIpsSrcFile[] ipsSrcFiles = productCmpt.getIpsProject().findAllProductCmptSrcFiles(targetProductCmptType,
+                true);
 
-            List<IProductCmptLink> existingLinks = getExistingLinks(productCmptEditor, association);
-            Set<IIpsSrcFile> possibleTargets = getSelectableTargetProductCmpts(ipsSrcFiles, existingLinks);
-            final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
-            context.setElements(possibleTargets.toArray(new IIpsSrcFile[ipsSrcFiles.length]));
-            final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(
-                    HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
-            int rc = dialog.open();
-            if (rc == Window.OK && !dialog.getSelectedObjects().isEmpty()) {
-                addLinksToGenerationOrProductCmpt((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
-                        association, dialog.getSelectedObjects());
-            }
-
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        List<IProductCmptLink> existingLinks = getExistingLinks(productCmptEditor, association);
+        Set<IIpsSrcFile> possibleTargets = getSelectableTargetProductCmpts(ipsSrcFiles, existingLinks);
+        final StaticContentSelectIpsObjectContext context = new StaticContentSelectIpsObjectContext();
+        context.setElements(possibleTargets.toArray(new IIpsSrcFile[ipsSrcFiles.length]));
+        final OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(
+                HandlerUtil.getActiveShell(event), Messages.AddLinkAction_selectDialogTitle, context, true);
+        int rc = dialog.open();
+        if (rc == Window.OK && !dialog.getSelectedObjects().isEmpty()) {
+            addLinksToGenerationOrProductCmpt((IProductCmptGeneration)productCmptEditor.getActiveGeneration(),
+                    association, dialog.getSelectedObjects());
         }
     }
 

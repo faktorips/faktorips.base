@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.htmlexport.pages.standard;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -51,10 +51,10 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     /**
      * creates a page for the given {@link ITestCase} with the given context
      * 
-     * @throws CoreException if the ITestCaseType for the ITestCase could not be found
+     * @throws IpsException if the ITestCaseType for the ITestCase could not be found
      * 
      */
-    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) throws CoreException {
+    protected TestCaseContentPageElement(ITestCase object, DocumentationContext context) {
         super(object, context);
         testCaseType = object.findTestCaseType(context.getIpsProject());
     }
@@ -102,7 +102,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             if (testObject instanceof ITestPolicyCmpt) {
                 return createTestPolicyCmptPageElement((ITestPolicyCmpt)testObject);
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR, "Error creating IPageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
@@ -111,7 +111,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 getContext().getLabel(testObject) + " " + testObject.getClass(), getContext()); //$NON-NLS-1$
     }
 
-    private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
                         new TextPageElement(testObject.getTestParameterName(), getContext())),
@@ -131,7 +131,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) throws CoreException {
+    private IPageElement createTestPolicyCmptTestAttributesTable(ITestPolicyCmpt testObject) {
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(
@@ -165,7 +165,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         return testObjectPageElement;
     }
 
-    private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
+    private IPageElement createTestValuePageElement(ITestValue testObject) {
         TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
                 getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
                         new TextPageElement(testObject.getTestParameterName(), getContext())),
@@ -201,7 +201,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
                     getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not find image for " + getDocumentedIpsObject().getName())); //$NON-NLS-1$
         }

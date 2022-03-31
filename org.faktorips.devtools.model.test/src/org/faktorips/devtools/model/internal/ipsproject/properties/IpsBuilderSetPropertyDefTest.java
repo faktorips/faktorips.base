@@ -34,6 +34,9 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestLogger;
 import org.faktorips.abstracttest.TestMockingUtils;
+import org.faktorips.devtools.abstraction.AJavaProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
@@ -43,7 +46,6 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testloadExtensions() {
-
         Map<String, String> attributes = new HashMap<>();
         attributes.put("value", "first");
         TestConfigurationElement discreteValue1 = new TestConfigurationElement("discreteValue", attributes, null,
@@ -70,7 +72,8 @@ public class IpsBuilderSetPropertyDefTest {
         attributes.put("defaultValue", "first");
         attributes.put("disableValue", "second");
         attributes.put("description", "Hello");
-        TestConfigurationElement propertyDefEl = new TestConfigurationElement("specifyLoggingLevel", attributes, null,
+        TestConfigurationElement propertyDefEl = new TestConfigurationElement("specifyLoggingLevel", attributes,
+                null,
                 new IConfigurationElement[] { discreteValuesEl });
 
         TestLogger logger = new TestLogger();
@@ -93,9 +96,11 @@ public class IpsBuilderSetPropertyDefTest {
         propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null, "builderSetId", logger, null);
         assertEquals(1, logger.getLogEntries().size());
 
-        // add the type attribute and remove the required defaultValue attribute. In this case since
+        // add the type attribute and remove the required defaultValue attribute. In this case
+        // since
         // null is an always an allowed value
-        // as a defaultValue null is the default value. It depends on the program that evaluates the
+        // as a defaultValue null is the default value. It depends on the program that evaluates
+        // the
         // default value how to treat null.
         attributes.put("type", "enum");
         attributes.remove("defaultValue");
@@ -104,7 +109,8 @@ public class IpsBuilderSetPropertyDefTest {
         assertEquals(0, logger.getLogEntries().size());
         assertNull(propertyDef.getDefaultValue(null));
 
-        // add the defaultValue attribute and remove the required disableValue attribute. Here the
+        // add the defaultValue attribute and remove the required disableValue attribute. Here
+        // the
         // same applies as to the default value above
         attributes.put("defaultValue", "enum");
         attributes.remove("disableValue");
@@ -116,7 +122,6 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testloadExtensionsIntegerValue() {
-
         HashMap<String, String> attributes = new HashMap<>();
         attributes.put("name", "debugLevel");
         attributes.put("type", "integer");
@@ -253,51 +258,52 @@ public class IpsBuilderSetPropertyDefTest {
 
     @Test
     public void testValidateAvailability() {
+        if (Abstractions.isEclipseRunning()) {
+            Map<String, String> attributes = new HashMap<>();
+            attributes.put("value", "1.4");
+            TestConfigurationElement jdk14 = new TestConfigurationElement("level", attributes, null,
+                    new IConfigurationElement[] {});
 
-        Map<String, String> attributes = new HashMap<>();
-        attributes.put("value", "1.4");
-        TestConfigurationElement jdk14 = new TestConfigurationElement("level", attributes, null,
-                new IConfigurationElement[] {});
+            attributes = new HashMap<>();
+            attributes.put("value", "1.5");
+            TestConfigurationElement jdk15 = new TestConfigurationElement("level", attributes, null,
+                    new IConfigurationElement[] {});
 
-        attributes = new HashMap<>();
-        attributes.put("value", "1.5");
-        TestConfigurationElement jdk15 = new TestConfigurationElement("level", attributes, null,
-                new IConfigurationElement[] {});
+            attributes = new HashMap<>();
+            attributes.put("value", "1.6");
+            TestConfigurationElement jdk16 = new TestConfigurationElement("level", attributes, null,
+                    new IConfigurationElement[] {});
 
-        attributes = new HashMap<>();
-        attributes.put("value", "1.6");
-        TestConfigurationElement jdk16 = new TestConfigurationElement("level", attributes, null,
-                new IConfigurationElement[] {});
+            TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels",
+                    new HashMap<String, String>(), null, new IConfigurationElement[] { jdk14, jdk15, jdk16 });
 
-        TestConfigurationElement jdkCompliances = new TestConfigurationElement("jdkComplianceLevels",
-                new HashMap<String, String>(), null, new IConfigurationElement[] { jdk14, jdk15, jdk16 });
+            attributes = new HashMap<>();
+            attributes.put("name", "logLevel");
+            attributes.put("type", "integer");
+            attributes.put("label", "Log Level");
+            attributes.put("defaultValue", "1");
+            attributes.put("disableValue", "0");
+            attributes.put("description", "Hello");
+            TestConfigurationElement propertyDefEl = new TestConfigurationElement("logLevelElement", attributes, null,
+                    new IConfigurationElement[] { jdkCompliances });
 
-        attributes = new HashMap<>();
-        attributes.put("name", "logLevel");
-        attributes.put("type", "integer");
-        attributes.put("label", "Log Level");
-        attributes.put("defaultValue", "1");
-        attributes.put("disableValue", "0");
-        attributes.put("description", "Hello");
-        TestConfigurationElement propertyDefEl = new TestConfigurationElement("logLevelElement", attributes, null,
-                new IConfigurationElement[] { jdkCompliances });
+            TestLogger logger = new TestLogger();
+            IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null,
+                    "builderSetId", logger, null);
+            assertTrue(logger.getLogEntries().isEmpty());
 
-        TestLogger logger = new TestLogger();
-        IIpsBuilderSetPropertyDef propertyDef = IpsBuilderSetPropertyDef.loadExtensions(propertyDefEl, null,
-                "builderSetId", logger, null);
-        assertTrue(logger.getLogEntries().isEmpty());
+            IIpsProject ipsProject = createTestIpsProject("1.4");
+            assertTrue(propertyDef.isAvailable(ipsProject));
 
-        IIpsProject ipsProject = createTestIpsProject("1.4");
-        assertTrue(propertyDef.isAvailable(ipsProject));
+            ipsProject = createTestIpsProject("1.5");
+            assertTrue(propertyDef.isAvailable(ipsProject));
 
-        ipsProject = createTestIpsProject("1.5");
-        assertTrue(propertyDef.isAvailable(ipsProject));
+            ipsProject = createTestIpsProject("1.6");
+            assertTrue(propertyDef.isAvailable(ipsProject));
 
-        ipsProject = createTestIpsProject("1.6");
-        assertTrue(propertyDef.isAvailable(ipsProject));
-
-        ipsProject = createTestIpsProject("1.3");
-        assertFalse(propertyDef.isAvailable(ipsProject));
+            ipsProject = createTestIpsProject("1.3");
+            assertFalse(propertyDef.isAvailable(ipsProject));
+        }
     }
 
     private IIpsProject createTestIpsProject(final String complianceLevel) {
@@ -307,6 +313,9 @@ public class IpsBuilderSetPropertyDefTest {
                     && ((String)args[0]).equals(JavaCore.COMPILER_COMPLIANCE)) {
                 return complianceLevel;
             }
+            if (method.getName().equals("hashCode")) {
+                return complianceLevel.hashCode();
+            }
             return null;
         };
         final IJavaProject javaProject = (IJavaProject)Proxy.newProxyInstance(IJavaProject.class.getClassLoader(),
@@ -314,7 +323,7 @@ public class IpsBuilderSetPropertyDefTest {
 
         InvocationHandler ipsProjectHandler = ($, method, $1) -> {
             if (method.getName().equals("getJavaProject")) {
-                return javaProject;
+                return Wrappers.wrap(javaProject).as(AJavaProject.class);
             }
             return null;
         };

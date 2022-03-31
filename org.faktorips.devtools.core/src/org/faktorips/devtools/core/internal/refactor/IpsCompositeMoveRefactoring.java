@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.refactor;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
@@ -37,7 +36,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
     }
 
     @Override
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws CoreException {
+    public RefactoringStatus validateUserInput(IProgressMonitor pm) {
         clearSkippedElements();
 
         RefactoringStatus refactoringStatus = new RefactoringStatus();

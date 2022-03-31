@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -51,10 +51,10 @@ public final class IpsValidation {
      * 
      * @param ipsProject Will be used for finder-methods that are used within the implementation
      * 
-     * @throws CoreException If any error occurs during the validation
+     * @throws IpsException If any error occurs during the validation
      * @throws NullPointerException If the given {@link IIpsProject} is null
      */
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         MessageList messageList = new MessageList();

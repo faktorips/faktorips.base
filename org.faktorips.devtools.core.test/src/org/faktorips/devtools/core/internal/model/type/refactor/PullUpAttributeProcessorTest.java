@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -59,7 +58,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisTypeHasNoSupertype() throws CoreException {
+    public void testCheckInitialConditionsThisTypeHasNoSupertype() {
         when(type.hasSupertype()).thenReturn(false);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -69,7 +68,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisSupertypeCannotBeFound() throws CoreException {
+    public void testCheckInitialConditionsThisSupertypeCannotBeFound() {
         when(type.hasSupertype()).thenReturn(true);
         when(type.findSupertype(ipsProject)).thenReturn(null);
 
@@ -80,7 +79,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisTargetTypeNotASupertype() throws CoreException {
+    public void testValidateUserInputThisTargetTypeNotASupertype() {
         pullUpAttributeProcessor.setTarget(type);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -90,7 +89,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisAttributeAlreadyExistingInTargetType() throws CoreException {
+    public void testValidateUserInputThisAttributeAlreadyExistingInTargetType() {
         IAttribute alreadyExistingAttribute = mock(IAttribute.class);
         when(superType.getAttribute(ATTRIBUTE_NAME)).thenReturn(alreadyExistingAttribute);
 
@@ -103,7 +102,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisOverwrittenAttributeNotFoundInTargetTypeSuperHierarchy() throws CoreException {
+    public void testValidateUserInputThisOverwrittenAttributeNotFoundInTargetTypeSuperHierarchy() {
         when(attribute.isOverwrite()).thenReturn(true);
 
         // Add another hierarchy level
@@ -120,7 +119,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisOverwrittenAttributeFoundInTargetTypeSuperHierarchy() throws CoreException {
+    public void testValidateUserInputThisOverwrittenAttributeFoundInTargetTypeSuperHierarchy() {
         when(attribute.isOverwrite()).thenReturn(true);
 
         // Add another hierarchy level
@@ -141,7 +140,7 @@ public class PullUpAttributeProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputThisValid() throws CoreException {
+    public void testValidateUserInputThisValid() {
         pullUpAttributeProcessor.setTarget(superType);
 
         RefactoringStatus status = new RefactoringStatus();

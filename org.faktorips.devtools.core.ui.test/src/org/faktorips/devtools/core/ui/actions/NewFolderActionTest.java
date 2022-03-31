@@ -16,8 +16,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -48,7 +49,7 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
         modelPackage = root.createPackageFragment("subpackage.model", true, null);
         emptyPackage = root.createPackageFragment("subpackage.model.emptypackage", true, null);
 
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder = ((AProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
         folder.create(true, false, null);
         subFolder = folder.getFolder("subfolder");
         subFolder.create(true, false, null);
@@ -59,25 +60,26 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
     @Test
     public void testCreateFolder() {
         // --- Tests for IpsPackageFragments ---
-        IFolder targetFolder = ((IFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated");
+        IFolder targetFolder = ((AFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated").unwrap();
         assertFalse(targetFolder.exists());
 
         // create handle by dot-separated folder/pathname
-        action.createFolder((IFolder)root.getCorrespondingResource(), "subpackage.model.emptypackage.toBeCreated");
+        action.createFolder(root.getCorrespondingResource().unwrap(),
+                "subpackage.model.emptypackage.toBeCreated");
         assertTrue(targetFolder.exists());
 
         // create handle for existing folder (subfolder)
-        action.createFolder((IFolder)root.getCorrespondingResource(), "subpackage.model");
+        action.createFolder(root.getCorrespondingResource().unwrap(), "subpackage.model");
         assertTrue(targetFolder.exists());
 
         // test creation of parentfolders
-        IFolder newPackage = ((IFolder)root.getCorrespondingResource()).getFolder("newPackage");
+        IFolder newPackage = ((AFolder)root.getCorrespondingResource()).getFolder("newPackage").unwrap();
         IFolder newSubPackage = newPackage.getFolder("newSubPackage");
         targetFolder = newSubPackage.getFolder("toBeCreated");
         assertFalse(newPackage.exists());
         assertFalse(newSubPackage.exists());
         assertFalse(targetFolder.exists());
-        action.createFolder((IFolder)root.getCorrespondingResource(), "newPackage.newSubPackage.toBeCreated");
+        action.createFolder(root.getCorrespondingResource().unwrap(), "newPackage.newSubPackage.toBeCreated");
         assertTrue(targetFolder.exists());
         assertTrue(newSubPackage.exists());
         assertEquals(newSubPackage, targetFolder.getParent());
@@ -115,19 +117,19 @@ public class NewFolderActionTest extends AbstractIpsPluginTest {
     @Test
     public void testGetFolder() {
         // --- Tests for IpsPackageFragments ---
-        IFolder targetFolder = ((IFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated");
+        IFolder targetFolder = ((AFolder)emptyPackage.getCorrespondingResource()).getFolder("toBeCreated").unwrap();
         assertFalse(targetFolder.exists());
 
         // create handle by dot-separated folder/pathname
-        IFolder newFolder = action.getFolder((IFolder)root.getCorrespondingResource(),
+        IFolder newFolder = action.getFolder(root.getCorrespondingResource().unwrap(),
                 "subpackage.model.emptypackage.toBeCreated");
         assertFalse(newFolder.exists());
         assertEquals(targetFolder, newFolder);
 
         // create handle for existing folder (subfolder)
-        newFolder = action.getFolder((IFolder)root.getCorrespondingResource(), "subpackage.model");
+        newFolder = action.getFolder(root.getCorrespondingResource().unwrap(), "subpackage.model");
         assertTrue(newFolder.exists());
-        assertEquals(modelPackage.getCorrespondingResource(), newFolder);
+        assertEquals(modelPackage.getCorrespondingResource().unwrap(), newFolder);
 
         // --- Tests for IResources ---
         targetFolder = subFolder.getFolder("toBeCreated");

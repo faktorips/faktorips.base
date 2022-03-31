@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <groupId>org.faktorips</groupId>
+    <artifactId>faktorips-abstraction</artifactId>
+    <version>@version@</version>
+    <packaging>jar</packaging>
+    
+    <name>Faktor-IPS Abstractions/name>
+    <description>Abstractions used in the Faktor-IPS design time tools</description>
+    <url>http://faktorzehn.org</url>
+
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>https://faktorzehn.org/</url>
+    </organization>
+
+    <scm>
+        <url>https://github.com/faktorips/faktorips.base</url>
+        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License Version 3 with additional permissions</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS-Team</name>
+            <email>fips@faktorzehn.de</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+            <version>@version@</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.common</artifactId>
+            <version>3.10.300</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+            <version>3.15.200</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.resources</artifactId>
+            <version>3.13.300</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+            <version>3.17.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

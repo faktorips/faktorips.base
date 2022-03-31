@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Widget;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -101,9 +101,9 @@ public class IpsObjectPathContainer {
      * 
      * @param parent control
      * @return IPS objectpath control
-     * @throws CoreException if the control could not be created
+     * @throws IpsException if the control could not be created
      */
-    public Control createControl(final Composite parent) throws CoreException {
+    public Control createControl(final Composite parent) {
         final UIToolkit toolkit = new UIToolkit(null);
         ipsObjectPathContainerPmo.addPropertyChangeListener(pce -> {
             if (IpsObjectPathContainerPmo.PROPERTY_ENABLED_VALUE.equals(pce.getPropertyName())) {
@@ -210,7 +210,7 @@ public class IpsObjectPathContainer {
     public boolean saveToIpsProjectFile() {
         try {
             currentIpsProject.setIpsObjectPath(ipsObjectPath);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return false;
         }

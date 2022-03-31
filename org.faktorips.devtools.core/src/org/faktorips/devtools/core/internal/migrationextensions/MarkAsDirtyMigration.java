@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.internal.migrationextensions;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -49,14 +49,14 @@ public class MarkAsDirtyMigration extends DefaultMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         MessageList messageList = super.migrate(monitor);
         MigrationUtil.updateBuilderSetDefaults(getIpsProject());
         return messageList;
     }
 
     @Override
-    protected void migrate(IIpsSrcFile srcFile) throws CoreException {
+    protected void migrate(IIpsSrcFile srcFile) {
         if (typesToMigrate.contains(srcFile.getIpsObjectType())) {
             srcFile.markAsDirty();
         }

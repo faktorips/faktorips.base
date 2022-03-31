@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.type.TypeHierarchy;
@@ -64,7 +63,7 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsNodeOfHierarchy() throws CoreException {
+    public void testIsNodeOfHierarchy() {
         IpsHierarchyViewMock testMock = new IpsHierarchyViewMock();
 
         Set<IIpsSrcFile> ipsSrcFiles = new HashSet<>();

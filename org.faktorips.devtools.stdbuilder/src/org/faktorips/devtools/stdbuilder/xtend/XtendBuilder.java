@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -59,7 +58,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    protected String generate() throws CoreException {
+    protected String generate() {
         if (getGeneratorModelRoot(getIpsObject()).isValidForCodeGeneration()) {
             String body = generateBodyInternal(getIpsObject());
             String packageDef = generatePackageDef();
@@ -100,7 +99,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws CoreException {
+    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
         super.beforeBuild(ipsSrcFile, status);
         generatorModelContext.resetContext(getPackage(), getAllSuperTypeNames(ipsSrcFile));
     }
@@ -127,7 +126,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     @Override
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public void afterBuild(IIpsSrcFile ipsSrcFile) {
         super.afterBuild(ipsSrcFile);
         generatorModelContext.resetContext(null, Collections.emptySet());
     }

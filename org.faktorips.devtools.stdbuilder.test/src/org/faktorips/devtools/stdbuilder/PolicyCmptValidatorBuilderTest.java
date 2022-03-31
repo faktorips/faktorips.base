@@ -16,10 +16,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -94,7 +94,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
         assertTrue(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
                 .exists());
 
-        sourceType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        sourceType.getIpsSrcFile().getCorrespondingFile().delete(null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
 
         assertFalse(project.getProject().getFile("src/org/faktorips/sample/model/internal/CmptValidator.java")
@@ -113,7 +113,7 @@ public class PolicyCmptValidatorBuilderTest extends AbstractStdBuilderTest {
         sourceType.setGenerateValidatorClass(false);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        IFile validator = project.getProject()
+        AFile validator = project.getProject()
                 .getFile("src/org/faktorips/sample/model/internal/CmptValidator.java");
         assertThat(validator.exists(), is(true));
     }

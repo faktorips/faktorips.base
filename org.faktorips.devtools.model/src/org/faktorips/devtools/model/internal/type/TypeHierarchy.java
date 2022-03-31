@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -64,7 +63,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
      * resolved.
      */
-    public static final TypeHierarchy getSubtypeHierarchy(IType pcType) throws CoreException {
+    public static final TypeHierarchy getSubtypeHierarchy(IType pcType) {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         hierarchy.addSubtypes(pcType, null, true, pcType.getIpsProject());
         return hierarchy;
@@ -74,8 +73,7 @@ public class TypeHierarchy implements ITypeHierarchy {
      * Creates a new type hierarchy containing all the given type's subtypes. Supertypes are not
      * resolved.
      */
-    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject)
-            throws CoreException {
+    public static final TypeHierarchy getSubtypeHierarchy(IType pcType, IIpsProject searchProject) {
         TypeHierarchy hierarchy = new TypeHierarchy(pcType);
         hierarchy.addSubtypes(pcType, null, false, searchProject);
         return hierarchy;
@@ -84,7 +82,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     /**
      * Creates a new type hierarchy containing all the given type's subtypes and supertypes.
      */
-    public static final TypeHierarchy getTypeHierarchy(IType pcType) throws CoreException {
+    public static final TypeHierarchy getTypeHierarchy(IType pcType) {
         TypeHierarchy hierarchy = getSupertypeHierarchy(pcType);
         Node pcTypeNode = hierarchy.nodes.get(pcType);
         List<IType> subtypes = hierarchy.searchDirectSubtypes(pcType, true, pcType.getIpsProject());
@@ -95,8 +93,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return hierarchy;
     }
 
-    private void addSubtypes(IType pcType, IType superType, boolean searchReferencingProjects, IIpsProject ipsProject)
-            throws CoreException {
+    private void addSubtypes(IType pcType, IType superType, boolean searchReferencingProjects, IIpsProject ipsProject) {
         List<IType> subtypes = searchDirectSubtypes(pcType, searchReferencingProjects, ipsProject);
         Node node = new Node(pcType, superType, subtypes);
         add(node);
@@ -105,8 +102,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         }
     }
 
-    private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject)
-            throws CoreException {
+    private List<IType> searchDirectSubtypes(IType type, boolean searchReferencingProjects, IIpsProject ipsProject) {
         List<IType> subtypes = new ArrayList<>();
         if (searchReferencingProjects) {
             IIpsProject[] referencingProjects = ipsProject.findReferencingProjectLeavesOrSelf();
@@ -119,7 +115,7 @@ public class TypeHierarchy implements ITypeHierarchy {
         return subtypes;
     }
 
-    private void findDirectSubtypes(IType type, List<IType> subtypes, IIpsProject project) throws CoreException {
+    private void findDirectSubtypes(IType type, List<IType> subtypes, IIpsProject project) {
         IIpsSrcFile[] candidateSrcFiles = project.findIpsSrcFiles(type.getIpsObjectType());
         for (IIpsSrcFile candidateSrcFile : candidateSrcFiles) {
             String candidateSuperTypeName = candidateSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);

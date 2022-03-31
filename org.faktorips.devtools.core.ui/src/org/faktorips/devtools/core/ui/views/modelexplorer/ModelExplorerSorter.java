@@ -39,7 +39,6 @@ import org.faktorips.devtools.model.type.IMethod;
  * 
  * @author Stefan Widmaier
  */
-@SuppressWarnings("deprecation")
 public class ModelExplorerSorter extends ViewerComparator {
 
     private static final Map<IpsObjectType, ModelExplorerCategory> TYPE_TO_CATEGORY = new HashMap<>();
@@ -48,7 +47,6 @@ public class ModelExplorerSorter extends ViewerComparator {
         TYPE_TO_CATEGORY.put(IpsObjectType.POLICY_CMPT_TYPE, ModelExplorerCategory.CAT_POLICY_CMPT_TYPE);
         TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_CMPT_TYPE, ModelExplorerCategory.CAT_PRODUCT_CMPT_TYPE);
         TYPE_TO_CATEGORY.put(IpsObjectType.ENUM_TYPE, ModelExplorerCategory.CAT_ENUM_TYPE);
-        TYPE_TO_CATEGORY.put(IpsObjectType.BUSINESS_FUNCTION, ModelExplorerCategory.CAT_BUSINESS_FUNCTION);
         TYPE_TO_CATEGORY.put(IpsObjectType.TABLE_STRUCTURE, ModelExplorerCategory.CAT_TABLE_STRUCTURE);
         TYPE_TO_CATEGORY.put(IpsObjectType.TEST_CASE_TYPE, ModelExplorerCategory.CAT_TEST_CASE_TYPE);
         TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_TEMPLATE, ModelExplorerCategory.CAT_PRODUCT_CMPT);

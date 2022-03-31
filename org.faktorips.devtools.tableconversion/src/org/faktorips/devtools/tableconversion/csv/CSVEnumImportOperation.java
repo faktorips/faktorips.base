@@ -19,12 +19,12 @@ import java.util.Locale;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
@@ -46,7 +46,7 @@ import org.faktorips.values.LocalizedString;
  * 
  * @author Roman Grutza
  */
-public class CSVEnumImportOperation implements IWorkspaceRunnable {
+public class CSVEnumImportOperation implements ICoreRunnable {
 
     private final IEnumValueContainer valueContainer;
     private final String sourceFile;
@@ -81,14 +81,14 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
                 ValueDatatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());
                 datatypes[i] = datatype;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
@@ -109,12 +109,12 @@ public class CSVEnumImportOperation implements IWorkspaceRunnable {
             }
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 
-    private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException, CoreException {
+    private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException {
         char fieldSeparator = getFieldSeparator();
         CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
 

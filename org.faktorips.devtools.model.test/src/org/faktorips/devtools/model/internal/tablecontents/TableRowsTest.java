@@ -23,7 +23,6 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
@@ -67,7 +66,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         table.newColumn("", "");
         table.newColumn("", "");
 
-        tableRows.getIpsSrcFile().save(true, null);
+        tableRows.getIpsSrcFile().save(null);
     }
 
     @Test
@@ -104,12 +103,12 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewRow_TableStructure() throws CoreException {
+    public void testNewRow_TableStructure() {
         structure.newColumn();
         structure.newColumn();
         table.newColumn("", "");
         table.newColumn("", "");
-        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        table.getIpsSrcFile().save(new NullProgressMonitor());
         IRow row0 = tableRows.newRow(structure, Optional.of("id23"), Arrays.asList("a", "b"));
         assertThat(row0.getId(), is("id23"));
         assertThat(row0.getRowNumber(), is(0));
@@ -119,7 +118,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         tableRows.markAsChanged();
         assertThat(table.getIpsSrcFile().isDirty(), is(true));
 
-        table.getIpsSrcFile().save(true, new NullProgressMonitor());
+        table.getIpsSrcFile().save(new NullProgressMonitor());
         assertThat(table.getIpsSrcFile().isDirty(), is(false));
 
         IRow row1 = tableRows.newRow(structure, Optional.of("id42"), Arrays.asList("foo", "bar"));
@@ -187,7 +186,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_RoundtripWithCVS() throws CoreException {
+    public void testToXml_RoundtripWithCVS() {
         setFormatToCsv();
         IRow row1 = newRow("A", "1", "\"ä,;\"");
         IRow row2 = newRow("", null, "|");
@@ -206,7 +205,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         assertThat(tableRows.getRow(1).getValue(2), is("|"));
     }
 
-    private void setFormatToCsv() throws CoreException {
+    private void setFormatToCsv() {
         IIpsProjectProperties properties = project.getProperties();
         properties.setTableContentFormat(TableContentFormat.CSV);
         project.setProperties(properties);
@@ -284,7 +283,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsUniqueKeyValidatedAutomatically() throws CoreException {
+    public void testIsUniqueKeyValidatedAutomatically() {
         createColumnsWithRangeKey();
         for (int i = 0; i < 5000;) {
             newRow(Integer.toString(i++), Integer.toString(i));
@@ -301,7 +300,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPropertiesToXml_SetsCsvFormatProperty() throws CoreException {
+    public void testPropertiesToXml_SetsCsvFormatProperty() {
         setFormatToCsv();
         Document document = newDocument();
         Element element = document.createElement(ITableRows.TAG_NAME);
@@ -312,7 +311,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPropertiesToXml_SetsNoFormatPropertyForXmlFormat() throws CoreException {
+    public void testPropertiesToXml_SetsNoFormatPropertyForXmlFormat() {
         IIpsProjectProperties properties = project.getProperties();
         properties.setTableContentFormat(TableContentFormat.XML);
         project.setProperties(properties);
@@ -325,7 +324,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPartsToXml_writesCsv() throws CoreException {
+    public void testPartsToXml_writesCsv() {
         setFormatToCsv();
         Document document = newDocument();
         Element element = document.createElement(ITableRows.TAG_NAME);
@@ -348,7 +347,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         return row;
     }
 
-    private void createColumnsWithRangeKey() throws CoreException {
+    private void createColumnsWithRangeKey() {
         IColumn column = structure.newColumn();
         column.setName("a");
         column.setDatatype("int");
@@ -358,7 +357,7 @@ public class TableRowsTest extends AbstractIpsPluginTest {
         column = structure.newColumn();
         column.setName("c");
         column.setDatatype("String");
-        structure.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
         IColumnRange range = structure.newRange();
         range.setColumnRangeType(ColumnRangeType.TWO_COLUMN_RANGE);
         range.setFromColumn("a");

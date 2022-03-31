@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.views.modelexplorer;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * This IChildrenProvider provides children for instance of the given type.
@@ -22,6 +22,6 @@ public interface IChildrenProvider<T> {
     /**
      * returns an array of Objects, which represents the children of the given element.
      */
-    Object[] getChildren(T element) throws CoreException;
+    Object[] getChildren(T element) throws IpsException;
 
 }

@@ -558,7 +558,7 @@ public class PolicyAssociationTest {
 
     @IpsProductCmptType(name = "MyProduct")
     @IpsAssociations({ "Matching" })
-    private static abstract class Product extends ProductComponent {
+    private abstract static class Product extends ProductComponent {
 
         private Target target;
 

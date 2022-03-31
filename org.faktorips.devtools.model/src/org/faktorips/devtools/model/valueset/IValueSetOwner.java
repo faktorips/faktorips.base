@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.valueset;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -34,9 +34,9 @@ public interface IValueSetOwner extends IIpsObjectPart {
     /**
      * Returns the list of allowed value set types.
      * 
-     * @throws CoreException If an error occurs.
+     * @throws IpsException If an error occurs.
      */
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException;
+    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the type of the value set.

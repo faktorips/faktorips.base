@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -108,11 +108,12 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
-            String text = NLS.bind(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound, getDatatype());
+            String text = MessageFormat.format(Messages.TestValueParameter_ValidateError_ValueDatatypeNotFound,
+                    getDatatype());
             Message msg = new Message(MSGCODE_VALUEDATATYPE_NOT_FOUND, text, Message.ERROR, this,
                     PROPERTY_VALUEDATATYPE);
             list.add(msg);
@@ -120,7 +121,7 @@ public class TestValueParameter extends TestParameter implements ITestValueParam
 
         // check the correct type
         if (isCombinedParameter() || (!isInputOrCombinedParameter() && !isExpextedResultOrCombinedParameter())) {
-            String text = NLS.bind(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type, name);
+            String text = MessageFormat.format(Messages.TestValueParameter_ValidationError_TypeNotAllowed, type, name);
             Message msg = new Message(MSGCODE_WRONG_TYPE, text, Message.ERROR, this, PROPERTY_TEST_PARAMETER_TYPE);
             list.add(msg);
         }

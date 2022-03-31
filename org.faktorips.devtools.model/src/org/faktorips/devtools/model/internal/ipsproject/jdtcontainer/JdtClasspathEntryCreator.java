@@ -11,12 +11,14 @@
 package org.faktorips.devtools.model.internal.ipsproject.jdtcontainer;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsArchiveEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -103,7 +105,7 @@ public class JdtClasspathEntryCreator {
 
         private IpsObjectPathEntry createIpsArchiveEntry(IPath path) {
             IpsArchiveEntry archiveEntry = referenceFactory.createArchiveEntry();
-            archiveEntry.initStorage(path);
+            archiveEntry.initStorage(PathMapping.toJavaPath(path));
             MessageList messageList = archiveEntry.validate();
             if (messageList.containsErrorMsg()) {
                 return null;
@@ -115,7 +117,11 @@ public class JdtClasspathEntryCreator {
         private IpsBundleEntry createBundleEntry(IPath path) {
             IpsBundleEntry ipsJarBundleEntry = referenceFactory.createIpsBundleEntry();
             try {
-                ipsJarBundleEntry.initStorage(path);
+                Path javaPath = PathMapping.toJavaPath(path);
+                if (javaPath == null) {
+                    return null;
+                }
+                ipsJarBundleEntry.initStorage(javaPath);
             } catch (IOException e) {
                 // this seem to be no jar bundle
                 return null;
@@ -150,7 +156,7 @@ public class JdtClasspathEntryCreator {
         }
 
         public IIpsProject getIpsProject(IPath path) {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(path.lastSegment());
+            AProject project = Abstractions.getWorkspace().getRoot().getProject(path.lastSegment());
             IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
             return ipsProject;
         }

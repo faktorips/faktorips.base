@@ -113,7 +113,7 @@ public class ProductCmptCompareItemTest extends AbstractIpsPluginTest {
         relation2 = generation1.newLink(productReferenced.getQualifiedName());
 
         srcFile = product.getIpsSrcFile();
-        correspondingFile = srcFile.getCorrespondingFile();
+        correspondingFile = srcFile.getCorrespondingFile().unwrap();
 
         compareItemRoot = (ProductCmptCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));
     }

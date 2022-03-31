@@ -1,3 +1,5 @@
+// CSOFF: FileLengthCheck
+// CSOFF: RegexpHeaderCheck
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
@@ -12,32 +14,33 @@ package org.faktorips.devtools.model.internal.ipsproject.properties;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -49,6 +52,7 @@ import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -79,8 +83,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
- * An ips project's properties. The project can't keep the properties on its own, as it is a handle.
+ * An IPS project's properties. The project can't keep the properties on its own, as it is a handle.
  * 
  * @author Jan Ortmann
  */
@@ -113,8 +119,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
-
-    private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
 
     private static final String SETTING_CHANGING_OVER_TIME_DEFAULT = "changingOverTimeDefault"; //$NON-NLS-1$
 
@@ -152,6 +156,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
 
     private static final String MARKER_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
+
+    private static final String FEATURE_CONFIGURATIONS_ELEMENT = "FeatureConfigurations"; //$NON-NLS-1$
+
+    private static final String FEATURE_ID_ATTRIBUTE = "featureId"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -193,7 +201,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
     private boolean enableMarkerEnums = true;
-    private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = false;
     private boolean generateValidatorClassByDefault = false;
     private boolean genericValidationByDefault = false;
@@ -226,6 +233,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String versionProviderId;
 
+    private final Map<String, IpsFeatureConfiguration> featureConfigurations = new LinkedHashMap<>();
+
     /**
      * Used to check if the additional setting "markerEnums" is configured in the .ipsproject file.
      */
@@ -253,7 +262,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         try {
             MessageList list = new MessageList();
             if (validateBuilderSetId(ipsProject, list)) {
@@ -270,30 +279,21 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validatePersistenceOption(list);
             validateVersion(list);
             validateSupportedLanguages(list);
-            validateDeprecatedBusinessFunctions(list);
+            validateFeatureConfigurations(list);
             return list;
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             // CSON: IllegalCatch
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
-            throw new CoreException(new IpsStatus(e));
-        }
-    }
-
-    @SuppressWarnings("deprecation")
-    private void validateDeprecatedBusinessFunctions(MessageList msgList) {
-        if (isBusinessFunctionsForValidationRulesEnabled()) {
-            msgList.add(new Message(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED,
-                    org.faktorips.devtools.model.internal.businessfct.Messages.BusinessFunction_deprecated,
-                    Message.WARNING,
-                    new ObjectProperty(this, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)));
+            throw new IpsException(new IpsStatus(e));
         }
     }
 
     private void validatePersistenceOption(MessageList msgList) {
         if (isPersistenceSupportEnabled()) {
-            String text = NLS.bind(Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
+            String text = MessageFormat.format(
+                    Messages.IpsProjectProperties_error_persistenceAndSharedAssociationNotAllowed,
                     SETTING_SHARED_ASSOCIATIONS, ATTRIBUTE_PERSISTENT_PROJECT);
             if (isSharedDetailToMasterAssociations()) {
                 msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_OPTIONAL_CONSTRAINT, text, Message.ERROR,
@@ -304,7 +304,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void validateProductCmptNamingStrategy(MessageList msgList) {
         if (productCmptNamingStrategy == null) {
-            String text = NLS.bind(Messages.IpsProjectProperties_unknownNamingStrategy, productCmptNamingStrategyId);
+            String text = MessageFormat.format(Messages.IpsProjectProperties_unknownNamingStrategy,
+                    productCmptNamingStrategyId);
             msgList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY, text,
                     Message.ERROR, this));
         }
@@ -320,7 +321,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
         for (IIpsFeatureVersionManager manager : managers) {
             if (manager.isRequiredForAllProjects() && getMinRequiredVersionNumber(manager.getFeatureId()) == null) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgMissingMinFeatureId, manager.getFeatureId());
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgMissingMinFeatureId,
+                        manager.getFeatureId());
                 list.add(new Message(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID, text, Message.ERROR, this));
             }
         }
@@ -330,7 +332,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         IIpsModel model = ipsProject.getIpsModel();
         for (String element : predefinedDatatypesUsed) {
             if (!model.isPredefinedValueDatatype(element)) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgUnknownDatatype, element);
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgUnknownDatatype, element);
                 Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_PREDEFINED_DATATYPE, text,
                         Message.ERROR, this);
                 list.add(msg);
@@ -353,7 +355,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     /**
      * Validate the IPS object path entry.
      */
-    private void validateIpsObjectPath(MessageList list) throws CoreException {
+    private void validateIpsObjectPath(MessageList list) {
         list.add(path.validate());
     }
 
@@ -375,7 +377,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             String languageString = supportedLanguage.getLocale().getLanguage();
             if (!(isoLanguagesList.contains(languageString))) {
-                String text = NLS.bind(Messages.IpsProjectProperties_msgSupportedLanguageUnknownLocale, languageString);
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgSupportedLanguageUnknownLocale,
+                        languageString);
                 Message msg = new Message(IIpsProjectProperties.MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE, text,
                         Message.ERROR);
                 list.add(msg);
@@ -396,6 +399,23 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                         Message.ERROR);
                 list.add(msg);
                 break;
+            }
+        }
+    }
+
+    private void validateFeatureConfigurations(MessageList list) {
+        Set<String> requiredIpsFeatureIds = new LinkedHashSet<>();
+        for (String featureId : getRequiredIpsFeatureIds()) {
+            requiredIpsFeatureIds.add(featureId);
+        }
+        for (Entry<String, IpsFeatureConfiguration> featureConfigurationEntry : featureConfigurations.entrySet()) {
+            String featureId = featureConfigurationEntry.getKey();
+            if (!requiredIpsFeatureIds.contains(featureId)) {
+                String text = MessageFormat.format(Messages.IpsProjectProperties_msgUnknownFeatureIdForConfiguration,
+                        featureId);
+                Message msg = new Message(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE, text,
+                        Message.ERROR);
+                list.add(msg);
             }
         }
     }
@@ -610,6 +630,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
         projectEl.appendChild(defaultCurrencyElement);
 
+        toXmlFeatureConfigurations(doc, projectEl);
+
         return projectEl;
     }
 
@@ -687,9 +709,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(), getMarkerEnumsAsString()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
-                isBusinessFunctionsForValidationRulesEnabled()));
-
         additionalSettingsEl.appendChild(
                 createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT, isChangingOverTimeDefaultEnabled()));
 
@@ -747,6 +766,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+    }
+
+    private void toXmlFeatureConfigurations(Document doc, Element projectEl) {
+        if (!featureConfigurations.isEmpty()) {
+            Element featureConfigurationsElement = doc.createElement(FEATURE_CONFIGURATIONS_ELEMENT);
+            for (Entry<String, IpsFeatureConfiguration> featureConfiguration : featureConfigurations.entrySet()) {
+                Element featureConfigurationElement = featureConfiguration.getValue().toXml(doc);
+                featureConfigurationElement.setAttribute(FEATURE_ID_ATTRIBUTE, featureConfiguration.getKey());
+                featureConfigurationsElement.appendChild(featureConfigurationElement);
+            }
+            projectEl.appendChild(featureConfigurationsElement);
+        }
     }
 
     @Override
@@ -849,6 +880,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         initPersistenceOptions(element);
         initSupportedLanguages(element);
         initDefaultCurrency(element);
+        initFeatureConfigurations(element);
 
         initCompatibilityMode(element);
     }
@@ -875,7 +907,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createObjectPathFromManifest(IIpsProject ipsProject) {
-        IFile file = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        AFile file = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
         if (file.exists()) {
             createObjectPathFromExistingManifest(ipsProject, file);
         } else {
@@ -884,7 +916,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private void createObjectPathFromExistingManifest(IIpsProject ipsProject, IFile file) {
+    private void createObjectPathFromExistingManifest(IIpsProject ipsProject, AFile file) {
         InputStream contents = null;
         try {
             contents = file.getContents();
@@ -893,8 +925,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             path = new IpsObjectPathManifestReader(bundleManifest, ipsProject).readIpsObjectPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         } finally {
             IoUtil.close(contents);
         }
@@ -1090,8 +1120,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
             markerEnumsConfiguredInIpsProjectFile = true;
-        } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
-            setBusinessFunctionsForValidationRules(enabled);
         } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
             setChangingOverTimeDefault(enabled);
         } else if (name.equals(SETTING_GENERATE_VALIDATOR_CLASS_BY_DEFAULT)) {
@@ -1167,6 +1195,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             return Currency.getInstance(value);
         } catch (IllegalArgumentException e) {
             return defaultCurrency;
+        }
+    }
+
+    private void initFeatureConfigurations(Element element) {
+        Element featureConfigurationsElement = XmlUtil.getFirstElement(element, FEATURE_CONFIGURATIONS_ELEMENT);
+        if (featureConfigurationsElement != null) {
+            featureConfigurations.clear();
+            NodeList featureConfigurationElements = featureConfigurationsElement
+                    .getElementsByTagName(IpsFeatureConfiguration.FEATURE_CONFIGURATION_ELEMENT);
+            for (int i = 0; i < featureConfigurationElements.getLength(); i++) {
+                Element featureConfigurationElement = (Element)featureConfigurationElements.item(i);
+                String featureId = featureConfigurationElement.getAttribute(FEATURE_ID_ATTRIBUTE);
+                IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+                featureConfiguration.initFromXml(featureConfigurationElement);
+                setFeatureConfiguration(featureId, featureConfiguration);
+            }
         }
     }
 
@@ -1431,8 +1475,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + System.lineSeparator()
                 + "you should not set this version manually but using the release builder wizard." //$NON-NLS-1$
                 + System.lineSeparator() + " " + System.lineSeparator() //$NON-NLS-1$
-                + "<" //$NON-NLS-1$
-                + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "<" + PRODUCT_RELEASE + " " + RELEASE_EXTENSION_ID_ATTRIBUTE + "=\"id-of-the-extension\"" + "/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator();
         createDescriptionComment(s, parentEl);
     }
@@ -1480,9 +1523,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + System.lineSeparator() //$NON-NLS-1$
                 + "        True to allow usage of marker enums. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-                + System.lineSeparator()
-                + "    <!-- True to allow business functions for validation rules. -->" + System.lineSeparator() //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + System.lineSeparator()
                 + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + System.lineSeparator() //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"false\"" + " name=\"" + SETTING_CHANGING_OVER_TIME_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
@@ -1840,16 +1880,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public boolean isBusinessFunctionsForValidationRulesEnabled() {
-        return businessFunctionsForValidationRules;
-    }
-
-    @Override
-    public void setBusinessFunctionsForValidationRules(boolean enabled) {
-        businessFunctionsForValidationRules = enabled;
-    }
-
-    @Override
     public boolean isChangingOverTimeDefaultEnabled() {
         return changingOverTimeDefault;
     }
@@ -1910,6 +1940,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
+    public @CheckForNull IIpsFeatureConfiguration getFeatureConfiguration(String featureId) {
+        return featureConfigurations.get(featureId);
+    }
+
+    /**
+     * Sets the {@link IIpsFeatureConfiguration} for the feature identified by the given ID.
+     */
+    public void setFeatureConfiguration(String featureId, IpsFeatureConfiguration featureConfiguration) {
+        ArgumentCheck.notNull(featureId, "featureId must not be null"); //$NON-NLS-1$
+        ArgumentCheck.notNull(featureConfiguration, "featureConfiguration must not be null"); //$NON-NLS-1$
+        featureConfigurations.put(featureId, featureConfiguration);
+    }
+
+    @Override
     public Severity getDuplicateProductComponentSeverity() {
         return duplicateProductComponentSeverity;
     }
@@ -1950,3 +1994,5 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
 }
+// CSON: RegexpHeaderCheck
+// CSON: FileLengthCheck

@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.enumexport;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -62,58 +61,53 @@ public class EnumExportPage extends IpsObjectExportPage {
             setErrorMessage(Messages.EnumExportPage_msgEnumEmpty);
             return;
         }
-        try {
-            IEnumValueContainer enumValueContainer = getEnum();
-            if (enumValueContainer == null) {
-                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+        IEnumValueContainer enumValueContainer = getEnum();
+        if (enumValueContainer == null) {
+            setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+            return;
+        }
+
+        if (!enumValueContainer.exists()) {
+            setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
+            return;
+        }
+
+        if (enumValueContainer.validate(enumValueContainer.getIpsProject()).containsErrorMsg()) {
+            setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
+            return;
+        }
+
+        if (enumValueContainer instanceof IEnumType) {
+            IEnumType enumType = (IEnumType)enumValueContainer;
+            if (enumType.isAbstract()) {
+                setErrorMessage(Messages.EnumExportPage_msgAbstractEnumType);
                 return;
             }
+        }
 
-            if (!enumValueContainer.exists()) {
-                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
-                return;
+        IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
+        if (enumType == null || !enumType.exists()) {
+            setErrorMessage(Messages.EnumExportPage_msgNonExistingEnumType);
+            return;
+        }
+        if (enumValueContainer instanceof IEnumContent) {
+            MessageList enumTypeValidationMessages = enumType.validate(enumType.getIpsProject());
+            removeVersionFormatValidation(enumTypeValidationMessages);
+            if (enumTypeValidationMessages.containsErrorMsg()) {
+                setWarningMessage(Messages.EnumExportPage_msgEnumTypeNotValid);
+            } else {
+                clearWarningMessage();
             }
+        }
 
-            if (enumValueContainer.validate(enumValueContainer.getIpsProject()).containsErrorMsg()) {
-                setErrorMessage(Messages.EnumExportPage_msgEnumNotValid);
-                return;
-            }
-
-            if (enumValueContainer instanceof IEnumType) {
-                IEnumType enumType = (IEnumType)enumValueContainer;
-                if (enumType.isAbstract()) {
-                    setErrorMessage(Messages.EnumExportPage_msgAbstractEnumType);
-                    return;
-                }
-            }
-
-            IEnumType enumType = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
-            if (enumType == null || !enumType.exists()) {
-                setErrorMessage(Messages.EnumExportPage_msgNonExistingEnumType);
-                return;
-            }
-            if (enumValueContainer instanceof IEnumContent) {
-                MessageList enumTypeValidationMessages = enumType.validate(enumType.getIpsProject());
-                removeVersionFormatValidation(enumTypeValidationMessages);
-                if (enumTypeValidationMessages.containsErrorMsg()) {
-                    setWarningMessage(Messages.EnumExportPage_msgEnumTypeNotValid);
-                } else {
-                    clearWarningMessage();
-                }
-            }
-
-            boolean includeLiteralName = enumValueContainer instanceof IEnumType;
-            if (enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName) > MAX_EXCEL_COLUMNS) {
-                Object[] objects = new Object[3];
-                objects[0] = Integer.valueOf(enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName));
-                objects[1] = enumType;
-                objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
-                String text = NLS.bind(Messages.EnumExportPage_msgEnumHasTooManyColumns, objects);
-                setErrorMessage(text);
-            }
-
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        boolean includeLiteralName = enumValueContainer instanceof IEnumType;
+        if (enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName) > MAX_EXCEL_COLUMNS) {
+            Object[] objects = new Object[3];
+            objects[0] = Integer.valueOf(enumType.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName));
+            objects[1] = enumType;
+            objects[2] = Short.valueOf(MAX_EXCEL_COLUMNS);
+            String text = NLS.bind(Messages.EnumExportPage_msgEnumHasTooManyColumns, objects);
+            setErrorMessage(text);
         }
     }
 

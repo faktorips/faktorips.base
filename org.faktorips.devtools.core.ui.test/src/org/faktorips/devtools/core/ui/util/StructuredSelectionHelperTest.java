@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -68,22 +69,22 @@ public class StructuredSelectionHelperTest extends AbstractIpsPluginTest {
 
     @Test
     public void testProdCmptResource() {
-        StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection(prodCmpt
-                .getIpsSrcFile().getCorrespondingResource()));
+        IResource resource = prodCmpt.getIpsSrcFile().getCorrespondingResource().unwrap();
+        StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection(resource));
         assertProdCmpt(helper);
     }
 
     @Test
     public void testProdCmptFirstElement() {
         StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection(new Object[] {
-                prodCmpt.getIpsSrcFile().getCorrespondingResource(), new String(), new String() }));
+                prodCmpt.getIpsSrcFile().getCorrespondingResource().unwrap(), new String(), new String() }));
         assertProdCmpt(helper);
     }
 
     @Test
     public void testProdCmptIllegalType() {
         StructuredSelectionHelper helper = new StructuredSelectionHelper(new StructuredSelection(new Object[] {
-                new String(), prodCmpt.getIpsSrcFile().getCorrespondingResource(), new String() }));
+                new String(), prodCmpt.getIpsSrcFile().getCorrespondingResource().unwrap(), new String() }));
         IProductCmpt foundCmpt = helper.getFirstElementAsIpsObject(IProductCmpt.class);
         assertNull(foundCmpt);
     }

@@ -9,6 +9,11 @@
       }, {
         "regex" : true,
         "code" : "java.class.externalClassExposedInAPI",
+        "new" : "(class|interface|enum) org.faktorips.devtools.abstraction..*",
+        "justification" : "Reexported abstraction API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
         "new" : "class org.faktorips.values..*",
         "justification" : "Reexported values API"
       }, {

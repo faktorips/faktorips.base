@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -88,7 +88,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         try {
             productGenerationAttributeTable = new ProductGenerationAttributeTable(getDocumentedIpsObject(),
                     getContext());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR, "Error getting " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
             return;

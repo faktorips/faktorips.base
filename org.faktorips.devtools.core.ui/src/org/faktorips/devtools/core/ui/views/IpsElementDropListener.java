@@ -23,10 +23,12 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.model.util.NestedProjectFileUtil;
+import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 /**
  * Abstract default implementation of a drop target listener. {@link #dragOver(DropTargetEvent)},
@@ -96,7 +98,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         }
         ArrayList<Object> elements = new ArrayList<>();
         for (String filename : filenames) {
-            addElementFromResource(elements, NestedProjectFileUtil.getFile(filename));
+            addElementFromResource(elements, NestedEclipseProjectFileUtil.getFile(filename));
 
             IContainer container = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(new Path(filename));
             addElementFromResource(elements, container);
@@ -110,7 +112,7 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
         }
 
         if (resource.exists()) {
-            IIpsElement element = IIpsModel.get().getIpsElement(resource);
+            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             if (element != null && element.exists()) {
                 result.add(handlePackageFragmentRoot(element));
             } else {

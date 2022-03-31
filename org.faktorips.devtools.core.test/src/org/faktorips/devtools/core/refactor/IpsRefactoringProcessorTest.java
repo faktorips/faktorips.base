@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
@@ -26,13 +25,13 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -73,7 +72,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldReturnOkStatusOnCheckInitialConditionsIfAllConditionsAreFulfilled()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         RefactoringStatus status = testProcessorSpy.checkInitialConditions(progressMonitor);
 
@@ -82,7 +81,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldReturnFatalErrorStatusOnCheckInitialConditionsIfTheIpsElementToBeRefactoredDoesNotExist()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         when(ipsElement.exists()).thenReturn(false);
 
@@ -93,7 +92,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldCallSubclassImplementationOfCheckInitialConditionsIfChecksWereSuccessfulThusFar()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         testProcessorSpy.checkInitialConditions(progressMonitor);
 
@@ -102,7 +101,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldNotCallSubclassImplementationOfCheckInitialConditionsIfChecksWereNotSuccessfulThusFar()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         when(ipsElement.exists()).thenReturn(false);
 
@@ -113,7 +112,7 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldReturnOkStatusOnCheckFinalConditionsIfAllConditionsAreFulfilled()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         RefactoringStatus status = testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
 
@@ -122,10 +121,11 @@ public class IpsRefactoringProcessorTest {
 
     @Test
     public void shouldReturnFatalErrorStatusOnCheckFinalConditionsIfAnAffectedIpsSrcFileIsOutOfSync()
-            throws OperationCanceledException, CoreException {
+            throws OperationCanceledException {
 
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, RETURNS_DEEP_STUBS);
-        when(ipsSrcFile.getCorrespondingResource().isSynchronized(anyInt())).thenReturn(false);
+        when(ipsSrcFile.getCorrespondingResource().isSynchronized(any(AResourceTreeTraversalDepth.class)))
+                .thenReturn(false);
         Set<IIpsSrcFile> affectedFiles = new HashSet<>();
         affectedFiles.add(ipsSrcFile);
         when(testProcessorSpy.getAffectedIpsSrcFiles()).thenReturn(affectedFiles);
@@ -136,14 +136,13 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldValidateUserInputOnCheckFinalConditions() throws OperationCanceledException, CoreException {
+    public void shouldValidateUserInputOnCheckFinalConditions() throws OperationCanceledException {
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
         assertTrue(testProcessorSpy.validateUserInputThisCalled);
     }
 
     @Test
-    public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar()
-            throws CoreException {
+    public void shouldCallSubclassImplementationOfCheckFinalConditionsIfChecksWereSuccessfulThusFar() {
 
         testProcessorSpy.checkFinalConditions(progressMonitor, checkConditionsContext);
         verify(testProcessorSpy).checkFinalConditionsThis(any(RefactoringStatus.class), eq(progressMonitor),
@@ -151,8 +150,7 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar()
-            throws CoreException {
+    public void shouldNotCallSubclassImplementationOfCheckFinalConditionsIfChecksWereNotSuccessfulThusFar() {
 
         testProcessorSpy.invalid = true;
 
@@ -163,7 +161,7 @@ public class IpsRefactoringProcessorTest {
     }
 
     @Test
-    public void shouldAlwaysBeApplicable() throws CoreException {
+    public void shouldAlwaysBeApplicable() {
         assertTrue(testProcessorSpy.isApplicable());
     }
 
@@ -179,12 +177,12 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+        protected void validateIpsModel(MessageList validationMessageList) {
 
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
             if (invalid) {
                 status.addFatalError("foo");
             }
@@ -198,7 +196,7 @@ public class IpsRefactoringProcessorTest {
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(null);
             addAffectedSrcFiles(modificationSet);
             return modificationSet;
@@ -216,7 +214,7 @@ public class IpsRefactoringProcessorTest {
 
         @Override
         public RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-                SharableParticipants sharedParticipants) throws CoreException {
+                SharableParticipants sharedParticipants) {
 
             return null;
         }

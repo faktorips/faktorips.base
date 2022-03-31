@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessFunction parameterRectangleHeight="100" parameterRectangleWidth="236" parameterRectangleX="10" parameterRectangleY="10" xml:space="preserve">
+ <Description id="2eadb6c1-f173-4b62-98a3-1292487a3496" locale="en"/>
+ <BFElement id="2" name="" type="start">
+  <Location xlocation="496" ylocation="30"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="12" type="out"/>
+ </BFElement>
+ <BFElement id="3" name="" type="end">
+  <Location xlocation="498" ylocation="678"/>
+  <Size height="30" width="30"/>
+  <ControlFlow id="18" type="in"/>
+ </BFElement>
+ <BFElement id="6" name="loop" type="merge">
+  <Location xlocation="461" ylocation="104"/>
+  <Size height="50" width="100"/>
+  <ControlFlow id="13" type="out"/>
+  <ControlFlow id="12" type="in"/>
+  <ControlFlow id="21" type="in"/>
+ </BFElement>
+ <BFElement id="11" name="merge" type="merge">
+  <Location xlocation="462" ylocation="503"/>
+  <Size height="50" width="100"/>
+  <ControlFlow id="17" type="out"/>
+  <ControlFlow id="16" type="in"/>
+  <ControlFlow id="20" type="in"/>
+  <ControlFlow id="24" type="in"/>
+ </BFElement>
+ <Action executableMethodName="" id="5" name="action1" target="" type="inlineAction">
+  <Location xlocation="461" ylocation="194"/>
+  <Size height="57" width="100"/>
+  <ControlFlow id="14" type="out"/>
+  <ControlFlow id="13" type="in"/>
+ </Action>
+ <Action executableMethodName="doitNow" id="8" name="" target="policy" type="methodCallAction">
+  <Location xlocation="451" ylocation="402"/>
+  <Size height="57" width="122"/>
+  <ControlFlow id="16" type="out"/>
+  <ControlFlow id="15" type="in"/>
+ </Action>
+ <Action executableMethodName="" id="9" name="" target="businessfunctions.subBfs.Bf2" type="businessFunctionCallAction">
+  <Location xlocation="679" ylocation="287"/>
+  <Size height="60" width="202"/>
+  <ControlFlow id="20" type="out"/>
+  <ControlFlow id="19" type="in"/>
+ </Action>
+ <Action executableMethodName="" id="22" name="action2" target="" type="inlineAction">
+  <Location xlocation="264" ylocation="288"/>
+  <Size height="60" width="100"/>
+  <ControlFlow id="24" type="out"/>
+  <ControlFlow id="23" type="in"/>
+ </Action>
+ <Decision datatype="Integer" executableMethodName="" id="7" name="condition1" target="" type="decision">
+  <Location xlocation="453" ylocation="294"/>
+  <Size height="50" width="113"/>
+  <ControlFlow id="15" type="out"/>
+  <ControlFlow id="19" type="out"/>
+  <ControlFlow id="23" type="out"/>
+  <ControlFlow id="14" type="in"/>
+ </Decision>
+ <Decision datatype="Boolean" executableMethodName="" id="10" name="condition2" target="" type="decision">
+  <Location xlocation="463" ylocation="603"/>
+  <Size height="50" width="100"/>
+  <ControlFlow id="18" type="out"/>
+  <ControlFlow id="21" type="out"/>
+  <ControlFlow id="17" type="in"/>
+ </Decision>
+ <Parameter datatype="businessfunctions.BfPolicy" name="policy" type="parameter"/>
+ <ControlFlow conditionValue="" id="12" name="" source="2" target="6"/>
+ <ControlFlow conditionValue="" id="13" name="" source="6" target="5"/>
+ <ControlFlow conditionValue="" id="14" name="" source="5" target="7"/>
+ <ControlFlow conditionValue="2" id="15" name="" source="7" target="8"/>
+ <ControlFlow conditionValue="" id="16" name="" source="8" target="11"/>
+ <ControlFlow conditionValue="" id="17" name="" source="11" target="10"/>
+ <ControlFlow conditionValue="true" id="18" name="" source="10" target="3"/>
+ <ControlFlow conditionValue="3" id="19" name="" source="7" target="9"/>
+ <ControlFlow conditionValue="" id="20" name="" source="9" target="11">
+  <Bendpoint locationX="781" locationY="529"/>
+ </ControlFlow>
+ <ControlFlow conditionValue="false" id="21" name="" source="10" target="6">
+  <Bendpoint locationX="220" locationY="628"/>
+  <Bendpoint locationX="220" locationY="129"/>
+ </ControlFlow>
+ <ControlFlow conditionValue="1" id="23" name="" source="7" target="22"/>
+ <ControlFlow conditionValue="" id="24" name="" source="22" target="11">
+  <Bendpoint locationX="314" locationY="528"/>
+ </ControlFlow>
+</BusinessFunction>

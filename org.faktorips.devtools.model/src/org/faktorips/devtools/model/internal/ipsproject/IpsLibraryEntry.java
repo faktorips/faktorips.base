@@ -11,12 +11,11 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsLibraryEntry;
@@ -35,7 +34,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     protected abstract IIpsStorage getIpsStorage();
 
-    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;
+    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws IpsException;
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
@@ -58,14 +57,14 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
+    public void initFromXml(Element element, AProject project) {
         super.initFromXml(element, project);
         String path = element.getAttribute(getXmlAttributePathName());
         try {
             if (StringUtils.isEmpty(path)) {
                 initStorage(null);
             } else {
-                initStorage(new Path(path));
+                initStorage(Path.of(path));
             }
         } catch (IOException e) {
             IpsLog.log(e);
@@ -77,7 +76,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     protected abstract String getXmlAttributePathName();
 
     @Override
-    public abstract void initStorage(IPath path) throws IOException;
+    public abstract void initStorage(Path path) throws IOException;
 
     @Override
     public LibraryIpsPackageFragmentRoot getIpsPackageFragmentRoot() {

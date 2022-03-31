@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -21,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -398,15 +400,15 @@ public class TestCaseTest extends AbstractDependencyTest {
     @Test
     public void testValidateTestCaseTypeNotFound() throws Exception {
         MessageList ml = testCase.validate(ipsProject);
-        assertNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
 
         testCase.setTestCaseType("x");
         ml = testCase.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestCase.MSGCODE_TEST_CASE_TYPE_NOT_FOUND));
     }
 
     @Test
-    public void testGetTestRuleCandidates() throws CoreException {
+    public void testGetTestRuleCandidates() {
         // create policy cmpts with validation rules
         IPolicyCmptType policyCmptTypeA = newPolicyAndProductCmptType(ipsProject, "PolicyCmptA", "ProductCmptA");
         policyCmptTypeA.setAbstract(true);
@@ -483,7 +485,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testContainsDifferenceToModel() throws CoreException {
+    public void testContainsDifferenceToModel() {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "testCaseTypeX");
 
@@ -498,7 +500,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFixAllDifferencesToModel() throws CoreException {
+    public void testFixAllDifferencesToModel() {
         ITestCaseType testCaseTypeX = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE,
                 "testCaseTypeX");
         ITestCase testCaseX = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCaseTypeX");
@@ -578,7 +580,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetAllTestPolicyCmpts() throws CoreException {
+    public void testGetAllTestPolicyCmpts() {
         ITestPolicyCmpt testPolicyCmptRoot1 = testCase.newTestPolicyCmpt();
         testPolicyCmptRoot1.setName("root");
         ITestPolicyCmptLink testPolicyCmptAssociation = testPolicyCmptRoot1.newTestPolicyCmptLink();
@@ -616,7 +618,7 @@ public class TestCaseTest extends AbstractDependencyTest {
         assertTrue(allTestPolicyCmptNames.contains("root2_child2"));
     }
 
-    public void getAllTestObjects() throws CoreException {
+    public void getAllTestObjects() {
         ITestPolicyCmpt testPolicyCmptRoot1 = testCase.newTestPolicyCmpt();
         testPolicyCmptRoot1.setName("root");
 
@@ -654,7 +656,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetReferencedProductCmpts() throws CoreException {
+    public void testGetReferencedProductCmpts() {
         IProductCmpt prodCmpt1 = newProductCmpt(root, "ProductCmpt1");
         IProductCmpt prodCmpt2 = newProductCmpt(root, "ProductCmpt2");
 
@@ -675,7 +677,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindTestCaseType() throws CoreException {
+    public void testFindTestCaseType() {
         IIpsProject project2 = newIpsProject("Project2");
         ITestCaseType testCaseType2 = (ITestCaseType)newIpsObject(project2, IpsObjectType.TEST_CASE_TYPE,
                 "testCaseType1");
@@ -688,7 +690,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testClearInputTestValues() throws CoreException {
+    public void testClearInputTestValues() {
         TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.INPUT);
         values.assertInputValues(true);
@@ -696,7 +698,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testClearExpectedTestValues() throws CoreException {
+    public void testClearExpectedTestValues() {
         TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.EXPECTED_RESULT);
         values.assertInputValues(false);
@@ -704,7 +706,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testClearCombinedTestValues() throws CoreException {
+    public void testClearCombinedTestValues() {
         TestValues values = new TestValues();
         testCase.clearTestValues(TestParameterType.COMBINED);
         values.assertInputValues(true);
@@ -721,12 +723,12 @@ public class TestCaseTest extends AbstractDependencyTest {
         public TestValues() {
             try {
                 initTestValues();
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 throw new ExceptionInInitializerError(e);
             }
         }
 
-        private void initTestValues() throws CoreException {
+        private void initTestValues() {
             // init test case
             paramInput = testCase.newTestValue();
             paramInput.setTestValueParameter("inputTestValue0");
@@ -788,7 +790,7 @@ public class TestCaseTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindMetaClass() throws CoreException {
+    public void testFindMetaClass() {
         IIpsSrcFile typeSrcFile = testCase.findMetaClassSrcFile(ipsProject);
         assertEquals(testCaseType.getIpsSrcFile(), typeSrcFile);
     }

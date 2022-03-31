@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
@@ -51,6 +50,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Item;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
@@ -63,7 +63,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -230,7 +229,7 @@ class CategoryComposite extends ViewerButtonComposite {
         try {
             int[] newIndices = category.moveProductCmptProperties(moveIndices, up, contextType);
             newSelectionIndices = getSelectionindicesPlusSupertypePropertyOffset(newIndices);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             // The elements could not be moved so the new selection equals the old selection
             IpsPlugin.log(e);
             newSelectionIndices = Arrays.copyOf(selectionIndices, selectionIndices.length);
@@ -304,6 +303,8 @@ class CategoryComposite extends ViewerButtonComposite {
             CategorySection targetCategorySection = categorySection.getCategoryCompositionSection().getCategorySection(
                     selectedCategory);
             targetCategorySection.getViewerButtonComposite().setSelectedObject(selectedProperty);
+            refresh();
+            targetCategorySection.refresh();
 
             // Hand the focus to the target category section
             targetCategorySection.getViewerButtonComposite().setFocus();
@@ -445,7 +446,7 @@ class CategoryComposite extends ViewerButtonComposite {
             List<IProductCmptProperty> properties = new ArrayList<>();
             try {
                 properties.addAll(category.findProductCmptProperties(contextType, true, contextType.getIpsProject()));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 // Recover by not displaying any properties
                 IpsPlugin.log(e);
             }
@@ -533,7 +534,7 @@ class CategoryComposite extends ViewerButtonComposite {
                 } else if (getCurrentLocation() == LOCATION_NONE) {
                     getTargetCategory().insertProductCmptProperty(droppedProperty, null, false);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 return false;
             }
 
@@ -645,23 +646,19 @@ class CategoryComposite extends ViewerButtonComposite {
             IpsObjectType typeObjectType = IpsObjectType.getTypeForName(readString(input));
             String partId = readString(input);
             IIpsProject ipsProject = IIpsModel.get().getIpsProject(projectName);
-            try {
-                IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
-                IProductCmptProperty property = null;
-                for (IIpsElement child : type.getChildren()) {
-                    if (!(child instanceof IProductCmptProperty)) {
-                        continue;
-                    }
-                    IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
-                    if (partId.equals(potentialProperty.getId())) {
-                        property = potentialProperty;
-                        break;
-                    }
+            IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
+            IProductCmptProperty property = null;
+            for (IIpsElement child : type.getChildren()) {
+                if (!(child instanceof IProductCmptProperty)) {
+                    continue;
                 }
-                return property;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+                IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
+                if (partId.equals(potentialProperty.getId())) {
+                    property = potentialProperty;
+                    break;
+                }
             }
+            return property;
         }
 
         @Override

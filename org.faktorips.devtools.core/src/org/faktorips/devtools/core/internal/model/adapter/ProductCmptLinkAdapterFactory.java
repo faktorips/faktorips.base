@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.adapter;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -53,9 +54,13 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
             if (IIpsSrcFile.class.isAssignableFrom(adapterType)) {
                 return (T)target.getIpsSrcFile();
             }
-            IResource enclosingResource = target.getEnclosingResource();
+            AResource enclosingResource = target.getEnclosingResource();
             if (adapterType.isInstance(enclosingResource)) {
                 return (T)enclosingResource;
+            }
+            IResource eclipseResource = enclosingResource.unwrap();
+            if (adapterType.isInstance(eclipseResource)) {
+                return (T)eclipseResource;
             }
         } catch (Exception e) {
             IpsPlugin.log(e);

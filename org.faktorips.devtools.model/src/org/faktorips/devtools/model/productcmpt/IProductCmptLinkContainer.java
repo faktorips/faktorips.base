@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -126,11 +126,11 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * @return <code>true</code> if a new relation with the given values will be valid,
      *         <code>false</code> otherwise.
      * 
-     * @throws CoreException if a problem occur during the search of the type hierarchy.
+     * @throws IpsException if a problem occur during the search of the type hierarchy.
      */
     public boolean canCreateValidLink(IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws IpsException;
 
     /**
      * Moves the link given with parameter <code>toMove</code> above or below the specified target
@@ -177,7 +177,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     public String getProductCmptType();
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
 
     @Override
     public IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);

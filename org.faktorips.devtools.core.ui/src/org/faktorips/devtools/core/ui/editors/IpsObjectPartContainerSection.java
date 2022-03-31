@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -69,24 +68,20 @@ public abstract class IpsObjectPartContainerSection extends IpsSection {
      * Refreshes the message indicator that is attached to the section.
      */
     private void refreshSectionMessageIndicator() {
-        try {
-            MessageList filteredMessageList = new MessageList();
-            if (!(monitoredValidationMessageCodes.isEmpty())) {
-                MessageList validationMessageList = ipsObjectPartContainer.validate(ipsObjectPartContainer
-                        .getIpsProject());
-                for (Message message : validationMessageList) {
-                    if (monitoredValidationMessageCodes.contains(message.getCode())) {
-                        filteredMessageList.add(message);
-                    }
+        MessageList filteredMessageList = new MessageList();
+        if (!(monitoredValidationMessageCodes.isEmpty())) {
+            MessageList validationMessageList = ipsObjectPartContainer.validate(ipsObjectPartContainer
+                    .getIpsProject());
+            for (Message message : validationMessageList) {
+                if (monitoredValidationMessageCodes.contains(message.getCode())) {
+                    filteredMessageList.add(message);
                 }
             }
-            if (messageDecoration == null) {
-                messageDecoration = getToolkit().createMessageDecoration(getClientComposite(), SWT.LEFT | SWT.TOP);
-            }
-            messageDecoration.setMessageList(filteredMessageList);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
         }
+        if (messageDecoration == null) {
+            messageDecoration = getToolkit().createMessageDecoration(getClientComposite(), SWT.LEFT | SWT.TOP);
+        }
+        messageDecoration.setMessageList(filteredMessageList);
     }
 
     /**

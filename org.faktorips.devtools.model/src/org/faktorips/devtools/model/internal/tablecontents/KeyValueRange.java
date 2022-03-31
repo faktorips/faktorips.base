@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.tablecontents;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -174,7 +174,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
                 } else {
                     IpsLog.log(new IpsStatus("Datatype of column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
                 }
-            } catch (CoreRuntimeException e) {
+            } catch (IpsException e) {
                 IpsLog.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
                 return null;
             }

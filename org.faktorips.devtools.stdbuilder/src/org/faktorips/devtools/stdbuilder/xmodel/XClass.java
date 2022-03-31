@@ -59,7 +59,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
     public String getFileName(BuilderAspect aspect) {
         return getJavaClassNaming()
                 .getRelativeJavaFile(getIpsObjectPartContainer().getIpsSrcFile(), aspect, getJavaClassNameProvider())
-                .toOSString();
+                .toString();
     }
 
     @Override

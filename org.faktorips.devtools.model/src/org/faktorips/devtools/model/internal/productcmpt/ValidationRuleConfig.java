@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -94,7 +93,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException {
+    public IValidationRule findValidationRule(IIpsProject ipsProject) {
         IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)getParent();
         IPolicyCmptType pcType = propertyValueContainer.findPolicyCmptType(ipsProject);
         if (pcType != null) {
@@ -133,7 +132,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
+    public String getCaption(Locale locale) {
         ArgumentCheck.notNull(locale);
 
         String caption = null;
@@ -155,7 +154,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptProperty findProperty(IIpsProject ipsProject) {
         return findValidationRule(ipsProject);
     }
 
@@ -197,7 +196,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         list.add(templateValueSettings.validate(this, ipsProject));
     }

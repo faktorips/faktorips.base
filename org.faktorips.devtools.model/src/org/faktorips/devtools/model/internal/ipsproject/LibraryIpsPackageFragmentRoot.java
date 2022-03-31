@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.faktorips.devtools.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -61,24 +62,24 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public IPackageFragmentRoot getArtefactDestination(boolean derived) throws CoreException {
+    public APackageFragmentRoot getArtefactDestination(boolean derived) {
         IIpsLibraryEntry entry = (IIpsLibraryEntry)getIpsObjectPathEntry();
         String path;
-        if (entry.getPath().isAbsolute()) {
-            path = entry.getPath().toPortableString();
+        if (PathUtil.isAbsoluteInWorkspace(entry.getPath())) {
+            path = entry.getPath().toString();
         } else {
-            path = getIpsProject().getProject().getLocation().append(entry.getPath()).toPortableString();
+            path = getIpsProject().getProject().getLocation().resolve(entry.getPath()).toString();
         }
-        return getIpsProject().getJavaProject().getPackageFragmentRoot(path);
+        return getIpsProject().getJavaProject().toPackageFragmentRoot(path);
     }
 
     @Override
-    public IIpsPackageFragment[] getIpsPackageFragments() throws CoreException {
+    public IIpsPackageFragment[] getIpsPackageFragments() {
         List<IIpsPackageFragment> list = getIpsPackageFragmentsAsList();
         return list.toArray(new IIpsPackageFragment[list.size()]);
     }
 
-    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() throws CoreException {
+    private List<IIpsPackageFragment> getIpsPackageFragmentsAsList() {
         if (getIpsStorage() == null) {
             return new ArrayList<>(0);
         }
@@ -98,28 +99,27 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public IResource[] getNonIpsResources() throws CoreException {
-        return new IResource[0];
+    public AResource[] getNonIpsResources() {
+        return new AResource[0];
     }
 
     @Override
-    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
-            throws CoreException {
+    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor) {
 
         throw newExceptionMethodNotAvailableForArchvies();
     }
 
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return storage.getCorrespondingResource();
     }
 
-    private CoreException newExceptionMethodNotAvailableForArchvies() {
-        return new CoreException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
+    private IpsException newExceptionMethodNotAvailableForArchvies() {
+        return new IpsException(new IpsStatus("Not possible for archives because they are not modifiable.")); //$NON-NLS-1$
     }
 
     @Override
-    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) throws CoreException {
+    void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) {
         if (type == null) {
             return;
         }
@@ -154,7 +154,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     }
 
     @Override
-    public void delete() throws CoreException {
+    public void delete() {
         throw new UnsupportedOperationException("IPS Package Fragment Roots that are stored" //$NON-NLS-1$
                 + " in an archive cannot be deleted."); //$NON-NLS-1$
     }

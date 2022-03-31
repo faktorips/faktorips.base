@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -56,13 +55,13 @@ public class IpsPullUpProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputTargetNotSpecified() throws CoreException {
+    public void testValidateUserInputTargetNotSpecified() {
         RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
         assertEquals(RefactoringStatus.FATAL, status.getSeverity());
     }
 
     @Test
-    public void testValidateUserInputTargetEqualsCurrentContainer() throws CoreException {
+    public void testValidateUserInputTargetEqualsCurrentContainer() {
         pullUpProcessor.setTarget(ipsObject);
 
         RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
@@ -71,7 +70,7 @@ public class IpsPullUpProcessorTest {
     }
 
     @Test
-    public void testValidateUserInputValid() throws CoreException {
+    public void testValidateUserInputValid() {
         pullUpProcessor.setTarget(mock(IIpsObjectPartContainer.class));
 
         RefactoringStatus status = pullUpProcessor.validateUserInput(progressMonitor);
@@ -94,7 +93,7 @@ public class IpsPullUpProcessorTest {
         }
 
         @Override
-        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+        public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
             IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getIpsElement());
             addAffectedSrcFiles(modificationSet);
             return modificationSet;

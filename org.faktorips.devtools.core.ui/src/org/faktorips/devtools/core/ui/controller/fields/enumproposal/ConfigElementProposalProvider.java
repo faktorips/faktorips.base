@@ -11,13 +11,11 @@
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.valueset.EnumValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
@@ -53,11 +51,7 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     }
 
     private IValueSetOwner getPolicyAttribute() {
-        try {
-            return getConfigElement().findPcTypeAttribute(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getConfigElement().findPcTypeAttribute(getIpsProject());
     }
 
     @Override
@@ -80,23 +74,15 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     }
 
     private boolean isEnumValueSetAllowed() {
-        try {
-            return getValueSetOwner().getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getValueSetOwner().getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
     }
 
     private boolean isAlreadyContained(String value) {
-        try {
-            if (isCurrentEnumValueSet()) {
-                IEnumValueSet currentValueSet = getCurrentValueSet();
-                return currentValueSet.containsValue(value, getIpsProject());
-            } else {
-                return false;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (isCurrentEnumValueSet()) {
+            IEnumValueSet currentValueSet = getCurrentValueSet();
+            return currentValueSet.containsValue(value, getIpsProject());
+        } else {
+            return false;
         }
     }
 

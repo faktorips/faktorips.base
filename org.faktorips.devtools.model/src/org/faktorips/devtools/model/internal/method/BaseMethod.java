@@ -11,19 +11,16 @@
 package org.faktorips.devtools.model.internal.method;
 
 import java.lang.reflect.Modifier;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
@@ -110,15 +107,11 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     @Override
     public List<Datatype> getParameterDatatypes() {
         List<Datatype> parameterDatatypes = new ArrayList<>();
-        try {
-            for (IParameter parameter : getParameters()) {
-                Datatype parameterDatatype = parameter.findDatatype(getIpsProject());
-                if (parameterDatatype != null) {
-                    parameterDatatypes.add(parameterDatatype);
-                }
+        for (IParameter parameter : getParameters()) {
+            Datatype parameterDatatype = parameter.findDatatype(getIpsProject());
+            if (parameterDatatype != null) {
+                parameterDatatypes.add(parameterDatatype);
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
         return parameterDatatypes;
     }
@@ -148,15 +141,15 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         if (StringUtils.isEmpty(getName())) {
             result.add(new Message(IBaseMethod.MSGCODE_NO_NAME, Messages.Method_msg_NameEmpty, Message.ERROR, this,
                     PROPERTY_NAME));
         } else {
-            String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-            IStatus status = JavaConventions.validateMethodName(getName(), sourceLevel, complianceLevel);
+            Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+            IStatus status = JavaConventions.validateMethodName(getName(), sourceVersion.toString(),
+                    sourceVersion.toString());
             if (!status.isOK()) {
                 result.add(new Message(IBaseMethod.MSGCODE_INVALID_METHODNAME, Messages.Method_msg_InvalidMethodname,
                         Message.ERROR, this, PROPERTY_NAME));
@@ -188,7 +181,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
                 }
             }
             ObjectProperty[] objectProperties = objProps.toArray(new ObjectProperty[objProps.size()]);
-            String text = NLS.bind(Messages.Method_duplicateParamName, paramName);
+            String text = MessageFormat.format(Messages.Method_duplicateParamName, paramName);
             msgList.add(new Message(IBaseMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR,
                     objectProperties));
         }
@@ -209,7 +202,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     }
 
     @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+    public Datatype findDatatype(IIpsProject ipsProject) {
         return ipsProject.findDatatype(getDatatype());
     }
 

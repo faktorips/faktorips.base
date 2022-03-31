@@ -10,10 +10,11 @@
 
 package org.faktorips.devtools.model.internal.testcasetype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -87,7 +88,7 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateWrongType() throws Exception {
         MessageList ml = valueParamInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+        assertThat(ml, lacksMessageCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
 
         Element docEl = getTestDocument().getDocumentElement();
         Element paramEl = XmlUtil.getElement(docEl, "ValueParameter", 3);
@@ -97,17 +98,17 @@ public class TestValueParameterTest extends AbstractIpsPluginTest {
         valueParamInput.setName(name);
         valueParamInput.initFromXml(paramEl);
         ml = valueParamInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
+        assertThat(ml, hasMessageCode(ITestValueParameter.MSGCODE_WRONG_TYPE));
     }
 
     @Test
     public void testValidateValueDatatypeNotFound() throws Exception {
         valueParamInput.setDatatype("String");
         MessageList ml = valueParamInput.validate(project);
-        assertNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
 
         valueParamInput.setDatatype("x");
         ml = valueParamInput.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestValueParameter.MSGCODE_VALUEDATATYPE_NOT_FOUND));
     }
 }

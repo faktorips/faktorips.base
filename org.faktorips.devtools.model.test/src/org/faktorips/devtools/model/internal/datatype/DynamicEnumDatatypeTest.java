@@ -18,9 +18,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.junit.Before;
@@ -59,7 +59,7 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllValueIds_CustomToStringMethod() throws CoreException, IOException {
+    public void testGetAllValueIds_CustomToStringMethod() throws IpsException, IOException {
         DynamicEnumDatatype customDataType = (DynamicEnumDatatype)newDefinedEnumDatatype(project,
                 new Class[] { TestEnumWithCustomStringRepresentation.class })[1];
         customDataType.setToStringMethodName("getStringRepresentation");

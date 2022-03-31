@@ -18,7 +18,6 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -67,7 +66,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle,
                 2 + enumValueContainer.getEnumValuesCount());
@@ -123,7 +122,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
             List<IEnumValue> values,
             IEnumType structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException {
+            boolean exportColumnHeaderRow) {
 
         boolean exportingEnumType = enumValueContainer instanceof IEnumType;
         List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(exportingEnumType);

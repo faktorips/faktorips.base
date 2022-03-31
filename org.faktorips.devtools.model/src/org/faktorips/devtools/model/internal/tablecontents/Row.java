@@ -10,17 +10,15 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -81,8 +79,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     @Override
-    public String getCaption(Locale locale) throws CoreException {
-        return NLS.bind(Messages.Row_caption, rowNumber + 1);
+    public String getCaption(Locale locale) {
+        return MessageFormat.format(Messages.Row_caption, rowNumber + 1);
     }
 
     @Override
@@ -167,11 +165,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     protected ITableStructure findTableStructure() {
-        try {
-            return getTableContents().findTableStructure(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getTableContents().findTableStructure(getIpsProject());
     }
 
     public void setValueInternal(int column, String newValue) {
@@ -205,7 +199,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
      * <code>Message</code> is added to the given <code>MessageList</code>. {@inheritDoc}
      */
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = findTableStructure();
         if (tableStructure == null) {
@@ -310,7 +304,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 IColumn toColumn = structure.getColumn(toColumnIndex);
                 String localizedFromLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(fromColumn);
                 String localizedToLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(toColumn);
-                String text = NLS.bind(Messages.Row_FromValueGreaterThanToValue,
+                String text = MessageFormat.format(Messages.Row_FromValueGreaterThanToValue,
                         localizedFromLabel + '-' + localizedToLabel);
                 list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
                         Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, fromColumnIndex)));
@@ -329,7 +323,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                     .getLocalizedLabel(structure.getColumn(columnIndex));
             String value = getValue(columnIndex);
             if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
-                String text = NLS.bind(Messages.Row_MissingValueForUniqueKey, localizedLabel);
+                String text = MessageFormat.format(Messages.Row_MissingValueForUniqueKey, localizedLabel);
                 Message message = new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
                 list.add(message);
@@ -354,7 +348,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             if (dataType == null || !dataType.isParsable(value)) {
                 String localizedLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(column);
                 String datatypeName = dataType == null ? column.getDatatype() : dataType.toString();
-                String text = NLS.bind(Messages.Row_ValueNotParsable,
+                String text = MessageFormat.format(Messages.Row_ValueNotParsable,
                         new Object[] { value, datatypeName, localizedLabel });
                 Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, i));

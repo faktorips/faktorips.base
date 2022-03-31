@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -98,13 +96,9 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
         if (ipsProject == null) {
             return;
         }
-        try {
-            IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
-            for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
-                structuresList.add((ITableStructure)ipsSrcFile.getIpsObject());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        for (IIpsSrcFile ipsSrcFile : findIpsSrcFiles) {
+            structuresList.add((ITableStructure)ipsSrcFile.getIpsObject());
         }
     }
 
@@ -114,23 +108,19 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     public void setAddToTableUsage(ITableContentUsage tableUsage, boolean autosafe) {
         this.autosaveAddToFile = autosafe;
-        try {
-            IIpsProject ipsProject = tableUsage.getIpsProject();
-            ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
-            String[] tableStructures = tableStructureUsage.getTableStructures();
-            structuresList.clear();
-            for (String structureName : tableStructures) {
-                QualifiedNameType qNameType = new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE);
-                IIpsSrcFile tableStructureFile = ipsProject.findIpsSrcFile(qNameType);
-                if (tableStructureFile != null) {
-                    structuresList.add((ITableStructure)tableStructureFile.getIpsObject());
-                }
+        IIpsProject ipsProject = tableUsage.getIpsProject();
+        ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
+        String[] tableStructures = tableStructureUsage.getTableStructures();
+        structuresList.clear();
+        for (String structureName : tableStructures) {
+            QualifiedNameType qNameType = new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE);
+            IIpsSrcFile tableStructureFile = ipsProject.findIpsSrcFile(qNameType);
+            if (tableStructureFile != null) {
+                structuresList.add((ITableStructure)tableStructureFile.getIpsObject());
             }
-            if (structuresList.size() > 0) {
-                setSelectedStructure(structuresList.get(0));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        }
+        if (structuresList.size() > 0) {
+            setSelectedStructure(structuresList.get(0));
         }
         this.addToTableUsage = tableUsage;
     }

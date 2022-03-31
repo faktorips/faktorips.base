@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Test data for ValidationRuleTest.java -->
-<ValidationRuleDef id="42" name="checkAge" configurableByProductComponent="true"
-	appliedInAllBusinessFunctions="false" messageSeverity="warning"
+<ValidationRuleDef id="42" name="checkAge" configurableByProductComponent="true" messageSeverity="warning"
 	messageCode="ageMissing" changingOverTime="true">
-	<BusinessFunction name="NewOffer" />
-	<BusinessFunction name="Renewal" />
 	<ValidatedAttribute name="a" />
 	<ValidatedAttribute name="b" />
 	<Markers>

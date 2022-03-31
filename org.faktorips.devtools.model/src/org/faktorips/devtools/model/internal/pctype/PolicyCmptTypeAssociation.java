@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal.pctype;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,10 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -90,16 +89,12 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     private boolean isConstrainedInverse() {
-        try {
-            IPolicyCmptTypeAssociation foundInverseAssociation = findInverseAssociation(getIpsProject());
-            // Need to check master to detail to avoid stack overflow
-            if (foundInverseAssociation != null && foundInverseAssociation.isCompositionMasterToDetail()) {
-                return foundInverseAssociation.isConstrain();
-            } else {
-                return false;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IPolicyCmptTypeAssociation foundInverseAssociation = findInverseAssociation(getIpsProject());
+        // Need to check master to detail to avoid stack overflow
+        if (foundInverseAssociation != null && foundInverseAssociation.isCompositionMasterToDetail()) {
+            return foundInverseAssociation.isConstrain();
+        } else {
+            return false;
         }
     }
 
@@ -124,7 +119,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public boolean isInverseOfDerivedUnion() throws CoreException {
+    public boolean isInverseOfDerivedUnion() {
         if (!isCompositionDetailToMaster()) {
             return false;
         }
@@ -223,7 +218,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException {
+    public boolean isQualificationPossible(IIpsProject ipsProject) {
         if (!isCompositionMasterToDetail()) {
             return false;
         }
@@ -235,7 +230,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException {
+    public String findQualifierCandidate(IIpsProject ipsProject) {
         IPolicyCmptType targetType = findTargetPolicyCmptType(ipsProject);
         if (targetType == null || !targetType.isConfigurableByProductCmptType()) {
             return ""; //$NON-NLS-1$
@@ -244,7 +239,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findQualifier(IIpsProject ipsProject) {
         if (!qualified) {
             return null;
         }
@@ -276,7 +271,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      * association host {@link #findSharedAssociationHost(IIpsProject)}
      */
     @Override
-    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) {
         if (isSharedAssociation()) {
             return null;
         }
@@ -298,10 +293,10 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException {
+    public IPolicyCmptTypeAssociation newInverseAssociation() {
         IPolicyCmptType targetPolicyCmptType = findTargetPolicyCmptType(getIpsProject());
         if (targetPolicyCmptType == null) {
-            throw new CoreException(new IpsStatus("Target policy component type of association " + getName() //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Target policy component type of association " + getName() //$NON-NLS-1$
                     + " not found.")); //$NON-NLS-1$
         }
 
@@ -344,7 +339,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    public IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) {
         AssociationHierarchyVisitor visitor = new AssociationHierarchyVisitor(ipsProject) {
 
             @Override
@@ -410,7 +405,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         // detail to master must have maxCardinality = 1
         if (getMaxCardinality() != 1 && getAssociationType() == AssociationType.COMPOSITION_DETAIL_TO_MASTER) {
@@ -424,7 +419,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         validateConstrainedAssociation(list, ipsProject);
     }
 
-    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) {
         IAssociation unionAss = findSubsettedDerivedUnion(ipsProject);
         if (unionAss instanceof IPolicyCmptTypeAssociation) {
             checkForDerivedUnionInverseAssociationMismatch((IPolicyCmptTypeAssociation)unionAss, list, ipsProject);
@@ -438,7 +433,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     private void checkForDerivedUnionInverseAssociationMismatch(IPolicyCmptTypeAssociation derivedUnion,
             MessageList list,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss == null) {
@@ -455,14 +450,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
         IAssociation derivedUnionOfInverseRel = inverseAss.findSubsettedDerivedUnion(ipsProject);
         if (derivedUnionOfInverseRel == null || derivedUnionOfInverseRel != inverseRelationOfContainerRel) {
-            String text = NLS.bind(Messages.Association_msg_InverseAssociationInconsistentWithDerivedUnion,
+            String text = MessageFormat.format(Messages.Association_msg_InverseAssociationInconsistentWithDerivedUnion,
                     derivedUnion);
             list.add(new Message(MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION, text, Message.ERROR, this,
                     PROPERTY_SUBSETTED_DERIVED_UNION));
         }
     }
 
-    private void validateInverseRelation(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateInverseRelation(MessageList list, IIpsProject ipsProject) {
         if (!validateInverseCompositionDetailToMaster(list)) {
             return;
         }
@@ -474,7 +469,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         // inverse association must exists
         IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
         if (inverseAss == null) {
-            String text = NLS.bind(Messages.Association_msg_AssociationNotFoundInTarget, inverseAssociation,
+            String text = MessageFormat.format(Messages.Association_msg_AssociationNotFoundInTarget, inverseAssociation,
                     getTarget());
             list.add(new Message(MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET, text, Message.ERROR, this,
                     PROPERTY_INVERSE_ASSOCIATION));
@@ -507,7 +502,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         }
     }
 
-    private boolean validateEmptyInverseAssociation(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private boolean validateEmptyInverseAssociation(MessageList list, IIpsProject ipsProject) {
         if (StringUtils.isEmpty(inverseAssociation)) {
             // special check in case of subsetted derived union the inverse must be set if the
             // derived union has specified an inverse association
@@ -566,7 +561,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return true;
     }
 
-    private boolean validateInverseCompositionDetailToMaster(MessageList list) throws CoreException {
+    private boolean validateInverseCompositionDetailToMaster(MessageList list) {
         if (getAssociationType().isCompositionDetailToMaster()) {
             String text = Messages.PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmpty;
             Message errorMessage = Message.newError(MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER,
@@ -607,7 +602,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     private boolean checkInverseAssociation(IIpsProject ipsProject,
             IPolicyCmptTypeAssociation association,
-            IPolicyCmptTypeAssociation inverseAss) throws CoreException {
+            IPolicyCmptTypeAssociation inverseAss) {
         if (inverseAss.getInverseAssociation().equals(association.getName())
                 && inverseAss.getTarget().equals(association.getType().getQualifiedName())) {
             return true;
@@ -632,7 +627,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         return false;
     }
 
-    private void validateMatchingAssociation(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateMatchingAssociation(MessageList list, IIpsProject ipsProject) {
         if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
             if (StringUtils.isNotEmpty(getMatchingAssociationSource())) {
                 IProductCmptType matchingProdCmptType = ipsProject.findProductCmptType(getMatchingAssociationSource());
@@ -658,14 +653,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName)
                 && matchingAssociation == null) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND,
-                    NLS.bind(Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound,
+                    MessageFormat.format(Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound,
                             getMatchingAssociationName(), getMatchingAssociationSource()),
                     Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
         } else {
             if (matchingAssociation != null
                     && !this.equals(matchingAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject))) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
-                        NLS.bind(Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid,
+                        MessageFormat.format(Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid,
                                 getMatchingAssociationName(), getMatchingAssociationSource()),
                         Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
             }
@@ -685,7 +680,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     boolean findCorrectMatchingPolicyCmptTypeRecoursive(IPolicyCmptType parentPolicyCmptType,
             IIpsProject ipsProject,
-            Set<IPolicyCmptType> visited) throws CoreException {
+            Set<IPolicyCmptType> visited) {
         if (parentPolicyCmptType == null) {
             return false;
         }

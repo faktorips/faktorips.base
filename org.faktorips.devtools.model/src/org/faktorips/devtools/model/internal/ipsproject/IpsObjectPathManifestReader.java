@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -77,13 +77,13 @@ public class IpsObjectPathManifestReader {
 
     private IpsSrcFolderEntry readEntry(ManifestElement manifestElement, IpsBundleManifest bundleManifest) {
         String objectDir = manifestElement.getValue();
-        IFolder objectFolder = ipsProject.getProject().getFolder(objectDir);
+        AFolder objectFolder = ipsProject.getProject().getFolder(objectDir);
         IpsSrcFolderEntry ipsSrcFolderEntry = new IpsSrcFolderEntry(ipsObjectPath, objectFolder);
         String srcOutDir = bundleManifest.getSourcecodeOutput(objectDir);
-        IFolder srcOutputFolder = ipsProject.getProject().getFolder(srcOutDir);
+        AFolder srcOutputFolder = ipsProject.getProject().getFolder(srcOutDir);
         ipsSrcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(srcOutputFolder);
         String resourceOutDir = bundleManifest.getResourceOutput(objectDir);
-        IFolder resourceOutputFolder = ipsProject.getProject().getFolder(resourceOutDir);
+        AFolder resourceOutputFolder = ipsProject.getProject().getFolder(resourceOutDir);
         ipsSrcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(resourceOutputFolder);
         ipsSrcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(bundleManifest.getBasePackage(objectDir));
         ipsSrcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(bundleManifest.getBasePackage(objectDir));

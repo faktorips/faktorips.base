@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -89,7 +89,7 @@ public class HtmlExportWizard extends Wizard implements IExportWizard {
         context.addDocumentorScript(new StandardDocumentorScript());
         context.setDocumentedIpsObjectTypes(ipsProjectHtmlExportWizardPage.getSelectedIpsObjectTypes());
 
-        IWorkspaceRunnable op = new HtmlExportOperation(context);
+        ICoreRunnable op = new HtmlExportOperation(context);
 
         WorkbenchRunnableAdapter workbenchRunnableAdapter = new WorkbenchRunnableAdapter(op);
         try {

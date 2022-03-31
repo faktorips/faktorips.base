@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -196,8 +198,8 @@ public class ModelExplorerConfiguration {
 
         if (item instanceof IIpsElement) {
             IIpsElement ipsElement = (IIpsElement)item;
-            IResource resource = ipsElement.getEnclosingResource();
-            if (resource instanceof IFile) {
+            AResource resource = ipsElement.getEnclosingResource();
+            if (resource instanceof AFile) {
                 return true;
             }
             return false;

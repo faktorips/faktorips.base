@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -25,11 +27,13 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.ProjectUtil;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 
 /**
  * An action that adds the ips nature to a project.
@@ -64,7 +68,7 @@ public class AddIpsNatureAction extends ActionDelegate {
             // only work with Java projects that are not IPS Projects at the same time
             try {
                 IJavaProject jPrj = (IJavaProject)prj.getNature(JavaCore.NATURE_ID);
-                if (!ProjectUtil.hasIpsNature(prj) && jPrj != null) {
+                if (!EclipseProjectUtil.hasIpsNature(prj) && jPrj != null) {
                     javaProject = jPrj;
                 }
                 action.setEnabled(javaProject != null);
@@ -87,13 +91,13 @@ public class AddIpsNatureAction extends ActionDelegate {
             return;
         }
         try {
-            if (ProjectUtil.hasIpsNature(javaProject)) {
+            if (EclipseProjectUtil.hasIpsNature(javaProject)) {
                 MessageDialog.openInformation(getShell(), Messages.AddIpsNatureAction_titleAddFaktorIpsNature,
                         Messages.AddIpsNatureAction_msgIPSNatureAlreadySet);
                 return;
             }
             IIpsModel ipsModel = IIpsModel.get();
-            IIpsProject ipsProject = ipsModel.getIpsProject(javaProject.getProject());
+            IIpsProject ipsProject = ipsModel.getIpsProject(wrap(javaProject.getProject()).as(AProject.class));
             if (ipsProject.getIpsProjectPropertiesFile().exists()) {
                 /*
                  * re-add the IPS Nature. For example when using SAP-NWDS, the project file is
@@ -104,11 +108,11 @@ public class AddIpsNatureAction extends ActionDelegate {
                 boolean answer = MessageDialog.openConfirm(getShell(),
                         Messages.AddIpsNatureAction_titleAddFaktorIpsNature, Messages.AddIpsNatureAction_readdNature);
                 if (answer) {
-                    ProjectUtil.addIpsNature(ipsProject.getProject());
+                    EclipseProjectUtil.addIpsNature(ipsProject.getProject().unwrap());
                 }
                 return;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return;
         }
@@ -118,7 +122,7 @@ public class AddIpsNatureAction extends ActionDelegate {
         }
 
         try {
-            ProjectUtil.createIpsProject(javaProject, dialog.getIpsProjectCreationProperties());
+            EclipseProjectUtil.createIpsProject(javaProject, dialog.getIpsProjectCreationProperties());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             ErrorDialog.openError(getShell(),

@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -45,14 +44,14 @@ import org.junit.Test;
 public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
 
     @Test
-    public void testCheckInitialConditionsValid() throws CoreException {
+    public void testCheckInitialConditionsValid() {
         IpsRefactoringProcessor ipsRefactoringProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
         RefactoringStatus status = ipsRefactoringProcessor.checkInitialConditions(new NullProgressMonitor());
         assertFalse(status.hasError());
     }
 
     @Test
-    public void testCheckFinalConditionsValid() throws CoreException {
+    public void testCheckFinalConditionsValid() {
         IpsRenameProcessor ipsRenameProcessor = new RenameAttributeProcessor(policyCmptTypeAttribute);
         ipsRenameProcessor.setNewName("test");
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
@@ -61,7 +60,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testCheckFinalConditionsInvalidAttributeName() throws CoreException {
+    public void testCheckFinalConditionsInvalidAttributeName() {
         // Create another policy component type attribute to test against.
         IAttribute attribute = policyCmptType.newAttribute();
         attribute.setName("otherAttribute");
@@ -74,7 +73,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAttribute() throws CoreException {
+    public void testRenamePolicyCmptTypeAttribute() {
         String newAttributeName = "test";
         performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
 
@@ -94,7 +93,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAttributeWithValidationRule() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeWithValidationRule() {
         policyCmptTypeAttribute.createValueSetRule();
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
         String newAttributeName = "test";
@@ -123,7 +122,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * modified by the refactoring, too.
      */
     @Test
-    public void testRenamePolicyCmptTypeAttributeSameNames() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeSameNames() {
         otherPolicyCmptType.setConfigurableByProductCmptType(true);
 
         // Create an attribute corresponding to the attribute of the original policy component type.
@@ -172,7 +171,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * that is a super type of another <code>IPolicyCmptType</code>.
      */
     @Test
-    public void testRenamePolicyCmptTypeAttributeInheritance() throws CoreException {
+    public void testRenamePolicyCmptTypeAttributeInheritance() {
         // Create an attribute in the super policy component type.
         IPolicyCmptTypeAttribute superAttribute = superPolicyCmptType.newPolicyCmptTypeAttribute();
         superAttribute.setName("superAttribute");
@@ -209,7 +208,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenameProductCmptTypeAttribute() throws CoreException {
+    public void testRenameProductCmptTypeAttribute() {
         String newAttributeName = "test";
         performRenameRefactoring(productCmptTypeAttribute, newAttributeName);
 
@@ -230,7 +229,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * no be modified by the rename refactoring).
      */
     @Test
-    public void testRenameProductCmptTypeAttributeSameNames() throws CoreException {
+    public void testRenameProductCmptTypeAttributeSameNames() {
         // Create other product component type.
         IProductCmptType otherProductCmptType = newProductCmptType(ipsProject, "OtherProductCmptType");
         IProductCmptTypeAttribute otherProductCmptTypeAttribute = otherProductCmptType.newProductCmptTypeAttribute();
@@ -264,7 +263,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * <code>IProductCmptType</code> that is a super type of another <code>IProductCmptType</code>.
      */
     @Test
-    public void testRenameProductCmptTypeAttributeInheritance() throws CoreException {
+    public void testRenameProductCmptTypeAttributeInheritance() {
         // Create an attribute in the super product component type.
         IProductCmptTypeAttribute superAttribute = superProductCmptType.newProductCmptTypeAttribute();
         superAttribute.setName("superAttribute");
@@ -288,7 +287,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * the super type hierarchy also renames the super attribute.
      */
     @Test
-    public void testRenameOverwritingPolicyCmptTypeAttribute() throws CoreException {
+    public void testRenameOverwritingPolicyCmptTypeAttribute() {
         // Create a type hierarchy of depth 3, always overwriting an attribute
         IPolicyCmptType deepPolicyCmptType = newPolicyCmptType(ipsProject, "DeepPolicyCmptType");
         deepPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
@@ -338,7 +337,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
      * the sub type hierarchy also renames the attributes in the sub type hierarchy.
      */
     @Test
-    public void testRenameOverwrittenPolicyCmptTypeAttribute() throws CoreException {
+    public void testRenameOverwrittenPolicyCmptTypeAttribute() {
         // Create a type hierarchy of depth 3, always overwriting an attribute
         IPolicyCmptType deepPolicyCmptType = newPolicyCmptType(ipsProject, "DeepPolicyCmptType");
         deepPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());

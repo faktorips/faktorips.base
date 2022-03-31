@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -133,7 +133,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
             accosiationTargetRefControl.setPolicyCmptTypeTarget(association.findTargetPolicyCmptType(association
                     .getIpsProject()));
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

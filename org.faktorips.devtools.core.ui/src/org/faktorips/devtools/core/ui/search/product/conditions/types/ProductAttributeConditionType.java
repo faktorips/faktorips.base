@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
@@ -49,11 +47,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
 
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType element) {
-        try {
-            return new ArrayList<>(element.findAllAttributes(element.getIpsProject()));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return new ArrayList<>(element.findAllAttributes(element.getIpsProject()));
     }
 
     @Override

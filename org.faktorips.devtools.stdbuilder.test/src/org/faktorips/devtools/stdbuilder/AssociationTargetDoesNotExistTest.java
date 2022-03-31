@@ -46,7 +46,7 @@ public class AssociationTargetDoesNotExistTest extends AbstractStdBuilderTest {
 
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-        targetType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        targetType.getIpsSrcFile().getCorrespondingFile().delete(null);
         ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
     }
 

@@ -33,7 +33,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -599,7 +598,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_changingOverTime() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_changingOverTime() {
         when(productCmptType.isChangingOverTime()).thenReturn(true);
 
         when(type.hasSupertype()).thenReturn(false);
@@ -618,7 +617,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_notChangingOverTime() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_notChangingOverTime() {
         when(productCmptType.isChangingOverTime()).thenReturn(false);
 
         when(type.hasSupertype()).thenReturn(false);
@@ -637,7 +636,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() throws CoreException {
+    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(type.hasSupertype()).thenReturn(false);
         when(type.isDependantType()).thenReturn(true);
@@ -675,6 +674,34 @@ public class XPolicyCmptClassTest {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         assertFalse(policyCmptClass.isGenerateGenerationAccessMethods());
+    }
+
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_true() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(true);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertTrue(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
+    }
+
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_noBaseClass() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(false);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertTrue(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
+    }
+
+    @Test
+    public void testIsGenerateGetEffectiveFromAsCalendar_false() {
+        when(generatorConfig.isGenerateGetEffectiveFromAsCalendar()).thenReturn(false);
+        when(generatorConfig.getBaseClassPolicyCmptType()).thenReturn("BaseClass");
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertFalse(policyCmptClass.isGenerateGetEffectiveFromAsCalendar());
     }
 
     private XPolicyCmptClass createXPolicyCmptClassSpy() {

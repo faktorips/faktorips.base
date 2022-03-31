@@ -12,6 +12,8 @@ package org.faktorips.runtime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -21,6 +23,7 @@ import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -65,7 +68,7 @@ public abstract class IpsTestCase extends TestCase {
                 return null;
             }
         }
-        return getDocumentBuilder().parse(is);
+        return getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
     }
 
     protected void run(Document doc) throws Exception {

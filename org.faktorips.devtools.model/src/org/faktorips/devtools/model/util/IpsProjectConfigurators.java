@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.util;
 import java.util.stream.Stream;
 
 import org.eclipse.jdt.core.IJavaProject;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
@@ -28,12 +29,12 @@ public class IpsProjectConfigurators {
 
     /**
      * Returns all {@link IIpsProjectConfigurator IIpsProjectConfigurators} that
-     * {@link IIpsProjectConfigurator#canConfigure(IJavaProject) can configure} the given
+     * {@link IIpsProjectConfigurator#canConfigure(AJavaProject) can configure} the given
      * {@link IJavaProject}.
      *
      * @see IIpsModelExtensions#getIpsProjectConfigurators()
      */
-    public static Stream<IIpsProjectConfigurator> applicableTo(IJavaProject project) {
+    public static Stream<IIpsProjectConfigurator> applicableTo(AJavaProject project) {
         return IIpsModelExtensions.get()
                 .getIpsProjectConfigurators().stream()
                 .filter(c -> c.canConfigure(project));
@@ -42,11 +43,11 @@ public class IpsProjectConfigurators {
     /**
      * Checks whether at least one extension of the extension point
      * {@link ExtensionPoints#ADD_IPS_NATURE} supports Groovy and is responsible for configuring the
-     * passed {@link IJavaProject}.
+     * passed {@link AJavaProject}.
      * 
      * @return {@code true} whether at least one extension supports Groovy
      */
-    public static final boolean isGroovySupported(IJavaProject javaProject) {
+    public static final boolean isGroovySupported(AJavaProject javaProject) {
         return IpsProjectConfigurators
                 .applicableTo(javaProject)
                 .anyMatch(c -> c.isGroovySupported(javaProject));

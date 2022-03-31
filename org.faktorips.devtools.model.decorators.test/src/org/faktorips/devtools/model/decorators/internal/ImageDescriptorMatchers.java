@@ -68,28 +68,7 @@ public final class ImageDescriptorMatchers {
     }
 
     public static Matcher<ImageDescriptor> hasNoOverlay() {
-        return new TypeSafeMatcher<>() {
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("an ImageDescriptor without overlays");
-            }
-
-            @Override
-            protected boolean matchesSafely(ImageDescriptor imageDescriptor) {
-                return !(imageDescriptor instanceof DecorationOverlayIcon)
-                        || isEmpty(getOverlays((DecorationOverlayIcon)imageDescriptor));
-            }
-
-            private boolean isEmpty(ImageDescriptor[] overlays) {
-                for (ImageDescriptor overlay : overlays) {
-                    if (overlay != null) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        };
+        return new NoOverlayMatcher();
     }
 
     private static ImageDescriptor[] getOverlays(DecorationOverlayIcon decorationOverlayIcon) {
@@ -168,6 +147,28 @@ public final class ImageDescriptorMatchers {
             return getOverlays((DecorationOverlayIcon)imageDescriptor)[position].getImageData(100);
         }
         return null;
+    }
+
+    private static final class NoOverlayMatcher extends TypeSafeMatcher<ImageDescriptor> {
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("an ImageDescriptor without overlays");
+        }
+
+        @Override
+        protected boolean matchesSafely(ImageDescriptor imageDescriptor) {
+            return !(imageDescriptor instanceof DecorationOverlayIcon)
+                    || isEmpty(getOverlays((DecorationOverlayIcon)imageDescriptor));
+        }
+
+        private boolean isEmpty(ImageDescriptor[] overlays) {
+            for (ImageDescriptor overlay : overlays) {
+                if (overlay != null) {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
 }

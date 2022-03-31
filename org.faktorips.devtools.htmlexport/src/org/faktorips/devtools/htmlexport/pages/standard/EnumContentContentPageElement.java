@@ -11,6 +11,7 @@
 package org.faktorips.devtools.htmlexport.pages.standard;
 
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -22,7 +23,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 
@@ -67,7 +67,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         EnumValuesTablePageElement tablePageElement;
         try {
             tablePageElement = new EnumValuesTablePageElement(getDocumentedIpsObject(), getContext());
-        } catch (CoreRuntimeException e) {
+        } catch (IpsException e) {
             IpsStatus status = new IpsStatus(IStatus.ERROR,
                     "Error creating EnumValuesTable of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
             getContext().addStatus(status);

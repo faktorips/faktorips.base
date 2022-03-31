@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;
@@ -19,7 +18,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.InternationalStringDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
@@ -38,11 +36,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     public boolean isUnique() {
-        try {
-            return getEnumAttribute().findIsUnique(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getEnumAttribute().findIsUnique(getIpsProject());
     }
 
     public boolean isDisplayName() {
@@ -89,11 +83,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     public ValueDatatype getDatatype() {
-        try {
-            return getEnumAttribute().findDatatype(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getEnumAttribute().findDatatype(getIpsProject());
     }
 
     /**
@@ -105,7 +95,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         return addImport(getDatatypeHelper(true));
     }
 
-    private Datatype getDatatypeUseWrappers() {
+    public Datatype getDatatypeUseWrappers() {
         ValueDatatype datatype = getDatatype();
         if (datatype.isPrimitive()) {
             datatype = datatype.getWrapperType();
@@ -134,11 +124,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
      * @see IEnumAttribute#findDatatypeIgnoreEnumContents(org.faktorips.devtools.model.ipsproject.IIpsProject)
      */
     protected ValueDatatype getDatatypeIgnoreEnumContents() {
-        try {
-            return getEnumAttribute().findDatatypeIgnoreEnumContents(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getEnumAttribute().findDatatypeIgnoreEnumContents(getIpsProject());
     }
 
     public boolean isGenerateField() {

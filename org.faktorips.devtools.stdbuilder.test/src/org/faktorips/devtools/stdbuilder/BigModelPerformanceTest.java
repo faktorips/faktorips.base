@@ -13,9 +13,8 @@ package org.faktorips.devtools.stdbuilder;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -96,8 +95,8 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
-                basePolicyCmptTypes[i][j].getIpsSrcFile().save(true, null);
-                baseProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                basePolicyCmptTypes[i][j].getIpsSrcFile().save(null);
+                baseProductCmptTypes[i][j].getIpsSrcFile().save(null);
             }
         }
         IPolicyCmptType[][] lobPolicyCmptTypes = new IPolicyCmptType[NUMBER_OF_LAYERS][NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER];
@@ -109,7 +108,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
                 lobPolicyCmptTypes[i][j].setSupertype(basePolicyCmptTypes[i][j].getQualifiedName());
                 lobProductCmptTypes[i][j] = lobPolicyCmptTypes[i][j].findProductCmptType(ipsProject);
                 lobProductCmptTypes[i][j].setSupertype(baseProductCmptTypes[i][j].getQualifiedName());
-                lobProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                lobProductCmptTypes[i][j].getIpsSrcFile().save(null);
                 for (int k = 0; k <= NUMBER_OF_ATTRIBUTES_PER_CMPTTYPE; k++) {
                     ValueDatatype datatype = ipsProject.getIpsModel().getPredefinedValueDatatypes()[k];
                     IPolicyCmptTypeAttribute policyAttribute = lobPolicyCmptTypes[i][j]
@@ -191,8 +190,8 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
             for (int j = 0; j < NUMBER_OF_CMPTTYPE_PAIRS_PER_LAYER; j++) {
-                lobPolicyCmptTypes[i][j].getIpsSrcFile().save(true, null);
-                lobProductCmptTypes[i][j].getIpsSrcFile().save(true, null);
+                lobPolicyCmptTypes[i][j].getIpsSrcFile().save(null);
+                lobProductCmptTypes[i][j].getIpsSrcFile().save(null);
             }
         }
         for (int i = 0; i < NUMBER_OF_LAYERS; i++) {
@@ -228,7 +227,7 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
                             }
                         }
                     }
-                    gen.getIpsSrcFile().save(true, null);
+                    gen.getIpsSrcFile().save(null);
                 }
             }
         }
@@ -247,13 +246,13 @@ public class BigModelPerformanceTest extends AbstractStdBuilderTest {
     // Remove @Ignore for performance tests. We don't want it to run in the regular build.
     @Ignore
     @Test
-    public void testPerformance() throws CoreException {
+    public void testPerformance() {
         int warmup = 3;
         int n = 10;
         long average = 0;
         for (int i = 0; i < warmup + n; i++) {
             long start = System.nanoTime();
-            ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+            ipsProject.getProject().build(ABuildKind.FULL, null);
             long end = System.nanoTime();
             long duration = (end - start) / 1_000_000;
             if (i < warmup) {

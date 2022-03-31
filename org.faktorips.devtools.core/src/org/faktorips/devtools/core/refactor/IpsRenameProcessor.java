@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.ParticipantManager;
@@ -68,7 +67,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
      * and that the name does not equal the element's original name.
      */
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         if (newName.isEmpty()) {
             status.addFatalError(Messages.IpsRenameProcessor_msgNewNameEmpty);
             return;
@@ -80,7 +79,7 @@ public abstract class IpsRenameProcessor extends IpsRefactoringProcessor {
 
     @Override
     public final RefactoringParticipant[] loadParticipants(RefactoringStatus status,
-            SharableParticipants sharedParticipants) throws CoreException {
+            SharableParticipants sharedParticipants) {
 
         return ParticipantManager.loadRenameParticipants(status, this, getIpsElement(), new IpsRenameArguments(newName,
                 newPluralName, true), new String[] { IIpsProject.NATURE_ID }, sharedParticipants);
