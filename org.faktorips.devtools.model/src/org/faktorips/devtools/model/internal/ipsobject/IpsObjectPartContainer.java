@@ -1177,7 +1177,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#isValidSinceVersion()
      */
     public boolean isValidSinceVersion() {
-        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
+        if (this instanceof IVersionControlledElement && StringUtils.isNotBlank(sinceVersion)) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             return versionProvider.isCorrectVersionFormat(sinceVersion);
         } else {
@@ -1197,7 +1197,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#getSinceVersion()
      */
     public IVersion<?> getSinceVersion() {
-        if (StringUtils.isEmpty(sinceVersion)) {
+        if (StringUtils.isBlank(sinceVersion)) {
             return null;
         }
         IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();

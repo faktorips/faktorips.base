@@ -129,10 +129,20 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     @Test
-    public void testHasSinceVersion_noVersion() throws Exception {
+    public void testHasSinceVersion_nullVersion() throws Exception {
         IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
 
+        boolean hasSinceVersion = modelNode.hasSinceVersion();
+
+        assertFalse(hasSinceVersion);
+    }
+
+    @Test
+    public void testHasSinceVersion_blankVersion() throws Exception {
+        IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
+        doReturn(new DefaultVersion(" ")).when(versionControlledElement).getSinceVersion();
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
         boolean hasSinceVersion = modelNode.hasSinceVersion();
 
         assertFalse(hasSinceVersion);

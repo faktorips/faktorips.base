@@ -1491,7 +1491,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + System.lineSeparator()
                 + "or" + System.lineSeparator() //$NON-NLS-1$
-                + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.devtools.core.bundleVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.maven.mavenVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
                 + System.lineSeparator();
         createDescriptionComment(s, parentEl);
     }

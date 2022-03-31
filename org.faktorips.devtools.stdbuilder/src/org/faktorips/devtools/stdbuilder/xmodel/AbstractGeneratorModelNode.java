@@ -26,6 +26,7 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
@@ -220,7 +221,10 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String getSinceVersion() {
         if (hasSinceVersion()) {
-            return ((IVersionControlledElement)getIpsObjectPartContainer()).getSinceVersion().asString();
+            IVersion<?> sinceVersion = ((IVersionControlledElement)getIpsObjectPartContainer()).getSinceVersion();
+            if (sinceVersion != null) {
+                return sinceVersion.asString();
+            }
         }
         return null;
     }
