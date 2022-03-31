@@ -28,6 +28,8 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
 
     public static final String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
 
+    public static final String PROPERTY_CATEGORY_POSITION = "categoryPosition"; //$NON-NLS-1$
+
     /**
      * Returns the {@link IType} this part belongs to.
      */

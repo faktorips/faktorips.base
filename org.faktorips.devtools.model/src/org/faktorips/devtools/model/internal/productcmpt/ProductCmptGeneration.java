@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -189,7 +188,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return productPartCollection.getProductParts(type);
     }
 
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws CoreException {
+    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) {
         return new ProductCmptGenerationToTypeDelta(this, ipsProject);
     }
 
@@ -293,7 +292,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public boolean canCreateValidLink(IProductCmpt target,
             IProductCmptTypeAssociation association,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
         return ProductCmptLinkContainerUtil.canCreateValidLink(this, target, association, ipsProject);
     }
 
@@ -456,7 +455,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptType type = findProductCmptType(ipsProject);
         // no type information available, so no further validation possible

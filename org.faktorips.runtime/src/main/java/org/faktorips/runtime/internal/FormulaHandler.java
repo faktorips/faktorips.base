@@ -32,7 +32,7 @@ class FormulaHandler {
 
     private IFormulaEvaluator formulaEvaluator;
 
-    private Map<String, String> availableFormulars = new LinkedHashMap<>();
+    private Map<String, String> availableFormulas = new LinkedHashMap<>();
 
     public FormulaHandler(Object callerObject, IRuntimeRepository repository) {
         this.callerObject = callerObject;
@@ -62,14 +62,17 @@ class FormulaHandler {
      * called for each formula found in the XML. see FIPS-995
      */
     public void doInitFormulaFromXml(Element element) {
-        availableFormulars.putAll(ProductComponentXmlUtil.getAvailableFormulars(element));
+        availableFormulas.putAll(ProductComponentXmlUtil.getAvailableFormulars(element));
 
         if (getFormulaEvaluator() != null) {
             return;
         }
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
-            if (factory != null) {
+            boolean hasFormulas = availableFormulas.values()
+                    .stream()
+                    .anyMatch(IpsStringUtils::isNotBlank);
+            if (factory != null && hasFormulas) {
                 Map<String, String> expressions = getCompiledExpressionsFromFormulas(element);
                 formulaEvaluator = factory.createFormulaEvaluator(callerObject, expressions);
             }
@@ -102,8 +105,8 @@ class FormulaHandler {
     }
 
     public boolean isFormulaAvailable(String formularSignature) {
-        String expression = availableFormulars.get(formularSignature);
-        return !IpsStringUtils.isBlank(expression);
+        String expression = availableFormulas.get(formularSignature);
+        return IpsStringUtils.isNotBlank(expression);
     }
 
     /**
@@ -113,7 +116,7 @@ class FormulaHandler {
      * @param element the element to add the formulas
      */
     public void writeFormulaToXml(Element element) {
-        addFormulasToElement(element, formulaEvaluator, availableFormulars);
+        addFormulasToElement(element, formulaEvaluator, availableFormulas);
     }
 
     protected void addFormulasToElement(final Element element,

@@ -220,7 +220,7 @@ public class ProductCmptTypeTest {
     @IpsChangingOverTime(ProductGen.class)
     @IpsAttributes({ "attr", "overwrittenAttr", "BigAttr", "attr_changing", "abstractSuper" })
     @IpsAssociations({ "asso", "asso_changing" })
-    private static abstract class Product extends SuperProduct {
+    private abstract static class Product extends SuperProduct {
 
         public Product(IRuntimeRepository repository, String id, String PolicyKindId, String versionId) {
             super(repository, id, PolicyKindId, versionId);
@@ -248,7 +248,7 @@ public class ProductCmptTypeTest {
 
     }
 
-    private static abstract class ProductGen extends ProductComponentGeneration {
+    private abstract static class ProductGen extends ProductComponentGeneration {
 
         public ProductGen(ProductComponent productCmpt) {
             super(productCmpt);
@@ -268,7 +268,7 @@ public class ProductCmptTypeTest {
     @IpsProductCmptType(name = "MySuperProduct")
     @IpsAttributes({ "supAttr", "overwrittenAttr", "abstractSuper" })
     @IpsAssociations({ "SupAsso" })
-    private static abstract class SuperProduct extends ProductComponent {
+    private abstract static class SuperProduct extends ProductComponent {
 
         @IpsAttribute(name = "supAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
         public int getSup() {
@@ -291,7 +291,7 @@ public class ProductCmptTypeTest {
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
-    private static abstract class Policy extends AbstractModelObject implements IConfigurableModelObject {
+    private abstract static class Policy extends AbstractModelObject implements IConfigurableModelObject {
 
     }
 

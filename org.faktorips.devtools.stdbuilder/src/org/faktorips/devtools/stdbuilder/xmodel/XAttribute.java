@@ -11,11 +11,9 @@
 package org.faktorips.devtools.stdbuilder.xmodel;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.util.DatatypeUtil;
@@ -166,12 +164,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
 
     public XAttribute getOverwrittenAttribute() {
         if (isOverwrite()) {
-            try {
-                IAttribute overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
-                return getModelNode(overwrittenAttribute, getClass());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IAttribute overwrittenAttribute = getAttribute().findOverwrittenAttribute(getIpsProject());
+            return getModelNode(overwrittenAttribute, getClass());
         } else {
             throw new RuntimeException(
                     "Attribute is not overwritten so there is no overwritten attribute for " + getAttribute());

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -23,16 +25,16 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -73,16 +75,16 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetEntry() throws CoreException {
+    public void testGetEntry() {
         assertNull(path.getEntry(null));
         assertNull(path.getEntry("unknown"));
 
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsObjectPathEntry entry0 = path.newSourceFolderEntry(srcFolder);
 
         path.newIpsProjectRefEntry(newIpsProject("Project2"));
 
-        IFile archiveFile = ipsProject.getProject().getFile("archive.jar");
+        AFile archiveFile = ipsProject.getProject().getFile("archive.jar");
         IIpsObjectPathEntry entry2 = path.newArchiveEntry(archiveFile.getLocation());
 
         assertEquals(entry0, path.getEntry("src"));
@@ -95,7 +97,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewSrcFolderEntry() {
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(srcFolder);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -110,7 +112,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewProjectRefEntry() throws CoreException {
+    public void testNewProjectRefEntry() {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -132,7 +134,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsProjectRefEntry() throws CoreException {
+    public void testContainsProjectRefEntry() {
         path.newIpsProjectRefEntry(ipsProject);
         assertTrue(path.containsProjectRefEntry(ipsProject));
 
@@ -144,7 +146,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveProjectRefEntry() throws CoreException {
+    public void testRemoveProjectRefEntry() {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -164,7 +166,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsArchiveEntry() throws Exception {
-        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
         IIpsArchive ipsArchive = path.newArchiveEntry(archiveFile.getLocation()).getIpsArchive();
         assertTrue(path.containsArchiveEntry(ipsArchive));
@@ -178,7 +180,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRemoveArchiveEntry() throws Exception {
-        IFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
+        AFile archiveFile = ipsProject.getProject().getFile("test.ipsar");
         createArchive(ipsProject, archiveFile);
         IIpsArchiveEntry entry0 = path.newArchiveEntry(archiveFile.getLocation());
         IIpsArchive archive0 = entry0.getIpsArchive();
@@ -194,8 +196,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsSrcFolderEntry() throws CoreException {
-        IFolder folder = ipsProject.getProject().getFolder("testfolder");
+    public void testContainsSrcFolderEntry() {
+        AFolder folder = ipsProject.getProject().getFolder("testfolder");
         path.newSourceFolderEntry(folder);
         assertTrue(path.containsSrcFolderEntry(folder));
 
@@ -207,8 +209,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRemoveSrcFolderEntry() throws CoreException {
-        IFolder folder = ipsProject.getProject().getFolder("testfolder");
+    public void testRemoveSrcFolderEntry() {
+        AFolder folder = ipsProject.getProject().getFolder("testfolder");
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(folder);
         assertEquals(path, entry0.getIpsObjectPath());
         // default test project contains already 1 entry
@@ -228,7 +230,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDirectlyReferencedIpsProjects() {
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
         refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
         refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
         path.newIpsProjectRefEntry(refProject);
@@ -243,7 +245,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetDirectlyReferencedIpsProjects_refInContainer() {
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
         refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
         refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
         path.newIpsProjectRefEntry(refProject);
@@ -265,7 +267,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllReferencedIpsProjects_refInContainer() throws CoreException {
+    public void testFindAllReferencedIpsProjects_refInContainer() {
         setUpReferencedProjects(false);
 
         List<IIpsProject> projects = path.getAllReferencedIpsProjects();
@@ -276,7 +278,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetProjectRefEntries_container() {
-        IFolder srcFolder = ipsProject.getProject().getFolder("src");
+        AFolder srcFolder = ipsProject.getProject().getFolder("src");
         refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
         refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
         IIpsProjectRefEntry refEntry1 = path.newIpsProjectRefEntry(refProject);
@@ -314,18 +316,18 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetOutputFolders() {
-        IProject project = ipsProject.getProject();
+        AProject project = ipsProject.getProject();
         IpsObjectPath path = new IpsObjectPath(ipsProject);
-        IFolder out0 = project.getFolder("out0");
-        IFolder ext0 = project.getFolder("ext0");
+        AFolder out0 = project.getFolder("out0");
+        AFolder ext0 = project.getFolder("ext0");
         path.setOutputFolderForMergableSources(out0);
         path.setOutputFolderForDerivedSources(ext0);
 
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(project.getFolder("src0"));
-        IFolder out1 = project.getFolder("out1");
+        AFolder out1 = project.getFolder("out1");
         entry0.setSpecificOutputFolderForMergableJavaFiles(out1);
         IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(project.getFolder("src1"));
-        IFolder out2 = project.getFolder("out2");
+        AFolder out2 = project.getFolder("out2");
         entry1.setSpecificOutputFolderForMergableJavaFiles(out2);
         IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(project.getFolder("src1"));
         entry2.setSpecificOutputFolderForMergableJavaFiles(null);
@@ -333,7 +335,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         // one output folder for all src folders
         path.setOutputDefinedPerSrcFolder(false);
-        IFolder[] outFolders = path.getOutputFolders();
+        AFolder[] outFolders = path.getOutputFolders();
         assertEquals(1, outFolders.length);
         assertEquals(out0, outFolders[0]);
 
@@ -351,7 +353,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate() throws CoreException {
+    public void testValidate() {
         MessageList ml = ipsProject.validate();
         assertEquals(0, ml.size());
 
@@ -359,12 +361,12 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
 
         // validate missing outputFolderGenerated
-        IFolder folder1 = ipsProject.getProject().getFolder("none");
+        AFolder folder1 = ipsProject.getProject().getFolder("none");
         path.setOutputFolderForMergableSources(folder1);
         path.setOutputDefinedPerSrcFolder(false);
         ipsProject.setProperties(props);
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER));
 
         // validate missing outputFolderExtension
         path.setOutputFolderForDerivedSources(folder1);
@@ -388,8 +390,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = props.getIpsObjectPath();
 
         ml = ipsProject.validate();
-        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
-        assertNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, lacksMessageCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
 
         path.setOutputDefinedPerSrcFolder(false);
         path.setOutputFolderForMergableSources(null);
@@ -397,8 +399,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(props);
 
         ml = ipsProject.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
-        assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(IIpsObjectPath.MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED));
+        assertThat(ml, hasMessageCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
     }
 
     @Test(expected = NullPointerException.class)
@@ -514,7 +516,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testContainsResource_falseForIpsProjectRefEntry() throws Exception {
         setUpReferencedProjects(false);
 
-        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         assertFalse(path.containsResource("file.txt"));
     }
@@ -523,12 +525,12 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testContainsResource_trueForIpsProjectRefEntry() throws Exception {
         setUpReferencedProjects(true);
 
-        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         assertTrue(path.containsResource("file.txt"));
     }
 
-    private void setUpReferencedProjects(boolean reexportProjects) throws CoreException {
+    private void setUpReferencedProjects(boolean reexportProjects) {
         refProject = newIpsProject("RefProject");
         refProject2 = newIpsProject("RefProject2");
         // ipsProject = newIpsProject();
@@ -550,7 +552,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     @Test
     public void testGetIndex() throws Exception {
         IpsObjectPath ipsObjectPath = new IpsObjectPath(ipsProject);
-        IIpsArchiveEntry newArchiveEntry = ipsObjectPath.newArchiveEntry(new Path("anyPath"));
+        IIpsArchiveEntry newArchiveEntry = ipsObjectPath.newArchiveEntry(Path.of("anyPath"));
         IIpsContainerEntry newContainerEntry = ipsObjectPath.newContainerEntry("MyContainer", "myContainerPath");
 
         assertEquals(0, ipsObjectPath.getIndex(newArchiveEntry));
@@ -575,18 +577,18 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetResourceAsStream() throws CoreException, IOException {
+    public void testGetResourceAsStream() throws IpsException, IOException {
         setUpReferencedProjects(true);
-        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         InputStream resourceAsStream = path.getResourceAsStream("file.txt");
         assertEquals("111", getFirstLine(resourceAsStream));
     }
 
     @Test
-    public void testGetResourceAsStreamInternal() throws CoreException {
+    public void testGetResourceAsStreamInternal() {
         setUpReferencedProjects(false);
-        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((AFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         InputStream resourceAsStream = path.getResourceAsStream("file.txt");
         assertNull(resourceAsStream);
@@ -761,7 +763,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencedIpsProjects_invalidRefEntry() throws CoreException {
+    public void testGetReferencedIpsProjects_invalidRefEntry() {
         path.newIpsProjectRefEntry(null);
         path.validate();
     }

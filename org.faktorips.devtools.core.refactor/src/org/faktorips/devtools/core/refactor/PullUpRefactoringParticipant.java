@@ -29,6 +29,7 @@ import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.ProcessorBasedRefactoring;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringArguments;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
  * This class is loaded by the Faktor-IPS 'Pull Up' refactoring to participate in this process by
@@ -54,7 +55,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
     }
 
     @Override
-    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException {
         return refactoringHelper.createChange(pm);
     }
 
@@ -142,7 +143,7 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
         }
 
         @Override
-        public RefactoringStatus checkAllConditions(IProgressMonitor pm) throws CoreException {
+        public RefactoringStatus checkAllConditions(IProgressMonitor pm) {
             return new RefactoringStatus();
         }
 

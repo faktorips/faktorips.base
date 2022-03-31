@@ -10,7 +10,8 @@ Require-Bundle:
  org.eclipse.text,
  org.faktorips.eclipse.emf.codegen
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.devtools.model.builder.java
+Export-Package: org.faktorips.devtools.model.builder.java,
+ org.faktorips.devtools.model.builder.settings
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional

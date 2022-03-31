@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -17,14 +19,14 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
+import java.nio.file.Path;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -52,8 +54,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
     private IpsArchiveEntry entry;
-    private IFile archiveFile;
-    private IPath archivePath;
+    private AFile archiveFile;
+    private Path archivePath;
 
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
@@ -69,9 +71,9 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         qntMotorCollision = newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack2.MotorCollision")
                 .getQualifiedNameType();
         newPolicyCmptTypeWithoutProductCmptType(archiveProject, "pack3.HomePolicy").getQualifiedNameType();
-        IFile iconFile = ((IFolder)archiveProject.getIpsPackageFragmentRoots()[0].getCorrespondingResource())
+        AFile iconFile = ((AFolder)archiveProject.getIpsPackageFragmentRoots()[0].getCorrespondingResource())
                 .getFile("myTest.gif");
-        iconFile.create(new ByteArrayInputStream("imageContent".getBytes()), true, new NullProgressMonitor());
+        iconFile.create(new ByteArrayInputStream("imageContent".getBytes()), new NullProgressMonitor());
         IProductCmptType prodType = motorPolicyCmptType.findProductCmptType(archiveProject);
         prodType.setInstancesIcon("myTest.gif");
 
@@ -101,8 +103,11 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     public void testInitFromXml() {
         Element docEl = getTestDocument().getDocumentElement();
         entry.initFromXml(XmlUtil.getElement(docEl, 0), project.getProject());
-        IFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
-        IPath archivePath = archiveFile.getFullPath();
+        AFile archiveFile = project.getProject().getFolder("lib").getFile("test.ipsar");
+        Path archivePath = archiveFile.getWorkspaceRelativePath();
+        if (!Abstractions.isEclipseRunning()) {
+            archivePath = Path.of("/").resolve(archivePath);
+        }
         assertEquals(archivePath, entry.getIpsArchive().getArchivePath());
 
         entry.initFromXml(XmlUtil.getElement(docEl, 1), project.getProject());
@@ -129,10 +134,10 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() {
         Element el = entry.toXml(newDocument());
         // to create a new entry we need a handle to an existing file path
-        IPath dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation();
+        Path dummyArchivePath = project.getIpsProjectPropertiesFile().getLocation();
         IpsArchiveEntry newEntry = (IpsArchiveEntry)project.getIpsObjectPath().newArchiveEntry(dummyArchivePath);
         newEntry.initFromXml(el, project.getProject());
         assertEquals(archivePath, newEntry.getArchiveLocation());
@@ -151,11 +156,11 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
         entry.initStorage(project.getProject().getFile("NoneExistingFile").getLocation());
         ml = entry.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
         entry.initStorage(null);
         ml = entry.validate();
-        assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
+        assertThat(ml, hasMessageCode(IIpsObjectPathEntry.MSGCODE_MISSING_ARCHVE));
 
     }
 

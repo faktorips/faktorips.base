@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInDocumentedSourceFileFilter;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
@@ -151,7 +151,7 @@ public class PageElementUtils {
                 return new WrapperPageElement(WrapperType.NONE, context).addPageElements(
                         new IpsElementImagePageElement(ipsElement, getContext())).addPageElements(
                                 new TextPageElement('\u00A0' + text, context));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 context.addStatus(
                         new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName(), e)); //$NON-NLS-1$
             }

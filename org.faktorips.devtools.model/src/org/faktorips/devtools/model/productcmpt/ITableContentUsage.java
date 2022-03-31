@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
@@ -89,9 +89,9 @@ public interface ITableContentUsage extends IPropertyValue {
      * Returns the table contents which is related or <code>null</code> if the table contents can't
      * be found.
      * 
-     * @throws CoreException if an error occurs while searching for the table contents.
+     * @throws IpsException if an error occurs while searching for the table contents.
      */
-    public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException;
+    public ITableContents findTableContents(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the related table structure usage or <code>null</code> if the table contents can't be
@@ -100,10 +100,10 @@ public interface ITableContentUsage extends IPropertyValue {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the table structure usage.
+     * @throws IpsException if an error occurs while searching for the table structure usage.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreException;
+    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant

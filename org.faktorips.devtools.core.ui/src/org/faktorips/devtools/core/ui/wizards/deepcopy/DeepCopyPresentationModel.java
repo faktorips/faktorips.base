@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
@@ -72,7 +72,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
         try {
             generationDatesInternal = new GenerationDateContentProvider().collectGenerationDates(
                     productCmptGeneration.getProductCmpt(), null);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             generationDatesInternal = new ArrayList<>();
         }

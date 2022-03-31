@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -67,7 +66,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public boolean isValid(IIpsProject ipsProject) throws CoreException {
+    public boolean isValid(IIpsProject ipsProject) {
         return getValidationResultSeverity(ipsProject) != Severity.ERROR;
     }
 
@@ -77,7 +76,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
+    public Severity getValidationResultSeverity(IIpsProject ipsProject) {
         return validate(ipsProject).getSeverity();
     }
 

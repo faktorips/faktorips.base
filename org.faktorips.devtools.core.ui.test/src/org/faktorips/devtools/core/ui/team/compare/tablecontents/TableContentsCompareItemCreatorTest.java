@@ -72,7 +72,7 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         row4 = generation.newRow();
 
         srcFile = table.getIpsSrcFile();
-        correspondingFile = srcFile.getCorrespondingFile();
+        correspondingFile = srcFile.getCorrespondingFile().unwrap();
 
         // initialized compareItem
         compareItemRoot = (TableContentsCompareItem)structureCreator.getStructure(new ResourceNode(correspondingFile));

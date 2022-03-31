@@ -23,12 +23,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -86,11 +88,19 @@ public class XPolicyAttributeTest {
 
         IPolicyCmptType polType = mock(IPolicyCmptType.class);
         when(attribute.getPolicyCmptType()).thenReturn(polType);
+        when(attribute.getIpsObject()).thenReturn(polType);
+        when(polType.getIpsProject()).thenReturn(ipsProject);
+        StandardBuilderSet builderSet = mock(StandardBuilderSet.class);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        when(builderSet.getGeneratorModelContext()).thenReturn(modelContext);
 
         policyClass = mock(XPolicyCmptClass.class);
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
+        when(modelContext.getGeneratorConfig(any(IpsObject.class))).thenReturn(generatorConfig);
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+
+        when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
 
         xPolicyAttribute = new XPolicyAttribute(attribute, modelContext, modelService);
     }
@@ -108,7 +118,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -131,7 +141,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(valueSet).isContainsNull();
         doReturn(valueSet).when(attribute).getValueSet();
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -158,7 +168,7 @@ public class XPolicyAttributeTest {
         doReturn(valueSet).when(attribute).getValueSet();
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
 
-        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -167,8 +177,10 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
+        IValueSet valueSet = mock(IValueSet.class);
+        doReturn(valueSet).when(attribute).getValueSet();
 
-        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -239,7 +251,7 @@ public class XPolicyAttributeTest {
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
 
-        assertFalse(generatedMethod);
+        assertThat(generatedMethod, is(true));
     }
 
     @Test
@@ -251,7 +263,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperConstant() throws CoreException {
+    public void testIsOverrideGetAllowedValuesFor_SuperConstant() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
@@ -266,7 +278,7 @@ public class XPolicyAttributeTest {
     }
 
     @Test
-    public void testIsOverrideGetAllowedValuesFor_SuperOverride() throws CoreException {
+    public void testIsOverrideGetAllowedValuesFor_SuperOverride() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
         when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
@@ -543,6 +555,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -553,6 +566,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -563,6 +577,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -593,7 +608,7 @@ public class XPolicyAttributeTest {
         doReturn(valueSet).when(attribute).getValueSet();
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
 
-        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test
@@ -607,7 +622,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         doReturn(valueSet).when(attribute).getValueSet();
 
-        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test
@@ -659,7 +674,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
         doReturn(superValueSet).when(superAttribute).getValueSet();
 
-        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(false));
+        assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
 
     @Test
@@ -712,7 +727,7 @@ public class XPolicyAttributeTest {
         doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
         doReturn(superValueSet).when(superAttribute).getValueSet();
 
-        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(false));
+        assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
 
     @Test

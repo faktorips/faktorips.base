@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.refactor;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -36,7 +35,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) {
         super.checkInitialConditionsThis(status, pm);
         moveRenameHelper.checkInitialConditions(status);
     }
@@ -44,7 +43,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     @Override
     protected void checkFinalConditionsThis(RefactoringStatus status,
             IProgressMonitor pm,
-            CheckConditionsContext context) throws CoreException {
+            CheckConditionsContext context) {
         super.checkFinalConditionsThis(status, pm, context);
         IIpsPackageFragment newPackageFragment = getTargetIpsPackageFragment().getSubPackage(
                 getOriginalIpsPackageFragment().getLastSegmentName());
@@ -53,7 +52,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) {
         super.validateUserInputThis(status, pm);
         if (isTargetParentPackage()) {
             status.addFatalError(NLS.bind(
@@ -81,7 +80,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) throws CoreException {
+    public IpsRefactoringModificationSet refactorIpsModel(IProgressMonitor pm) {
         return moveRenameHelper.movePackageFragment(getTargetIpsPackageFragment(), pm);
     }
 
@@ -91,7 +90,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     }
 
     @Override
-    protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
+    protected void validateIpsModel(MessageList validationMessageList) {
         // nichts zu tun
     }
 

@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.type;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -40,7 +41,7 @@ public class AttributeAbstractDatatypeValidator {
     public void validateNotAbstractDatatype(MessageList list) {
         ValueDatatype datatype = attribute.findDatatype(ipsProject);
         if (datatype != null && datatype.isAbstract()) {
-            String text = NLS.bind(Messages.AttributeAbstractDatatypeValidator_msg, attribute.getName());
+            String text = MessageFormat.format(Messages.AttributeAbstractDatatypeValidator_msg, attribute.getName());
             ObjectProperty[] invalidObjects;
             if (!attribute.isOfType(getQualifiedNameType())) {
                 text += Messages.AttributeAbstractDatatypeValidator_hint;

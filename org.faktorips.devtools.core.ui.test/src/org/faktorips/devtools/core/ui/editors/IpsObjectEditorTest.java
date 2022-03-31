@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.forms.IMessage;
@@ -110,7 +109,7 @@ public class IpsObjectEditorTest {
         assertEquals(IMessageProvider.WARNING, messages.get(1).getMessageType());
     }
 
-    private MessageList mockValidation() throws CoreException {
+    private MessageList mockValidation() {
         MessageList messageList = new MessageList();
         when(ipsObject.validate(any(IIpsProject.class))).thenReturn(messageList);
         return messageList;
@@ -157,7 +156,7 @@ public class IpsObjectEditorTest {
     }
 
     @Test
-    public void testgetMessageList_SizeBiggerSix() throws CoreException {
+    public void testgetMessageList_SizeBiggerSix() {
         MessageList messageList = createMessageList();
         messageList.add(new Message("warning2", "warning2", Message.WARNING));
         messageList.add(new Message("err7", "err7", Message.ERROR));
@@ -171,7 +170,7 @@ public class IpsObjectEditorTest {
     }
 
     @Test
-    public void testgetMessageList_SizeSixOrSmaller() throws CoreException {
+    public void testgetMessageList_SizeSixOrSmaller() {
         MessageList messageList = createMessageList();
 
         doReturn(messageList).when(ipsObject).validate(ipsProject);

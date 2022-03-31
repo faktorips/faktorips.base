@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.builderpattern;
 
 import static java.util.Objects.requireNonNull;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -53,7 +53,7 @@ public class PolicyCmptTypeBuilder {
             }
 
             return result;
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             throw new RuntimeException("Failed to create PolicyCmptType", e);
         }
     }
@@ -61,11 +61,11 @@ public class PolicyCmptTypeBuilder {
     private IIpsObject newIpsObject(final IIpsPackageFragmentRoot root,
             final IpsObjectType type,
             final String qualifiedName,
-            final boolean createAutoProductCmptType) throws CoreException {
+            final boolean createAutoProductCmptType) {
 
         final String packName = StringUtil.getPackageName(qualifiedName);
         final String unqualifiedName = StringUtil.unqualifiedName(qualifiedName);
-        IWorkspaceRunnable runnable = $ -> {
+        ICoreRunnable runnable = $ -> {
             IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
             if (!pack.exists()) {
                 pack = root.createPackageFragment(packName, true, null);
@@ -77,7 +77,7 @@ public class PolicyCmptTypeBuilder {
                 ((IPolicyCmptType)ipsObject).setConfigurableByProductCmptType(false);
             }
         };
-        ResourcesPlugin.getWorkspace().run(runnable, null);
+        Abstractions.getWorkspace().run(runnable, null);
         IIpsPackageFragment pack = root.getIpsPackageFragment(packName);
         return pack.getIpsSrcFile(type.getFileName(unqualifiedName)).getIpsObject();
     }

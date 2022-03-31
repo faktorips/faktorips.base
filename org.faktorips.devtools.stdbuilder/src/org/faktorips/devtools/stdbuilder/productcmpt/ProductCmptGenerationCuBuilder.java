@@ -22,7 +22,6 @@ import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -75,17 +74,13 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
         String genName = generatorConfig.getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(AbstractProductCuBuilder.CONSTRUCTOR_JAVADOC, genName);
-        try {
-            String className = getUnqualifiedClassName();
-            String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-            String qualifiedClassName = productCmptCuBuilder
-                    .getImplementationClass(getPropertyValueContainer().getProductCmpt());
-            String[] argClassNames = new String[] { qualifiedClassName };
-            JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
-            codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        String className = getUnqualifiedClassName();
+        String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
+        String qualifiedClassName = productCmptCuBuilder
+                .getImplementationClass(getPropertyValueContainer().getProductCmpt());
+        String[] argClassNames = new String[] { qualifiedClassName };
+        JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
+        codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
     }
 
     @Override

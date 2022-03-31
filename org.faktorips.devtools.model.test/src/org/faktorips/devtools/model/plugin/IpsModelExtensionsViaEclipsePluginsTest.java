@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.abstracttest.TestConfigurationElement;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
 import org.faktorips.devtools.model.versionmanager.EmptyIpsFeatureVersionManager;
@@ -55,54 +56,65 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
 
     @Before
     public void createExtensionFactory() throws Exception {
-        modelExtensionFactory = new IpsModelExtensionsViaEclipsePlugins(extensionRegistry);
+        if (Abstractions.isEclipseRunning()) {
+            modelExtensionFactory = new IpsModelExtensionsViaEclipsePlugins(extensionRegistry);
+        }
     }
 
     @Test
     public void testCreateIpsFeatureVersionManagers_empty() throws Exception {
-        when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
-                FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
-                        new IConfigurationElement[0]);
+        if (Abstractions.isEclipseRunning()) {
+            when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
+                    FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
+                            new IConfigurationElement[0]);
 
-        IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory.getIpsFeatureVersionManagers();
+            IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory
+                    .getIpsFeatureVersionManagers();
 
-        assertEquals(1, ipsFeatureVersionManagers.length);
-        assertEquals(EmptyIpsFeatureVersionManager.INSTANCE, ipsFeatureVersionManagers[0]);
+            assertEquals(1, ipsFeatureVersionManagers.length);
+            assertEquals(EmptyIpsFeatureVersionManager.INSTANCE, ipsFeatureVersionManagers[0]);
+        }
     }
 
     @Test
     public void testCreateIpsFeatureVersionManagers_ipsFeatureVersionManager() throws Exception {
-        IConfigurationElement extendableVersionManagerElement = mockVersionManager(ipsFeatureVersionManager);
-        when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
-                FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
-                        new IConfigurationElement[] { extendableVersionManagerElement });
+        if (Abstractions.isEclipseRunning()) {
+            IConfigurationElement extendableVersionManagerElement = mockVersionManager(ipsFeatureVersionManager);
+            when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
+                    FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
+                            new IConfigurationElement[] { extendableVersionManagerElement });
 
-        IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory.getIpsFeatureVersionManagers();
+            IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory
+                    .getIpsFeatureVersionManagers();
 
-        assertEquals(1, ipsFeatureVersionManagers.length);
-        assertEquals(ipsFeatureVersionManager, ipsFeatureVersionManagers[0]);
-        verify(ipsFeatureVersionManager).setFeatureId(MY_FEATURE_ID);
-        verify(ipsFeatureVersionManager).setId(MY_ID);
-        verify(ipsFeatureVersionManager).setPredecessorId(MY_BASED_ON_FEATURE_MANAGER);
-        verify(ipsFeatureVersionManager).setRequiredForAllProjects(true);
+            assertEquals(1, ipsFeatureVersionManagers.length);
+            assertEquals(ipsFeatureVersionManager, ipsFeatureVersionManagers[0]);
+            verify(ipsFeatureVersionManager).setFeatureId(MY_FEATURE_ID);
+            verify(ipsFeatureVersionManager).setId(MY_ID);
+            verify(ipsFeatureVersionManager).setPredecessorId(MY_BASED_ON_FEATURE_MANAGER);
+            verify(ipsFeatureVersionManager).setRequiredForAllProjects(true);
+        }
     }
 
     @Test
     public void testCreateIpsFeatureVersionManagers_extendableVersionManager() throws Exception {
-        IConfigurationElement extendableVersionManagerElement = mockVersionManager(extendableVersionManager);
-        when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
-                FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
-                        new IConfigurationElement[] { extendableVersionManagerElement });
+        if (Abstractions.isEclipseRunning()) {
+            IConfigurationElement extendableVersionManagerElement = mockVersionManager(extendableVersionManager);
+            when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
+                    FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER)).thenReturn(
+                            new IConfigurationElement[] { extendableVersionManagerElement });
 
-        IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory.getIpsFeatureVersionManagers();
+            IIpsFeatureVersionManager[] ipsFeatureVersionManagers = modelExtensionFactory
+                    .getIpsFeatureVersionManagers();
 
-        assertEquals(1, ipsFeatureVersionManagers.length);
-        assertEquals(extendableVersionManager, ipsFeatureVersionManagers[0]);
-        verify(extendableVersionManager).setContributorName(MY_CONTRIBUTOR_NAME);
-        verify(extendableVersionManager).setFeatureId(MY_FEATURE_ID);
-        verify(extendableVersionManager).setId(MY_ID);
-        verify(extendableVersionManager).setPredecessorId(MY_BASED_ON_FEATURE_MANAGER);
-        verify(extendableVersionManager).setRequiredForAllProjects(true);
+            assertEquals(1, ipsFeatureVersionManagers.length);
+            assertEquals(extendableVersionManager, ipsFeatureVersionManagers[0]);
+            verify(extendableVersionManager).setContributorName(MY_CONTRIBUTOR_NAME);
+            verify(extendableVersionManager).setFeatureId(MY_FEATURE_ID);
+            verify(extendableVersionManager).setId(MY_ID);
+            verify(extendableVersionManager).setPredecessorId(MY_BASED_ON_FEATURE_MANAGER);
+            verify(extendableVersionManager).setRequiredForAllProjects(true);
+        }
     }
 
     private IConfigurationElement mockVersionManager(IIpsFeatureVersionManager ipsFeatureVersionManager) {

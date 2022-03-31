@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
@@ -68,7 +67,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
         markerPMO = ValidationRuleMarkerPMO.createFor(ipsProject, rule);
     }
 
-    private void initMarkerEnumInProjectSettings() throws CoreException {
+    private void initMarkerEnumInProjectSettings() {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.addMarkerEnum("qualified.markerEnum");
         ipsProject.setProperties(properties);
@@ -83,7 +82,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetItems_defaultValues() throws CoreException {
+    public void testGetItems_defaultValues() {
         initMarkerEnumInProjectSettings();
         initMarkerPMO();
 
@@ -100,7 +99,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetItems() throws CoreException {
+    public void testGetItems() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("id1"));
         initMarkerPMO();
@@ -113,7 +112,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testUpdateActiveMarkers() throws CoreException {
+    public void testUpdateActiveMarkers() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("id1"));
         initMarkerPMO();
@@ -128,7 +127,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIllegalID() throws CoreException {
+    public void testIllegalID() {
         initMarkerEnumInProjectSettings();
         rule.setMarkers(Collections.singletonList("illegalID"));
         initMarkerPMO();

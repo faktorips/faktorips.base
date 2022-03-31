@@ -17,7 +17,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Arrays;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
@@ -28,6 +27,8 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
@@ -73,30 +74,30 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
 
         pcType2 = newPolicyCmptTypeWithoutProductCmptType(project, "products.folder.TestPolicy2");
 
-        IFile archiveFile = createIpsArchiveFile(root);
+        AFile archiveFile = createIpsArchiveFile(root);
         IIpsObjectPath objectPath = project.getIpsObjectPath();
         objectPath.newArchiveEntry(archiveFile.getLocation());
         project.setIpsObjectPath(objectPath);
 
-        folder = project.getProject().getFolder("testFolder");
+        folder = project.getProject().getFolder("testFolder").unwrap();
         folder.create(true, true, null);
     }
 
-    private IFile createIpsArchiveFile(IIpsPackageFragmentRoot targetRoot) throws Exception {
+    private AFile createIpsArchiveFile(IIpsPackageFragmentRoot targetRoot) throws Exception {
         IIpsProject tempProject = this.newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive1");
         newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive2");
 
         IIpsPackageFragmentRoot tempRoot = tempProject.getSourceIpsPackageFragmentRoots()[0];
-        IFile archiveFile = targetRoot.getIpsProject().getProject().getFile("test.ipsar");
+        AFile archiveFile = targetRoot.getIpsProject().getProject().getFile("test.ipsar");
         createArchive(tempRoot, archiveFile);
 
-        tempProject.getProject().delete(true, true, null);
+        tempProject.getProject().delete(null);
         return archiveFile;
     }
 
     @Test
-    public void testRun() throws CoreException {
+    public void testRun() {
         cutAction = newIpsCutAction(attribute);
         pasteAction = newIpsPasteAction(pcType);
 
@@ -118,7 +119,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsObject2IpsPackageFragment() throws CoreException {
+    public void testCopyPasteIpsObject2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
         newIpsCopyAction(pcType).run();
@@ -133,7 +134,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsPackageFragment2IpsPackageFragment() throws CoreException {
+    public void testCopyPasteIpsPackageFragment2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("testTarget", true, null);
 
         newIpsCopyAction(pack).run();
@@ -151,13 +152,13 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     public void testCopyPasteIpsObject2Folder() throws CoreException {
         newIpsCopyAction(pcType).run();
         assertEquals(0, folder.members().length);
-
         newIpsPasteAction(folder).run();
         assertEquals(1, folder.members().length);
 
         newIpsCopyAction(new IIpsElement[] { pcType, pcType2 }).run();
         newIpsPasteAction(folder).run();
         assertEquals(3, folder.members().length);
+
     }
 
     @Test
@@ -171,7 +172,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() throws CoreException {
+    public void testCopyPasteIpsObjectFromArchive2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
         IIpsObject obj1 = project.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "test.PolicyInArchive1");
@@ -189,7 +190,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCopyPasteIpsPackageFragmentFromArchive2IpsPackageFragment() throws CoreException {
+    public void testCopyPasteIpsPackageFragmentFromArchive2IpsPackageFragment() {
         IIpsPackageFragment fragment = root.createPackageFragment("test", true, null);
 
         IIpsPackageFragmentRoot root = project.findIpsPackageFragmentRoot("test.ipsar");
@@ -211,7 +212,6 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
 
         newIpsCopyAction(obj1).run();
         assertEquals(0, folder.members().length);
-
         newIpsPasteAction(folder).run();
         assertEquals(1, folder.members().length);
 
@@ -258,8 +258,8 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         assertEquals(0, destFragment.getChildren().length);
         clipboard.dispose();
 
-        IFolder destFolder = (IFolder)destFragment.getEnclosingResource();
-        assertEquals(1, destFolder.members().length);
+        AFolder destFolder = (AFolder)destFragment.getEnclosingResource();
+        assertEquals(1, destFolder.getMembers().size());
     }
 
     private IpsCopyAction newIpsCopyAction(Object selection) {

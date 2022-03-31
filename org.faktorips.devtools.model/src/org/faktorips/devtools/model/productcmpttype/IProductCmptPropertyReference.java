@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -29,11 +29,14 @@ import org.faktorips.devtools.model.type.IType;
  * unique across types, the {@link IpsObjectType} of the poperty's {@link IType} is stored as well.
  * 
  * @since 3.6
+ * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
+ *             instead.
  * 
  * @see IProductCmptProperty
  * @see IProductCmptCategory
  * @see IProductCmptType
  */
+@Deprecated(forRemoval = true, since = "22.6")
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
     public static final String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
@@ -54,9 +57,9 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
     /**
      * Returns the referenced {@link IProductCmptProperty} or null if it cannot be found.
      * 
-     * @throws CoreException if an error occurs during the search
+     * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the part id of the referenced {@link IProductCmptProperty}.

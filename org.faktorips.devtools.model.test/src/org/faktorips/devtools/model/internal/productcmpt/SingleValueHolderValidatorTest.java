@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.internal.value.InternationalStringValue;
@@ -39,7 +38,7 @@ import org.junit.Test;
 public class SingleValueHolderValidatorTest {
 
     @Test
-    public void testValidate_NoValidationErrors() throws CoreException {
+    public void testValidate_NoValidationErrors() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -61,7 +60,7 @@ public class SingleValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_ValueNotInValueSet() throws CoreException {
+    public void testValidate_ValueNotInValueSet() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -91,7 +90,7 @@ public class SingleValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_DatatypeNotFound() throws CoreException {
+    public void testValidate_DatatypeNotFound() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -112,7 +111,7 @@ public class SingleValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_NotReadyToUse() throws CoreException {
+    public void testValidate_NotReadyToUse() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -136,7 +135,7 @@ public class SingleValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_ValueNotParsable() throws CoreException {
+    public void testValidate_ValueNotParsable() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
@@ -159,7 +158,7 @@ public class SingleValueHolderValidatorTest {
     }
 
     @Test
-    public void testValidate_InvalidMultilingualValue() throws CoreException {
+    public void testValidate_InvalidMultilingualValue() {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);

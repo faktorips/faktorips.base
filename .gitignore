@@ -10,3 +10,6 @@ org.faktorips.runtime/.*
 .META-INF_*
 pom.tycho
 .tycho-consumer-pom.xml
+
+# IntelliJ
+.idea

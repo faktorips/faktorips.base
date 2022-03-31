@@ -12,7 +12,6 @@ package org.faktorips.abstracttest;
 
 import static org.junit.Assert.assertEquals;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
@@ -111,7 +110,7 @@ public abstract class AbstractIpsEnumPluginTest extends AbstractIpsPluginTest {
         value2.setEnumAttributeValue(2, ValueFactory.createStringValue("annually"));
     }
 
-    private void createGenderEnum() throws CoreException {
+    private void createGenderEnum() {
         genderEnumType = newEnumType(ipsProject, GENDER_ENUM_TYPE_NAME);
         genderEnumType.setAbstract(false);
         genderEnumType.setExtensible(true);

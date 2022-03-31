@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -46,8 +47,8 @@ public class MissingTemplateLinkEntry extends AbstractDeltaEntryForLinks {
         String linkCaption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(getLink());
         String linkTarget = StringUtil.unqualifiedName(getLink().getTarget());
         String templateName = getLink().getProductCmpt().getName();
-        return NLS.bind(Messages.MissingTemplateLinkEntry_missingTemplateLink, new String[] { linkCaption, linkTarget,
-                templateName });
+        return MessageFormat.format(Messages.MissingTemplateLinkEntry_missingTemplateLink, linkCaption, linkTarget,
+                templateName);
     }
 
     /**

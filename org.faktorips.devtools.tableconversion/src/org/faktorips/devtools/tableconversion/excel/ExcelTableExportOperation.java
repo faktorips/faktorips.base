@@ -17,7 +17,6 @@ import java.io.IOException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -62,7 +61,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         // Currently, there is only one generation per table contents
         ITableContents contents = getTableContents(typeToExport);

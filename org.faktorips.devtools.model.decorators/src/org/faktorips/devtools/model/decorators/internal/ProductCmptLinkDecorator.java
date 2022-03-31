@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IDecoration;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -36,7 +36,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
                         IIpsDecorators.getImageDescriptor(target),
                         OverlayIcons.LINK,
                         IDecoration.BOTTOM_RIGHT);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }
@@ -58,7 +58,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
                     return IpsStringUtils.EMPTY;
                 }
                 return findTarget.getName();
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsLog.log(e);
             }
         }

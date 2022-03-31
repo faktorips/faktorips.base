@@ -17,7 +17,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -75,7 +74,7 @@ public class AssociationNodeGeneratorTest {
     private IdentifierNodeFactory nodeFactory;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         nodeFactory = new IdentifierNodeFactory(new TextRegion("AssociationNodeGeneratorTest", 0,
                 "AssociationNodeGeneratorTest".length()), ipsProject);
         setUpMockAssociation();
@@ -90,7 +89,7 @@ public class AssociationNodeGeneratorTest {
         when(builderSet.getJavaClassName(elementDatatype, true)).thenReturn("Policy");
     }
 
-    private void setUpMockAssociation() throws CoreException {
+    private void setUpMockAssociation() {
         when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
     }
 

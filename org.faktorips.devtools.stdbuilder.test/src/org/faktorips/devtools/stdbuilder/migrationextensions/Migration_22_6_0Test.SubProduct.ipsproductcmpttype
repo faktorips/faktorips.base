@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmptType2 xmlns="http://www.faktorzehn.org" abstract="false" changingOverTime="false" configurationForPolicyCmptType="true" instancesIcon="" layerSupertype="false" policyCmptType="SubPolicy" since="0.0.1" supertype="BaseProduct" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/21.12/ProductCmptType2.xsd" xml:space="preserve">
+ <Label id="942f21ec-ebea-4f88-bebe-1785869a139b" locale="en" pluralValue="" value=""/>
+ <Description id="3e7f4a9f-484d-4eba-9fea-8ee86484c8e1" locale="en"/>
+ <Attribute category="" changingOverTime="false" datatype="Integer" id="d8d969c1-f4f0-494a-ade4-83323a0e8105" modifier="published" multiValueAttribute="false" multilingual="false" name="SubAttribute1" overwrite="false" since="0.0.1" visible="true">
+  <DefaultValue isNull="true"/>
+  <Label id="103d3ba7-b91b-4c55-ae2e-644186102deb" locale="en" pluralValue="" value=""/>
+  <Description id="132d7df6-9a93-4f60-8cec-20cb89ee8c2a" locale="en"/>
+  <ValueSet abstract="false" id="649796d3-837a-4a8a-9019-57b56191b316">
+   <AllValues containsNull="true"/>
+  </ValueSet>
+ </Attribute>
+ <Attribute category="CategoryC" changingOverTime="false" datatype="Integer" id="ebbe60df-bd9d-4222-8c72-f68943447b93" modifier="published" multiValueAttribute="false" multilingual="false" name="SubAttribute2" overwrite="false" since="0.0.1" visible="true">
+  <DefaultValue isNull="true"/>
+  <Label id="909993b5-0280-4535-84cc-612bc8edecbc" locale="en" pluralValue="" value=""/>
+  <Description id="bcdc5ed2-5f49-42ae-b0ad-9e0030c741ff" locale="en"/>
+  <ValueSet abstract="false" id="3b33ecc3-ae35-4857-a726-5af2ab579eae">
+   <AllValues containsNull="true"/>
+  </ValueSet>
+ </Attribute>
+ <Attribute category="CategoryC" changingOverTime="false" datatype="Integer" id="df6e5002-9ba8-4715-8b71-e4b5f9b9568c" modifier="published" multiValueAttribute="false" multilingual="false" name="SubAttribute3" overwrite="false" since="0.0.1" visible="true">
+  <DefaultValue isNull="true"/>
+  <Label id="5f656442-77b2-40bf-af50-edfc9f86e14e" locale="en" pluralValue="" value=""/>
+  <Description id="9ed92247-801a-41ad-a858-b3d13ef6f05a" locale="en"/>
+  <ValueSet abstract="false" id="23fc6b15-21bd-41ef-9914-49c48872c97a">
+   <AllValues containsNull="true"/>
+  </ValueSet>
+ </Attribute>
+ <Category defaultForFormulaSignatureDefinitions="false" defaultForPolicyCmptTypeAttributes="false" defaultForProductCmptTypeAttributes="false" defaultForTableStructureUsages="false" defaultForValidationRules="false" id="c72ea021-bec6-44cb-9f9a-a264eead3f51" name="CategoryC" position="left">
+  <Label id="6ff10c66-531f-4ea8-86cf-e47d6cdb3c17" locale="en" pluralValue="" value=""/>
+  <Description id="11231a72-9906-4762-8523-6ebbae369ee6" locale="en"/>
+ </Category>
+ <ProductCmptPropertyReference id="d6ece7d9-4332-4a26-92b2-2867693e7830" referencedIpsObjectType="ProductCmptType2" referencedPartId="d8d969c1-f4f0-494a-ade4-83323a0e8105"/>
+ <ProductCmptPropertyReference id="f0aefbd5-7255-4e39-af1f-dcc0e5359655" referencedIpsObjectType="ProductCmptType2" referencedPartId="df6e5002-9ba8-4715-8b71-e4b5f9b9568c"/>
+ <ProductCmptPropertyReference id="77350c9b-635a-4459-9338-b8ec97fafffb" referencedIpsObjectType="ProductCmptType2" referencedPartId="ebbe60df-bd9d-4222-8c72-f68943447b93"/>
+</ProductCmptType2>

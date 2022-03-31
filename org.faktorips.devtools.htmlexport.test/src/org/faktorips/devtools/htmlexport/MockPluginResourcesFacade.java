@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.IPluginResourceFacade;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
@@ -23,14 +23,13 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class MockPluginResourcesFacade implements IPluginResourceFacade {
 
-    private Map<String, Properties> messagesMap = new HashMap<>();
-
-    @SuppressWarnings("deprecation")
     private static final IpsObjectType[] ALL_IPS_OBJECT_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,
-            IpsObjectType.ENUM_TYPE, IpsObjectType.BUSINESS_FUNCTION, IpsObjectType.POLICY_CMPT_TYPE,
+            IpsObjectType.ENUM_TYPE, IpsObjectType.POLICY_CMPT_TYPE,
             IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.TABLE_STRUCTURE, IpsObjectType.PRODUCT_CMPT,
             IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE_TYPE, IpsObjectType.TEST_CASE,
             IpsObjectType.IPS_SOURCE_FILE };
+
+    private Map<String, Properties> messagesMap = new HashMap<>();
 
     private IpsObjectType[] defaultIpsObjectTypes;
 
@@ -68,10 +67,10 @@ public class MockPluginResourcesFacade implements IPluginResourceFacade {
     }
 
     @Override
-    public Properties getMessageProperties(String resourceName) throws CoreException {
+    public Properties getMessageProperties(String resourceName) {
         Properties properties = messagesMap.get(resourceName);
         if (properties == null) {
-            throw new CoreException(new IpsStatus(IStatus.WARNING, "Messages " + resourceName + " not found")); //$NON-NLS-1$ //$NON-NLS-2$
+            throw new IpsException(new IpsStatus(IStatus.WARNING, "Messages " + resourceName + " not found")); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return properties;
     }

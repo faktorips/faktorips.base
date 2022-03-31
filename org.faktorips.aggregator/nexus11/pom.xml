@@ -15,7 +15,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-nexus</artifactId>
-        <version>1.2.7</version>
+        <version>1.2.8</version>
         <relativePath></relativePath>
     </parent>
 
@@ -31,11 +31,13 @@
     </scm>
 
     <modules>
+        <module>../../org.faktorips.devtools.abstraction/nexus</module>
+        <module>../../org.faktorips.devtools.abstraction.test/nexus</module>
         <module>../../org.faktorips.devtools.model/nexus</module>
+        <module>../../org.faktorips.devtools.model.test/nexus</module>
         <module>../../org.faktorips.devtools.model.builder/nexus</module>
         <module>../../org.faktorips.devtools.model.decorators/nexus</module>
         <module>../../org.faktorips.devtools.htmlexport/nexus</module>
-        <module>../../org.faktorips.devtools.stdbuilder/nexus</module>
         <module>../../org.faktorips.eclipse.emf.codegen/nexus</module>
         <module>../../org.faktorips.dtflcommon/nexus</module>
         <module>../../org.faktorips.fl/nexus</module>

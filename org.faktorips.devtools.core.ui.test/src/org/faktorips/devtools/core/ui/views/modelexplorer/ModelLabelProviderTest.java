@@ -20,9 +20,11 @@ import static org.mockito.Mockito.when;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -83,7 +85,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         attr3.setDatatype("float");
         attr3.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("testfolder");
+        folder = ((AProject)proj.getCorrespondingResource()).getFolder("testfolder").unwrap();
         folder.create(true, false, null);
         subFolder = folder.getFolder("subfolder");
         subFolder.create(true, false, null);
@@ -111,7 +113,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImage() {
         // Image returned by getImage() equals Image returned by IpsElement#getImage()
-        Image img = IpsUIPlugin.getImageHandling().getImage(proj.getProject());
+        Image img = IpsUIPlugin.getImageHandling().getImage((IAdaptable)proj.getProject().unwrap());
         assertTrue(img == flatProvider.getImage(proj));
         assertTrue(img == hierarchyProvider.getImage(proj));
         img = IpsUIPlugin.getImageHandling().getImage(root);
@@ -141,7 +143,7 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetText() throws CoreException {
+    public void testGetText() throws IpsException {
         String fragmentName;
         // packagefragment Labels
         // hierarchical Layout
@@ -194,7 +196,8 @@ public class ModelLabelProviderTest extends AbstractIpsPluginTest {
         assertEquals(subFolder.getName(), resName);
 
         // non ips projects in model explorer
-        IProject platformProject = newPlatformProject("PlatformProject");
+        IProject platformProject = newPlatformProject("PlatformProject").unwrap();
+
         resName = hierarchyProvider.getText(platformProject);
         assertEquals(platformProject.getName() + " (" + Messages.ModelExplorer_nonIpsProjectLabel + ")", resName);
         resName = flatProvider.getText(platformProject);

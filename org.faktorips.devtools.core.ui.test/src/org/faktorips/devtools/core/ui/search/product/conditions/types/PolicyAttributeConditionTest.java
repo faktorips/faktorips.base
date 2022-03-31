@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -119,7 +118,7 @@ public class PolicyAttributeConditionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOperandProvider() throws CoreException {
+    public void testOperandProvider() {
         IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
         attribute.setName("zahlweise");
 

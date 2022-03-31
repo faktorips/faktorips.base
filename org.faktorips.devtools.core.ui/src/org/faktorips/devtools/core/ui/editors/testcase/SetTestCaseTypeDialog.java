@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.testcase;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -20,7 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
@@ -83,11 +81,7 @@ public class SetTestCaseTypeDialog extends EditDialog {
     protected void buttonPressed(int buttonId) {
         if (buttonId == OK) {
             testCase.setTestCaseType(getTestCaseType());
-            try {
-                testCase.getIpsSrcFile().save(true, null);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            testCase.getIpsSrcFile().save(null);
         }
         super.buttonPressed(buttonId);
     }

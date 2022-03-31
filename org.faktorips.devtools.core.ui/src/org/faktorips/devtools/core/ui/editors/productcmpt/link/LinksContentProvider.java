@@ -15,11 +15,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -118,12 +116,8 @@ public class LinksContentProvider implements ITreeContentProvider {
         if (element instanceof LinkViewItem) {
             LinkViewItem linkViewItem = (LinkViewItem)element;
             IProductCmptLink link = linkViewItem.getLink();
-            try {
-                IProductCmptTypeAssociation association = link.findAssociation(link.getIpsProject());
-                return createAssociationViewItem(link.getProductCmptLinkContainer(), association);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IProductCmptTypeAssociation association = link.findAssociation(link.getIpsProject());
+            return createAssociationViewItem(link.getProductCmptLinkContainer(), association);
         }
         return null;
     }

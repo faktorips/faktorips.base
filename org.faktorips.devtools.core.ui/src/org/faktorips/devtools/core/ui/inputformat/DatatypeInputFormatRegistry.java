@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -67,7 +67,7 @@ public class DatatypeInputFormatRegistry {
                 getInputFormatMap().put(datatypeClass, inputFormatFactory);
             }
         } catch (CoreException e) {
-            throw new CoreRuntimeException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
                             + extension.getUniqueIdentifier(),
                     e));
@@ -89,7 +89,7 @@ public class DatatypeInputFormatRegistry {
             Class<? extends ValueDatatype> castedResult = (Class<? extends ValueDatatype>)datatypeClass;
             return castedResult;
         } catch (ClassNotFoundException e) {
-            throw new CoreRuntimeException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
                             + extension.getUniqueIdentifier(),
                     e));

@@ -26,10 +26,6 @@ public interface IValidationRule extends IProductCmptProperty {
 
     public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
-    public static final String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
-
-    public static final String PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS = "appliedForAllBusinessFunctions"; //$NON-NLS-1$
-
     public static final String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
 
     public static final String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
@@ -136,55 +132,6 @@ public interface IValidationRule extends IProductCmptProperty {
      * Sets the message's severity.
      */
     public void setMessageSeverity(MessageSeverity newSeverity);
-
-    /**
-     * Returns the qualified name of the business functions in that the rule is applied.
-     */
-    public String[] getBusinessFunctions();
-
-    /**
-     * Returns the number of business functions in which the rule is applied.
-     */
-    public int getNumOfBusinessFunctions();
-
-    /**
-     * Sets the qualified name of the business functions in that the rule is applied.
-     */
-    public void setBusinessFunctions(String[] functionNames);
-
-    /**
-     * Returns the business function name at the given index.
-     * 
-     * @throws IndexOutOfBoundsException if the index is invalid.
-     */
-    public String getBusinessFunction(int index);
-
-    /**
-     * Sets the business function at the specified index.
-     * 
-     * @throws IndexOutOfBoundsException if the index is invalid.
-     */
-    public void setBusinessFunctions(int index, String functionName);
-
-    /**
-     * Adds a new business function with the given name.
-     */
-    public void addBusinessFunction(String functionName);
-
-    /**
-     * Removes the business functions at the specified indices.
-     */
-    public void removeBusinessFunction(int index);
-
-    /**
-     * Returns true if the rule is to be applied for all business functions.
-     */
-    public boolean isAppliedForAllBusinessFunctions();
-
-    /**
-     * Sets if the rule should be applied for all business functions.
-     */
-    public void setAppliedForAllBusinessFunctions(boolean newValue);
 
     /**
      * Adds the name of an attribute that is evaluated in the rules condition.

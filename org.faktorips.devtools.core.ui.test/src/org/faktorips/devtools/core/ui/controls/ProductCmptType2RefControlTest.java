@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -30,7 +29,7 @@ import org.junit.Test;
 public class ProductCmptType2RefControlTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetSrcFiles_SingleProject() throws CoreException {
+    public void testGetSrcFiles_SingleProject() {
         IIpsProject project = newIpsProject("BaseProject");
 
         IProductCmptType productCmptType = newProductCmptType(project, "ProductType");
@@ -49,7 +48,7 @@ public class ProductCmptType2RefControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSrcFiles_ExcludeAbstract() throws CoreException {
+    public void testGetSrcFiles_ExcludeAbstract() {
         IIpsProject project = newIpsProject("BaseProject");
 
         IProductCmptType productCmptType = newProductCmptType(project, "ProductType");
@@ -69,7 +68,7 @@ public class ProductCmptType2RefControlTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetSrcFiles_MultiProject() throws CoreException {
+    public void testGetSrcFiles_MultiProject() {
         IIpsProject project = newIpsProject("BaseProject");
         IIpsProject subProject = newIpsProject("SubProject");
         IIpsProject anotherProject = newIpsProject("AnotherProject");

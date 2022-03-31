@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,8 +25,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.junit.Before;
@@ -42,11 +41,11 @@ public class IpsJarBundleContentIndexTest {
 
     private List<JarEntry> jarEntries;
 
-    private IPath pathRelative;
+    private Path pathRelative;
 
-    private IPath pathAbsolute;
+    private Path pathAbsolute;
 
-    private IPath pathTrailing;
+    private Path pathTrailing;
 
     private QualifiedNameType qntRelative;
 
@@ -58,9 +57,9 @@ public class IpsJarBundleContentIndexTest {
     public void setUp() {
         jarEntries = new ArrayList<>();
 
-        pathRelative = new Path("src/model");
-        pathAbsolute = new Path("/src2/model");
-        pathTrailing = new Path("src3/model/");
+        pathRelative = Path.of("src/model");
+        pathAbsolute = Path.of("/src2/model");
+        pathTrailing = Path.of("src3/model/");
 
         JarEntry entryRelative = createJarEntry(pathRelative + "/life/policy.ipspolicycmpttype");
         JarEntry entryAbsolute = createJarEntry(pathAbsolute + "/base/sub/coverage.ipspolicycmpttype");
@@ -83,19 +82,19 @@ public class IpsJarBundleContentIndexTest {
     @Test
     public void testGetModelPath() {
 
-        List<IPath> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
+        List<Path> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
         IpsJarBundleContentIndex index = new IpsJarBundleContentIndex(jarFile, modelFolders);
 
-        assertEquals(pathRelative, index.getModelPath(new Path("life/policy.ipspolicycmpttype")));
-        assertEquals(pathAbsolute, index.getModelPath(new Path("base/sub/coverage.ipspolicycmpttype")));
-        assertEquals(pathTrailing, index.getModelPath(new Path("base/sub/reduction.ipspolicycmpttype")));
+        assertEquals(pathRelative, index.getModelPath(Path.of("life/policy.ipspolicycmpttype")));
+        assertEquals(pathAbsolute, index.getModelPath(Path.of("base/sub/coverage.ipspolicycmpttype")));
+        assertEquals(pathTrailing, index.getModelPath(Path.of("base/sub/reduction.ipspolicycmpttype")));
 
     }
 
     @Test
     public void testGetQualifiedNameTypes() {
 
-        List<IPath> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
+        List<Path> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
         IpsJarBundleContentIndex index = new IpsJarBundleContentIndex(jarFile, modelFolders);
 
         Set<QualifiedNameType> qualifiedNameTypes = index.getQualifiedNameTypes();
@@ -110,7 +109,7 @@ public class IpsJarBundleContentIndexTest {
     @Test
     public void testGetQualifiedNameTypesByPackage() {
 
-        List<IPath> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
+        List<Path> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
         IpsJarBundleContentIndex index = new IpsJarBundleContentIndex(jarFile, modelFolders);
 
         Set<QualifiedNameType> qualifiedNameTypesRoot = index.getQualifiedNameTypes("");
@@ -128,7 +127,7 @@ public class IpsJarBundleContentIndexTest {
     @Test
     public void testGetNonEmptyPackagePaths() {
 
-        List<IPath> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
+        List<Path> modelFolders = Arrays.asList(pathRelative, pathAbsolute, pathTrailing);
         IpsJarBundleContentIndex index = new IpsJarBundleContentIndex(jarFile, modelFolders);
 
         Set<String> nonEmptyPackagePaths = index.getNonEmptyPackagePaths();

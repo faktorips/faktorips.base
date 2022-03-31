@@ -11,14 +11,15 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -105,7 +106,8 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             datatypeChanged(editFieldDatatypeOrRule.getText());
         }
         wizard.postAsyncRunnable(() -> {
-            if (wizard.getShell().isDisposed()) {
+            Shell shell = wizard.getShell();
+            if (shell == null || shell.isDisposed()) {
                 return;
             }
             updateSetPageComplete();
@@ -192,7 +194,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             } else {
                 return true;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

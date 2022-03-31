@@ -13,12 +13,12 @@ package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWizard;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
@@ -45,17 +45,17 @@ public class FixDifferencesToModelWizard extends Wizard implements IWorkbenchWiz
     @Override
     public boolean performFinish() {
         final Set<IFixDifferencesToModelSupport> elementsToFix = elementSelectionPage.getElementsToFix();
-        final IWorkspaceRunnable op = monitor -> {
+        final ICoreRunnable op = monitor -> {
             monitor.beginTask(Messages.FixDifferencesToModelWizard_beginTask, elementsToFix.size() + 1);
             Set<IFixDifferencesToModelSupport> sortedElements = SortedByDependency.sortByInstanceOf(elementsToFix);
             monitor.worked(1);
             try {
                 for (IFixDifferencesToModelSupport element : sortedElements) {
                     element.fixAllDifferencesToModel(element.getIpsSrcFile().getIpsProject());
-                    element.getIpsSrcFile().save(true, null);
+                    element.getIpsSrcFile().save(null);
                     monitor.worked(1);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } finally {
                 monitor.done();

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.ComparatorUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
@@ -157,7 +156,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
      * This validates every {@link SingleValueHolder} in the list of values.
      */
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+    public MessageList validate(IIpsProject ipsProject) {
         return new MultiValueHolderValidator(this, getParent(), ipsProject).validate();
     }
 

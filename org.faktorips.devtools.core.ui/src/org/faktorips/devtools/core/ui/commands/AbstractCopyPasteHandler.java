@@ -25,7 +25,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.part.ResourceTransfer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -46,7 +46,7 @@ public abstract class AbstractCopyPasteHandler extends AbstractHandler {
     public boolean isHandled() {
         Display display = Display.getCurrent();
         if (display == null) {
-            throw new CoreRuntimeException(
+            throw new IpsException(
                     MessageFormat.format("This {0} can only be called in a user-interface thread.", this.getClass())); //$NON-NLS-1$
         }
         return display.getFocusControl() instanceof Tree;

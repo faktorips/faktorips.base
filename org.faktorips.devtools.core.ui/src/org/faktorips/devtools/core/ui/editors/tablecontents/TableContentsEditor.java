@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IMessage;
@@ -67,7 +66,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() {
         ITableStructure tableStructure = getTableContents().findTableStructure(getIpsProject());
         if (tableStructure != null) {
             return new TableDescriptionPage(tableStructure);
@@ -87,7 +86,7 @@ public class TableContentsEditor extends TimedIpsObjectEditor implements IModelD
     }
 
     /*
-     * @Override protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+     * @Override protected Dialog createDialogToFixDifferencesToModel() {
      * contentsPage.updateToolbarActionsEnabledStates();
      * 
      * }

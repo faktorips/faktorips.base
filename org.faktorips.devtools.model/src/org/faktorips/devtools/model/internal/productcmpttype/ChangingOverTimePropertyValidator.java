@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
@@ -43,11 +42,7 @@ public class ChangingOverTimePropertyValidator {
 
     public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property) {
         this.property = property;
-        try {
-            this.productCmptType = property.findProductCmptType(property.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        this.productCmptType = property.findProductCmptType(property.getIpsProject());
     }
 
     /**
@@ -64,7 +59,8 @@ public class ChangingOverTimePropertyValidator {
             if (!productCmptType.isChangingOverTime() && property.isChangingOverTime()) {
                 String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences()
                         .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
-                String text = NLS.bind(Messages.ProductCmptPropertyValidator_msgTypeDoesNotAcceptChangingOverTime,
+                String text = MessageFormat.format(
+                        Messages.ProductCmptPropertyValidator_msgTypeDoesNotAcceptChangingOverTime,
                         property.getName(), changingOverTimePluralName);
                 messageList.add(Message.newError(MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME, text, property,
                         PROPERTY_CHANGING_OVER_TIME));

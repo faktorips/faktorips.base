@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.ipshierarchy;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -55,6 +54,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.contexts.IContextService;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -545,7 +545,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             try {
                 final ITypeHierarchy hierarchy = TypeHierarchy.getTypeHierarchy(iType);
                 display.asyncExec(() -> setInputData(hierarchy));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
             return new Status(IStatus.OK, IpsUIPlugin.PLUGIN_ID, null);

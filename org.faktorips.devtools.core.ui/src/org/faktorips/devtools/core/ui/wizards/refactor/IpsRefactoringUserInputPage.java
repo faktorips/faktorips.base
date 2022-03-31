@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.RefactoringStatusEntry;
 import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
@@ -100,12 +100,8 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * Operation that should be called when any user input has changed, triggers validation.
      */
     protected final void userInputChanged() {
-        try {
-            boolean userInputValid = validateUserInput();
-            setPageComplete(userInputValid);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        boolean userInputValid = validateUserInput();
+        setPageComplete(userInputValid);
     }
 
     /**
@@ -113,7 +109,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * <p>
      * Returns true if valid, false otherwise.
      */
-    private final boolean validateUserInput() throws CoreException {
+    private final boolean validateUserInput() {
         resetPageMessages();
 
         RefactoringStatus status = new RefactoringStatus();
@@ -128,7 +124,7 @@ abstract class IpsRefactoringUserInputPage extends UserInputWizardPage {
      * 
      * @param status {@link RefactoringStatus} to add messages to
      */
-    protected abstract void validateUserInputThis(RefactoringStatus status) throws CoreException;
+    protected abstract void validateUserInputThis(RefactoringStatus status) throws IpsException;
 
     /**
      * Evaluates the given {@link RefactoringStatus} by setting appropriate page messages.

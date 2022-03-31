@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -60,7 +59,7 @@ public class DocumentationContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDocumentedSourceFiles_NoDuplicates() throws CoreException {
+    public void testGetDocumentedSourceFiles_NoDuplicates() {
         IIpsProject referencedIpsProject = newIpsProject();
         IIpsSrcFile ipsSrcFile1 = newPolicyCmptType(referencedIpsProject, "Policy").getIpsSrcFile();
         IIpsSrcFile ipsSrcFile2 = newPolicyCmptType(referencedIpsProject, "Coverage").getIpsSrcFile();

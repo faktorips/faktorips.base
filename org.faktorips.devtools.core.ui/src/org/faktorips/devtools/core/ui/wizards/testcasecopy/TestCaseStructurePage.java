@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -39,6 +38,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -125,7 +125,7 @@ public class TestCaseStructurePage extends WizardPage {
 
         new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 MessageList result = new MessageList();
                 if (element instanceof IIpsObjectPartContainer) {
                     IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
@@ -197,13 +197,13 @@ public class TestCaseStructurePage extends WizardPage {
                     return;
                 }
                 refreshCanditatesInTable(testPolicyCmpt);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         });
     }
 
-    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) throws CoreException {
+    private void refreshCanditatesInTable(ITestPolicyCmpt testPolicyCmpt) {
         ITestPolicyCmpt parentPolicyCmpt = testPolicyCmpt.getParentTestPolicyCmpt();
         changeCandidatesInTable(testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject()),
                 testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject), parentPolicyCmpt == null ? null
@@ -235,7 +235,7 @@ public class TestCaseStructurePage extends WizardPage {
      */
     private void changeCandidatesInTable(IProductCmpt productCmptSelected,
             ITestPolicyCmptTypeParameter parameter,
-            IProductCmpt parentProductCmpt) throws CoreException {
+            IProductCmpt parentProductCmpt) {
         checkedProductCmpt = null;
         if (productCmptSelected == null) {
             // parameter doens't need product cmpt, therefore clear table
@@ -296,7 +296,7 @@ public class TestCaseStructurePage extends WizardPage {
         IProductCmpt oldProductCmp;
         try {
             oldProductCmp = testPolicyCmpt.findProductCmpt(ipsProject);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.logAndShowErrorDialog(e);
             return null;
         }
@@ -360,8 +360,7 @@ public class TestCaseStructurePage extends WizardPage {
      * Collect all messages for the given element and all its child's. If an element isn't checked
      * then this element will be ignored.
      */
-    private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container)
-            throws CoreException {
+    private void collectMessages(MessageList result, MessageList msgList, IIpsObjectPartContainer container) {
         boolean checked = treeViewer.getChecked(container);
         if (checked) {
             result.add(msgList.getMessagesFor(container));
@@ -456,7 +455,7 @@ public class TestCaseStructurePage extends WizardPage {
                 if (selectedTreeItem.length > 0) {
                     refreshCanditatesInTable((ITestPolicyCmpt)selectedTreeItem[0].getData());
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             } finally {
                 treeViewer.getTree().setRedraw(true);

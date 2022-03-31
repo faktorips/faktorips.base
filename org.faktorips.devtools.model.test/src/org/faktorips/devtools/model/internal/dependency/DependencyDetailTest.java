@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.dependency;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.type.IAssociation;
@@ -54,7 +54,7 @@ public class DependencyDetailTest {
         verify(part).setTarget(MY_NEW_TARGET + "." + MY_NEW_NAME);
     }
 
-    @Test(expected = CoreException.class)
+    @Test(expected = IpsException.class)
     public void testRefactorAfterRename_exception() throws Exception {
         DependencyDetail myDependencyDetail = new DependencyDetail(part, "any");
         when(targetIpsPackageFragment.getName()).thenReturn(MY_NEW_TARGET);

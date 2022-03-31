@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
-import org.eclipse.core.resources.IFile;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -61,7 +61,7 @@ public class ValidationRuleMessagesPropertiesBuilder extends AbstractLocalizedPr
     }
 
     @Override
-    protected ValidationRuleMessagesGenerator createNewMessageGenerator(IFile propertyFile,
+    protected ValidationRuleMessagesGenerator createNewMessageGenerator(AFile propertyFile,
             ISupportedLanguage supportedLanguage) {
         return new ValidationRuleMessagesGenerator(propertyFile, supportedLanguage, this);
     }

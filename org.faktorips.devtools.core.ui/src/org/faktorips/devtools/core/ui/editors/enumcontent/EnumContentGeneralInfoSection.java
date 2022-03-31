@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -119,16 +118,12 @@ public class EnumContentGeneralInfoSection extends IpsSection {
     @Override
     protected void performRefresh() {
         IIpsProject ipsProject = enumContent.getIpsProject();
-        try {
-            MessageList validationMessages = enumContent.validate(ipsProject);
-            if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
-                    || validationMessages
-                            .getMessageByCode(
-                                    IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
-                enumContentEditorPage.getEnumValuesSection().reinit();
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        MessageList validationMessages = enumContent.validate(ipsProject);
+        if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
+                || validationMessages
+                        .getMessageByCode(
+                                IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
+            enumContentEditorPage.getEnumValuesSection().reinit();
         }
         enumTypeLabel.pack();
     }

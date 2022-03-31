@@ -11,18 +11,16 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -67,10 +65,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private static final String PROPERTY_UNIQUE_QUALIFIER = "uniqueQualifier"; //$NON-NLS-1$
 
     /** the folder containing the IPS objects */
-    private IFolder sourceFolder;
+    private AFolder sourceFolder;
 
     /** the output folder containing the generated but mergeable Java files. */
-    private IFolder outputFolderMergable;
+    private AFolder outputFolderMergable;
 
     /** the name of the base package containing the generated but mergeable Java files. */
     private String basePackageMergable = StringUtils.EMPTY;
@@ -80,7 +78,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private String validationMessagesBundle = DEFAUTL_VALIDATION_MESSAGES_BUNDLE;
 
     /** the output folder containing the Java files that are generated and derived. */
-    private IFolder outputFolderDerived;
+    private AFolder outputFolderDerived;
 
     /**
      * the name of the base package containing the Java files where the developer adds it's own
@@ -99,7 +97,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         super(path);
     }
 
-    public IpsSrcFolderEntry(IpsObjectPath path, IFolder sourceFolder) {
+    public IpsSrcFolderEntry(IpsObjectPath path, AFolder sourceFolder) {
         super(path);
         ArgumentCheck.notNull(sourceFolder);
         setSourceFolder(sourceFolder);
@@ -147,7 +145,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 + " </" + XML_ELEMENT + ">" + System.lineSeparator(); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private void setSourceFolder(IFolder newFolder) {
+    private void setSourceFolder(AFolder newFolder) {
         sourceFolder = newFolder;
         root = new IpsPackageFragmentRoot(getIpsObjectPath().getIpsProject(),
                 getIpsPackageFragmentRootName());
@@ -159,7 +157,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IFolder getSourceFolder() {
+    public AFolder getSourceFolder() {
         return sourceFolder;
     }
 
@@ -174,7 +172,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IFolder getOutputFolderForMergableJavaFiles() {
+    public AFolder getOutputFolderForMergableJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             return outputFolderMergable;
         }
@@ -182,12 +180,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IFolder getSpecificOutputFolderForMergableJavaFiles() {
+    public AFolder getSpecificOutputFolderForMergableJavaFiles() {
         return outputFolderMergable;
     }
 
     @Override
-    public void setSpecificOutputFolderForMergableJavaFiles(IFolder outputFolder) {
+    public void setSpecificOutputFolderForMergableJavaFiles(AFolder outputFolder) {
         outputFolderMergable = outputFolder;
     }
 
@@ -210,7 +208,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IFolder getOutputFolderForDerivedJavaFiles() {
+    public AFolder getOutputFolderForDerivedJavaFiles() {
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             return outputFolderDerived;
         }
@@ -218,12 +216,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IFolder getSpecificOutputFolderForDerivedJavaFiles() {
+    public AFolder getSpecificOutputFolderForDerivedJavaFiles() {
         return outputFolderDerived;
     }
 
     @Override
-    public void setSpecificOutputFolderForDerivedJavaFiles(IFolder outputFolder) {
+    public void setSpecificOutputFolderForDerivedJavaFiles(AFolder outputFolder) {
         outputFolderDerived = outputFolder;
     }
 
@@ -246,7 +244,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) {
         if (sourceFolder == null) {
             return false;
         }
@@ -267,14 +265,13 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
+    public void initFromXml(Element element, AProject project) {
         super.initFromXml(element, project);
         String sourceFolderPath = element.getAttribute(PROPERTY_SOURCE_FOLDER);
-        setSourceFolder(project.getFolder(new Path(sourceFolderPath)));
+        setSourceFolder(project.getFolder(java.nio.file.Path.of(sourceFolderPath)));
         String outputFolderPathMergable = element.getAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE);
         outputFolderMergable = outputFolderPathMergable.equals(StringUtils.EMPTY) ? null
-                : project.getFolder(new Path(
-                        outputFolderPathMergable));
+                : project.getFolder(java.nio.file.Path.of(outputFolderPathMergable));
         basePackageMergable = element.getAttribute(PROPERTY_BASE_PACKAGE_MERGABLE);
         tocPath = element.getAttribute(PROPERTY_TOC_PATH);
         if (StringUtils.isEmpty(tocPath)) {
@@ -286,8 +283,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
         String outputFolderPathDerived = element.getAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED);
         outputFolderDerived = outputFolderPathDerived.equals(StringUtils.EMPTY) ? null
-                : project.getFolder(new Path(
-                        outputFolderPathDerived));
+                : project.getFolder(java.nio.file.Path.of(outputFolderPathDerived));
         basePackageDerived = element.getAttribute(PROPERTY_BASE_PACKAGE_DERIVED);
         uniqueQualifier = StringUtils.trimToEmpty(element.getAttribute(PROPERTY_UNIQUE_QUALIFIER));
     }
@@ -319,9 +315,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         MessageList result = new MessageList();
         // the sourceFolder will never be null (see this#initFromXml)
         result.add(validateIfFolderExists(sourceFolder));
-        if (sourceFolder.getProjectRelativePath().segmentCount() > 1) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder
-                    .getProjectRelativePath().toString());
+        if (sourceFolder.getProjectRelativePath().getNameCount() > 1) {
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject,
+                    sourceFolder
+                            .getProjectRelativePath().toString());
             Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR,
                     this);
             result.add(msg);
@@ -344,13 +341,13 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                     Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR, this));
         }
         if (outputFolderMergable != null && !outputFolderMergable.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
-                    outputFolderMergable.getFullPath());
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
+                    outputFolderMergable.getWorkspaceRelativePath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR, this));
         }
         if (outputFolderDerived != null && !outputFolderDerived.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
-                    outputFolderDerived.getFullPath());
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
+                    outputFolderDerived.getWorkspaceRelativePath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR, this));
         }
         return result;
@@ -359,10 +356,10 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     /**
      * Validate that the given folder exists.
      */
-    private MessageList validateIfFolderExists(IFolder folder) {
+    private MessageList validateIfFolderExists(AFolder folder) {
         MessageList result = new MessageList();
         if (!folder.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }
@@ -399,12 +396,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         MessageList ml = new MessageList();
         if (getUniqueBasePackageNameForMergableArtifacts()
                 .equals(entry.getUniqueBasePackageNameForMergableArtifacts())) {
-            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, NLS.bind(
+            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, MessageFormat.format(
                     Messages.IpsSrcFolderEntry_error_duplicateMergableBasePackage,
                     getUniqueBasePackageNameForMergableArtifacts()), this);
         }
         if (getUniqueBasePackageNameForDerivedArtifacts().equals(entry.getUniqueBasePackageNameForDerivedArtifacts())) {
-            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, NLS.bind(
+            ml.newError(MSGCODE_DUPLICATE_BASE_PACKAGE, MessageFormat.format(
                     Messages.IpsSrcFolderEntry_error_duplicateDerivedBasePackage,
                     getUniqueBasePackageNameForDerivedArtifacts()), this);
         }
@@ -447,11 +444,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     public String getFullTocPath() {
-        String path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses()).toString();
-        if (StringUtils.isEmpty(path)) {
+        Path path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses());
+        String pathString = path == null ? null : path.toString();
+        if (StringUtils.isEmpty(pathString)) {
             return tocPath;
         }
-        return path + IPath.SEPARATOR + tocPath;
+        return pathString + IPath.SEPARATOR + tocPath;
     }
 
     @Override
@@ -466,20 +464,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public boolean containsResource(String resourcePath) {
-        IFile file = getSourceFolder().getFile(resourcePath);
+        AFile file = getSourceFolder().getFile(resourcePath);
         return file.exists();
     }
 
     /**
-     * Interprets the given path as relative to the referenced sourcefolder.
+     * Interprets the given path as relative to the referenced source folder.
      */
     @Override
     public InputStream getResourceAsStream(String pathAsString) {
-        IFile file = getSourceFolder().getFile(pathAsString);
-        try {
-            return file.getContents();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        AFile file = getSourceFolder().getFile(pathAsString);
+        return file.getContents();
     }
 }

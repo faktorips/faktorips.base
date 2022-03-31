@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
@@ -238,8 +237,8 @@ public class InferTemplateProcessorMockTest {
     public void testInferTemplate_SrcFileSaved() throws Exception {
         inferTemplateProcessor.run(monitor);
 
-        verify(templateSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
-        verify(productSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
+        verify(templateSrcFile).save(any(IProgressMonitor.class));
+        verify(productSrcFile).save(any(IProgressMonitor.class));
         verify(productDirtySrcFile, atLeastOnce()).isDirty();
         verifyNoMoreInteractions(productDirtySrcFile);
     }

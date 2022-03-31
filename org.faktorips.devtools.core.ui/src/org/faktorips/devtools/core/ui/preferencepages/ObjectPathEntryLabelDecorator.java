@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
@@ -41,7 +41,7 @@ public class ObjectPathEntryLabelDecorator implements ILightweightLabelDecorator
             } else {
                 return;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
 

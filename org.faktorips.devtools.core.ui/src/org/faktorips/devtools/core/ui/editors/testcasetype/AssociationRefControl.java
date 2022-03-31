@@ -13,10 +13,10 @@ package org.faktorips.devtools.core.ui.editors.testcasetype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
@@ -78,9 +78,9 @@ public class AssociationRefControl extends TextButtonControl {
      * Returns all associations of the parentPolicyCmptType which are assoziations or forward
      * compositions
      * 
-     * @throws CoreException in case of an error
+     * @throws IpsException in case of an error
      */
-    protected IPolicyCmptTypeAssociation[] getAssociations() throws CoreException {
+    protected IPolicyCmptTypeAssociation[] getAssociations() {
         List<IPolicyCmptTypeAssociation> associationsToSelect = new ArrayList<>();
         IPolicyCmptType currPolicyCmptType = parentPolicyCmptType;
         while (currPolicyCmptType != null) {
@@ -103,7 +103,7 @@ public class AssociationRefControl extends TextButtonControl {
                 && !association.isDerivedUnion();
     }
 
-    public IPolicyCmptTypeAssociation findAssociation() throws CoreException {
+    public IPolicyCmptTypeAssociation findAssociation() {
         String association = getText();
         IPolicyCmptTypeAssociation[] associations = getAssociations();
         for (IPolicyCmptTypeAssociation association2 : associations) {

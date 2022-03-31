@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
@@ -67,7 +67,6 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
@@ -175,12 +174,12 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * @param parent The parent UI composite.
      * @param toolkit The UI toolkit that shall be used to create UI elements.
      * 
-     * @throws CoreException If an error occurs while searching for the <code>IEnumType</code>
+     * @throws IpsException If an error occurs while searching for the <code>IEnumType</code>
      *             referenced by the IPS object being edited.
      * @throws NullPointerException If <code>enumValueContainer</code> is <code>null</code>.
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, IEditorSite editorSite, Composite parent,
-            UIToolkit toolkit) throws CoreException {
+            UIToolkit toolkit) {
         super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         this.editorSite = editorSite;
         ArgumentCheck.notNull(enumValueContainer);
@@ -195,7 +194,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             enumContent = (IEnumContent)enumValueContainer;
             enumType = enumContent.findEnumType(ipsProject);
         } else {
-            throw new CoreRuntimeException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
+            throw new IpsException("Illegal Enum Container " + enumValueContainer); //$NON-NLS-1$
         }
 
         loadDialogSettings();
@@ -305,15 +304,11 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         EnumValueTraversalStrategy previousTraversalStrategy = null;
         for (IEnumAttribute currentEnumAttribute : enumType.getEnumAttributesIncludeSupertypeCopies(true)) {
             String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute);
-            try {
-                previousTraversalStrategy = addTableColumn(columnName,
-                        currentEnumAttribute.findDatatypeIgnoreEnumContents(ipsProject),
-                        currentEnumAttribute.findIsUnique(ipsProject),
-                        currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
-                        previousTraversalStrategy);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            previousTraversalStrategy = addTableColumn(columnName,
+                    currentEnumAttribute.findDatatypeIgnoreEnumContents(ipsProject),
+                    currentEnumAttribute.findIsUnique(ipsProject),
+                    currentEnumAttribute.isEnumLiteralNameAttribute(), currentEnumAttribute.isMultilingual(),
+                    previousTraversalStrategy);
         }
     }
 
@@ -322,33 +317,29 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * <code>IEnumAttribute</code>s of the referenced <code>IEnumType</code> if possible).
      */
     private void createTableColumnsForEnumContent() {
-        try {
-            IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
-            List<IPartReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
-            EnumValueTraversalStrategy previousTraversalStrategy = null;
-            for (int i = 0; i < enumAttributeReferences.size(); i++) {
-                IPartReference enumAttributeReference = enumAttributeReferences.get(i);
-                if (enumContent.isFixToModelRequired()) {
-                    previousTraversalStrategy = addTableColumn(enumAttributeReference.getName(), null, false, false,
-                            false, previousTraversalStrategy);
+        IEnumType referencedEnumType = enumContent.findEnumType(ipsProject);
+        List<IPartReference> enumAttributeReferences = enumContent.getEnumAttributeReferences();
+        EnumValueTraversalStrategy previousTraversalStrategy = null;
+        for (int i = 0; i < enumAttributeReferences.size(); i++) {
+            IPartReference enumAttributeReference = enumAttributeReferences.get(i);
+            if (enumContent.isFixToModelRequired()) {
+                previousTraversalStrategy = addTableColumn(enumAttributeReference.getName(), null, false, false,
+                        false, previousTraversalStrategy);
+            } else {
+                if (referencedEnumType == null) {
+                    previousTraversalStrategy = addTableColumn(Messages.EnumValuesSection_column + (i + 1), null,
+                            false, false, false, previousTraversalStrategy);
                 } else {
-                    if (referencedEnumType == null) {
-                        previousTraversalStrategy = addTableColumn(Messages.EnumValuesSection_column + (i + 1), null,
-                                false, false, false, previousTraversalStrategy);
-                    } else {
-                        IEnumAttribute currentEnumAttribute = referencedEnumType
-                                .getEnumAttributesIncludeSupertypeCopies(false).get(i);
-                        previousTraversalStrategy = addTableColumn(
-                                IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute),
-                                currentEnumAttribute.findDatatype(ipsProject),
-                                currentEnumAttribute.findIsUnique(ipsProject),
-                                currentEnumAttribute.isEnumLiteralNameAttribute(),
-                                currentEnumAttribute.isMultilingual(), previousTraversalStrategy);
-                    }
+                    IEnumAttribute currentEnumAttribute = referencedEnumType
+                            .getEnumAttributesIncludeSupertypeCopies(false).get(i);
+                    previousTraversalStrategy = addTableColumn(
+                            IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(currentEnumAttribute),
+                            currentEnumAttribute.findDatatype(ipsProject),
+                            currentEnumAttribute.findIsUnique(ipsProject),
+                            currentEnumAttribute.isEnumLiteralNameAttribute(),
+                            currentEnumAttribute.isMultilingual(), previousTraversalStrategy);
                 }
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -574,7 +565,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         new TableMessageHoverService(enumValuesTableViewer) {
 
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     return ((IEnumValue)element).validate(enumValueContainer.getIpsProject());
                 }
@@ -698,12 +689,8 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             int index = enumValues.indexOf(currentViewItem);
             index++;
             if (index >= enumValues.size()) {
-                try {
-                    fireApplyEditorValue();
-                    return enumValueContainer.newEnumValue();
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                fireApplyEditorValue();
+                return enumValueContainer.newEnumValue();
             }
             return enumValues.get(index);
         }
@@ -742,13 +729,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             if (enumValue.getEnumAttributeValues().size() <= columnIndex) {
                 return Severity.NONE;
             }
-            try {
-                MessageList messageList = enumValue.validate(enumValue.getIpsProject());
-                return messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex), null)
-                        .getSeverity();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            MessageList messageList = enumValue.validate(enumValue.getIpsProject());
+            return messageList.getMessagesFor(enumValue.getEnumAttributeValues().get(columnIndex), null)
+                    .getSeverity();
         }
 
         @Override
@@ -771,21 +754,17 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             String columnValue = IIpsModel.get().getMultiLanguageSupport().getLocalizedContent(
                     enumAttributeValue.getValue(),
                     ipsProject);
-            try {
-                IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
-                if (enumAttribute == null) {
-                    return columnValue;
-                }
-                ValueDatatype valueDatatype;
-                if (enumTypeEditing) {
-                    valueDatatype = enumAttribute.findDatatypeIgnoreEnumContents(ipsProject);
-                } else {
-                    valueDatatype = enumAttribute.findDatatype(ipsProject);
-                }
-                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(valueDatatype, columnValue);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            IEnumAttribute enumAttribute = enumAttributeValue.findEnumAttribute(ipsProject);
+            if (enumAttribute == null) {
+                return columnValue;
             }
+            ValueDatatype valueDatatype;
+            if (enumTypeEditing) {
+                valueDatatype = enumAttribute.findDatatypeIgnoreEnumContents(ipsProject);
+            } else {
+                valueDatatype = enumAttribute.findDatatype(ipsProject);
+            }
+            return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(valueDatatype, columnValue);
         }
 
     }

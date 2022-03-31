@@ -53,7 +53,6 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         String value = getLocalizedStringValue(rule);
         ruleData.add(value == null ? "" : value); //$NON-NLS-1$
 
-        ruleData.add(StringUtils.join(rule.getBusinessFunctions(), '\n'));
         ruleData.add(StringUtils.join(rule.getValidatedAttributes(), '\n'));
         ruleData.add(rule.isConfigurableByProductComponent() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         ruleData.add(rule.isActivatedByDefault() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -81,8 +80,6 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         headline.add(
                 getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageSeverity));
         headline.add(getContext().getMessage(HtmlExportMessages.ValidationRuleTablePageElement_headlineMessageText));
-        headline.add(getContext().getMessage(
-                HtmlExportMessages.ValidationRuleTablePageElement_headlineBusinessFunctions));
         headline.add(getContext().getMessage(
                 HtmlExportMessages.ValidationRuleTablePageElement_headlineValidatedAttributes));
 

@@ -28,13 +28,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -144,7 +144,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         // test case 4: new "normal" file inside package
         visitor = newVisitor(LayoutStyle.FLAT);
-        IFolder folder = (IFolder)basePack.getCorrespondingResource();
+        IFolder folder = basePack.getCorrespondingResource().unwrap();
         IFile readme = folder.getFile("readme.txt");
         readme.create(new ByteArrayInputStream("hello".getBytes()), true, null);
         elementsToRefresh = visitor.getElementsToRefresh();
@@ -165,7 +165,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         // test case 5: "normal" folder in IpsProject
         visitor = newVisitor(LayoutStyle.FLAT);
-        folder = ipsProject.getProject().getFolder("docs");
+        folder = ipsProject.getProject().getFolder("docs").unwrap();
         folder.create(true, true, null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
@@ -268,7 +268,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         // test case 4: new "normal" file inside package
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
-        IFolder folder = (IFolder)basePack.getCorrespondingResource();
+        IFolder folder = basePack.getCorrespondingResource().unwrap();
         IFile readme = folder.getFile("readme.txt");
         readme.create(new ByteArrayInputStream("hello".getBytes()), true, null);
         elementsToRefresh = visitor.getElementsToRefresh();
@@ -289,7 +289,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
         // test case 5: "normal" folder in IpsProject
         visitor = newVisitor(LayoutStyle.HIERACHICAL);
-        folder = ipsProject.getProject().getFolder("docs");
+        folder = ipsProject.getProject().getFolder("docs").unwrap();
         folder.create(true, true, null);
         elementsToRefresh = visitor.getElementsToRefresh();
         elementsToUpdate = visitor.getElementsToUpdate();
@@ -322,7 +322,7 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
 
     // Test for FIPS-70
     @Test
-    public void testUpdateIfManifestIsChanged() throws CoreException {
+    public void testUpdateIfManifestIsChanged() {
 
         ModelExplorerConfiguration config = new ModelExplorerConfiguration(
                 ipsProject.getIpsModel().getIpsObjectTypes());
@@ -330,9 +330,9 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
         IpsViewRefreshVisitor visitor = new IpsViewRefreshVisitor(contentProvider);
 
         IResourceDelta delta = mock(IResourceDelta.class);
-        IResource manifestResource = mock(IResource.class);
+        IResource manifestResource = mock(IFile.class);
 
-        when(manifestResource.getProject()).thenReturn(ipsProject.getProject());
+        when(manifestResource.getProject()).thenReturn(ipsProject.getProject().unwrap());
         when(manifestResource.getFullPath()).thenReturn(new Path(ipsProject.getName() + "/META-INF/MANIFEST.MF"));
         when(manifestResource.getProjectRelativePath()).thenReturn(new Path("META-INF/MANIFEST.MF"));
 
@@ -385,13 +385,12 @@ public class IpsViewRefreshVisitorTest extends AbstractIpsPluginTest {
     }
 
     private void addIpsRootAsSourceEntry() throws Exception {
-        IJavaProject javaProject = ipsProject.getJavaProject();
+        IJavaProject javaProject = ipsProject.getJavaProject().unwrap();
         IClasspathEntry[] entries = javaProject.getRawClasspath();
 
         IClasspathEntry[] newEntries = new IClasspathEntry[entries.length + 1];
         System.arraycopy(entries, 0, newEntries, 0, entries.length);
-
-        IPath srcPath = packRoot.getEnclosingResource().getFullPath();
+        IPath srcPath = PathMapping.toEclipsePath(packRoot.getEnclosingResource().getWorkspaceRelativePath());
         IClasspathEntry srcEntry = JavaCore.newSourceEntry(srcPath, null);
 
         newEntries[entries.length] = JavaCore.newSourceEntry(srcEntry.getPath());

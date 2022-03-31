@@ -10,7 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import org.eclipse.osgi.util.NLS;
+import java.text.MessageFormat;
+
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.productcmpt.DeltaType;
@@ -58,15 +59,16 @@ public class LinkChangingOverTimeMismatchEntry extends AbstractDeltaEntryForLink
         String generationLabelByNamingConvention = IIpsModelExtensions.get().getModelPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true);
         if (getAssociation().isChangingOverTime()) {
-            return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt, new String[] {
-                    linkCaption, unqualifiedTargetName, generationLabelByNamingConvention });
+            return MessageFormat.format(Messages.LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt,
+                    linkCaption, unqualifiedTargetName, generationLabelByNamingConvention);
         } else {
             if (isLinkPartOfLatestGeneration()) {
-                return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen, linkCaption,
+                return MessageFormat.format(Messages.LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen,
+                        linkCaption,
                         unqualifiedTargetName);
             } else {
-                return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_RemoveOnly, new String[] {
-                        linkCaption, unqualifiedTargetName, generationLabelByNamingConvention });
+                return MessageFormat.format(Messages.LinkChangingOverTimeMismatchEntry_Description_RemoveOnly,
+                        linkCaption, unqualifiedTargetName, generationLabelByNamingConvention);
             }
         }
     }

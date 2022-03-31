@@ -12,11 +12,10 @@ package org.faktorips.devtools.model.internal;
 
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -46,7 +45,9 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     }
 
     private IVersionFormat createVersionFormat() {
-        final IConfigurationElement releaseExtension = ExtensionPoints.getReleaseExtensionElement(ipsProject);
+        final IConfigurationElement releaseExtension = Abstractions.isEclipseRunning()
+                ? ExtensionPoints.getReleaseExtensionElement(ipsProject)
+                : null;
         if (releaseExtension == null) {
             return new OsgiVersionFormat();
         } else {
@@ -76,11 +77,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     public void setProjectVersion(IVersion<DefaultVersion> version) {
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setVersion(version.asString());
-        try {
-            ipsProject.setProperties(properties);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        ipsProject.setProperties(properties);
     }
 
     @Override

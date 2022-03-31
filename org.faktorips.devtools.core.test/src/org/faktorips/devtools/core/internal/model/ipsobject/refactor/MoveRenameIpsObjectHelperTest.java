@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
@@ -46,7 +45,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsModel_ChangeLetterCase() throws CoreException {
+    public void testValidateIpsModel_ChangeLetterCase() {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "ProdCmpt", messageList);
@@ -55,7 +54,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsModel_NameAlreadyExist() throws CoreException {
+    public void testValidateIpsModel_NameAlreadyExist() {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "otherProductCmp", messageList);
@@ -65,7 +64,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsModel_NameAlreadyExistUpperCase() throws CoreException {
+    public void testValidateIpsModel_NameAlreadyExistUpperCase() {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "OTHERPRODUctCMp", messageList);
@@ -75,7 +74,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsModel_NameAlreadyExistInOtherIpsObjectType() throws CoreException {
+    public void testValidateIpsModel_NameAlreadyExistInOtherIpsObjectType() {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "policyCMPTType", messageList);

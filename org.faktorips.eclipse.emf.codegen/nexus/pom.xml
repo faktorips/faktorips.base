@@ -19,7 +19,6 @@
     <description>Fork of Eclipse EMF Code Generator</description>
 
     <build>
-        <sourceDirectory>../src</sourceDirectory>
         <!-- JavaDoc DocLint is turned off because we do not want to change forked code -->
         <plugins>
             <plugin>

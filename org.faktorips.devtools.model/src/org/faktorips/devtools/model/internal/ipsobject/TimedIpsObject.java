@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -289,7 +288,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateValidFrom(list);
         validateValidTo(list);
@@ -315,7 +314,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         IIpsObjectGeneration[] generationsByValidDate = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generationsByValidDate) {
             if (generation.getValidFrom() != null && generation.getValidFrom().after(getValidTo())) {
-                String[] params = new String[4];
+                Object[] params = new Object[4];
                 params[0] = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
                         .format(getValidTo().getTime());
                 params[1] = IIpsModelExtensions.get().getModelPreferences().getChangesOverTimeNamingConvention()
@@ -323,7 +322,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
                 params[3] = IIpsModelExtensions.get().getModelPreferences().getDateFormat()
                         .format(generation.getValidFrom().getTime());
-                String msg = NLS.bind(Messages.TimedIpsObject_msgIvalidValidToDate, params);
+                String msg = MessageFormat.format(Messages.TimedIpsObject_msgIvalidValidToDate, params);
                 list.add(new Message(MSGCODE_INVALID_VALID_TO, msg, Message.ERROR, this, PROPERTY_VALID_TO));
             }
         }

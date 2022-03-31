@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -81,7 +80,7 @@ public class DateBasedProductCmptNamingStrategyTest extends AbstractIpsPluginTes
     }
 
     @Test
-    public void testGetNextVersionId() throws CoreException {
+    public void testGetNextVersionId() {
         GregorianCalendar workingDate = new GregorianCalendar(2006, 0, 31);
         IProductCmpt pc = newProductCmpt(ipsProject, "TestProduct 2005-01-01");
         assertEquals("2006-01-31", strategy.getNextVersionId(pc, workingDate));

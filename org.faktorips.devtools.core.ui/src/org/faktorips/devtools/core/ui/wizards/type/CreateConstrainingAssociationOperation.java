@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -116,12 +114,8 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private IType getConstrainedTargetType() {
-        try {
-            IType constrainedTargetType = getConstrainedAssociation().findTarget(getIpsProject());
-            return constrainedTargetType;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IType constrainedTargetType = getConstrainedAssociation().findTarget(getIpsProject());
+        return constrainedTargetType;
     }
 
     /**
@@ -159,16 +153,12 @@ public class CreateConstrainingAssociationOperation {
 
     private void createInverseAssociation(IPolicyCmptTypeAssociation assoc,
             IPolicyCmptTypeAssociation constrainedAssoc) {
-        try {
-            IPolicyCmptTypeAssociation templateInverseAssociation = constrainedAssoc
-                    .findInverseAssociation(getIpsProject());
-            IPolicyCmptType inverseAssocSourceType = (IPolicyCmptType)assoc.findTarget(getIpsProject());
-            boolean isTargetSrcFileDirty = inverseAssocSourceType.getIpsSrcFile().isDirty();
-            inverseAssocSourceType.constrainAssociation(templateInverseAssociation, assoc.getType());
-            saveIfNecessary(inverseAssocSourceType, isTargetSrcFileDirty);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptTypeAssociation templateInverseAssociation = constrainedAssoc
+                .findInverseAssociation(getIpsProject());
+        IPolicyCmptType inverseAssocSourceType = (IPolicyCmptType)assoc.findTarget(getIpsProject());
+        boolean isTargetSrcFileDirty = inverseAssocSourceType.getIpsSrcFile().isDirty();
+        inverseAssocSourceType.constrainAssociation(templateInverseAssociation, assoc.getType());
+        saveIfNecessary(inverseAssocSourceType, isTargetSrcFileDirty);
     }
 
     private IAssociation setupMatchingAssociationIfPossible(IAssociation constrainingAssociation) {
@@ -195,12 +185,8 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private void saveIfNecessary(IType type, boolean wasDirty) {
-        try {
-            if (!wasDirty) {
-                type.getIpsSrcFile().save(true, null);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (!wasDirty) {
+            type.getIpsSrcFile().save(null);
         }
     }
 

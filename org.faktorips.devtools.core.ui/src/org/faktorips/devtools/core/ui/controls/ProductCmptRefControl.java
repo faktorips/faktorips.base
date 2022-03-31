@@ -16,10 +16,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -63,7 +61,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     @Override
-    protected IIpsSrcFile[] getIpsSrcFiles() throws CoreException {
+    protected IIpsSrcFile[] getIpsSrcFiles() {
 
         Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<>();
         for (IIpsProject ipsProject : getIpsProjects()) {
@@ -82,14 +80,10 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     }
 
     private Collection<? extends IIpsSrcFile> findIpsSrcFiles(IIpsProject ipsProject) {
-        try {
-            if (searchTemplates) {
-                return ipsProject.findCompatibleProductTemplates(productCmptType);
-            } else {
-                return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (searchTemplates) {
+            return ipsProject.findCompatibleProductTemplates(productCmptType);
+        } else {
+            return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
         }
     }
 

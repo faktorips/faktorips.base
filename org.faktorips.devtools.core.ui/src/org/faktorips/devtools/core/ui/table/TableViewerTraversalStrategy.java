@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.FocusEvent;
@@ -254,11 +253,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
             return newRow;
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
             IEnumValueContainer enumValueContainer = (IEnumValueContainer)tableViewer.getInput();
-            try {
-                return enumValueContainer.newEnumValue();
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            return enumValueContainer.newEnumValue();
         } else {
             return null;
         }

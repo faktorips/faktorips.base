@@ -115,11 +115,8 @@ public class Messages extends NLS {
 
     public static String ValidationRule_ConstantAttributesCantBeValidated;
     public static String ValidationRule_msg_InvalidMarkerId;
-    public static String ValidationRule_msgFunctionNotExists;
-    public static String ValidationRule_msgIgnored;
     public static String ValidationRule_msgUndefinedAttribute;
     public static String ValidationRule_msgDuplicateEntries;
-    public static String ValidationRule_msgOneBusinessFunction;
     public static String ValidationRule_msgValueSetRule;
     public static String ValidationRule_msgNoNewlineAllowed;
     public static String ValidationRule_msgCodeShouldBeProvided;

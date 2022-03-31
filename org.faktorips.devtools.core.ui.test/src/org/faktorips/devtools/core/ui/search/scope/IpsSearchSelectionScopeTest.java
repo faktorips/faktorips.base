@@ -15,11 +15,11 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.nio.file.Path;
 import java.util.Collections;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.model.IIpsElement;
@@ -40,7 +40,7 @@ public class IpsSearchSelectionScopeTest {
     }
 
     @Test
-    public void testIpsArchiveSelected() throws CoreException {
+    public void testIpsArchiveSelected() {
         IStructuredSelection selection = mock(IStructuredSelection.class);
 
         IIpsSrcFile scrFile = mock(IpsSrcFile.class);
@@ -62,13 +62,14 @@ public class IpsSearchSelectionScopeTest {
         when(resource.isAccessible()).thenReturn(true);
         when(resource.getAdapter(IIpsElement.class)).thenReturn(scrFile);
         IPath location = mock(IPath.class);
+        Path archiveLocation = mock(Path.class);
         when(resource.getLocation()).thenReturn(location);
-        when(archive.getLocation()).thenReturn(location);
+        when(archive.getLocation()).thenReturn(archiveLocation);
 
         IIpsProject ipsProject = mock(IIpsProject.class);
         IIpsPackageFragmentRoot emptyPackageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         IIpsArchive wrongArchive = mock(IIpsArchive.class);
-        IPath otherLocation = mock(IPath.class);
+        Path otherLocation = mock(Path.class);
         when(wrongArchive.getLocation()).thenReturn(otherLocation);
         when(emptyPackageFragmentRoot.isBasedOnIpsArchive()).thenReturn(true);
         when(emptyPackageFragmentRoot.getIpsStorage()).thenReturn(wrongArchive);

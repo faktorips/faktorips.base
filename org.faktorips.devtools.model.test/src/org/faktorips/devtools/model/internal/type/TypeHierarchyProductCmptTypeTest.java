@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -399,7 +398,7 @@ public class TypeHierarchyProductCmptTypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsNodeOfHierarchy() throws CoreException {
+    public void testIsNodeOfHierarchy() {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
         IIpsSrcFile file3 = pdFolder.createIpsFile(IpsObjectType.PRODUCT_CMPT_TYPE, "Intependent", true, null);

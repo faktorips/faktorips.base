@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -156,7 +155,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     @Override
-    public void saving(ISaveContext context) throws CoreException {
+    public void saving(ISaveContext context) {
         if (context.getKind() != ISaveContext.FULL_SAVE) {
             return;
         }
@@ -191,7 +190,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
     }
 
     @Override
-    public void prepareToSave(ISaveContext context) throws CoreException {
+    public void prepareToSave(ISaveContext context) {
         // nothing to do
     }
 

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -174,9 +174,9 @@ public interface IAttribute extends IChangingOverTimeProperty {
      * 
      * @param ipsProject The project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
-    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
+    public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the {@link IValueSet} of this {@link IAttribute}.

@@ -14,8 +14,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -42,32 +42,36 @@ public class IpsSrcFilesChangeListenerTest extends AbstractIpsPluginTest impleme
     @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        pdProject = this.newIpsProject("TestProject");
-        pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
-        pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
-        pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
-        pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
+        if (Abstractions.isEclipseRunning()) {
+            super.setUp();
+            pdProject = this.newIpsProject("TestProject");
+            pdRootFolder = pdProject.getIpsPackageFragmentRoots()[0];
+            pdFolder = pdRootFolder.createPackageFragment("products.folder", true, null);
+            pdSrcFile = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "TestPolicy", true, null);
+            pcType = (PolicyCmptType)pdSrcFile.getIpsObject();
 
-        // create two more types that act as supertype and supertype's supertype
-        IIpsSrcFile file1 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
-        supertype = (PolicyCmptType)file1.getIpsObject();
-        IIpsSrcFile file2 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
-        supersupertype = (PolicyCmptType)file2.getIpsObject();
-        pcType.setSupertype(supertype.getQualifiedName());
-        supertype.setSupertype(supersupertype.getQualifiedName());
-        IIpsModel.get().addIpsSrcFilesChangedListener(this);
+            // create two more types that act as supertype and supertype's supertype
+            IIpsSrcFile file1 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supertype", true, null);
+            supertype = (PolicyCmptType)file1.getIpsObject();
+            IIpsSrcFile file2 = pdFolder.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Supersupertype", true, null);
+            supersupertype = (PolicyCmptType)file2.getIpsObject();
+            pcType.setSupertype(supertype.getQualifiedName());
+            supertype.setSupertype(supersupertype.getQualifiedName());
+            IIpsModel.get().addIpsSrcFilesChangedListener(this);
+        }
     }
 
     @Test
-    public void testIpsSrcFilesChanged() throws CoreException {
-        // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
-        pcType.getIpsSrcFile().save(true, null);
-        while (event == null) {
-        }
-        Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            assertTrue("TestPolicy.ipspolicycmpttype".equals(ipsSrcFile.getName()));
+    public void testIpsSrcFilesChanged() {
+        if (Abstractions.isEclipseRunning()) {
+            // TODO: Gibt es eine Möglichkeit zwei save-Event gleichzeitig zu testen (saveAll)
+            pcType.getIpsSrcFile().save(null);
+            while (event == null) {
+            }
+            Set<IIpsSrcFile> ipsSrcFiles = event.getChangedIpsSrcFiles();
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                assertTrue("TestPolicy.ipspolicycmpttype".equals(ipsSrcFile.getName()));
+            }
         }
     }
 

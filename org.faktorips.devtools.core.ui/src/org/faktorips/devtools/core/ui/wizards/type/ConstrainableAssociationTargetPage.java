@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.type;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -24,7 +23,6 @@ import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.views.ipshierarchy.HierarchyContentProvider;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
@@ -106,15 +104,11 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
             @Override
             protected void propertyChanged(IAssociation oldValue, IAssociation newValue) {
                 if (pmo.getSelectedAssociation() != null) {
-                    try {
-                        IType targetType = pmo.getSelectedAssociation().findTarget(pmo.getType().getIpsProject());
-                        ITypeHierarchy subtypeHierarchy = targetType.getSubtypeHierarchy();
-                        viewer.setInput(subtypeHierarchy);
-                        viewer.expandAll();
-                        setLabel();
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    IType targetType = pmo.getSelectedAssociation().findTarget(pmo.getType().getIpsProject());
+                    ITypeHierarchy subtypeHierarchy = targetType.getSubtypeHierarchy();
+                    viewer.setInput(subtypeHierarchy);
+                    viewer.expandAll();
+                    setLabel();
                 }
             }
         });

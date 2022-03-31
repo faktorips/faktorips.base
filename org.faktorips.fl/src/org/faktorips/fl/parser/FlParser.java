@@ -13,12 +13,12 @@ package org.faktorips.fl.parser;
 
 @SuppressWarnings("all")
 // generated file
-public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlParserConstants {/*
- * @bgen
- * (
- * jjtree
- * )
- */
+public class FlParser/* @bgen(jjtree) */ implements FlParserTreeConstants, FlParserConstants {/*
+                                                                                               * @bgen
+                                                                                               * (
+                                                                                               * jjtree
+                                                                                               * )
+                                                                                               */
     protected JJTFlParserState jjtree = new JJTFlParserState();
 
     public static void main(String args[]) {
@@ -96,8 +96,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         label_1: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
                 case 20:
-                case 21:
-                    ;
+                case 21:;
                     break;
                 default:
                     jj_la1[0] = jj_gen;
@@ -197,8 +196,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                 case 22:
                 case 23:
                 case 24:
-                case 25:
-                    ;
+                case 25:;
                     break;
                 default:
                     jj_la1[2] = jj_gen;
@@ -374,8 +372,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         label_3: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
                 case 26:
-                case 27:
-                    ;
+                case 27:;
                     break;
                 default:
                     jj_la1[4] = jj_gen;
@@ -473,8 +470,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
         label_4: while (true) {
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
                 case 28:
-                case 29:
-                    ;
+                case 29:;
                     break;
                 default:
                     jj_la1[6] = jj_gen;
@@ -776,8 +772,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
                     argumentList();
                     break;
                 default:
-                    jj_la1[12] = jj_gen;
-                    ;
+                    jj_la1[12] = jj_gen;;
             }
             jj_consume_token(32);
         } catch (Throwable jjte000) {
@@ -822,8 +817,7 @@ public class FlParser/* @bgen(jjtree) */implements FlParserTreeConstants, FlPars
             expr();
             label_5: while (true) {
                 switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
-                    case 33:
-                        ;
+                    case 33:;
                         break;
                     default:
                         jj_la1[13] = jj_gen;

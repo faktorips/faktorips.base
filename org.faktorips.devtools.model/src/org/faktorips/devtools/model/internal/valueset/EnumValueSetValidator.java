@@ -12,11 +12,11 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -76,7 +76,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
      */
     private boolean isValidDatatype() {
         if (getDatatype() == null) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgDatatypeUnknown, getOwner().getName());
+            String msg = MessageFormat.format(Messages.EnumValueSet_msgDatatypeUnknown, getOwner().getName());
             list.add(new Message(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, getParentOp()));
             return false;
         }
@@ -87,7 +87,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
         ObjectProperty op = new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_VALUES, index);
         String value = getValueSet().getValue(index);
         if (isSpecialNull(value, getDatatype())) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value),
+            String msg = MessageFormat.format(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value),
                     getDatatype().getName());
             list.add(new Message(IEnumValueSet.MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, getParentOp()));
         }
@@ -122,7 +122,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
     }
 
     private Message createMsgForDuplicateValues(String value, ObjectProperty... ops) {
-        String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
+        String msg = MessageFormat.format(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
         return new Message(IEnumValueSet.MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops);
     }
 

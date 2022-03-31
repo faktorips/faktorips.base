@@ -12,6 +12,8 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,12 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.search.AbstractSearch;
 import org.faktorips.devtools.model.internal.ipsproject.search.CycleSearch;
 import org.faktorips.devtools.model.internal.ipsproject.search.DuplicateIpsSrcFileSearch;
@@ -62,7 +63,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private boolean outputDefinedPerSourceFolder = false;
 
     /** output folder for the generated Java files */
-    private IFolder outputFolderMergableSources;
+    private AFolder outputFolderMergableSources;
 
     /** base package for the generated Java files */
     private String basePackageMergable = ""; //$NON-NLS-1$
@@ -73,7 +74,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Derived resources will not be managed by the resource management system and will use the
      * output folder and base package for the extension Java files
      */
-    private IFolder outputFolderDerivedSources;
+    private AFolder outputFolderDerivedSources;
 
     private String basePackageDerived = ""; //$NON-NLS-1$
 
@@ -216,19 +217,20 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
+    public IIpsSrcFolderEntry newSourceFolderEntry(AFolder srcFolder) {
         IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
         addEntry(newEntry);
         return newEntry;
     }
 
     @Override
-    public IIpsArchiveEntry newArchiveEntry(IPath archivePath) throws CoreException {
-        IPath correctArchivePath = archivePath;
+    public IIpsArchiveEntry newArchiveEntry(Path archivePath) {
+        Path correctArchivePath = archivePath;
 
-        if (archivePath.segmentCount() >= 2 && archivePath.segment(0).equals(getIpsProject().getName())) {
+        if (archivePath.getNameCount() >= 2
+                && PathUtil.segment(archivePath, 0).equals(getIpsProject().getName())) {
             // Path should be project relative
-            IFile archiveFile = ResourcesPlugin.getWorkspace().getRoot().getFile(archivePath);
+            AFile archiveFile = Abstractions.getWorkspace().getRoot().getFile(archivePath);
             correctArchivePath = archiveFile.getProjectRelativePath();
         }
 
@@ -243,7 +245,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         try {
             newEntry.initStorage(correctArchivePath);
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         }
         addEntry(newEntry);
         return newEntry;
@@ -321,7 +323,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public boolean containsSrcFolderEntry(IFolder folder) {
+    public boolean containsSrcFolderEntry(AFolder folder) {
         for (IIpsObjectPathEntry entry : entries) {
             if (entry instanceof IpsSrcFolderEntry) {
                 IpsSrcFolderEntry ref = (IpsSrcFolderEntry)entry;
@@ -334,7 +336,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public void removeSrcFolderEntry(IFolder srcFolder) {
+    public void removeSrcFolderEntry(AFolder srcFolder) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
             if (entry instanceof IpsSrcFolderEntry) {
@@ -358,26 +360,26 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public IFolder getOutputFolderForMergableSources() {
+    public AFolder getOutputFolderForMergableSources() {
         return outputFolderMergableSources;
     }
 
     @Override
-    public void setOutputFolderForMergableSources(IFolder outputFolder) {
+    public void setOutputFolderForMergableSources(AFolder outputFolder) {
         outputFolderMergableSources = outputFolder;
     }
 
     @Override
-    public IFolder[] getOutputFolders() {
+    public AFolder[] getOutputFolders() {
         if (!outputDefinedPerSourceFolder) {
             if (outputFolderMergableSources == null) {
-                return new IFolder[0];
+                return new AFolder[0];
             } else {
-                return new IFolder[] { outputFolderMergableSources };
+                return new AFolder[] { outputFolderMergableSources };
             }
         }
 
-        List<IFolder> result = new ArrayList<>(entries.length);
+        List<AFolder> result = new ArrayList<>(entries.length);
         for (IIpsObjectPathEntry entrie : entries) {
             if (entrie.getType() == IIpsObjectPathEntry.TYPE_SRC_FOLDER) {
                 IIpsSrcFolderEntry srcEntry = (IIpsSrcFolderEntry)entrie;
@@ -386,7 +388,7 @@ public class IpsObjectPath implements IIpsObjectPath {
                 }
             }
         }
-        return result.toArray(new IFolder[result.size()]);
+        return result.toArray(new AFolder[result.size()]);
     }
 
     @Override
@@ -400,12 +402,12 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public IFolder getOutputFolderForDerivedSources() {
+    public AFolder getOutputFolderForDerivedSources() {
         return outputFolderDerivedSources;
     }
 
     @Override
-    public void setOutputFolderForDerivedSources(IFolder outputFolder) {
+    public void setOutputFolderForDerivedSources(AFolder outputFolder) {
         outputFolderDerivedSources = outputFolder;
     }
 
@@ -459,17 +461,17 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public MessageList validate() throws CoreException {
+    public MessageList validate() {
         MessageList list = new MessageList();
         if (!isOutputDefinedPerSrcFolder()) {
             if (outputFolderMergableSources == null) {
-                list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(
+                list.add(new Message(MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED, MessageFormat.format(
                         Messages.IpsObjectPath_msgOutputFolderMergableMissing, getIpsProject()), Message.ERROR, this));
             } else {
                 list.add(validateFolder(outputFolderMergableSources));
             }
             if (outputFolderDerivedSources == null) {
-                list.add(new Message(MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED, NLS.bind(
+                list.add(new Message(MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED, MessageFormat.format(
                         Messages.IpsObjectPath_msgOutputFolderDerivedMissing, getIpsProject()), Message.ERROR, this));
             } else {
                 list.add(validateFolder(outputFolderDerivedSources));
@@ -492,10 +494,10 @@ public class IpsObjectPath implements IIpsObjectPath {
     /**
      * Validate that the given folder exists.
      */
-    private MessageList validateFolder(IFolder folder) {
+    private MessageList validateFolder(AFolder folder) {
         MessageList result = new MessageList();
         if (!folder.exists()) {
-            String text = NLS.bind(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
             Message msg = new Message(IIpsObjectPathEntry.MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }

@@ -29,7 +29,6 @@ import static org.junit.Assert.fail;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
@@ -88,7 +87,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAssociation() throws CoreException {
+    public void testFindAssociation() {
         IProductCmptTypeAssociation assocation = productCmptType.newProductCmptTypeAssociation();
 
         assocation.setTargetRoleSingular("CoverageType");
@@ -113,7 +112,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() throws CoreException {
+    public void testToXml() {
         setUpAssociation(true);
         productCmpt.setTemplate("TestTemplate");
         templateLink.setTarget("newTarget");
@@ -140,7 +139,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml() throws CoreException {
+    public void testInitFromXml() {
         setUpAssociation(true);
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setTargetRoleSingular("FullCoverage");
@@ -172,13 +171,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateUnknownAssociate() throws CoreException {
+    public void testValidateUnknownAssociate() {
         MessageList ml = link.validate(ipsProject);
         assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
     }
 
     @Test
-    public void testValidateUnknownTarget() throws CoreException {
+    public void testValidateUnknownTarget() {
         link.setTarget("unknown");
         MessageList ml = link.validate(ipsProject);
         assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
@@ -189,7 +188,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateCardinalityForQualified() throws CoreException {
+    public void testValidateCardinalityForQualified() {
         IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
         IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
 
@@ -296,7 +295,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangingOverTimeMatchesContainer() throws CoreException {
+    public void testChangingOverTimeMatchesContainer() {
         setUpAssociation(true);
 
         MessageList messageList = link.validate(ipsProject);
@@ -304,14 +303,14 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangingOverTimeDoesNotMatchContainer() throws CoreException {
+    public void testChangingOverTimeDoesNotMatchContainer() {
         setUpAssociation(false);
 
         MessageList messageList = link.validate(ipsProject);
         assertThat(messageList, hasSize(1));
     }
 
-    private void setUpAssociation(boolean changingOverTime) throws CoreException {
+    private void setUpAssociation(boolean changingOverTime) {
         IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
         IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
         IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
@@ -325,13 +324,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetCaption() throws CoreException {
+    public void testGetCaption() {
         createAssociation();
         assertEquals("foo", link.getCaption(Locale.US));
     }
 
     @Test
-    public void testGetCaptionNullPointer() throws CoreException {
+    public void testGetCaptionNullPointer() {
         try {
             link.getCaption(null);
             fail();
@@ -340,13 +339,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetPluralCaption() throws CoreException {
+    public void testGetPluralCaption() {
         createAssociation();
         assertEquals("foos", link.getPluralCaption(Locale.US));
     }
 
     @Test
-    public void testGetPluralCaptionNullPointer() throws CoreException {
+    public void testGetPluralCaptionNullPointer() {
         try {
             link.getPluralCaption(null);
             fail();
@@ -505,7 +504,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete_InheritedLinkIsSetToUndefined() throws CoreException {
+    public void testDelete_InheritedLinkIsSetToUndefined() {
         IProductCmptLink templateLink = createTemplateLink();
         link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
@@ -519,7 +518,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete_DefinedLinkIsSetToUndefinedWhenTemplateIsPresent() throws CoreException {
+    public void testDelete_DefinedLinkIsSetToUndefinedWhenTemplateIsPresent() {
         IProductCmptLink templateLink = createTemplateLink();
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
@@ -533,7 +532,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDelete_LinkIsDeletedIfNoTemplateLinkExists() throws CoreException {
+    public void testDelete_LinkIsDeletedIfNoTemplateLinkExists() {
         // There is a template but no matching link
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         productCmpt.setTemplate(template.getQualifiedName());
@@ -575,7 +574,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertThat(generation.getLinksAsList().size(), is(0));
     }
 
-    protected IProductCmptLink createTemplateLink() throws CoreException {
+    protected IProductCmptLink createTemplateLink() {
         setUpAssociation(true);
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         productCmpt.setTemplate(template.getQualifiedName());
@@ -586,7 +585,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsConcreteValue() throws CoreException {
+    public void testIsConcreteValue() {
         // make product cmpt part of template hierarchy
         setUpAssociation(true);
         productCmpt.setTemplate("TestTemplate");
@@ -623,7 +622,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsConfiguringPolicyAssociation_ProductCmptWithoutPolicyCmpt() throws CoreException {
+    public void testIsConfiguringPolicyAssociation_ProductCmptWithoutPolicyCmpt() {
         IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
         IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
         productAssociation.setTargetRoleSingular("CoverageType");
@@ -636,7 +635,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsConfiguringPolicyAssociation_ProductCmptTypeNotFound() throws CoreException {
+    public void testIsConfiguringPolicyAssociation_ProductCmptTypeNotFound() {
         IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
         IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
         productAssociation.setTargetRoleSingular("CoverageType");

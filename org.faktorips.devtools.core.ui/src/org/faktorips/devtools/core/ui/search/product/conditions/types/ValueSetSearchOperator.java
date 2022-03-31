@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.model.valueset.IValueSet;
 
@@ -33,13 +31,9 @@ public class ValueSetSearchOperator extends AbstractSearchOperator<ValueSetSearc
 
     @Override
     protected boolean check(Object searchOperand, IProductPartsContainer productPartsContainer) {
-        try {
-            IValueSet valueSet = (IValueSet)searchOperand;
-            boolean isContained = valueSet.containsValue(getArgument(), productPartsContainer.getIpsProject());
+        IValueSet valueSet = (IValueSet)searchOperand;
+        boolean isContained = valueSet.containsValue(getArgument(), productPartsContainer.getIpsProject());
 
-            return isContained != getSearchOperatorType().isNegation();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return isContained != getSearchOperatorType().isNegation();
     }
 }

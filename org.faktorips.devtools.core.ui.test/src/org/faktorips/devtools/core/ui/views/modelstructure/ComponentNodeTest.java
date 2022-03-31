@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -28,7 +27,7 @@ import org.junit.Test;
 public class ComponentNodeTest extends AbstractIpsPluginTest {
 
     @Test
-    public void testGetParent_RootParentIsNull() throws CoreException {
+    public void testGetParent_RootParentIsNull() {
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
         ComponentNode root = new ComponentNode(vertrag, project);
@@ -37,7 +36,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEquals_RootsWithoutChildrenAreEqual() throws CoreException {
+    public void testEquals_RootsWithoutChildrenAreEqual() {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -50,7 +49,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEquals_RootsWithSameTypesAndDifferentProjectAreNotEqual() throws CoreException {
+    public void testEquals_RootsWithSameTypesAndDifferentProjectAreNotEqual() {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -64,7 +63,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEquals_RootsWithDifferenValuesAreNotEqual() throws CoreException {
+    public void testEquals_RootsWithDifferenValuesAreNotEqual() {
         // setup
         IIpsProject project = newIpsProject();
         PolicyCmptType vertrag = newPolicyCmptTypeWithoutProductCmptType(project, "Vertrag");
@@ -78,7 +77,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testEncapsulateComponentTypes_EmptyListInput() throws CoreException {
+    public void testEncapsulateComponentTypes_EmptyListInput() {
         IIpsProject project = newIpsProject();
         List<ComponentNode> encapsulateComponentTypes = ComponentNode.encapsulateComponentTypes(new ArrayList<IType>(),
                 null, project);
@@ -87,14 +86,14 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testEncapsulateComponentTypes_NullListInput() throws CoreException {
+    public void testEncapsulateComponentTypes_NullListInput() {
         IIpsProject project = newIpsProject();
 
         ComponentNode.encapsulateComponentTypes(null, null, project);
     }
 
     @Test
-    public void testEncapsulateComponentTypes_NonEmptyListInput() throws CoreException {
+    public void testEncapsulateComponentTypes_NonEmptyListInput() {
         IIpsProject project = newIpsProject();
         ArrayList<IType> components = new ArrayList<>();
         PolicyCmptType type = newPolicyCmptTypeWithoutProductCmptType(project, "Component");
@@ -107,7 +106,7 @@ public class ComponentNodeTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testEncapsulateComponentTypes_NullProjectAndNonEmptyListInput() throws CoreException {
+    public void testEncapsulateComponentTypes_NullProjectAndNonEmptyListInput() {
         IIpsProject project = newIpsProject();
         ArrayList<IType> components = new ArrayList<>();
         components.add(newPolicyCmptTypeWithoutProductCmptType(project, "Component"));

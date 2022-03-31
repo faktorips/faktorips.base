@@ -13,9 +13,7 @@ package org.faktorips.devtools.core.ui.controls.chooser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IMultiValueHolder;
@@ -53,14 +51,10 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     public MessageList validateValue(ListChooserValue value) {
-        try {
-            ISingleValueHolder holder = findSingleValueHolderFor(value);
-            MessageList messageList = multiValueHolder.validate(multiValueHolder.getIpsProject());
-            messageList = messageList.getMessagesFor(holder);
-            return messageList;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        ISingleValueHolder holder = findSingleValueHolderFor(value);
+        MessageList messageList = multiValueHolder.validate(multiValueHolder.getIpsProject());
+        messageList = messageList.getMessagesFor(holder);
+        return messageList;
     }
 
     protected ISingleValueHolder findSingleValueHolderFor(ListChooserValue value) {

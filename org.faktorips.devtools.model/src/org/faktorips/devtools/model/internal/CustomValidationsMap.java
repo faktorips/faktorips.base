@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
@@ -107,8 +107,7 @@ public class CustomValidationsMap {
             putInternal(key, validation);
         } else {
             String message = Messages.CustomValidationsMap_MsgCannotAddValidation_classesDoNotMatch;
-            throw new RuntimeException(NLS.bind(message,
-                    new Object[] { validation, validation.getExtendedClass(), key }));
+            throw new RuntimeException(MessageFormat.format(message, validation, validation.getExtendedClass(), key));
         }
     }
 

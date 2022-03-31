@@ -26,7 +26,6 @@ public class Messages extends NLS {
 
     public static String IpsObjectType_nameEnumContent;
     public static String IpsObjectType_nameEnumType;
-    public static String IpsObjectType_nameBusinessFunction;
     public static String IpsObjectType_namePolicyClass;
     public static String IpsObjectType_nameProductClass;
     public static String IpsObjectType_nameTableStructure;
@@ -37,7 +36,6 @@ public class Messages extends NLS {
     public static String IpsObjectType_nameTestCase;
     public static String IpsObjectType_nameEnumContentPlural;
     public static String IpsObjectType_nameEnumTypePlural;
-    public static String IpsObjectType_nameBusinessFunctionPlural;
     public static String IpsObjectType_namePolicyClassPlural;
     public static String IpsObjectType_nameProductClassPlural;
     public static String IpsObjectType_nameTableStructurePlural;

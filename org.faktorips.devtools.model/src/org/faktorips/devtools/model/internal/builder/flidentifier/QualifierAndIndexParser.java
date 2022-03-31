@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
@@ -95,7 +96,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         try {
             productCmpt = findProductCmpt();
             return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsLog.log(e);
             return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS
                     .bind(Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
@@ -107,7 +108,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return associationNode.isListContext() || associationNode.getAssociation().is1ToManyIgnoringQualifier();
     }
 
-    private IProductCmpt findProductCmpt() throws CoreException {
+    private IProductCmpt findProductCmpt() {
         Collection<IIpsSrcFile> foundProductCmpts = findProductCmptByName();
         if (foundProductCmpts != null) {
             for (IIpsSrcFile ipsSrcFile : foundProductCmpts) {
@@ -120,7 +121,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return null;
     }
 
-    private Collection<IIpsSrcFile> findProductCmptByName() throws CoreException {
+    private Collection<IIpsSrcFile> findProductCmptByName() {
         Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
         if (foundProductCmpt.isEmpty()) {
             IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());
@@ -154,7 +155,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     private IdentifierNode handleInvalidIndex(NumberFormatException e) {
         IpsLog.log(e);
         return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER,
-                NLS.bind(Messages.AssociationParser_msgErrorAssociationQualifierOrIndex, getQualifierOrIndex(),
+                MessageFormat.format(Messages.AssociationParser_msgErrorAssociationQualifierOrIndex,
+                        getQualifierOrIndex(),
                         getIdentifierPart())));
     }
 
@@ -228,7 +230,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     public String getQualifierDescription(IProductCmpt productCmpt) {
-        return NLS.bind(Messages.QualifierAndIndexParser_descriptionQualifier, productCmpt.getName());
+        return MessageFormat.format(Messages.QualifierAndIndexParser_descriptionQualifier, productCmpt.getName());
     }
 
 }

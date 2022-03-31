@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -59,7 +59,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ITableStructure tableStructure;
         try {
             tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR,
                             "Could not find TableStructure of " + getDocumentedIpsObject().getName(), e)); //$NON-NLS-1$
@@ -95,7 +95,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         ContentTablePageElement contentTablePageElement = null;
         try {
             contentTablePageElement = new ContentTablePageElement(tableRows);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not create ContentTable of " + tableRows.getName(), e)); //$NON-NLS-1$
         }
@@ -125,13 +125,13 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
         private ValueDatatype[] datatypes;
 
-        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreException {
+        public ContentTablePageElement(ITableRows tableContentsGeneration) {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
             this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 
-        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreException {
+        private void initDatatypes(ITableRows tableContentsGeneration) {
             datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());

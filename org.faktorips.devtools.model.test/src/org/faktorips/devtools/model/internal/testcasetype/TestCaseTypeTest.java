@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -267,7 +266,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetTestRuleCandidates() throws CoreException {
+    public void testGetTestRuleCandidates() {
         IValidationRule[] testRuleParameters = type.getTestRuleCandidates(ipsProject);
         assertEquals(0, testRuleParameters.length);
 
@@ -303,7 +302,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetAllTestParameter() throws CoreException {
+    public void testGetAllTestParameter() {
         ITestPolicyCmptTypeParameter testParameter1 = type.newInputTestPolicyCmptTypeParameter();
         ITestPolicyCmptTypeParameter testParameter1_1 = testParameter1.newTestPolicyCmptTypeParamChild();
         ITestPolicyCmptTypeParameter testParameter1_2 = testParameter1.newTestPolicyCmptTypeParamChild();
@@ -327,7 +326,7 @@ public class TestCaseTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindAllMetaObjects() throws CoreException {
+    public void testFindAllMetaObjects() {
         String testCaseTypeQName = "pack.MyTestCaseType";
         String testCaseTypeProj2QName = "otherpack.MyTestCaseTypeProj2";
         String testCase1QName = "pack.MyTableContent1";

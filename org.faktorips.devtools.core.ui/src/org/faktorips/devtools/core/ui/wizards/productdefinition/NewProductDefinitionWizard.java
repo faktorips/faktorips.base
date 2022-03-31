@@ -22,6 +22,9 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResizableWizard;
 import org.faktorips.devtools.model.IIpsElement;
@@ -99,7 +102,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
         if (resource != null) {
             IProject project = resource.getProject();
             if (project != null) {
-                IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
+                IIpsProject ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
                 if (ipsProject.exists()) {
                     IIpsPackageFragmentRoot root = ipsProject.getSourceIpsPackageFragmentRoots()[0];
                     initDefaults(root.getDefaultIpsPackageFragment(), null);
@@ -131,11 +134,25 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     @Override
     public boolean performFinish() {
         setNeedsProgressMonitor(true);
-        IIpsModel.get().runAndQueueChangeEvents($ -> {
-            try {
-                getContainer().run(false, true, getOperation());
-            } catch (InvocationTargetException | InterruptedException e) {
-                throw new CoreException(new IpsStatus(e));
+        IIpsModel.get().runAndQueueChangeEvents(monitor -> {
+            var operation = getOperation();
+            if (operation != null) {
+                var container = getContainer();
+                if (container != null) {
+                    try {
+                        container.run(false, true, operation);
+                    } catch (InvocationTargetException | InterruptedException e) {
+                        throw new CoreException(new IpsStatus(e));
+                    }
+                } else {
+                    Abstractions.getWorkspace().run(m -> {
+                        try {
+                            operation.execute(m);
+                        } catch (InvocationTargetException | InterruptedException e) {
+                            throw new CoreException(new IpsStatus(e));
+                        }
+                    }, monitor);
+                }
             }
         }, new NullProgressMonitor());
         afterFinishPerformed();

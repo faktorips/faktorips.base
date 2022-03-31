@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.dialogs;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import java.util.LinkedHashMap;
 
 import org.eclipse.core.runtime.Path;
@@ -31,6 +33,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -311,7 +314,8 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
                 ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
             }
             ipsProjectCreationProperties.setLocales(supportedLanguagesControl.getLocales());
-            MessageList messages = ipsProjectCreationProperties.validate(javaProject);
+            MessageList messages = ipsProjectCreationProperties
+                    .validate(wrap(javaProject).as(AJavaProject.class));
             if (messages.containsErrorMsg()) {
                 ErrorDialog.openError(getParentShell(),
                         Messages.bind(Messages.AddIpsNatureDialog_ErrorDialogTitle, javaProject.getElementName()),
@@ -340,6 +344,6 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
     private boolean isGroovyAvailable() {
         return IpsClasspathContainerInitializer.isGroovySupportAvailable()
-                || IpsProjectConfigurators.isGroovySupported(javaProject);
+                || IpsProjectConfigurators.isGroovySupported(wrap(javaProject).as(AJavaProject.class));
     }
 }

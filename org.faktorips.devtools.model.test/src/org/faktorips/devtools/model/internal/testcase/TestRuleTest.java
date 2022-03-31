@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.model.internal.testcase;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -138,7 +139,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         // simple validation
         MessageList ml = testRule.validate(project);
         testRule.setValidationRule("x");
-        assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
         IPolicyCmptType policyCmptType = newPolicyCmptType(project, "policyCmptType1");
         IValidationRule validationRule = policyCmptType.newRule();
@@ -148,7 +149,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         // check rule not found because the test parameter doesn't contain the policy cmpt which
         // contains the rule
         ml = testRule.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
+        assertThat(ml, hasMessageCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
         // assign the policy cmpt (including the rule) to the corresponding test case type
         ITestCase testCase = (ITestCase)testRule.getParent();
@@ -157,7 +158,7 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         param.setPolicyCmptType("policyCmptType1");
 
         ml = testRule.validate(project);
-        assertNull(ml.getMessageByCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
+        assertThat(ml, lacksMessageCode(ITestRule.MSGCODE_VALIDATION_RULE_NOT_EXISTS));
 
         // complex validation @see TestCaseTest#testGetTestRuleCandidates
         ITestPolicyCmptTypeParameter paramA1 = testCaseType.newInputTestPolicyCmptTypeParameter();
@@ -203,20 +204,20 @@ public class TestRuleTest extends AbstractIpsPluginTest {
         rule2.setValidationRule("validationRule2");
 
         MessageList ml = testRule.validate(project);
-        assertNull(ml.getMessageByCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
+        assertThat(ml, lacksMessageCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
 
         rule2.setValidationRule("validationRule1");
         ml = testRule.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
+        assertThat(ml, hasMessageCode(ITestRule.MSGCODE_DUPLICATE_VALIDATION_RULE));
     }
 
     @Test
     public void testValidateTestValueParamNotFound() throws Exception {
         MessageList ml = testRule.validate(project);
-        assertNull(ml.getMessageByCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
+        assertThat(ml, lacksMessageCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
 
         testRule.setTestRuleParameter("x");
         ml = testRule.validate(project);
-        assertNotNull(ml.getMessageByCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
+        assertThat(ml, hasMessageCode(ITestRule.MSGCODE_TEST_RULE_PARAM_NOT_FOUND));
     }
 }

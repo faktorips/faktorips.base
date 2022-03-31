@@ -10,11 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -57,11 +55,7 @@ public class IpsSrcFileContentProposalProvider extends AbstractIpsSrcFileContent
     }
 
     protected IIpsSrcFile[] findIpsSrcFiles() {
-        try {
-            return ipsProject.findIpsSrcFiles(ipsObjectType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ipsProject.findIpsSrcFiles(ipsObjectType);
     }
 
     /**

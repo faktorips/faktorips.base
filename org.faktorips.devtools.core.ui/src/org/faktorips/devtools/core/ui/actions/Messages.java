@@ -53,7 +53,6 @@ public class Messages extends NLS {
 
     public static String NewEnumTypeAction_title;
     public static String NewEnumContentAction_title;
-    public static String NewBusinessFunctionAction_title;
     public static String NewProductCmptTypeAction_name;
     public static String NewTableStructureAction_name;
     public static String NewTestCaseTypeAction_name;

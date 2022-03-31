@@ -10,8 +10,11 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
-import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
-import static org.hamcrest.CoreMatchers.not;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.datatype.Datatype;
@@ -37,6 +39,7 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategy;
+import org.faktorips.devtools.model.ipsproject.IIpsFeatureConfiguration;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -72,7 +75,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptNamingStrategy() throws CoreException {
+    public void testValidate_ProductCmptNamingStrategy() {
         ((IpsProjectProperties)properties).setProductCmptNamingStrategyInternal(null, "UnknownStrategy-ID");
         MessageList result = properties.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IIpsProjectProperties.MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY));
@@ -95,35 +98,35 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_RequiredFeatures() throws CoreException {
+    public void testValidate_RequiredFeatures() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         props.setMinRequiredVersionNumber("org.faktorips.feature", "1.0.0");
         ml = props.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+        assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
         IIpsFeatureVersionManager versionManager = mock(IIpsFeatureVersionManager.class);
         when(versionManager.getFeatureId()).thenReturn("my.feature");
         when(versionManager.isRequiredForAllProjects()).thenReturn(false);
-        try (TestIpsModelExtensions testIpsModelExtensions = new TestIpsModelExtensions()) {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions.setFeatureVersionManagers(versionManager);
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             when(versionManager.isRequiredForAllProjects()).thenReturn(true);
             ml = props.validate(ipsProject);
-            assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, hasMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
             props.setMinRequiredVersionNumber("my.feature", "1.0.0");
             ml = props.validate(ipsProject);
-            assertNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
+            assertThat(ml, lacksMessageCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
         }
     }
 
     @Test
-    public void testValidate_DefinedDatatypes() throws CoreException {
+    public void testValidate_DefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -138,7 +141,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_PredefinedDatatypes() throws CoreException {
+    public void testValidate_PredefinedDatatypes() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -155,7 +158,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
+    public void testValidate_SupportedLanguagesIsoConformity() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -173,7 +176,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
+    public void testValidate_SupportedLanguagesDefaultLanguage() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
@@ -193,19 +196,26 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertNotNull(list.getMessageByCode(IIpsProjectProperties.MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
-    public void testValidate_DeprecatedBusinessFunctions() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setBusinessFunctionsForValidationRules(false);
+    public void testValidate_FeatureConfiguration_UnknownFeature() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
-        assertThat(list,
-                not(hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED)));
+        int numOfMessages = list.size();
 
-        props.setBusinessFunctionsForValidationRules(true);
+        // Test that there is no additional error message if everything is OK.
+        props.setMinRequiredVersionNumber("a.feature.id", "0.0.1");
+        props.setFeatureConfiguration("a.feature.id", new IpsFeatureConfiguration());
         list = props.validate(ipsProject);
-        assertThat(list,
-                hasMessageCode(org.faktorips.devtools.model.businessfct.BusinessFunction.MSGCODE_DEPRECATED));
+        assertThat(list.size(), is(numOfMessages));
+
+        // Test for one more additional error message if there is a problem.
+        props.setFeatureConfiguration("another.feature.id", new IpsFeatureConfiguration());
+        list = props.validate(ipsProject);
+        assertThat(list.size(), is(numOfMessages + 1));
+        assertThat(list.getMessageByCode(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE),
+                is(notNullValue()));
+        assertThat(list.getMessageByCode(IIpsProjectProperties.MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE).getText(),
+                containsString("another.feature.id"));
     }
 
     @Test
@@ -219,7 +229,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             props.setMarkerEnumsEnabled((i & 1) == 1);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
             props.setPersistenceSupport((i & 1) == 1);
-            props.setBusinessFunctionsForValidationRules((i & 1) == 1);
             props.setChangingOverTimeDefault((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
@@ -232,7 +241,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
             assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
-            assertEquals(props.isBusinessFunctionsForValidationRulesEnabled(), (i & 1) == 1);
             assertEquals(props.isChangingOverTimeDefaultEnabled(), (i & 1) == 1);
         }
     }
@@ -248,7 +256,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setRuntimeIdPrefix("newRuntimeIdPrefix");
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
-        props.setBusinessFunctionsForValidationRules(true);
         props.setChangingOverTimeDefault(false);
         props.setGenerateValidatorClassDefault(true);
         props.setGenericValidationDefault(false);
@@ -287,6 +294,11 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.addSupportedLanguage(Locale.ENGLISH);
         props.addSupportedLanguage(Locale.KOREAN);
 
+        IpsFeatureConfiguration featureConfiguration = new IpsFeatureConfiguration();
+        featureConfiguration.set("foo", "bar");
+        featureConfiguration.set("x", "y");
+        props.setFeatureConfiguration("a.feature.id", featureConfiguration);
+
         // 2) ... and retrieve the corresponding XML element ...
         Element projectEl = props.toXml(newDocument());
 
@@ -297,7 +309,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isProductDefinitionProject());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertTrue(props.isGenerateValidatorClassDefaultEnabled());
         assertFalse(props.isGenericValidationDefaultEnabled());
@@ -347,6 +358,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(100, props.getPersistenceOptions().getMaxTableColumnSize());
         assertEquals(101, props.getPersistenceOptions().getMaxTableColumnScale());
         assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
+
+        IIpsFeatureConfiguration newFeatureConfiguration = props.getFeatureConfiguration("a.feature.id");
+        assertThat(newFeatureConfiguration.get("foo"), is("bar"));
+        assertThat(newFeatureConfiguration.get("x"), is("y"));
     }
 
     @Test
@@ -421,7 +436,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isProductDefinitionProject());
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertFalse(props.isGenerateValidatorClassDefaultEnabled());
         assertTrue(props.isGenericValidationDefaultEnabled());
@@ -506,21 +520,6 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
 
         assertFalse(props.isMarkerEnumsEnabled());
-    }
-
-    @Test
-    public void testIsBusinessFunctionsForValidationRulesEnabled_default() {
-        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-
-        assertFalse(props.isBusinessFunctionsForValidationRulesEnabled());
-    }
-
-    @Test
-    public void testIsBusinessFunctionsForValidationRulesEnabled() {
-        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setBusinessFunctionsForValidationRules(true);
-
-        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
     }
 
     @Test

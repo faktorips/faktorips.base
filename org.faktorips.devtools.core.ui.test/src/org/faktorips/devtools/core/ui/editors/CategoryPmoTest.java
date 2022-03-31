@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -55,7 +54,7 @@ public class CategoryPmoTest {
     private List<IProductCmptCategory> categories;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         categories = Arrays.asList(category1, category2, category3);
 
@@ -89,7 +88,7 @@ public class CategoryPmoTest {
     }
 
     @Test
-    public void testGetCategories_ProductCmptTypeNotFound() throws CoreException {
+    public void testGetCategories_ProductCmptTypeNotFound() {
         when(property.findProductCmptType(any(IIpsProject.class))).thenReturn(null);
 
         assertTrue(new CategoryPmo(property).getCategories().isEmpty());

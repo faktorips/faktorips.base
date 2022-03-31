@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
+import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +20,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -66,20 +70,20 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
     }
 
     private void handleUpdateProjectSettings(IResource resource) {
-        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
+        IIpsProject ipsProject = ipsModel.getIpsProject(wrap(resource.getProject()).as(AProject.class));
         ipsModel.clearProjectSpecificCaches(ipsProject);
         ipsModel.getValidationResultCache().clear();
     }
 
     private void handleRemoved(IResource resource) {
-        IIpsElement ipsElement = ipsModel.getIpsElement(resource);
+        IIpsElement ipsElement = ipsModel.getIpsElement(wrap(resource).as(AResource.class));
         if (ipsElement instanceof IIpsSrcFile) {
             ipsModel.removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
         }
     }
 
     private boolean handleOtherResourceChange(IResource resource) {
-        final IIpsElement element = ipsModel.findIpsElement(resource);
+        final IIpsElement element = ipsModel.findIpsElement(wrap(resource).as(AResource.class));
         if (element instanceof IIpsSrcFile && ((IIpsSrcFile)element).isContainedInIpsRoot()) {
             IIpsSrcFile srcFile = (IIpsSrcFile)element;
             IpsSrcFileContent content = ipsModel.getIpsSrcFileContent(srcFile);
@@ -95,8 +99,9 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
     }
 
     private boolean ipsProjectPropertiesChanged(IResource resource) {
-        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
-        return resource.equals(ipsProject.getIpsProjectPropertiesFile());
+        AProject project = wrap(resource).as(AResource.class).getProject();
+        IIpsProject ipsProject = project == null ? null : ipsModel.getIpsProject(project);
+        return ipsProject != null && resource.equals(ipsProject.getIpsProjectPropertiesFile().unwrap());
     }
 
     private boolean manifestChanged(IResource resource) {

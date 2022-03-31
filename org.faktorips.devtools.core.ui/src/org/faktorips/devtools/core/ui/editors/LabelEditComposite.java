@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -101,7 +100,7 @@ public final class LabelEditComposite extends Composite {
     private void createTableHoverService(TableViewer tableViewer) {
         new TableMessageHoverService(tableViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 if (element != null) {
                     ILabel label = (ILabel)element;
                     return label.validate(label.getIpsProject());
@@ -184,13 +183,9 @@ public final class LabelEditComposite extends Composite {
             // Error markers appear only in the locale column.
             if (columnIndex == 0) {
                 ILabel label = (ILabel)element;
-                try {
-                    MessageList messageList = label.validate(label.getIpsProject());
-                    if (!(messageList.isEmpty())) {
-                        return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
+                MessageList messageList = label.validate(label.getIpsProject());
+                if (!(messageList.isEmpty())) {
+                    return IpsUIPlugin.getImageHandling().getImage(OverlayIcons.ERROR_OVR_DESC);
                 }
             }
             return null;

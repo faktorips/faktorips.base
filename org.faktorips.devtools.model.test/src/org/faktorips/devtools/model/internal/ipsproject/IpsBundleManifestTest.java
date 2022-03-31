@@ -14,22 +14,30 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -108,9 +116,9 @@ public class IpsBundleManifestTest {
     }
 
     public void mockProject() {
-        IProject project = mock(IProject.class);
+        AProject project = mock(AProject.class);
         when(ipsProject.getProject()).thenReturn(project);
-        IFolder folder = mock(IFolder.class);
+        AFolder folder = mock(AFolder.class);
         when(project.getFolder(anyString())).thenReturn(folder);
     }
 
@@ -279,10 +287,10 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetObjectDirs() {
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
-        assertEquals(new Path(MY_OBJECT_DIR), objectDir.get(0));
+        assertEquals(Path.of(MY_OBJECT_DIR), objectDir.get(0));
     }
 
     @Test
@@ -313,17 +321,17 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testHasObjectDirs() {
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(1, objectDir.size());
-        assertEquals(new Path(MY_OBJECT_DIR), objectDir.get(0));
+        assertEquals(Path.of(MY_OBJECT_DIR), objectDir.get(0));
         assertEquals(true, ipsBundleManifest.hasObjectDirs());
     }
 
     @Test
     public void testHasObjectDirs_NoObjectDirs() {
         ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
-        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+        List<Path> objectDir = ipsBundleManifest.getObjectDirs();
 
         assertEquals(0, objectDir.size());
         assertEquals(false, ipsBundleManifest.hasObjectDirs());
@@ -374,6 +382,34 @@ public class IpsBundleManifestTest {
 
         assertThat(generatorConfig, is(notNullValue()));
         assertThat(generatorConfig.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testWriteBuilderSettings() throws IOException {
+        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
+        when(builderSet.getId()).thenReturn(STANDARD_BUILDER_SET_ID);
+        when(ipsProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
+        IIpsArtefactBuilderSetConfig builderSetConfig = mock(IIpsArtefactBuilderSetConfig.class);
+        when(builderSet.getConfig()).thenReturn(builderSetConfig);
+        when(builderSetConfig.getPropertyNames())
+                .thenReturn(new String[] { "stringAttr", "nullAttr", "booleanAttr", "intAttr" });
+        when(builderSetConfig.getPropertyValue("stringAttr")).thenReturn("Foo Bar");
+        when(builderSetConfig.getPropertyValue("nullAttr")).thenReturn(null);
+        when(builderSetConfig.getPropertyValue("booleanAttr")).thenReturn(Boolean.TRUE);
+        when(builderSetConfig.getPropertyValue("intAttr")).thenReturn(42);
+        AFile eclipseManifestFile = mock(AFile.class);
+        when(ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME)).thenReturn(eclipseManifestFile);
+        Path eclipseManifestPath = mock(Path.class);
+        when(eclipseManifestFile.getLocation()).thenReturn(eclipseManifestPath);
+        File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();
+        when(eclipseManifestPath.toFile()).thenReturn(manifestFile);
+        Attributes mainAttributes = manifest.getMainAttributes();
+
+        ipsBundleManifest.writeBuilderSettings(ipsProject);
+
+        verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_GENERATOR_CONFIG),
+                "org.faktorips.devtools.stdbuilder.StandardBuilderSet;booleanAttr=\"true\";intAttr=\"42\";stringAttr=\"Foo Bar\"");
+        verify(manifest).write(any(OutputStream.class));
     }
 
 }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.concurrent.CompletableFuture;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -48,7 +47,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         super(createImageDataByIpsElement(element), title, path, context);
     }
 
-    public IpsElementImagePageElement(IIpsElement element, DocumentationContext context) throws CoreException {
+    public IpsElementImagePageElement(IIpsElement element, DocumentationContext context) {
         super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element), context);
     }
 
@@ -68,7 +67,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         }
     }
 
-    private static String getIpsElementImageName(IIpsElement element) throws CoreException {
+    private static String getIpsElementImageName(IIpsElement element) {
         if (element instanceof IIpsPackageFragment) {
             return "ipspackage"; //$NON-NLS-1$
         }
@@ -134,7 +133,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         throw new RuntimeException("Unknown Type of ITestValue"); //$NON-NLS-1$
     }
 
-    private static String createImageNameByIpsSrcFile(IIpsElement element) throws CoreException {
+    private static String createImageNameByIpsSrcFile(IIpsElement element) {
         IIpsSrcFile srcFile = (IIpsSrcFile)element;
         if (srcFile.getIpsObjectType() != IpsObjectType.PRODUCT_CMPT) {
             return srcFile.getIpsObjectType().getFileExtension();
@@ -143,13 +142,12 @@ public class IpsElementImagePageElement extends ImagePageElement {
         return createImageNameByProductCmpt(ipsObject);
     }
 
-    private static String createImageNameByProductCmpt(IProductCmpt object) throws CoreException {
+    private static String createImageNameByProductCmpt(IProductCmpt object) {
         IProductCmptType productCmptType = object.getIpsProject().findProductCmptType(object.getProductCmptType());
         return getProductCmptImageNameByProductCmptType(productCmptType);
     }
 
-    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType)
-            throws CoreException {
+    private static String getProductCmptImageNameByProductCmptType(IProductCmptType productCmptType) {
         if (productCmptType.isUseCustomInstanceIcon()) {
             return productCmptType.getQualifiedName();
         }

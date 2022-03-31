@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -84,7 +83,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindVRule() throws CoreException {
+    public void testFindVRule() {
         IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
         assertNotNull(rule);
         assertEquals(this.rule, rule);
@@ -103,7 +102,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_InheritedValue() throws CoreException {
+    public void testToXml_InheritedValue() {
         IValidationRuleConfig templateRuleConfig = addTemplateRuleConfig();
         assertThat(ruleConfig.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
@@ -119,7 +118,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValidationRule_InexistentRule() throws CoreException {
+    public void testFindValidationRule_InexistentRule() {
         IValidationRule rule = mock(IValidationRule.class);
         when(rule.getPropertyName()).thenReturn("newRule");
         when(rule.isActivatedByDefault()).thenReturn(false);
@@ -131,14 +130,14 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindInexistentPcTypeOnFindVRule() throws CoreException {
+    public void testFindInexistentPcTypeOnFindVRule() {
         productCmptType.setPolicyCmptType("inexistentPCType");
         IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
         assertNull(rule);
     }
 
     @Test
-    public void testFindSupertypeHierarchie() throws CoreException {
+    public void testFindSupertypeHierarchie() {
         IPolicyCmptType subPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "SubPolicy", "SubProdukt");
         subPolicyCmptType.setSupertype(policyCmptType.getQualifiedName());
         IProductCmptType subProductCmptType = subPolicyCmptType.findProductCmptType(ipsProject);
@@ -166,7 +165,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsActive_InheritedValue() throws CoreException {
+    public void testIsActive_InheritedValue() {
         IValidationRuleConfig templateRuleConfig = addTemplateRuleConfig();
         assertThat(ruleConfig.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
 
@@ -185,7 +184,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
         assertThat(ruleConfig.isActive(), is(true));
     }
 
-    private IValidationRuleConfig addTemplateRuleConfig() throws CoreException {
+    private IValidationRuleConfig addTemplateRuleConfig() {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IValidationRuleConfig templateRuleConfig = templateGen.newValidationRuleConfig(rule);

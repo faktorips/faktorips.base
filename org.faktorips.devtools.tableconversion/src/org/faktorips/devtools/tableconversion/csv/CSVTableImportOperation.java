@@ -19,10 +19,10 @@ import java.util.Optional;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -74,7 +74,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor monitor) {
         try {
             monitor.beginTask("Import file " + sourceFile, IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 
@@ -105,7 +105,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
             monitor.done();
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(
+            throw new IpsException(new IpsStatus(
                     NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }

@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.pctype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
@@ -282,9 +282,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching.
+     * @throws IpsException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets whether this association is qualified or not.
@@ -302,19 +302,19 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the target.
+     * @throws IpsException if an error occurs while searching for the target.
      * 
      * @see #setQualified(boolean)
      */
-    public boolean isQualificationPossible(IIpsProject ipsProject) throws CoreException;
+    public boolean isQualificationPossible(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this association is the inverse of a derived union association,
      * otherwise <code>false</code>.
      * 
-     * @throws CoreException if an error occurs while searching for the derived union association.
+     * @throws IpsException if an error occurs while searching for the derived union association.
      */
-    public boolean isInverseOfDerivedUnion() throws CoreException;
+    public boolean isInverseOfDerivedUnion() throws IpsException;
 
     /**
      * Returns the (fully qualified) name of the product component type that can qualify this
@@ -328,9 +328,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the target.
+     * @throws IpsException if an error occurs while searching for the target.
      */
-    public String findQualifierCandidate(IIpsProject ipsProject) throws CoreException;
+    public String findQualifierCandidate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the product component type that qualifies this association. Returns <code>null</code>
@@ -338,9 +338,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching for the target.
+     * @throws IpsException if an error occurs while searching for the target.
      */
-    public IProductCmptType findQualifier(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findQualifier(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new inverse association. Returns the newly created association.
@@ -348,7 +348,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * CoreException if an error occurs while creating the association, e.g. if the target of this
      * association wasn't found.
      */
-    public IPolicyCmptTypeAssociation newInverseAssociation() throws CoreException;
+    public IPolicyCmptTypeAssociation newInverseAssociation() throws IpsException;
 
     /**
      * Returns the object containing information about how to persist this policy component type
@@ -397,9 +397,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The project used to search from
      * @return an association with the same name and target found in the super type hierarchy
-     * @throws CoreException in case of a core exception in the finder methods
+     * @throws IpsException in case of a core exception in the finder methods
      */
-    IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws CoreException;
+    IPolicyCmptTypeAssociation findSharedAssociationHost(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches for a matching association in the product side of the model. The matching
@@ -428,7 +428,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * @return the default matching association
      */
     IProductCmptTypeAssociation findDefaultMatchingProductCmptTypeAssociation(IIpsProject ipsProject)
-            throws CoreException;
+            throws IpsException;
 
     /**
      * Setting the source product component of the explicitly specified association that constrains

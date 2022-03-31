@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsimport;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -21,6 +20,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
@@ -70,7 +72,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
             } else if (selection.getFirstElement() instanceof IJavaElement) {
                 selectedResource = ((IJavaElement)selection.getFirstElement()).getCorrespondingResource();
             } else if (selection.getFirstElement() instanceof IIpsElement) {
-                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource();
+                selectedResource = ((IIpsElement)selection.getFirstElement()).getEnclosingResource().unwrap();
             } else {
                 selectedResource = null;
             }
@@ -105,7 +107,7 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
         if (selectedResource == null) {
             return;
         }
-        IIpsElement element = IIpsModel.get().getIpsElement(selectedResource);
+        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element != null) {
             setIpsProject(element.getIpsProject());
         }
@@ -157,9 +159,9 @@ public abstract class SelectImportTargetPage extends WizardPage implements Value
     /**
      * Returns the type into which the external data will be imported.
      * 
-     * @throws CoreException If an exception occurs while searching for the target type.
+     * @throws IpsException If an exception occurs while searching for the target type.
      */
-    public abstract IIpsObject getTargetForImport() throws CoreException;
+    public abstract IIpsObject getTargetForImport() throws IpsException;
 
     /**
      * Saves the dialog settings to be able to restore them on future instances of this wizard page.

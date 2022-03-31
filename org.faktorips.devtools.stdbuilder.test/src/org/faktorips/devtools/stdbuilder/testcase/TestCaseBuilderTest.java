@@ -13,8 +13,7 @@ package org.faktorips.devtools.stdbuilder.testcase;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -45,7 +44,7 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
         testCaseType = (ITestCaseType)newIpsObject(ipsProject, IpsObjectType.TEST_CASE_TYPE, "testCaseType");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
         testCaseType.newInputTestValueParameter().setName("testValueParam1");
-        testCaseType.getIpsSrcFile().save(true, null);
+        testCaseType.getIpsSrcFile().save(null);
 
         builder = new TestCaseBuilder(builderSet);
 
@@ -58,12 +57,12 @@ public class TestCaseBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testBuildInvalidTestCase() throws CoreException {
+    public void testBuildInvalidTestCase() {
         ITestCase testCase = (ITestCase)newIpsObject(ipsProject, IpsObjectType.TEST_CASE, "testCase");
         testCase.setTestCaseType(testCaseType.getQualifiedName());
         testCase.newTestValue().setTestValueParameter("testValueParam1");
-        testCase.getIpsSrcFile().save(true, null);
-        ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
+        testCase.getIpsSrcFile().save(null);
+        ipsProject.getProject().build(ABuildKind.FULL, null);
     }
 
     @Test

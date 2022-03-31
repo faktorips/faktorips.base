@@ -443,7 +443,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private String[] getFilenames(ProductCmpt... cmpts) {
         String[] filenames = new String[cmpts.length];
         for (int i = 0; i < cmpts.length; i++) {
-            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toOSString();
+            filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toString();
         }
         return filenames;
     }

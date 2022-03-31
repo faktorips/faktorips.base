@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -22,13 +21,17 @@ import org.eclipse.jface.action.IMenuListener2;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
+import org.eclipse.jface.viewers.IDecorationContext;
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -60,12 +63,15 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropLi
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.StringUtil;
 
 /**
  * A section to display a product component's relations in a tree.
@@ -299,9 +305,10 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private LinksMessageCueLabelProvider createLabelProvider() {
+        ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.RECREATE);
         final LinksMessageCueLabelProvider labelProvider = new LinksMessageCueLabelProvider(generation.getIpsProject());
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingStyledCellLabelProvider decoratedLabelProvider = new DecoratingStyledCellLabelProvider(labelProvider,
+        DecoratingStyledCellLabelProvider decoratedLabelProvider = new ProductLinkLabelProvider(labelProvider,
                 decoManager.getLabelDecorator(), new DecorationContext());
         treeViewer.setLabelProvider(decoratedLabelProvider);
         return labelProvider;
@@ -310,7 +317,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     private TreeMessageHoverService createTreeMessageHoverService(final LinksMessageCueLabelProvider labelProvider) {
         return new TreeMessageHoverService(treeViewer) {
             @Override
-            protected MessageList getMessagesFor(Object element) throws CoreException {
+            protected MessageList getMessagesFor(Object element) {
                 return labelProvider.getMessages(element);
             }
         };
@@ -339,15 +346,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void openLink(IProductCmptLink link) {
-        try {
-            IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
-            if (targetProductCmpt != null) {
-                IProductCmptGeneration targetGeneration = targetProductCmpt
-                        .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
-                IpsUIPlugin.getDefault().openEditor(targetGeneration);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
+        if (targetProductCmpt != null) {
+            IProductCmptGeneration targetGeneration = targetProductCmpt
+                    .getBestMatchingGenerationEffectiveOn(getActiveGeneration().getValidFrom());
+            IpsUIPlugin.getDefault().openEditor(targetGeneration);
         }
     }
 
@@ -431,8 +434,59 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         }
     }
 
+    private static final class ProductLinkLabelProvider extends DecoratingStyledCellLabelProvider {
+        private ProductLinkLabelProvider(IStyledLabelProvider labelProvider,
+                ILabelDecorator decorator, IDecorationContext decorationContext) {
+            super(labelProvider, decorator, decorationContext);
+        }
+
+        @Override
+        public String getToolTipText(Object element) {
+            if (element instanceof AssociationViewItem || element instanceof LinkViewItem) {
+                IProductCmptTypeAssociation productAssociation;
+                if (element instanceof LinkViewItem) {
+                    IProductCmptLink link = ((LinkViewItem)element).getLink();
+                    productAssociation = link.findAssociation(link.getIpsProject());
+                } else {
+                    productAssociation = ((AssociationViewItem)element).getAssociation();
+                }
+                IPolicyCmptTypeAssociation policyAssociation = productAssociation
+                        .findMatchingPolicyCmptTypeAssociation(productAssociation.getIpsProject());
+
+                if (policyAssociation == null) {
+                    return getProductAssociationToolTip(productAssociation);
+                }
+                return getPolicyAssociationToolTip(policyAssociation) + System.lineSeparator()
+                        + getProductAssociationToolTip(productAssociation);
+            }
+            return null;
+        }
+
+        private String getProductAssociationToolTip(IProductCmptTypeAssociation association) {
+            String cardinalityProductAssociation = StringUtil.getRangeString(
+                    association.getMinCardinality(),
+                    association.getMaxCardinality());
+            String productAssocationTargetRole = getRole(association);
+
+            return NLS.bind(Messages.LinksSection_Tooltip_ProductAssociation,
+                    cardinalityProductAssociation,
+                    productAssocationTargetRole);
+
+        }
+
+        private String getPolicyAssociationToolTip(IPolicyCmptTypeAssociation association) {
+            return NLS.bind(Messages.LinksSection_Tooltip_PolicyAssociation, getRole(association));
+        }
+
+        private String getRole(IAssociation association) {
+            return association.is1ToMany()
+                    ? association.getTargetRolePlural()
+                    : association.getTargetRoleSingular();
+        }
+    }
+
     /**
-     * Listener for updating the cardinality triggerd by the selection of another link.
+     * Listener for updating the cardinality triggered by the selection of another link.
      */
     private class SelectionChangedListener implements ISelectionChangedListener {
 

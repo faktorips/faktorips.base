@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -84,7 +84,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
             try {
                 ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
                 valueData.add(getContext().getDatatypeFormatter().formatValue(datatype, value));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsStatus status = new IpsStatus(IStatus.WARNING,
                         "Could not format " + enumAttributeValue.getName() + " " + value, e); //$NON-NLS-1$ //$NON-NLS-2$
                 getContext().addStatus(status);

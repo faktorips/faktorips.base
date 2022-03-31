@@ -18,8 +18,8 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -35,7 +35,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
     @Override
-    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws CoreException {
+    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() {
         Set<IIpsSrcFile> srcFiles = new HashSet<>();
 
         for (IResource resource : getSelectedResources()) {
@@ -111,7 +111,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
      */
     protected abstract String getScopeTypeLabel(boolean singular);
 
-    private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) throws CoreException {
+    private void addResource(Set<IIpsSrcFile> srcFiles, IResource resource) {
         IIpsElement element = resource.getAdapter(IIpsElement.class);
 
         if (element != null) {
@@ -170,7 +170,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
     protected abstract List<?> getSelectedObjects();
 
-    private void addSrcFilesOfElement(Set<IIpsSrcFile> srcFiles, IIpsElement element) throws CoreException {
+    private void addSrcFilesOfElement(Set<IIpsSrcFile> srcFiles, IIpsElement element) {
         if (element instanceof IIpsSrcFile) {
             IIpsSrcFile srcFile = (IIpsSrcFile)element;
             srcFiles.add(srcFile);
@@ -180,8 +180,8 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
         if (element instanceof IIpsProject) {
             IIpsProject ipsProject = (IIpsProject)element;
 
-            for (IResource resource : ipsProject.getProject().members()) {
-                addResource(srcFiles, resource);
+            for (AResource resource : ipsProject.getProject()) {
+                addResource(srcFiles, resource.unwrap());
             }
 
             /*

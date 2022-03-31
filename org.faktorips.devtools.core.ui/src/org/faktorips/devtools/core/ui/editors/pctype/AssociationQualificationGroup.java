@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.editors.pctype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -22,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -145,7 +145,7 @@ public class AssociationQualificationGroup extends Composite {
                     label = label
                             + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
             return StringUtils.rightPad(label, 80);
@@ -156,7 +156,7 @@ public class AssociationQualificationGroup extends Composite {
                 return getQualificationNote(association.isCompositionMasterToDetail(),
                         association.isQualificationPossible(ipsProject));
 
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
             return ""; //$NON-NLS-1$
@@ -179,7 +179,7 @@ public class AssociationQualificationGroup extends Composite {
         public boolean isQualificationPossible() {
             try {
                 return association.isQualificationPossible(ipsProject);
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return false;
             }

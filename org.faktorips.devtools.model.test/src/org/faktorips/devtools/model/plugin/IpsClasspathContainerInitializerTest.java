@@ -15,6 +15,7 @@ import static org.junit.Assert.assertEquals;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer.IpsClasspathContainer;
 import org.junit.Test;
 
@@ -70,40 +71,46 @@ public class IpsClasspathContainerInitializerTest {
 
     @Test
     public void testGetSourceBundlePath() throws Exception {
-        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
-                new Path("faktorips"));
-        String sourceBundlePath = ipsClasspathContainer.getSourceBundlePath(
-                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
-                "org.faktorips.runtime.java5");
-        assertEquals(
-                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
-                sourceBundlePath);
+        if (Abstractions.isEclipseRunning()) {
+            IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                    new Path("faktorips"));
+            String sourceBundlePath = ipsClasspathContainer.getSourceBundlePath(
+                    "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
+                    "org.faktorips.runtime.java5");
+            assertEquals(
+                    "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
+                    sourceBundlePath);
+        }
     }
 
     @Test
     public void testGetSourceBundlePath_2() throws Exception {
-        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
-                new Path("faktorips"));
-        String sourceBundlePath = ipsClasspathContainer
-                .getSourceBundlePath(
-                        "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
-                        "org.faktorips.runtime.java5");
-        assertEquals(
-                "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
-                sourceBundlePath);
+        if (Abstractions.isEclipseRunning()) {
+            IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                    new Path("faktorips"));
+            String sourceBundlePath = ipsClasspathContainer
+                    .getSourceBundlePath(
+                            "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5_1.2.3.test_vla-jztd",
+                            "org.faktorips.runtime.java5");
+            assertEquals(
+                    "/home/any-folder/eclipse_test/eclipse/plugins/org/faktorips/runtime/java5/org.faktorips.runtime.java5.source_1.2.3.test_vla-jztd",
+                    sourceBundlePath);
+        }
     }
 
     @Test
     public void testGetSourceBundlePath_3() throws Exception {
-        IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
-                new Path("faktorips"));
-        String sourceBundlePath = ipsClasspathContainer
-                .getSourceBundlePath(
-                        "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5_1.2.3.test_vla-jztd",
-                        "org.faktorips+.runtime.java5");
-        assertEquals(
-                "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5.source_1.2.3.test_vla-jztd",
-                sourceBundlePath);
+        if (Abstractions.isEclipseRunning()) {
+            IpsClasspathContainer ipsClasspathContainer = new IpsClasspathContainerInitializer.IpsClasspathContainer(
+                    new Path("faktorips"));
+            String sourceBundlePath = ipsClasspathContainer
+                    .getSourceBundlePath(
+                            "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5_1.2.3.test_vla-jztd",
+                            "org.faktorips+.runtime.java5");
+            assertEquals(
+                    "/home/any-folder/eclipse_test/eclipse/plugins/org.faktorips.runtime.java5/org.faktorips+.runtime.java5.source_1.2.3.test_vla-jztd",
+                    sourceBundlePath);
+        }
     }
 
 }

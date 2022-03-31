@@ -74,7 +74,8 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
             elementName += typeSuffix;
         }
         if (item.isDuplicateName()) {
-            String pathSuffix = " - " + item.getIpsSrcFile().getParent().getEnclosingResource().getFullPath(); //$NON-NLS-1$
+            String pathSuffix = " - " //$NON-NLS-1$
+                    + item.getIpsSrcFile().getParent().getEnclosingResource().getWorkspaceRelativePath();
             StyleRange styledPath = new StyleRange();
             styledPath.start = elementName.length();
             styledPath.length = pathSuffix.length();

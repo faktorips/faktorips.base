@@ -13,13 +13,11 @@ package org.faktorips.devtools.core.ui.controls.chooser;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueListExtractor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
@@ -122,13 +120,9 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
 
     @Override
     public MessageList validateValue(ListChooserValue value) {
-        try {
-            MessageList messageList = resultingEnumValueSet.validate(resultingEnumValueSet.getIpsProject());
-            validateContainedInSourceValues(messageList, value);
-            return messageList;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        MessageList messageList = resultingEnumValueSet.validate(resultingEnumValueSet.getIpsProject());
+        validateContainedInSourceValues(messageList, value);
+        return messageList;
     }
 
     protected void validateContainedInSourceValues(MessageList messageList, ListChooserValue value) {

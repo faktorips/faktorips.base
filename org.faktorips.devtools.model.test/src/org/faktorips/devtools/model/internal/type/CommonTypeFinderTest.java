@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -54,7 +53,7 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
      * </pre>
      */
     @Test
-    public void testCommonTypeOf() throws CoreException {
+    public void testCommonTypeOf() {
         IProductCmptType a = newProductCmptType(ipsProject, "a");
         IProductCmptType b = newProductCmptType(a, "b");
         IProductCmpt cmptA = newProductCmpt(a, "cmptA");
@@ -79,7 +78,7 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
      * </pre>
      */
     @Test
-    public void testFindCommonType_CommonSuperType() throws CoreException {
+    public void testFindCommonType_CommonSuperType() {
         IProductCmptType aType = newProductCmptType(ipsProject, "aType");
         IProductCmptType bType = newProductCmptType(aType, "bType");
         IProductCmptType cType = newProductCmptType(bType, "cType");
@@ -113,7 +112,7 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
      * </pre>
      */
     @Test
-    public void testFindCommonType_NoCommonSuperType() throws CoreException {
+    public void testFindCommonType_NoCommonSuperType() {
         IProductCmptType aType = newProductCmptType(ipsProject, "aType");
         IProductCmptType bType = newProductCmptType(aType, "bType");
         IProductCmptType xType = newProductCmptType(ipsProject, "xType");

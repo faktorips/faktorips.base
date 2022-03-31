@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -55,7 +57,7 @@ public class StructuredSelectionHelper {
         Object selectedObject = selection.getFirstElement();
         if (selectedObject instanceof IResource) {
             IResource resource = (IResource)selectedObject;
-            IIpsElement ipsElement = IIpsModel.get().getIpsElement(resource);
+            IIpsElement ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             return adaptToIpsObjectType(ipsElement, clazz);
         } else if (selectedObject instanceof IAdaptable) {
             return adaptToIpsObjectType((IAdaptable)selectedObject, clazz);

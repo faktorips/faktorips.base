@@ -17,8 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -129,12 +127,8 @@ public class AggregateRootFinder {
     }
 
     private boolean isComposition(IProductCmptLink link) {
-        try {
-            IProductCmptTypeAssociation association = link.findAssociation(getIpsProject());
-            return association.getAssociationType() == AssociationType.AGGREGATION;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptTypeAssociation association = link.findAssociation(getIpsProject());
+        return association.getAssociationType() == AssociationType.AGGREGATION;
     }
 
     private void removeFromPotentialRoots(IProductCmpt sourceProdCmpt, String targetName) {

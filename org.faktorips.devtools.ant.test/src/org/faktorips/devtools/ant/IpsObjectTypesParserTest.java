@@ -25,9 +25,8 @@ import org.junit.Test;
 
 public class IpsObjectTypesParserTest {
 
-    @SuppressWarnings("deprecation")
     private static final IpsObjectType[] ALL_STANDARD_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,
-            IpsObjectType.ENUM_TYPE, IpsObjectType.BUSINESS_FUNCTION, IpsObjectType.POLICY_CMPT_TYPE,
+            IpsObjectType.ENUM_TYPE, IpsObjectType.POLICY_CMPT_TYPE,
             IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.PRODUCT_TEMPLATE,
             IpsObjectType.TABLE_CONTENTS, IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TEST_CASE,
             IpsObjectType.TEST_CASE_TYPE };
@@ -68,12 +67,11 @@ public class IpsObjectTypesParserTest {
                 containsAll(IpsObjectType.ENUM_CONTENT, IpsObjectType.ENUM_TYPE));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testGetIpsObjectTypes_InAndExcludes() {
         assertThat(getIpsObjectTypes("Model, !EnumType, EnumContent", ALL_STANDARD_TYPES),
                 containsAll(IpsObjectType.ENUM_CONTENT, IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE,
-                        IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TEST_CASE_TYPE, IpsObjectType.BUSINESS_FUNCTION));
+                        IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TEST_CASE_TYPE));
     }
 
     private IpsObjectType[] modelTypes() {

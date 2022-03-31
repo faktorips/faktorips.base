@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +33,7 @@ public class FolderExplorer {
      * If nothing is found, an empty List will be returned.
      * 
      */
-    public List<IPath> getFiles(IPath path) {
+    public List<Path> getFiles(Path path) {
         if (isNotPathRelevant(path)) {
             return Collections.emptyList();
         }
@@ -47,7 +48,7 @@ public class FolderExplorer {
      * If nothing is found, an empty List will be returned.
      * 
      */
-    public List<IPath> getFolders(IPath path) {
+    public List<Path> getFolders(Path path) {
         if (isNotPathRelevant(path)) {
             return Collections.emptyList();
         }
@@ -61,20 +62,22 @@ public class FolderExplorer {
         return file.isFile();
     }
 
-    private List<IPath> createPaths(IPath path, boolean mustBeDirectory) {
-        List<IPath> paths = new ArrayList<>();
+    private List<Path> createPaths(Path path, boolean mustBeDirectory) {
+        List<Path> paths = new ArrayList<>();
         File[] listFiles = path.toFile().listFiles();
-        for (File file : listFiles) {
-            if (isRelevant(file, mustBeDirectory)) {
-                String name = file.getName();
-                paths.add(path.append(name));
+        if (listFiles != null) {
+            for (File file : listFiles) {
+                if (isRelevant(file, mustBeDirectory)) {
+                    String name = file.getName();
+                    paths.add(path.resolve(name));
+                }
             }
         }
 
         return paths;
     }
 
-    private boolean isNotPathRelevant(IPath path) {
+    private boolean isNotPathRelevant(Path path) {
         if (path == null) {
             return true;
         }
@@ -85,7 +88,7 @@ public class FolderExplorer {
         }
 
         File[] listFiles = file.listFiles();
-        if (listFiles.length == 0) {
+        if (listFiles == null || listFiles.length == 0) {
             return true;
         }
 

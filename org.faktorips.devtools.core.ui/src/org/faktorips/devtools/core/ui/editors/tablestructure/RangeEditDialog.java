@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.tablestructure;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,7 +35,6 @@ import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IColumnRange;
@@ -296,12 +294,8 @@ public class RangeEditDialog extends IpsPartEditDialog2 {
             IColumn[] columns = range.getTableStructure().getColumns();
             ArrayList<IColumn> result = new ArrayList<>();
             for (IColumn column : columns) {
-                try {
-                    if (column.findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
-                        result.add(column);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (column.findValueDatatype(getIpsPart().getIpsProject()).supportsCompare()) {
+                    result.add(column);
                 }
             }
             return result.toArray();

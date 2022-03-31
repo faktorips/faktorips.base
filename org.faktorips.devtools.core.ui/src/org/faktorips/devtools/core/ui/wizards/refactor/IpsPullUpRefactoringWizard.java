@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -111,7 +110,7 @@ public class IpsPullUpRefactoringWizard extends IpsRefactoringWizard {
         }
 
         @Override
-        protected void validateUserInputThis(RefactoringStatus status) throws CoreException {
+        protected void validateUserInputThis(RefactoringStatus status) {
             IStructuredSelection selection = (IStructuredSelection)destinationTreeViewer.getSelection();
             Object selectedElement = selection.getFirstElement();
             if (selectedElement == null) {

@@ -20,10 +20,10 @@ import java.util.Locale;
 
 import com.opencsv.CSVReader;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
@@ -83,7 +83,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) {
 
         CSVTableImportOperation tableImportOperation = new CSVTableImportOperation(structure, filename.toOSString(),
                 targetGeneration, this, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
@@ -96,7 +96,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,
-            boolean importIntoExisting) throws CoreException {
+            boolean importIntoExisting) {
 
         CSVEnumImportOperation enumImportOperation = new CSVEnumImportOperation(valueContainer, filename.toOSString(),
                 this, nullRepresentationString, ignoreColumnHeaderRow, list);
@@ -213,7 +213,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
             }
 
             return getPreviewInternal(datatypes, filename, maxNumberOfRows, ignoreColumnHeaderRow, nullRepresentation);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
             return Collections.EMPTY_LIST;
         }

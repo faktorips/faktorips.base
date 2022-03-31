@@ -15,9 +15,8 @@ import static org.junit.Assert.assertNull;
 
 import java.io.InputStream;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
@@ -56,7 +55,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         project = newIpsProject();
         type = newPolicyCmptType(project, "Policy");
         file = type.getIpsSrcFile();
-        file.save(true, null);
+        file.save(null);
 
         contentChangeListener = new TestContentChangeListener();
         statusChangeListener = new TestModificationStatusChangeListener();
@@ -87,9 +86,9 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testChangeIpsPartProperty() throws CoreException {
+    public void testChangeIpsPartProperty() {
         IPolicyCmptTypeAttribute attribute = type.newPolicyCmptTypeAttribute();
-        file.save(true, null);
+        file.save(null);
 
         contentChangeListener.count = 0;
         statusChangeListener.count = 0;
@@ -126,10 +125,10 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDeletePart() throws CoreException {
+    public void testDeletePart() {
         IPolicyCmptTypeAttribute attribute1 = type.newPolicyCmptTypeAttribute();
         IPolicyCmptTypeAttribute attribute2 = type.newPolicyCmptTypeAttribute();
-        file.save(true, null);
+        file.save(null);
         contentChangeListener.count = 0;
         statusChangeListener.count = 0;
 
@@ -148,22 +147,21 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
     }
 
     // NOTE: The asserts in the following test case do not work in all cases, as the resource change
-    // notfication is run asynchonously and so the event might occurr later!
+    // notification is run asynchronously and so the event might occur later!
     // So basically, we don't now how to test this!
     // Therefore we comment the whole test case until we have an idea, how we can test this.
     // TODO
     @Ignore
     @Test
     public void testChangeCorrespondigResource() throws Exception {
-
-        IFile ioFile = file.getCorrespondingFile();
+        AFile ioFile = file.getCorrespondingFile();
         InputStream is = file.getContentFromEnclosingResource();
 
         TestContentChangeListener listener = new TestContentChangeListener();
 
         try {
             IIpsModel.get().addChangeListener(listener);
-            ioFile.setContents(is, true, false, null);
+            ioFile.setContents(is, false, null);
             assertEquals(file, listener.lastEvent.getIpsSrcFile());
             assertEquals(ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED, listener.lastEvent.getEventType());
             assertNull(listener.lastEvent.getPart());
@@ -183,7 +181,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         assertEquals(file, contentChangeListener.lastEvent.getIpsSrcFile());
         assertNull(contentChangeListener.lastEvent.getPart());
         assertEquals(0, contentChangeListener.lastEvent.getMovedParts().length);
-        file.save(true, null);
+        file.save(null);
 
         IpsModel model = (IpsModel)file.getIpsModel();
         model.stopBroadcastingChangesMadeByCurrentThread();
@@ -194,7 +192,7 @@ public class IpsModelListenerTest extends AbstractIpsPluginTest {
         type.setSupertype("NewSuper");
         assertEquals(0, contentChangeListener.count);
         assertEquals(0, statusChangeListener.count);
-        file.save(true, null);
+        file.save(null);
 
         model.resumeBroadcastingChangesMadeByCurrentThread();
         contentChangeListener.count = 0;

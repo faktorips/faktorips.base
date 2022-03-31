@@ -14,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -221,7 +220,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    protected Dialog createDialogToFixDifferencesToModel() throws CoreException {
+    protected Dialog createDialogToFixDifferencesToModel() {
         IIpsObjectGeneration[] gen = getProductCmpt().getGenerationsOrderedByValidDate();
         IProductCmptGeneration[] generations = new IProductCmptGeneration[gen.length];
         for (int i = 0; i < generations.length; i++) {
@@ -272,7 +271,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     @Override
-    public IPage createModelDescriptionPage() throws CoreException {
+    public IPage createModelDescriptionPage() {
         IProductCmptType cmptType = getProductCmpt().findProductCmptType(getIpsProject());
         if (cmptType != null) {
             return new ProductCmptTypeDescriptionPage(cmptType);

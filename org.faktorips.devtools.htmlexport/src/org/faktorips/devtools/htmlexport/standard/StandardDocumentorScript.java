@@ -17,8 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.IDocumentorScript;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -60,7 +60,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws CoreException {
+    public void execute(DocumentationContext context, IProgressMonitor monitor) {
         List<IIpsSrcFile> srcFiles = new ArrayList<>(context.getDocumentedSourceFiles());
         Set<IIpsPackageFragment> relatedPackageFragments = getRelatedPackageFragments(srcFiles);
         IpsObjectType[] documentedIpsObjectTypes = context.getDocumentedIpsObjectTypes();
@@ -89,7 +89,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
             writeResources(context, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
         } catch (IOException e) {
-            throw new CoreException(new IpsStatus(e));
+            throw new IpsException(new IpsStatus(e));
         } finally {
             monitor.done();
         }
@@ -108,7 +108,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
     private void writeClassesContentPages(DocumentationContext context,
             List<IIpsSrcFile> srcFiles,
-            IProgressMonitor monitor) throws IOException, CoreException {
+            IProgressMonitor monitor) throws IOException {
 
         monitor.beginTask("Classes", srcFiles.size()); //$NON-NLS-1$
 
@@ -119,8 +119,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
         monitor.done();
     }
 
-    private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
-            CoreException {
+    private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException {
         ICompositePageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;

@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
@@ -101,14 +100,14 @@ public class IpsObjectPathXmlPersister {
             path.setOutputFolderForMergableSources(null);
         } else {
             path.setOutputFolderForMergableSources(ipsProject.getProject().getFolder(
-                    new Path(outputFolderMergedSourcesString)));
+                    java.nio.file.Path.of(outputFolderMergedSourcesString)));
         }
         String outputFolderDerivedSourcesString = element.getAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES);
         if (outputFolderDerivedSourcesString.equals(StringUtils.EMPTY)) {
             path.setOutputFolderForDerivedSources(null);
         } else {
             path.setOutputFolderForDerivedSources(ipsProject.getProject().getFolder(
-                    new Path(outputFolderDerivedSourcesString)));
+                    java.nio.file.Path.of(outputFolderDerivedSourcesString)));
         }
         path.setOutputDefinedPerSrcFolder(Boolean.valueOf(
                 element.getAttribute(ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER)).booleanValue());

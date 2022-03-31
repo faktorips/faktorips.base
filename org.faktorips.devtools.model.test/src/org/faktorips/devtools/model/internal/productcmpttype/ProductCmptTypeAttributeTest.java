@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -23,7 +25,6 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
@@ -124,7 +125,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsPropertyFor() throws CoreException {
+    public void testIsPropertyFor() {
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "Product");
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newAttributeValue(productAttribute);
@@ -133,7 +134,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverwrittenAttribute() throws CoreException {
+    public void testFindOverwrittenAttribute() {
         productAttribute.setName("a");
         IProductCmptType supertype = newProductCmptType(productCmptType, "Supertype");
         IProductCmptType supersupertype = newProductCmptType(ipsProject, "SuperSupertype");
@@ -199,11 +200,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setValueSetType(ValueSetType.RANGE);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_INVALID_VALUE_SET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -212,12 +213,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNullContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -226,12 +227,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3", null));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -240,12 +241,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNullContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNullContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -254,12 +255,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3", null));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -268,12 +269,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueNotContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -282,12 +283,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Hidden_DefaultValueContained() throws CoreException {
+    public void testValidate_EnumValueSet_Hidden_DefaultValueContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -296,12 +297,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_EnumValueSet_Visible_DefaultValueContained() throws CoreException {
+    public void testValidate_EnumValueSet_Visible_DefaultValueContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -310,12 +311,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.addValues(Arrays.asList("1", "2", "3"));
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(false);
@@ -326,12 +327,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -342,12 +343,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -358,12 +359,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(true);
@@ -374,12 +375,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setStep("1");
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -391,12 +392,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(false);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, hasMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() throws CoreException {
+    public void testValidate_RangeValueSet_Hidden_DefaultValueNullContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
         productAttribute.setVisible(false);
@@ -408,12 +409,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(true);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNullNotContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullNotContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -425,12 +426,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(false);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
-    public void testValidate_RangeValueSet_Visible_DefaultValueNullContained() throws CoreException {
+    public void testValidate_RangeValueSet_Visible_DefaultValueNullContained() {
         productAttribute.setName("productAttribute");
         productAttribute.setDatatype(Datatype.STRING.getQualifiedName());
         productAttribute.setVisible(true);
@@ -442,8 +443,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         valueSet.setContainsNull(true);
 
         MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
-        assertNull(ml.getMessageByCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN));
+        assertThat(ml, lacksMessageCode(IProductCmptTypeAttribute.MSGCODE_DEFAULT_NOT_IN_VALUESET));
     }
 
     @Test
@@ -480,7 +481,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMultiDefaultValue() throws CoreException {
+    public void testValidateMultiDefaultValue() {
         MessageList list = new MessageList();
         StringDatatype data = new StringDatatype();
         productAttribute.setVisible(false);
@@ -492,7 +493,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() {
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(false);
 
@@ -542,7 +543,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         ProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
@@ -550,11 +551,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype("Integer");
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         attribute.setDatatype(superAttr.getDatatype());
         ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test
@@ -568,12 +569,12 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setDatatype(SUPER_ENUM_TYPE);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
 
         superAttr.setDatatype(ENUM_TYPE);
         attribute.setDatatype(SUPER_ENUM_TYPE);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+        assertThat(ml, hasMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test

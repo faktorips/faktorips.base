@@ -10,13 +10,16 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.mapping.StatusMessageListMapping;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaConventions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -29,6 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 /**
  * A collection of helper methods for validating model objects.
@@ -73,7 +77,7 @@ public class ValidationUtils {
          * is implicitly done by calling findIpsObject).
          */
         if (part.getIpsProject().findIpsSrcFile(type, objectName) == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgObjectDoesNotExist,
                     StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return false;
@@ -113,7 +117,7 @@ public class ValidationUtils {
         }
         IIpsSrcFile srcFile = ipsProject.findIpsSrcFile(type, objectName);
         if (srcFile == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgObjectDoesNotExist,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgObjectDoesNotExist,
                     StringUtils.capitalize(propertyDisplayName), objectName);
             list.add(new Message(msgCode, text, Message.ERROR, part, propertyName));
             return null;
@@ -151,7 +155,8 @@ public class ValidationUtils {
 
         Datatype datatype = ipsProject.findDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName,
+                    part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -193,7 +198,8 @@ public class ValidationUtils {
         }
         ValueDatatype datatype = part.getIpsProject().findValueDatatype(datatypeName);
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName, part.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_msgDatatypeDoesNotExist, datatypeName,
+                    part.getName());
             list.add(new Message(msgcode, text, Message.ERROR, part, propertyName));
             return null;
         }
@@ -252,7 +258,7 @@ public class ValidationUtils {
             MessageList list) {
 
         if (datatype == null) {
-            String text = NLS.bind(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND,
+            String text = MessageFormat.format(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND,
                     new Object[] { propertyName, value, datatypeName });
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND,
@@ -262,7 +268,8 @@ public class ValidationUtils {
         }
 
         if (datatype.checkReadyToUse().containsErrorMsg()) {
-            String text = NLS.bind(Messages.ValidationUtils_VALUEDATATYPE_INVALID, propertyName, datatype.getName());
+            String text = MessageFormat.format(Messages.ValidationUtils_VALUEDATATYPE_INVALID, propertyName,
+                    datatype.getName());
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_IS_INVALID, text,
                     Message.WARNING, part, propertyName);
@@ -293,11 +300,11 @@ public class ValidationUtils {
             String text;
 
             if (Datatype.MONEY.equals(datatype)) {
-                String[] params = { propertyName, value, datatype.getName() };
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE_MONEY,
+                        propertyName, value, datatype.getName());
             } else {
-                String[] params = { value, propertyName, datatype.getName() };
-                text = NLS.bind(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE, params);
+                text = MessageFormat.format(Messages.ValidationUtils_NO_INSTANCE_OF_VALUEDATATYPE,
+                        value, propertyName, datatype.getName());
             }
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_VALUE_IS_NOT_INSTANCE_OF_VALUEDATATYPE, text,
@@ -330,7 +337,7 @@ public class ValidationUtils {
             MessageList list) {
 
         if (StringUtils.isEmpty(propertyValue)) {
-            String text = NLS.bind(Messages.ValidationUtils_msgPropertyMissing,
+            String text = MessageFormat.format(Messages.ValidationUtils_msgPropertyMissing,
                     StringUtils.capitalize(propertyDisplayName));
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));
             return false;
@@ -348,12 +355,14 @@ public class ValidationUtils {
      * @see JavaConventions#validateFieldName(String, String, String)
      */
     public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name), sourceLevel,
-                complianceLevel);
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name),
+                sourceVersion.toString(),
+                sourceVersion.toString());
         if (validateFieldName.isOK()) {
-            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name), sourceLevel, complianceLevel);
+            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name),
+                    sourceVersion.toString(),
+                    sourceVersion.toString());
         } else {
             return validateFieldName;
         }
@@ -364,19 +373,24 @@ public class ValidationUtils {
      * <code>"java.lang.Object"</code>, or <code>"Object"</code> using the source and compliance
      * levels used by the given IpsProject/JavaProject.
      * <p>
-     * Returns a status object with code <code>IStatus.OK</code> if the given name is valid as a
-     * Java type name, a status with code <code>IStatus.WARNING</code> indicating why the given name
-     * is discouraged, otherwise a status object indicating what is wrong with the name.
+     * Returns an empty {@link MessageList} if the given name is valid as a Java type name, one
+     * containing a {@link Message} with {@link Severity#WARNING} if the given name is discouraged,
+     * otherwise a {@link Message} with {@link Severity#ERROR} indicating what is wrong with the
+     * name.
      * 
      * @param name the name of a type
      * @param ipsProject the project which source and compliance level should be used
      * 
      * @see JavaConventions#validateJavaTypeName(String, String, String)
      */
-    public static IStatus validateJavaTypeName(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        return JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
+    public static MessageList validateJavaTypeName(String name, IIpsProject ipsProject) {
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        if (Abstractions.isEclipseRunning()) {
+            return StatusMessageListMapping.toMessageList(
+                    JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString()));
+        } else {
+            return PlainJavaConventions.validateTypeName(name);
+        }
     }
 
     /**
@@ -395,9 +409,8 @@ public class ValidationUtils {
      * @see JavaConventions#validateIdentifier(String, String, String)
      */
     public static IStatus validateJavaIdentifier(String name, IIpsProject ipsProject) {
-        String complianceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_COMPLIANCE, true);
-        String sourceLevel = ipsProject.getJavaProject().getOption(JavaCore.COMPILER_SOURCE, true);
-        return JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
+        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
+        return JavaConventions.validateIdentifier(name, sourceVersion.toString(), sourceVersion.toString());
     }
 
 }

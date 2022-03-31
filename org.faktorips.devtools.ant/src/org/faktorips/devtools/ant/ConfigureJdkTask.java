@@ -149,54 +149,29 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * @param types
      * @param ignore
      */
-    // CSOFF: CyclomaticComplexity
     private static void searchJDK(File directory,
             List<File> found,
             List<IVMInstallType> types,
             Set<File> ignore,
             IProgressMonitor monitor) {
+        List<File> subDirs = new ArrayList<>();
+        IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
+        boolean validLocation = searchJDK(found, types, ignore, subDirs, vmTypes, directory);
+        if (validLocation) {
+            return;
+        }
         String[] names = directory.list();
         if (names == null) {
             return;
         }
-        List<File> subDirs = new ArrayList<>();
         for (String name : names) {
             if (monitor.isCanceled()) {
                 return;
             }
             File file = new File(directory, name);
-            IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
-            if (file.isDirectory()) {
-                if (!ignore.contains(file) && !"jre".equalsIgnoreCase(name)) {
-                    boolean validLocation = false;
-
-                    // Take the first VM install type that claims the location as a
-                    // valid VM install. VM install types should be smart enough to not
-                    // claim another type's VM, but just in case...
-                    for (IVMInstallType type : vmTypes) {
-                        if (monitor.isCanceled()) {
-                            return;
-                        }
-                        IStatus status = type.validateInstallLocation(file);
-                        if (status.isOK()) {
-                            String filePath = file.getPath();
-                            int index = filePath.lastIndexOf(File.separatorChar);
-                            File newFile = file;
-                            // remove bin folder from install location as java executables are found
-                            // only under bin for Java 9 and above
-                            if (index > 0 && filePath.substring(index + 1).equals("bin")) { //$NON-NLS-1$
-                                newFile = new File(filePath.substring(0, index));
-                            }
-                            found.add(newFile);
-                            types.add(type);
-                            validLocation = true;
-                            break;
-                        }
-                    }
-                    if (!validLocation) {
-                        subDirs.add(file);
-                    }
-                }
+            validLocation = searchJDK(found, types, ignore, subDirs, vmTypes, file);
+            if (validLocation) {
+                return;
             }
         }
         while (!subDirs.isEmpty()) {
@@ -208,6 +183,39 @@ public class ConfigureJdkTask extends AbstractIpsTask {
         }
 
     }
-    // CSON: CyclomaticComplexity
+
+    private static boolean searchJDK(List<File> found,
+            List<IVMInstallType> types,
+            Set<File> ignore,
+            List<File> subDirs,
+            IVMInstallType[] vmTypes,
+            File file) {
+        if (file.isDirectory()) {
+            if (!ignore.contains(file) && !"jre".equalsIgnoreCase(file.getName())) {
+
+                // Take the first VM install type that claims the location as a
+                // valid VM install. VM install types should be smart enough to not
+                // claim another type's VM, but just in case...
+                for (IVMInstallType type : vmTypes) {
+                    IStatus status = type.validateInstallLocation(file);
+                    if (status.isOK()) {
+                        String filePath = file.getPath();
+                        int index = filePath.lastIndexOf(File.separatorChar);
+                        File newFile = file;
+                        // remove bin folder from install location as java executables are found
+                        // only under bin for Java 9 and above
+                        if (index > 0 && filePath.substring(index + 1).equals("bin")) { //$NON-NLS-1$
+                            newFile = new File(filePath.substring(0, index));
+                        }
+                        found.add(newFile);
+                        types.add(type);
+                        return true;
+                    }
+                }
+                subDirs.add(file);
+            }
+        }
+        return false;
+    }
 
 }

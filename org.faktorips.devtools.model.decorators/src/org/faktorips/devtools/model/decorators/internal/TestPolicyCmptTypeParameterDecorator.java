@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -49,7 +49,7 @@ public class TestPolicyCmptTypeParameterDecorator implements IIpsObjectPartDecor
                     if (association != null) {
                         return IIpsDecorators.getImageDescriptor(association);
                     }
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsLog.log(e);
                 }
             }

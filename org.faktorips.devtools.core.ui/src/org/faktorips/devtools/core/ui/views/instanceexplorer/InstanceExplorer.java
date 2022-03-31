@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -45,6 +44,7 @@ import org.eclipse.ui.IDecoratorManager;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.forms.widgets.ImageHyperlink;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -250,9 +250,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
      * Loads the element in the editor if it is supported.
      * 
      * @param element The element to load into the editor
-     * @throws CoreException if there is an exception with searching objects
+     * @throws IpsException if there is an exception with searching objects
      */
-    public void showInstancesOf(IIpsObject element) throws CoreException {
+    public void showInstancesOf(IIpsObject element) {
         if (element != null && !element.getEnclosingResource().isAccessible()) {
             setInputData(null);
         } else if (element instanceof IIpsMetaObject) {
@@ -379,7 +379,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         return false;
     }
 
-    private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) throws CoreException {
+    private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) {
         Object[] elements = contentProvider.getElements(null);
         for (Object anElement : elements) {
             if (anElement instanceof InstanceIpsSrcFileViewItem) {
@@ -469,7 +469,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 showInstancesOf(ipsObject);
                 return true;
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsPlugin.log(e);
         }
         return false;
@@ -499,7 +499,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                         showInstancesOf(contentProvider.getActualElement());
                     }
                 }
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 IpsPlugin.log(e);
             }
         }
@@ -519,7 +519,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 try {
                     // getSite().getPage().activate(getSite().getPage().findView(EXTENSION_ID));
                     showInstancesOf(((IIpsSrcFile)transferred[0]).getIpsObject());
-                } catch (CoreException e) {
+                } catch (IpsException e) {
                     IpsPlugin.log(e);
                 }
             }
@@ -648,7 +648,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         }
 
         @Override
-        public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws CoreException {
+        public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) {
             ArrayList<IIpsSrcFile> result = new ArrayList<>();
             result.add(metaObject.getIpsSrcFile());
             return result;

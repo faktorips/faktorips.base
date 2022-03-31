@@ -12,10 +12,9 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -87,7 +86,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * Returns <code>true</code> if the entry contains a source file with the indicated qualified
      * name type, otherwise <code>false</code>.
      */
-    public abstract boolean exists(QualifiedNameType qnt) throws CoreException;
+    public abstract boolean exists(QualifiedNameType qnt) throws IpsException;
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
@@ -109,11 +108,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      */
     @Override
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
-        try {
-            return getIpsPackageFragmentRoot().findAllIpsSrcFiles(type);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsPackageFragmentRoot().findAllIpsSrcFiles(type);
     }
 
     /**
@@ -122,7 +117,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * @param element the Top {@link Element}
      * @param project The {@link IIpsProject}
      */
-    protected void initFromXml(Element element, IProject project) {
+    protected void initFromXml(Element element, AProject project) {
         if (element.hasAttribute(XML_ATTRIBUTE_REEXPORTED)) {
             reexported = Boolean.valueOf(element.getAttribute(XML_ATTRIBUTE_REEXPORTED)).booleanValue();
         }
@@ -142,7 +137,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     /**
      * Returns the object path entry stored in the xml element.
      */
-    public static final IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, IProject project) {
+    public static final IIpsObjectPathEntry createFromXml(IpsObjectPath path, Element element, AProject project) {
         IpsObjectPathEntry entry;
         String type = element.getAttribute(XML_ATTRIBUTE_TYPE);
         if (type.equals(TYPE_SRC_FOLDER)) {

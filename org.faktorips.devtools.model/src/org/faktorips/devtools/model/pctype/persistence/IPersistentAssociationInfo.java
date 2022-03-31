@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.pctype.persistence;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 
@@ -304,17 +304,17 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
      * @return <code>true</code> for n-to-m relationships where a join table is mandatory,
      *         <code>false</code> otherwise.
      * 
-     * @throws CoreException if errors occur during retrieval of the corresponding inverse relation.
+     * @throws IpsException if errors occur during retrieval of the corresponding inverse relation.
      */
-    public boolean isJoinTableRequired() throws CoreException;
+    public boolean isJoinTableRequired() throws IpsException;
 
     /**
      * @return <code>true</code> if the foreign key column is defined on the target side.
      *         <code>false</code> otherwise.
      * 
-     * @throws CoreException if errors occur during retrieval of the corresponding inverse relation.
+     * @throws IpsException if errors occur during retrieval of the corresponding inverse relation.
      */
-    public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException;
+    public boolean isForeignKeyColumnDefinedOnTargetSide() throws IpsException;
 
     /**
      * Set to <code>true</code> if the association should be the owner of am many-to-many
@@ -348,7 +348,7 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
      * Set to <code>true</code> if the default cascade type should be ignored and the other cascade
      * type properties should be used instead.
      */
-    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws CoreException;
+    public void setCascadeTypeOverwriteDefault(boolean cascadeTypeOverwriteDefault) throws IpsException;
 
     /**
      * Returns <code>true</code> if the corresponding cascade type should be used.
@@ -393,7 +393,7 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
     /**
      * Initialize the default properties
      */
-    public void initDefaults() throws CoreException;
+    public void initDefaults() throws IpsException;
 
     /**
      * Evaluates the relationship type for bidirectional associations. If the association is
@@ -426,7 +426,7 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
     /**
      * Initialize the default cascade type properties
      */
-    public void initDefaultsCascadeTypes() throws CoreException;
+    public void initDefaultsCascadeTypes() throws IpsException;
 
     /**
      * Returns <code>true</code> if the join column / foreign key column is nullable.

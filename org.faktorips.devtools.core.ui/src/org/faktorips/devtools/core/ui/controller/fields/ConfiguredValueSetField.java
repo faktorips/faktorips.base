@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
@@ -22,7 +21,6 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ContentProposalListener;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -66,23 +64,19 @@ public class ConfiguredValueSetField extends FormattingTextField<IValueSet> {
     }
 
     private boolean isContentAssistAvailable() {
-        try {
-            boolean enumValueSetAllowed = configuredValueSet.getAllowedValueSetTypes(getIpsProject()).contains(
-                    ValueSetType.ENUM);
-            if (enumValueSetAllowed) {
-                ValueDatatype valueDatatype = configuredValueSet.findValueDatatype(getIpsProject());
-                if (valueDatatype == null) {
-                    return false;
-                } else if (valueDatatype.isEnum()) {
-                    return true;
-                }
-                IValueSet modelValueSet = configuredValueSet.findPcTypeAttribute(getIpsProject()).getValueSet();
-                return modelValueSet.isEnum();
-            } else {
+        boolean enumValueSetAllowed = configuredValueSet.getAllowedValueSetTypes(getIpsProject()).contains(
+                ValueSetType.ENUM);
+        if (enumValueSetAllowed) {
+            ValueDatatype valueDatatype = configuredValueSet.findValueDatatype(getIpsProject());
+            if (valueDatatype == null) {
                 return false;
+            } else if (valueDatatype.isEnum()) {
+                return true;
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+            IValueSet modelValueSet = configuredValueSet.findPcTypeAttribute(getIpsProject()).getValueSet();
+            return modelValueSet.isEnum();
+        } else {
+            return false;
         }
     }
 

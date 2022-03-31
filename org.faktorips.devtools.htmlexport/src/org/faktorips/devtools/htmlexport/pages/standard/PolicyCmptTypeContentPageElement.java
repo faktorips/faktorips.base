@@ -12,8 +12,8 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -74,7 +74,7 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
             try {
                 List<IAttribute> attributes = getDocumentedIpsObject().findAllAttributes(getContext().getIpsProject());
                 return new PolicyCmptTypeAttributesTablePageElement(getDocumentedIpsObject(), attributes, getContext());
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error getting attributes of " //$NON-NLS-1$
                         + getDocumentedIpsObject().getQualifiedName(), e));
             }

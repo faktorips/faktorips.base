@@ -36,13 +36,10 @@ public class LazyIntermediateCollectionExtension<P, C, T> extends AbstractLazyEx
 
     @Override
     protected T initializeExtension() {
-
         // TODO Superklasse
         C collection = collectionCreator.get();
         getConfigElements().forEach(configElement -> {
-            P element = ExtensionPoints.createExecutableExtension(getExtensionPointId(), configElement,
-                    getConfigElementAttribute(),
-                    getExtensionClass());
+            P element = create(configElement);
             elementCollector.accept(configElement, element, collection);
         });
         return extensionFinalizer.apply(collection);

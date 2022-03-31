@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.controlfactories;
 
 import java.util.LinkedHashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -36,7 +35,6 @@ import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.model.ContentsChangeListener;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
@@ -131,11 +129,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
 
     private boolean valueSetContainsId(IValueSet valueSet, String valueId) {
         IIpsProject ipsProject = valueSet.getIpsProject();
-        try {
-            return valueSet.containsValue(valueId, ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return valueSet.containsValue(valueId, ipsProject);
     }
 
     @Override

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import static org.faktorips.abstracttest.matcher.ExistsFileMatcher.exists;
+import static org.faktorips.abstracttest.matcher.ExistsAFileMatcher.exists;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,10 +18,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.DefinedOrderComparator;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -47,7 +47,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCompareDefinedSortOrder() throws CoreException {
+    public void testCompareDefinedSortOrder() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
@@ -88,11 +88,11 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCompareDefinedSortOrderFromFileInRoot() throws CoreException, IOException {
+    public void testCompareDefinedSortOrderFromFileInRoot() throws IpsException, IOException {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
-        createSortOrderFile((IFolder)ipsRoot.getCorrespondingResource(), "b", "c", "a");
+        createSortOrderFile((AFolder)ipsRoot.getCorrespondingResource(), "b", "c", "a");
 
         comparator = DefinedOrderComparator.forPackage((IpsPackageFragment)ipsRoot.getDefaultIpsPackageFragment());
 
@@ -110,12 +110,12 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCompareDefinedSortOrderFromFile() throws CoreException, IOException {
+    public void testCompareDefinedSortOrderFromFile() throws IpsException, IOException {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("x.y.a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("x.y.b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("x.y.c", true, null); //$NON-NLS-1$
         IpsPackageFragment parentPack = (IpsPackageFragment)ipsRoot.getIpsPackageFragment("x.y");
-        createSortOrderFile((IFolder)parentPack.getCorrespondingResource(), "b", "c", "a");
+        createSortOrderFile((AFolder)parentPack.getCorrespondingResource(), "b", "c", "a");
 
         comparator = DefinedOrderComparator.forPackage(parentPack);
 
@@ -133,7 +133,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCompareUndefinedSortOrder() throws CoreException {
+    public void testCompareUndefinedSortOrder() {
         IIpsPackageFragment packA = ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packB = ipsRoot.createPackageFragment("b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packC = ipsRoot.createPackageFragment("c", true, null); //$NON-NLS-1$
@@ -176,7 +176,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPersistTo() throws CoreException, IOException {
+    public void testPersistTo() throws IpsException, IOException {
         IpsPackageFragment packA = (IpsPackageFragment)ipsRoot.createPackageFragment("a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packAA = ipsRoot.createPackageFragment("a.a", true, null); //$NON-NLS-1$
         IIpsPackageFragment packAB = ipsRoot.createPackageFragment("a.b", true, null); //$NON-NLS-1$
@@ -190,7 +190,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
 
         comparator.persistTo(packA);
 
-        IFile file = ((IFolder)packA.getCorrespondingResource()).getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
+        AFile file = ((AFolder)packA.getCorrespondingResource()).getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME);
         assertThat(file, exists());
         String[] lines = StringUtil.readFromInputStream(file.getContents(), StringUtil.CHARSET_UTF8)
                 .split(System.lineSeparator());
@@ -207,7 +207,7 @@ public class DefinedOrderComparatorTest extends AbstractIpsPluginTest {
     // this case is not really supported, but a check to prevent it would be unnecessary in the
     // intended
     // usage and is therefore not implemented, as the default does no harm
-    public void testCompareElementsInDifferentPackage() throws CoreException {
+    public void testCompareElementsInDifferentPackage() {
         IIpsPackageFragment packAB = ipsRoot.createPackageFragment("a.b", true, null); //$NON-NLS-1$
         IIpsPackageFragment packAC = ipsRoot.createPackageFragment("a.c", true, null); //$NON-NLS-1$
 

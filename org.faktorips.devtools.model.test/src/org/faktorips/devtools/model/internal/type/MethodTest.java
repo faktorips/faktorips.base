@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.method.Method;
@@ -75,7 +74,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindMethodBySignature() throws CoreException {
+    public void testFindMethodBySignature() {
         assertNull(type.findMethod("calc()", ipsProject));
 
         method.setName("calc");
@@ -195,7 +194,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testOverrides() throws CoreException {
+    public void testOverrides() {
         method.setName("calc");
         method.setDatatype("void");
         IParameter param0 = method.newParameter();
@@ -329,7 +328,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateMultipleParameterNames() throws CoreException {
+    public void testValidateMultipleParameterNames() {
         IType pcType = newPolicyCmptType(ipsProject, "aType");
         method = pcType.newMethod();
         method.setModifier(Modifier.PUBLIC);
@@ -352,7 +351,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverridingMethod() throws CoreException {
+    public void testFindOverridingMethod() {
         IType superType = newPolicyCmptType(ipsProject, "superType");
         IType thisType = newPolicyCmptType(ipsProject, "thisType");
         thisType.setSupertype(superType.getQualifiedName());
@@ -377,7 +376,7 @@ public class MethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindOverriddenMethod() throws CoreException {
+    public void testFindOverriddenMethod() {
         IType superSuperType = newPolicyCmptType(ipsProject, "superSuperType");
         IType superType = newPolicyCmptType(ipsProject, "superType");
         superType.setSupertype(superSuperType.getQualifiedName());

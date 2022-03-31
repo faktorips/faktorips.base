@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.tableconversion;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -24,7 +24,7 @@ import org.faktorips.runtime.MessageList;
  * 
  * @author Roman Grutza
  */
-public abstract class AbstractTableImportOperation implements IWorkspaceRunnable {
+public abstract class AbstractTableImportOperation implements ICoreRunnable {
 
     /**
      * The qualified name of the file to import from.
@@ -72,6 +72,6 @@ public abstract class AbstractTableImportOperation implements IWorkspaceRunnable
     }
 
     @Override
-    public abstract void run(IProgressMonitor monitor) throws CoreException;
+    public abstract void run(IProgressMonitor monitor) throws IpsException;
 
 }

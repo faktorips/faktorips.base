@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -59,7 +58,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * Adds the setting of the selected PolicyCmptType.
      */
     @Override
-    protected void setDefaults(IResource selectedResource) throws CoreException {
+    protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
 
         IIpsObject ipsObject = getSelectedIpsObject();
@@ -104,7 +103,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) throws CoreException {
+    protected void valueChangedExtension(FieldValueChangedEvent e) {
         super.valueChangedExtension(e);
 
         if (e.field == policyCmptTypeField) {
@@ -128,7 +127,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void validateName() throws CoreException {
+    protected void validateName() {
         super.validateName();
 
         if (getIpsProject() == null) {
@@ -141,8 +140,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     }
 
     @Override
-    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects)
-            throws CoreException {
+    protected void finishIpsObjectsExtension(IIpsObject newIpsObject, Set<IIpsObject> modifiedIpsObjects) {
 
         super.finishIpsObjectsExtension(newIpsObject, modifiedIpsObjects);
 
@@ -207,7 +205,7 @@ public class NewProductCmptTypePage extends NewTypePage {
      * of the product component type of the supertype of the policy component type.
      */
     @Override
-    protected void validatePageExtensionThis(IpsValidation validation) throws CoreException {
+    protected void validatePageExtensionThis(IpsValidation validation) {
         // TODO AW 08-06-2011: Experimental usage of validation concept, see FIPS-571
         validation.addTask(new ValidatePcTypeDoesNotExist());
         validation.addTask(new ValidatePcTypeAlreadyConfigured());
@@ -219,7 +217,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePcTypeDoesNotExist extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -238,7 +236,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePcTypeAlreadyConfigured extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -263,7 +261,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidatePolicyCmptSuperTypeNeedsToBeX extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
@@ -293,7 +291,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private class ValidateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract extends IpsValidationTask {
 
         @Override
-        public Message execute(IIpsProject ipsProject) throws CoreException {
+        public Message execute(IIpsProject ipsProject) {
             if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }

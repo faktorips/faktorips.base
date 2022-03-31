@@ -17,6 +17,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
@@ -86,11 +88,11 @@ public class ModelExplorerSorterTest extends AbstractIpsPluginTest {
         rel = policyCT.newPolicyCmptTypeAssociation();
         attr2 = policyCT.newPolicyCmptTypeAttribute();
 
-        projectResource1 = (IProject)proj3.getCorrespondingResource();
-        projectResource2 = (IProject)proj4.getCorrespondingResource();
-        folder = ((IProject)proj.getCorrespondingResource()).getFolder("folder");
+        projectResource1 = proj3.getCorrespondingResource().unwrap();
+        projectResource2 = proj4.getCorrespondingResource().unwrap();
+        folder = ((AProject)proj.getCorrespondingResource()).getFolder("folder").unwrap();
         folder.create(true, false, null);
-        subFolder = ((IProject)proj.getCorrespondingResource()).getFolder("subfolder");
+        subFolder = ((AProject)proj.getCorrespondingResource()).getFolder("subfolder").unwrap();
         subFolder.create(true, false, null);
         file = folder.getFile("test.txt");
         file.create(null, true, null);
@@ -98,7 +100,8 @@ public class ModelExplorerSorterTest extends AbstractIpsPluginTest {
         pathContainer = mock(IIpsObjectPathContainer.class);
 
         // create sort order file
-        createSortOrderFile((IFolder)root.getCorrespondingResource(), "ZTestPackageFragment", "TestPackageFragment");
+        createSortOrderFile((AFolder)root.getCorrespondingResource(),
+                "ZTestPackageFragment", "TestPackageFragment");
     }
 
     @Test

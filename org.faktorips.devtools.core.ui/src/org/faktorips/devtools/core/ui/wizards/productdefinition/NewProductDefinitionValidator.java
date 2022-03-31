@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.runtime.Message;
@@ -77,22 +75,18 @@ public abstract class NewProductDefinitionValidator {
 
     protected MessageList validateIpsObjectName(String propertyOfNameField) {
         MessageList result = new MessageList();
-        try {
-            if (getPmo().getIpsProject() != null) {
-                IIpsProjectNamingConventions namingConventions = getPmo().getIpsProject().getNamingConventions();
-                MessageList msgListName = namingConventions.validateUnqualifiedIpsObjectName(getPmo()
-                        .getIpsObjectType(), getPmo().getName());
-                result.add(addInvalidObjectProperty(msgListName, propertyOfNameField));
-                IIpsSrcFile file = getPmo().getIpsProject().findIpsSrcFile(getPmo().getIpsObjectType(),
-                        getPmo().getQualifiedName());
-                if (file != null) {
-                    result.add(new Message(MSG_SRC_FILE_EXISTS,
-                            Messages.NewProductDefinitionValidator_msg_srcFileExists, Message.ERROR, getPmo(),
-                            propertyOfNameField));
-                }
+        if (getPmo().getIpsProject() != null) {
+            IIpsProjectNamingConventions namingConventions = getPmo().getIpsProject().getNamingConventions();
+            MessageList msgListName = namingConventions.validateUnqualifiedIpsObjectName(getPmo()
+                    .getIpsObjectType(), getPmo().getName());
+            result.add(addInvalidObjectProperty(msgListName, propertyOfNameField));
+            IIpsSrcFile file = getPmo().getIpsProject().findIpsSrcFile(getPmo().getIpsObjectType(),
+                    getPmo().getQualifiedName());
+            if (file != null) {
+                result.add(new Message(MSG_SRC_FILE_EXISTS,
+                        Messages.NewProductDefinitionValidator_msg_srcFileExists, Message.ERROR, getPmo(),
+                        propertyOfNameField));
             }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
         return result;
     }

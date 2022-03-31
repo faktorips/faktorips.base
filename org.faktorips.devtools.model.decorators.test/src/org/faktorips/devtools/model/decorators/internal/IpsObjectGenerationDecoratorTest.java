@@ -43,7 +43,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetDefaultImageDescriptor_FIPS() {
+    public void testGetDefaultImageDescriptor_FIPS() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention(IChangesOverTimeNamingConvention.FAKTOR_IPS))) {
 
@@ -55,7 +55,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetDefaultImageDescriptor_PM() {
+    public void testGetDefaultImageDescriptor_PM() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention(IChangesOverTimeNamingConvention.PM))) {
 
@@ -67,7 +67,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetDefaultImageDescriptor_VAA() {
+    public void testGetDefaultImageDescriptor_VAA() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention(IChangesOverTimeNamingConvention.VAA))) {
 
@@ -79,7 +79,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetDefaultImageDescriptor_UnknownNamingConvention() {
+    public void testGetDefaultImageDescriptor_UnknownNamingConvention() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention("FooBar"))) {
 
@@ -91,7 +91,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor_Null() {
+    public void testGetImageDescriptor_Null() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention(IChangesOverTimeNamingConvention.VAA))) {
 
@@ -103,7 +103,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetImageDescriptor() {
+    public void testGetImageDescriptor() throws Exception {
         try (TestIpsModelExtensions x = TestIpsModelExtensions
                 .using(modelPreferencesWithNamingConvention(IChangesOverTimeNamingConvention.FAKTOR_IPS))) {
 
@@ -121,7 +121,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_NoValidFrom() {
+    public void testGetLabel_NoValidFrom() throws Exception {
         IIpsObjectGeneration ipsObjectGeneration = mock(IIpsObjectGeneration.class);
 
         IIpsModelPreferences modelPreferences = mock(IIpsModelPreferences.class);
@@ -135,7 +135,7 @@ public class IpsObjectGenerationDecoratorTest {
     }
 
     @Test
-    public void testGetLabel_FormattedValidFrom() {
+    public void testGetLabel_FormattedValidFrom() throws Exception {
         IIpsObjectGeneration ipsObjectGeneration = mock(IIpsObjectGeneration.class);
         GregorianCalendar validFrom = new GregorianCalendar(2021, Calendar.MARCH, 3);
         when(ipsObjectGeneration.getValidFrom()).thenReturn(validFrom);

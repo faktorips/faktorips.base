@@ -15,10 +15,10 @@ import static org.junit.Assert.assertEquals;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -59,7 +59,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates valid table contents.
      */
-    protected ITableContents createValidTableContents(IIpsProject ipsProject) throws CoreException {
+    protected ITableContents createValidTableContents(IIpsProject ipsProject) {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "ExportSource");
         ITableRows exportSource = createExportSource(ipsProject, contents);
@@ -94,7 +94,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row3.setValue(6, null);
         row3.setValue(7, null);
 
-        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(null);
 
         return contents;
     }
@@ -102,7 +102,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates an invalid source for export.
      */
-    protected ITableContents createInvalidTableContents(IIpsProject ipsProject) throws CoreException {
+    protected ITableContents createInvalidTableContents(IIpsProject ipsProject) {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "ExportSource");
         ITableRows exportSource = createExportSource(ipsProject, contents);
@@ -117,7 +117,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row1.setValue(6, "INVALID"); // MONEY
         row1.setValue(7, "invalid is impossible"); // STRING
 
-        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(null);
 
         return contents;
     }
@@ -128,10 +128,10 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * 
      * @param ipsProject The IPS project to create the table structure for.
      * @return The generated table structure.
-     * @throws CoreException If the ipsProject is invalid or if this method is called more than once
+     * @throws IpsException If the ipsProject is invalid or if this method is called more than once
      *             per test fixture.
      */
-    public ITableStructure createTableStructure(IIpsProject ipsProject) throws CoreException {
+    public ITableStructure createTableStructure(IIpsProject ipsProject) {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "TestStructure");
 
@@ -141,7 +141,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             col.setName("col" + i);
             col.setDatatype(datatypes[i]);
         }
-        structure.getIpsSrcFile().save(true, null);
+        structure.getIpsSrcFile().save(null);
 
         return structure;
     }
@@ -155,8 +155,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
      *            generated file.
      */
-    public void createValidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow)
-            throws CoreException {
+    public void createValidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow) {
 
         ITableContents contents = createValidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
@@ -172,15 +171,14 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      * @param exportColumnHeaderRow Flag to indicate whether to create a header line in the
      *            generated file.
      */
-    public void createInvalidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow)
-            throws CoreException {
+    public void createInvalidExternalTable(IIpsProject ipsProject, ITableFormat format, boolean exportColumnHeaderRow) {
 
         ITableContents contents = createInvalidTableContents(ipsProject);
         format.executeTableExport(contents, new Path("table" + format.getDefaultExtension()), "NULL",
                 exportColumnHeaderRow, new MessageList());
     }
 
-    private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {
+    private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) {
 
         structure = createTableStructure(ipsProject);
         contents.setTableStructure(structure.getQualifiedName());
@@ -199,7 +197,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates valid table contents.
      */
-    protected IEnumType createValidEnumTypeWithValues(IIpsProject ipsProject) throws CoreException {
+    protected IEnumType createValidEnumTypeWithValues(IIpsProject ipsProject) {
         IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
         enumType.setAbstract(false);
         enumType.setExtensible(false);
@@ -263,7 +261,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
     /**
      * Creates an invalid enumeration for export.
      */
-    protected IEnumType createInvalidEnumTypeWithValues(IIpsProject ipsProject) throws CoreException {
+    protected IEnumType createInvalidEnumTypeWithValues(IIpsProject ipsProject) {
         IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
         enumType.setAbstract(false);
         enumType.setExtensible(false);

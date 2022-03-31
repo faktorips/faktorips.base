@@ -11,13 +11,12 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -100,7 +99,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     @Override
-    public boolean exists(QualifiedNameType qnt) throws CoreException {
+    public boolean exists(QualifiedNameType qnt) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             if (((IpsObjectPathEntry)entry).exists(qnt)) {
@@ -148,7 +147,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     @Override
-    public void initFromXml(Element element, IProject project) {
+    public void initFromXml(Element element, AProject project) {
         super.initFromXml(element, project);
         containerTypeId = element.getAttribute(XML_ATTRIBUTE_CONTAINER);
         optionalPath = element.getAttribute(XML_ATTRIBUTE_PATH);
@@ -168,7 +167,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         IIpsObjectPathContainer container = getIpsObjectPathContainer();
         if (container == null) {
             MessageList result = new MessageList();
-            result.add(new Message(MSG_CODE_INVALID_CONTAINER_ENTRY, NLS.bind(
+            result.add(new Message(MSG_CODE_INVALID_CONTAINER_ENTRY, MessageFormat.format(
                     Messages.IpsContainerEntry_err_invalidConainerEntry, containerTypeId), Message.ERROR, this));
             return result;
         }

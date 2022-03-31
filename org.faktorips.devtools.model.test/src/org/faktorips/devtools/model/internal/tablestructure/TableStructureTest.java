@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -394,7 +393,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllMetaObjects() throws CoreException {
+    public void testFindAllMetaObjects() {
         String tableStructureQName = "pack.MyTableStructure";
         String tableStructureProj2QName = "otherpack.MyTableStructureProj2";
         String tableContent1QName = "pack.MyTableContent1";
@@ -448,7 +447,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         tableContentProj2.setTableStructure(tableStructureQName);
         // need to save to update cache
         tableContentProj2.newTableRows();
-        tableContentProj2.getIpsSrcFile().save(true, null);
+        tableContentProj2.getIpsSrcFile().save(null);
 
         resultList = tableStructure.searchMetaObjectSrcFiles(true);
         assertEquals(3, resultList.size());

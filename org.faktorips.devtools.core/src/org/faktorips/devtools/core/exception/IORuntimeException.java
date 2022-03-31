@@ -13,14 +13,14 @@ package org.faktorips.devtools.core.exception;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 
 /**
- * Similar to the {@link CoreRuntimeException} the {@link IORuntimeException} wraps another
- * exception to throw it as an unchecked exception. In this case an {@link IOException} is wrapped.
- * Where before a {@link CoreException} was thrown with an {@link IOException} as a cause, now throw
- * an {@link IORuntimeException}. This will allow for a distinction between a few important
- * exception types.
+ * Similar to the {@link IpsException} the {@link IORuntimeException} wraps another exception to
+ * throw it as an unchecked exception. In this case an {@link IOException} is wrapped. Where before
+ * a {@link CoreException} was thrown with an {@link IOException} as a cause, now throw an
+ * {@link IORuntimeException}. This will allow for a distinction between a few important exception
+ * types.
  * 
  * @author Stefan Widaier, FaktorZehn AG
  */

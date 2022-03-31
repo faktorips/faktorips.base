@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -39,9 +39,9 @@ public abstract class SingleEventModification<T> {
      * @return true if the modifications have been successful and an event needs to be fired
      *         afterwards
      * 
-     * @throws CoreException exceptions within this method
+     * @throws IpsException exceptions within this method
      */
-    protected abstract boolean execute() throws CoreException;
+    protected abstract boolean execute() throws IpsException;
 
     /**
      * Returns the {@link ContentChangeEvent} that is fired after the {@link #execute()} method has

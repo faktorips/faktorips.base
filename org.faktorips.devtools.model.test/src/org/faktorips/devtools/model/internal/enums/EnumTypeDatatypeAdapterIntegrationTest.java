@@ -19,7 +19,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -158,7 +157,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     }
 
     @Test
-    public void testGetValueNameExtensible() throws CoreException {
+    public void testGetValueNameExtensible() {
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
 
         IEnumAttribute id = enumType.newEnumAttribute();
@@ -187,7 +186,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         assertNull(adapter.getValueName("idC"));
     }
 
-    private void addEnumValue(IEnumValueContainer container, String id, String name) throws CoreException {
+    private void addEnumValue(IEnumValueContainer container, String id, String name) {
         IEnumValue contentEnumValue = container.newEnumValue();
         List<IEnumAttributeValue> values = contentEnumValue.getEnumAttributeValues();
         values.get(0).setValue(new StringValue(id));

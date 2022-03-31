@@ -13,6 +13,7 @@ package org.faktorips.devtools.ant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IProject;
@@ -20,9 +21,10 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
 /**
  * Implements a custom Ant task, which imports a given directory to a running Eclipse workspace as
@@ -108,7 +110,8 @@ public class ProjectImportTask extends AbstractIpsTask {
         }
 
         if (!copy) {
-            description.setLocation(Path.fromPortableString(getDir()).makeAbsolute());
+            IPath eclipsePath = PathMapping.toEclipsePath(Path.of(getDir()));
+            description.setLocation(eclipsePath == null ? null : eclipsePath.makeAbsolute());
         }
 
         // create new project with name provided in description
@@ -123,7 +126,7 @@ public class ProjectImportTask extends AbstractIpsTask {
 
             if (copy) {
                 RecursiveCopy copyUtil = new RecursiveCopy();
-                copyUtil.copyDir(this.getDir(), project.getLocation().toString());
+                copyUtil.copyDir(Path.of(this.getDir()), project.getLocation().toFile().toPath());
             }
         }
         project.open(monitor);

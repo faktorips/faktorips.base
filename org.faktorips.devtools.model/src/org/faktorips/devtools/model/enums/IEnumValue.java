@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.enums;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -52,10 +52,10 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
     /**
      * Creates a new <code>IEnumAttributeValue</code> and returns it.
      * 
-     * @throws CoreException If the <code>IEnumType</code> this <code>IEnumValue</code> is based
-     *             upon cannot be found.
+     * @throws IpsException If the <code>IEnumType</code> this <code>IEnumValue</code> is based upon
+     *             cannot be found.
      */
-    public IEnumAttributeValue newEnumAttributeValue() throws CoreException;
+    public IEnumAttributeValue newEnumAttributeValue() throws IpsException;
 
     /**
      * Creates a new <code>IEnumLiteralNameAttributeValue</code> and returns it.
@@ -126,12 +126,12 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @param enumAttribute The <code>IEnumAttribute</code> for that the value shall be set.
      * @param value The new value. May also be <code>null</code>.
      * 
-     * @throws CoreException If an error occurs while searching for the
+     * @throws IpsException If an error occurs while searching for the
      *             <code>IEnumAttributeValue</code> that refers to the given
      *             <code>IEnumAttribute</code>.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws CoreException;
+    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws IpsException;
 
     /**
      * Sets the value of the <code>IEnumAttributeValue</code> that refers to the
@@ -144,14 +144,14 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @see #setEnumAttributeValue(IEnumAttribute, IValue)
      * @see #setEnumAttributeValue(int, IValue)
      * 
-     * @throws CoreException If an error occurs while searching for the <code>IEnumAttribute</code>
+     * @throws IpsException If an error occurs while searching for the <code>IEnumAttribute</code>
      *             identified by the given name or while searching for the
      *             <code>IEnumAttributeValue</code> that refers to the <code>IEnumAttribute</code>.
      * @throws NullPointerException If <code>enumAttributeName</code> is <code>null</code>.
      * @throws NoSuchElementException If there is no <code>IEnumAttribute</code> with the given name
      *             in the parent <code>IEnumType</code>.
      */
-    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws CoreException;
+    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws IpsException;
 
     /**
      * Sets the value of the <code>IEnumAttributeValue</code> identified by the given index.
@@ -183,12 +183,12 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      *            referenced <code>IEnumType</code>. This is not necessarily the project this
      *            <code>IEnumValue</code> is part of.
      * 
-     * @throws CoreException If an error occurs while searching for the referenced
+     * @throws IpsException If an error occurs while searching for the referenced
      *             <code>IEnumType</code>.
      * @throws NullPointerException If any parameter is <code>null</code>.
      */
     public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the index of the given <code>IEnumAttributeValue</code> in this

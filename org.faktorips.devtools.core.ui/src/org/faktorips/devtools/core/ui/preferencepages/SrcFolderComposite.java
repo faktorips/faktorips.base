@@ -47,6 +47,8 @@ import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
@@ -210,11 +212,11 @@ public class SrcFolderComposite extends DataChangeableComposite {
 
         treeViewer.setInput(ipsObjectPath);
 
-        derivedSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
-        derivedSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForDerivedSources());
+        derivedSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject().unwrap());
+        derivedSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForDerivedSources().unwrap());
 
-        mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject());
-        mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources());
+        mergableSrcFolderControl.setRoot(ipsObjectPath.getIpsProject().getProject().unwrap());
+        mergableSrcFolderControl.setFolder(ipsObjectPath.getOutputFolderForMergableSources().unwrap());
 
         IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsObjectPath.getIpsProject().getIpsPackageFragmentRoots();
         if (ipsPackageFragmentRoots.length > 0) {
@@ -307,7 +309,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
             Object[] selectedFolders = selectFolderDialog.getResult();
             for (Object selectedFolder : selectedFolders) {
                 IFolder folder = (IFolder)selectedFolder;
-                ipsObjectPath.newSourceFolderEntry(folder);
+                ipsObjectPath.newSourceFolderEntry(Wrappers.wrap(folder).as(AFolder.class));
                 treeViewer.refresh(false);
 
                 dataChanged = true;
@@ -345,9 +347,11 @@ public class SrcFolderComposite extends DataChangeableComposite {
         if (editDialog.open() == Window.OK) {
             IContainer newOutputFolder = editDialog.getSelectedFolder();
             if (attribute.isFolderForDerivedSources()) {
-                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(newOutputFolder.getAdapter(IFolder.class));
+                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles(
+                        Wrappers.wrap(newOutputFolder.getAdapter(IFolder.class)).as(AFolder.class));
             } else {
-                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(newOutputFolder.getAdapter(IFolder.class));
+                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles(
+                        Wrappers.wrap(newOutputFolder.getAdapter(IFolder.class)).as(AFolder.class));
             }
             dataChanged = true;
         }
@@ -391,7 +395,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
     }
 
     private ElementTreeSelectionDialog createSelectFolderDialog() {
-        final IProject project = ipsObjectPath.getIpsProject().getProject();
+        final IProject project = ipsObjectPath.getIpsProject().getProject().unwrap();
 
         /*
          * According to the validation rules for IpsSrcFolderEntry objects, a source (model) folder
@@ -411,7 +415,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 if (element instanceof IFolder) {
-                    return (!ipsObjectPath.containsSrcFolderEntry((IFolder)element));
+                    return (!ipsObjectPath.containsSrcFolderEntry(Wrappers.wrap(element).as(AFolder.class)));
                 }
                 return false;
             }
@@ -475,9 +479,9 @@ public class SrcFolderComposite extends DataChangeableComposite {
         IPath path = new Path(IPath.SEPARATOR + folderName);
         IFolder folder = ResourcesPlugin.getWorkspace().getRoot().getFolder(path);
         if (mergable) {
-            ipsObjectPath.setOutputFolderForMergableSources(folder);
+            ipsObjectPath.setOutputFolderForMergableSources(Wrappers.wrap(folder).as(AFolder.class));
         } else {
-            ipsObjectPath.setOutputFolderForDerivedSources(folder);
+            ipsObjectPath.setOutputFolderForDerivedSources(Wrappers.wrap(folder).as(AFolder.class));
         }
 
         dataChanged = true;
@@ -541,7 +545,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
                     Messages.SrcFolderComposite_create_new_folder_defaultText, validator);
 
             if (dialog.open() == Window.OK) {
-                IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue());
+                IFolder newFolder = ipsObjectPath.getIpsProject().getProject().getFolder(dialog.getValue()).unwrap();
                 try {
                     newFolder.create(true, false, null);
                 } catch (CoreException e) {

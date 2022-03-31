@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IFlIdentifierFilterExtension;
@@ -27,6 +30,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plainjava.PlainJavaIpsModelExtensions;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
@@ -34,7 +38,6 @@ import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
-import org.osgi.framework.Version;
 
 /**
  * Extensions to the Faktor-IPS model.
@@ -42,7 +45,11 @@ import org.osgi.framework.Version;
 public interface IIpsModelExtensions {
 
     static IIpsModelExtensions get() {
-        return IpsModelExtensionsViaEclipsePlugins.get();
+        if (Abstractions.isEclipseRunning()) {
+            return IpsModelExtensionsViaEclipsePlugins.get();
+        } else {
+            return PlainJavaIpsModelExtensions.get();
+        }
     }
 
     /**
@@ -110,7 +117,7 @@ public interface IIpsModelExtensions {
      * @return A map containing all registered migration operations. The key of the map is the
      *         target version of the operation
      */
-    Map<Version, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName);
+    Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName);
 
     /**
      * Returns user preferences.
@@ -125,7 +132,7 @@ public interface IIpsModelExtensions {
     /**
      * Returns the available configurators for adding the IPS nature to a project.
      *
-     * @see IpsProjectConfigurators#applicableTo(org.eclipse.jdt.core.IJavaProject)
+     * @see IpsProjectConfigurators#applicableTo(org.faktorips.devtools.abstraction.AJavaProject)
      */
     List<IIpsProjectConfigurator> getIpsProjectConfigurators();
 
@@ -183,9 +190,14 @@ public interface IIpsModelExtensions {
     }
 
     /**
-     * Returns a all registered {@link IIpsObjectPathContainerType IIpsObjectPathContainerTypes} to
-     * be used by the {@link IpsObjectPathContainerFactory}.
+     * Returns all registered {@link IIpsObjectPathContainerType IIpsObjectPathContainerTypes} to be
+     * used by the {@link IpsObjectPathContainerFactory}.
      */
     List<IIpsObjectPathContainerType> getIpsObjectPathContainerTypes();
+
+    /**
+     * Returns all registered {@link Datatype Datatypes} mapped by their qualified names.
+     */
+    Map<String, Datatype> getPredefinedDatatypes();
 
 }

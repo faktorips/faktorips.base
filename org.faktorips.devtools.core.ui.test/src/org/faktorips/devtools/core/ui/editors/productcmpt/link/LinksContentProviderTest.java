@@ -21,7 +21,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmptGeneration;
@@ -121,7 +120,7 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetParent() throws CoreException {
+    public void testGetParent() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(true);
         when(linkViewItem.getLink()).thenReturn(link1);
@@ -141,7 +140,7 @@ public class LinksContentProviderTest {
     }
 
     @Test
-    public void testGetParent_ParameterIsNotALinkViewItem() throws CoreException {
+    public void testGetParent_ParameterIsNotALinkViewItem() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
         when(asso1.isRelevant()).thenReturn(true);
         when(linkViewItem.getLink()).thenReturn(link1);

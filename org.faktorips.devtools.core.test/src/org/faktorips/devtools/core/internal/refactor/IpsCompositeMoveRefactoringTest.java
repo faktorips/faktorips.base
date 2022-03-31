@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
@@ -56,7 +55,7 @@ public class IpsCompositeMoveRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputTargetPackageNotSet() throws CoreException {
+    public void testValidateUserInputTargetPackageNotSet() {
         LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
 
@@ -67,7 +66,7 @@ public class IpsCompositeMoveRefactoringTest {
     }
 
     @Test
-    public void testValidateUserInputTargetPackageEqualsOriginalPackage() throws CoreException {
+    public void testValidateUserInputTargetPackageEqualsOriginalPackage() {
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(originalIpsPackageFragment);
 
         RefactoringStatus result = ipsCompositeMoveRefactoring.validateUserInput(null);

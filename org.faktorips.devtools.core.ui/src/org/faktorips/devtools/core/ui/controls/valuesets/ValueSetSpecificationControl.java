@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.controls.valuesets;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
@@ -37,7 +36,6 @@ import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
@@ -449,13 +447,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             super(valueSetOwner);
             if (valueSetOwner instanceof IConfigElement) {
                 IConfigElement configElement = (IConfigElement)valueSetOwner;
-                try {
-                    IPolicyCmptTypeAttribute attribute = configElement
-                            .findPcTypeAttribute(configElement.getIpsProject());
-                    sourceSet = attribute.getValueSet();
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                IPolicyCmptTypeAttribute attribute = configElement
+                        .findPcTypeAttribute(configElement.getIpsProject());
+                sourceSet = attribute.getValueSet();
             }
         }
 
@@ -498,7 +492,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         @Override
-        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        public MessageList validate(IIpsProject ipsProject) {
             MessageList messageList = super.validate(ipsProject);
             addContainsNullMessagesIfApplicable(messageList);
             return messageList;

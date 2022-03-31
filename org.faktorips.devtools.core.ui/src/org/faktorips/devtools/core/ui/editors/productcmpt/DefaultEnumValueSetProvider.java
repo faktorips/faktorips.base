@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
@@ -38,14 +36,10 @@ public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
      */
     @Override
     public IEnumValueSet getSourceEnumValueSet() {
-        try {
-            IPolicyCmptTypeAttribute attribute = configuredValueSet.findPcTypeAttribute(configuredValueSet
-                    .getIpsProject());
-            IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
-            return sourceSet;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptTypeAttribute attribute = configuredValueSet.findPcTypeAttribute(configuredValueSet
+                .getIpsProject());
+        IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
+        return sourceSet;
     }
 
     /**

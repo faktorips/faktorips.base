@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
+import org.faktorips.devtools.abstraction.AAbstraction;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
@@ -64,6 +65,7 @@ public class ModelLabelProvider implements ILabelProvider {
         resourceManager = new LocalResourceManager(JFaceResources.getResources());
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public Image getImage(Object element) {
         if (element instanceof IIpsProject) {
@@ -87,6 +89,8 @@ public class ModelLabelProvider implements ILabelProvider {
             ImageDescriptor descriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
                     IPS_OBJECT_PATH_CONTAINER_GIF, true);
             return (Image)resourceManager.get(descriptor);
+        } else if (element instanceof AAbstraction) {
+            return getImage(((AAbstraction)element).unwrap());
         } else if (element instanceof IResource) {
             // check if the resource is an ips source file, in this case return the image of the ips
             // source,
@@ -119,7 +123,9 @@ public class ModelLabelProvider implements ILabelProvider {
 
         return null;
     }
+    // CSON: CyclomaticComplexity
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public String getText(Object element) {
         if (element instanceof IIpsElement) {
@@ -159,10 +165,13 @@ public class ModelLabelProvider implements ILabelProvider {
             return ((IIpsObjectPathContainer)element).getName();
         } else if (element instanceof ReferencedIpsProjectViewItem) {
             return ((ReferencedIpsProjectViewItem)element).getName();
+        } else if (element instanceof AAbstraction) {
+            return getText(((AAbstraction)element).unwrap());
         } else {
             return ((IResource)element).getName();
         }
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public void addListener(ILabelProviderListener listener) {

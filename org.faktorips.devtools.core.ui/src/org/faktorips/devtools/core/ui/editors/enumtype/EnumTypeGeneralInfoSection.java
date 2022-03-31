@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.enumtype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,7 +35,6 @@ import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.exception.CoreRuntimeException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -212,14 +210,10 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             return;
         }
 
-        try {
-            propertyChanged();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        propertyChanged();
     }
 
-    private void propertyChanged() throws CoreException {
+    private void propertyChanged() {
         /*
          * Initialize enumeration content field if none has been specified yet and the values are
          * not part of the model.
@@ -280,11 +274,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
             IEnumAttribute identiferAttribute = enumType.findIdentiferAttribute(enumType.getIpsProject());
             ValueDatatype datatype = null;
             if (identiferAttribute != null) {
-                try {
-                    datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                datatype = identiferAttribute.findDatatype(enumType.getIpsProject());
             }
             return datatype;
         }

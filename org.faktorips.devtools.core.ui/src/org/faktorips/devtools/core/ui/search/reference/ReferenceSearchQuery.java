@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.search.reference;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -18,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 import org.eclipse.search.ui.text.Match;
-import org.eclipse.ui.PartInitException;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -58,9 +57,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
             monitor.worked(1);
             addFoundMatches(found);
-        } catch (PartInitException e) {
-            return new IpsStatus(e);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             return new IpsStatus(e);
         }
         monitor.done();
@@ -72,7 +69,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      * method to perform special operations before adding the found element to the result list (e.g.
      * combine the found elements to one match with multiple children)
      */
-    protected void addFoundMatches(IIpsElement[] found) throws CoreException {
+    protected void addFoundMatches(IIpsElement[] found) {
         Match[] resultMatches = new Match[found.length];
         for (int i = 0; i < found.length; i++) {
             Object[] combined = getDataForResult(found[i]);
@@ -88,7 +85,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      * abstract superclass. If no objects are found an empty array is returned. This method throws a
      * CoreException which is handled by the calling run() method.
      */
-    protected abstract IIpsElement[] findReferences() throws CoreException;
+    protected abstract IIpsElement[] findReferences() throws IpsException;
 
     /**
      * Template method to be implemented by subclasses. This method is called for each IIpsElement
@@ -98,7 +95,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
      * represent its children. This method throws a CoreException which is handled by the calling
      * run() method.
      */
-    protected abstract Object[] getDataForResult(IIpsElement object) throws CoreException;
+    protected abstract Object[] getDataForResult(IIpsElement object) throws IpsException;
 
     @Override
     public String getLabel() {

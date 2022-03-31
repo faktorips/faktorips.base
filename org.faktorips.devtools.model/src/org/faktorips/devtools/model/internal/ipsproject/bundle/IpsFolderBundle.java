@@ -15,9 +15,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.jar.Manifest;
 
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -30,10 +30,10 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class IpsFolderBundle extends AbstractIpsBundle {
 
-    private final IPath folder;
+    private final Path folder;
     private IOFactory ioFactory;
 
-    public IpsFolderBundle(IIpsProject ipsProject, IPath folder) {
+    public IpsFolderBundle(IIpsProject ipsProject, Path folder) {
         super(ipsProject);
         this.folder = folder;
         ioFactory = new IOFactory();
@@ -44,7 +44,7 @@ public class IpsFolderBundle extends AbstractIpsBundle {
     }
 
     @Override
-    public IPath getLocation() {
+    public Path getLocation() {
         return folder;
     }
 
@@ -58,7 +58,7 @@ public class IpsFolderBundle extends AbstractIpsBundle {
     }
 
     public Manifest getManifest() throws IOException {
-        File file = folder.append(IpsBundleManifest.MANIFEST_NAME).toFile();
+        File file = folder.resolve(IpsBundleManifest.MANIFEST_NAME).toFile();
         Manifest manifest;
         try (InputStream is = ioFactory.createInputStream(file)) {
             manifest = new Manifest(is);
@@ -67,9 +67,9 @@ public class IpsFolderBundle extends AbstractIpsBundle {
     }
 
     @Override
-    protected InputStream getResourceAsStream(IPath path) {
+    protected InputStream getResourceAsStream(Path path) {
 
-        IPath absolutePath = folder.append(path);
+        Path absolutePath = folder.resolve(path);
         File file = absolutePath.toFile();
         try {
             return ioFactory.createInputStream(file);

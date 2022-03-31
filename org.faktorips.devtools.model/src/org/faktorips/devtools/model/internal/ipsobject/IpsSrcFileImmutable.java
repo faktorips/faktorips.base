@@ -16,10 +16,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFileMemento;
@@ -74,7 +73,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * Returns null.
      */
     @Override
-    public IFile getCorrespondingFile() {
+    public AFile getCorrespondingFile() {
         return null;
     }
 
@@ -82,7 +81,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * Returns null.
      */
     @Override
-    public IResource getCorrespondingResource() {
+    public AResource getCorrespondingResource() {
         return null;
     }
 
@@ -90,7 +89,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * Does nothing
      */
     @Override
-    public void save(boolean force, IProgressMonitor monitor) throws CoreException {
+    public void save(IProgressMonitor monitor) {
         // No save
     }
 
@@ -98,7 +97,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * This implementation throws an {@link UnsupportedOperationException}.
      */
     @Override
-    public void delete() throws CoreException {
+    public void delete() {
         throw new UnsupportedOperationException("Immutable IPS source files cannot be deleted."); //$NON-NLS-1$
     }
 
@@ -128,7 +127,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
     }
 
     @Override
-    public InputStream getContentFromEnclosingResource() throws CoreException {
+    public InputStream getContentFromEnclosingResource() {
         ByteArrayInputStream content = new ByteArrayInputStream(xmlContent.getBytes());
         return content;
     }
@@ -137,7 +136,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
      * No modification allowed
      */
     @Override
-    public void setMemento(IIpsSrcFileMemento memento) throws CoreException {
+    public void setMemento(IIpsSrcFileMemento memento) {
         // No modification of a remote file
     }
 

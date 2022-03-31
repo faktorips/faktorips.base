@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.bundle;
 
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -29,14 +29,14 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
  * any other resource stored in the IPS model folder. It is also used to get a list of all objects
  * stored in the bundle. It should handle everything located to the content index of the IPS bundle.
  * <p>
- * Subclasses must call {@link #registerPath(IPath, IPath)} to build up the content index.
+ * Subclasses must call {@link #registerPath(Path, Path)} to build up the content index.
  * 
  * 
  * @author dicker
  */
 public abstract class AbstractIpsBundleContentIndex {
 
-    private final Map<IPath, IPath> fileToModelPath = new HashMap<>();
+    private final Map<Path, Path> fileToModelPath = new HashMap<>();
     private final Set<QualifiedNameType> qualifiedNameTypes = new HashSet<>();
 
     /**
@@ -46,7 +46,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * created and stored in the Set of {@link QualifiedNameType}
      * 
      */
-    protected void registerPath(IPath modelPath, IPath relativePath) {
+    protected void registerPath(Path modelPath, Path relativePath) {
         fileToModelPath.put(relativePath, modelPath);
 
         QualifiedNameType qualifiedNameType = createQualifiedNameType(relativePath.toString());
@@ -74,7 +74,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * @param path A path to a file relative to any model folder
      * @return The path of the model folder in which the file is located
      */
-    public IPath getModelPath(IPath path) {
+    public Path getModelPath(Path path) {
         return fileToModelPath.get(path);
     }
 

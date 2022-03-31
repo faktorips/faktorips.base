@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.ipsproject;
 
+import java.nio.file.Path;
+
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -43,6 +45,6 @@ public interface IIpsArchive extends IIpsStorage {
      * workspace or might not exists at all. Do not use this method to locate the archive because
      * this path may be project relative or workspace relative. Use {@link #getLocation()} instead!
      */
-    public IPath getArchivePath();
+    public Path getArchivePath();
 
 }

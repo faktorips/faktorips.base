@@ -87,19 +87,12 @@ public class IpsDecorators implements IIpsDecorators {
     private final Supplier<IIpsElementDecorator> templateDecorator = CachingSupplier
             .caching(ProductCmptDecorator::forTemplates);
 
-    @SuppressWarnings("deprecation")
     private IpsDecorators() {
         // set this here, because the SimpleIpsElementDecorator will access it in its constructor
         theInstance = this;
         decorators.put(AbstractIpsSrcFile.class, new IpsSrcFileDecorator());
-        decorators.put(org.faktorips.devtools.model.internal.bf.BusinessFunction.class,
-                new SimpleIpsElementDecorator("BusinessFunction.gif")); //$NON-NLS-1$
-        decorators.put(org.faktorips.devtools.model.internal.businessfct.BusinessFunctionImpl.class,
-                new SimpleIpsElementDecorator("BusinessFunction.gif")); //$NON-NLS-1$
         decorators.put(Column.class, new SimpleIpsElementDecorator("TableColumn.gif")); //$NON-NLS-1$
         decorators.put(ColumnRange.class, new SimpleIpsElementDecorator("TableRange.gif")); //$NON-NLS-1$
-        decorators.put(org.faktorips.devtools.model.internal.bf.ControlFlow.class,
-                new SimpleIpsElementDecorator("ControlFlow.gif")); //$NON-NLS-1$
         decorators.put(EnumContent.class, new SimpleIpsElementDecorator("EnumContent.gif")); //$NON-NLS-1$
         decorators.put(EnumType.class, new SimpleIpsElementDecorator("EnumType.gif")); //$NON-NLS-1$
         decorators.put(Expression.class, new SimpleIpsElementDecorator("Formula.gif")); //$NON-NLS-1$

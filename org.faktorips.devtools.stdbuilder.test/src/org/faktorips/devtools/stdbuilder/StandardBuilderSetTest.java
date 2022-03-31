@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.IntegerHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
@@ -32,7 +31,7 @@ import org.junit.Test;
 public class StandardBuilderSetTest extends AbstractStdBuilderTest {
 
     @Test
-    public void testGetDatatypeHelper_DefaultHelper() throws CoreException {
+    public void testGetDatatypeHelper_DefaultHelper() {
         IIpsProject ipsProject = newIpsProject();
         StandardBuilderSet builderSet = new StandardBuilderSet();
         builderSet.setIpsProject(ipsProject);
@@ -50,7 +49,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() throws CoreException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithDefaultConfiguration() {
         IIpsProject ipsProject = newIpsProject();
         IIpsArtefactBuilderSet builderSet = ipsProject.getIpsArtefactBuilderSet();
 
@@ -65,7 +64,7 @@ public class StandardBuilderSetTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() throws CoreException {
+    public void testGetDatatypeHelper_LocalDateHelpersWithJava8Configuration() {
         IIpsProject ipsProject = newIpsProject();
         setGeneratorProperty(ipsProject, StandardBuilderSet.CONFIG_PROPERTY_LOCAL_DATE_HELPER_VARIANT,
                 LocalDateHelperVariant.JAVA8.toString().toLowerCase());

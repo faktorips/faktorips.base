@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.model.internal.method;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -85,7 +84,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public Datatype findDatatype(IIpsProject ipsProject) throws CoreException {
+    public Datatype findDatatype(IIpsProject ipsProject) {
         return method.findDatatype(ipsProject);
     }
 
@@ -100,7 +99,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws CoreException {
+    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) {
         if (!typeToSearchFrom.isSubtypeOf(getType(), ipsProject)) {
             return null;
         }
@@ -110,7 +109,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public IMethod findOverriddenMethod(IIpsProject ipsProject) throws CoreException {
+    public IMethod findOverriddenMethod(IIpsProject ipsProject) {
         OverridingMethodFinder finder = new OverridingMethodFinder(ipsProject);
         finder.start(getType());
         return finder.overridingMethod;
@@ -122,7 +121,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    public boolean overrides(IMethod other) throws CoreException {
+    public boolean overrides(IMethod other) {
         if (this.equals(other)) {
             return false;
         }
@@ -178,12 +177,13 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     @Override
-    protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
         result.add(method.validate(ipsProject));
         if (isAbstract() && !getType().isAbstract()) {
             result.add(new Message(
-                    "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, //$NON-NLS-1$
+                    "", MessageFormat.format(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, //$NON-NLS-1$
+                    this,
                     PROPERTY_ABSTRACT));
         }
         if (validateDuplicateMethodInSameType(result)) {
@@ -191,7 +191,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
     }
 
-    private void validateOverriddenMethod(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateOverriddenMethod(MessageList list, IIpsProject ipsProject) {
         IMethod overridden = findOverriddenMethod(ipsProject);
         if (overridden == null) {
             return;
@@ -203,20 +203,20 @@ public abstract class Method extends TypePart implements IMethod {
     private void validateModifierOfOverriddenMethod(MessageList list, IMethod overridden) {
         if (!getModifier().equals(overridden.getModifier())) {
             list.add(Message.newError(MSGCODE_MODIFIER_NOT_EQUAL,
-                    NLS.bind(Messages.TypeMethod_msg_modifierOverriddenNotEqual, overridden.getModifier().getId()),
+                    MessageFormat.format(Messages.TypeMethod_msg_modifierOverriddenNotEqual,
+                            overridden.getModifier().getId()),
                     this, ITypePart.PROPERTY_MODIFIER));
         }
     }
 
-    private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateReturnTypeOfOverriddenMethod(MessageList list, IMethod overridden, IIpsProject ipsProject) {
         Datatype returnType = findDatatype(ipsProject);
         if (returnType == null) {
             return;
         }
         Datatype overriddenReturnType = overridden.findDatatype(ipsProject);
         if (!returnType.equals(overriddenReturnType)) {
-            String text = NLS.bind(Messages.TypeMethod_incompatbileReturnType, overridden.getType()
+            String text = MessageFormat.format(Messages.TypeMethod_incompatbileReturnType, overridden.getType()
                     .getUnqualifiedName(), overridden.getSignatureString());
             Message msg = Message.newError(MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE, text, this,
                     IBaseMethod.PROPERTY_DATATYPE);

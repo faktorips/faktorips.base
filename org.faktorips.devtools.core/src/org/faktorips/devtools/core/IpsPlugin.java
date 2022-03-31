@@ -20,6 +20,7 @@ import org.eclipse.ui.IPerspectiveDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.internal.model.versionmanager.IpsFeatureMigrationOperation;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
@@ -30,7 +31,6 @@ import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
 import org.faktorips.devtools.core.refactor.IIpsRefactoringFactory;
 import org.faktorips.devtools.model.IIpsModelExtensions;
-import org.faktorips.devtools.model.bf.BFElementType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -38,7 +38,6 @@ import org.faktorips.devtools.model.versionmanager.IpsFeatureVersionManagerSorte
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Version;
 
 /**
  * The main plug-in class.
@@ -119,9 +118,6 @@ public class IpsPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         preferences = new IpsPreferences(getPreferenceStore());
-
-        // ensure that this class is loaded in time
-        BFElementType.ACTION_BUSINESSFUNCTIONCALL.getClass();
     }
 
     /**
@@ -135,9 +131,9 @@ public class IpsPlugin extends AbstractUIPlugin {
     /**
      * Returns the plugin's version identifier.
      */
-    public Version getVersionIdentifier() {
-        String version = getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
-        return Version.parseVersion(version);
+    public AVersion getVersionIdentifier() {
+        String bundleVersion = getBundle().getHeaders().get(org.osgi.framework.Constants.BUNDLE_VERSION);
+        return AVersion.parse(bundleVersion);
     }
 
     /**
@@ -251,8 +247,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * 
      * @param projectToMigrate The project the migration operation should be returned for.
      */
-    public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate)
-            throws CoreException {
+    public AbstractIpsFeatureMigrationOperation getMigrationOperation(IIpsProject projectToMigrate) {
         IIpsFeatureVersionManager[] managers = IIpsModelExtensions.get().getIpsFeatureVersionManagers();
 
         /*

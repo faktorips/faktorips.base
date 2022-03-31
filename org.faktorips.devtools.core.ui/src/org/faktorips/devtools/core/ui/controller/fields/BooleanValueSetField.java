@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 import org.faktorips.devtools.core.ui.util.SelectionListeners;
@@ -58,7 +58,7 @@ public class BooleanValueSetField extends DefaultEditField<IValueSet> {
             if (booleanValueSetControl.getNullCheckBox() != null) {
                 booleanValueSetControl.getNullCheckBox().setChecked(newValue.isContainsNull());
             }
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             e.printStackTrace();
         }
         booleanValueSetControl.updateEnabledState();

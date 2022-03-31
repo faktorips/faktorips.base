@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
@@ -84,7 +84,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     @Override
-    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         validateIsNeeded(list);
         if (list.containsErrorMsg()) {
@@ -107,7 +107,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     }
 
     /** Validates the <code>defaultValueProviderAttribute</code> property. */
-    private void validateDefaultValueProviderAttribute(MessageList list) throws CoreException {
+    private void validateDefaultValueProviderAttribute(MessageList list) {
         // Pass validation if no provider is specified.
         if (StringUtils.isEmpty(defaultValueProviderAttribute)) {
             return;
@@ -119,7 +119,8 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     private void validateValueProviderAttributeExists(MessageList list) {
         IEnumType enumType = getEnumType();
         if (isValueProviderAttributeMissing(enumType)) {
-            String text = NLS.bind(Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist,
+            String text = MessageFormat.format(
+                    Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeDoesNotExist,
                     defaultValueProviderAttribute);
             Message msg = new Message(
                     MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST, text,
@@ -132,7 +133,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         return !(enumType.containsEnumAttributeIncludeSupertypeCopies(defaultValueProviderAttribute));
     }
 
-    private void validateValueProviderAttributeHasStringDatatype(MessageList list) throws CoreException {
+    private void validateValueProviderAttributeHasStringDatatype(MessageList list) {
         IEnumType enumType = getEnumType();
         if (isValueProviderAttributeMissing(enumType)) {
             return;
@@ -142,7 +143,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
         Datatype datatype = providerAttribute.findDatatype(getIpsProject());
         if (datatype != null) {
             if (!(datatype.equals(Datatype.STRING))) {
-                String text = NLS.bind(
+                String text = MessageFormat.format(
                         Messages.EnumLiteralNameAttribute_DefaultValueProviderAttributeNotOfDatatypeString,
                         defaultValueProviderAttribute);
                 Message msg = new Message(

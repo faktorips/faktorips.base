@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
@@ -79,7 +79,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         for (ITestParameter testParameter : testParameters) {
             try {
                 root.addPageElements(createTestParameterPageElement(testParameter));
-            } catch (CoreException e) {
+            } catch (IpsException e) {
                 getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error adding TestParameter", e)); //$NON-NLS-1$
             }
         }
@@ -96,7 +96,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
                     getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
-        } catch (CoreException e) {
+        } catch (IpsException e) {
             IpsStatus status = new IpsStatus(IStatus.WARNING,
                     "Could not find image for " + getDocumentedIpsObject().getName(), e); //$NON-NLS-1$
             getContext().addStatus(status);
@@ -110,7 +110,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      * creates a IPageElement representing the given testParameter
      * 
      */
-    private IPageElement createTestParameterPageElement(ITestParameter testParameter) throws CoreException {
+    private IPageElement createTestParameterPageElement(ITestParameter testParameter) {
         if (testParameter instanceof ITestValueParameter) {
             return createTestValueParameterPageElement((ITestValueParameter)testParameter);
         }
@@ -125,8 +125,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 getContext()).addStyles(Style.BIG).addStyles(Style.BOLD);
     }
 
-    private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
-            throws CoreException {
+    private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter) {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
         IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),
