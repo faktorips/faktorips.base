@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2022-03)" sequenceNumber="2">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2022-03)" sequenceNumber="3">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -49,13 +49,12 @@
       <unit id="org.eclipse.wst.server_ui.feature.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.wst.xml_core.feature.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.wst.xml_ui.feature.feature.group" version="0.0.0"/>
-      <unit id="org.eclipse.xpand.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.xtend.lib" version="0.0.0"/>
+      <unit id="org.eclipse.xtend.sdk.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.xtext.xbase.lib" version="0.0.0"/>
       <unit id="org.eclipse.xtend.lib.macro" version="0.0.0"/>
       <unit id="org.eclipse.xsd.feature.group" version="0.0.0"/>
       <unit id="org.slf4j.api" version="0.0.0"/>
-      <unit id="org.eclipse.xtend.sdk.feature.group" version="0.0.0"/>
       <repository location="https://update.faktorzehn.org/p2repositories/2022-03/"/>
     </location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
