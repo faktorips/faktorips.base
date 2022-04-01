@@ -11,6 +11,7 @@
 package org.faktorips.runtime.model.type;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -190,6 +191,28 @@ public abstract class Type extends ModelElement {
 
     protected List<Method> getDeclaredMethods() {
         return getAnnotatedDeclaration().getDeclaredMethods();
+    }
+
+    /**
+     * Searches for a field with the given annotation that matches the condition defined by a
+     * {@link AnnotatedElementMatcher matcher}. Only fields in this type's declaration class are
+     * considered, thus no fields from super classes are found.
+     * 
+     * @param annotationClass the class of the annotation the field must be annotated with
+     * @param matcher matcher to determine if the annotation has the correct properties
+     * @return the first field that is both annotated with the given annotation and has the correct
+     *         annotated properties. {@link Optional#empty()} if no such field can be found.
+     */
+    public <T extends Annotation> Optional<Field> findDeclaredField(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        return getDeclaredFields().stream()
+                .filter(field -> field.isAnnotationPresent(annotationClass)
+                        && matcher.matches(field.getAnnotation(annotationClass)))
+                .findFirst();
+    }
+
+    protected List<Field> getDeclaredFields() {
+        return getAnnotatedDeclaration().getDeclaredFields();
     }
 
     /**

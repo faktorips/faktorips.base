@@ -63,7 +63,7 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
     }
 
     @Override
-    public Object getDefaultValue(IConfigurableModelObject modelObject) {
+    public Object getDefaultValue(IModelObject modelObject) {
         return getValue(modelObject);
     }
 

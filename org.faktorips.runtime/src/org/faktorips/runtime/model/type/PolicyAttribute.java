@@ -135,21 +135,19 @@ public abstract class PolicyAttribute extends Attribute {
     }
 
     /**
-     * Returns the product configured default value of the attribute identified by this model type
-     * attribute. Throws an {@link IllegalStateException} if the model object has no
-     * getDefaultValue() method for this attribute. This also occurs if the corresponding policy
-     * class is not configured by a product class.
+     * Returns the (product configured) default value of the attribute identified by this model type
+     * attribute. Throws an {@link IllegalStateException} if the model object has no default value
+     * constant or the product has no getDefaultValue~() method for this attribute.
      * 
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @see #getDefaultValue(IProductComponent, Calendar)
-     * @throws IllegalStateException if the model object has no getter method for this attribute's
-     *             default value. This also occurs if the corresponding policy class is not
-     *             configured by a product class.
+     * @throws IllegalStateException if the model object has no default value constant or the
+     *             product has no getter method for this attribute's default value.
      * @throws IllegalArgumentException if the invocation of the method that should get the default
      *             value for this attribute fails for any reason
      */
-    public abstract Object getDefaultValue(IConfigurableModelObject modelObject);
+    public abstract Object getDefaultValue(IModelObject modelObject);
 
     /**
      * Returns the product configured default value of the attribute identified by this model type

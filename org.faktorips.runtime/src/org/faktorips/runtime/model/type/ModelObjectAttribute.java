@@ -183,10 +183,10 @@ public class ModelObjectAttribute {
      * @throws IllegalArgumentException if the invocation of the method that should get the default
      *             value for this attribute fails for any reason
      * @throws ClassCastException if the model object is no {@link IConfigurableModelObject}.
-     * @see PolicyAttribute#getDefaultValue(IConfigurableModelObject)
+     * @see PolicyAttribute#getDefaultValue(IModelObject)
      */
     public Object getDefaultValue() {
-        return policyAttribute.getDefaultValue((IConfigurableModelObject)modelObject);
+        return policyAttribute.getDefaultValue(modelObject);
     }
 
     /**
