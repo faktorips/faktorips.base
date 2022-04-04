@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -128,6 +131,14 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
     @Override
     public boolean isMutable() {
         return false;
+    }
+
+    @Override
+    public String getIdByName(String valueName) {
+        return Arrays.stream(getAllValueIds(false))
+                .filter(x -> StringUtils.equals(getValueName(x), valueName))
+                .findFirst()
+                .orElse(null);
     }
 
 }

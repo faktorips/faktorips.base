@@ -29,6 +29,8 @@ import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class GenericValueDatatypeTest {
 
     private DefaultGenericValueDatatype datatype;
@@ -108,6 +110,7 @@ public class GenericValueDatatypeTest {
 
     @Test
     public void testGetIsParsableMethod_CharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ParsableCharSequenceDatatype {
 
             @SuppressWarnings("unused")
@@ -123,6 +126,7 @@ public class GenericValueDatatypeTest {
 
     @Test
     public void testGetIsParsableMethod_String() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ParsableStringDatatype {
 
             @SuppressWarnings("unused")
@@ -138,6 +142,7 @@ public class GenericValueDatatypeTest {
 
     @Test
     public void testGetIsParsableMethod_NotStringOrCharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class NotParsableDatatype {
 
             @SuppressWarnings("unused")
@@ -186,6 +191,7 @@ public class GenericValueDatatypeTest {
 
     @Test
     public void testGetValueOfMethod_CharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ValueOfCharSequenceDatatype {
 
             @SuppressWarnings("unused")
@@ -201,6 +207,7 @@ public class GenericValueDatatypeTest {
 
     @Test
     public void testCheckReadyToUse_WrongReturnType() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class IllegalDatatype {
 
             @SuppressWarnings("unused")
@@ -218,11 +225,12 @@ public class GenericValueDatatypeTest {
         MessageList readyToUse = datatype.checkReadyToUse();
         assertThat(readyToUse.containsErrorMsg(), is(true));
         assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
-                is(GenericValueDatatype.MSGCODE_GETVALUE_METHOD_NOT_FOUND));
+                is(DatatypeValidation.MSGCODE_METHOD_NOT_FOUND));
     }
 
     @Test
     public void testCheckReadyToUse_IsParsableMethodDoesNotReturnBoolean() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class IllegalDatatype {
 
             @SuppressWarnings("unused")
@@ -240,7 +248,7 @@ public class GenericValueDatatypeTest {
         MessageList readyToUse = datatype.checkReadyToUse();
         assertThat(readyToUse.containsErrorMsg(), is(true));
         assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
-                is(GenericValueDatatype.MSGCODE_ISPARSABLE_METHOD_NOT_FOUND));
+                is(DatatypeValidation.MSGCODE_METHOD_NOT_FOUND));
     }
 
     @Test
@@ -265,6 +273,7 @@ public class GenericValueDatatypeTest {
         assertNotNull(datatype.getToStringMethod());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         assertEquals(datatype, datatype);

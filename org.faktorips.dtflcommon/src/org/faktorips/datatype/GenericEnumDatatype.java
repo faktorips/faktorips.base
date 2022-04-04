@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
+import org.faktorips.runtime.MessageList;
+
 /**
  * Generic enum datatype. See the superclass for more Details.
  * 
@@ -67,6 +69,14 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         this.getAllValuesMethodName = getAllValuesMethodName;
         getAllValuesMethod = null;
         clearCache();
+    }
+
+    @Override
+    public MessageList checkReadyToUse() {
+        MessageList ml = super.checkReadyToUse();
+        DatatypeValidation.checkMethod(ml, getAllValuesMethod, true, Object[].class, Collection.class);
+        DatatypeValidation.checkMethod(ml, getNameMethod, false, String.class);
+        return ml;
     }
 
     /**

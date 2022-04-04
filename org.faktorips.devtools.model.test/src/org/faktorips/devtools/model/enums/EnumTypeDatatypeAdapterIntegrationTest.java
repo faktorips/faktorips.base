@@ -8,8 +8,11 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.model.internal.enums;
+package org.faktorips.devtools.model.enums;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -21,13 +24,6 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsEnumPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
-import org.faktorips.devtools.model.enums.IEnumAttribute;
-import org.faktorips.devtools.model.enums.IEnumAttributeValue;
-import org.faktorips.devtools.model.enums.IEnumContent;
-import org.faktorips.devtools.model.enums.IEnumType;
-import org.faktorips.devtools.model.enums.IEnumValue;
-import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
@@ -67,7 +63,7 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
     }
 
     @Test
-    public void testCompreTo() throws Exception {
+    public void testCompareTo() throws Exception {
         assertEquals(0, genderAdapter.compareTo(genderAdapter));
         assertTrue(genderAdapter.compareTo(paymentModeAdapter) < 0);
         assertTrue(paymentModeAdapter.compareTo(genderAdapter) > 0);
@@ -341,4 +337,15 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
         assertEquals(adapter1.hashCode(), adapter2.hashCode());
     }
 
+    @Test
+    public void testGetIdByName_existing() {
+        String id = paymentModeAdapter.getIdByName("monthly");
+        assertThat(id, is("P1"));
+    }
+
+    @Test
+    public void testGetIdByName_notExisting() {
+        String id = paymentModeAdapter.getIdByName("noValue");
+        assertThat(id, is(nullValue()));
+    }
 }

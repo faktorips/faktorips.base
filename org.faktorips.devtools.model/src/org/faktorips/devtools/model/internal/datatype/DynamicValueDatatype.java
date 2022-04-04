@@ -10,7 +10,10 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import java.lang.reflect.Method;
+
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.DatatypeValidation;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -20,6 +23,8 @@ import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
@@ -35,9 +40,20 @@ import org.w3c.dom.Element;
  */
 public class DynamicValueDatatype extends GenericValueDatatype implements IDynamicValueDatatype {
 
+    public static final String MSGCODE_GET_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX + "getNameMethod is empty or blank"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX
+            + "getIdByName is empty or blank"; //$NON-NLS-1$
+
     private IIpsProject ipsProject;
     private IClassLoaderProvider classLoaderProvider;
     private IClasspathContentsChangeListener listener;
+
+    private boolean isSupportingNames = false;
+
+    private String getNameMethodName = ""; //$NON-NLS-1$
+    private Method getNameMethod;
+    private String getIdByNameMethodName = ""; //$NON-NLS-1$
+    private Method getIdByNameMethod;
 
     private String className;
     private Class<?> adaptedClass;
@@ -117,26 +133,20 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         if (getToStringMethodName() != null) {
             element.setAttribute("valueToStringMethod", getToStringMethodName()); //$NON-NLS-1$
         }
+        if (getGetNameMethodName() != null) {
+            element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
+        }
+        if (getGetIdByNameMethodName() != null) {
+            element.setAttribute("getIdByName", getGetIdByNameMethodName()); //$NON-NLS-1$
+        }
+        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
         if (hasNullObject()) {
             ValueToXmlHelper.addValueToElement(getNullObjectId(), element, "NullObjectId"); //$NON-NLS-1$
         }
     }
 
     public static final DynamicValueDatatype createFromXml(IIpsProject ipsProject, Element element) {
-        DynamicValueDatatype datatype = null;
-        String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
-            datatype = new DynamicValueDatatype(ipsProject);
-        } else {
-            DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
-            enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
-            enumDatatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
-            String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
-            enumDatatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
-                    : Boolean.valueOf(isSupporting)
-                            .booleanValue());
-            datatype = enumDatatype;
-        }
+        DynamicValueDatatype datatype = createDynamicValueOrEnumDatatype(ipsProject, element);
         // note: up to version 2.1 it was valueClass, since then it is javaClass
         String javaClass = element.getAttribute("valueClass"); //$NON-NLS-1$
         if (StringUtils.isEmpty(javaClass)) {
@@ -159,6 +169,21 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         } else {
             datatype.setToStringMethodName(null);
         }
+        if (element.hasAttribute("getNameMethod")) { //$NON-NLS-1$
+            datatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
+        } else {
+            datatype.setGetNameMethodName(null);
+        }
+        if (element.hasAttribute("getIdByNameMethod")) { //$NON-NLS-1$
+            datatype.setGetIdByNameMethodName(element.getAttribute("getIdByNameMethod")); //$NON-NLS-1$ );
+        } else {
+            datatype.setGetIdByNameMethodName(null);
+        }
+        String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
+        datatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
+                : Boolean.valueOf(isSupporting)
+                        .booleanValue());
+
         Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
         if (nullObjectEl == null) {
             datatype.setNullObjectDefined(false);
@@ -170,4 +195,155 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         return datatype;
     }
 
+    private static DynamicValueDatatype createDynamicValueOrEnumDatatype(IIpsProject ipsProject, Element element) {
+        DynamicValueDatatype datatype;
+        String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
+        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
+            datatype = new DynamicValueDatatype(ipsProject);
+        } else {
+            DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
+            enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
+            datatype = enumDatatype;
+        }
+        return datatype;
+    }
+
+    @Override
+    public void setIsSupportingNames(boolean supporting) {
+        isSupportingNames = supporting;
+    }
+
+    @Override
+    public boolean isSupportingNames() {
+        return isSupportingNames;
+    }
+
+    @Override
+    public void setGetNameMethodName(String getNameMethodName) {
+        this.getNameMethodName = getNameMethodName;
+    }
+
+    @Override
+    public String getGetNameMethodName() {
+        return getNameMethodName;
+    }
+
+    @Override
+    public String getValueName(String id) {
+        if (StringUtils.isBlank(getNameMethodName)) {
+            throw new UnsupportedOperationException(
+                    "This value type does not support a getName() method, value type class: " //$NON-NLS-1$
+                            + getAdaptedClass());
+        }
+        return getValueNameFromClass(id);
+    }
+
+    @Override
+    public String getIdByName(String valueName) {
+        if (StringUtils.isBlank(getIdByNameMethodName)) {
+            throw new UnsupportedOperationException(
+                    "This value type does not support a getIdByName(String) method, value type class: " //$NON-NLS-1$
+                            + getAdaptedClass());
+        }
+        return (String)getIdByValueNameFromClass(valueName);
+    }
+
+    @Override
+    public String getGetIdByNameMethodName() {
+        return getIdByNameMethodName;
+    }
+
+    @Override
+    public void setGetIdByNameMethodName(String name) {
+        getIdByNameMethodName = name;
+    }
+
+    @Override
+    public MessageList checkReadyToUse() {
+        MessageList ml = super.checkReadyToUse();
+        if (isSupportingNames()) {
+            checkGetIdByName(ml);
+            checkGetName(ml);
+        }
+        return ml;
+    }
+
+    private void checkGetName(MessageList ml) {
+        if (StringUtils.isBlank(getGetNameMethodName())) {
+            ml.add(Message.newError(MSGCODE_GET_NAME_METHOD_IS_BLANK,
+                    "SupportingNames is true but no getNameMethod method is configured.")); //$NON-NLS-1$ ));
+        }
+        DatatypeValidation.checkMethod(ml, getGetNameMethod(), false, String.class);
+    }
+
+    private void checkGetIdByName(MessageList ml) {
+        if (StringUtils.isBlank(getGetIdByNameMethodName())) {
+            ml.add(Message.newError(MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK,
+                    "SupportingNames is true but no getIdByNameMethod method is configured.")); //$NON-NLS-1$
+        }
+        DatatypeValidation.checkMethod(ml, getGetIdByNameMethod(), true, getAdaptedClass());
+    }
+
+    private Method getGetIdByNameMethod() {
+        if (getIdByNameMethod == null && getGetIdByNameMethodName() != null) {
+            try {
+                getIdByNameMethod = getAdaptedClass().getMethod(getGetIdByNameMethodName(), String.class);
+                // CSOFF: Illegal Catch
+            } catch (Exception e) {
+                // CSON: Illegal Catch
+                throw new RuntimeException("Unable to access the method " + getIdByNameMethod //$NON-NLS-1$
+                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
+            }
+        }
+        return getIdByNameMethod;
+    }
+
+    private Object getIdByValueNameFromClass(String valueName) {
+        try {
+            if (valueName == null) {
+                return null;
+            }
+            return getGetIdByNameMethod().invoke(null, valueName);
+            // CSOFF: Illegal Catch
+        } catch (Exception e) {
+            // CSON: Illegal Catch
+            throw new RuntimeException("Unable to invoke the method to get the value name " + getIdByNameMethodName //$NON-NLS-1$
+                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Returns the method to get the name for a given valueId from the adapted class.
+     * 
+     * @throws RuntimeException if the method can't be found.
+     */
+    private Method getGetNameMethod() {
+        if (getNameMethod == null && getNameMethodName != null) {
+            try {
+                getNameMethod = getAdaptedClass().getMethod(getNameMethodName);
+                // CSOFF: Illegal Catch
+            } catch (Exception e) {
+                // CSON: Illegal Catch
+                throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
+                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
+            }
+        }
+        return getNameMethod;
+    }
+
+    private String getValueNameFromClass(String id) {
+        try {
+            Object value = getValue(id);
+            if (value == null) {
+                return null;
+            }
+            return (String)getGetNameMethod().invoke(value);
+
+            // CSOFF: Illegal Catch
+        } catch (Exception e) {
+            // CSON: Illegal Catch
+            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
+                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
+        }
+    }
 }

@@ -10,6 +10,9 @@
 
 package org.faktorips.fl;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -54,7 +57,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
 
     @Override
     public boolean isParsable(String value) {
-        return value.equals("MONTH") || value.equals(("YEAR"));
+        return "MONTH".equals(value) || "YEAR".equals(value);
     }
 
     @Override
@@ -131,4 +134,11 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return false;
     }
 
+    @Override
+    public String getIdByName(String valueName) {
+        return Arrays.stream(getAllValueIds(false))
+                .filter(id -> StringUtils.equals(getValueName(id), valueName))
+                .findFirst()
+                .orElse(null);
+    }
 }

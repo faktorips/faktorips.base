@@ -10,9 +10,11 @@
 
 package org.faktorips.devtools.model.enums;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -427,4 +429,11 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return getEnumValueContainer().getQualifiedName();
     }
 
+    @Override
+    public String getIdByName(String valueName) {
+        return Arrays.stream(getAllValueIds(false))
+                .filter(id -> StringUtils.equals(getValueName(id), valueName))
+                .findFirst()
+                .orElse(null);
+    }
 }

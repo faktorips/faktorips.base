@@ -82,6 +82,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         }
         checkParsableMethodName(list);
         checkStringMethodName(list);
+        checkNullObjectDefined(list);
         try {
             getValueOfMethod();
             // CSOFF: Illegal Catch
@@ -91,13 +92,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
             return list;
         }
-        if (valueOfMethod != null && !getAdaptedClass().isAssignableFrom(valueOfMethod.getReturnType())) {
-            String text = "The method " + valueOfMethod + " does not return a " //$NON-NLS-1$ //$NON-NLS-2$
-                    + getAdaptedClass().getSimpleName();
-            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
-            return list;
-        }
-        checkNullObjectDefined(list);
+        DatatypeValidation.checkMethod(list, valueOfMethod, true, getAdaptedClass());
         return list;
     }
 
@@ -111,11 +106,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
                 list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
             }
-            if (isParsableMethod != null && !(Boolean.class.isAssignableFrom(isParsableMethod.getReturnType())
-                    || Boolean.TYPE.isAssignableFrom(isParsableMethod.getReturnType()))) {
-                String text = "The method " + isParsableMethod + " does not return a boolean value type"; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
-            }
+            DatatypeValidation.checkMethod(list, isParsableMethod, false, Boolean.class);
         }
     }
 

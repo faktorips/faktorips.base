@@ -36,4 +36,10 @@ public interface NamedDatatype extends ValueDatatype {
      * {@link #getValueName(String)} method is supposed to throw an {@link IllegalStateException}.
      */
     public boolean isSupportingNames();
+
+    /**
+     * Returns the id for an specific value name and therefore does the exact contrary than
+     * {@link #getValueName(String)}.
+     */
+    public String getIdByName(String valueName);
 }

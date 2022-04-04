@@ -23,22 +23,4 @@ public interface IDynamicEnumDatatype extends IDynamicValueDatatype, EnumDatatyp
      * Returns the name of the method that provides all values of the datatype.
      */
     String getAllValuesMethodName();
-
-    /**
-     * Sets the name of the method that returns the isSupportingNames flag of the enumeration class
-     * wrapped by this dynamic enum datatype.
-     */
-    void setIsSupportingNames(boolean supporting);
-
-    /**
-     * Sets the name of the method that returns the name of a value of the enumeration class wrapped
-     * by this dynamic enum datatype.
-     */
-    void setGetNameMethodName(String getNameMethodName);
-
-    /**
-     * Returns the name of the method returning the value's name.
-     */
-    String getGetNameMethodName();
-
 }

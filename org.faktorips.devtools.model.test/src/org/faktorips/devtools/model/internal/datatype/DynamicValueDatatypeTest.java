@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -77,4 +79,16 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertNull(type.getNullObjectId());
     }
 
+    @Test
+    public void testGetNamedDatatype() {
+        Element docEl = getTestDocument().getDocumentElement();
+        Element el = XmlUtil.getElement(docEl, "Datatype", 4);
+        DynamicValueDatatype type = DynamicValueDatatype.createFromXml(ipsProject, el);
+
+        assertThat(type.getAdaptedClassName(), is("foo.bar.MyDataType"));
+        assertThat(type.isEnum(), is(false));
+        assertThat(type.isSupportingNames(), is(true));
+        assertThat(type.getGetNameMethodName(), is("getSymbol"));
+        assertThat(type.getGetIdByNameMethodName(), is("getIdByName"));
+    }
 }

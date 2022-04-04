@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -83,6 +85,13 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
     @Test
     public void testIsSupportingNames() {
         assertTrue(dataType.isSupportingNames());
+    }
+
+    @Test
+    public void testGetIdByName() {
+        String id = dataType.getIdByName("third");
+
+        assertThat(id, is("3"));
     }
 
     @Test

@@ -11,7 +11,9 @@
 package org.faktorips.abstracttest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class TestEnumType {
 
@@ -72,5 +74,13 @@ public class TestEnumType {
     @Override
     public String toString() {
         return getId();
+    }
+
+    public static String getIdByName(String name) {
+        return Arrays.stream(getAllValues())
+                .filter(v -> Objects.equals(v.getName(), name))
+                .map(v -> v.getId())
+                .findFirst()
+                .orElse(null);
     }
 }
