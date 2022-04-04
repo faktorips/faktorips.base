@@ -1,17 +1,183 @@
-<?xml version="1.0" encoding="UTF-8"?><umlet_diagram><element><type>com.umlet.element.base.Note</type><coordinates><x>40</x><y>360</y><w>590</w><h>330</h></coordinates><panel_attributes>A datatype can be either a reference type or a value type. 
-In most cases a datatypes refers to an existing Java class. 
-However the usage of a Datatype class  allows us to use a Datatype when no 
-Java class exists (because it is generated later).
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>54</x>
+      <y>45</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/Datatype/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>54</x>
+      <y>117</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/ValueDatatype/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>99</x>
+      <y>72</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>126</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>GenericValueDatatype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>153</x>
+      <y>126</y>
+      <w>81</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>54</x>
+      <y>189</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/NamedDatatype/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>99</x>
+      <y>144</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>54</x>
+      <y>261</y>
+      <w>108</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+/EnumDatatype/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>99</x>
+      <y>216</y>
+      <w>27</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>270</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>GenericEnumDatatype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>153</x>
+      <y>270</y>
+      <w>81</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>216</x>
+      <y>54</y>
+      <w>153</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>AbstractDatatype</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>153</x>
+      <y>54</y>
+      <w>81</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>54</x>
+      <y>333</y>
+      <w>585</w>
+      <h>261</h>
+    </coordinates>
+    <panel_attributes>A datatype can be either a reference type or a value type. 
+In most cases a datatype refers to an existing Java class. 
+However the use of a Datatype implementation class allows us to use a datatype when no 
+Java class exists (because it is generated later) or the class' methods do not match
+the requirements for a datatype.
 
 A value datatype represents a value concept similiar to value classes in Java. 
 Examples are Integer, String, Money and so on.
 
-Enumeration value type like Gender, Payment Mode etc. are represented by EnumDatatype.
+Named datatypes have a human readable name (for example currency symbols like $ and €
+or full names like "annual payment") for every value in addition to a more technical ID.
 
-GenericValueDatatype and GenericEnumDatatype allow to use an existing Java class as 
+Enumeration value types like Gender, Payment Mode etc. are represented by EnumDatatypes.
+
+GenericValueDatatype and GenericEnumDatatype allow the use of an existing Java class as 
 Datatype by "wrapping" it with an instance of GenericValueDatatype instead of writing
-a new class implementing the ValueDatatype / EnumDatatype interface.
-</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>240</x><y>260</y><w>180</w><h>30</h></coordinates><panel_attributes>GenericEnumDatatype</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>50</x><y>150</y><w>110</w><h>40</h></coordinates><panel_attributes>ValueDatatype
-&lt;&lt;Interface&gt;&gt;</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>50</x><y>30</y><w>120</w><h>40</h></coordinates><panel_attributes>Datatype
-&lt;&lt;Interface&gt;&gt;</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>50</x><y>260</y><w>110</w><h>40</h></coordinates><panel_attributes>EnumDatatype
-&lt;&lt;Interface&gt;&gt;</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Class</type><coordinates><x>240</x><y>150</y><w>180</w><h>30</h></coordinates><panel_attributes>GenericValueDatatype</panel_attributes><additional_attributes>transparentSelection=false</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>140</x><y>250</y><w>120</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;100;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>140</x><y>140</y><w>120</w><h>40</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;100;20</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>90</x><y>170</y><w>40</w><h>110</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;90</additional_attributes></element><element><type>com.umlet.element.base.Relation</type><coordinates><x>90</x><y>50</y><w>40</w><h>120</h></coordinates><panel_attributes>lt=&lt;&lt;-</panel_attributes><additional_attributes>20;20;20;100</additional_attributes></element></umlet_diagram>
+a new class implementing the ValueDatatype/EnumDatatype interface.
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
