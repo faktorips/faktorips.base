@@ -8,33 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.fl.functions;
-
-import org.faktorips.values.Decimal;
-
 /**
- * SimpleBean for testing purposes.
- * 
- * @author Jan Ortmann
+ * This package defines some interfaces for the memento pattern.
  */
-public class SimpleBean {
-
-    private Decimal value;
-
-    public SimpleBean() {
-        super();
-    }
-
-    public SimpleBean(Decimal value) {
-        this.value = value;
-    }
-
-    public Decimal getValue() {
-        return value;
-    }
-
-    public void setValue(Decimal value) {
-        this.value = value;
-    }
-
-}
+package org.faktorips.util.memento;

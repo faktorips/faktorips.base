@@ -27,7 +27,7 @@ public class MessageListObjectPropertyMatcher extends TypeSafeMatcher<MessageLis
     private final int count;
 
     public MessageListObjectPropertyMatcher(ObjectProperty objectProperty) {
-        this(objectProperty, 1);
+        this(objectProperty, -1);
     }
 
     public MessageListObjectPropertyMatcher(ObjectProperty objectProperty, int count) {
@@ -37,7 +37,9 @@ public class MessageListObjectPropertyMatcher extends TypeSafeMatcher<MessageLis
 
     @Override
     public void describeTo(Description description) {
-        if (count == 1) {
+        if (count == -1) {
+            description.appendText("at least one message for " + objectProperty);
+        } else if (count == 1) {
             description.appendText("a message for " + objectProperty);
         } else {
             description.appendText(count + " messages for " + objectProperty);
@@ -46,7 +48,8 @@ public class MessageListObjectPropertyMatcher extends TypeSafeMatcher<MessageLis
 
     @Override
     protected boolean matchesSafely(MessageList ml) {
-        return ml.getMessagesFor(objectProperty.getObject(), objectProperty.getProperty()).size() == count;
+        int messages = ml.getMessagesFor(objectProperty.getObject(), objectProperty.getProperty()).size();
+        return count >= 0 ? messages == count : messages > 0;
     }
 
 }

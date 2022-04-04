@@ -10,10 +10,7 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
-import java.lang.reflect.Method;
-
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.datatype.DatatypeValidation;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -26,6 +23,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.MethodAccess;
 import org.w3c.dom.Element;
 
 /**
@@ -40,9 +38,11 @@ import org.w3c.dom.Element;
  */
 public class DynamicValueDatatype extends GenericValueDatatype implements IDynamicValueDatatype {
 
-    public static final String MSGCODE_GET_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX + "getNameMethod is empty or blank"; //$NON-NLS-1$
-    public static final String MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX
-            + "getIdByName is empty or blank"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_GET_NAME_METHOD = MSGCODE_PREFIX + "getNameMethod"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_NAME_METHOD + " is empty or blank"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD = MSGCODE_PREFIX + "getValueByName"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD
+            + " is empty or blank"; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
     private IClassLoaderProvider classLoaderProvider;
@@ -51,9 +51,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     private boolean isSupportingNames = false;
 
     private String getNameMethodName = ""; //$NON-NLS-1$
-    private Method getNameMethod;
-    private String getIdByNameMethodName = ""; //$NON-NLS-1$
-    private Method getIdByNameMethod;
+    private String getValueByNameMethodName = ""; //$NON-NLS-1$
 
     private String className;
     private Class<?> adaptedClass;
@@ -136,8 +134,8 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         if (getGetNameMethodName() != null) {
             element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
         }
-        if (getGetIdByNameMethodName() != null) {
-            element.setAttribute("getIdByName", getGetIdByNameMethodName()); //$NON-NLS-1$
+        if (getGetValueByNameMethodName() != null) {
+            element.setAttribute("getValueByName", getGetValueByNameMethodName()); //$NON-NLS-1$
         }
         element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
         if (hasNullObject()) {
@@ -174,10 +172,10 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         } else {
             datatype.setGetNameMethodName(null);
         }
-        if (element.hasAttribute("getIdByNameMethod")) { //$NON-NLS-1$
-            datatype.setGetIdByNameMethodName(element.getAttribute("getIdByNameMethod")); //$NON-NLS-1$ );
+        if (element.hasAttribute("getValueByNameMethod")) { //$NON-NLS-1$
+            datatype.setGetValueByNameMethodName(element.getAttribute("getValueByNameMethod")); //$NON-NLS-1$ );
         } else {
-            datatype.setGetIdByNameMethodName(null);
+            datatype.setGetValueByNameMethodName(null);
         }
         String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
         datatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
@@ -239,111 +237,81 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     }
 
     @Override
-    public String getIdByName(String valueName) {
-        if (StringUtils.isBlank(getIdByNameMethodName)) {
+    public Object getValueByName(String valueName) {
+        if (StringUtils.isBlank(getValueByNameMethodName)) {
             throw new UnsupportedOperationException(
-                    "This value type does not support a getIdByName(String) method, value type class: " //$NON-NLS-1$
+                    "This value type does not support a getValueByName(String) method, value type class: " //$NON-NLS-1$
                             + getAdaptedClass());
         }
-        return (String)getIdByValueNameFromClass(valueName);
+        return getValueByNameFromClass(valueName);
     }
 
     @Override
-    public String getGetIdByNameMethodName() {
-        return getIdByNameMethodName;
+    public String getGetValueByNameMethodName() {
+        return getValueByNameMethodName;
     }
 
     @Override
-    public void setGetIdByNameMethodName(String name) {
-        getIdByNameMethodName = name;
+    public void setGetValueByNameMethodName(String name) {
+        getValueByNameMethodName = name;
     }
 
     @Override
     public MessageList checkReadyToUse() {
         MessageList ml = super.checkReadyToUse();
         if (isSupportingNames()) {
-            checkGetIdByName(ml);
+            checkGetValueByName(ml);
             checkGetName(ml);
         }
         return ml;
     }
 
+    private MethodAccess getGetValueByNameMethod() {
+        return MethodAccess.of(getAdaptedClass(), getGetValueByNameMethodName(), CharSequence.class);
+    }
+
+    private void checkGetValueByName(MessageList ml) {
+        if (StringUtils.isBlank(getGetValueByNameMethodName())) {
+            ml.add(Message.newError(MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK,
+                    "SupportingNames is true but no getValueByNameMethod is configured.")); //$NON-NLS-1$
+        }
+        getGetValueByNameMethod()
+                .check(ml, MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD)
+                .exists()
+                .isStatic()
+                .returnTypeIsCompatible(getAdaptedClass());
+    }
+
+    private Object getValueByNameFromClass(String valueName) {
+        if (valueName == null) {
+            return null;
+        }
+        return getGetValueByNameMethod().invokeStatic("to get the value for a name", valueName); //$NON-NLS-1$
+    }
+
+    private MethodAccess getNameMethod() {
+        return MethodAccess.of(getAdaptedClass(), getGetNameMethodName());
+    }
+
     private void checkGetName(MessageList ml) {
         if (StringUtils.isBlank(getGetNameMethodName())) {
             ml.add(Message.newError(MSGCODE_GET_NAME_METHOD_IS_BLANK,
-                    "SupportingNames is true but no getNameMethod method is configured.")); //$NON-NLS-1$ ));
+                    "SupportingNames is true but no getNameMethod is configured.")); //$NON-NLS-1$
+            return;
         }
-        DatatypeValidation.checkMethod(ml, getGetNameMethod(), false, String.class);
-    }
 
-    private void checkGetIdByName(MessageList ml) {
-        if (StringUtils.isBlank(getGetIdByNameMethodName())) {
-            ml.add(Message.newError(MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK,
-                    "SupportingNames is true but no getIdByNameMethod method is configured.")); //$NON-NLS-1$
-        }
-        DatatypeValidation.checkMethod(ml, getGetIdByNameMethod(), true, getAdaptedClass());
-    }
-
-    private Method getGetIdByNameMethod() {
-        if (getIdByNameMethod == null && getGetIdByNameMethodName() != null) {
-            try {
-                getIdByNameMethod = getAdaptedClass().getMethod(getGetIdByNameMethodName(), String.class);
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Unable to access the method " + getIdByNameMethod //$NON-NLS-1$
-                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
-            }
-        }
-        return getIdByNameMethod;
-    }
-
-    private Object getIdByValueNameFromClass(String valueName) {
-        try {
-            if (valueName == null) {
-                return null;
-            }
-            return getGetIdByNameMethod().invoke(null, valueName);
-            // CSOFF: Illegal Catch
-        } catch (Exception e) {
-            // CSON: Illegal Catch
-            throw new RuntimeException("Unable to invoke the method to get the value name " + getIdByNameMethodName //$NON-NLS-1$
-                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
-        }
-    }
-
-    /**
-     * Returns the method to get the name for a given valueId from the adapted class.
-     * 
-     * @throws RuntimeException if the method can't be found.
-     */
-    private Method getGetNameMethod() {
-        if (getNameMethod == null && getNameMethodName != null) {
-            try {
-                getNameMethod = getAdaptedClass().getMethod(getNameMethodName);
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
-                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
-            }
-        }
-        return getNameMethod;
+        getNameMethod()
+                .check(ml, MSGCODE_PREFIX_GET_NAME_METHOD)
+                .exists()
+                .isNotStatic()
+                .returnTypeIsCompatible(String.class);
     }
 
     private String getValueNameFromClass(String id) {
-        try {
-            Object value = getValue(id);
-            if (value == null) {
-                return null;
-            }
-            return (String)getGetNameMethod().invoke(value);
-
-            // CSOFF: Illegal Catch
-        } catch (Exception e) {
-            // CSON: Illegal Catch
-            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
-                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
+        Object value = getValue(id);
+        if (value == null) {
+            return null;
         }
+        return getNameMethod().invoke("to get the value name", value); //$NON-NLS-1$
     }
 }

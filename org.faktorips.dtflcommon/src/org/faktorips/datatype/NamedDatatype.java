@@ -38,8 +38,18 @@ public interface NamedDatatype extends ValueDatatype {
     public boolean isSupportingNames();
 
     /**
-     * Returns the id for an specific value name and therefore does the exact contrary than
-     * {@link #getValueName(String)}.
+     * This method parses the given string and returns the value as an instance of the class this
+     * value datatype represents. The difference to {@link #getValue(String)} is that the given
+     * string is not a representation of the ID (as used by {@link #getValue(String)}) but of the
+     * name as returned by {@link #getValueName(String)}.
+     * <p>
+     * Use with caution: During development time Faktor-IPS maintains all values with their string
+     * representation. This allows to change the value's datatype without the need to convert the
+     * value from one class to another (e.g. if the string representation is 42 you can change the
+     * datatype from integer to string without converting the integer object to a string object.
+     * 
+     * @param name the name representation of a value
+     * @return the value as instance of the class this datatype represents
      */
-    public String getIdByName(String valueName);
+    public Object getValueByName(String name);
 }

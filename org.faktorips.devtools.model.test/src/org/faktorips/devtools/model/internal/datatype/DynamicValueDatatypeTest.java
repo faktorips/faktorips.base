@@ -89,6 +89,6 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertThat(type.isEnum(), is(false));
         assertThat(type.isSupportingNames(), is(true));
         assertThat(type.getGetNameMethodName(), is("getSymbol"));
-        assertThat(type.getGetIdByNameMethodName(), is("getIdByName"));
+        assertThat(type.getGetValueByNameMethodName(), is("getValueByName"));
     }
 }

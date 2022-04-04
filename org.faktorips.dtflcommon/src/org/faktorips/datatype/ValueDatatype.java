@@ -11,6 +11,7 @@
 package org.faktorips.datatype;
 
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.NullObject;
 
 /**
@@ -23,13 +24,13 @@ public interface ValueDatatype extends Datatype {
      * represents the wrapper class. Returns {@code null} if this datatype does not represent a
      * primitive.
      */
-    public ValueDatatype getWrapperType();
+    ValueDatatype getWrapperType();
 
     /**
      * Returns {@code true} if the given string can be parsed to a value of this datatype. Returns
      * {@code false} otherwise.
      */
-    public boolean isParsable(String value);
+    boolean isParsable(String value);
 
     /**
      * Returns {@code true} if the given string is {@code null} or the representation of the null
@@ -38,7 +39,25 @@ public interface ValueDatatype extends Datatype {
      *
      * @see NullObject
      */
-    public boolean isNull(String value);
+    default boolean isNull(String value) {
+        if (value == null) {
+            return true;
+        }
+        if (!hasNullObject()) {
+            return false;
+        }
+        return value.equals(getValue(getNullObjectId()));
+    }
+
+    /**
+     * Returns the string representation of the special null-object, if the datatype uses one.
+     *
+     * @see #hasNullObject()
+     * @see NullObject
+     */
+    default String getNullObjectId() {
+        return IpsStringUtils.EMPTY;
+    }
 
     /**
      * Returns {@code true} if this is a mutable datatype, {@code false} if it is an immutable
@@ -46,14 +65,14 @@ public interface ValueDatatype extends Datatype {
      * 
      * @return whether this is a mutable datatype
      */
-    public boolean isMutable();
+    boolean isMutable();
 
     /**
      * Returns {@code true} if this is an immutable datatype, {@code false} otherwise.
      * 
      * @return whether this is an immutable datatype
      */
-    public boolean isImmutable();
+    boolean isImmutable();
 
     /**
      * Returns the datatype's default value. For datatypes representing objects the method returns
@@ -64,7 +83,7 @@ public interface ValueDatatype extends Datatype {
      * 
      * @see Void
      */
-    public String getDefaultValue();
+    String getDefaultValue();
 
     /**
      * This method parses the given string and returns the value as an instance of the class this
@@ -81,13 +100,27 @@ public interface ValueDatatype extends Datatype {
      * 
      * @param value the string representation of a value
      * @return the value as instance of the class this datatype represents
+     * 
+     * @see ValueDatatype#valueToString(Object)
      */
-    public Object getValue(String value);
+    Object getValue(String value);
+
+    /**
+     * Returns the string representation of the given value compatible to {@link #getValue(String)}.
+     *
+     * @param value a value of this datatype
+     * @return the value's string representation
+     * 
+     * @see #getValue(String)
+     */
+    default String valueToString(Object value) {
+        return value == null ? IpsStringUtils.EMPTY : value.toString();
+    }
 
     /**
      * @return {@code true} if this datatype is able to compare two values.
      */
-    public boolean supportsCompare();
+    boolean supportsCompare();
 
     /**
      * Compares the values created from the two given strings.
@@ -100,7 +133,7 @@ public interface ValueDatatype extends Datatype {
      * @see #supportsCompare()
      * @see #getValue(String)
      */
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException;
+    int compare(String valueA, String valueB) throws UnsupportedOperationException;
 
     /**
      * Returns {@code true} if both given strings represent the same value defined by this datatype.
@@ -117,7 +150,7 @@ public interface ValueDatatype extends Datatype {
      * @throws IllegalArgumentException if one of the parameter values doesn't exist in the value
      *             set of this datatype.
      */
-    public boolean areValuesEqual(String valueA, String valueB);
+    boolean areValuesEqual(String valueA, String valueB);
 
     /**
      * Validates the value datatype and returns a message list containing error messages if the
@@ -126,6 +159,6 @@ public interface ValueDatatype extends Datatype {
      * Value datatypes like the predefined datatypes (defined by the constants in this class) are
      * always valid. However generic datatypes that implement this interface might be invalid.
      */
-    public MessageList checkReadyToUse();
+    MessageList checkReadyToUse();
 
 }

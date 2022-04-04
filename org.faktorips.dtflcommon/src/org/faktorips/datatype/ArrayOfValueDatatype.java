@@ -176,6 +176,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * If the value is null, null will be returned. Other values are not supported yet.
      */
+    @Override
     public String valueToString(Object value) {
         if (value == null) {
             return null;

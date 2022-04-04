@@ -50,6 +50,6 @@
         isEnumType="false" 
         isSupportingNames="true" 
         getNameMethod="getSymbol" 
-        getIdByNameMethod="getIdByName" >
+        getValueByNameMethod="getValueByName" >
     </Datatype>
 </TestCases>

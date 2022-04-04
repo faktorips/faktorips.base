@@ -47,17 +47,14 @@ public interface IDynamicValueDatatype extends NamedDatatype {
     void setIsSupportingNames(boolean supporting);
 
     /**
-     * Returns the name of the method that finds the id by name, e.g. finding the {@link Currency}
-     * instance for EUR with the € symbol.
-     * 
-     * @return the corresponding id
+     * Returns the name of the method that finds the value by name, e.g. finding the
+     * {@link Currency} instance for EUR with the € symbol.
      */
-    String getGetIdByNameMethodName();
+    String getGetValueByNameMethodName();
 
     /**
-     * Finds the id by name, e.g. finding the {@link Currency} instance for EUR with the € symbol.
-     * 
-     * @param name the name
+     * Sets the name of the method that finds the value by name, e.g. finding the {@link Currency}
+     * instance for EUR with the € symbol.
      */
-    void setGetIdByNameMethodName(String name);
+    void setGetValueByNameMethodName(String name);
 }

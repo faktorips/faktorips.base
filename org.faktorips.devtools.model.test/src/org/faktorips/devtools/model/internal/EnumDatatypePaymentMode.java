@@ -110,7 +110,7 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     }
 
     @Override
-    public String getIdByName(String valueName) {
+    public Object getValueByName(String name) {
         throw new UnsupportedOperationException("Not supported");
     }
 

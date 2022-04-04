@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.plugin;
 
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
@@ -36,8 +37,8 @@ public interface IDatatypeFormatter {
         if (datatype instanceof EnumTypeDatatypeAdapter) {
             return formatValue((EnumDatatype)datatype, value);
         }
-        if (datatype instanceof EnumDatatype) {
-            return formatValue((EnumDatatype)datatype, value);
+        if (datatype instanceof NamedDatatype) {
+            return formatValue((NamedDatatype)datatype, value);
         }
         if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
             if (Boolean.valueOf(value).booleanValue()) {
@@ -53,7 +54,7 @@ public interface IDatatypeFormatter {
      * 
      * @param datatype The data type the value is a value of.
      */
-    default String formatValue(EnumDatatype datatype, String id) {
+    default String formatValue(NamedDatatype datatype, String id) {
         if (!datatype.isSupportingNames()) {
             return id;
         }

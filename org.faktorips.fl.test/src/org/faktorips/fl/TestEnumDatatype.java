@@ -10,9 +10,6 @@
 
 package org.faktorips.fl;
 
-import java.util.Arrays;
-
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -71,6 +68,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return null;
     }
 
+    @Override
     public String valueToString(Object value) {
         return value.toString();
     }
@@ -135,10 +133,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
     }
 
     @Override
-    public String getIdByName(String valueName) {
-        return Arrays.stream(getAllValueIds(false))
-                .filter(id -> StringUtils.equals(getValueName(id), valueName))
-                .findFirst()
-                .orElse(null);
+    public Object getValueByName(String name) {
+        return getValue(name);
     }
 }

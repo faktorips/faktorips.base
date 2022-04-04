@@ -88,10 +88,10 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIdByName() {
-        String id = dataType.getIdByName("third");
+    public void testGetValueByName() {
+        TestEnumType value = (TestEnumType)dataType.getValueByName("third");
 
-        assertThat(id, is("3"));
+        assertThat(value, is(TestEnumType.THIRDVALUE));
     }
 
     @Test

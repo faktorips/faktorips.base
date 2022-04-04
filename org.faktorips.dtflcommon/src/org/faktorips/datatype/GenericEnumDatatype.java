@@ -10,14 +10,13 @@
 
 package org.faktorips.datatype;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.MethodAccess;
 
 /**
  * Generic enum datatype. See the superclass for more Details.
@@ -26,12 +25,11 @@ import org.faktorips.runtime.MessageList;
  */
 public abstract class GenericEnumDatatype extends GenericValueDatatype implements EnumDatatype {
 
-    private Method getAllValuesMethod;
+    public static final String MSGCODE_PREFIX_GET_ALL_VALUES_METHOD = MSGCODE_PREFIX + "getAllValuesMethod"; //$NON-NLS-1$
 
-    private Method getNameMethod;
+    public static final String MSGCODE_PREFIX_GET_NAME_METHOD = MSGCODE_PREFIX + "getNameMethod"; //$NON-NLS-1$
 
     private String getAllValuesMethodName = "getAllValues"; //$NON-NLS-1$
-
     private String getNameMethodName = "getName"; //$NON-NLS-1$
 
     private boolean isSupportingNames = false;
@@ -67,15 +65,30 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
     public void setGetAllValuesMethodName(String getAllValuesMethodName) {
         this.getAllValuesMethodName = getAllValuesMethodName;
-        getAllValuesMethod = null;
         clearCache();
+    }
+
+    private MethodAccess getAllValuesMethod() {
+        return MethodAccess.of(getAdaptedClass(), getGetAllValuesMethodName());
+    }
+
+    private MethodAccess getNameMethod() {
+        return MethodAccess.of(getAdaptedClass(), getGetNameMethodName());
     }
 
     @Override
     public MessageList checkReadyToUse() {
         MessageList ml = super.checkReadyToUse();
-        DatatypeValidation.checkMethod(ml, getAllValuesMethod, true, Object[].class, Collection.class);
-        DatatypeValidation.checkMethod(ml, getNameMethod, false, String.class);
+        getAllValuesMethod()
+                .check(ml, MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)
+                .exists()
+                .isStatic()
+                .returnTypeIsCompatible(Object[].class, Collection.class);
+        getNameMethod()
+                .check(ml, MSGCODE_PREFIX_GET_NAME_METHOD)
+                .exists()
+                .isNotStatic()
+                .returnTypeIsCompatible(String.class);
         return ml;
     }
 
@@ -90,7 +103,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * Sets the name of the getName(String) method.
      */
     public void setGetNameMethodName(String getNameMethodName) {
-        getNameMethod = null;
         this.getNameMethodName = getNameMethodName;
         clearCache();
     }
@@ -134,17 +146,16 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     /**
-     * Returns the value id's from the underlying enum class' via it's getAllValuesMethod().
-     * 
-     * throws IllegalArgumentException
+     * Returns the value id's from the underlying enum class' via it's get-all-values method.
      */
-    private String[] getAllValueIdsFromClass() throws IllegalAccessException, InvocationTargetException {
-        Method allValuesMethod = getGetAllValuesMethod();
+    private String[] getAllValueIdsFromClass() {
+        Object result = getAllValuesMethod()
+                .invokeStatic("to get all values"); //$NON-NLS-1$
         Object[] values;
-        if (Collection.class.isAssignableFrom(allValuesMethod.getReturnType())) {
-            values = ((Collection<?>)allValuesMethod.invoke(null)).toArray(Object[]::new);
+        if (result instanceof Collection) {
+            values = ((Collection<?>)result).toArray(Object[]::new);
         } else {
-            values = (Object[])allValuesMethod.invoke(null);
+            values = (Object[])result;
         }
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
@@ -163,47 +174,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             }
         }
         return -1;
-    }
-
-    /**
-     * Returns the method to get all enum values from the adapted class.
-     * 
-     * @throws RuntimeException if the method can't be found.
-     */
-    public Method getGetAllValuesMethod() {
-        if (getAllValuesMethod == null && getAllValuesMethodName != null) {
-            try {
-                getAllValuesMethod = getAdaptedClass().getMethod(getAllValuesMethodName);
-                if (getAllValuesMethod == null) {
-                    throw new NullPointerException();
-                }
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Can't get method getAllValues(), Class: " + getAdaptedClass() //$NON-NLS-1$
-                        + ", Methodname: " + getAllValuesMethodName); //$NON-NLS-1$
-            }
-        }
-        return getAllValuesMethod;
-    }
-
-    /**
-     * Returns the method to get the name for a given valueId from the adapted class.
-     * 
-     * @throws RuntimeException if the method can't be found.
-     */
-    public Method getGetNameMethod() {
-        if (getNameMethod == null && getNameMethodName != null) {
-            try {
-                getNameMethod = getAdaptedClass().getMethod(getNameMethodName);
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
-                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
-            }
-        }
-        return getNameMethod;
     }
 
     @Override
@@ -226,19 +196,15 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     private String getValueNameFromClass(String id) {
-        try {
-            Object value = getValue(id);
-            if (value == null) {
-                return null;
-            }
-            return (String)getGetNameMethod().invoke(value);
+        Object value = getValue(id);
+        return getNameFromValue(value);
+    }
 
-            // CSOFF: Illegal Catch
-        } catch (Exception e) {
-            // CSON: Illegal Catch
-            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
-                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
+    protected String getNameFromValue(Object value) {
+        if (value == null) {
+            return null;
         }
+        return getNameMethod().invoke("to get the name for a value", value); //$NON-NLS-1$
     }
 
     @Override
@@ -322,7 +288,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     @Override
     protected void clearCache() {
         super.clearCache();
-        getAllValuesMethod = null;
         cachedValueIds = null;
         cachedValueNames = null;
     }

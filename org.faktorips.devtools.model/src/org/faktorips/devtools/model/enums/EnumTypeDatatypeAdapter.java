@@ -108,6 +108,11 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             return null;
         }
 
+        return getValueName(ipsProject, enumValue);
+
+    }
+
+    private String getValueName(IIpsProject ipsProject, IEnumValue enumValue) {
         IEnumAttribute displayNameAttribute = getNameAttribute(ipsProject);
         IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
         if (enumAttributeValue != null) {
@@ -116,7 +121,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         } else {
             return null;
         }
-
     }
 
     private IEnumAttribute getNameAttribute(IIpsProject ipsProject) {
@@ -127,7 +131,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     @Override
-    public Object getValue(String value) {
+    public IEnumValue getValue(String value) {
         IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
         IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
         if (enumValue == null) {
@@ -430,9 +434,11 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     @Override
-    public String getIdByName(String valueName) {
+    public Object getValueByName(String name) {
+        IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
         return Arrays.stream(getAllValueIds(false))
-                .filter(id -> StringUtils.equals(getValueName(id), valueName))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(name, getValueName(ipsProject, v)))
                 .findFirst()
                 .orElse(null);
     }

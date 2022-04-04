@@ -1183,7 +1183,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             dataType.setQualifiedName(StringUtil.unqualifiedName(adaptedClas.getName()));
             dataType.setToStringMethodName("toString");
             dataType.setValueOfMethodName("valueOf");
-            dataType.setGetIdByNameMethodName("getIdByName");
+            dataType.setGetValueByNameMethodName("getValueByName");
             dataTypes.add(dataType);
             createEnumClassFileInProjectOutputLocation(project, adaptedClas);
         }

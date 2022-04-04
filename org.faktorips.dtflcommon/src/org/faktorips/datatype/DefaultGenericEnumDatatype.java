@@ -34,9 +34,10 @@ public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
     }
 
     @Override
-    public String getIdByName(String valueName) {
+    public Object getValueByName(String name) {
         return Arrays.stream(getAllValueIds(false))
-                .filter(id -> StringUtils.equals(getValueName(id), valueName))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(name, getNameFromValue(v)))
                 .findFirst()
                 .orElse(null);
     }

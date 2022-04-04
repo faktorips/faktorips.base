@@ -339,13 +339,13 @@ public class EnumTypeDatatypeAdapterIntegrationTest extends AbstractIpsEnumPlugi
 
     @Test
     public void testGetIdByName_existing() {
-        String id = paymentModeAdapter.getIdByName("monthly");
-        assertThat(id, is("P1"));
+        IEnumValue value = (IEnumValue)paymentModeAdapter.getValueByName("monthly");
+        assertThat(value, is(paymentModeAdapter.getValue("P1")));
     }
 
     @Test
     public void testGetIdByName_notExisting() {
-        String id = paymentModeAdapter.getIdByName("noValue");
-        assertThat(id, is(nullValue()));
+        IEnumValue value = (IEnumValue)paymentModeAdapter.getValueByName("noValue");
+        assertThat(value, is(nullValue()));
     }
 }
