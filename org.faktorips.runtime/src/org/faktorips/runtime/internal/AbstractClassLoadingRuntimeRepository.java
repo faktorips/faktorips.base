@@ -239,10 +239,9 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
                     }
                     if (correct) {
                         @SuppressWarnings("unchecked")
-                        // neccessary as Class.getDeclaredConstructors() is of type
-                        // Constructor<?>[]
-                        // while returning Contructor<T>[]
-                        // The Javaoc Class.getDeclaredConstructors() for more information
+                        // necessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
+                        // while returning Constructor<T>[]
+                        // See the Javadoc of Class#getDeclaredConstructors() for more information
                         Constructor<T> castedConstructor = (Constructor<T>)currentConstructor;
                         constructor = castedConstructor;
                         break;

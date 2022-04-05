@@ -252,7 +252,7 @@ public abstract class XType extends XClass {
     }
 
     private static class NonAbstractSupertypeFinder extends TypeHierarchyVisitor<IType> {
-        boolean hasNonAbstractSupertype = false;
+        private boolean hasNonAbstractSupertype = false;
 
         public NonAbstractSupertypeFinder(IIpsProject ipsProject) {
             super(ipsProject);

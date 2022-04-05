@@ -69,6 +69,11 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import org.faktorips.runtime.util.ProductComponentLinks
 import org.faktorips.valueset.StringLengthValueSet
 import java.util.Objects
+import org.faktorips.runtime.IRuntimeRepositoryLookup
+import java.io.InvalidObjectException
+import java.io.Serializable
+import java.io.IOException
+import java.io.ObjectInputStream
 
 @SuppressFBWarnings
 class ClassNames {
@@ -182,6 +187,8 @@ class ClassNames {
 
     def static IRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepository)) }
 
+    def static IRuntimeRepositoryLookup(AbstractGeneratorModelNode it) { addImport(typeof(IRuntimeRepositoryLookup)) }
+
     def static InMemoryRuntimeRepository(AbstractGeneratorModelNode it) { addImport(typeof(InMemoryRuntimeRepository)) }
 
     def static DateTime(AbstractGeneratorModelNode it) { addImport(typeof(DateTime)) }
@@ -261,9 +268,15 @@ class ClassNames {
 
     def static IllegalStateException(AbstractGeneratorModelNode it) { addImport(typeof(IllegalStateException)) }
 
+    def static InvalidObjectException(AbstractGeneratorModelNode it) { addImport(typeof(InvalidObjectException)) }
+
+    def static IOException(AbstractGeneratorModelNode it) { addImport(typeof(IOException)) }
+
     def static ObjectUtil(AbstractGeneratorModelNode it) { addImport(typeof(ObjectUtil)) }
 
     def static Objects(AbstractGeneratorModelNode it) { addImport(typeof(Objects)) }
+
+    def static ObjectInputStream(AbstractGeneratorModelNode it) { addImport(typeof(ObjectInputStream)) }
 
     def static IObjectReferenceStore(AbstractGeneratorModelNode it) { addImport(typeof(IObjectReferenceStore)) }
 
@@ -282,5 +295,9 @@ class ClassNames {
     def static InstantiationException(AbstractGeneratorModelNode it) { addImport("java.lang.InstantiationException") }
 
     def static GregorianCalendar(AbstractGeneratorModelNode it) { addImport("java.util.GregorianCalendar") }
+    
+    def static Serializable(AbstractGeneratorModelNode it) { addImport(typeof(Serializable)) }
+    
+    def static SuppressWarnings(AbstractGeneratorModelNode it) { addImport(typeof(SuppressWarnings)) }
 
 }
