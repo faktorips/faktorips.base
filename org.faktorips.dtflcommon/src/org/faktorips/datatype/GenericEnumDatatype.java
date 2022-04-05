@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
 
 /**
@@ -41,16 +42,15 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     /**
-     * Returns <code>true</code> if the values' id and names are cached, <code>false</code>
-     * otherwise.
+     * Returns {@code true} if the values' id and names are cached, {@code false} otherwise.
      */
     public boolean isCacheData() {
         return cacheData;
     }
 
     /**
-     * Sets to <code>true</code> if the values' ids and names should be cached, otherwise
-     * <code>false</code>. Setting <code>false</code> also clears the cache.
+     * Sets to {@code true} if the values' ids and names should be cached, otherwise {@code false}.
+     * Setting {@code false} also clears the cache.
      */
     public void setCacheData(boolean cacheData) {
         this.cacheData = cacheData;
@@ -129,7 +129,13 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * throws IllegalArgumentException
      */
     private String[] getAllValueIdsFromClass() throws IllegalAccessException, InvocationTargetException {
-        Object[] values = (Object[])getGetAllValuesMethod().invoke(null);
+        Method allValuesMethod = getGetAllValuesMethod();
+        Object[] values;
+        if (Collection.class.isAssignableFrom(allValuesMethod.getReturnType())) {
+            values = ((Collection<?>)allValuesMethod.invoke(null)).toArray(Object[]::new);
+        } else {
+            values = (Object[])allValuesMethod.invoke(null);
+        }
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
             ids[i] = valueToString(values[i]);
@@ -243,11 +249,11 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     /**
-     * Returns all value ids from the cache. If caching is enabled, but the cache is empty, the
-     * cahce is populated with the date. If caching is disabled, the method returns
-     * <code>null</code>.
+     * Returns all value IDs from the cache. If caching is enabled, but the cache is empty, the
+     * cache is populated with the IDs retrieved from {@link #getAllValueIdsFromClass()}. If caching
+     * is disabled, the method returns {@code null}.
      * <p>
-     * Package private to allows testing.
+     * Package private to allow testing.
      */
     String[] getAllValueIdsFromCache() {
         if (!cacheData) {
@@ -261,10 +267,10 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
     /**
      * Returns all value names from the cache. If caching is enabled, but the cache is empty, the
-     * cahce is populated with the date. If caching is disabled, the method returns
-     * <code>null</code>.
+     * cache is populated with the names for all values retrieved from
+     * {@link #getAllValueIdsFromClass()}. If caching is disabled, the method returns {@code null}.
      * <p>
-     * Package private to allows testing.
+     * Package private to allow testing.
      */
     String[] getAllValueNamesFromCache() {
         if (!isSupportingNames) {

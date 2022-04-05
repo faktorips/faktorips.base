@@ -17,6 +17,10 @@ package org.faktorips.datatype;
  */
 public class TestValueClass {
 
+    private TestValueClass() {
+        super();
+    }
+
     public static final Integer getInteger(String s) {
         return Integer.valueOf(s);
     }
@@ -28,10 +32,6 @@ public class TestValueClass {
         } catch (NumberFormatException e) {
             return false;
         }
-    }
-
-    public TestValueClass() {
-        super();
     }
 
 }

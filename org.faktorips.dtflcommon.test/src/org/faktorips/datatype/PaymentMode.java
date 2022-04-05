@@ -22,6 +22,11 @@ public class PaymentMode implements NullObjectSupport {
     private final String id;
     private final String name;
 
+    PaymentMode(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public static final PaymentMode[] getAllPaymentModes() {
         return new PaymentMode[] { MONTHLY, ANNUAL };
     }
@@ -46,11 +51,6 @@ public class PaymentMode implements NullObjectSupport {
             return MONTHLY;
         }
         throw new IllegalArgumentException("The id " + id + " does not identify a PaymentMode"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
-    PaymentMode(String id, String name) {
-        this.id = id;
-        this.name = name;
     }
 
     public String getId() {

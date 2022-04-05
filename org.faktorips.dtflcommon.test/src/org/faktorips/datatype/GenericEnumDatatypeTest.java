@@ -17,6 +17,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.faktorips.values.NullObjectSupport;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +35,7 @@ public class GenericEnumDatatypeTest {
     }
 
     @Test
-    public void testGetAllValueIds() {
+    public void testGetAllValueIds_FromArray() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
@@ -53,6 +58,47 @@ public class GenericEnumDatatypeTest {
         valueIds = datatype.getAllValueIds(true);
         assertEquals(3, valueIds.length);
         assertEquals(null, valueIds[2]);
+    }
+
+    @Test
+    public void testGetAllValueIds_FromList() {
+        datatype = new DefaultGenericEnumDatatype(TestValueClassWithListOfAllValues.class);
+        datatype.setGetAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setNullObjectDefined(false);
+        String[] valueIds = datatype.getAllValueIds(false);
+        assertEquals(3, valueIds.length);
+        assertEquals("1", valueIds[0]);
+        assertEquals("2", valueIds[1]);
+        assertEquals("3", valueIds[2]);
+
+        valueIds = datatype.getAllValueIds(true);
+        assertEquals(4, valueIds.length);
+        assertEquals("1", valueIds[0]);
+        assertEquals("2", valueIds[1]);
+        assertEquals("3", valueIds[2]);
+        assertEquals(null, valueIds[3]);
+    }
+
+    @Test
+    public void testGetAllValueIds_FromSet() {
+        datatype = new DefaultGenericEnumDatatype(TestValueClassWithSetOfAllValuesAndNullObject.class);
+        datatype.setGetAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setNullObjectDefined(true);
+        datatype.setNullObjectId("0");
+        String[] valueIds = datatype.getAllValueIds(false);
+        assertEquals(3, valueIds.length);
+        assertEquals("1", valueIds[0]);
+        assertEquals("2", valueIds[1]);
+        assertEquals("3", valueIds[2]);
+
+        valueIds = datatype.getAllValueIds(true);
+        assertEquals(4, valueIds.length);
+        assertEquals("1", valueIds[0]);
+        assertEquals("0", valueIds[1]);
+        assertEquals("2", valueIds[2]);
+        assertEquals("3", valueIds[3]);
     }
 
     @Test
@@ -155,6 +201,71 @@ public class GenericEnumDatatypeTest {
         datatype.setCacheData(false);
         names = datatype.getAllValueNamesFromCache();
         assertNull(names); // should have cleared the cached
+    }
+
+    static class TestValueClassWithListOfAllValues {
+        private final int value;
+
+        private TestValueClassWithListOfAllValues(int value) {
+            this.value = value;
+        }
+
+        public static TestValueClassWithListOfAllValues of(String id) {
+            return new TestValueClassWithListOfAllValues(Integer.parseInt(id));
+        }
+
+        public static List<TestValueClassWithListOfAllValues> getAllValues() {
+            return List.of(of("1"), of("2"), of("3"));
+        }
+
+        public String getId() {
+            return Integer.toString(value);
+        }
+    }
+
+    static class TestValueClassWithSetOfAllValuesAndNullObject implements NullObjectSupport {
+
+        public static TestValueClassWithSetOfAllValuesAndNullObject NULL = new TestValueClassWithSetOfAllValuesAndNullObject(
+                0) {
+            @Override
+            public boolean isNull() {
+                return true;
+            }
+
+            @Override
+            public boolean isNotNull() {
+                return false;
+            }
+        };
+
+        private final int value;
+
+        private TestValueClassWithSetOfAllValuesAndNullObject(int value) {
+            this.value = value;
+        }
+
+        public static TestValueClassWithSetOfAllValuesAndNullObject of(String id) {
+            return new TestValueClassWithSetOfAllValuesAndNullObject(Integer.parseInt(id));
+        }
+
+        public static Set<TestValueClassWithSetOfAllValuesAndNullObject> getAllValues() {
+            return new LinkedHashSet<>(List.of(of("1"), NULL, of("2"), of("3")));
+        }
+
+        public String getId() {
+            return Integer.toString(value);
+        }
+
+        @Override
+        public boolean isNull() {
+            return false;
+        }
+
+        @Override
+        public boolean isNotNull() {
+            return true;
+        }
+
     }
 
 }
