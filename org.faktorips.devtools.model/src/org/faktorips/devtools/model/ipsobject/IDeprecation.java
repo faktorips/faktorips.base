@@ -10,41 +10,52 @@
 
 package org.faktorips.devtools.model.ipsobject;
 
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
+import org.faktorips.devtools.model.XmlSupport;
 
 /**
- * This interface is implemented by every {@link IIpsElement} that supports the since-version
- * mechanism.
- * <p>
- * The since-version is a documentation property that tells the user since which version a element
- * is available in the model.
- * 
+ * The implementation of this interface is used to provide deprecation information for an
+ * {@link IVersionControlledElement}. It describes the version since the part is deprecated, whether
+ * the part is marked for removal and supports attaching {@link IDescription IDescriptions} in
+ * different languages.
  */
-public interface IVersionControlledElement extends IIpsObjectPartContainer {
+public interface IDeprecation extends IDescribedElement, XmlSupport {
 
-    public static final String PROPERTY_SINCE_VERSION_STRING = "sinceVersionString"; //$NON-NLS-1$
+    public static final String XML_TAG = "Deprecation"; //$NON-NLS-1$
+
+    public static final String XML_ATTRIBUTE_DEPRECATION_VERSION = "since"; //$NON-NLS-1$
+
+    public static final String XML_ATTRIBUTE_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
 
     /**
-     * Sets the Version since which this part is available in the model using a version string
-     * representation.
+     * Returns whether the part is marked for removal.
+     */
+    public boolean isForRemoval();
+
+    /**
+     * Marks the part for removal.
+     */
+    public void setForRemoval(boolean forRemoval);
+
+    /**
+     * Sets the version since which this part is deprecated using a version string representation.
      * 
      * @param version The version-string that should be set as since-version
      */
-    void setSinceVersionString(String version);
+    public void setSinceVersionString(String version);
 
     /**
-     * Returns the version since which this part is available as a string. The version was set by
+     * Returns the version since which this part is deprecated as a string. The version was set by
      * {@link #setSinceVersionString(String)}.
      * 
-     * @return the version since which this element is available
+     * @return the version since which this element is deprecated
      * @see #getSinceVersion()
      */
-    String getSinceVersionString();
+    public String getSinceVersionString();
 
     /**
-     * Returns the version since which this part is available. The version was set by
+     * Returns the version since which this part is deprecated. The version was set by
      * {@link #setSinceVersionString(String)}. Returns <code>null</code> if no since version is set.
      * 
      * @return the version since which this element is available
@@ -52,7 +63,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      *             to the configured {@link IVersionProvider}
      * @see #isValidSinceVersion()
      */
-    IVersion<?> getSinceVersion();
+    public IVersion<?> getSinceVersion();
 
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
@@ -63,18 +74,6 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
      *         return a valid version. Otherwise <code>false</code>.
      */
-    boolean isValidSinceVersion();
-
-    /**
-     * Creates a new {@link IDeprecation} for this element. If it already had a deprecation, it is
-     * replaced by the new one.
-     */
-    IDeprecation newDeprecation();
-
-    /**
-     * Returns the deprecation information for this part, if it is deprecated or {@code null}
-     * otherwise.
-     */
-    IDeprecation getDeprecation();
+    public boolean isValidSinceVersion();
 
 }

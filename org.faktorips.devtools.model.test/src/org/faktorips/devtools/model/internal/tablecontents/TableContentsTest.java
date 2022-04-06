@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.tablecontents;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinit
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.preferences.DefaultIpsModelPreferences;
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -208,9 +210,15 @@ public class TableContentsTest extends AbstractDependencyTest {
     @Test
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
-        assertEquals("blabla", table.getDescriptionText(Locale.GERMAN));
-        assertEquals("Ts", table.getTableStructure());
-        assertEquals(2, table.getNumOfColumns());
+
+        assertThat(table.getDescriptionText(Locale.GERMAN), is("blabla"));
+        assertThat(table.getTableStructure(), is("Ts"));
+        assertThat(table.getNumOfColumns(), is(2));
+        IDeprecation deprecation = table.getDeprecation();
+        assertThat(deprecation, is(notNullValue()));
+        assertThat(deprecation.getSinceVersionString(), is("22.6"));
+        assertThat(deprecation.isForRemoval(), is(true));
+        assertThat(deprecation.getDescriptionText(Locale.GERMAN), is("Andere Tabelle benutzen"));
     }
 
     private void addExtensionPropertyDefinition(String propId) {
