@@ -25,6 +25,13 @@ public class ListUtil {
     }
 
     /**
+     * Initializes an empty list. Uses the call-site type as the list's (generic) element type.
+     */
+    public static final <T> List<T> newList() {
+        return new ArrayList<>();
+    }
+
+    /**
      * Initializes a list with a given value. Uses the value's type as the list's (generic) element
      * type.
      */

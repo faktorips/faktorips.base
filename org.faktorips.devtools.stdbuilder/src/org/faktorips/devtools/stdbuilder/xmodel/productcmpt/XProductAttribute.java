@@ -130,23 +130,17 @@ public class XProductAttribute extends XAttribute {
     }
 
     public String getNewMultiValueInstanceWithDefaultValue() {
-        if (getAttribute().getDefaultValue() == null) {
-            JavaCodeFragment newInstance = getDatatypeHelper().newInstance("");
-            addImport(newInstance.getImportDeclaration());
-            return newInstance.getSourcecode();
-        } else {
-            String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
-            List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
-            for (String defaultValue : defaultValues) {
-                JavaCodeFragment fragment = super.getDatatypeHelper().newInstance(defaultValue);
-                addImport(fragment.getImportDeclaration());
-                defaultValueCodes.add(fragment.getSourcecode());
-            }
-
-            JavaCodeFragment result = newListInitializer(defaultValueCodes);
-            addImport(result.getImportDeclaration());
-            return result.getSourcecode();
+        String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
+        List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
+        for (String defaultValue : defaultValues) {
+            JavaCodeFragment fragment = super.getDatatypeHelper().newInstance(defaultValue);
+            addImport(fragment.getImportDeclaration());
+            defaultValueCodes.add(fragment.getSourcecode());
         }
+
+        JavaCodeFragment result = newListInitializer(defaultValueCodes);
+        addImport(result.getImportDeclaration());
+        return result.getSourcecode();
     }
 
     public String getNewMultiValueInstance() {

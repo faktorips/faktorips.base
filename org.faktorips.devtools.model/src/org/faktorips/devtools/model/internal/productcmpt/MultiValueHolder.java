@@ -11,12 +11,14 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections.ComparatorUtils;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
@@ -29,6 +31,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.collections.ListComparator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -315,7 +318,15 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
         }
 
         public static String[] getSplitMultiValue(String content) {
-            return content.split(MULTI_VALUE_SPLIT_REGEX);
+            if (content == null) {
+                return new String[] { null };
+            }
+            if (IpsStringUtils.isBlank(content)) {
+                return new String[0];
+            }
+            String nullPresentation = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
+            return Arrays.stream(content.split(MULTI_VALUE_SPLIT_REGEX))
+                    .map(s -> nullPresentation.equalsIgnoreCase(s.trim()) ? null : s.trim()).toArray(String[]::new);
         }
 
     }
