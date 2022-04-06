@@ -1387,24 +1387,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        --- the following attributes are only needed for value objects ---" + System.lineSeparator() //$NON-NLS-1$
                 + "        isEnumType=\"true|false\"                            True if this is an enumeration of values." + System.lineSeparator() //$NON-NLS-1$
                 + "        valueOfMethod=\"getPaymentMode\"                     Name of the method that takes a String and returns an" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             object instance/value." + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              object instance/value. This method has to be static." + System.lineSeparator() //$NON-NLS-1$
                 + "        isParsableMethod=\"isPaymentMode\"                   Name of the method that evaluates if a given string" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             can be parsed to an instance." + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              can be parsed to an instance. This method has to be static and" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              is optional, if the valueOfMethod throws an Exception in case of an invalid id." + System.lineSeparator() //$NON-NLS-1$
                 + "        valueToStringMethod=\"toString\"                     Name of the method that transforms an object instance" + System.lineSeparator() //$NON-NLS-1$
                 + "                                                              to a String (that can be parsed via the valueOfMethod)" + System.lineSeparator() //$NON-NLS-1$
-                + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values" + System.lineSeparator() //$NON-NLS-1$
-                + "        isSupportingNames=\"true\"                           For enums only: True indicates that a string" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             representation for the user other than the one defined by the valueToStringMethod exists." + System.lineSeparator() //$NON-NLS-1$
-                + "        getNameMethod=\"getName\">                           For enums only: The name of the method that returns" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             the string representation for the user, if" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             isSupportingNames=true" + System.lineSeparator() //$NON-NLS-1$
+                + "        getAllValuesMethod=\"getAllPaymentModes\"            For enums only: The name of the method that returns all values. This method has to be static." + System.lineSeparator() //$NON-NLS-1$
+                + "        isSupportingNames=\"true\"                           True indicates that a string" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              representation for the user other than the one defined by the valueToStringMethod exists." + System.lineSeparator() //$NON-NLS-1$
+                + "        getNameMethod=\"getName\"                            The name of the method that returns" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              the string representation for the user, if" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              isSupportingNames=true" + System.lineSeparator() //$NON-NLS-1$
+                + "        getValueByNameMethod=\"parseName\">                  The name of the method that returns a value for a given string representation for the user," + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              if isSupportingNames=true. This method has to be static and be compatible to the getNameMethod." + System.lineSeparator() //$NON-NLS-1$
                 + "        <NullObjectId isNull=\"false\">n</NullObjectId>      Marks a value as a NullObject. This has to be used," + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             if the Java class implements the null object pattern," + System.lineSeparator() //$NON-NLS-1$"
-                + "                                                             otherwise omitt this element. The element's text" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             defines the null object's id. Calling the valueOfMethod" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             with this name must return the null object instance. If" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             the null object's id is null, leave the text empty" + System.lineSeparator() //$NON-NLS-1$
-                + "                                                             and set the isNull attribute to true." + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              if the Java class implements the null object pattern," + System.lineSeparator() //$NON-NLS-1$"
+                + "                                                              otherwise omitt this element. The element's text" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              defines the null object's id. Calling the valueOfMethod" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              with this name must return the null object instance. If" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              the null object's id is null, leave the text empty" + System.lineSeparator() //$NON-NLS-1$
+                + "                                                              and set the isNull attribute to true." + System.lineSeparator() //$NON-NLS-1$
                 + "    </Datatype>" + System.lineSeparator() //$NON-NLS-1$
                 + "</DatatypeDefinitions>" + System.lineSeparator(); //$NON-NLS-1$
         createDescriptionComment(s, parentEl);

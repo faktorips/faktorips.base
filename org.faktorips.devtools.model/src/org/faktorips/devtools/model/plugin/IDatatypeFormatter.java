@@ -58,8 +58,8 @@ public interface IDatatypeFormatter {
         if (!datatype.isSupportingNames()) {
             return id;
         }
-        EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
+        NamedDataTypeDisplay dataTypeDisplay = getNamedDataTypeDisplay();
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.ID)) {
             return id;
         }
         if (!datatype.isParsable(id)) {
@@ -69,10 +69,10 @@ public interface IDatatypeFormatter {
         if (name == null) {
             return id;
         }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME)) {
             return name;
         }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME_AND_ID)) {
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return id;
@@ -82,8 +82,8 @@ public interface IDatatypeFormatter {
         return DEFAULT_NULL_REPRESENTATION;
     }
 
-    default EnumTypeDisplay getEnumTypeDisplay() {
-        return EnumTypeDisplay.NAME_AND_ID;
+    default NamedDataTypeDisplay getNamedDataTypeDisplay() {
+        return NamedDataTypeDisplay.NAME_AND_ID;
     }
 
 }

@@ -18,7 +18,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 
 public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
 
@@ -49,8 +49,8 @@ public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
         }
 
         String parsedAsNameAndId = parseValueNameAndID(stringToBeparsed);
-        EnumTypeDisplay enumTypeDisplay = ipsPreferences.getEnumTypeDisplay();
-        if (EnumTypeDisplay.NAME_AND_ID.equals(enumTypeDisplay)) {
+        NamedDataTypeDisplay dataTypeDisplay = ipsPreferences.getNamedDataTypeDisplay();
+        if (NamedDataTypeDisplay.NAME_AND_ID.equals(dataTypeDisplay)) {
             if (parsedAsNameAndId != null) {
                 return parsedAsNameAndId;
             }

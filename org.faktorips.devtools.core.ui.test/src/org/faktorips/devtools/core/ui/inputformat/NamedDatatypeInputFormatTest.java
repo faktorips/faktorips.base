@@ -20,7 +20,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +65,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
@@ -74,7 +74,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
@@ -83,7 +83,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_parseNameSpecial() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("c (c)");
 
@@ -92,7 +92,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("asdsdf");
 
@@ -101,7 +101,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_invalidNameAndId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
@@ -110,7 +110,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
@@ -119,7 +119,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
@@ -128,7 +128,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("asdfsadf");
 
@@ -137,7 +137,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_invalidNameAndId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
@@ -146,7 +146,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_parseNameId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
@@ -155,7 +155,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameAndidConfigured_parseNameSpecial() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("c (c) (c)");
 
@@ -164,7 +164,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
@@ -173,7 +173,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
@@ -182,7 +182,7 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
         String parsed = NamedDatatypeInputFormat.parseInternal("asdfdsaf");
 

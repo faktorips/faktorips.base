@@ -24,8 +24,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -137,9 +137,11 @@ public class IpsPreferences implements IIpsModelPreferences {
     public static final String IPSTESTRUNNER_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ipsTestTunnerMaxHeapSize"; //$NON-NLS-1$
 
     /**
-     * Constant identifying the enumeration display type.
+     * Constant identifying the named data display type. This setting was renamed, but since the
+     * setting is stored in the prefsStore we should either never rename this string or migrate the
+     * setting in the prefsStore.
      */
-    public static final String ENUM_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
+    public static final String NAMED_DATA_TYPE_DISPLAY = IpsPlugin.PLUGIN_ID + ".enumTypeDisplay"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the locale to be used for formating values of specific datatypes.
@@ -189,7 +191,7 @@ public class IpsPreferences implements IIpsModelPreferences {
         prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
         prefStore.setDefault(ENABLE_GENERATING, true);
         prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
-        prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
+        prefStore.setDefault(NAMED_DATA_TYPE_DISPLAY, NamedDataTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
         prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
@@ -333,8 +335,8 @@ public class IpsPreferences implements IIpsModelPreferences {
 
     /**
      * Returns the max heap size in megabytes for the IPS test runner. This parameter specify the
-     * maximum size of the memory allocation pool for the test runner. Will be used to set the Xmx
-     * Java virtual machines option for the IPS test runner virtual machine.
+     * maximum size of the memory allocation pool for the test runner. Will be used to set the
+     * {@code Xmx} Java virtual machines option for the IPS test runner virtual machine.
      */
     @Override
     public String getIpsTestRunnerMaxHeapSize() {
@@ -342,30 +344,30 @@ public class IpsPreferences implements IIpsModelPreferences {
     }
 
     /**
-     * Returns the enumeration type display. Specifies the text display of enumeration type edit
-     * fields. E.g. display id or name only, or display both.
+     * Returns the named data type display setting. Specifies the text display of name data type
+     * edit fields. E.g. display id or name only, or display both.
      * 
-     * @see EnumTypeDisplay
+     * @see NamedDataTypeDisplay
      */
-    public EnumTypeDisplay getEnumTypeDisplay() {
-        String id = prefStore.getString(ENUM_TYPE_DISPLAY);
-        EnumTypeDisplay enumTypeDisplay = EnumTypeDisplay.getValueById(id);
-        if (enumTypeDisplay == null) {
-            IpsPlugin.log(new IpsStatus("Unknown enum type with id: " + id //$NON-NLS-1$
-                    + ". Use default enum type display.")); //$NON-NLS-1$
-            enumTypeDisplay = EnumTypeDisplay.NAME_AND_ID;
+    public NamedDataTypeDisplay getNamedDataTypeDisplay() {
+        String id = prefStore.getString(NAMED_DATA_TYPE_DISPLAY);
+        NamedDataTypeDisplay dataTypeDisplay = NamedDataTypeDisplay.getValueById(id);
+        if (dataTypeDisplay == null) {
+            IpsPlugin.log(new IpsStatus("Unknown named data type with id: " + id //$NON-NLS-1$
+                    + ". Use default named data type display.")); //$NON-NLS-1$
+            dataTypeDisplay = NamedDataTypeDisplay.NAME_AND_ID;
         }
-        return enumTypeDisplay;
+        return dataTypeDisplay;
     }
 
     /**
-     * Sets the enum type display.
+     * Sets the named data type display setting.
      * 
      * @throws NullPointerException if etDisplay is <code>null</code>
      */
-    public void setEnumTypeDisplay(EnumTypeDisplay etDisplay) {
+    public void setNamedDataTypeDisplay(NamedDataTypeDisplay etDisplay) {
         ArgumentCheck.notNull(etDisplay);
-        prefStore.setValue(ENUM_TYPE_DISPLAY, etDisplay.getId());
+        prefStore.setValue(NAMED_DATA_TYPE_DISPLAY, etDisplay.getId());
     }
 
     /**
