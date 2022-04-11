@@ -9,7 +9,7 @@
     <version>@version@</version>
     <packaging>jar</packaging>
     
-    <name>Faktor-IPS Model/name>
+    <name>Faktor-IPS Model</name>
     <description>Model for the Faktor-IPS design time tools</description>
     <url>http://faktorzehn.org</url>
 
