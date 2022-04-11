@@ -9,7 +9,7 @@
     <version>@version@</version>
     <packaging>jar</packaging>
     
-    <name>Faktor-IPS Abstractions/name>
+    <name>Faktor-IPS Abstractions</name>
     <description>Abstractions used in the Faktor-IPS design time tools</description>
     <url>http://faktorzehn.org</url>
 
