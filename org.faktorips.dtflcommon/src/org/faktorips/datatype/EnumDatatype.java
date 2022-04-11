@@ -10,6 +10,10 @@
 
 package org.faktorips.datatype;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * A value datatype representing an enumeration of values.
  */
@@ -23,5 +27,14 @@ public interface EnumDatatype extends NamedDatatype {
      *            or a special case NULL-value ID.
      */
     public String[] getAllValueIds(boolean includeNull);
+
+    @Override
+    default Object getValueByName(String name) {
+        return Arrays.stream(getAllValueIds(false))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(getValueName(valueToString(v)), name))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
 
 }

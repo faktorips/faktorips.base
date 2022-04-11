@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.datatype;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -40,8 +41,8 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     public static final String MSGCODE_PREFIX_GET_NAME_METHOD = MSGCODE_PREFIX + "getNameMethod"; //$NON-NLS-1$
     public static final String MSGCODE_GET_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_NAME_METHOD + " is empty or blank"; //$NON-NLS-1$
-    public static final String MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD = MSGCODE_PREFIX + "getValueByName"; //$NON-NLS-1$
-    public static final String MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD
+    public static final String MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD = MSGCODE_PREFIX + "getValueByName"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD
             + " is empty or blank"; //$NON-NLS-1$
 
     private IIpsProject ipsProject;
@@ -272,14 +273,18 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     private void checkGetValueByName(MessageList ml) {
         if (StringUtils.isBlank(getGetValueByNameMethodName())) {
-            ml.add(Message.newError(MSGCODE_GET_ID_BY_NAME_METHOD_IS_BLANK,
-                    "SupportingNames is true but no getValueByNameMethod is configured.")); //$NON-NLS-1$
+            if (!(this instanceof EnumDatatype)) {
+                // enums can just iterate over all values and use getNameMethod
+                ml.add(Message.newError(MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK,
+                        "SupportingNames is true but no getValueByNameMethod is configured.")); //$NON-NLS-1$
+            }
+        } else {
+            getGetValueByNameMethod()
+                    .check(ml, MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD)
+                    .exists()
+                    .isStatic()
+                    .returnTypeIsCompatible(getAdaptedClass());
         }
-        getGetValueByNameMethod()
-                .check(ml, MSGCODE_PREFIX_GET_ID_BY_NAME_METHOD)
-                .exists()
-                .isStatic()
-                .returnTypeIsCompatible(getAdaptedClass());
     }
 
     private Object getValueByNameFromClass(String valueName) {

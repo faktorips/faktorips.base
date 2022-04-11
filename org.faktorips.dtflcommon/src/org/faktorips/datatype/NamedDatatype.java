@@ -52,4 +52,5 @@ public interface NamedDatatype extends ValueDatatype {
      * @return the value as instance of the class this datatype represents
      */
     public Object getValueByName(String name);
+
 }
