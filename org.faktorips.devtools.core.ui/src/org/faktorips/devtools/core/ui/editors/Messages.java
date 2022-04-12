@@ -62,6 +62,12 @@ public class Messages extends NLS {
 
     public static String DescriptionSection_description;
 
+    public static String DeprecationSection_label;
+    public static String DeprecationSection_isDeprecated;
+    public static String DeprecationSection_version;
+    public static String DeprecationSection_versionTooltip;
+    public static String DeprecationSection_forRemoval;
+
     public static String LabelSection_label;
 
     public static String LabelEditComposite_tableColumnHeaderLanguage;

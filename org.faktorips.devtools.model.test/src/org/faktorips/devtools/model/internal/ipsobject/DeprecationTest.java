@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,6 +63,17 @@ public class DeprecationTest extends AbstractIpsPluginTest {
         IVersion<DefaultVersion> version = new DefaultVersionProvider(deprecationInfo.getIpsProject())
                 .getVersion("22.6.0");
         assertThat(deprecationInfo.getSinceVersion(), is(version));
+    }
+
+    @Test
+    public void testSinceVersionIsInitializedFromProject() {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setVersion("47.11");
+        ipsProject.setProperties(properties);
+
+        IDeprecation deprecation = policyCmptType.newDeprecation();
+
+        assertThat(deprecation.getSinceVersionString(), is("47.11"));
     }
 
     @Test

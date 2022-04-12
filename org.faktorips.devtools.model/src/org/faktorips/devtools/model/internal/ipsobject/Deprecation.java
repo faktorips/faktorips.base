@@ -13,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,8 +24,9 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
     /** Whether the part is marked for removal. */
     private boolean forRemoval;
 
-    protected Deprecation(IIpsObjectPartContainer parent, String id) {
+    protected Deprecation(IpsObjectPartContainer parent, String id) {
         super(parent, id);
+        sinceVersion = parent.getDefaultVersion();
     }
 
     @Override
@@ -36,12 +36,16 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
 
     @Override
     public void setForRemoval(boolean forRemoval) {
+        boolean oldValue = this.forRemoval;
         this.forRemoval = forRemoval;
+        valueChanged(oldValue, forRemoval, IDeprecation.PROPERTY_FOR_REMOVAL);
     }
 
     @Override
     public void setSinceVersionString(String version) {
+        String oldValue = this.sinceVersion;
         this.sinceVersion = version;
+        valueChanged(oldValue, sinceVersion, IDeprecation.PROPERTY_SINCE_VERSION_STRING);
     }
 
     @Override

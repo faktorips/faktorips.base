@@ -83,6 +83,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /** Name of the XML element the containing the elements for the extension property values. */
     public static final String XML_EXT_PROPERTIES_ELEMENT = "ExtensionProperties"; //$NON-NLS-1$
 
+    public static final String PROPERTY_DEPRECATED = "deprecated"; //$NON-NLS-1$
+
     /** Name of the XML element containing a property value. */
     protected static final String XML_VALUE_ELEMENT = ValueToXmlHelper.XML_TAG_VALUE;
 
@@ -112,7 +114,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /** Validation start time used for tracing in debug mode */
     private long validationStartTime;
 
-    private IDeprecation deprecationInfo;
+    private IDeprecation deprecation;
+
+    private boolean deprecated = false;
 
     public IpsObjectPartContainer(IIpsElement parent, String name) {
         super(parent, name);
@@ -147,15 +151,19 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     /* private */void initDefaultVersion() {
+        sinceVersion = getDefaultVersion();
+    }
+
+    String getDefaultVersion() {
         if (this instanceof IVersionControlledElement && getIpsProject() != null) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             IVersion<?> version = versionProvider.getProjectVersion();
             if (version.isNotEmptyVersion()) {
-                sinceVersion = version.getUnqualifiedVersion();
-            } else {
-                sinceVersion = StringUtils.EMPTY;
+                return version.getUnqualifiedVersion();
             }
         }
+        return StringUtils.EMPTY;
+
     }
 
     @Override
@@ -377,8 +385,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void deprecationInfoToXML(Document doc, Element element) {
-        if (deprecationInfo != null) {
-            Element deprecationElement = ((Deprecation)deprecationInfo).toXml(doc);
+        if (deprecated) {
+            Element deprecationElement = ((Deprecation)deprecation).toXml(doc);
             element.appendChild(deprecationElement);
         }
     }
@@ -412,8 +420,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         NodeList elementsByTagName = element.getElementsByTagName(IDeprecation.XML_TAG);
         Node deprecationNode = elementsByTagName.item(0);
         if (deprecationNode != null) {
-            deprecationInfo = newDeprecation();
-            deprecationInfo.initFromXml((Element)deprecationNode);
+            deprecation = newDeprecation();
+            deprecation.initFromXml((Element)deprecationNode);
+            deprecated = true;
+        } else {
+            deprecated = false;
         }
     }
 
@@ -1109,8 +1120,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#newDeprecation()
      */
     public IDeprecation newDeprecation() {
-        deprecationInfo = new Deprecation(this, getNextPartId());
-        return deprecationInfo;
+        deprecation = new Deprecation(this, getNextPartId());
+        return deprecation;
     }
 
     /**
@@ -1240,7 +1251,17 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#getDeprecation()
      */
     public IDeprecation getDeprecation() {
-        return deprecationInfo;
+        return deprecation;
+    }
+
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(boolean isDeprecated) {
+        boolean oldValue = this.deprecated;
+        this.deprecated = isDeprecated;
+        valueChanged(oldValue, isDeprecated);
     }
 
 }
