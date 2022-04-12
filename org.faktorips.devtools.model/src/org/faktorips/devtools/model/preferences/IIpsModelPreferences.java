@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.preferences;
 
 import java.text.DateFormat;
+import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.builder.IpsBuilder;
@@ -32,6 +33,11 @@ public interface IIpsModelPreferences {
      * Returns the formatter to convert values of different {@link Datatype Datatypes} to Strings
      */
     IDatatypeFormatter getDatatypeFormatter();
+
+    /**
+     * Returns the configured {@link Locale}
+     */
+    Locale getDatatypeFormattingLocale();
 
     /**
      * Returns the {@code null}-representation String.

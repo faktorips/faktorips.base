@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -48,14 +50,14 @@ public class NamedDatatypeInputFormatTest {
     public void setUpEnumDatatype() {
         when(enumDatatype.isSupportingNames()).thenReturn(true);
 
-        when(enumDatatype.getValueName("a")).thenReturn("nameA");
-        when(enumDatatype.getValueByName("nameA")).thenReturn("a");
+        when(enumDatatype.getValueName(eq("a"), any(Locale.class))).thenReturn("nameA");
+        when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");
         when(enumDatatype.valueToString("a")).thenReturn("a");
-        when(enumDatatype.getValueName("b")).thenReturn("nameB");
-        when(enumDatatype.getValueByName("nameB")).thenReturn("b");
+        when(enumDatatype.getValueName(eq("b"), any(Locale.class))).thenReturn("nameB");
+        when(enumDatatype.getValueByName(eq("nameB"), any(Locale.class))).thenReturn("b");
         when(enumDatatype.valueToString("b")).thenReturn("b");
-        when(enumDatatype.getValueName("c")).thenReturn("c (c)");
-        when(enumDatatype.getValueByName("c (c)")).thenReturn("c");
+        when(enumDatatype.getValueName(eq("c"), any(Locale.class))).thenReturn("c (c)");
+        when(enumDatatype.getValueByName(eq("c (c)"), any(Locale.class))).thenReturn("c");
         when(enumDatatype.valueToString("c")).thenReturn("c");
 
         when(enumDatatype.isParsable("a")).thenReturn(true);

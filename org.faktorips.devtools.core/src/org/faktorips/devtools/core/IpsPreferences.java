@@ -497,6 +497,7 @@ public class IpsPreferences implements IIpsModelPreferences {
      * @return the currently configured locale for formating values of the data types Integer,
      *         Double, Date.
      */
+    @Override
     public Locale getDatatypeFormattingLocale() {
         String localeString = prefStore.getString(DATATYPE_FORMATTING_LOCALE);
         return LocaleUtils.toLocale(localeString);

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.datatype;
 
 import org.faktorips.datatype.DefaultGenericEnumDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -66,7 +67,8 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         datatype.setValueOfMethodName(getValueOfMethodName());
         datatype.setToStringMethodName(getToStringMethodName());
         try {
-            return datatype.getValueName(id);
+            return datatype.getValueName(id,
+                    IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale());
             // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error getting name for enum value id " + id, e)); //$NON-NLS-1$

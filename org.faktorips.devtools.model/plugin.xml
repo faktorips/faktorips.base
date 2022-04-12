@@ -142,6 +142,10 @@
             datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
             helperClass="org.faktorips.codegen.dthelpers.joda.MonthDayHelper">
       </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.classtypes.CurrencyDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.CurrencyHelper">
+      </datatypeDefinition>
    </extension>
 
 <!-- 

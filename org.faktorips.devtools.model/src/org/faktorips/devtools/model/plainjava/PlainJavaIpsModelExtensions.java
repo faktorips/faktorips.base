@@ -21,6 +21,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.classtypes.CurrencyDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
@@ -186,7 +187,8 @@ public class PlainJavaIpsModelExtensions implements IIpsModelExtensions {
                             new LocalDateDatatype(),
                             new LocalTimeDatatype(),
                             new LocalDateTimeDatatype(),
-                            new MonthDayDatatype())
+                            new MonthDayDatatype(),
+                            new CurrencyDatatype())
                             .forEach(d -> datatypes.put(d.getName(), d));
                 }
             }

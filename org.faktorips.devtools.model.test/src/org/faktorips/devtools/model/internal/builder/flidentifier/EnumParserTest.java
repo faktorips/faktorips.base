@@ -12,10 +12,13 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
@@ -127,7 +130,7 @@ public class EnumParserTest extends AbstractParserTest {
         doReturn(new String[] {}).when(enumDatatypeAdapter).getAllValueIds(false);
         enumParser.setContextType(enumClass);
         when(enumClass.getEnumDatatype()).thenReturn(enumDatatype);
-        when(enumDatatype.getValueName(MY_ENUM_VALUE)).thenReturn(MY_LABEL);
+        when(enumDatatype.getValueName(eq(MY_ENUM_VALUE), any(Locale.class))).thenReturn(MY_LABEL);
 
         List<IdentifierProposal> proposals = enumParser.getProposals("my");
 

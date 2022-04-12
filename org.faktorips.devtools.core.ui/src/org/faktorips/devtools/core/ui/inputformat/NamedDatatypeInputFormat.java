@@ -60,7 +60,8 @@ public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
 
     protected String parseValueName(String stringToBeparsed) {
         try {
-            Object value = namedDatatype.getValueByName(stringToBeparsed);
+            Object value = namedDatatype.getValueByName(stringToBeparsed,
+                    IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
             return value != null ? namedDatatype.valueToString(value)
                     : namedDatatype.hasNullObject() ? namedDatatype.getNullObjectId() : null;
             // CSOFF: IllegalCatch

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.preferences;
 
 import java.text.DateFormat;
+import java.util.Locale;
 
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
@@ -67,5 +68,10 @@ public class DefaultIpsModelPreferences implements IIpsModelPreferences {
     @Override
     public boolean isBuilderEnabled() {
         return true;
+    }
+
+    @Override
+    public Locale getDatatypeFormattingLocale() {
+        return Locale.US;
     }
 }

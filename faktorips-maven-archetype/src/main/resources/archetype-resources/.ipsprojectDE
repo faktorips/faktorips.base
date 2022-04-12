@@ -236,7 +236,6 @@
         <UsedPredefinedDatatypes>
             <Datatype id="Money"\>                                 The id of the datatype that should be used.
         </UsedPredefinedDatatypes>
-         
         <DatatypeDefinitions>
             <Datatype id="PaymentMode"                             The datatype's id used in the model to refer to it.
                 javaClass="org.faktorips.sample.PaymentMode"       The Java class the datatype represents
@@ -244,24 +243,27 @@
                 - - - the following attributes are only needed for value objects - - -
                 isEnumType="true|false"                            True if this is an enumeration of values.
                 valueOfMethod="getPaymentMode"                     Name of the method that takes a String and returns an
-                                                                     object instance/value.
+                                                                      object instance/value. This method has to be static.
                 isParsableMethod="isPaymentMode"                   Name of the method that evaluates if a given string
-                                                                     can be parsed to an instance.
+                                                                      can be parsed to an instance. This method has to be static and
+                                                                      is optional, if the valueOfMethod throws an Exception in case of an invalid id.
                 valueToStringMethod="toString"                     Name of the method that transforms an object instance
                                                                       to a String (that can be parsed via the valueOfMethod)
-                getAllValuesMethod="getAllPaymentModes"            For enums only: The name of the method that returns all values
-                isSupportingNames="true"                           For enums only: True indicates that a string
-                                                                     representation for the user other than the one defined by the valueToStringMethod exists.
-                getNameMethod="getName">                           For enums only: The name of the method that returns
-                                                                     the string representation for the user, if
-                                                                     isSupportingNames=true
+                getAllValuesMethod="getAllPaymentModes"            For enums only: The name of the method that returns all values. This method has to be static.
+                isSupportingNames="true"                           True indicates that a string
+                                                                      representation for the user other than the one defined by the valueToStringMethod exists.
+                getNameMethod="getName"                            The name of the method that returns
+                                                                      the string representation for the user, if
+                                                                      isSupportingNames=true
+                getValueByNameMethod="parseName">                  The name of the method that returns a value for a given string representation for the user,
+                                                                      if isSupportingNames=true. This method has to be static and be compatible to the getNameMethod.
                 <NullObjectId isNull="false">n</NullObjectId>      Marks a value as a NullObject. This has to be used,
-                                                                     if the Java class implements the null object pattern,
-                                                                     otherwise omitt this element. The element's text
-                                                                     defines the null object's id. Calling the valueOfMethod
-                                                                     with this name must return the null object instance. If
-                                                                     the null object's id is null, leave the text empty
-                                                                     and set the isNull attribute to true.
+                                                                      if the Java class implements the null object pattern,
+                                                                      otherwise omitt this element. The element's text
+                                                                      defines the null object's id. Calling the valueOfMethod
+                                                                      with this name must return the null object instance. If
+                                                                      the null object's id is null, leave the text empty
+                                                                      and set the isNull attribute to true.
             </Datatype>
         </DatatypeDefinitions>
     -->
@@ -284,6 +286,7 @@
    <Datatype id="Decimal"/>
    <Datatype id="Long"/>
    <Datatype id="Boolean"/>
+   <Datatype id="Currency"/>
   </UsedPredefinedDatatypes>
   <DatatypeDefinitions/>
  </Datatypes>

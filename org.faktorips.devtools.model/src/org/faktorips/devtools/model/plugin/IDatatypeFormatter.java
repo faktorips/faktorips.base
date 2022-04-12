@@ -15,6 +15,7 @@ import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 
 public interface IDatatypeFormatter {
@@ -65,7 +66,8 @@ public interface IDatatypeFormatter {
         if (!datatype.isParsable(id)) {
             return id;
         }
-        String name = datatype.getValueName(id);
+        String name = datatype.getValueName(id,
+                IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale());
         if (name == null) {
             return id;
         }
