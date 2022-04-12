@@ -10,36 +10,31 @@
 
 package org.faktorips.datatype;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+
 /**
  * A value datatype representing an enumeration of values.
- * 
- * @author Jan Ortmann
- * @author Peter Erzberger
  */
-public interface EnumDatatype extends ValueDatatype {
+public interface EnumDatatype extends NamedDatatype {
 
     /**
-     * Returns the ids of all values defined in the enum type.
+     * Returns the IDs of all values defined in the enum type.
      * 
-     * @param includeNull <code>true</code> to get the id for the null-Value included,
-     *            <code>false</code> for not include the null-Value. Note that the null-Value can be
-     *            the Java <code>null</code> or the special case NULL-value id.
+     * @param includeNull {@code true} to get the ID for the NULL-Value included, {@code false} for
+     *            not include the NULL-Value. Note that the NULL-Value can be the Java {@code null}
+     *            or a special case NULL-value ID.
      */
     public String[] getAllValueIds(boolean includeNull);
 
-    /**
-     * Returns <code>true</code> if an implementation of this interface supports names that describe
-     * the datatype's value. E.g. an enum datatype PaymentMode might return the name "annual" for
-     * the annual payment mode with id "1". If this method returns <code>false</code> a call to the
-     * getName(String id) method is supposed to throw a runtime exception.
-     */
-    public boolean isSupportingNames();
+    @Override
+    default Object getValueByName(String name) {
+        return Arrays.stream(getAllValueIds(false))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(getValueName(valueToString(v)), name))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
 
-    /**
-     * Returns a short description of the value of this enumeration datatype specified by the id.
-     * 
-     * @throws IllegalArgumentException if the id is not a valid id of this enumeration datatype
-     * @throws RuntimeException if the datatype does not support names for the id.
-     */
-    public String getValueName(String id);
 }

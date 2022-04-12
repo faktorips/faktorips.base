@@ -10,9 +10,11 @@
 
 package org.faktorips.devtools.model.enums;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -106,6 +108,11 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
             return null;
         }
 
+        return getValueName(ipsProject, enumValue);
+
+    }
+
+    private String getValueName(IIpsProject ipsProject, IEnumValue enumValue) {
         IEnumAttribute displayNameAttribute = getNameAttribute(ipsProject);
         IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
         if (enumAttributeValue != null) {
@@ -114,7 +121,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         } else {
             return null;
         }
-
     }
 
     private IEnumAttribute getNameAttribute(IIpsProject ipsProject) {
@@ -125,7 +131,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     @Override
-    public Object getValue(String value) {
+    public IEnumValue getValue(String value) {
         IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
         IEnumValue enumValue = getEnumValueContainer().findEnumValue(value, ipsProject);
         if (enumValue == null) {
@@ -427,4 +433,13 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return getEnumValueContainer().getQualifiedName();
     }
 
+    @Override
+    public Object getValueByName(String name) {
+        IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
+        return Arrays.stream(getAllValueIds(false))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(name, getValueName(ipsProject, v)))
+                .findFirst()
+                .orElse(null);
+    }
 }

@@ -880,7 +880,7 @@ public class UIToolkit {
      * Creates a combo containing the given <code>EnumDatatype</code>'s values as items. The
      * formatting is done based on the user's preferences.
      * 
-     * @see org.faktorips.devtools.core.IpsPreferences#getEnumTypeDisplay()
+     * @see org.faktorips.devtools.core.IpsPreferences#getNamedDataTypeDisplay()
      */
     public Combo createCombo(Composite parent, EnumDatatype datatype) {
         Combo newCombo = createCombo(parent);

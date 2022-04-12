@@ -20,7 +20,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumDatatypeInputFormatTest {
+public class NamedDatatypeInputFormatTest {
 
     @Mock
     private EnumDatatype enumDatatype;
@@ -36,177 +36,183 @@ public class EnumDatatypeInputFormatTest {
     @Mock
     private IpsPreferences ipsPreferences;
 
-    private EnumDatatypeInputFormat enumDatatypeInputFormat;
+    private NamedDatatypeInputFormat NamedDatatypeInputFormat;
 
     @Before
     public void createInputFormat() {
         doReturn(Locale.GERMANY).when(ipsPreferences).getDatatypeFormattingLocale();
-        enumDatatypeInputFormat = new EnumDatatypeInputFormat(enumDatatype, ipsPreferences);
+        NamedDatatypeInputFormat = new NamedDatatypeInputFormat(enumDatatype, ipsPreferences);
     }
 
     @Before
     public void setUpEnumDatatype() {
         when(enumDatatype.isSupportingNames()).thenReturn(true);
-        when(enumDatatype.getAllValueIds(false)).thenReturn(new String[] { "a", "b", "c" });
+
         when(enumDatatype.getValueName("a")).thenReturn("nameA");
+        when(enumDatatype.getValueByName("nameA")).thenReturn("a");
+        when(enumDatatype.valueToString("a")).thenReturn("a");
         when(enumDatatype.getValueName("b")).thenReturn("nameB");
+        when(enumDatatype.getValueByName("nameB")).thenReturn("b");
+        when(enumDatatype.valueToString("b")).thenReturn("b");
         when(enumDatatype.getValueName("c")).thenReturn("c (c)");
+        when(enumDatatype.getValueByName("c (c)")).thenReturn("c");
+        when(enumDatatype.valueToString("c")).thenReturn("c");
+
         when(enumDatatype.isParsable("a")).thenReturn(true);
         when(enumDatatype.isParsable("b")).thenReturn(true);
-        when(enumDatatype.isParsable("c")).thenReturn(true);
         when(enumDatatype.isParsable("c")).thenReturn(true);
     }
 
     @Test
     public void testParseInternal_idConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("a");
+        String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_idConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_idConfigured_parseNameSpecial() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("c (c)");
+        String parsed = NamedDatatypeInputFormat.parseInternal("c (c)");
 
         assertEquals("c", parsed);
     }
 
     @Test
     public void testParseInternal_idConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("asdsdf");
+        String parsed = NamedDatatypeInputFormat.parseInternal("asdsdf");
 
         assertEquals("asdsdf", parsed);
     }
 
     @Test
     public void testParseInternal_idConfigured_invalidNameAndId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA (a)");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
         assertEquals("nameA (a)", parsed);
     }
 
     @Test
     public void testParseInternal_nameConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_nameConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("a");
+        String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_nameConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("asdfsadf");
+        String parsed = NamedDatatypeInputFormat.parseInternal("asdfsadf");
 
         assertEquals("asdfsadf", parsed);
     }
 
     @Test
     public void testParseInternal_nameConfigured_invalidNameAndId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA (a)");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
         assertEquals("nameA (a)", parsed);
     }
 
     @Test
     public void testParseInternal_nameIdConfigured_parseNameId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA (a)");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA (a)");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_nameAndidConfigured_parseNameSpecial() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("c (c) (c)");
+        String parsed = NamedDatatypeInputFormat.parseInternal("c (c) (c)");
 
         assertEquals("c", parsed);
     }
 
     @Test
     public void testParseInternal_nameIdConfigured_parseId() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("a");
+        String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_nameIdConfigured_parseName() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("nameA");
+        String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
     }
 
     @Test
     public void testParseInternal_nameIdConfigured_invalid() throws Exception {
-        when(ipsPreferences.getEnumTypeDisplay()).thenReturn(EnumTypeDisplay.NAME_AND_ID);
+        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
 
-        String parsed = enumDatatypeInputFormat.parseInternal("asdfdsaf");
+        String parsed = NamedDatatypeInputFormat.parseInternal("asdfdsaf");
 
         assertEquals("asdfdsaf", parsed);
     }
 
     @Test
     public void testParseValueName_findName() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueName("nameA");
+        String parseValueName = NamedDatatypeInputFormat.parseValueName("nameA");
 
         assertEquals("a", parseValueName);
     }
 
     @Test
     public void testParseValueName_invalidName() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueName("xasd");
+        String parseValueName = NamedDatatypeInputFormat.parseValueName("xasd");
 
         assertNull(parseValueName);
     }
 
     @Test
     public void testParseValueNameAndID() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA (a)");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("nameA (a)");
 
         assertEquals("a", parseValueName);
     }
 
     @Test
     public void testParseValueNameAndID_withParentheses() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA (xyz) (a)");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("nameA (xyz) (a)");
 
         assertEquals("a", parseValueName);
     }
@@ -218,7 +224,7 @@ public class EnumDatatypeInputFormatTest {
      */
     @Test
     public void testCannotParse_whenClosingParanthesisNotFollowedByStringEnding() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a) ");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a) ");
 
         assertNull(parseValueName);
     }
@@ -230,28 +236,28 @@ public class EnumDatatypeInputFormatTest {
      */
     @Test
     public void testCannotParse_whenIdContainsNestedParantheses() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a(b)c)");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("nameA(x(y)z)(a(b)c)");
 
         assertNull(parseValueName);
     }
 
     @Test
     public void testParseValueNameAndID_invalidName() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("asdsg (agds)");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("asdsg (agds)");
 
         assertNull(parseValueName);
     }
 
     @Test
     public void testParseValueNameAndID_notNameAndId() throws Exception {
-        String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds (");
+        String parseValueName = NamedDatatypeInputFormat.parseValueNameAndID("agds (");
 
         assertNull(parseValueName);
     }
 
     @Test
     public void testFormatNullIsEmptyString() throws Exception {
-        String nullString = enumDatatypeInputFormat.format(null);
+        String nullString = NamedDatatypeInputFormat.format(null);
 
         assertEquals(StringUtils.EMPTY, nullString);
     }

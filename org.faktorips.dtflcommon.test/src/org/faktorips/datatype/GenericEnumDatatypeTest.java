@@ -10,9 +10,14 @@
 
 package org.faktorips.datatype;
 
+import static org.faktorips.datatype.GenericEnumDatatype.MSGCODE_PREFIX_GET_ALL_VALUES_METHOD;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCodeThat;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -104,14 +109,16 @@ public class GenericEnumDatatypeTest {
     @Test
     public void testGetGetAllValuesMethod() {
         datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
-        assertNotNull(datatype.getGetAllValuesMethod());
+        assertThat(datatype.checkReadyToUse(),
+                not(
+                        hasMessageThat(
+                                hasMessageCodeThat(
+                                        startsWith(MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)))));
         datatype.setGetAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
-        try {
-            datatype.getGetAllValuesMethod();
-            fail();
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+        assertThat(datatype.checkReadyToUse(),
+                hasMessageThat(
+                        hasMessageCodeThat(
+                                startsWith(MSGCODE_PREFIX_GET_ALL_VALUES_METHOD))));
     }
 
     @Test
@@ -203,7 +210,7 @@ public class GenericEnumDatatypeTest {
         assertNull(names); // should have cleared the cached
     }
 
-    static class TestValueClassWithListOfAllValues {
+    public static class TestValueClassWithListOfAllValues {
         private final int value;
 
         private TestValueClassWithListOfAllValues(int value) {
@@ -223,7 +230,7 @@ public class GenericEnumDatatypeTest {
         }
     }
 
-    static class TestValueClassWithSetOfAllValuesAndNullObject implements NullObjectSupport {
+    public static class TestValueClassWithSetOfAllValuesAndNullObject implements NullObjectSupport {
 
         public static TestValueClassWithSetOfAllValuesAndNullObject NULL = new TestValueClassWithSetOfAllValuesAndNullObject(
                 0) {

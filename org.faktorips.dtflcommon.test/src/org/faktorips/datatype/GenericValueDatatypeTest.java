@@ -10,24 +10,32 @@
 
 package org.faktorips.datatype;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.faktorips.datatype.GenericValueDatatype.MSGCODE_PREFIX_GET_VALUE_METHOD;
+import static org.faktorips.datatype.GenericValueDatatype.MSGCODE_PREFIX_IS_PARSABLE_METHOD;
+import static org.faktorips.datatype.GenericValueDatatype.MSGCODE_TOSTRING_METHOD_NOT_FOUND;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCodeThat;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.MethodAccess;
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class GenericValueDatatypeTest {
 
@@ -91,23 +99,18 @@ public class GenericValueDatatypeTest {
     }
 
     @Test
-    public void testGetIsParsableMethod() {
-        assertNotNull(datatype.getIsParsableMethod());
-    }
-
-    @Test
     public void testGetIsParsableMethod_UnknownMethod() {
         datatype.setIsParsableMethodName("unknownMethod"); //$NON-NLS-1$
-        try {
-            datatype.getIsParsableMethod();
-            fail();
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+
+        assertThat(datatype.checkReadyToUse(),
+                hasMessageThat(
+                        hasMessageCodeThat(
+                                startsWith(MSGCODE_PREFIX_IS_PARSABLE_METHOD))));
     }
 
     @Test
     public void testGetIsParsableMethod_CharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ParsableCharSequenceDatatype {
 
             @SuppressWarnings("unused")
@@ -118,11 +121,15 @@ public class GenericValueDatatypeTest {
         datatype = new DefaultGenericValueDatatype(ParsableCharSequenceDatatype.class);
 
         datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
-        assertNotNull(datatype.getIsParsableMethod());
+
+        assertThat(datatype.checkReadyToUse(),
+                not(hasMessageCode(
+                        MSGCODE_PREFIX_IS_PARSABLE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST)));
     }
 
     @Test
     public void testGetIsParsableMethod_String() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ParsableStringDatatype {
 
             @SuppressWarnings("unused")
@@ -133,11 +140,15 @@ public class GenericValueDatatypeTest {
         datatype = new DefaultGenericValueDatatype(ParsableStringDatatype.class);
 
         datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
-        assertNotNull(datatype.getIsParsableMethod());
+
+        assertThat(datatype.checkReadyToUse(),
+                not(hasMessageCode(
+                        MSGCODE_PREFIX_IS_PARSABLE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST)));
     }
 
     @Test
     public void testGetIsParsableMethod_NotStringOrCharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class NotParsableDatatype {
 
             @SuppressWarnings("unused")
@@ -148,12 +159,9 @@ public class GenericValueDatatypeTest {
         datatype = new DefaultGenericValueDatatype(NotParsableDatatype.class);
         datatype.setIsParsableMethodName("isFoo"); //$NON-NLS-1$
 
-        try {
-            datatype.getIsParsableMethod();
-            fail();
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+        assertThat(datatype.checkReadyToUse(),
+                hasMessageCode(
+                        MSGCODE_PREFIX_IS_PARSABLE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST));
     }
 
     @Test
@@ -170,22 +178,25 @@ public class GenericValueDatatypeTest {
     @Test
     public void testGetValueOfMethod() {
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
-        assertNotNull(datatype.getValueOfMethod());
+        assertThat(datatype.checkReadyToUse(),
+                not(
+                        hasMessageThat(
+                                hasMessageCodeThat(
+                                        startsWith(MSGCODE_PREFIX_GET_VALUE_METHOD)))));
     }
 
     @Test
     public void testGetValueOfMethod_UnknownMethod() {
         datatype.setValueOfMethodName("unknownMethod"); //$NON-NLS-1$
-        try {
-            datatype.getValueOfMethod();
-            fail("Should throw an exception because there is no method called \"unknownMethod\"");
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+        assertThat(datatype.checkReadyToUse(),
+                hasMessageThat(
+                        hasMessageCodeThat(
+                                startsWith(MSGCODE_PREFIX_GET_VALUE_METHOD))));
     }
 
     @Test
     public void testGetValueOfMethod_CharSequence() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class ValueOfCharSequenceDatatype {
 
             @SuppressWarnings("unused")
@@ -196,11 +207,16 @@ public class GenericValueDatatypeTest {
         datatype = new DefaultGenericValueDatatype(ValueOfCharSequenceDatatype.class);
 
         datatype.setValueOfMethodName("foo"); //$NON-NLS-1$
-        assertNotNull(datatype.getValueOfMethod());
+
+        assertThat(datatype.checkReadyToUse(),
+                not(
+                        hasMessageCode(
+                                MSGCODE_PREFIX_GET_VALUE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST)));
     }
 
     @Test
     public void testCheckReadyToUse_WrongReturnType() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class IllegalDatatype {
 
             @SuppressWarnings("unused")
@@ -215,14 +231,17 @@ public class GenericValueDatatypeTest {
         }
         datatype = new DefaultGenericValueDatatype(IllegalDatatype.class);
 
-        MessageList readyToUse = datatype.checkReadyToUse();
-        assertThat(readyToUse.containsErrorMsg(), is(true));
-        assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
-                is(GenericValueDatatype.MSGCODE_GETVALUE_METHOD_NOT_FOUND));
+        assertThat(datatype.checkReadyToUse(), hasMessageCode(
+                MSGCODE_PREFIX_IS_PARSABLE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_NOT_STATIC));
+        assertThat(datatype.checkReadyToUse(), hasMessageCode(
+                MSGCODE_PREFIX_GET_VALUE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_INCOMPATIBLE_RETURN_TYPE));
+        assertThat(datatype.checkReadyToUse(), hasMessageCode(
+                MSGCODE_PREFIX_GET_VALUE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_NOT_STATIC));
     }
 
     @Test
     public void testCheckReadyToUse_IsParsableMethodDoesNotReturnBoolean() {
+        @SuppressFBWarnings(value = "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS")
         class IllegalDatatype {
 
             @SuppressWarnings("unused")
@@ -237,10 +256,8 @@ public class GenericValueDatatypeTest {
         }
         datatype = new DefaultGenericValueDatatype(IllegalDatatype.class);
 
-        MessageList readyToUse = datatype.checkReadyToUse();
-        assertThat(readyToUse.containsErrorMsg(), is(true));
-        assertThat(readyToUse.getFirstMessage(Message.ERROR).getCode(),
-                is(GenericValueDatatype.MSGCODE_ISPARSABLE_METHOD_NOT_FOUND));
+        assertThat(datatype.checkReadyToUse(), hasMessageCode(
+                MSGCODE_PREFIX_IS_PARSABLE_METHOD + MethodAccess.Check.MSG_CODE_SUFFIX_INCOMPATIBLE_RETURN_TYPE));
     }
 
     @Test
@@ -252,19 +269,16 @@ public class GenericValueDatatypeTest {
     @Test
     public void testGetToStringMethod() {
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
-        assertNotNull(datatype.getToStringMethod());
+
+        assertThat(datatype.checkReadyToUse(), not(hasMessageCode(MSGCODE_TOSTRING_METHOD_NOT_FOUND)));
         datatype.setToStringMethodName("unknownMethod"); //$NON-NLS-1$
-        try {
-            datatype.getValueOfMethod();
-            fail();
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+        assertThat(datatype.checkReadyToUse(), hasMessageCode(MSGCODE_TOSTRING_METHOD_NOT_FOUND));
         // Payment hasn't got a special toString method, but the super type
         datatype.setToStringMethodName("toString"); //$NON-NLS-1$
-        assertNotNull(datatype.getToStringMethod());
+        assertThat(datatype.checkReadyToUse(), not(hasMessageCode(MSGCODE_TOSTRING_METHOD_NOT_FOUND)));
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         assertEquals(datatype, datatype);

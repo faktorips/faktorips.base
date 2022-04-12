@@ -26,10 +26,6 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
 
     private String getAllValuesMethodName = ""; //$NON-NLS-1$
 
-    private String getNameMethodName = ""; //$NON-NLS-1$
-
-    private boolean isSupportingNames = false;
-
     public DynamicEnumDatatype(IIpsProject ipsProject) {
         super(ipsProject);
     }
@@ -58,35 +54,15 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
     }
 
     @Override
-    public void setIsSupportingNames(boolean supporting) {
-        isSupportingNames = supporting;
-    }
-
-    @Override
-    public void setGetNameMethodName(String getNameMethodName) {
-        this.getNameMethodName = getNameMethodName;
-    }
-
-    @Override
-    public String getGetNameMethodName() {
-        return getNameMethodName;
-    }
-
-    @Override
-    public boolean isSupportingNames() {
-        return isSupportingNames;
-    }
-
-    @Override
     public String getValueName(String id) {
-        if (!isSupportingNames) {
+        if (!isSupportingNames()) {
             IpsLog.log(new IpsStatus(
                     "The getName(String) method is not supported by this enumeration class: " + getAdaptedClass())); //$NON-NLS-1$ )
             return id;
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
-        datatype.setIsSupportingNames(isSupportingNames);
-        datatype.setGetNameMethodName(getNameMethodName);
+        datatype.setIsSupportingNames(isSupportingNames());
+        datatype.setGetNameMethodName(getGetNameMethodName());
         datatype.setValueOfMethodName(getValueOfMethodName());
         datatype.setToStringMethodName(getToStringMethodName());
         try {
@@ -106,12 +82,6 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         if (getAllValuesMethodName() != null) {
             element.setAttribute("getAllValuesMethod", getAllValuesMethodName()); //$NON-NLS-1$
         }
-        if (getGetNameMethodName() != null) {
-            element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
-
-        }
-        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
-
     }
 
 }

@@ -70,6 +70,7 @@ public class StringValueTest extends AbstractIpsPluginTest {
         assertNull(new StringValue(null).toString());
     }
 
+    @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
         StringValue stringValue = new StringValue("Versicherung");

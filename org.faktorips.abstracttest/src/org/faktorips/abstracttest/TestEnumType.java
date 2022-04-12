@@ -11,7 +11,9 @@
 package org.faktorips.abstracttest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class TestEnumType {
 
@@ -19,13 +21,13 @@ public class TestEnumType {
     public static final TestEnumType SECONDVALUE = new TestEnumType("2", "second");
     public static final TestEnumType THIRDVALUE = new TestEnumType("3", "third");
 
-    private static final List<TestEnumType> allValues;
+    private static final List<TestEnumType> ALL_VALUES;
 
     static {
-        allValues = new ArrayList<>();
-        allValues.add(FIRSTVALUE);
-        allValues.add(SECONDVALUE);
-        allValues.add(THIRDVALUE);
+        ALL_VALUES = new ArrayList<>();
+        ALL_VALUES.add(FIRSTVALUE);
+        ALL_VALUES.add(SECONDVALUE);
+        ALL_VALUES.add(THIRDVALUE);
     }
 
     private String id;
@@ -38,7 +40,7 @@ public class TestEnumType {
     }
 
     public static final TestEnumType[] getAllValues() {
-        return allValues.toArray(new TestEnumType[allValues.size()]);
+        return ALL_VALUES.toArray(new TestEnumType[ALL_VALUES.size()]);
     }
 
     public boolean isValueOf(String id) {
@@ -51,9 +53,7 @@ public class TestEnumType {
     }
 
     public static final TestEnumType valueOf(String id) {
-
-        TestEnumType[] allValues = getAllValues();
-        for (TestEnumType allValue : allValues) {
+        for (TestEnumType allValue : getAllValues()) {
             if (allValue.id.equals(id)) {
                 return allValue;
             }
@@ -72,5 +72,12 @@ public class TestEnumType {
     @Override
     public String toString() {
         return getId();
+    }
+
+    public static TestEnumType getValueByName(String name) {
+        return Arrays.stream(getAllValues())
+                .filter(v -> Objects.equals(v.getName(), name))
+                .findFirst()
+                .orElse(null);
     }
 }

@@ -24,13 +24,13 @@ import org.faktorips.values.Decimal;
  */
 public class DecimalTestArrayFct extends AbstractFlFunction {
 
-    public static final String name = "DECIMALTESTARRAY";
+    public static final String NAME = "DECIMALTESTARRAY";
 
     // the values that will be returned by the function.
     private Decimal[] values;
 
     public DecimalTestArrayFct() {
-        super(name, "", new ArrayOfValueDatatype(Datatype.DECIMAL, 1), new Datatype[] {});
+        super(NAME, "", new ArrayOfValueDatatype(Datatype.DECIMAL, 1), new Datatype[] {});
     }
 
     public void setValues(Decimal[] values) {

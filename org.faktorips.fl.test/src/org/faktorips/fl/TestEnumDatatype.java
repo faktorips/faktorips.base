@@ -54,7 +54,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
 
     @Override
     public boolean isParsable(String value) {
-        return value.equals("MONTH") || value.equals(("YEAR"));
+        return "MONTH".equals(value) || "YEAR".equals(value);
     }
 
     @Override
@@ -68,6 +68,7 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return null;
     }
 
+    @Override
     public String valueToString(Object value) {
         return value.toString();
     }
@@ -131,4 +132,8 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return false;
     }
 
+    @Override
+    public Object getValueByName(String name) {
+        return getValue(name);
+    }
 }

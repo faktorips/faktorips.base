@@ -7,7 +7,6 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
 package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.Locale;
@@ -16,25 +15,25 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
-import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 
-public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
+public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
 
-    private final EnumDatatype enumDatatype;
+    private final NamedDatatype namedDatatype;
 
     private final IpsPreferences ipsPreferences;
 
-    public EnumDatatypeInputFormat(EnumDatatype enumDatatype, IpsPreferences ipsPreferences) {
+    public NamedDatatypeInputFormat(NamedDatatype namedDatatype, IpsPreferences ipsPreferences) {
         super(StringUtils.EMPTY, ipsPreferences.getDatatypeFormattingLocale());
-        this.enumDatatype = enumDatatype;
+        this.namedDatatype = namedDatatype;
         this.ipsPreferences = ipsPreferences;
     }
 
-    public static EnumDatatypeInputFormat newInstance(EnumDatatype enumDatatype) {
-        return new EnumDatatypeInputFormat(enumDatatype, IpsPlugin.getDefault().getIpsPreferences());
+    public static NamedDatatypeInputFormat newInstance(NamedDatatype namedDatatype) {
+        return new NamedDatatypeInputFormat(namedDatatype, IpsPlugin.getDefault().getIpsPreferences());
     }
 
     @Override
@@ -43,13 +42,15 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
         if (parsedAsId != null) {
             return parsedAsId;
         }
+
         String parsedAsName = parseValueName(stringToBeparsed);
         if (parsedAsName != null) {
             return parsedAsName;
         }
+
         String parsedAsNameAndId = parseValueNameAndID(stringToBeparsed);
-        EnumTypeDisplay enumTypeDisplay = ipsPreferences.getEnumTypeDisplay();
-        if (EnumTypeDisplay.NAME_AND_ID.equals(enumTypeDisplay)) {
+        NamedDataTypeDisplay dataTypeDisplay = ipsPreferences.getNamedDataTypeDisplay();
+        if (NamedDataTypeDisplay.NAME_AND_ID.equals(dataTypeDisplay)) {
             if (parsedAsNameAndId != null) {
                 return parsedAsNameAndId;
             }
@@ -57,23 +58,20 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
         return stringToBeparsed;
     }
 
-    protected String parseValueId(String stringToBeparsed) {
-        if (enumDatatype.isParsable(stringToBeparsed)) {
-            return stringToBeparsed;
-        } else {
+    protected String parseValueName(String stringToBeparsed) {
+        try {
+            Object value = namedDatatype.getValueByName(stringToBeparsed);
+            return value != null ? namedDatatype.valueToString(value)
+                    : namedDatatype.hasNullObject() ? namedDatatype.getNullObjectId() : null;
+            // CSOFF: IllegalCatch
+        } catch (RuntimeException e) {
+            // CSON: IllegalCatch
             return null;
         }
     }
 
-    protected String parseValueName(String stringToBeparsed) {
-        String[] allValueIds = enumDatatype.getAllValueIds(false);
-        for (String valueId : allValueIds) {
-            String valueName = enumDatatype.getValueName(valueId);
-            if (stringToBeparsed.equals(valueName)) {
-                return valueId;
-            }
-        }
-        return null;
+    protected String parseValueId(String stringToBeparsed) {
+        return namedDatatype.isParsable(stringToBeparsed) ? stringToBeparsed : null;
     }
 
     protected String parseValueNameAndID(String stringToBeparsed) {
@@ -95,7 +93,7 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
 
     @Override
     protected String formatInternal(String value) {
-        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(enumDatatype, value);
+        return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(namedDatatype, value);
     }
 
     @Override

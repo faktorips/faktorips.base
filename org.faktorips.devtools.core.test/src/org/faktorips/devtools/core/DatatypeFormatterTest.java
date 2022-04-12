@@ -22,7 +22,7 @@ import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.junit.Test;
 
@@ -77,7 +77,7 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         values.get(3).setValue(ValueFactory.createStringValue("cdesc"));
 
         IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
-        ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME);
+        ipsPreferences.setNamedDataTypeDisplay(NamedDataTypeDisplay.NAME);
         DatatypeFormatter formatter = new DatatypeFormatter(ipsPreferences);
 
         String text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
@@ -99,7 +99,7 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
-        ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.ID);
+        ipsPreferences.setNamedDataTypeDisplay(NamedDataTypeDisplay.ID);
         formatter = new DatatypeFormatter(ipsPreferences);
 
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");
@@ -120,7 +120,7 @@ public class DatatypeFormatterTest extends AbstractIpsPluginTest {
         assertEquals("a", formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a"));
         attr2.setUsedAsNameInFaktorIpsUi(true);
 
-        ipsPreferences.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
+        ipsPreferences.setNamedDataTypeDisplay(NamedDataTypeDisplay.NAME_AND_ID);
         formatter = new DatatypeFormatter(ipsPreferences);
 
         text = formatter.formatValue(new EnumTypeDatatypeAdapter(enum1, null), "a");

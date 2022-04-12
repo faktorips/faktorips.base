@@ -104,18 +104,7 @@ public class JavaProjectUtil {
     public static void convertToModuleProject(IJavaProject javaProject) {
         javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_11);
         try {
-            IPackageFragmentRoot[] packageFragmentRoots = javaProject.getPackageFragmentRoots();
-            List<IPackageFragmentRoot> packageFragmentRootsAsList = new ArrayList<>(
-                    Arrays.asList(packageFragmentRoots));
-            for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
-                IResource res = packageFragmentRoot.getCorrespondingResource();
-                if (res == null || res.getType() != IResource.FOLDER
-                        || packageFragmentRoot.getKind() != IPackageFragmentRoot.K_SOURCE) {
-                    packageFragmentRootsAsList.remove(packageFragmentRoot);
-                }
-            }
-            packageFragmentRoots = packageFragmentRootsAsList
-                    .toArray(new IPackageFragmentRoot[packageFragmentRootsAsList.size()]);
+            IPackageFragmentRoot[] packageFragmentRoots = collectPAckageFragmentRoots(javaProject);
 
             IPackageFragmentRoot targetPkgFragmentRoot = null;
 
@@ -135,6 +124,23 @@ public class JavaProjectUtil {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static IPackageFragmentRoot[] collectPAckageFragmentRoots(IJavaProject javaProject)
+            throws JavaModelException {
+        IPackageFragmentRoot[] packageFragmentRoots = javaProject.getPackageFragmentRoots();
+        List<IPackageFragmentRoot> packageFragmentRootsAsList = new ArrayList<>(
+                Arrays.asList(packageFragmentRoots));
+        for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
+            IResource res = packageFragmentRoot.getCorrespondingResource();
+            if (res == null || res.getType() != IResource.FOLDER
+                    || packageFragmentRoot.getKind() != IPackageFragmentRoot.K_SOURCE) {
+                packageFragmentRootsAsList.remove(packageFragmentRoot);
+            }
+        }
+        packageFragmentRoots = packageFragmentRootsAsList
+                .toArray(new IPackageFragmentRoot[packageFragmentRootsAsList.size()]);
+        return packageFragmentRoots;
     }
 
     private static void createModuleInfoJava(IJavaProject javaProject,
@@ -210,20 +216,22 @@ public class JavaProjectUtil {
     }
 
     private static IClasspathAttribute[] addModuleAttributeIfNeeded(IClasspathAttribute[] extraAttributes) {
-        for (int j = 0; j < extraAttributes.length; j++) {
-            IClasspathAttribute classpathAttribute = extraAttributes[j];
+        IClasspathAttribute[] attributes = extraAttributes;
+        for (int j = 0; j < attributes.length; j++) {
+            IClasspathAttribute classpathAttribute = attributes[j];
             if (IClasspathAttribute.MODULE.equals(classpathAttribute.getName())) {
                 if ("true".equals(classpathAttribute.getValue())) {
-                    return null; // no change required
+                    // no change required
+                    return null;
                 }
-                extraAttributes[j] = JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE, "true");
-                return extraAttributes;
+                attributes[j] = JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE, "true");
+                return attributes;
             }
         }
-        extraAttributes = Arrays.copyOf(extraAttributes, extraAttributes.length + 1);
-        extraAttributes[extraAttributes.length - 1] = JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE,
+        attributes = Arrays.copyOf(attributes, attributes.length + 1);
+        attributes[attributes.length - 1] = JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE,
                 "true");
-        return extraAttributes;
+        return attributes;
     }
 
     private static IClasspathEntry addAttributes(IClasspathEntry entry, IClasspathAttribute[] extraAttributes) {
@@ -239,7 +247,8 @@ public class JavaProjectUtil {
                 return JavaCore.newProjectEntry(entry.getPath(), entry.getAccessRules(), entry.combineAccessRules(),
                         extraAttributes, entry.isExported());
             default:
-                return entry; // other kinds are not handled
+                // other kinds are not handled
+                return entry;
         }
     }
 

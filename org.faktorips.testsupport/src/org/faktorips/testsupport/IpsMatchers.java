@@ -241,6 +241,10 @@ public class IpsMatchers {
         return new MessageInvalidObjectMatcher(invalidObject, propertyName);
     }
 
+    public static Matcher<Message> hasMessageCodeThat(Matcher<String> messageCodeMatcher) {
+        return new MessageCodeMatcher(messageCodeMatcher);
+    }
+
     /**
      * Creates a {@link FeatureMatcher} that extracts a {@code &lt;U&gt;} feature from a
      * {@code &lt;T&gt;} object and matches it with the given matcher.

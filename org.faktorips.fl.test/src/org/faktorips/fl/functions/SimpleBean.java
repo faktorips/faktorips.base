@@ -19,6 +19,8 @@ import org.faktorips.values.Decimal;
  */
 public class SimpleBean {
 
+    private Decimal value;
+
     public SimpleBean() {
         super();
     }
@@ -26,8 +28,6 @@ public class SimpleBean {
     public SimpleBean(Decimal value) {
         this.value = value;
     }
-
-    private Decimal value;
 
     public Decimal getValue() {
         return value;

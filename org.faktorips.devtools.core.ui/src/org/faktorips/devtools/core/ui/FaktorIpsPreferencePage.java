@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 
 public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -37,7 +37,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createDatatypeFormattingField();
         createProductCmptPostfixField();
         createChangesOverTimeField();
-        createEnumTypeDisplayField();
+        createNamedDataTypeDisplayField();
         createIpsTestRunnerMaxHeapSizeField();
 
         createEditRuntimeIdField();
@@ -80,15 +80,15 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         addField(field);
     }
 
-    private void createEnumTypeDisplayField() {
-        EnumTypeDisplay[] values = EnumTypeDisplay.values();
-        String[][] enumTypeDisplayNameValues = new String[values.length][2];
-        for (int i = 0; i < enumTypeDisplayNameValues.length; i++) {
-            enumTypeDisplayNameValues[i][0] = values[i].getText();
-            enumTypeDisplayNameValues[i][1] = values[i].getId();
+    private void createNamedDataTypeDisplayField() {
+        NamedDataTypeDisplay[] values = NamedDataTypeDisplay.values();
+        String[][] dataTypeDisplayNameValues = new String[values.length][2];
+        for (int i = 0; i < dataTypeDisplayNameValues.length; i++) {
+            dataTypeDisplayNameValues[i][0] = values[i].getText();
+            dataTypeDisplayNameValues[i][1] = values[i].getId();
         }
-        ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.ENUM_TYPE_DISPLAY,
-                Messages.FaktorIpsPreferencePage_labelEnumTypeDisplay, enumTypeDisplayNameValues,
+        ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.NAMED_DATA_TYPE_DISPLAY,
+                Messages.FaktorIpsPreferencePage_labelNamedDataTypeDisplay, dataTypeDisplayNameValues,
                 getFieldEditorParent());
         addField(field);
     }

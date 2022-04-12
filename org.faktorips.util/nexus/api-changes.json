@@ -1,0 +1,27 @@
+{
+  "all-versions" : {
+    "revapi" : {
+      "ignore" : [ {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "class org.faktorips.runtime..*",
+        "justification" : "Reexported runtime API"
+      }, {
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "enum org.faktorips.runtime..*",
+        "justification" : "Reexported runtime API"
+      },{
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "interface org.faktorips.runtime..*",
+        "justification" : "Reexported runtime API"
+      },{
+        "regex" : true,
+        "code" : "java.class.externalClassExposedInAPI",
+        "new" : "class org.faktorips.values..*",
+        "justification" : "Reexported values API"
+      } ]
+    }
+  }
+}

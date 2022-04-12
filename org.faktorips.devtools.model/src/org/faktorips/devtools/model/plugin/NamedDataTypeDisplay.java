@@ -11,7 +11,7 @@
 package org.faktorips.devtools.model.plugin;
 
 /**
- * Enumeration to specify the display type of enumeration type controls.
+ * Enumeration to specify the display type of named data type controls.
  * <ul>
  * <li>ID - display id only
  * <li>NAME - display name only
@@ -20,19 +20,19 @@ package org.faktorips.devtools.model.plugin;
  * 
  * @author Joerg Ortmann
  */
-public enum EnumTypeDisplay {
+public enum NamedDataTypeDisplay {
 
-    ID("id", Messages.EnumTypeDisplay_id), //$NON-NLS-1$
+    ID("id", Messages.NamedDataTypeDisplay_id), //$NON-NLS-1$
 
-    NAME("name", Messages.EnumTypeDisplay_name), //$NON-NLS-1$
+    NAME("name", Messages.NamedDataTypeDisplay_name), //$NON-NLS-1$
 
-    NAME_AND_ID("nameAndId", Messages.EnumTypeDisplay_nameAndId); //$NON-NLS-1$
+    NAME_AND_ID("nameAndId", Messages.NamedDataTypeDisplay_nameAndId); //$NON-NLS-1$
 
     private final String id;
 
     private final String text;
 
-    private EnumTypeDisplay(String id, String text) {
+    private NamedDataTypeDisplay(String id, String text) {
         this.id = id;
         this.text = text;
     }
@@ -45,8 +45,8 @@ public enum EnumTypeDisplay {
         return text;
     }
 
-    public static EnumTypeDisplay getValueById(String id) {
-        for (EnumTypeDisplay value : values()) {
+    public static NamedDataTypeDisplay getValueById(String id) {
+        for (NamedDataTypeDisplay value : values()) {
             if (value.getId().equals(id)) {
                 return value;
             }
