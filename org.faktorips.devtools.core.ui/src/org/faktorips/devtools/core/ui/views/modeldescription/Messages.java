@@ -33,4 +33,5 @@ public class Messages extends NLS {
     public static String DefaultModelDescriptionPage_FilterEmptyText;
     public static String DefaultModelDescriptionPage_FilterEmptyTooltipText;
     public static String DefaultModelDescriptionPage_ErrorIpsModelNotFound;
+    public static String DefaultModelDescriptionPage_GeneralInformation;
 }

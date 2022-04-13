@@ -13,8 +13,6 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
-import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -42,11 +40,7 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
         List<DescriptionItem> descriptions = new ArrayList<>();
         IIpsProject ipsProject = getIpsObject().getIpsProject();
         if (getIpsObject() != null) {
-            String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
-                    .getLocalizedDescription(getIpsObject());
-            DescriptionItem structureDescription = new DescriptionItem(
-                    Messages.TableModelDescriptionPage_generalInformation, localizedDescription);
-            descriptions.add(structureDescription);
+            descriptions.add(createStructureDescriptionItem());
             List<IAttribute> attributes = getIpsObject().findAllAttributes(ipsProject);
             for (IAttribute attribute : attributes) {
                 createDescriptionItem(attribute, descriptions);

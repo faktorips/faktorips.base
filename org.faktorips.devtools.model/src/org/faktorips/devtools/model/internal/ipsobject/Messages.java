@@ -43,4 +43,6 @@ public class Messages extends NLS {
     public static String Description_msgLocaleMissing;
     public static String Description_msgLocaleNotSupportedByProject;
 
+    public static String Deprecation_since;
+
 }

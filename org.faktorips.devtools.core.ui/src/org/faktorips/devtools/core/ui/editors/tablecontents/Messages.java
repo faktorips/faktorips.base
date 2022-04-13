@@ -96,8 +96,6 @@ public class Messages extends NLS {
 
     public static String SelectionStatusBarPublisher_singleMarkedRow;
 
-    public static String TableModelDescriptionPage_generalInformation;
-
     public static String UniqueKeyValidatonAction_Label;
 
     public static String UniqueKeyValidatonAction_Tooltip;

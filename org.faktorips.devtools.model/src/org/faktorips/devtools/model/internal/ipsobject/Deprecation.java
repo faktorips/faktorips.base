@@ -10,6 +10,8 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
@@ -91,4 +93,16 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
         forRemoval = Boolean.valueOf(deprecationNode.getAttribute(XML_ATTRIBUTE_FOR_REMOVAL));
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Deprecated"); //$NON-NLS-1$
+        if (isValidSinceVersion()) {
+            sb.append(" "); //$NON-NLS-1$
+            sb.append(NLS.bind(Messages.Deprecation_since, getSinceVersionString()));
+        }
+        sb.append(". "); //$NON-NLS-1$
+        sb.append(IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(this));
+        return sb.toString();
+    }
 }

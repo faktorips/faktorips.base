@@ -77,4 +77,13 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      */
     IDeprecation getDeprecation();
 
+    /**
+     * Returns whether this part is deprecated.
+     *
+     * @see #getDeprecation()
+     */
+    default boolean isDeprecated() {
+        return getDeprecation() != null;
+    }
+
 }
