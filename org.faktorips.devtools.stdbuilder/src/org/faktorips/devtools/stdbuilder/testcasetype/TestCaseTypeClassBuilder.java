@@ -57,7 +57,7 @@ import org.faktorips.runtime.internal.XmlCallback;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestResult;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 

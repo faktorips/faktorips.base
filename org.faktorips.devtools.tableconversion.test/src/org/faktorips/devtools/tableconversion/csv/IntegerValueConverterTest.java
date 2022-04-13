@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.tableconversion.IValueConverter;
+import org.faktorips.devtools.core.tableconversion.IValueConverter;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 

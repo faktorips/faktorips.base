@@ -30,6 +30,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.fl.parser.FlParser;
 import org.faktorips.fl.parser.FlParserConstants;
 import org.faktorips.fl.parser.FlParserTokenManager;
@@ -40,7 +41,6 @@ import org.faktorips.fl.parser.Token;
 import org.faktorips.fl.parser.TokenMgrError;
 import org.faktorips.runtime.Message;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * A compiler to compile expressions. This abstract class is target language agnostic and is by

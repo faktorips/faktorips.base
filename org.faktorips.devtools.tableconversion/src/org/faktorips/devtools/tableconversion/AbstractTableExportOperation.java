@@ -13,6 +13,7 @@ package org.faktorips.devtools.tableconversion;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.tableconversion.csv.CSVTableFormat;
 import org.faktorips.runtime.MessageList;

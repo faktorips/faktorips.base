@@ -23,7 +23,7 @@ import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder.BuilderJavaClassNameProvider;
 import org.faktorips.devtools.stdbuilder.xtend.productcmptbuilder.template.ProductBuilderTmpl;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class ProductCmptClassBuilderBuilder extends XtendTypeBuilder<XProductBuilder> {
 

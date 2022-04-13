@@ -132,7 +132,6 @@
         <setEntry value="org.eclipse.egit.doc@default:default"/>
         <setEntry value="org.eclipse.egit.ui@default:default"/>
         <setEntry value="org.eclipse.egit@default:default"/>
-        <setEntry value="org.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.eclipse.emf.common@default:default"/>
         <setEntry value="org.eclipse.emf.ecore.change@default:default"/>
         <setEntry value="org.eclipse.emf.ecore.edit@default:default"/>
@@ -290,6 +289,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
+    <stringAttribute key="timestamp" value="1649763656564"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

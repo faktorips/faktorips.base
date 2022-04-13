@@ -11,11 +11,11 @@
 package org.faktorips.devtools.model.builder.java;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.util.LocalizedStringsSet;
 
 /**
  * This subclass of <code>JavaGeneratorForIpsPart</code> works together with

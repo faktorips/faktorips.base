@@ -5,16 +5,40 @@ Bundle-SymbolicName: org.faktorips.devtools.core.refactor.test
 Bundle-Version: 22.6.0.qualifier
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.core.refactor
-Require-Bundle: org.faktorips.devtools.stdbuilder,
- org.faktorips.abstracttest.core;bundle-version="21.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
-Import-Package: org.junit;version="4.5.0",
+Import-Package: org.faktorips.abstracttest,
+ org.faktorips.abstracttest.core,
+ org.faktorips.abstracttest.matcher,
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.devtools.core.model.ipsobject.refactor,
+ org.faktorips.devtools.core.refactor,
+ org.faktorips.devtools.core.refactor.java,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.builder.naming,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.internal.ipsobject,
+ org.faktorips.devtools.model.internal.ipsproject,
+ org.faktorips.devtools.model.internal.productcmpt,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.productcmpttype,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.testcasetype,
+ org.faktorips.devtools.model.util,
+ org.faktorips.devtools.model.value,
+ org.faktorips.devtools.model.valueset,
+ org.faktorips.devtools.stdbuilder,
+ org.faktorips.runtime;version="22.6.0",
+ org.faktorips.testsupport,
+ org.faktorips.util,
  org.hamcrest;version="1.3.0",
  org.hamcrest.core;version="1.3.0",
+ org.junit;version="4.5.0",
  org.mockito;version="1.9.5",
  org.mockito.runners;version="1.9.5",
  org.mockito.stubbing;version="1.9.5",
- org.mockito.verification;version="1.9.5",
- org.faktorips.testsupport
-
+ org.mockito.verification;version="1.9.5"

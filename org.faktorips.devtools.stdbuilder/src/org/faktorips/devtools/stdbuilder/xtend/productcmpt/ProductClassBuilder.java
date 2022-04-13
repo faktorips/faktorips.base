@@ -19,7 +19,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public abstract class ProductClassBuilder<T extends XProductClass> extends XtendTypeBuilder<T> {
 

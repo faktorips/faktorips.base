@@ -280,13 +280,9 @@
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor.test@default:false"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
-        <setEntry value="org.faktorips.devtools.core.test@default:false"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.builder.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
-        <setEntry value="org.faktorips.devtools.stdbuilder.test@default:false"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
@@ -297,6 +293,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
+    <stringAttribute key="timestamp" value="1649768218324"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

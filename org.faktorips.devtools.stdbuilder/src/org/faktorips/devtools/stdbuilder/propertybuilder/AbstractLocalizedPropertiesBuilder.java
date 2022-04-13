@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefactBuilder {
 

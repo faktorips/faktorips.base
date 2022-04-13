@@ -10,5 +10,5 @@ Export-Package: org.faktorips.util,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
- org.faktorips.annotation
-Require-Bundle: org.faktorips.runtime;bundle-version="21.6.0";visibility:=reexport
+ org.faktorips.annotation,
+ org.faktorips.runtime.internal;version="22.6.0"

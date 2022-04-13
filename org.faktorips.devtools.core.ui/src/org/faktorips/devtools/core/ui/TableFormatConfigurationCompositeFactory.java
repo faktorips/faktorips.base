@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.MessageList;
 
 /**

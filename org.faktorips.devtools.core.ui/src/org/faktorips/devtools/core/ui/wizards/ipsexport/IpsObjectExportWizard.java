@@ -20,7 +20,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 
 /**
  * Base class for wizards exporting <code>IIpsObject</code> types like <code>IEnumType</code>,

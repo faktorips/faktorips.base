@@ -17,10 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
+import org.faktorips.devtools.core.tableconversion.IValueConverter;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.extensions.LazyCollectionExtension;
-import org.faktorips.devtools.tableconversion.ITableFormat;
-import org.faktorips.devtools.tableconversion.IValueConverter;
 
 public class ExternalTableFormatExtensions extends LazyCollectionExtension<ITableFormat, List<ITableFormat>> {
 

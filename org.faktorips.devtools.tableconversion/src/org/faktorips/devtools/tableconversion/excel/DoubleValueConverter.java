@@ -13,9 +13,9 @@ package org.faktorips.devtools.tableconversion.excel;
 import java.math.BigDecimal;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
+import org.faktorips.devtools.core.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.core.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.runtime.MessageList;
 
 /**

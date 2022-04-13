@@ -10,8 +10,8 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.util.DatatypeComparator;
 
 /**
  * Abstract super class for Datatype implementations.

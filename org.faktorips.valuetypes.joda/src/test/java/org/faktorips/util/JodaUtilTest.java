@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.GregorianCalendar;
 
+import org.faktorips.valuetypes.joda.util.JodaUtil;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;

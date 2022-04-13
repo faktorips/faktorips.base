@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.parser;
 
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * 

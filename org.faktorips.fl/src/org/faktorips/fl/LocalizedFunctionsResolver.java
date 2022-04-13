@@ -13,7 +13,7 @@ package org.faktorips.fl;
 import java.util.Locale;
 
 import org.faktorips.codegen.CodeFragment;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * A {@link FunctionResolver} that supports localized names for {@link FlFunction functions}.

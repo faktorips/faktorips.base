@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.model.INewProductDefinitionOperationParticipa
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 
 public class IpsCoreExtensions {
 

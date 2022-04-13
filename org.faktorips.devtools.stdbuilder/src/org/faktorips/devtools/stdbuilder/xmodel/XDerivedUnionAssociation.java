@@ -26,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * This is the generator model node for a derived union association. It is very important to

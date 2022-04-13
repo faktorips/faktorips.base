@@ -49,7 +49,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerati
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * Base class for every Xtend generator model object. This class provides some useful methods e.g.

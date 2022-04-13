@@ -5,10 +5,8 @@ Bundle-SymbolicName: org.faktorips.devtools.tableconversion;singleton:=true
 Bundle-Version: 22.6.0.qualifier
 Bundle-Activator: org.faktorips.devtools.tableconversion.TableConversionPlugin
 Bundle-Vendor: Faktor Zehn GmbH
-Require-Bundle: org.faktorips.devtools.core,
- org.faktorips.devtools.core.ui,
- org.faktorips.valuetypes,
- com.opencsv;bundle-version="3.3.0"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.15.200",
+ org.eclipse.ui;bundle-version="3.112.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.tableconversion,org.faktorips.d
@@ -20,6 +18,25 @@ Bundle-ClassPath: .,
  lib/poi-ooxml-schemas-3.9-20121203.jar,
  lib/xmlbeans-2.3.0.jar,
  lib/dom4j-1.6.1.jar
-Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
+Import-Package: com.opencsv;version="3.3.0",
+ org.apache.commons.lang;version="[2.6,2.6]",
  org.apache.commons.lang.time;version="[2.6,2.6]",
- org.faktorips.runtime.util
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.core,
+ org.faktorips.devtools.core.tableconversion,
+ org.faktorips.devtools.core.ui,
+ org.faktorips.devtools.core.ui.controller.fields,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.internal.tablecontents,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.tablecontents,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.value,
+ org.faktorips.runtime;version="22.6.0",
+ org.faktorips.runtime.util,
+ org.faktorips.values;version="22.6.0"

@@ -15,9 +15,9 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
 
+import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.StringUtil;
 import org.faktorips.values.NullObjectSupport;
 

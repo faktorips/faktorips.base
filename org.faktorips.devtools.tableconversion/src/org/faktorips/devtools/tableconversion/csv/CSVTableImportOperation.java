@@ -24,13 +24,13 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.AbstractTableImportOperation;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.internal.tablecontents.TableRows;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 

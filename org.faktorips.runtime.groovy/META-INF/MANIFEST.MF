@@ -5,11 +5,10 @@ Bundle-SymbolicName: org.faktorips.runtime.groovy
 Bundle-Version: 22.6.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: Faktor Zehn GmbH
-Require-Bundle: org.faktorips.runtime,
- org.faktorips.valuetypes
 Import-Package: groovy.lang;version="3.0.9",
  org.codehaus.groovy.reflection;version="3.0.9",
  org.codehaus.groovy.runtime;version="3.0.9",
- org.codehaus.groovy.runtime.callsite;version="3.0.9"
+ org.codehaus.groovy.runtime.callsite;version="3.0.9",
+ org.faktorips.runtime.formula;version="22.6.0"
 Export-Package: org.faktorips.runtime.formula.groovy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

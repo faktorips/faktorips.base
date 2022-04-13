@@ -22,7 +22,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyValidatorTmpl;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class PolicyCmptValidatorBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
 

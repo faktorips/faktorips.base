@@ -13,8 +13,8 @@ package org.faktorips.devtools.tableconversion.csv;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.devtools.core.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 
 public abstract class NumberValueConverter extends AbstractValueConverter {
 

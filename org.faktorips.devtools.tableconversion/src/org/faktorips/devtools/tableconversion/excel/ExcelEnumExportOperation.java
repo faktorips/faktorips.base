@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -28,7 +29,6 @@ import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.tablecontents.Messages;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 

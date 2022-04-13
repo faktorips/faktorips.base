@@ -29,7 +29,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.tableconversion.AbstractTableImportOperation;
+import org.faktorips.devtools.core.tableconversion.AbstractTableImportOperation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
