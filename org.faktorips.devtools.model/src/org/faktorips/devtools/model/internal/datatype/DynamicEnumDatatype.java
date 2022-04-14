@@ -10,12 +10,17 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import java.util.Arrays;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.DefaultGenericEnumDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -75,6 +80,18 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
             return id;
         }
         // CSON: IllegalCatchCheck
+    }
+
+    @Override
+    public Object getValueByName(String name, Locale locale) {
+        if (IpsStringUtils.isBlank(getGetValueByNameMethodName())) {
+            return Arrays.stream(getAllValueIds(false))
+                    .map(this::getValue)
+                    .filter(v -> StringUtils.equals(name, getNameFromValue(v, locale)))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return super.getValueByName(name, locale);
     }
 
     @Override

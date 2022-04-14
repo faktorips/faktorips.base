@@ -135,6 +135,19 @@ public class MethodAccess {
     }
 
     /**
+     * Returns whether the wrapped method actually exists.
+     */
+    public boolean exists() {
+        return method.isPresent();
+    }
+
+    @Override
+    public String toString() {
+        return "MethodAccess [" + clazz + "." + methodName
+                + (parameterTypes != null ? "(" + Arrays.toString(parameterTypes) + ")" : "()");
+    }
+
+    /**
      * Creates a new {@link Check} object for this class and method name.
      * <p>
      * All checks called on the {@link Check} object report problems to the given
@@ -188,7 +201,7 @@ public class MethodAccess {
          * @return this {@link Check} object for further checks.
          */
         public Check exists() {
-            if (method.isEmpty()) {
+            if (!MethodAccess.this.exists()) {
                 String text = MessageFormat.format("The Java class {0} hasn''t got a method {1}", clazz, methodName);
                 if (messageList.getMessagesFor(clazz, methodName)
                         .getMessagesByCode(msgCodePrefix + MSG_CODE_SUFFIX_DOES_NOT_EXIST).isEmpty()) {

@@ -10,12 +10,15 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import java.util.Locale;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -23,6 +26,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.MethodAccess;
 import org.w3c.dom.Element;
@@ -229,17 +233,22 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     @Override
     public String getValueName(String id) {
+        return getValueName(id, IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale());
+    }
+
+    @Override
+    public String getValueName(String id, Locale locale) {
         if (StringUtils.isBlank(getNameMethodName)) {
             throw new UnsupportedOperationException(
                     "This value type does not support a getName() method, value type class: " //$NON-NLS-1$
                             + getAdaptedClass());
         }
-        return getValueNameFromClass(id);
+        return getValueNameFromClass(id, locale);
     }
 
     @Override
     public Object getValueByName(String valueName) {
-        if (StringUtils.isBlank(getValueByNameMethodName)) {
+        if (IpsStringUtils.isBlank(getValueByNameMethodName)) {
             throw new UnsupportedOperationException(
                     "This value type does not support a getValueByName(String) method, value type class: " //$NON-NLS-1$
                             + getAdaptedClass());
@@ -298,6 +307,10 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         return MethodAccess.of(getAdaptedClass(), getGetNameMethodName());
     }
 
+    private MethodAccess getNameMethodWithLocale() {
+        return MethodAccess.of(getAdaptedClass(), getGetNameMethodName(), Locale.class);
+    }
+
     private void checkGetName(MessageList ml) {
         if (StringUtils.isBlank(getGetNameMethodName())) {
             ml.add(Message.newError(MSGCODE_GET_NAME_METHOD_IS_BLANK,
@@ -312,11 +325,19 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
                 .returnTypeIsCompatible(String.class);
     }
 
-    private String getValueNameFromClass(String id) {
+    private String getValueNameFromClass(String id, Locale locale) {
         Object value = getValue(id);
+        return getNameFromValue(value, locale);
+    }
+
+    protected String getNameFromValue(Object value, Locale locale) {
         if (value == null) {
             return null;
         }
-        return getNameMethod().invoke("to get the value name", value); //$NON-NLS-1$
+        String methodDescription = "to get the value name"; //$NON-NLS-1$
+        MethodAccess nameMethodWithLocale = getNameMethodWithLocale();
+        return nameMethodWithLocale.exists()
+                ? nameMethodWithLocale.invoke(methodDescription, value, locale)
+                : getNameMethod().invoke(methodDescription, value);
     }
 }
