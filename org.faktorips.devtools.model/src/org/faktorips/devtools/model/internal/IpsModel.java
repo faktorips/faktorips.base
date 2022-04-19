@@ -1254,7 +1254,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             if (file.exists()) {
                 // new content
                 content = readContentFromFile(file, loadCompleteContent);
-                ipsObjectsMap.put(file, content);
+                cache(file, content);
                 return content;
             } else {
                 return null;
@@ -1279,6 +1279,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
             content.initRootPropertiesFromFile();
         }
         return content;
+    }
+
+    /**
+     * @deprecated FOR TESTING ONLY
+     */
+    @Deprecated
+    public void cache(IIpsSrcFile file, IpsSrcFileContent content) {
+        ipsObjectsMap.put(file, content);
     }
 
     private IpsSrcFileContent readContentFromFile(IIpsSrcFile file, boolean loadCompleteContent) {

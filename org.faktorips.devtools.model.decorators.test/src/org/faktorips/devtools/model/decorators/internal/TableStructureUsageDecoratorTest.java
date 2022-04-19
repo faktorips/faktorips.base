@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasBaseImage;
+import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasOverlay;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
@@ -18,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -51,6 +54,18 @@ public class TableStructureUsageDecoratorTest extends AbstractIpsPluginTest {
         assertNotNull(imageDescriptor);
         privateImageDescriptor = createImageDescriptorWithChangingOverTimeOverlay(false);
         assertTrue(privateImageDescriptor.equals(imageDescriptor));
+    }
+
+    @Test
+    public void testGetImageDescriptor_Deprecated() {
+        ITableStructureUsage tableStructureUsage = mock(ITableStructureUsage.class);
+        when(tableStructureUsage.isDeprecated()).thenReturn(true);
+        TableStructureUsageDecorator decorator = new TableStructureUsageDecorator();
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(tableStructureUsage);
+
+        assertThat(imageDescriptor, hasBaseImage(TableStructureUsageDecorator.BASE_IMAGE));
+        assertThat(imageDescriptor, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
     }
 
     private ImageDescriptor createImageDescriptorWithChangingOverTimeOverlay(boolean changingOverTime) {

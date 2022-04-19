@@ -36,6 +36,7 @@ public final class OverlayIcons {
     public static final String SUCCESS = OVERLAYS_FOLDER + "success_ovr.gif"; //$NON-NLS-1$
     public static final String TEMPLATE = OVERLAYS_FOLDER + "ProductTemplateOverlay.gif"; //$NON-NLS-1$
     public static final String WARNING = OVERLAYS_FOLDER + "warning_co.gif"; //$NON-NLS-1$
+    public static final String DEPRECATED = OVERLAYS_FOLDER + "deprecated.png"; //$NON-NLS-1$
 
     public static final ImageDescriptor ERROR_OVR_DESC = IIpsDecorators.getImageHandling().createImageDescriptor(ERROR);
     public static final ImageDescriptor WARNING_OVR_DESC = IIpsDecorators.getImageHandling()
@@ -59,6 +60,8 @@ public final class OverlayIcons {
             .createImageDescriptor(MODIFIED);
     public static final ImageDescriptor NOT_CHANGEOVERTIME_OVR_DESC = IIpsDecorators.getImageHandling()
             .createImageDescriptor(STATIC);
+    public static final ImageDescriptor DEPRECATED_OVR_DESC = IIpsDecorators.getImageHandling()
+            .createImageDescriptor(DEPRECATED);
 
     private OverlayIcons() {
         // utility class

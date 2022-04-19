@@ -126,7 +126,7 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(aProductAssociation);
 
         assertNotNull(imageDescriptor);
-        assertTrue(createImageDescriptorWithChangeOvertime(
+        assertTrue(createImageDescriptorWithChangeOverTime(
                 AssociationDecorator.ASSOCIATION_TYPE_ASSOCIATION_IMAGE).equals(imageDescriptor));
     }
 
@@ -139,7 +139,7 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(aProductAssociation);
 
         assertNotNull(imageDescriptor);
-        assertFalse(createImageDescriptorWithChangeOvertime(
+        assertFalse(createImageDescriptorWithChangeOverTime(
                 AssociationDecorator.ASSOCIATION_TYPE_ASSOCIATION_IMAGE).equals(imageDescriptor));
     }
 
@@ -169,26 +169,43 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
                 .equals(imageDescriptor));
     }
 
-    private ImageDescriptor createImageDescriptor(String baseName) {
-        return createImageDescriptorWithOverwrittenOverlay(baseName, false, false, false);
+    @Test
+    public void testGetImageDescriptor_OverlayDeprecated() {
+        when(aProductAssociation.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
+        when(aProductAssociation.isDeprecated()).thenReturn(true);
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(aProductAssociation);
+
+        assertNotNull(imageDescriptor);
+        assertTrue(createImageDescriptorWithDeprecated(AssociationDecorator.ASSOCIATION_TYPE_ASSOCIATION_IMAGE)
+                .equals(imageDescriptor));
     }
 
-    private ImageDescriptor createImageDescriptorWithChangeOvertime(String baseName) {
-        return createImageDescriptorWithOverwrittenOverlay(baseName, false, false, true);
+    private ImageDescriptor createImageDescriptor(String baseName) {
+        return createImageDescriptorWithOverlay(baseName, false, false, false, false);
+    }
+
+    private ImageDescriptor createImageDescriptorWithChangeOverTime(String baseName) {
+        return createImageDescriptorWithOverlay(baseName, false, false, true, false);
     }
 
     private ImageDescriptor createImageDescriptorWithProductRelevant(String baseName) {
-        return createImageDescriptorWithOverwrittenOverlay(baseName, false, true, false);
+        return createImageDescriptorWithOverlay(baseName, false, true, false, false);
     }
 
     private ImageDescriptor createImageDescriptorWithConstrains(String baseName) {
-        return createImageDescriptorWithOverwrittenOverlay(baseName, true, false, false);
+        return createImageDescriptorWithOverlay(baseName, true, false, false, false);
     }
 
-    private ImageDescriptor createImageDescriptorWithOverwrittenOverlay(String baseName,
+    private ImageDescriptor createImageDescriptorWithDeprecated(String baseName) {
+        return createImageDescriptorWithOverlay(baseName, false, false, false, true);
+    }
+
+    private ImageDescriptor createImageDescriptorWithOverlay(String baseName,
             boolean isOverride,
             boolean isProductRelevant,
-            boolean noChangeOverTime) {
+            boolean noChangeOverTime,
+            boolean isDeprecated) {
         String[] overlays = new String[4];
         if (isOverride) {
             overlays[3] = OverlayIcons.OVERRIDE;
@@ -198,6 +215,9 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
         }
         if (noChangeOverTime) {
             overlays[0] = OverlayIcons.STATIC;
+        }
+        if (isDeprecated) {
+            overlays[2] = OverlayIcons.DEPRECATED;
         }
         return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseName, overlays);
     }

@@ -149,7 +149,8 @@ public class IIpsDecoratorsImagesTest extends AbstractIpsPluginTest {
         }
     }
 
-    public void tesOverlayImages() throws Exception {
+    @Test
+    public void testOverlayImages() throws Exception {
         ResourceManager resourceManager = new LocalResourceManager(JFaceResources.getResources());
 
         String baseName = "New.gif";

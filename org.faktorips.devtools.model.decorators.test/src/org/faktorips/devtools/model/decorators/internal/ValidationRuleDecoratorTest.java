@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasBaseImage;
+import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.hasOverlay;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,6 +20,7 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -51,6 +55,16 @@ public class ValidationRuleDecoratorTest extends AbstractIpsPluginTest {
         ImageDescriptor expectedImageDesc = IIpsDecorators.getImageHandling()
                 .getSharedImageDescriptor(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE, true);
         assertEquals(expectedImageDesc, imageDesc);
+    }
+
+    @Test
+    public void testGetImage_Deprecated() {
+        when(rule.isDeprecated()).thenReturn(true);
+
+        ImageDescriptor imageDesc = adapter.getImageDescriptor(rule);
+
+        assertThat(imageDesc, hasBaseImage(ValidationRuleDecorator.VALIDATION_RULE_DEF_BASE_IMAGE));
+        assertThat(imageDesc, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
     }
 
     @Test

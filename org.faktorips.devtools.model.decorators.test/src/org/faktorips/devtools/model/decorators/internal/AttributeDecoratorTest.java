@@ -61,6 +61,18 @@ public class AttributeDecoratorTest {
     }
 
     @Test
+    public void testGetImageDescriptor_Deprecated() {
+        IAttribute overwritingAttribute = mock(IAttribute.class);
+        when(overwritingAttribute.getModifier()).thenReturn(Modifier.PUBLISHED);
+        when(overwritingAttribute.isDeprecated()).thenReturn(true);
+
+        ImageDescriptor imageDescriptor = attributeDecorator.getImageDescriptor(overwritingAttribute);
+
+        assertThat(imageDescriptor, hasBaseImage(AttributeDecorator.PUBLISHED_BASE_IMAGE));
+        assertThat(imageDescriptor, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
+    }
+
+    @Test
     public void testGetImageDescriptor_Published() {
         IAttribute publishedAttribute = mock(IAttribute.class);
         when(publishedAttribute.getModifier()).thenReturn(Modifier.PUBLISHED);
