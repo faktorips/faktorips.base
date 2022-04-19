@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
+import org.faktorips.devtools.model.internal.ipsproject.IpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
@@ -169,4 +171,26 @@ public class GeneratorModelContextTest {
         assertThat(generatorModelContext.getGeneratorConfig(ipsSrcFile), is(baseGeneratorConfig));
     }
 
+    @Test
+    public void testGetValidationMessageBundleBaseName() {
+        IIpsSrcFolderEntry entry = mock(IpsSrcFolderEntry.class);
+        when(entry.getValidationMessagesBundle()).thenReturn("name-for-message-bundle");
+        when(entry.getUniqueQualifier()).thenReturn("UniqueQualifier");
+        when(entry.getBasePackageNameForDerivedJavaClasses()).thenReturn("org.faktorips.test");
+        when(entry.getUniqueBasePackageNameForDerivedArtifacts()).thenCallRealMethod();
+
+        assertThat(generatorModelContext.getValidationMessageBundleBaseName(entry),
+                is("org.faktorips.test.UniqueQualifier.name-for-message-bundle"));
+    }
+
+    @Test
+    public void testGetValidationMessageBundleBaseName_emptyQualifier() {
+        IIpsSrcFolderEntry entry = mock(IpsSrcFolderEntry.class);
+        when(entry.getValidationMessagesBundle()).thenReturn("name-for-message-bundle");
+        when(entry.getBasePackageNameForDerivedJavaClasses()).thenReturn("org.faktorips.test");
+        when(entry.getUniqueBasePackageNameForDerivedArtifacts()).thenCallRealMethod();
+
+        assertThat(generatorModelContext.getValidationMessageBundleBaseName(entry),
+                is("org.faktorips.test.name-for-message-bundle"));
+    }
 }
