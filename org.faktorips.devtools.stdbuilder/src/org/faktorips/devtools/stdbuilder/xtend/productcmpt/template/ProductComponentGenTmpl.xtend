@@ -39,6 +39,8 @@ class ProductComponentGenTmpl {
              */
             «IF !productCmptType.changingOverTime»
              @Deprecated
+            «ELSE»
+              «getAnnotations(DEPRECATION)»
             «ENDIF»
             public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)»
              {
@@ -68,6 +70,7 @@ class ProductComponentGenTmpl {
                  *
                  * @generated
                  */
+                «getAnnotations(DEPRECATION)»
                 public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
                     super(productCmpt);
                     «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»

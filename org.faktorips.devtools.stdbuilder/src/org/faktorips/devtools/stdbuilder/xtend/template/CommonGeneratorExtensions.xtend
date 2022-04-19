@@ -127,7 +127,7 @@ class CommonGeneratorExtensions {
         overrideAnnotationIf((generatePublishedInterfaces && !genInterface()) || condition)
     }
 
-    def static overrideAnnotationForConstainedAssociation(XAssociation it) {
+    def static overrideAnnotationForConstrainedAssociation(XAssociation it) {
         overrideAnnotationForPublishedMethodImplementationOr(it, constrain)
     }
 

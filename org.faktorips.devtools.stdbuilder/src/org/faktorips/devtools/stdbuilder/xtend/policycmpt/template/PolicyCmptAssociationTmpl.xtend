@@ -22,6 +22,7 @@ def package static constants (XPolicyAssociation it) '''
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public static final «IntegerRange()» «field(constantNameMaxCardinalityFor)» = «IntegerRange()».valueOf(«minCardinality», «maxCardinality»);
     «ENDIF»
 
@@ -32,6 +33,7 @@ def package static constants (XPolicyAssociation it) '''
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public static final String «field(constantNamePropertyName)» = "«fieldName»";
     «ENDIF»
 '''
@@ -84,6 +86,7 @@ def private static contains (XAssociation it) '''
          *
          * @generated
          */
+         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
          «overrideAnnotationForPublishedMethodImplementation()»
         public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")»
         «IF genInterface()»;«ELSE»
@@ -107,8 +110,8 @@ def private static getters (XPolicyAssociation it) '''
          *
          * @generated
          */
-         «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+        «overrideAnnotationForConstrainedAssociation()»
         public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
         «IF genInterface()»;«ELSE»
             {
@@ -125,7 +128,8 @@ def private static getters (XPolicyAssociation it) '''
          *
          * @generated
          */
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation()»
         public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
          «IF genInterface()»;«ELSE»
              {
@@ -144,7 +148,7 @@ def private static getters (XPolicyAssociation it) '''
              * @generated
              */
             «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
-            «overrideAnnotationForConstainedAssociation()»
+            «overrideAnnotationForConstrainedAssociation()»
             public «targetInterfaceName» «method(methodNameGetter)»
             «IF genInterface()»;«ELSE»
                 {
@@ -164,7 +168,8 @@ def private static getters (XPolicyAssociation it) '''
          *
          * @generated
          */
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation()»
          «IF oneToManyIgnoringQualifier»
             public  «List_("? extends " +targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceNameBase, "qualifier")»
             «IF genInterface»;«ELSE»
@@ -281,7 +286,7 @@ def private static generateSetter (XPolicyAssociation it) '''
              * @generated
              */
             «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
-            «overrideAnnotationForConstainedAssociation()»
+            «overrideAnnotationForConstrainedAssociation()»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
             «IF genInterface()»;«ELSE»
             {
@@ -349,7 +354,7 @@ def private static generateAdder (XPolicyAssociation it) '''
          * @generated
          */
         «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
-        «overrideAnnotationForConstainedAssociation()»
+        «overrideAnnotationForConstrainedAssociation()»
         public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "objectToAdd")»
         «IF genInterface()»;«ELSE»
         {
@@ -370,7 +375,8 @@ def private static generateAdder (XPolicyAssociation it) '''
          *
          * @generated
          */
-         «overrideAnnotationIf(constrain)»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationIf(constrain)»
         public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "objectToAdd")»{
             «addMethodCode(methodNameSetOrAddInternal, it)»
         }
@@ -440,6 +446,7 @@ def private static newChildMethods (XPolicyAssociation it) '''
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
         public «targetInterfaceName» «method(methodNameNew)»
         «IF genInterface()»;«ELSE»
@@ -456,7 +463,8 @@ def private static newChildMethods (XPolicyAssociation it) '''
              *
              * @generated
              */
-             «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+            «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
             public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
             «IF genInterface()»;«ELSE»
             {

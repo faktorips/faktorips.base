@@ -1,5 +1,4 @@
 package org.faktorips.devtools.stdbuilder.xtend.table.template
-
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.table.XColumn
 import org.faktorips.devtools.stdbuilder.xmodel.table.XTableRow
@@ -14,10 +13,13 @@ class TableRowTmpl {
 
 
         /**
-        * «localizedJDoc("CLASS_DESCRIPTION")»
-        *
-        * @generated
-        */
+         * «localizedJDoc("CLASS_DESCRIPTION")»
+         *
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»
+         * @generated
+         */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public class «name» {
             «nullrowconstant»
             «attributes»
@@ -29,8 +31,8 @@ class TableRowTmpl {
 
     def private static nullrowconstant(XTableRow it) '''
         /**
-        * @generated
-        */
+         * @generated
+         */
         public static final «name» NULL_ROW = new «name»(«nullExpressions»);
     '''
 
@@ -45,18 +47,22 @@ class TableRowTmpl {
             /**
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
             «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»
-            * @generated
-            */
+             * @generated
+             */
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
             private final «datatypeName» «attributeName»;
         «ENDIF»
     '''
 
     def private static constructors(XTableRow it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR")»
-        *
-        * @generated
-        */
+         * «localizedJDoc("CONSTRUCTOR")»
+         *
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+        «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»
+         * @generated
+         */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public «method(name, constructorParameters)»{
             «FOR it : constructorParameters»
                 this.«name» = «name»;
@@ -73,8 +79,8 @@ class TableRowTmpl {
         /**
         «getAnnotations(ELEMENT_JAVA_DOC)»
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»
-        * @generated
-        */
+         * @generated
+         */
         «getAnnotations(TABLE_ROW_CLASS_COLUMN_GETTER)»
         public «datatypeName» «method(methodNameGetter)»{
             return «attributeName»;
@@ -83,8 +89,8 @@ class TableRowTmpl {
 
     def private static toStringMethod(XTableRow it) '''
         /**
-        * @generated
-        */
+         * @generated
+         */
         «overrideAnnotationIf(true)»
         public String «method("toString")»{
             return «attributeNames»;

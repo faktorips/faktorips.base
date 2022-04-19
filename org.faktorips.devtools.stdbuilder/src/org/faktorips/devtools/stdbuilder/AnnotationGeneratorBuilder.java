@@ -38,6 +38,9 @@ public class AnnotationGeneratorBuilder {
 
     private final IIpsProject ipsProject;
 
+    private final DeprecationAnnotationGenerator deprecationAnnotationGenerator = new DeprecationAnnotationGenerator();
+    private final DeprecationJavadocTagGenerator deprecationJavadocTagGenerator = new DeprecationJavadocTagGenerator();
+
     public AnnotationGeneratorBuilder(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
         annotationGeneratorFactories = new IAnnotationGeneratorFactory[] {
@@ -80,9 +83,9 @@ public class AnnotationGeneratorBuilder {
     public Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> createAnnotationGenerators() {
         HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorsMap = new HashMap<>();
         List<IAnnotationGeneratorFactory> factories = getAnnotationGeneratorFactoriesRequiredForProject();
-
         for (AnnotatedJavaElementType type : AnnotatedJavaElementType.values()) {
             ArrayList<IAnnotationGenerator> annotationGenerators = new ArrayList<>();
+            addDeprecationAnnotationGenerator(annotationGenerators, type);
             for (IAnnotationGeneratorFactory annotationGeneratorFactory : factories) {
                 IAnnotationGenerator annotationGenerator;
                 annotationGenerator = annotationGeneratorFactory.createAnnotationGenerator(type);
@@ -93,6 +96,23 @@ public class AnnotationGeneratorBuilder {
             annotationGeneratorsMap.put(type, annotationGenerators);
         }
         return annotationGeneratorsMap;
+    }
+
+    private void addDeprecationAnnotationGenerator(ArrayList<IAnnotationGenerator> annotationGenerators,
+            AnnotatedJavaElementType type) {
+        switch (type) {
+            case POLICY_CMPT_DECL_CLASS:
+            case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
+            case PRODUCT_CMPT_DECL_CLASS:
+                break;
+            case ELEMENT_JAVA_DOC:
+                annotationGenerators.add(deprecationJavadocTagGenerator);
+                break;
+
+            default:
+                annotationGenerators.add(deprecationAnnotationGenerator);
+                break;
+        }
     }
 
     private List<IAnnotationGeneratorFactory> getAnnotationGeneratorFactoriesRequiredForProject() {

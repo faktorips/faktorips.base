@@ -32,6 +32,7 @@ class DefaultAndAllowedValuesTmpl {
          *
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
     '''
 
@@ -42,6 +43,7 @@ class DefaultAndAllowedValuesTmpl {
          *
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         private «valueSetJavaClassName» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
     '''
 

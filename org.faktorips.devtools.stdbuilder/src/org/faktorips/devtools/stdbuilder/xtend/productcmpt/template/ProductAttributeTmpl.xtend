@@ -10,6 +10,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNa
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 
 class ProductAttributeTmpl {
 
@@ -20,6 +21,7 @@ class ProductAttributeTmpl {
              *
              * @generated
              */
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
             public static final String «field(constantNamePropertyName)» = "«name»";
     '''
 
@@ -129,6 +131,7 @@ class ProductAttributeTmpl {
              *
              * @generated
              */
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
             protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»{
                 this.«fieldName» = newValue;
             }

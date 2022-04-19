@@ -19,6 +19,7 @@ class TableUsagesTmpl{
          *
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         private String «field(fieldName)» = null;
     '''
 
@@ -29,6 +30,7 @@ class TableUsagesTmpl{
          *
          * @generated
          */
+         «getAnnotations(DEPRECATION)»
          public static final String «field(constantNameTable)» = "«name»";
     '''
 
@@ -60,6 +62,7 @@ class TableUsagesTmpl{
          *
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         public void «method(methodNameSetter, "String", "tableName")» {
             «checkRepositoryModifyable»
             this.«fieldName» = tableName;
