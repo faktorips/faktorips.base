@@ -13,6 +13,7 @@
                 <xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="ValidationRuleDef" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="Persistence" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
 
             <xsd:attributeGroup ref="abstract" />
@@ -38,6 +39,7 @@
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="ValueSet" type="ValueSet" minOccurs="1" maxOccurs="1" />
                 <xsd:element name="PersistenceAttribute" type="PersistenceAttribute" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="attributeType" type="attributeType" use="required" />
             <xsd:attributeGroup ref="category" />
@@ -77,6 +79,7 @@
                 <xsd:element name="MessageText" type="MessageText" minOccurs="1" maxOccurs="1" />
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="activatedByDefault" type="boolean" use="required" />
             <xsd:attributeGroup ref="category" />
@@ -118,6 +121,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="PersistenceAssociation" type="PersistenceAssociation" minOccurs="0" maxOccurs="1"></xsd:element>
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="associationType" use="required">
                 <xsd:simpleType>
@@ -170,6 +174,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Parameter" type="MethodParameter" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="category" />

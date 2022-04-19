@@ -14,6 +14,7 @@
                 <xsd:element ref="Association" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="Category" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="ProductCmptPropertyReference" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="changingOverTime" />
@@ -38,6 +39,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="ValueSet" type="ValueSet" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
@@ -62,6 +64,7 @@
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="defaultForFormulaSignatureDefinitions" type="boolean" use="required" />
             <xsd:attribute name="defaultForPolicyCmptTypeAttributes" type="boolean" use="required" />
@@ -91,6 +94,7 @@
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="associationType" use="required">
                 <xsd:simpleType>
@@ -125,6 +129,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Parameter" type="MethodParameter" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="category" />
@@ -159,6 +164,7 @@
                         <xsd:attribute name="tableStructure" type="qualifiedName" use="required" />
                     </xsd:complexType>
                 </xsd:element>
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
