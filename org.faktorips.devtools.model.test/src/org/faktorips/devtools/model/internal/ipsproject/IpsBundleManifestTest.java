@@ -393,7 +393,7 @@ public class IpsBundleManifestTest {
         when(builderSet.getConfig()).thenReturn(builderSetConfig);
         when(builderSetConfig.getPropertyNames())
                 .thenReturn(new String[] { "stringAttr", "nullAttr", "booleanAttr", "intAttr" });
-        when(builderSetConfig.getPropertyValue("stringAttr")).thenReturn("Foo Bar");
+        when(builderSetConfig.getPropertyValue("stringAttr")).thenReturn("Foo \"quoted\" Bar");
         when(builderSetConfig.getPropertyValue("nullAttr")).thenReturn(null);
         when(builderSetConfig.getPropertyValue("booleanAttr")).thenReturn(Boolean.TRUE);
         when(builderSetConfig.getPropertyValue("intAttr")).thenReturn(42);
@@ -408,7 +408,7 @@ public class IpsBundleManifestTest {
         ipsBundleManifest.writeBuilderSettings(ipsProject);
 
         verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_GENERATOR_CONFIG),
-                "org.faktorips.devtools.stdbuilder.StandardBuilderSet;booleanAttr=\"true\";intAttr=\"42\";stringAttr=\"Foo Bar\"");
+                "org.faktorips.devtools.stdbuilder.StandardBuilderSet;booleanAttr=\"true\";intAttr=\"42\";stringAttr=\"Foo \\\"quoted\\\" Bar\"");
         verify(manifest).write(any(OutputStream.class));
     }
 

@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
@@ -303,7 +304,8 @@ public class IpsBundleManifest {
                 sb.append(p.getKey());
                 sb.append('=');
                 sb.append('"');
-                sb.append(p.getValue());
+                String value = Objects.toString(p.getValue());
+                sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
                 sb.append('"');
             });
             attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
