@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
+import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.internal.tablecontents.SingleTableContentsValidator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -77,6 +78,8 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
             result.add(new Message(MSG_INVALID_STRUCTURE,
                     Messages.NewTableContentsValidator_msgNoAdditionalContentsAllowed, Message.ERROR));
         }
+        DeprecationValidation.validateTableStructureIsNotDeprecated(null, getPmo().getQualifiedName(),
+                selectedTableStructure, ipsProject, result);
     }
 
     private void validateTableContentName(MessageList result) {

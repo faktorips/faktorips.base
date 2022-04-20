@@ -1262,6 +1262,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         boolean oldValue = this.deprecated;
         this.deprecated = isDeprecated;
         valueChanged(oldValue, isDeprecated);
+        if (isDeprecated && deprecation == null) {
+            newDeprecation();
+        }
     }
 
 }

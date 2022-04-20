@@ -16,6 +16,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.XmlSaxSupport;
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
@@ -83,6 +84,13 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
      */
     public static final String MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMN_NAMES_INVALID = MSGCODE_PREFIX
             + "TableContentReferencedColumnNamesInvalid"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the table structure is deprecated. A
+     * replacement/migration strategy should be documented in its
+     * {@link IDeprecation#getDescriptions() deprecation descriptions}.
+     */
+    public static final String MSGCODE_DEPRECATED_TABLE_STRUCTURE = MSGCODE_PREFIX + "DeprecatedTableStructure"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of the table structure this table contents is based on.

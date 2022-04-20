@@ -15,6 +15,7 @@ import java.util.List;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaObject;
 import org.faktorips.devtools.model.IPartReference;
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 
 /**
  * An <code>IEnumContent</code> is used when the values for a Faktor-IPS enumeration shall not be
@@ -98,6 +99,13 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <code>IEnumType</code>.
      */
     public static final String MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT = MSGCODE_PREFIX + "EnumContentNameNotCorrect"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the enum type is deprecated. A
+     * replacement/migration strategy should be documented in its
+     * {@link IDeprecation#getDescriptions() deprecation descriptions}.
+     */
+    public static final String MSGCODE_DEPRECATED_ENUM_TYPE = MSGCODE_PREFIX + "DeprecatedEnumType"; //$NON-NLS-1$
 
     /**
      * Sets the <code>IEnumType</code> this <code>IEnumContent</code> is based upon.

@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.Messages;
@@ -36,7 +37,7 @@ public class ProductCmptValidations {
     }
 
     /**
-     * Checks if the product component type exists and is not abstract.
+     * Checks if the product component type exists and is not abstract or deprecated.
      * 
      * @param productCmpt The product component that is checked or <code>null</code> if it does not
      *            exist, yet.
@@ -65,6 +66,8 @@ public class ProductCmptValidations {
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
         }
+        DeprecationValidation.validateProductCmptTypeIsNotDeprecated(productCmpt, productCmpt.getQualifiedName(), type,
+                ipsProject, list);
         return type;
     }
 

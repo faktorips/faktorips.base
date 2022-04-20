@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaObject;
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -54,6 +55,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * product component types can't have an instance (=product component)
      */
     public static final String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates that the product component type is deprecated. A
+     * replacement/migration strategy should be documented in its
+     * {@link IDeprecation#getDescriptions() deprecation descriptions}.
+     */
+    public static final String MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "DeprecatedProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the type's hierarchy the product component is based

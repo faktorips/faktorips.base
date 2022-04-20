@@ -16,6 +16,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
+import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -80,6 +81,9 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         if (getPmo().getSelectedType() == null) {
             result.add(new Message(MSG_INVALID_SELECTED_TYPE, Messages.NewProdutCmptValidator_msg_invalidSelectedType,
                     Message.ERROR, getPmo(), NewProductCmptPMO.PROPERTY_SELECTED_TYPE));
+        } else {
+            DeprecationValidation.validateProductCmptTypeIsNotDeprecated(null, getPmo().getQualifiedName(),
+                    getPmo().getSelectedType(), getPmo().getIpsProject(), result);
         }
 
         if (StringUtils.isEmpty(getPmo().getKindId())) {
@@ -165,7 +169,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
     MessageList validateAddToType() {
         MessageList result = new MessageList();
-        if (getPmo().getAddToProductCmptGeneration() != null && getPmo().getAddToProductCmptGeneration() != null) {
+        if (getPmo().getAddToProductCmptGeneration() != null) {
             IProductCmptTypeAssociation addToAssociation = getPmo().getAddToAssociation();
             IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(getPmo()
                     .getIpsProject());

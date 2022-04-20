@@ -16,6 +16,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.Messages;
+import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -144,5 +145,8 @@ public abstract class EnumContentValidations {
             validationMessageList.add(new Message(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT, text,
                     Message.ERROR, objectProperties));
         }
+
+        DeprecationValidation.validateEnumTypeIsNotDeprecated(enumContent, enumTypeRef, ipsProject,
+                validationMessageList);
     }
 }

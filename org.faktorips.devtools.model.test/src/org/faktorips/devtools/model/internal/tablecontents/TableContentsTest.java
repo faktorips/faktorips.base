@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -38,12 +41,14 @@ import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.preferences.DefaultIpsModelPreferences;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescription;
@@ -60,6 +65,7 @@ import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.tablestructure.TableStructureType;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -543,6 +549,58 @@ public class TableContentsTest extends AbstractDependencyTest {
         tableContents.validateChildren(list, project);
 
         verify(tableRows, never()).validateThis((MessageList)any(), eq(project));
+    }
+
+    @Test
+    public void testValidate_TableStructureIsNotDeprecated() {
+        var messageList = table.validate(project);
+        assertThat(messageList, not(hasMessageCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE)));
+    }
+
+    @Test
+    public void testValidate_TableStructureIsDeprecated() {
+        ((IpsObjectPartContainer)structure).setDeprecated(true);
+        var deprecation = structure.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        var locale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        IDescription description = deprecation.newDescription();
+        description.setLocale(locale);
+        deprecation.setDescriptionText(locale, "Use Foo instead");
+
+        var messageList = table.validate(project);
+
+        assertThat(messageList, hasMessageCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE));
+        Message message = messageList.getMessageByCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE);
+        assertThat(message, hasInvalidObject(table, ITableContents.PROPERTY_TABLESTRUCTURE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
+    }
+
+    @Test
+    public void testValidate_TableStructureIsDeprecated_UseExistingDeprecationDescription() {
+        var properties = project.getProperties();
+        var usedLanguagePackLocale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        var defaultLocale = usedLanguagePackLocale.equals(Locale.ITALIAN) ? Locale.CHINESE : Locale.ITALIAN;
+        properties.addSupportedLanguage(defaultLocale);
+        var otherLocale = usedLanguagePackLocale.equals(Locale.FRENCH) ? Locale.KOREAN : Locale.FRENCH;
+        properties.addSupportedLanguage(otherLocale);
+        properties.setDefaultLanguage(defaultLocale);
+        project.setProperties(properties);
+        ((IpsObjectPartContainer)structure).setDeprecated(true);
+        var deprecation = structure.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        deprecation.setDescriptionText(defaultLocale, "Default Description");
+        deprecation.setDescriptionText(otherLocale, "Other Description");
+
+        var messageList = table.validate(project);
+
+        assertThat(messageList, hasMessageCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE));
+        Message message = messageList.getMessageByCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE);
+        assertThat(message, hasInvalidObject(table, ITableContents.PROPERTY_TABLESTRUCTURE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Default Description"));
     }
 
     @Test
