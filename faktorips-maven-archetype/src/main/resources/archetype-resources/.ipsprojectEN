@@ -196,18 +196,23 @@
             outputFolderMergable="src"      Folder in the project where the generator puts the java source files which content will be merged with the newly generated content during each build cycle.
             basePackageMergable="org.foo"   The package prefix for all generated but mergable java files.
             tocPath="motor/motor-reposiory-toc.xml" 
-                                              The partial path of the resource containing the runtime repository table of content (toc).
-                                              The full path is derived from the basePackageMergeable by adding this partial path.
-                                              The file is not part of the published interface so it is places in the internal package.
+                                            The partial path of the resource containing the runtime repository table of content (toc).
+                                             The full path is derived from the basePackageMergeable by adding this partial path.
+                                             The file is not part of the published interface so it is places in the internal package.
             validationMessagesBundle="motor.validation-messages" 
-                                              The partial name of the resource bundle containing the validation messages.
-                                              The full resource bundle name is derived from basePackageDerived adding this parial name.
-                                              For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name.
+                                            The partial name of the resource bundle containing the validation messages.
+                                             The full resource bundle name is derived from basePackageDerived adding this parial name.
+                                             For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name.
             outputFolderDerived=""          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and regenerated during a clean build cycle.
-                                              Other builders can choose to maintain user code in a separate folder which is defined here.
-                                              If you use the standard builder, leave the atribute empty.
-            basePackageDerived=""          Package prefix for all generated derived Java classes in the output folder for derived sources. See above.
-            uniqueQualifier="">            Optional argument if the basePackage names are not unique for all referencing source folders.
+                                             Other builders can choose to maintain user code in a separate folder which is defined here.
+                                             If you use the standard builder, leave the atribute empty.
+            basePackageDerived=""           Package prefix for all generated derived Java classes in the output folder for derived sources. See above.
+            uniqueQualifier="">             Optional argument if the basePackage names are not unique for all referencing source folders.
+                                             If two referencing Faktor-IPS projects have the same base package name, e.g. org.faktorips.model, and the same source folder name, e.g. model,
+                                             some equal named derived resources e.g. model-label-and-descriptions.properties, are generated in a package with the same name.
+                                             This leads to problems at runtime because the class loader only sees one of the two files.
+                                             Therefore when adding a dependency the basePackage name is validated. The resulting error can either be fixed by changing the 
+                                             basePackageMergable and basePackageDerived or by adding a uniqueQualifier that will create a unique package for those resources.
          </Entry>
          
         Project Reference:
