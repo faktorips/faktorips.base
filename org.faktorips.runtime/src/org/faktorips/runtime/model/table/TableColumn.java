@@ -18,6 +18,7 @@ import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsTableColumn;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader;
@@ -30,15 +31,15 @@ public class TableColumn extends ModelElement {
 
     private final Class<?> datatype;
 
-    private final Method getterMethod;
+    private final Method getter;
 
     private final TableStructure tableStructure;
 
-    protected TableColumn(TableStructure tableStructure, String name, Class<?> datatype, Method getterMethod) {
-        super(name, getterMethod.getAnnotation(IpsExtensionProperties.class));
+    protected TableColumn(TableStructure tableStructure, String name, Class<?> datatype, Method getter) {
+        super(name, getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
         this.tableStructure = tableStructure;
         this.datatype = datatype;
-        this.getterMethod = getterMethod;
+        this.getter = getter;
     }
 
     /**
@@ -49,7 +50,7 @@ public class TableColumn extends ModelElement {
     }
 
     protected Method getGetterMethod() {
-        return getterMethod;
+        return getter;
     }
 
     /**

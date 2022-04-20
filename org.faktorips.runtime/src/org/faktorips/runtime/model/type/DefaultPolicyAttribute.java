@@ -61,7 +61,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
             boolean changingOverTime) {
         super(policyCmptType, getter.getAnnotation(IpsAttribute.class),
-                getter.getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime);
+                getter.getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime,
+                Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
     }

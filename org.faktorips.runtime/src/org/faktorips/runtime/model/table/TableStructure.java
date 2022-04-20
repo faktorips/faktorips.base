@@ -18,9 +18,11 @@ import java.util.List;
 
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
@@ -41,7 +43,8 @@ public class TableStructure extends ModelElement {
 
     public TableStructure(Class<? extends ITable<?>> tableObjectClass) {
         super(tableObjectClass.getAnnotation(IpsTableStructure.class).name(),
-                tableObjectClass.getAnnotation(IpsExtensionProperties.class));
+                tableObjectClass.getAnnotation(IpsExtensionProperties.class),
+                Deprecation.of(AnnotatedDeclaration.from(tableObjectClass)));
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
         this.kind = annotation.type();

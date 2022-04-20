@@ -11,6 +11,7 @@
 package org.faktorips.runtime.model.type;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -36,8 +37,8 @@ import org.faktorips.valueset.ValueSet;
 public abstract class PolicyAttribute extends Attribute {
 
     public PolicyAttribute(Type type, IpsAttribute attributeAnnotation, IpsExtensionProperties extensionProperties,
-            Class<?> datatype, boolean changingOverTime) {
-        super(type, attributeAnnotation, extensionProperties, datatype, changingOverTime);
+            Class<?> datatype, boolean changingOverTime, Optional<Deprecation> deprecation) {
+        super(type, attributeAnnotation, extensionProperties, datatype, changingOverTime, deprecation);
     }
 
     /**

@@ -417,11 +417,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void initDeprecationFromXML(Element element) {
-        NodeList elementsByTagName = element.getElementsByTagName(IDeprecation.XML_TAG);
-        Node deprecationNode = elementsByTagName.item(0);
+        Element deprecationNode = XmlUtil.getFirstElement(element, IDeprecation.XML_TAG);
         if (deprecationNode != null) {
             deprecation = newDeprecation();
-            deprecation.initFromXml((Element)deprecationNode);
+            deprecation.initFromXml(deprecationNode);
             deprecated = true;
         } else {
             deprecated = false;
@@ -1190,8 +1189,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     public void setSinceVersionString(String version) {
         String oldValue = this.sinceVersion;
-        this.sinceVersion = version;
+        setSinceVersionStringInternal(version);
         valueChanged(oldValue, version, IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
+    }
+
+    protected void setSinceVersionStringInternal(String version) {
+        this.sinceVersion = version;
     }
 
     /**

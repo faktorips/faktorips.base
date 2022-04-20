@@ -29,8 +29,8 @@ public abstract class Attribute extends TypePart {
     private final boolean changingOverTime;
 
     public Attribute(Type type, IpsAttribute attributeAnnotation, IpsExtensionProperties extensionProperties,
-            Class<?> datatype, boolean changingOverTime) {
-        super(attributeAnnotation.name(), type, extensionProperties);
+            Class<?> datatype, boolean changingOverTime, Optional<Deprecation> deprecation) {
+        super(attributeAnnotation.name(), type, extensionProperties, deprecation);
         this.attributeAnnotation = attributeAnnotation;
         this.datatype = datatype;
         this.changingOverTime = changingOverTime;

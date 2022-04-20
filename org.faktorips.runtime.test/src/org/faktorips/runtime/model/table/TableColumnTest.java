@@ -10,18 +10,26 @@
 
 package org.faktorips.runtime.model.table;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Optional;
 
 import org.faktorips.runtime.internal.TestTable;
 import org.faktorips.runtime.internal.TestTableRow;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.values.Decimal;
 import org.junit.Test;
 
 public class TableColumnTest {
 
     private final TableStructure tableStructure = IpsModel.getTableStructure(TestTable.class);
+    @SuppressWarnings("deprecation")
+    private final TableStructure deprecatedTableStructure = IpsModel
+            .getTableStructure(TableStructureTest.DeprecatedTable.class);
 
     @Test
     public void testGetValue() throws NoSuchMethodException, SecurityException {
@@ -34,5 +42,20 @@ public class TableColumnTest {
         assertTrue(value != null);
         assertTrue(value instanceof Integer);
         assertEquals(3, value);
+    }
+
+    @Test
+    public void testIsDeprecated() {
+        assertThat(deprecatedTableStructure.getColumn("aColumn").isDeprecated(), is(false));
+        assertThat(deprecatedTableStructure.getColumn("deprecatedColumn").isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecated() {
+        assertThat(deprecatedTableStructure.getColumn("aColumn").getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = deprecatedTableStructure.getColumn("deprecatedColumn").getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 }

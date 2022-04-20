@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IValidationContext;
@@ -104,6 +105,21 @@ public class TypeTest {
 
         assertNull(type.searchDeclaredMethod(IpsAttribute.class,
                 a -> a.name().equals("Attribute") && AttributeKind.CONSTANT == a.kind()));
+    }
+
+    @Test
+    public void testIsDeprecated() {
+        assertThat(IpsModel.getType(ISource.class).isDeprecated(), is(false));
+        assertThat(IpsModel.getType(DeprecatedType.class).isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecated() {
+        assertThat(IpsModel.getType(ISource.class).getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = IpsModel.getType(DeprecatedType.class).getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
     @IpsPublishedInterface(implementation = SuperSource.class)
@@ -248,6 +264,19 @@ public class TypeTest {
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
     public static class Faker implements IModelObject {
         @IpsAssociation(name = "Not a real association", pluralName = "", kind = AssociationKind.Association, targetClass = Faker.class, min = 0, max = 0)
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return null;
+        }
+
+    }
+
+    @IpsPolicyCmptType(name = "Dep")
+    @IpsAssociations({})
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @Deprecated
+    public static class DeprecatedType implements IModelObject {
+
         @Override
         public MessageList validate(IValidationContext context) {
             return null;

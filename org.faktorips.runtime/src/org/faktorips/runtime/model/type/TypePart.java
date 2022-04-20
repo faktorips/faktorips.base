@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.model.type;
 
+import java.util.Optional;
+
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.util.MessagesHelper;
 
@@ -20,8 +22,8 @@ public abstract class TypePart extends ModelElement {
 
     private final Type type;
 
-    public TypePart(String name, Type parent, IpsExtensionProperties extensionProperties) {
-        super(name, extensionProperties);
+    public TypePart(String name, Type parent, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
+        super(name, extensionProperties, deprecation);
         this.type = parent;
     }
 

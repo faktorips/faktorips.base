@@ -17,10 +17,12 @@ import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
@@ -45,7 +47,7 @@ public class EnumType extends ModelElement {
 
     public EnumType(Class<?> enumTypeClass) {
         super(enumTypeClass.getAnnotation(IpsEnumType.class).name(), enumTypeClass
-                .getAnnotation(IpsExtensionProperties.class));
+                .getAnnotation(IpsExtensionProperties.class), Deprecation.of(AnnotatedDeclaration.from(enumTypeClass)));
         IpsEnumType annotation = enumTypeClass.getAnnotation(IpsEnumType.class);
         attributeNames = Arrays.asList(annotation.attributeNames());
         attributeModels = EnumAttribute.createFrom(this, enumTypeClass);

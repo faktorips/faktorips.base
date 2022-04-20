@@ -18,6 +18,7 @@ import java.util.Locale;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader;
@@ -32,16 +33,16 @@ public class EnumAttribute extends ModelElement {
 
     private final Class<?> datatype;
 
-    private final Method getterMethod;
+    private final Method getter;
 
     private final IpsEnumAttribute annotation;
 
-    public EnumAttribute(EnumType enumType, String name, Method getterMethod) {
-        super(name, getterMethod.getAnnotation(IpsExtensionProperties.class));
+    public EnumAttribute(EnumType enumType, String name, Method getter) {
+        super(name, getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
         this.enumType = enumType;
-        this.datatype = getterMethod.getReturnType();
-        this.getterMethod = getterMethod;
-        this.annotation = getterMethod.getAnnotation(IpsEnumAttribute.class);
+        this.datatype = getter.getReturnType();
+        this.getter = getter;
+        this.annotation = getter.getAnnotation(IpsEnumAttribute.class);
     }
 
     /**
@@ -88,7 +89,7 @@ public class EnumAttribute extends ModelElement {
      * Whether the values of this attribute are dependent on {@link Locale}.
      */
     public boolean isMultilingual() {
-        return getterMethod.getParameterTypes().length == 1;
+        return getter.getParameterTypes().length == 1;
     }
 
     /**
@@ -101,9 +102,9 @@ public class EnumAttribute extends ModelElement {
     public Object getValue(Object enumInstance, Locale locale) {
         try {
             if (isMultilingual()) {
-                return getterMethod.invoke(enumInstance, locale);
+                return getter.invoke(enumInstance, locale);
             } else {
-                return getterMethod.invoke(enumInstance);
+                return getter.invoke(enumInstance);
             }
         } catch (IllegalAccessException e) {
             throw cantGetValueException(e, locale);

@@ -10,12 +10,15 @@
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -174,8 +177,25 @@ public class ConstantPolicyAttributeTest {
         assertTrue(overwritingAttribute instanceof ConstantPolicyAttribute);
     }
 
+    @Test
+    public void testIsDeprecated() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConstPolicy.class);
+        assertThat(modelType.getAttribute("attr").isDeprecated(), is(false));
+        assertThat(modelType.getAttribute("deprecatedAttribute").isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecation() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConstPolicy.class);
+        assertThat(modelType.getAttribute("attr").getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = modelType.getAttribute("deprecatedAttribute").getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "ConstPolicy")
-    @IpsAttributes({ "attr", "nullAttr", "nullObjectAttr" })
+    @IpsAttributes({ "attr", "nullAttr", "nullObjectAttr", "deprecatedAttribute" })
     @IpsConfiguredBy(ConstProduct.class)
     private static class ConstPolicy implements IConfigurableModelObject {
 
@@ -193,6 +213,10 @@ public class ConstantPolicyAttributeTest {
 
         @IpsAttribute(name = "nullObjectAttr", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public static final Decimal NULL_OBJECT_ATTR = Decimal.NULL;
+
+        @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        @Deprecated
+        public static final int deprecatedAttribute = -1;
 
         private ConstProduct constProduct = new ConstProduct();
 

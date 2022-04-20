@@ -28,7 +28,7 @@ public interface IDeprecation extends IDescribedElement, XmlSupport {
 
     public static final String XML_ATTRIBUTE_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SINCE_VERSION_STRING = "sinceVersionString"; //$NON-NLS-1$
+    public static final String PROPERTY_SINCE_VERSION_STRING = IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING;
 
     public static final String PROPERTY_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
 

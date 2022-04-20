@@ -20,15 +20,12 @@ import org.w3c.dom.Element;
 
 public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
 
-    /** The version since which the part is deprecated. May be <code>null</code>. */
-    private String sinceVersion;
-
     /** Whether the part is marked for removal. */
     private boolean forRemoval;
 
     protected Deprecation(IpsObjectPartContainer parent, String id) {
         super(parent, id);
-        sinceVersion = parent.getDefaultVersion();
+        setSinceVersionStringInternal(parent.getDefaultVersion());
     }
 
     @Override
@@ -44,31 +41,19 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
     }
 
     @Override
-    public void setSinceVersionString(String version) {
-        String oldValue = this.sinceVersion;
-        this.sinceVersion = version;
-        valueChanged(oldValue, sinceVersion, IDeprecation.PROPERTY_SINCE_VERSION_STRING);
-    }
-
-    @Override
-    public String getSinceVersionString() {
-        return sinceVersion;
-    }
-
-    @Override
     public IVersion<?> getSinceVersion() {
-        if (StringUtils.isBlank(sinceVersion)) {
+        if (StringUtils.isBlank(getSinceVersionString())) {
             return null;
         }
         IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-        return versionProvider.getVersion(sinceVersion);
+        return versionProvider.getVersion(getSinceVersionString());
     }
 
     @Override
     public boolean isValidSinceVersion() {
-        if (StringUtils.isNotBlank(sinceVersion)) {
+        if (StringUtils.isNotBlank(getSinceVersionString())) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
-            return versionProvider.isCorrectVersionFormat(sinceVersion);
+            return versionProvider.isCorrectVersionFormat(getSinceVersionString());
         } else {
             return false;
         }
@@ -82,14 +67,14 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(XML_ATTRIBUTE_DEPRECATION_VERSION, sinceVersion);
+        element.setAttribute(XML_ATTRIBUTE_DEPRECATION_VERSION, getSinceVersionString());
         element.setAttribute(XML_ATTRIBUTE_FOR_REMOVAL, String.valueOf(forRemoval));
     }
 
     @Override
     protected void initPropertiesFromXml(Element deprecationNode, String id) {
         super.initPropertiesFromXml(deprecationNode, id);
-        sinceVersion = deprecationNode.getAttribute(XML_ATTRIBUTE_DEPRECATION_VERSION);
+        setSinceVersionStringInternal(deprecationNode.getAttribute(XML_ATTRIBUTE_DEPRECATION_VERSION));
         forRemoval = Boolean.valueOf(deprecationNode.getAttribute(XML_ATTRIBUTE_FOR_REMOVAL));
     }
 
@@ -97,6 +82,9 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Deprecated"); //$NON-NLS-1$
+        if (isForRemoval()) {
+            sb.append(Messages.Deprecation_forRemoval);
+        }
         if (isValidSinceVersion()) {
             sb.append(" "); //$NON-NLS-1$
             sb.append(NLS.bind(Messages.Deprecation_since, getSinceVersionString()));

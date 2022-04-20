@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.model.type;
 
+import java.util.Optional;
+
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.model.annotation.IpsConfiguredValidationRule;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
@@ -22,8 +24,8 @@ public class ValidationRule extends TypePart {
     private final IpsConfiguredValidationRule validationConfigurationRule;
 
     public ValidationRule(Type type, IpsValidationRule validationRuleAnnotation,
-            IpsConfiguredValidationRule validationConfigurationRule, IpsExtensionProperties extensionProperties) {
-        super(validationRuleAnnotation.name(), type, extensionProperties);
+            IpsConfiguredValidationRule validationConfigurationRule, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
+        super(validationRuleAnnotation.name(), type, extensionProperties, deprecation);
         this.validationRuleAnnotation = validationRuleAnnotation;
         this.validationConfigurationRule = validationConfigurationRule;
     }

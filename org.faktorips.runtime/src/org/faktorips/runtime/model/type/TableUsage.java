@@ -29,10 +29,10 @@ public class TableUsage extends TypePart {
 
     private final Method getter;
 
-    public TableUsage(Type parent, Method getterMethod) {
-        super(getterMethod.getAnnotation(IpsTableUsage.class).name(), parent,
-                getterMethod.getAnnotation(IpsExtensionProperties.class));
-        getter = getterMethod;
+    public TableUsage(Type parent, Method getter) {
+        super(getter.getAnnotation(IpsTableUsage.class).name(), parent,
+                getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
+        this.getter = getter;
     }
 
     /**
