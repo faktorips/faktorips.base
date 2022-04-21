@@ -7,10 +7,6 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
-/**
- * 
- */
 package org.faktorips.runtime.jaxb;
 
 import java.io.IOException;
@@ -65,6 +61,11 @@ public class IpsJAXBContext extends JAXBContext {
     public Marshaller createMarshaller() throws JAXBException {
         Marshaller marshaller = wrappedCtx.createMarshaller();
         marshaller.setAdapter(new ProductConfigurationXmlAdapter(repository));
+        marshaller.setAdapter(new LocalDateAdapter());
+        marshaller.setAdapter(new LocalDateTimeAdapter());
+        marshaller.setAdapter(new LocalTimeAdapter());
+        marshaller.setAdapter(new MonthDayAdapter());
+        marshaller.setAdapter(new MonthAdapter());
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             marshaller.setAdapter(xmlAdapter);
         }
@@ -75,6 +76,11 @@ public class IpsJAXBContext extends JAXBContext {
     public Unmarshaller createUnmarshaller() throws JAXBException {
         Unmarshaller unmarshaller = wrappedCtx.createUnmarshaller();
         unmarshaller.setAdapter(new ProductConfigurationXmlAdapter(repository));
+        unmarshaller.setAdapter(new LocalDateAdapter());
+        unmarshaller.setAdapter(new LocalDateTimeAdapter());
+        unmarshaller.setAdapter(new LocalTimeAdapter());
+        unmarshaller.setAdapter(new MonthDayAdapter());
+        unmarshaller.setAdapter(new MonthAdapter());
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             unmarshaller.setAdapter(xmlAdapter);
         }
