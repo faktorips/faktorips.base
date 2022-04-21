@@ -35,6 +35,21 @@ public class StringLengthValueSetTest {
     }
 
     @Test
+    public void testContains_TreatsBlankAsNull() {
+        StringLengthValueSet sl = new StringLengthValueSet(10, true);
+
+        assertThat(sl.contains(null), is(true));
+        assertThat(sl.contains(""), is(true));
+        assertThat(sl.contains(" "), is(true));
+
+        sl = new StringLengthValueSet(10, false);
+
+        assertThat(sl.contains(null), is(false));
+        assertThat(sl.contains(""), is(false));
+        assertThat(sl.contains(" "), is(false));
+    }
+
+    @Test
     public void testContainsNull() {
         StringLengthValueSet sl1 = new StringLengthValueSet(10, true);
         StringLengthValueSet sl2 = new StringLengthValueSet(10, false);
