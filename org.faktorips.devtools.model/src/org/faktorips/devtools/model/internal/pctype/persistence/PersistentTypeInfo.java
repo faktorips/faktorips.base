@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,6 +63,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
 
     private String discriminatorColumnName = ""; //$NON-NLS-1$
+
+    private Integer discriminatorColumnLength = 3;
 
     /** per default the persistent is disabled */
     private PersistentType persistentType = PersistentType.NONE;
@@ -103,7 +106,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
         PersistentType oldValue = this.persistentType;
         this.persistentType = persistentType;
-        valueChanged(oldValue, persistentType);
+        valueChanged(oldValue, persistentType, PROPERTY_PERSISTENT_TYPE);
     }
 
     @Override
@@ -113,7 +116,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
         boolean oldValue = this.definesDiscriminatorColumn;
         this.definesDiscriminatorColumn = definesDiscriminatorColumn;
-        valueChanged(oldValue, definesDiscriminatorColumn);
+        valueChanged(oldValue, definesDiscriminatorColumn, PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
     }
 
     @Override
@@ -121,7 +124,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         setTableName(""); //$NON-NLS-1$
         boolean oldValue = this.useTableDefinedInSupertype;
         this.useTableDefinedInSupertype = useTableDefinedInSupertype;
-        valueChanged(oldValue, useTableDefinedInSupertype);
+        valueChanged(oldValue, useTableDefinedInSupertype, PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
     }
 
     @Override
@@ -155,12 +158,25 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     @Override
+    public Integer getDiscriminatorColumnLength() {
+        return discriminatorColumnLength;
+    }
+
+    @Override
+    public void setDiscriminatorColumnLength(Integer newDiscriminatorColumnLength) {
+        Integer oldValue = discriminatorColumnLength;
+        discriminatorColumnLength = newDiscriminatorColumnLength;
+
+        valueChanged(oldValue, newDiscriminatorColumnLength, PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
+    }
+
+    @Override
     public void setDiscriminatorColumnName(String newDiscriminatorColumnName) {
         ArgumentCheck.notNull(newDiscriminatorColumnName);
         String oldValue = discriminatorColumnName;
         discriminatorColumnName = newDiscriminatorColumnName;
 
-        valueChanged(oldValue, newDiscriminatorColumnName);
+        valueChanged(oldValue, newDiscriminatorColumnName, PROPERTY_DISCRIMINATOR_COLUMN_NAME);
     }
 
     @Override
@@ -169,7 +185,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         DiscriminatorDatatype oldValue = discriminatorDatatype;
         discriminatorDatatype = newDescriminatorDatatype;
 
-        valueChanged(oldValue, newDescriminatorDatatype);
+        valueChanged(oldValue, newDescriminatorDatatype, PROPERTY_DISCRIMINATOR_DATATYPE);
     }
 
     @Override
@@ -178,7 +194,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         String oldValue = discriminatorValue;
         discriminatorValue = newDescriminatorValue;
 
-        valueChanged(oldValue, newDescriminatorValue);
+        valueChanged(oldValue, newDescriminatorValue, PROPERTY_DISCRIMINATOR_VALUE);
     }
 
     @Override
@@ -188,7 +204,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         setInheritanceStrategyInternal(newStrategy);
 
-        valueChanged(oldValue, newStrategy);
+        valueChanged(oldValue, newStrategy, PROPERTY_INHERITANCE_STRATEGY);
     }
 
     public void setInheritanceStrategyInternal(InheritanceStrategy newStrategy) {
@@ -207,7 +223,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         String oldValue = tableName;
         tableName = newTableName;
 
-        valueChanged(oldValue, tableName);
+        valueChanged(oldValue, tableName, PROPERTY_TABLE_NAME);
     }
 
     public boolean isSecondaryTableNameRequired() {
@@ -487,6 +503,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName); //$NON-NLS-1$
         element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName); //$NON-NLS-1$
+        if (discriminatorColumnLength != null) {
+            element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_LENGTH, "" + discriminatorColumnLength); //$NON-NLS-1$
+        }
         element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
@@ -503,6 +522,10 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         inheritanceStrategy = InheritanceStrategy.valueOf(element.getAttribute(PROPERTY_INHERITANCE_STRATEGY));
         discriminatorColumnName = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME);
         discriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DISCRIMINATOR_DATATYPE));
+        String discriminatorColumnLengthString = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
+        discriminatorColumnLength = IpsStringUtils.isNotBlank(discriminatorColumnLengthString)
+                ? Integer.parseInt(discriminatorColumnLengthString)
+                : null;
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
         initPersistentTypeWithWorkaround(element);
         definesDiscriminatorColumn = Boolean.valueOf(element.getAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));

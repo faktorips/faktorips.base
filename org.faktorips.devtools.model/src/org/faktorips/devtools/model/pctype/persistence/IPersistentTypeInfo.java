@@ -17,6 +17,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * A class that holds information of a policy component type which is relevant for persistence.
  * <p>
@@ -44,6 +46,11 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * The name of the discriminator column name property.
      */
     public static final String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName"; //$NON-NLS-1$
+
+    /**
+     * The name of the discriminator column length property.
+     */
+    public static final String PROPERTY_DISCRIMINATOR_COLUMN_LENGTH = "discriminatorColumnLength"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator value property.
@@ -255,6 +262,24 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * @see InheritanceStrategy
      */
     public void setDiscriminatorColumnName(String newDiscriminatorColumnName);
+
+    /**
+     * Returns the length of the discriminator column. Returns {@code null} if the database default
+     * should be used.
+     */
+    @CheckForNull
+    public Integer getDiscriminatorColumnLength();
+
+    /**
+     * Sets the length for the discriminator column. This only makes sense if the SINGLE_TABLE
+     * inheritance strategy is used.
+     * 
+     * @param newDiscriminatorColumnLength The length of the discriminator column. A value of
+     *            {@code null} is treated as database default.
+     * 
+     * @see InheritanceStrategy
+     */
+    public void setDiscriminatorColumnLength(@CheckForNull Integer newDiscriminatorColumnLength);
 
     /**
      * Returns the discriminator value. When using the SINGLE_TABLE inheritance strategy the

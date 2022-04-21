@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -58,47 +60,6 @@ public class PersistentTypeInfoSection extends IpsSection {
         initControls();
         setText(Messages.PersistentTypeInfoSection_sectionTitleJpaEntityInformation);
         setExpanded(false);
-    }
-
-    private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
-
-        private UIToolkit toolkit;
-
-        private boolean checkEnable = true;
-
-        private Boolean oldValue;
-
-        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
-                boolean checkEnable) {
-            super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
-            this.toolkit = toolkit;
-            this.checkEnable = checkEnable;
-        }
-
-        @Override
-        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-            try {
-                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
-                if (oldValue != null && enabled == oldValue) {
-                    return;
-                }
-                oldValue = enabled;
-                updateUiIfNotDisposedAndPropertyChanged(enabled);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
-            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                toolkit.setDataChangeable(getControl(), false);
-            } else {
-                if (!checkEnable) {
-                    enabled = !enabled;
-                }
-                toolkit.setDataChangeable(getControl(), enabled);
-            }
-        }
     }
 
     @Override
@@ -145,6 +106,10 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnName);
         Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
+
+        toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnLength);
+        IntegerField descriminatorColumnLengthField = new IntegerField(
+                getToolkit().createText(discriminatorDefComposite));
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
         Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
@@ -203,16 +168,63 @@ public class PersistentTypeInfoSection extends IpsSection {
                     new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
             getBindingContext().add(
+                    new EnabledControlsBindingByProperty(descriminatorColumnLengthField.getControl(), toolkit,
+                            IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
+            getBindingContext().add(
                     new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
 
             getBindingContext().bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
+            getBindingContext().bindContent(descriminatorColumnLengthField, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
             getBindingContext().bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
 
             getBindingContext().bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
+        }
+    }
+
+    private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
+
+        private UIToolkit toolkit;
+
+        private boolean checkEnable = true;
+
+        private Boolean oldValue;
+
+        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
+                boolean checkEnable) {
+            super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
+            this.toolkit = toolkit;
+            this.checkEnable = checkEnable;
+        }
+
+        @Override
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+            try {
+                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
+                if (oldValue != null && enabled == oldValue) {
+                    return;
+                }
+                oldValue = enabled;
+                updateUiIfNotDisposedAndPropertyChanged(enabled);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
+            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
+                toolkit.setDataChangeable(getControl(), false);
+            } else {
+                boolean newEnabled = enabled;
+                if (!checkEnable) {
+                    newEnabled = !newEnabled;
+                }
+                toolkit.setDataChangeable(getControl(), newEnabled);
+            }
         }
     }
 
