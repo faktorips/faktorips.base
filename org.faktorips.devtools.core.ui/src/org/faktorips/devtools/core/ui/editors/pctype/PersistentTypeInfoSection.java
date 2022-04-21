@@ -105,19 +105,20 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnName);
-        Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
+        Text discriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnLength);
-        IntegerField descriminatorColumnLengthField = new IntegerField(
+        IntegerField discriminatorColumnLengthField = new IntegerField(
                 getToolkit().createText(discriminatorDefComposite));
+        discriminatorColumnLengthField.setSupportsNullStringRepresentation(true);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
-        Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
-        EnumField<DiscriminatorDatatype> descriminatorDatatypeField = new EnumField<>(
-                descriminatorDatatypeCombo, DiscriminatorDatatype.class);
+        Combo discriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
+        EnumField<DiscriminatorDatatype> discriminatorDatatypeField = new EnumField<>(
+                discriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnValue);
-        Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
+        Text discriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
             getBindingContext().bindContent(persistentTypeField, ipsObject.getPersistenceTypeInfo(),
@@ -165,23 +166,23 @@ public class PersistentTypeInfoSection extends IpsSection {
             getBindingContext().bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
             getBindingContext().add(
-                    new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
+                    new EnabledControlsBindingByProperty(discriminatorColumnNameText, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
             getBindingContext().add(
-                    new EnabledControlsBindingByProperty(descriminatorColumnLengthField.getControl(), toolkit,
+                    new EnabledControlsBindingByProperty(discriminatorColumnLengthField.getControl(), toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
             getBindingContext().add(
-                    new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
+                    new EnabledControlsBindingByProperty(discriminatorDatatypeCombo, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
 
-            getBindingContext().bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
-            getBindingContext().bindContent(descriminatorColumnLengthField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnLengthField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
-            getBindingContext().bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
 
-            getBindingContext().bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
         }
     }

@@ -174,6 +174,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setDiscriminatorValue("value");
         persTypeInfo.setDiscriminatorColumnName("invali?");
+        persTypeInfo.setDiscriminatorColumnLength(10);
         MessageList msgList = persTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
@@ -490,6 +491,34 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         msgList = persistenceTypeInfo1.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
         msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+    }
+
+    @Test
+    public void testValidateDiscriminator_ColumnLength() {
+        MessageList msgList = null;
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        IPersistentTypeInfo persistenceTypeInfoSuper = superPcType.getPersistenceTypeInfo();
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+
+        persistenceTypeInfoSuper.setPersistentType(PersistentType.ENTITY);
+        persistenceTypeInfo.setPersistentType(PersistentType.ENTITY);
+
+        persistenceTypeInfoSuper.setDefinesDiscriminatorColumn(true);
+        persistenceTypeInfoSuper.setDiscriminatorColumnName("DTYPE");
+        persistenceTypeInfoSuper.setDiscriminatorDatatype(DiscriminatorDatatype.STRING);
+
+        persistenceTypeInfoSuper.setDiscriminatorColumnLength(2);
+        persistenceTypeInfo.setDiscriminatorValue("123");
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        persistenceTypeInfoSuper.setDiscriminatorColumnLength(null);
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
     }
 

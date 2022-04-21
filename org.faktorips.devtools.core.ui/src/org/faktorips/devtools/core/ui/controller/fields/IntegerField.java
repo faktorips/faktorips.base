@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -36,20 +37,24 @@ public class IntegerField extends DefaultEditField<Integer> {
 
     @Override
     public Integer parseContent() {
-        String text = getText();
-        if (text != null && text.length() == 0) {
+        String content = getText();
+        if (content != null && content.length() == 0) {
             return null;
         }
-        if (text == null) {
+        if (content == null) {
             return null;
         }
-        return Integer.valueOf(text);
+        return Integer.valueOf(content);
     }
 
     @Override
     public void setValue(Integer newValue) {
-        ArgumentCheck.isInstanceOf(newValue, Integer.class);
-        text.setText(newValue.toString());
+        if (newValue == null) {
+            text.setText(IpsStringUtils.EMPTY);
+        } else {
+            ArgumentCheck.isInstanceOf(newValue, Integer.class);
+            text.setText(newValue.toString());
+        }
     }
 
     @Override

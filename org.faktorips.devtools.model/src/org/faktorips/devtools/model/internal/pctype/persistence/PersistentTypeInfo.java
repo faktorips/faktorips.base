@@ -240,7 +240,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity, ipsProject);
         validateTableName(msgList, rootEntityFinder.rooEntity);
-        validateDisriminator(msgList, rootEntityFinder.rooEntity);
+        validateDiscriminator(msgList, rootEntityFinder.rooEntity);
         validateUniqueColumnNameInHierarchy(msgList);
     }
 
@@ -354,7 +354,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return rooEntityFinder.rooEntity;
     }
 
-    private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) {
+    private void validateDiscriminator(MessageList msgList, IPolicyCmptType rootEntity) {
         validatePersistentType(msgList);
 
         // check if this type not defines the discriminator column
@@ -366,6 +366,115 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
 
+        if (!validateRootEntityNotDefined(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateDefinesDiscriminatorColumnAndRootEntryNotNull(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateDiscriminatorEmptinessOrConformity(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateMaxDiscriminatorLength(msgList, rootEntity)) {
+            return;
+        }
+
+        validatePolicyCmptType(msgList);
+    }
+
+    /**
+     * The discriminator value exceeds the maximum length of the defined in the root entity.
+     * 
+     * @return false if the validation fails
+     */
+    private boolean validateMaxDiscriminatorLength(MessageList msgList, IPolicyCmptType rootEntity) {
+        Integer maxDiscriminatorColumnLength = rootEntity.getPersistenceTypeInfo().getDiscriminatorColumnLength();
+        if (maxDiscriminatorColumnLength != null && getDiscriminatorValue().length() > maxDiscriminatorColumnLength) {
+            String text = MessageFormat.format(Messages.PersistentTypeInfo_msgDiscriminatorValueTooLong,
+                    maxDiscriminatorColumnLength);
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * The discriminator value must <strong>not be empty</strong> if the root entity defines the
+     * discriminator column and the type is not abstract.
+     * <p>
+     * The discriminator value must <strong>be empty</strong> if the root entity does not define a
+     * discriminator column or the type is abstract.
+     * <p>
+     * The discriminator value does <strong>not conform</strong> to the specified discriminator
+     * datatype.
+     *
+     * @return false if one of the validation fails
+     */
+    private boolean validateDiscriminatorEmptinessOrConformity(MessageList msgList, IPolicyCmptType rootEntity) {
+        boolean discriminatorValueMustBeEmpty = isDiscrValueEmpty(rootEntity);
+
+        if (!discriminatorValueMustBeEmpty) {
+            if (StringUtils.isEmpty(discriminatorValue)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+                return false;
+            }
+        } else {
+            if (!StringUtils.isEmpty(discriminatorValue)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmpty;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+                return false;
+            }
+        }
+
+        if (!rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+            // discriminator not defined in hierarchy,
+            // skip next validation steps
+            return false;
+        }
+
+        if (!discriminatorValueMustBeEmpty
+                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype()
+                        .isParsableToDiscriminatorDatatype(discriminatorValue)) {
+            String text = Messages.PersistentTypeInfo_msgDiscriminatorValueNotConform;
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The discriminator definition is not allowed here because this type is not the root entity
+     *
+     * @return false if the validation fails
+     */
+    private boolean validateDefinesDiscriminatorColumnAndRootEntryNotNull(MessageList msgList,
+            IPolicyCmptType rootEntity) {
+        // discriminator necessary if single table or joined table inheritance strategy
+        // and the root entity defines a discriminator
+        if (isDefinesDiscriminatorColumnAndRootEntryNotNull(rootEntity)) {
+            String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
+            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The discriminator must be defined in the root entity
+     *
+     * @return false if the validation fails
+     */
+    private boolean validateRootEntityNotDefined(MessageList msgList, IPolicyCmptType rootEntity) {
         if (checkIsRootEntityNotDefined(rootEntity)) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
@@ -373,52 +482,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                     rootEntity.getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            return;
+            return false;
         }
-
-        // discriminator necessary if single table or joined table inheritance strategy
-        // and the root entity defines a discriminator
-        if (isDefinesDiscriminatorColumnAndRootEntryNotNull(rootEntity)) {
-            String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
-            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            return;
-        }
-
-        boolean discrValueMustBeEmpty = isDiscrValueEmpty(rootEntity);
-
-        if (!discrValueMustBeEmpty) {
-            if (StringUtils.isEmpty(discriminatorValue)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-                return;
-            }
-        } else {
-            if (!StringUtils.isEmpty(discriminatorValue)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmpty;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-                return;
-            }
-        }
-
-        if (!rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
-            // discriminator not defined in hierarchy,
-            // skip next validation steps
-            return;
-        }
-
-        if (!discrValueMustBeEmpty
-                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype()
-                        .isParsableToDiscriminatorDatatype(discriminatorValue)) {
-            String text = Messages.PersistentTypeInfo_msgDiscriminatorValueNotConform;
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-            return;
-        }
-
-        validatePolicyCmptType(msgList);
+        return true;
     }
 
     private boolean isDefinesDiscriminatorColumnAndRootEntryNotNull(IPolicyCmptType rootEntity) {
