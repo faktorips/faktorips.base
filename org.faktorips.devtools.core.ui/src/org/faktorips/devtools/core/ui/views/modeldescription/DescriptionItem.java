@@ -19,6 +19,8 @@ public class DescriptionItem {
 
     private String description;
 
+    private String deprecation;
+
     private List<DescriptionItem> children = new ArrayList<>(0);
 
     public DescriptionItem() {
@@ -28,6 +30,12 @@ public class DescriptionItem {
     public DescriptionItem(String name, String description) {
         this.description = description;
         this.name = name;
+    }
+
+    public DescriptionItem(String name, String description, String deprecation) {
+        this.description = description;
+        this.name = name;
+        this.deprecation = deprecation;
     }
 
     public DescriptionItem(String name, List<DescriptionItem> children) {
@@ -65,6 +73,14 @@ public class DescriptionItem {
 
     public boolean hasChildren() {
         return !children.isEmpty();
+    }
+
+    public String getDeprecation() {
+        return deprecation;
+    }
+
+    public void setDeprecation(String deprecation) {
+        this.deprecation = deprecation;
     }
 
 }

@@ -38,8 +38,7 @@ class ProductComponentTmpl {
         */
         «getAnnotations(PRODUCT_CMPT_IMPL_CLASS)»
         «getAnnotationsForPublishedInterface(PRODUCT_CMPT_DECL_CLASS, genInterface)»
-            public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)»
-            {
+       public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)» {
 
              «FOR it : associations» «privateConstants»«ENDFOR»
 
@@ -59,16 +58,17 @@ class ProductComponentTmpl {
 
              «FOR it : tables» «memberField» «ENDFOR»
 
-            /**
-            * «localizedJDoc("CONSTRUCTOR", implClassName)»
-           «getAnnotations(ELEMENT_JAVA_DOC)»
-            *
-            * @generated
-            */
-                public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {
-                    super(repository, id, kindId, versionId);
-                    «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
-                }
+             /**
+               * «localizedJDoc("CONSTRUCTOR", implClassName)»
+             «getAnnotations(ELEMENT_JAVA_DOC)»
+               *
+               * @generated
+               */
+             «getAnnotations(DEPRECATION)»
+             public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {
+                 super(repository, id, kindId, versionId);
+                 «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
+             }
 
                 «IF generateGenerationAccessMethods»
                     «getProductComponentGeneration(productCmptGenerationNode)»

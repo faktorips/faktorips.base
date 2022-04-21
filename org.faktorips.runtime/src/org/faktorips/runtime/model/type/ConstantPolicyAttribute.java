@@ -33,7 +33,7 @@ public class ConstantPolicyAttribute extends PolicyAttribute {
 
     public ConstantPolicyAttribute(Type type, Field field, boolean changingOverTime) {
         super(type, field.getAnnotation(IpsAttribute.class), field.getAnnotation(IpsExtensionProperties.class),
-                field.getType(), changingOverTime);
+                field.getType(), changingOverTime, Deprecation.of(field));
         this.field = field;
     }
 

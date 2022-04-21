@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
@@ -17,17 +21,22 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Locale;
+
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 public class NewTableContentsValidatorTest {
 
     @Test
-    public void testValidateTableContents_invalidProject() throws Exception {
+    public void testValidateTableContents_InvalidProject() throws Exception {
         NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
 
@@ -37,7 +46,7 @@ public class NewTableContentsValidatorTest {
     }
 
     @Test
-    public void testValidateTableContents_validProject() throws Exception {
+    public void testValidateTableContents_ValidProject() throws Exception {
         NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
         IIpsProject ipsProject = mockStructureSelection(pmo);
@@ -51,7 +60,7 @@ public class NewTableContentsValidatorTest {
 
     // FIPS-5387
     @Test
-    public void testValidateTableContents_validProject_noProductDefinition() throws Exception {
+    public void testValidateTableContents_ValidProject_NoProductDefinition() throws Exception {
         NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
         IIpsProject ipsProject = mockStructureSelection(pmo);
@@ -78,6 +87,34 @@ public class NewTableContentsValidatorTest {
         when(namingConventions.validateUnqualifiedIpsObjectName(any(IpsObjectType.class), anyString())).thenReturn(
                 new MessageList());
         when(ipsProject.getNamingConventions()).thenReturn(namingConventions);
+    }
+
+    @Test
+    public void testValidateTableContents_DeprecatedTableStructure() throws Exception {
+        NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
+        NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
+        IIpsProject ipsProject = mockStructureSelection(pmo);
+        when(ipsProject.isProductDefinitionProject()).thenReturn(true);
+        mockNamingConventions(ipsProject);
+        ITableStructure tableStructure = pmo.getSelectedStructure();
+        when(tableStructure.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_STRUCTURE);
+
+        MessageList msgList = newProdutCmptValidator.validateTableContents();
+
+        assertThat(msgList, not(hasMessageCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE)));
+
+        when(tableStructure.isDeprecated()).thenReturn(true);
+        IDeprecation deprecation = mock(IDeprecation.class);
+        when(tableStructure.getDeprecation()).thenReturn(deprecation);
+        when(deprecation.getSinceVersionString()).thenReturn("1.2.3");
+        when(deprecation.getDescriptionText(any(Locale.class))).thenReturn("Use Foo instead");
+
+        msgList = newProdutCmptValidator.validateTableContents();
+
+        assertThat(msgList, hasMessageCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE));
+        Message message = msgList.getMessageByCode(ITableContents.MSGCODE_DEPRECATED_TABLE_STRUCTURE);
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
     }
 
 }

@@ -18,8 +18,10 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -100,6 +102,27 @@ public class EnumAttributeTest {
         assertThat((String)barModel.getValue(myEnum, Locale.GERMANY), is(equalTo("Hallo Welt")));
     }
 
+    @Test
+    public void testIsDeprecated() throws NoSuchMethodException, SecurityException {
+        Method deprecatedGetter = MyEnum.class.getMethod("getDeprecated");
+        EnumAttribute deprecatedAttribute = new EnumAttribute(enumType, "deprecated", deprecatedGetter);
+
+        assertThat(fooModel.isDeprecated(), is(false));
+        assertThat(deprecatedAttribute.isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecated() throws NoSuchMethodException, SecurityException {
+        Method deprecatedGetter = MyEnum.class.getMethod("getDeprecated");
+        EnumAttribute deprecatedAttribute = new EnumAttribute(enumType, "deprecated", deprecatedGetter);
+
+        assertThat(fooModel.getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = deprecatedAttribute.getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     private static class MyEnum {
         private final Integer foo;
         private final Map<Locale, String> bar;
@@ -117,6 +140,12 @@ public class EnumAttributeTest {
         @IpsEnumAttribute(name = "bar", displayName = true)
         public String getBar(Locale locale) {
             return bar.get(locale);
+        }
+
+        @IpsEnumAttribute(name = "deprecated")
+        @Deprecated
+        public int getDeprecated() {
+            return -1;
         }
     }
 

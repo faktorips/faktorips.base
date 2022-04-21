@@ -31,11 +31,11 @@ public abstract class Association extends TypePart {
 
     private final Method getter;
 
-    public Association(Type type, Method getterMethod) {
-        super(getAssociationAnnotation(getterMethod).name(), type,
-                getterMethod.getAnnotation(IpsExtensionProperties.class));
-        this.annotation = getAssociationAnnotation(getterMethod);
-        getter = getterMethod;
+    public Association(Type type, Method getter) {
+        super(getAssociationAnnotation(getter).name(), type,
+                getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
+        this.annotation = getAssociationAnnotation(getter);
+        this.getter = getter;
     }
 
     private static IpsAssociation getAssociationAnnotation(Method getterMethod) {

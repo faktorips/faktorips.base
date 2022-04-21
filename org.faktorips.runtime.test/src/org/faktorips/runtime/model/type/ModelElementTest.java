@@ -18,8 +18,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
+import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperty;
@@ -64,10 +66,32 @@ public class ModelElementTest {
         assertEquals("testDescription", element.getDescription(Locale.CANADA));
     }
 
+    @Test
+    public void testIsDeprecated() throws Exception {
+        assertThat(element.isDeprecated(), is(false));
+        ModelElement deprecatedElement = new TestModelElement(ANY_NAME, DeprecatedAnnotatedModelElement.class);
+        assertThat(deprecatedElement.isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecation() throws Exception {
+        assertThat(element.getDeprecation().isPresent(), is(false));
+        ModelElement deprecatedElement = new TestModelElement(ANY_NAME, DeprecatedAnnotatedModelElement.class);
+        Optional<Deprecation> deprecation = deprecatedElement.getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     private static class TestModelElement extends ModelElement {
 
         public TestModelElement(String name) {
-            super(name, AnnotatedModelElement.class.getAnnotation(IpsExtensionProperties.class));
+            this(name, AnnotatedModelElement.class);
+        }
+
+        public TestModelElement(String name, Class<?> clazz) {
+            super(name, clazz.getAnnotation(IpsExtensionProperties.class),
+                    Deprecation.of(AnnotatedDeclaration.from(clazz)));
         }
 
         @Override
@@ -86,6 +110,14 @@ public class ModelElementTest {
             @IpsExtensionProperty(id = "id2", value = "anyValue") })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class AnnotatedModelElement {
+
+    }
+
+    @IpsExtensionProperties({ @IpsExtensionProperty(id = "id1", isNull = true),
+            @IpsExtensionProperty(id = "id2", value = "anyValue") })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
+    @Deprecated
+    private static class DeprecatedAnnotatedModelElement {
 
     }
 

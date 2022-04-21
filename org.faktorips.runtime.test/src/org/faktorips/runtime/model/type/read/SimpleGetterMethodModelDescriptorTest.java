@@ -13,6 +13,7 @@ package org.faktorips.runtime.model.type.read;
 import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -48,7 +49,7 @@ public class SimpleGetterMethodModelDescriptorTest {
     private static class DummyElement extends ModelElement {
 
         public DummyElement(String name) {
-            super(name, null);
+            super(name, null, Optional.empty());
         }
 
         @Override

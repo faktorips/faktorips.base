@@ -30,6 +30,7 @@ class CommonEnumTypeTmpl {
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty» *«ENDIF»
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         private final «datatypeNameForConstructor» «field(memberVarName)»;
     '''
 

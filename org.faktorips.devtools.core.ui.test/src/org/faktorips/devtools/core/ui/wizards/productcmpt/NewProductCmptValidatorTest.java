@@ -10,16 +10,23 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
+import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -104,6 +111,32 @@ public class NewProductCmptValidatorTest {
 
         msgList = newProdutCmptValidator.validateProductCmptPage();
         assertNull(msgList.getMessageByCode(NewProductCmptValidator.MSG_INVALID_SELECTED_TYPE));
+    }
+
+    @Test
+    public void testValidateAllPagesProductCmptPage_selectedTypeDeprecated() throws Exception {
+        NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
+        NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
+        mockTypeSelection(pmo);
+        IProductCmptType type = mock(IProductCmptType.class);
+        when(pmo.getSelectedType()).thenReturn(type);
+
+        MessageList msgList = newProdutCmptValidator.validateProductCmptPage();
+        assertThat(msgList, not(hasMessageCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE)));
+
+        when(type.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
+        when(type.isDeprecated()).thenReturn(true);
+        IDeprecation deprecation = mock(IDeprecation.class);
+        when(type.getDeprecation()).thenReturn(deprecation);
+        when(deprecation.getSinceVersionString()).thenReturn("1.2.3");
+        when(deprecation.getDescriptionText(any(Locale.class))).thenReturn("Use Foo instead");
+
+        msgList = newProdutCmptValidator.validateProductCmptPage();
+
+        assertThat(msgList, hasMessageCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE));
+        Message message = msgList.getMessageByCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE);
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
     }
 
     private IIpsProject mockTypeSelection(NewProductCmptPMO pmo) {

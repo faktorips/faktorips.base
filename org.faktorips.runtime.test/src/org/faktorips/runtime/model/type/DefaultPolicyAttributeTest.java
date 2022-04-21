@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -852,10 +853,28 @@ public class DefaultPolicyAttributeTest {
         assertEquals("MeinAttribut (überschrieben)", overwritingAttribute.getLabel(Locale.GERMAN));
     }
 
+    @Test
+    public void testIsDeprecated() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThat(modelType.getAttribute("attr1").isDeprecated(), is(false));
+        assertThat(modelType.getAttribute("deprecatedAttribute").isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecation() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThat(modelType.getAttribute("attr1").getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = modelType.getAttribute("deprecatedAttribute").getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
-            "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured" })
+            "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
+            "deprecatedAttribute" })
     private class ConfVertrag implements IConfigurableModelObject {
 
         @IpsDefaultValue("attr2")
@@ -1009,6 +1028,12 @@ public class DefaultPolicyAttributeTest {
         @Override
         public void setProductComponent(IProductComponent productComponent) {
             produkt = (Produkt)productComponent;
+        }
+
+        @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @Deprecated
+        public int getDeprecatedAttribute() {
+            return -1;
         }
     }
 

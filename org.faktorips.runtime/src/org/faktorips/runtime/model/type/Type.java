@@ -37,7 +37,7 @@ public abstract class Type extends ModelElement {
     private final MessagesHelper messagesHelper;
 
     public Type(String name, AnnotatedDeclaration annotatedDeclaration) {
-        super(name, annotatedDeclaration.get(IpsExtensionProperties.class));
+        super(name, annotatedDeclaration.get(IpsExtensionProperties.class), Deprecation.of(annotatedDeclaration));
         this.annotatedDeclaration = annotatedDeclaration;
         IpsDocumented ipsDocumented = annotatedDeclaration.get(IpsDocumented.class);
         messagesHelper = createMessageHelper(ipsDocumented, annotatedDeclaration.getClassLoader());

@@ -10,6 +10,11 @@
 
 package org.faktorips.devtools.model.internal.enums;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -19,6 +24,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -32,9 +38,12 @@ import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -161,6 +170,88 @@ public class EnumContentTest extends AbstractIpsEnumPluginTest {
         MessageList validationMessageList = enumContent.validate(ipsProject);
         assertOneValidationMessage(validationMessageList);
         assertNotNull(validationMessageList.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT));
+    }
+
+    @Test
+    public void testValidate_EnumTypeIsNotDeprecated() {
+        IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
+        enumContent.setEnumType(genderEnumType.getQualifiedName());
+
+        var messageList = enumContent.validate(ipsProject);
+        assertThat(messageList, not(hasMessageCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE)));
+    }
+
+    @Test
+    public void testValidate_EnumTypeIsDeprecated() {
+        IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
+        enumContent.setEnumType(genderEnumType.getQualifiedName());
+        ((IpsObjectPartContainer)genderEnumType).setDeprecated(true);
+        var deprecation = genderEnumType.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        var locale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        IDescription description = deprecation.newDescription();
+        description.setLocale(locale);
+        deprecation.setDescriptionText(locale, "Use Foo instead");
+
+        var messageList = enumContent.validate(ipsProject);
+
+        assertThat(messageList, hasMessageCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE));
+        Message message = messageList.getMessageByCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE);
+        assertThat(message, hasInvalidObject(enumContent, IEnumContent.PROPERTY_ENUM_TYPE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
+    }
+
+    @Test
+    public void testValidate_EnumTypeIsDeprecated_NoInstance() {
+        IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
+        enumContent.setEnumType(genderEnumType.getQualifiedName());
+        ((IpsObjectPartContainer)genderEnumType).setDeprecated(true);
+        var deprecation = genderEnumType.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        var locale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        IDescription description = deprecation.newDescription();
+        description.setLocale(locale);
+        deprecation.setDescriptionText(locale, "Use Foo instead");
+
+        var messageList = new MessageList();
+        EnumContentValidations.validateEnumType(messageList, null, genderEnumType.getQualifiedName(), ipsProject);
+
+        assertThat(messageList, hasMessageCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE));
+        Message message = messageList.getMessageByCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE);
+        assertThat(message, not(hasInvalidObject(enumContent, IEnumContent.PROPERTY_ENUM_TYPE)));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
+    }
+
+    @Test
+    public void testValidate_EnumTypeIsDeprecated_UseExistingDeprecationDescription() {
+        var properties = ipsProject.getProperties();
+        var usedLanguagePackLocale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        var defaultLocale = usedLanguagePackLocale.equals(Locale.ITALIAN) ? Locale.CHINESE : Locale.ITALIAN;
+        properties.addSupportedLanguage(defaultLocale);
+        var otherLocale = usedLanguagePackLocale.equals(Locale.FRENCH) ? Locale.KOREAN : Locale.FRENCH;
+        properties.addSupportedLanguage(otherLocale);
+        properties.setDefaultLanguage(defaultLocale);
+        ipsProject.setProperties(properties);
+        IEnumContent enumContent = newEnumContent(ipsProject, "foo.Bar");
+        enumContent.setEnumType(genderEnumType.getQualifiedName());
+        ((IpsObjectPartContainer)genderEnumType).setDeprecated(true);
+        var deprecation = genderEnumType.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        deprecation.setDescriptionText(defaultLocale, "Default Description");
+        deprecation.setDescriptionText(otherLocale, "Other Description");
+
+        var messageList = enumContent.validate(ipsProject);
+
+        assertThat(messageList, hasMessageCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE));
+        Message message = messageList.getMessageByCode(IEnumContent.MSGCODE_DEPRECATED_ENUM_TYPE);
+        assertThat(message, hasInvalidObject(enumContent, IEnumContent.PROPERTY_ENUM_TYPE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Default Description"));
     }
 
     @Test

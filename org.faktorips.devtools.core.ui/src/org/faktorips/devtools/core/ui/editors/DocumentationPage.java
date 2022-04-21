@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -44,6 +45,7 @@ class DocumentationPage extends IpsObjectEditorPage {
         new DescriptionSection(getIpsObject(), formBody, toolkit);
         if (ipsObject instanceof IVersionControlledElement) {
             new VersionSection((IVersionControlledElement)getIpsObject(), formBody, toolkit);
+            new DeprecationSection((IpsObjectPartContainer)getIpsObject(), formBody, toolkit);
         }
     }
 
@@ -107,7 +109,7 @@ class DocumentationPage extends IpsObjectEditorPage {
         private final IVersionControlledElement versionElement;
 
         public VersionSection(IVersionControlledElement versionElement, Composite composite, UIToolkit toolkit) {
-            super(composite, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+            super(composite, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
             this.versionElement = versionElement;
 
             initControls();
@@ -122,6 +124,34 @@ class DocumentationPage extends IpsObjectEditorPage {
         @Override
         protected void performRefresh() {
             // nothing to do
+        }
+    }
+
+    private static class DeprecationSection extends IpsSection {
+
+        private final IpsObjectPartContainer deprecatedElement;
+
+        private DeprecationEditComposite deprecationEditComposite;
+
+        public DeprecationSection(IpsObjectPartContainer deprecatedElement, Composite composite,
+                UIToolkit toolkit) {
+            super(composite, Section.TITLE_BAR, GridData.FILL_HORIZONTAL, toolkit);
+            this.deprecatedElement = deprecatedElement;
+            initControls();
+            setText(Messages.DeprecationSection_label);
+        }
+
+        @Override
+        protected void initClientComposite(Composite client, UIToolkit toolkit) {
+            deprecationEditComposite = new DeprecationEditComposite(client, deprecatedElement,
+                    toolkit,
+                    getBindingContext());
+
+        }
+
+        @Override
+        protected void performRefresh() {
+            deprecationEditComposite.refresh();
         }
     }
 }

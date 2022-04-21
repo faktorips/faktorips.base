@@ -23,6 +23,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
+      «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
       public static final String «field(constantNamePropertyName)» = "«name»";
     «ENDIF»
   '''
@@ -35,6 +36,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
+      «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
       public static final «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
   '''
@@ -198,6 +200,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
+      «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
       protected final void «method(methodNameSetterInternal, javaClassName, "newValue")»
       {
           this.«fieldName» = «getReferenceOrSafeCopyIfNecessary("newValue")»;
@@ -219,6 +222,8 @@ class PolicyCmptAttributeTmpl {
        */
       «IF isPublishedInterfaceModifierRelevant(rule)»
          «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
+      «ELSE»
+          «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
       «ENDIF»
       «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule))»
       «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
@@ -259,6 +264,7 @@ class PolicyCmptAttributeTmpl {
          * «inheritDoc»
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         @Override
         public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE), IValidationContext(), "context")»
         «IF genInterface()»;«ELSE» {
@@ -274,6 +280,7 @@ class PolicyCmptAttributeTmpl {
          * «inheritDoc»
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         @Override
         public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED))»
         «IF genInterface()»;«ELSE» {
@@ -289,6 +296,7 @@ class PolicyCmptAttributeTmpl {
          *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         «overrideAnnotationForPublishedMethodImplementation»
         «IF !(valueSetMethods.generateByType && generateBothMethodsToGetAllowedValues)»
             «attributeSuperType.getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»

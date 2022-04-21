@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -36,7 +37,10 @@ public class TableStructureUsageDecorator extends SimpleIpsElementDecorator impl
             String[] overlays = new String[4];
 
             if (!tableStructureUsage.isChangingOverTime()) {
-                overlays[0] = OverlayIcons.STATIC;
+                overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
+            }
+            if (tableStructureUsage.isDeprecated()) {
+                overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
             }
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);
         }

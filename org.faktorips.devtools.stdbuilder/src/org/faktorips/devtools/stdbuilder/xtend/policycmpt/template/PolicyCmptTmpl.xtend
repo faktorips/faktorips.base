@@ -208,6 +208,7 @@ def private static constructors(XPolicyCmptClass it) '''
      *
      * @generated
      */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     public «method(implClassName)» {
         super();
         «IF firstConfigurableInHierarchy»
@@ -222,6 +223,7 @@ def private static constructors(XPolicyCmptClass it) '''
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public «method(implClassName, productCmptClassName, "productCmpt")» {
             «IF firstConfigurableInHierarchy»
                 super();
@@ -242,7 +244,8 @@ def private static getterForProductAttributes(XPolicyCmptClass currentClass, XPr
          *
          * @generated
          */
-         «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
         «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
             «IF changingOverTime»
                 return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
@@ -260,6 +263,7 @@ def private static getterForTables(XPolicyCmptClass policyClass, XTableUsage it)
      *
      * @generated
      */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     public «tableClassName» «method(methodNameGetter)» {
         «IF changingOverTime»
             «policyClass.productCmptGenerationNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptGenerationNode.implClassName)»«policyClass.methodNameGetProductCmptGeneration»();
@@ -287,10 +291,10 @@ def package static getAndSetProductComponent(XProductCmptClass it) '''
      *
      * @generated
      */
-     «overrideAnnotationForPublishedMethodImplementation()»
-     public «interfaceName» «method(methodNameGetProductCmpt)»
+    «overrideAnnotationForPublishedMethodImplementation()»
+    public «interfaceName» «method(methodNameGetProductCmpt)»
      «IF genInterface()»
-        ;
+      ;
      «ELSE»
          {
              return («interfaceName») «getProductComponent()»;

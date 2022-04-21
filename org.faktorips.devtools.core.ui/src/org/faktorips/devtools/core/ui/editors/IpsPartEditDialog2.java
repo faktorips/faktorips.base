@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -198,6 +199,7 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         createLabelGroupIfRequired(tabFolderComposite);
         createDescriptionGroupIfRequired(tabFolderComposite);
         createVersionGroupIfRequired(tabFolderComposite);
+        createDeprecationGroupIfRequired(tabFolderComposite);
         createTabItem(tabFolder, tabFolderComposite);
     }
 
@@ -222,6 +224,16 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
             Group versionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupVersion);
             versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
             new VersionsComposite(versionGroup, (IVersionControlledElement)part, getToolkit(), getBindingContext());
+        }
+    }
+
+    private void createDeprecationGroupIfRequired(Composite composite) {
+        if (part instanceof IVersionControlledElement) {
+            Group versionGroup = getToolkit().createGroup(composite,
+                    Messages.DeprecationSection_label);
+            versionGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+            new DeprecationEditComposite(versionGroup, (IpsObjectPartContainer)part, getToolkit(),
+                    getBindingContext());
         }
     }
 

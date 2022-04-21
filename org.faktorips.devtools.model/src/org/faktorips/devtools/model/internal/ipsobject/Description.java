@@ -94,8 +94,8 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
     }
 
     private void validateLocaleMissing(MessageList list) {
-        String text = Messages.Description_msgLocaleMissing;
-        Message msg = new Message(IDescription.MSGCODE_LOCALE_MISSING, text, Message.ERROR, this,
+        String msgText = Messages.Description_msgLocaleMissing;
+        Message msg = new Message(IDescription.MSGCODE_LOCALE_MISSING, msgText, Message.ERROR, this,
                 IDescription.PROPERTY_LOCALE);
         list.add(msg);
     }
@@ -106,9 +106,9 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         IIpsProjectProperties properties = ((IpsModel)getIpsModel()).getIpsProjectProperties(getIpsProject());
         boolean localeSupported = properties.isSupportedLanguage(locale);
         if (!(localeSupported)) {
-            String text = MessageFormat.format(Messages.Description_msgLocaleNotSupportedByProject,
+            String msgText = MessageFormat.format(Messages.Description_msgLocaleNotSupportedByProject,
                     locale.getLanguage());
-            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, text, Message.WARNING,
+            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, msgText, Message.WARNING,
                     this, IDescription.PROPERTY_LOCALE);
             list.add(msg);
         }

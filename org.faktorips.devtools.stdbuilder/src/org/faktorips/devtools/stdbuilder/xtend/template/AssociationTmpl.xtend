@@ -10,14 +10,15 @@ class AssociationTmpl {
 
     def static getNumOf(XAssociation it) '''
         «IF oneToMany && !derived && !constrain»
-            /**
-             * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
+           /**
+            * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
             *
             * @generated
             */
-               «overrideAnnotationForPublishedMethodImplementation()»
-            public int «method(methodNameGetNumOf)»
+           «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+           «overrideAnnotationForPublishedMethodImplementation()»
+           public int «method(methodNameGetNumOf)»
               «IF genInterface()»;
               «ELSE»
                   {

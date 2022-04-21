@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Optional;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -160,9 +161,26 @@ public class ProductAttributeTest {
                 is(equalTo((Object)ConcreteEnumType.class)));
     }
 
+    @Test
+    public void testIsDeprecated() throws Exception {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        assertThat(productCmptType.getAttribute("attr1").isDeprecated(), is(false));
+        assertThat(productCmptType.getAttribute("deprecatedAttribute").isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecation() throws Exception {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        assertThat(productCmptType.getAttribute("attr1").getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = productCmptType.getAttribute("deprecatedAttribute").getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
-    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum" })
+    @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute" })
     private class Produkt extends ProductComponent {
 
         private final ProduktGen produktGen = new ProduktGen(this);
@@ -189,6 +207,12 @@ public class ProductAttributeTest {
         @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public List<? extends AbstractEnumType> getMultiEnum() {
             return Collections.emptyList();
+        }
+
+        @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
+        @Deprecated
+        public int getDeprecatedAttribute() {
+            return -1;
         }
 
         @Override

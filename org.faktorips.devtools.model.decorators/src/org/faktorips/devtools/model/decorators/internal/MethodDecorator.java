@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
@@ -52,7 +53,10 @@ public class MethodDecorator implements IIpsObjectPartDecorator {
             IpsLog.log(e);
         }
         if (method.isAbstract()) {
-            overlays[1] = OverlayIcons.ABSTRACT;
+            overlays[IDecoration.TOP_RIGHT] = OverlayIcons.ABSTRACT;
+        }
+        if (method.isDeprecated()) {
+            overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
         }
         return overlays;
     }

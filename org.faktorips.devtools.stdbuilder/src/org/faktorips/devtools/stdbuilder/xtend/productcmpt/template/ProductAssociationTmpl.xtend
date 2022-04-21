@@ -20,6 +20,7 @@ class ProductAssociationTmpl {
              *
              * @generated
              */
+            «getAnnotations(DEPRECATION)»
             private static final String «field(constantNameXmlTag)» = "«name»";
         «ENDIF»
     '''
@@ -32,6 +33,7 @@ class ProductAssociationTmpl {
              *
              * @generated
              */
+            «getAnnotations(DEPRECATION)»
             «IF oneToMany»
                 private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap»(0);
             «ELSE»
@@ -72,7 +74,7 @@ class ProductAssociationTmpl {
          * @generated
          */
          «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface)»
-         «overrideAnnotationForConstainedAssociation»
+         «overrideAnnotationForConstrainedAssociation»
            «IF oneToMany»
                public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
                «IF genInterface»;«ELSE»
@@ -111,7 +113,8 @@ class ProductAssociationTmpl {
          *
          * @generated
          */
-         «overrideAnnotationForConstainedAssociation»
+        «getAnnotations(DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation»
            «IF oneToMany»
                public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar, "effectiveDate")»
                «IF genInterface»;«ELSE»
@@ -153,7 +156,8 @@ class ProductAssociationTmpl {
              *
              * @generated
              */
-             «overrideAnnotationForConstainedAssociation»
+            «getAnnotations(DEPRECATION)»
+            «overrideAnnotationForConstrainedAssociation»
             public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
             «IF genInterface»;«ELSE»
                         {
@@ -200,7 +204,8 @@ class ProductAssociationTmpl {
          *
          * @generated
          */
-         «overrideAnnotationForPublishedMethodImplementation»
+        «getAnnotations(DEPRECATION)»
+        «overrideAnnotationForPublishedMethodImplementation»
         public «IProductComponentLink(targetInterfaceName)» «method(methodNameGetLinkFor, targetInterfaceName, "productComponent")»
         «IF genInterface»;«ELSE»
                     {
@@ -339,7 +344,8 @@ class ProductAssociationTmpl {
              *
              * @generated
              */
-             «overrideAnnotationForPublishedMethodImplementation»
+            «getAnnotations(DEPRECATION)»
+            «overrideAnnotationForPublishedMethodImplementation»
             public «CardinalityRange» «matchingMethod(methodNameGetCardinalityFor, targetInterfaceName, "productCmpt")»
             «IF genInterface»;«ELSE»
                         {
@@ -370,6 +376,7 @@ class ProductAssociationTmpl {
          * @generated
          */
         @Override
+        «getAnnotations(DEPRECATION)»
         public «IProductComponentLink("? extends " + IProductComponent)» «getLink("String linkName", IProductComponent + " target")» {
             «FOR it : associations»
                 «IF !derivedUnion && !constrain»
@@ -393,6 +400,7 @@ class ProductAssociationTmpl {
          * @generated
          */
         @Override
+        «getAnnotations(DEPRECATION)»
         public «List_(IProductComponentLink("? extends " + IProductComponent))» «getLinks()» {
             «List_(IProductComponentLink("? extends " + IProductComponent))» list =
             «IF hasSupertype»
@@ -424,8 +432,8 @@ class ProductAssociationTmpl {
     def package static doInitFromXmlMethod(XProductAssociation it) '''
         «IF !derivedUnion && !constrain»
             /**
-              * @generated
-            */
+             * @generated
+             */
             private void «method(methodNameDoInitFromXml, Map("String", List_(Element)), "elementsMap")» {
                 «List_(Element)» associationElements = elementsMap.get(«constantNameXmlTag»);
                 if (associationElements != null) {
