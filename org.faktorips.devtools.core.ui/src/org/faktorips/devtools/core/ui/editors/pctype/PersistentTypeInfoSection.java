@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
+import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -58,47 +60,6 @@ public class PersistentTypeInfoSection extends IpsSection {
         initControls();
         setText(Messages.PersistentTypeInfoSection_sectionTitleJpaEntityInformation);
         setExpanded(false);
-    }
-
-    private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
-
-        private UIToolkit toolkit;
-
-        private boolean checkEnable = true;
-
-        private Boolean oldValue;
-
-        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
-                boolean checkEnable) {
-            super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
-            this.toolkit = toolkit;
-            this.checkEnable = checkEnable;
-        }
-
-        @Override
-        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-            try {
-                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
-                if (oldValue != null && enabled == oldValue) {
-                    return;
-                }
-                oldValue = enabled;
-                updateUiIfNotDisposedAndPropertyChanged(enabled);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
-            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                toolkit.setDataChangeable(getControl(), false);
-            } else {
-                if (!checkEnable) {
-                    enabled = !enabled;
-                }
-                toolkit.setDataChangeable(getControl(), enabled);
-            }
-        }
     }
 
     @Override
@@ -144,15 +105,20 @@ public class PersistentTypeInfoSection extends IpsSection {
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnName);
-        Text descriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
+        Text discriminatorColumnNameText = toolkit.createText(discriminatorDefComposite);
+
+        toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnLength);
+        IntegerField discriminatorColumnLengthField = new IntegerField(
+                getToolkit().createText(discriminatorDefComposite));
+        discriminatorColumnLengthField.setSupportsNullStringRepresentation(true);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelDatatype);
-        Combo descriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
-        EnumField<DiscriminatorDatatype> descriminatorDatatypeField = new EnumField<>(
-                descriminatorDatatypeCombo, DiscriminatorDatatype.class);
+        Combo discriminatorDatatypeCombo = toolkit.createCombo(discriminatorDefComposite);
+        EnumField<DiscriminatorDatatype> discriminatorDatatypeField = new EnumField<>(
+                discriminatorDatatypeCombo, DiscriminatorDatatype.class);
 
         toolkit.createLabel(discriminatorDefComposite, Messages.PersistentTypeInfoSection_labelColumnValue);
-        Text descriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
+        Text discriminatorColumnValueText = toolkit.createText(discriminatorDefComposite);
 
         if (ipsObject.getPersistenceTypeInfo() != null) {
             getBindingContext().bindContent(persistentTypeField, ipsObject.getPersistenceTypeInfo(),
@@ -200,19 +166,66 @@ public class PersistentTypeInfoSection extends IpsSection {
             getBindingContext().bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
             getBindingContext().add(
-                    new EnabledControlsBindingByProperty(descriminatorColumnNameText, toolkit,
+                    new EnabledControlsBindingByProperty(discriminatorColumnNameText, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
             getBindingContext().add(
-                    new EnabledControlsBindingByProperty(descriminatorDatatypeCombo, toolkit,
+                    new EnabledControlsBindingByProperty(discriminatorColumnLengthField.getControl(), toolkit,
+                            IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
+            getBindingContext().add(
+                    new EnabledControlsBindingByProperty(discriminatorDatatypeCombo, toolkit,
                             IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, true));
 
-            getBindingContext().bindContent(descriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnNameText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_NAME);
-            getBindingContext().bindContent(descriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnLengthField, ipsObject.getPersistenceTypeInfo(),
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
+            getBindingContext().bindContent(discriminatorDatatypeField, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_DATATYPE);
 
-            getBindingContext().bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
+            getBindingContext().bindContent(discriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
+        }
+    }
+
+    private class EnabledControlsBindingByProperty extends ControlPropertyBinding {
+
+        private UIToolkit toolkit;
+
+        private boolean checkEnable = true;
+
+        private Boolean oldValue;
+
+        public EnabledControlsBindingByProperty(Control control, UIToolkit toolkit, String property,
+                boolean checkEnable) {
+            super(control, ipsObject.getPersistenceTypeInfo(), property, Boolean.TYPE);
+            this.toolkit = toolkit;
+            this.checkEnable = checkEnable;
+        }
+
+        @Override
+        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+            try {
+                boolean enabled = (Boolean)getProperty().getReadMethod().invoke(getObject());
+                if (oldValue != null && enabled == oldValue) {
+                    return;
+                }
+                oldValue = enabled;
+                updateUiIfNotDisposedAndPropertyChanged(enabled);
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public void updateUiIfNotDisposedAndPropertyChanged(boolean enabled) {
+            if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
+                toolkit.setDataChangeable(getControl(), false);
+            } else {
+                boolean newEnabled = enabled;
+                if (!checkEnable) {
+                    newEnabled = !newEnabled;
+                }
+                toolkit.setDataChangeable(getControl(), newEnabled);
+            }
         }
     }
 

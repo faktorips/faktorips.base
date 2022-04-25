@@ -247,6 +247,7 @@
             </xsd:sequence>
             <xsd:attribute name="definesDiscriminatorColumn" type="boolean" use="required" />
             <xsd:attribute name="discriminatorColumnName" type="string" use="required" />
+            <xsd:attribute name="discriminatorColumnLength" type="int" use="optional" />
             <xsd:attribute name="discriminatorDatatype" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">

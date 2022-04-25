@@ -140,9 +140,14 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
 
         DiscriminatorDatatype discriminatorDatatype = persistenceTypeInfo.getDiscriminatorDatatype();
         String discriminatorColumnName = persistenceTypeInfo.getDiscriminatorColumnName();
+        Integer discriminatorColumnLength = persistenceTypeInfo.getDiscriminatorColumnLength();
 
-        fragment.appendln(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
-                + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype + ")");
+        fragment.append(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
+                + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype);
+        if (discriminatorColumnLength != null) {
+            fragment.append(", length = " + discriminatorColumnLength);
+        }
+        fragment.appendln(")");
 
         fragment.addImport(IMPORT_DISCRIMINATOR_COLUMN);
         fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);

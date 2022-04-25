@@ -208,6 +208,8 @@ public class Messages extends NLS {
 
     public static String PersistentTypeInfoSection_labelColumnName;
 
+    public static String PersistentTypeInfoSection_labelColumnLength;
+
     public static String PersistentTypeInfoSection_labelColumnValue;
 
     public static String PersistentTypeInfoSection_labelDatatype;
