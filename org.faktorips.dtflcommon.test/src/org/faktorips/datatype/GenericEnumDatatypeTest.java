@@ -10,7 +10,7 @@
 
 package org.faktorips.datatype;
 
-import static org.faktorips.datatype.GenericEnumDatatype.MSGCODE_PREFIX_GET_ALL_VALUES_METHOD;
+import static org.faktorips.datatype.GenericValueDatatype.MSGCODE_PREFIX_GET_ALL_VALUES_METHOD;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCodeThat;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.hamcrest.CoreMatchers.not;
@@ -41,7 +41,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetAllValueIds_FromArray() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
         String[] valueIds = datatype.getAllValueIds(false);
@@ -68,7 +68,7 @@ public class GenericEnumDatatypeTest {
     @Test
     public void testGetAllValueIds_FromList() {
         datatype = new DefaultGenericEnumDatatype(TestValueClassWithListOfAllValues.class);
-        datatype.setGetAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllValues"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
         String[] valueIds = datatype.getAllValueIds(false);
@@ -88,7 +88,7 @@ public class GenericEnumDatatypeTest {
     @Test
     public void testGetAllValueIds_FromSet() {
         datatype = new DefaultGenericEnumDatatype(TestValueClassWithSetOfAllValuesAndNullObject.class);
-        datatype.setGetAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllValues"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(true);
         datatype.setNullObjectId("0");
@@ -108,13 +108,13 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetGetAllValuesMethod() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         assertThat(datatype.checkReadyToUse(),
                 not(
                         hasMessageThat(
                                 hasMessageCodeThat(
                                         startsWith(MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)))));
-        datatype.setGetAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
         assertThat(datatype.checkReadyToUse(),
                 hasMessageThat(
                         hasMessageCodeThat(
@@ -123,7 +123,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValueName() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setGetNameMethodName("getName"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
@@ -137,7 +137,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValue() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
@@ -149,7 +149,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testIsParsable() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
@@ -163,7 +163,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValueIdsFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
         String[] ids = datatype.getAllValueIdsFromCache();
@@ -182,7 +182,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValueNamesFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 

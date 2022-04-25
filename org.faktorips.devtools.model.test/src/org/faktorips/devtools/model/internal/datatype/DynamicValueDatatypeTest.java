@@ -18,8 +18,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.MessageList;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -90,5 +93,52 @@ public class DynamicValueDatatypeTest extends AbstractIpsPluginTest {
         assertThat(type.isSupportingNames(), is(true));
         assertThat(type.getGetNameMethodName(), is("getSymbol"));
         assertThat(type.getGetValueByNameMethodName(), is("getValueByName"));
+    }
+
+    @Test
+    public void testCheckGetValueByName() {
+        Class<TestEnumType> adaptedClass = TestEnumType.class;
+        DynamicValueDatatype dataType = new DynamicValueDatatype(ipsProject);
+
+        dataType.setAdaptedClass(adaptedClass);
+        dataType.setIsSupportingNames(true);
+        dataType.setQualifiedName(StringUtil.unqualifiedName(adaptedClass.getName()));
+        dataType.setGetNameMethodName("getName");
+        dataType.setValueOfMethodName("valueOf");
+        dataType.setIsParsableMethodName(null);
+        dataType.setToStringMethodName("toString");
+        dataType.setGetValueByNameMethodName(null);
+
+        dataType.setAllValuesMethodName(null);
+
+        MessageList messages = dataType.checkReadyToUse();
+        assertThat(messages.getMessages().size(), is(1));
+        assertThat(messages.getMessages().get(0).getCode(),
+                is(DynamicValueDatatype.MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK));
+
+        dataType.setAllValuesMethodName("getAllValues");
+
+        messages = dataType.checkReadyToUse();
+        assertThat(messages.getMessages().size(), is(0));
+    }
+
+    @Test
+    public void testFindValueByNameInAllValues() {
+        Class<TestEnumType> adaptedClass = TestEnumType.class;
+        DynamicValueDatatype dataType = new DynamicValueDatatype(ipsProject);
+
+        dataType.setAdaptedClass(adaptedClass);
+        dataType.setIsSupportingNames(true);
+        dataType.setQualifiedName(StringUtil.unqualifiedName(adaptedClass.getName()));
+        dataType.setGetNameMethodName("getName");
+        dataType.setValueOfMethodName("valueOf");
+        dataType.setIsParsableMethodName(null);
+        dataType.setToStringMethodName("toString");
+        dataType.setGetValueByNameMethodName(null);
+        dataType.setAllValuesMethodName("getAllValues");
+
+        Object valueByName = dataType.getValueByName("third");
+        assertEquals(TestEnumType.THIRDVALUE, valueByName);
+
     }
 }

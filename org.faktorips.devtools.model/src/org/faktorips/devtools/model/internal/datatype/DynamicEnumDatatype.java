@@ -30,8 +30,6 @@ import org.w3c.dom.Element;
  */
 public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynamicEnumDatatype {
 
-    private String getAllValuesMethodName = ""; //$NON-NLS-1$
-
     public DynamicEnumDatatype(IIpsProject ipsProject) {
         super(ipsProject);
     }
@@ -44,19 +42,9 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
         datatype.setToStringMethodName(getToStringMethodName());
-        datatype.setGetAllValuesMethodName(getAllValuesMethodName);
+        datatype.setAllValuesMethodName(getAllValuesMethodName());
 
         return datatype.getAllValueIds(includeNull);
-    }
-
-    @Override
-    public void setAllValuesMethodName(String getAllValuesMethodName) {
-        this.getAllValuesMethodName = getAllValuesMethodName;
-    }
-
-    @Override
-    public String getAllValuesMethodName() {
-        return getAllValuesMethodName;
     }
 
     @Override

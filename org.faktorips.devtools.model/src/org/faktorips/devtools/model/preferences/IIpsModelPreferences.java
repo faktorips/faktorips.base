@@ -17,6 +17,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.runtime.IpsTestCase;
 
 /**
@@ -66,4 +67,11 @@ public interface IIpsModelPreferences {
      */
     boolean isBuilderEnabled();
 
+    /**
+     * Returns the named data type display setting. Specifies the text display of name data type
+     * edit fields. E.g. display id or name only, or display both.
+     * 
+     * @see NamedDataTypeDisplay
+     */
+    NamedDataTypeDisplay getNamedDataTypeDisplay();
 }

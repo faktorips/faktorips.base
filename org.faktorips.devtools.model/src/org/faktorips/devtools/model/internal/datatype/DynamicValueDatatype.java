@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +25,7 @@ import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -48,7 +51,6 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     public static final String MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD = MSGCODE_PREFIX + "getValueByName"; //$NON-NLS-1$
     public static final String MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK = MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD
             + " is empty or blank"; //$NON-NLS-1$
-
     private IIpsProject ipsProject;
     private IClassLoaderProvider classLoaderProvider;
     private IClasspathContentsChangeListener listener;
@@ -57,7 +59,6 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     private String getNameMethodName = ""; //$NON-NLS-1$
     private String getValueByNameMethodName = ""; //$NON-NLS-1$
-
     private String className;
     private Class<?> adaptedClass;
 
@@ -182,6 +183,11 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         } else {
             datatype.setGetValueByNameMethodName(null);
         }
+        if (element.hasAttribute("getAllValuesMethod")) { //$NON-NLS-1$
+            datatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$ );
+        } else {
+            datatype.setAllValuesMethodName(null);
+        }
         String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
         datatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
                 : Boolean.valueOf(isSupporting)
@@ -204,9 +210,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
             datatype = new DynamicValueDatatype(ipsProject);
         } else {
-            DynamicEnumDatatype enumDatatype = new DynamicEnumDatatype(ipsProject);
-            enumDatatype.setAllValuesMethodName(element.getAttribute("getAllValuesMethod")); //$NON-NLS-1$
-            datatype = enumDatatype;
+            datatype = new DynamicEnumDatatype(ipsProject);
         }
         return datatype;
     }
@@ -248,12 +252,32 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     @Override
     public Object getValueByName(String valueName) {
-        if (IpsStringUtils.isBlank(getValueByNameMethodName)) {
+        if (IpsStringUtils.isBlank(getValueByNameMethodName) && IpsStringUtils.isBlank(getAllValuesMethodName())) {
             throw new UnsupportedOperationException(
                     "This value type does not support a getValueByName(String) method, value type class: " //$NON-NLS-1$
                             + getAdaptedClass());
         }
+        if (IpsStringUtils.isBlank(getValueByNameMethodName)) {
+            return findValueByNameInAllValues(valueName);
+        }
         return getValueByNameFromClass(valueName);
+    }
+
+    private Object findValueByNameInAllValues(String valueName) {
+        Object result = getAllValuesMethod()
+                .invokeStatic("to get all values"); //$NON-NLS-1$
+        Object[] values;
+        if (result instanceof Collection) {
+            values = ((Collection<?>)result).toArray(Object[]::new);
+        } else {
+            values = (Object[])result;
+        }
+        return Arrays.stream(values)
+                .filter(v -> StringUtils.equals(valueName,
+                        getNameFromValue(v,
+                                IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale())))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(valueName + " could not be found in all values.")); //$NON-NLS-1$
     }
 
     @Override
@@ -282,18 +306,28 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     private void checkGetValueByName(MessageList ml) {
         if (StringUtils.isBlank(getGetValueByNameMethodName())) {
-            if (!(this instanceof EnumDatatype)) {
-                // enums can just iterate over all values and use getNameMethod
-                ml.add(Message.newError(MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK,
-                        "SupportingNames is true but no getValueByNameMethod is configured.")); //$NON-NLS-1$
+            if (StringUtils.isBlank(getAllValuesMethodName())) {
+                if (NamedDataTypeDisplay.NAME
+                        .equals(IIpsModelExtensions.get().getModelPreferences().getNamedDataTypeDisplay())) {
+                    ml.add(Message.newError(MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK,
+                            "The datatype display type is \"Name\" but no getValueByNameMethod or getAllValuesMethod are configured for the datatype " //$NON-NLS-1$
+                                    + getName()
+                                    + ". Either define one of these methods or change the datatype display type to \"Name and Id\" and perform a clean build.")); //$NON-NLS-1$
+                }
+                if (!(this instanceof EnumDatatype)) {
+                    // enums can just iterate over all values and use getNameMethod
+                    ml.add(Message.newError(MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK,
+                            "SupportingNames is true but no getValueByNameMethod or getAllValuesMethod is configured for datatype " //$NON-NLS-1$
+                                    + getName()));
+                }
             }
-        } else {
-            getGetValueByNameMethod()
-                    .check(ml, MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD)
-                    .exists()
-                    .isStatic()
-                    .returnTypeIsCompatible(getAdaptedClass());
+            return;
         }
+        getGetValueByNameMethod()
+                .check(ml, MSGCODE_PREFIX_GET_VALUE_BY_NAME_METHOD)
+                .exists()
+                .isStatic()
+                .returnTypeIsCompatible(getAdaptedClass());
     }
 
     private Object getValueByNameFromClass(String valueName) {

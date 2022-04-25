@@ -89,9 +89,11 @@ public class DynamicEnumDatatypeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetValueByName() {
-        TestEnumType value = (TestEnumType)dataType.getValueByName("third");
+        Object value = dataType.getValueByName("third");
+        // Can't cast to TestEnumType, because that would be loaded by a different classloader
 
-        assertThat(value, is(TestEnumType.THIRDVALUE));
+        assertThat(value.toString(), is(TestEnumType.THIRDVALUE.toString()));
+        assertThat(value.getClass().getName(), is(TestEnumType.class.getName()));
     }
 
     @Test

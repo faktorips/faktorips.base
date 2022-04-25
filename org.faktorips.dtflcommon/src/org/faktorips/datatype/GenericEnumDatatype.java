@@ -25,11 +25,8 @@ import org.faktorips.util.MethodAccess;
  */
 public abstract class GenericEnumDatatype extends GenericValueDatatype implements EnumDatatype {
 
-    public static final String MSGCODE_PREFIX_GET_ALL_VALUES_METHOD = MSGCODE_PREFIX + "getAllValuesMethod"; //$NON-NLS-1$
-
     public static final String MSGCODE_PREFIX_GET_NAME_METHOD = MSGCODE_PREFIX + "getNameMethod"; //$NON-NLS-1$
 
-    private String getAllValuesMethodName = "getAllValues"; //$NON-NLS-1$
     private String getNameMethodName = "getName"; //$NON-NLS-1$
 
     private boolean isSupportingNames = false;
@@ -59,19 +56,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         }
     }
 
-    public String getGetAllValuesMethodName() {
-        return getAllValuesMethodName;
-    }
-
-    public void setGetAllValuesMethodName(String getAllValuesMethodName) {
-        this.getAllValuesMethodName = getAllValuesMethodName;
-        clearCache();
-    }
-
-    private MethodAccess getAllValuesMethod() {
-        return MethodAccess.of(getAdaptedClass(), getGetAllValuesMethodName());
-    }
-
     private MethodAccess getNameMethod() {
         return MethodAccess.of(getAdaptedClass(), getGetNameMethodName());
     }
@@ -79,11 +63,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     @Override
     public MessageList checkReadyToUse() {
         MessageList ml = super.checkReadyToUse();
-        getAllValuesMethod()
-                .check(ml, MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)
-                .exists()
-                .isStatic()
-                .returnTypeIsCompatible(Object[].class, Collection.class);
         getNameMethod()
                 .check(ml, MSGCODE_PREFIX_GET_NAME_METHOD)
                 .exists()
@@ -141,7 +120,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             // CSOFF: Illegal Catch
         } catch (Exception e) {
             // CSON: Illegal Catch
-            throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e); //$NON-NLS-1$
+            throw new RuntimeException("Error invoking method " + getAllValuesMethodName(), e); //$NON-NLS-1$
         }
     }
 

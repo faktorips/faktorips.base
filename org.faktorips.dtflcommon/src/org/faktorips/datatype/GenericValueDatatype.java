@@ -10,6 +10,10 @@
 
 package org.faktorips.datatype;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.DatatypeComparator;
@@ -34,6 +38,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     public static final String MSGCODE_PREFIX_GET_VALUE_METHOD = MSGCODE_PREFIX + "getValueMethod"; //$NON-NLS-1$
     public static final String MSGCODE_PREFIX_IS_PARSABLE_METHOD = MSGCODE_PREFIX + "isParsable"; //$NON-NLS-1$
     public static final String MSGCODE_PREFIX_TO_STRING_METHOD = MSGCODE_PREFIX + "toString"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_VALUE_OF_METHOD = MSGCODE_PREFIX + "valueOf"; //$NON-NLS-1$
     public static final String MSGCODE_SPECIALCASE_NULL_NOT_FOUND = MSGCODE_PREFIX + "Special case null not found"; //$NON-NLS-1$
     public static final String MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL = MSGCODE_PREFIX + "Special case null is not null"; //$NON-NLS-1$
     public static final String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX_GET_VALUE_METHOD
@@ -42,11 +47,17 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
     public static final String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX_TO_STRING_METHOD
             + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_VALUE_OF_METHOD_NOT_FOUND = MSGCODE_PREFIX_VALUE_OF_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_PREFIX_GET_ALL_VALUES_METHOD = MSGCODE_PREFIX + "getAllValuesMethod"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_ALL_VALUES_METHOD_NOT_FOUND = MSGCODE_PREFIX_GET_ALL_VALUES_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
 
     private String qualifiedName;
     private String valueOfMethodName = "valueOf"; //$NON-NLS-1$
     private String isParsableMethodName = "isParsable"; //$NON-NLS-1$
     private String toStringMethodName = "toString"; //$NON-NLS-1$
+    private String getAllValuesMethodName = ""; //$NON-NLS-1$
 
     private boolean nullObjectDefined = false;
     private String nullObjectId = null;
@@ -83,6 +94,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         checkToStringMethodName(list);
         checkNullObjectDefined(list);
         checkValueOfMethodName(list);
+        checkGetAllValues(list);
         return list;
     }
 
@@ -91,11 +103,18 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     private void checkValueOfMethodName(MessageList list) {
-        getValueOfMethod()
-                .check(list, MSGCODE_PREFIX_GET_VALUE_METHOD)
-                .exists()
-                .isStatic()
-                .returnTypeIsCompatible(getAdaptedClass());
+        if (StringUtils.isBlank(getValueOfMethodName()) && StringUtils.isBlank(getAllValuesMethodName())) {
+            list.add(Message.newError(MSGCODE_VALUE_OF_METHOD_NOT_FOUND,
+                    "valueOfMethod must be configured for the datatype " + getName() //$NON-NLS-1$
+                            + " if no getAllValuesMethod is configured.")); //$NON-NLS-1$
+        }
+        if (valueOfMethodName != null) {
+            getValueOfMethod()
+                    .check(list, MSGCODE_PREFIX_GET_VALUE_METHOD)
+                    .exists()
+                    .isStatic()
+                    .returnTypeIsCompatible(getAdaptedClass());
+        }
     }
 
     private MethodAccess getIsParsableMethod() {
@@ -112,7 +131,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         }
     }
 
-    private MethodAccess getToStringMethod() {
+    protected MethodAccess getToStringMethod() {
         return MethodAccess.of(getAdaptedClass(), getToStringMethodName());
     }
 
@@ -232,8 +251,27 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (!nullObjectDefined && value == null) {
             return null;
         }
+        if (StringUtils.isBlank(valueOfMethodName)) {
+            return findValueInAllValues(value);
+        }
         return getValueOfMethod()
                 .invokeStatic("to get a value", value); //$NON-NLS-1$
+    }
+
+    private Object findValueInAllValues(String value) {
+        Object result = getAllValuesMethod()
+                .invokeStatic("to get all values"); //$NON-NLS-1$
+        Object[] values;
+        if (result instanceof Collection) {
+            values = ((Collection<?>)result).toArray(Object[]::new);
+        } else {
+            values = (Object[])result;
+        }
+        return Arrays.stream(values)
+                .filter(v -> StringUtils.equals(value,
+                        valueToString(v)))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(value + " could not be found in all values.")); //$NON-NLS-1$
     }
 
     @Override
@@ -370,6 +408,33 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     @Override
     public boolean isMutable() {
         return false;
+    }
+
+    private void checkGetAllValues(MessageList ml) {
+        if (StringUtils.isBlank(getAllValuesMethodName())) {
+            if (this instanceof EnumDatatype) {
+                ml.add(Message.newError(MSGCODE_GET_ALL_VALUES_METHOD_NOT_FOUND,
+                        "getAllValuesMethod must be configured for the enum datatype " + getName())); //$NON-NLS-1$
+            }
+            return;
+        }
+        getAllValuesMethod()
+                .check(ml, MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)
+                .exists()
+                .isStatic()
+                .returnTypeIsCompatible(Object[].class, Collection.class);
+    }
+
+    public MethodAccess getAllValuesMethod() {
+        return MethodAccess.of(getAdaptedClass(), getAllValuesMethodName());
+    }
+
+    public void setAllValuesMethodName(String getAllValuesMethodName) {
+        this.getAllValuesMethodName = getAllValuesMethodName;
+    }
+
+    public String getAllValuesMethodName() {
+        return getAllValuesMethodName;
     }
 
 }

@@ -343,12 +343,7 @@ public class IpsPreferences implements IIpsModelPreferences {
         return prefStore.getString(IPSTESTRUNNER_MAX_HEAP_SIZE);
     }
 
-    /**
-     * Returns the named data type display setting. Specifies the text display of name data type
-     * edit fields. E.g. display id or name only, or display both.
-     * 
-     * @see NamedDataTypeDisplay
-     */
+    @Override
     public NamedDataTypeDisplay getNamedDataTypeDisplay() {
         String id = prefStore.getString(NAMED_DATA_TYPE_DISPLAY);
         NamedDataTypeDisplay dataTypeDisplay = NamedDataTypeDisplay.getValueById(id);
