@@ -26,8 +26,6 @@ public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProv
     @Deprecated(forRemoval = true, since = "21.12")
     public static final String ID_GENERIC_JPA_2_1 = PersistenceSupportNames.ID_GENERIC_JPA_2_1;
 
-    private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$
-
     @Override
     public boolean isSupportingConverters() {
         return true;
@@ -36,7 +34,8 @@ public class GenericJPA2_1PersistenceProvider extends GenericJPA2PersistenceProv
     @Override
     public JavaCodeFragment getConverterAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
-        fragmentBuilder.annotationClassValueLn(ANNOTATION_CONVERT, "converter",
+        fragmentBuilder.annotationClassValueLn(getPackagePrefix() + PersistenceAnnotation.Convert.toString(),
+                "converter",
                 persistentAttributeInfo.getConverterQualifiedClassName());
 
         return fragmentBuilder.getFragment();

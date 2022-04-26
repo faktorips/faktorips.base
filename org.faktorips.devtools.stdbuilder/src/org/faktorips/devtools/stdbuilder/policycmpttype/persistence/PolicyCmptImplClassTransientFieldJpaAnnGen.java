@@ -11,7 +11,10 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceAnnotation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -22,21 +25,16 @@ import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
  * This class generates the @Transient JPA annotation for fields of policy component types.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD
- * 
- * @author Roman Grutza
  */
 public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
-    private static final String IMPORT_TRANSIENT = "javax.persistence.Transient";
-    private static final String ANNOTATION_TRANSIENT = "@Transient";
-
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendln(ANNOTATION_TRANSIENT);
-        fragment.addImport(IMPORT_TRANSIENT);
+        IPersistenceProvider persistenceProvider = getPersistenceProvider(generatorModelNode.getIpsProject());
+        JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
+        fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Transient));
 
-        return fragment;
+        return fragmentBuilder.getFragment();
     }
 
     @Override

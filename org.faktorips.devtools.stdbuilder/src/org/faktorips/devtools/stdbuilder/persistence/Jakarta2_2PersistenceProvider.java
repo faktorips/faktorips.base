@@ -19,8 +19,6 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
  */
 public class Jakarta2_2PersistenceProvider extends GenericJPA2PersistenceProvider {
 
-    private static final String ANNOTATION_CONVERT = "javax.persistence.Convert"; //$NON-NLS-1$
-
     @Override
     public boolean isSupportingConverters() {
         return true;
@@ -29,7 +27,8 @@ public class Jakarta2_2PersistenceProvider extends GenericJPA2PersistenceProvide
     @Override
     public JavaCodeFragment getConverterAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
-        fragmentBuilder.annotationClassValueLn(ANNOTATION_CONVERT, "converter",
+        fragmentBuilder.annotationClassValueLn(getPackagePrefix() + PersistenceAnnotation.Convert.toString(),
+                "converter",
                 persistentAttributeInfo.getConverterQualifiedClassName());
 
         return fragmentBuilder.getFragment();

@@ -15,10 +15,12 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceAnnotation;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceEnum;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
@@ -30,23 +32,12 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
  * This class generates JPA annotations for fields derived from policy component type attributes.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD
- * 
- * @author Roman Grutza
  */
 public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
-    private static final String ANNOTATION_COLUMN = "@Column";
-    private static final String ANNOTATION_TEMPORAL = "@Temporal";
-
-    private static final String IMPORT_COLUMN = "javax.persistence.Column";
-    private static final String IMPORT_TEMPORAL = "javax.persistence.Temporal";
-    private static final String IMPORT_TEMPORAL_TYPE = "javax.persistence.TemporalType";
-
-    private static final String ATTRIBUTE_TEMPORAL_TYPE = "TemporalType";
-
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
+        JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
         if (generatorModelNode instanceof XPolicyAttribute) {
             XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
 
@@ -59,9 +50,6 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             boolean isNullable = jpaAttributeInfo.getTableColumnNullable();
             boolean isUnique = jpaAttributeInfo.getTableColumnUnique();
 
-            fragment.addImport(IMPORT_COLUMN);
-            fragment.append(ANNOTATION_COLUMN);
-
             List<String> attributesToAppend = new ArrayList<>();
             attributesToAppend.add("name=\"" + tableColumnName + "\"");
 
@@ -71,20 +59,22 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
                 addDatatypeDendingJpaAttributes(attributesToAppend, jpaAttributeInfo, datatype);
             } else {
                 // sql column definition overwrites nullable (not null), unique, scale, precision
-                // and
-                // length
+                // and length
                 attributesToAppend.add("columnDefinition=\"" + jpaAttributeInfo.getSqlColumnDefinition() + "\"");
             }
 
-            fragment.append("(");
-            fragment.appendJoined(attributesToAppend);
-            fragment.append(')').appendln();
-            createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
-            createConverterAnnotation(fragment, jpaAttributeInfo);
-            createIndexAnnotation(fragment, jpaAttributeInfo);
+            IPersistenceProvider persistenceProvider = getPersistenceProvider(generatorModelNode.getIpsProject());
+            JavaCodeFragment params = new JavaCodeFragment();
+            params.appendJoined(attributesToAppend);
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Column), params);
+
+            createTemporalAnnotationIfTemporalDatatype(fragmentBuilder, jpaAttributeInfo, datatype,
+                    persistenceProvider);
+            createConverterAnnotation(fragmentBuilder.getFragment(), jpaAttributeInfo);
+            createIndexAnnotation(fragmentBuilder.getFragment(), jpaAttributeInfo);
         }
 
-        return fragment;
+        return fragmentBuilder.getFragment();
     }
 
     private ValueDatatype getDatatype(IPolicyCmptTypeAttribute attribute) {
@@ -110,25 +100,24 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
         if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
             return;
         }
-        IIpsArtefactBuilderSet builderSet = getBuilderSet(jpaAttributeInfo.getIpsProject());
-        IPersistenceProvider persistenceProviderImpl = builderSet.getPersistenceProvider();
+        IPersistenceProvider persistenceProviderImpl = getPersistenceProvider(jpaAttributeInfo.getIpsProject());
         if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingConverters()) {
             fragment.append(persistenceProviderImpl.getConverterAnnotations(jpaAttributeInfo));
         }
     }
 
-    private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragment fragment,
+    private void createTemporalAnnotationIfTemporalDatatype(JavaCodeFragmentBuilder fragmentBuilder,
             IPersistentAttributeInfo jpaAttributeInfo,
-            ValueDatatype datatype) {
+            ValueDatatype datatype,
+            IPersistenceProvider persistenceProvider) {
 
         if (PersistenceUtil.isSupportingTemporalType(datatype)) {
-            fragment.addImport(IMPORT_TEMPORAL);
-            fragment.addImport(IMPORT_TEMPORAL_TYPE);
-            fragment.append(ANNOTATION_TEMPORAL);
+            JavaCodeFragment params = new JavaCodeFragment();
+            params.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.TemporalType));
+            params.append('.');
+            params.append(jpaAttributeInfo.getTemporalMapping().toJpaTemporalType());
 
-            fragment.append('(').append(ATTRIBUTE_TEMPORAL_TYPE).append('.');
-            fragment.append(jpaAttributeInfo.getTemporalMapping().toJpaTemporalType());
-            fragment.append(')');
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Temporal), params);
         }
     }
 
