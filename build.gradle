@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.4.0'
+    id 'org.jetbrains.intellij' version '1.5.3'
     id 'java'
 }
 
@@ -16,7 +16,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.3.3'
+    version = '2022.1'
 }
 patchPluginXml {
     changeNotes = """
