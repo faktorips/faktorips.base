@@ -559,10 +559,12 @@ def private static removeAndDetach (XPolicyAssociation it) '''
 def private static detachRemovedObject (XPolicyAssociation it) '''
     «IF hasInverseAssociation()»
         «IF inverseAssociation.oneToMany»
-            objectToRemove.«inverseAssociation.methodNameRemove»(this);
+                objectToRemove.«inverseAssociation.methodNameRemove»(this);
         «ELSE»
             «IF inverseAssociation.typeAssociation»
-                «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+                if («castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameGetter»() == this) {
+                    «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+                }
             «ELSE»
                 «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
             «ENDIF»
