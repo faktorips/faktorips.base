@@ -69,6 +69,7 @@ import org.faktorips.devtools.stdbuilder.table.TableContentBuilder;
 import org.faktorips.devtools.stdbuilder.testcase.TestCaseBuilder;
 import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
+import org.faktorips.devtools.stdbuilder.xmodel.JaxbSupportVariant;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
@@ -281,6 +282,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         return toc;
     }
 
+    // CSOFF: CyclomaticComplexity
     @Override
     public void build(IIpsSrcFile ipsSrcFile) {
         IIpsObject object = null;
@@ -304,6 +306,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             throw new IpsException(status);
         }
     }
+    // CSON: CyclomaticComplexity
 
     private List<TocEntryObject> buildTocEntries(IIpsObject object) {
         List<TocEntryObject> entries = new ArrayList<>();
@@ -464,7 +467,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     public TocEntryObject createTocEntry(IEnumType enumType) {
-        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport() || enumType.isInextensibleEnum()
+        if (JaxbSupportVariant.None == GeneratorConfig.forIpsObject(enumType).getJaxbSupport()
+                || enumType.isInextensibleEnum()
                 || enumType.isAbstract()) {
             return null;
         }

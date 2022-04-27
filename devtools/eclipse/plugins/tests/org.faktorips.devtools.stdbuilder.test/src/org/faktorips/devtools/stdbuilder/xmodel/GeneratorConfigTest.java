@@ -70,8 +70,8 @@ public class GeneratorConfigTest {
     public void testGetBaseClassPolicyCmptType_defaultJaxb() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
                 .thenReturn("");
-        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn(true);
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("true");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(),
                 is(org.faktorips.runtime.internal.AbstractJaxbModelObject.class.getName()));
     }

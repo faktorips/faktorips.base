@@ -71,7 +71,12 @@
             disableValue="false"
             label="%generateJaxbSupportLabel"
             name="generateJaxbSupport"
-            type="boolean">
+            type="enum">
+            <discreteValues>
+               <value value="false" />
+               <value value="true" />
+               <value value="true (Jakarta XML Binding 3.0)" />
+            </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
             defaultValue="Generic JPA 2.0"

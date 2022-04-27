@@ -18,6 +18,7 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAssoc
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAttributeFieldJaxbGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassProductConfigurationJaxbGen;
+import org.faktorips.devtools.stdbuilder.xmodel.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumDeclClassJaxbAnnGen;
 
 public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
@@ -52,7 +53,8 @@ public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
                 properties.getBuilderSetId());
         IIpsArtefactBuilderSetConfig builderSetConfig = properties.getBuilderSetConfig().create(ipsProject,
                 builderSetInfo);
-        return builderSetConfig.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT);
+        return JaxbSupportVariant.of(builderSetConfig.getPropertyValueAsString(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)) != JaxbSupportVariant.None;
     }
 
 }
