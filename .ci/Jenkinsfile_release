@@ -34,7 +34,7 @@ pipeline {
                 INTELLIJ_PRIVATE_KEY = credentials('INTELLIJ_PRIVATE_KEY')
                 INTELLIJ_PRIVATE_KEY_PASSWORD = credentials('INTELLIJ_PRIVATE_KEY_PASSWORD')
                 INTELLIJ_PUBLISH_TOKEN = credentials('INTELLIJ_PUBLISH_TOKEN')
-                INTELLIJ_CHANNEL = params.CHANNEL
+                INTELLIJ_CHANNEL = "${params.CHANNEL?:'Alpha'}"
             }
             steps {
                 withGradle {
