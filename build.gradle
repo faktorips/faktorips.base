@@ -20,8 +20,10 @@ intellij {
 }
 patchPluginXml {
     changeNotes = """
-      First Version
+      Alpha Version
       """
+    sinceBuild = "213"
+    untilBuild = "221.*"
 }
 test {
     useJUnitPlatform()
