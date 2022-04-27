@@ -57,7 +57,6 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
     public boolean isVariant();
 
     /**
-     * 
      * Allows distinguishing variants not only by their product component type but also their varied
      * base. {@link #isVariant()} allows determining whether a product component is a variant.
      * 

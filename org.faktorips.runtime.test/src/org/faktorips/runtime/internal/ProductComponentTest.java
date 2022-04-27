@@ -34,6 +34,7 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -318,6 +319,58 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         assertNull(pc.getVariedBase());
         verify(repository).getProductComponent(id);
+    }
+
+    @Test
+    public void testSetVariedBase() {
+        repository = new InMemoryRuntimeRepository();
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+        String oldId = "oldId";
+        TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
+        ((InMemoryRuntimeRepository)repository).putProductComponent(oldBaseComponent);
+        String newId = "newId";
+        TestProductComponent newBaseComponent = new TestProductComponent(repository, newId, "new", "1.0");
+        ((InMemoryRuntimeRepository)repository).putProductComponent(newBaseComponent);
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
+        pc.initFromXml(element);
+
+        pc.setVariedBase(newBaseComponent);
+
+        IProductComponent baseFromProduct = pc.getVariedBase();
+        assertSame(newBaseComponent, baseFromProduct);
+    }
+
+    @Test
+    public void testSetVariedBase_Null() {
+        repository = new InMemoryRuntimeRepository();
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+        String oldId = "oldId";
+        TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
+        ((InMemoryRuntimeRepository)repository).putProductComponent(oldBaseComponent);
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
+        pc.initFromXml(element);
+
+        pc.setVariedBase(null);
+
+        IProductComponent baseFromProduct = pc.getVariedBase();
+        assertNull(baseFromProduct);
+    }
+
+    @Test(expected = IllegalRepositoryModificationException.class)
+    public void testSetVariedBase_NotModifiable() {
+        String oldId = "oldId";
+        TestProductComponent oldBaseComponent = new TestProductComponent(repository, oldId, "old", "1.0");
+        when(repository.getProductComponent(oldId)).thenReturn(oldBaseComponent);
+        String newId = "newId";
+        TestProductComponent newBaseComponent = new TestProductComponent(repository, newId, "new", "1.0");
+        when(repository.getProductComponent(newId)).thenReturn(newBaseComponent);
+        Element element = getTestDocument().getDocumentElement();
+        element.setAttribute(ProductComponent.ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT, oldId);
+        pc.initFromXml(element);
+
+        pc.setVariedBase(newBaseComponent);
     }
 
     @Test
