@@ -16,6 +16,7 @@ import static org.hamcrest.CoreMatchers.not;
 
 import java.util.function.Function;
 
+import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -27,6 +28,7 @@ import org.faktorips.testsupport.matchers.MessageListCodeMatcher;
 import org.faktorips.testsupport.matchers.MessageListMessageMatcher;
 import org.faktorips.testsupport.matchers.MessageListObjectPropertyMatcher;
 import org.faktorips.testsupport.matchers.MessageListSizeMatcher;
+import org.faktorips.testsupport.matchers.MessageMarkerMatcher;
 import org.faktorips.testsupport.matchers.MessageSeverityMatcher;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
@@ -243,6 +245,10 @@ public class IpsMatchers {
 
     public static Matcher<Message> hasMessageCodeThat(Matcher<String> messageCodeMatcher) {
         return new MessageCodeMatcher(messageCodeMatcher);
+    }
+
+    public static Matcher<Message> hasMarker(IMarker marker) {
+        return new MessageMarkerMatcher(marker);
     }
 
     /**
