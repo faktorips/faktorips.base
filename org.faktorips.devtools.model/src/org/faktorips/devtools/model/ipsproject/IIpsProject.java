@@ -77,6 +77,16 @@ public interface IIpsProject extends IIpsElement {
     public static final String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate a xsd schema validation error.
+     */
+    public static final String MSGCODE_XSD_VALIDATION_ERROR = MSGCODE_PREFIX + "XsdValidationError"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate a xsd schema validation warning.
+     */
+    public static final String MSGCODE_XSD_VALIDATION_WARNING = MSGCODE_PREFIX + "XsdValidationWarning"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that no version manager was installed for a required
      * feature.
      */

@@ -31,6 +31,8 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 
+import javax.xml.XMLConstants;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
@@ -41,6 +43,7 @@ import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
+import org.faktorips.devtools.model.internal.XsdValidationHandler;
 import org.faktorips.devtools.model.internal.datatype.DynamicValueDatatype;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
@@ -239,6 +242,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * Used to check if the additional setting "markerEnums" is configured in the .ipsproject file.
      */
     private boolean markerEnumsConfiguredInIpsProjectFile = false;
+
+    private XsdValidationHandler xsdValidationHandler = new XsdValidationHandler();
 
     public IpsProjectProperties(IIpsProject ipsProject) {
         super();
@@ -572,6 +577,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.setAttribute("runtimeIdPrefix", runtimeIdPrefix); //$NON-NLS-1$
         projectEl.setAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION, changesInTimeConventionIdForGeneratedCode);
         projectEl.setAttribute(ATTRIBUTE_PERSISTENT_PROJECT, Boolean.toString(persistentProject));
+
+        if (isValidateIpsSchema()) {
+            projectEl.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
+            projectEl.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", //$NON-NLS-1$
+                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + XmlUtil.getIpsProjectPropertiesSchemaLocation()); //$NON-NLS-1$
+        }
 
         // required features
         createRequiredIpsFeaturesComment(projectEl);
@@ -1996,6 +2007,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         this.validateIpsSchema = validateIpsSchema;
     }
 
+    public XsdValidationHandler getXsdValidationHandler() {
+        return xsdValidationHandler;
+    }
+
+    public void setXsdValidationHandler(XsdValidationHandler xsdValidationHandler) {
+        this.xsdValidationHandler = xsdValidationHandler;
+    }
 }
 // CSON: RegexpHeaderCheck
 // CSON: FileLengthCheck

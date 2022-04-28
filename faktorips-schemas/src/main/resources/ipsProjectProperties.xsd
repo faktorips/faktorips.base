@@ -127,6 +127,7 @@
         <xsd:attribute name="getAllValuesMethod" type="string" />
         <xsd:attribute name="isSupportingNames" type="boolean" />
         <xsd:attribute name="getNameMethod" type="string" />
+        <xsd:attribute name="getValueByNameMethod" type="string" />
     </xsd:complexType>
 
     <xsd:complexType name="NullObjectIdType">
@@ -162,7 +163,7 @@
 
     <xsd:complexType name="ProductCmptNamingStrategyType">
         <xsd:sequence>
-            <xsd:element name="DateBasedProductCmptNamingStrategy" type="DateBasedProductCmptNamingStrategyType" />
+            <xsd:element name="DateBasedProductCmptNamingStrategy" type="DateBasedProductCmptNamingStrategyType" minOccurs="0" maxOccurs="1"/>
             <xsd:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="id" type="string" />
@@ -174,7 +175,7 @@
         </xsd:sequence>
         <xsd:attribute name="dateFormatPattern" type="string" />
         <xsd:attribute name="postfixAllowed" type="boolean" />
-        <xsd:attribute name="versionIdSeparator" type="string" />
+        <xsd:attribute name="versionIdSeparator" type="xsd:string" />
     </xsd:complexType>
 
     <xsd:complexType name="JavaIdentifierCharReplacementsType">
@@ -197,7 +198,7 @@
 
     <xsd:complexType name="IpsArtefactBuilderSetConfigType">
         <xsd:sequence>
-            <xsd:element name="Property" type="PropertyType"  minOccurs="1" maxOccurs="unbounded" />
+            <xsd:element name="Property" type="PropertyType"  minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
 

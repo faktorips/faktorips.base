@@ -477,6 +477,13 @@ public class XmlUtil {
         return documentBuilder;
     }
 
+    public static final DocumentBuilder getValidatingDocumentBuilderForIpsProjectProperties(
+            ErrorHandler customErrorHandler) {
+        DocumentBuilder documentBuilder = new ValidatingDocumentBuilderHolder().get();
+        documentBuilder.setErrorHandler(customErrorHandler);
+        return documentBuilder;
+    }
+
     /**
      * Writes an XML document to a file.
      * <p>
@@ -731,10 +738,18 @@ public class XmlUtil {
     }
 
     public static final String getSchemaLocation(IpsObjectType ipsObjectType) {
+        return getSchemaLocation(ipsObjectType.getXmlElementName());
+    }
+
+    public static final String getIpsProjectPropertiesSchemaLocation() {
+        return getSchemaLocation("ipsProjectProperties"); //$NON-NLS-1$
+    }
+
+    public static final String getSchemaLocation(String schemaName) {
         AVersion version = Abstractions.getVersion();
         String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
                 version.majorMinor().toString(),
-                ipsObjectType.getXmlElementName());
+                schemaName);
         return schemaLocation;
     }
 

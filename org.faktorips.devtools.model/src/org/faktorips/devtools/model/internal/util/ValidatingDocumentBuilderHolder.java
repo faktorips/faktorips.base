@@ -42,6 +42,10 @@ public class ValidatingDocumentBuilderHolder extends ThreadLocal<DocumentBuilder
 
     private final IpsObjectType ipsObjectType;
 
+    public ValidatingDocumentBuilderHolder() {
+        this.ipsObjectType = null;
+    }
+
     public ValidatingDocumentBuilderHolder(IpsObjectType ipsObjectType) {
         this.ipsObjectType = ipsObjectType;
     }
@@ -55,7 +59,8 @@ public class ValidatingDocumentBuilderHolder extends ThreadLocal<DocumentBuilder
         SchemaFactory schemafactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         DocumentBuilder builder;
         try {
-            if (NetUtil.isSchemaReachable(ipsObjectType)) {
+            if ((ipsObjectType == null && NetUtil.isIpsProjectPropertiesSchemaReachable())
+                    || (ipsObjectType != null && NetUtil.isSchemaReachable(ipsObjectType))) {
                 factory.setSchema(schemafactory.newSchema());
             }
             // else load from jar file

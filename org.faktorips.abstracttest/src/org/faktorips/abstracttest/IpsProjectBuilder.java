@@ -135,6 +135,7 @@ public class IpsProjectBuilder {
         IIpsProjectProperties properties = ipsProject.getProperties();
 
         properties.setChangingOverTimeDefault(changingOverTimeDefault);
+        properties.setValidateIpsSchema(false);
         setProductCmptNamingStrategy(ipsProject, properties);
         addSupportedLanguages(properties);
         addPredefinedDatatypes(properties);
