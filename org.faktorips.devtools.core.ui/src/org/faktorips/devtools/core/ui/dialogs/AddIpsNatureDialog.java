@@ -182,7 +182,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
                 if (enablePersistenceCheckbox.getSelection()) {
                     persistenceSupport.setEnabled(true);
                     // Generic JPA 2.0 is default
-                    persistenceSupport.select(3);
+                    persistenceSupport.select(persistenceSupport.getItemCount() - 1);
                 } else {
                     persistenceSupport.setEnabled(false);
                     persistenceSupport.select(0);

@@ -19,8 +19,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
  * This class generates JPA annotations for attribute getter methods on policy component types.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER
- * 
- * @author Roman Grutza
  */
 public class PolicyCmptImplClassAttributeGetterJpaAnnGen extends AbstractJpaAnnotationGenerator {
 

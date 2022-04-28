@@ -315,6 +315,14 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 .map(Dependency::getArtifactId)
                 .collect(Collectors.toSet());
 
+        addFaktorIpsRuntime(mavenModel, ipsVersion, dependencies);
+
+        addGroovySupport(mavenModel, creationProperties, ipsVersion, dependencies);
+
+        addPersistenceSupport(mavenModel, creationProperties);
+    }
+
+    private void addFaktorIpsRuntime(Model mavenModel, String ipsVersion, Set<String> dependencies) {
         String runtimeArtifactId = "faktorips-runtime";
         if (!dependencies.contains(runtimeArtifactId)) {
             Dependency ipsRuntimeDependency = new Dependency();
@@ -323,7 +331,12 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             ipsRuntimeDependency.setVersion(ipsVersion);
             mavenModel.addDependency(ipsRuntimeDependency);
         }
+    }
 
+    private void addGroovySupport(Model mavenModel,
+            IpsProjectCreationProperties creationProperties,
+            String ipsVersion,
+            Set<String> dependencies) {
         if (creationProperties.isGroovySupport()) {
             String groovyArtifactId = "faktorips-runtime-groovy";
             if (!dependencies.contains(groovyArtifactId)) {
@@ -334,34 +347,48 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 mavenModel.addDependency(ipsGroovyDependency);
             }
         }
+    }
 
+    private void addPersistenceSupport(Model mavenModel, IpsProjectCreationProperties creationProperties) {
         if (creationProperties.isPersistentProject()) {
             String persistenceSupport = creationProperties.getPersistenceSupport();
-            Dependency persistenceDependency = new Dependency();
-            persistenceDependency.setGroupId("org.eclipse.persistence");
-            if (persistenceSupport.equals(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1)) {
-                persistenceDependency.setArtifactId("eclipselink");
-                persistenceDependency.setVersion("1.1.0");
-            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_ECLIPSE_LINK_2_5)) {
-                persistenceDependency.setArtifactId("eclipselink");
-                persistenceDependency.setVersion("2.5.0");
-            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_GENERIC_JPA_2)) {
-                persistenceDependency.setArtifactId("javax.persistence");
-                persistenceDependency.setVersion("2.0.0");
-            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_GENERIC_JPA_2_1)) {
-                persistenceDependency.setArtifactId("javax.persistence");
-                persistenceDependency.setVersion("2.1.0");
-            } else if (persistenceSupport.equals(PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2)) {
-                persistenceDependency.setGroupId("jakarta.persistence");
-                persistenceDependency.setArtifactId("jakarta.persistence-api");
-                persistenceDependency.setVersion("2.2.3");
-            } else {
-                throw new IpsException(new IpsStatus(
-                        String.format("The selected persistence support \"%s\" is not supported.",
-                                creationProperties.getPersistenceSupport())));
+            switch (persistenceSupport) {
+                case PersistenceSupportNames.ID_ECLIPSE_LINK_1_1:
+                    addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "1.1.0");
+                    break;
+                case PersistenceSupportNames.ID_ECLIPSE_LINK_2_5:
+                    addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "2.5.0");
+                    break;
+                case PersistenceSupportNames.ID_ECLIPSE_LINK_3_0:
+                    addDependency(mavenModel, "org.eclipse.persistence", "eclipselink", "3.0.2");
+                    addDependency(mavenModel, "jakarta.persistence", "jakarta.persistence-api", "3.0.0");
+                    break;
+                case PersistenceSupportNames.ID_GENERIC_JPA_2:
+                    addDependency(mavenModel, "org.eclipse.persistence", "javax.persistence", "2.0.0");
+                    break;
+                case PersistenceSupportNames.ID_GENERIC_JPA_2_1:
+                    addDependency(mavenModel, "org.eclipse.persistence", "javax.persistence", "2.1.0");
+                    break;
+                case PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2:
+                    addDependency(mavenModel, "jakarta.persistence", "jakarta.persistence-api", "2.2.3");
+                    break;
+                case PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_3_0:
+                    addDependency(mavenModel, "jakarta.persistence", "jakarta.persistence-api", "3.0.0");
+                    break;
+                default:
+                    throw new IpsException(new IpsStatus(
+                            String.format("The selected persistence support \"%s\" is not supported.",
+                                    creationProperties.getPersistenceSupport())));
             }
-            mavenModel.addDependency(persistenceDependency);
         }
+    }
+
+    private static void addDependency(Model mavenModel, String groupId, String artifactId, String version) {
+        Dependency dependency = new Dependency();
+        dependency.setGroupId(groupId);
+        dependency.setArtifactId(artifactId);
+        dependency.setVersion(version);
+        mavenModel.addDependency(dependency);
     }
 
     /**

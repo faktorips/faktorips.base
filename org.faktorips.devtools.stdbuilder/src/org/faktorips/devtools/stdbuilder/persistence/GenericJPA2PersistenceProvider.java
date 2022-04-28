@@ -11,7 +11,7 @@
 package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
@@ -19,13 +19,20 @@ import org.faktorips.devtools.model.util.PersistenceSupportNames;
 /**
  * Persistence provider for standard generic JPA 2 support
  */
-public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
+public class GenericJPA2PersistenceProvider extends AbstractPersistenceProvider {
+
+    public static final String PACKAGE_PREFIX_JAVAX_PERSISTENCE = "javax.persistence.";
 
     /**
      * @deprecated Use {@link PersistenceSupportNames#ID_GENERIC_JPA_2} instead.
      */
     @Deprecated(forRemoval = true, since = "21.12")
     public static final String ID_GENERIC_JPA_2 = PersistenceSupportNames.ID_GENERIC_JPA_2;
+
+    @Override
+    public String getPackagePrefix() {
+        return PACKAGE_PREFIX_JAVAX_PERSISTENCE;
+    }
 
     @Override
     public boolean isSupportingConverters() {
@@ -38,7 +45,7 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment) {
+    public void addAnnotationOrphanRemoval(JavaCodeFragmentBuilder fragmentBuilder) {
         // nothing to do
     }
 

@@ -41,6 +41,11 @@ public class PersistenceSupportNames {
     public static final String ID_ECLIPSE_LINK_2_5 = "EclipseLink 2.5"; //$NON-NLS-1$
 
     /**
+     * The ID for using Eclipse Link 3.0 for persistence support.
+     */
+    public static final String ID_ECLIPSE_LINK_3_0 = "EclipseLink 3.0"; //$NON-NLS-1$
+
+    /**
      * The ID for using Generic JPA 2.0 for persistence support.
      */
     public static final String ID_GENERIC_JPA_2 = "Generic JPA 2.0"; //$NON-NLS-1$
@@ -55,6 +60,11 @@ public class PersistenceSupportNames {
      */
     public static final String ID_JAKARTA_PERSISTENCE_2_2 = "Jakarta Persistence 2.2"; //$NON-NLS-1$
 
+    /**
+     * The ID for using Jakarta Persistence 3.0 for persistence support.
+     */
+    public static final String ID_JAKARTA_PERSISTENCE_3_0 = "Jakarta Persistence 3.0"; //$NON-NLS-1$
+
     private PersistenceSupportNames() {
         // Utility class
     }
@@ -66,8 +76,10 @@ public class PersistenceSupportNames {
      * @since 21.12
      */
     public static final List<String> getAllPersistenceProviderOptions() {
-        return List.of(ID_NONE, ID_ECLIPSE_LINK_1_1, ID_ECLIPSE_LINK_2_5, ID_GENERIC_JPA_2, ID_GENERIC_JPA_2_1,
-                ID_JAKARTA_PERSISTENCE_2_2);
+        return List.of(ID_NONE,
+                ID_ECLIPSE_LINK_1_1, ID_ECLIPSE_LINK_2_5, ID_ECLIPSE_LINK_3_0,
+                ID_GENERIC_JPA_2, ID_GENERIC_JPA_2_1,
+                ID_JAKARTA_PERSISTENCE_2_2, ID_JAKARTA_PERSISTENCE_3_0);
     }
 
 }

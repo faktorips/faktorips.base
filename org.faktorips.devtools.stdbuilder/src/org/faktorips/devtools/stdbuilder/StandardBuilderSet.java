@@ -68,9 +68,11 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.EclipseLink3_0PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2_1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.Jakarta2_2PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.Jakarta3_0PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -476,9 +478,11 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
         allSupportedPersistenceProvider = Map
                 .of(PersistenceSupportNames.ID_ECLIPSE_LINK_1_1, new EclipseLink1PersistenceProvider(),
                         PersistenceSupportNames.ID_ECLIPSE_LINK_2_5, new EclipseLink25PersistenceProvider(),
+                        PersistenceSupportNames.ID_ECLIPSE_LINK_3_0, new EclipseLink3_0PersistenceProvider(),
                         PersistenceSupportNames.ID_GENERIC_JPA_2, new GenericJPA2PersistenceProvider(),
                         PersistenceSupportNames.ID_GENERIC_JPA_2_1, new GenericJPA2_1PersistenceProvider(),
-                        PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2, new Jakarta2_2PersistenceProvider());
+                        PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_2_2, new Jakarta2_2PersistenceProvider(),
+                        PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_3_0, new Jakarta3_0PersistenceProvider());
     }
 
     public LocalDateHelperVariant getLocalDateHelperVariant() {

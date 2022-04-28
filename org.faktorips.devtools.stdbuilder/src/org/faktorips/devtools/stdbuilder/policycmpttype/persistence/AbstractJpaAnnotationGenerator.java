@@ -37,4 +37,5 @@ public abstract class AbstractJpaAnnotationGenerator extends AbstractAnnotationG
     }
 
     protected abstract boolean isGenerateAnnotationForInternal(IIpsElement ipsElement);
+
 }

@@ -11,16 +11,16 @@
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceAnnotation;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceEnum;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -30,51 +30,19 @@ import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.util.StringUtil;
 
 /**
  * This class generates JPA annotations for associations of policy component types.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD
- * 
- * @author Roman Grutza
  */
 public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
-    // JPA imports
-    private static final String IMPORT_JOIN_TABLE = "javax.persistence.JoinTable";
-    private static final String IMPORT_JOIN_COLUMN = "javax.persistence.JoinColumn";
-    private static final String IMPORT_ONE_TO_MANY = "javax.persistence.OneToMany";
-    private static final String IMPORT_ONE_TO_ONE = "javax.persistence.OneToOne";
-    private static final String IMPORT_MANY_TO_MANY = "javax.persistence.ManyToMany";
-    private static final String IMPORT_MANY_TO_ONE = "javax.persistence.ManyToOne";
-    private static final String IMPORT_CASCADE_TYPE = "javax.persistence.CascadeType";
-    private static final String IMPORT_FETCH_TYPE = "javax.persistence.FetchType";
-
-    private static final String ANNOTATION_JOIN_TABLE = "@JoinTable";
-    private static final String ANNOTATION_JOIN_COLUMN = "@JoinColumn";
-    private static final String ANNOTATION_ONE_TO_MANY = "@OneToMany";
-    private static final String ANNOTATION_ONE_TO_ONE = "@OneToOne";
-    private static final String ANNOTATION_MANY_TO_MANY = "@ManyToMany";
-    private static final String ANNOTATION_MANY_TO_ONE = "@ManyToOne";
-
-    private static Map<RelationshipType, String> importForRelationshipType = new HashMap<>(4);
-    private static Map<RelationshipType, String> annotationForRelationshipType = new HashMap<>(
-            4);
-
-    static {
-        importForRelationshipType.put(RelationshipType.ONE_TO_MANY, IMPORT_ONE_TO_MANY);
-        importForRelationshipType.put(RelationshipType.ONE_TO_ONE, IMPORT_ONE_TO_ONE);
-        importForRelationshipType.put(RelationshipType.MANY_TO_MANY, IMPORT_MANY_TO_MANY);
-        importForRelationshipType.put(RelationshipType.MANY_TO_ONE, IMPORT_MANY_TO_ONE);
-        annotationForRelationshipType.put(RelationshipType.ONE_TO_MANY, ANNOTATION_ONE_TO_MANY);
-        annotationForRelationshipType.put(RelationshipType.ONE_TO_ONE, ANNOTATION_ONE_TO_ONE);
-        annotationForRelationshipType.put(RelationshipType.MANY_TO_MANY, ANNOTATION_MANY_TO_MANY);
-        annotationForRelationshipType.put(RelationshipType.MANY_TO_ONE, ANNOTATION_MANY_TO_ONE);
-    }
-
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
+        JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
         if (generatorModelNode instanceof XPolicyAssociation) {
             XPolicyAssociation xPolicyAssociation = (XPolicyAssociation)generatorModelNode;
 
@@ -83,7 +51,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             try {
                 IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
                 if (!persistenceAssociatonInfo.isValid(association.getIpsProject())) {
-                    return fragment;
+                    return fragmentBuilder.getFragment();
                 }
 
                 XPolicyAssociation xInverseAssociation = null;
@@ -95,7 +63,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                         .getIpsArtefactBuilderSet();
                 IPersistenceProvider persistenceProvider = ipsArtefactBuilderSet.getPersistenceProvider();
                 if (persistenceProvider == null) {
-                    return fragment;
+                    return fragmentBuilder.getFragment();
                 }
 
                 // add import and annotation depending on the relationship type (e.g. oneToMany)
@@ -110,32 +78,53 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                     throw new RuntimeException("Error evaluation the relationship type!");
                 }
 
-                fragment.addImport(importForRelationshipType.get(relationShip));
-                fragment.append(annotationForRelationshipType.get(relationShip));
-
                 // add attributes to relationship annotation
                 List<String> attributesToAppend = new ArrayList<>();
                 if (xInverseAssociation != null) {
                     addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association, xInverseAssociation);
                 }
-                addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
-                addAnnotationAttributeFetch(fragment, attributesToAppend, association);
+                addAnnotationAttributeCascadeType(persistenceProvider, fragmentBuilder, attributesToAppend,
+                        association);
+                addAnnotationAttributeFetch(persistenceProvider, fragmentBuilder, attributesToAppend, association);
                 addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);
                 addAnnotationAttributeOrphanRemoval(persistenceProvider, attributesToAppend, association);
-                appendAllAttributes(fragment, attributesToAppend);
+
+                JavaCodeFragment params = new JavaCodeFragment();
+                params.appendJoined(attributesToAppend);
+                String annotationForRelationshipType = getAnnotationForRelationshipType(relationShip,
+                        persistenceProvider);
+                fragmentBuilder.annotationLn(annotationForRelationshipType, params);
 
                 // evaluate further attributes depending on the relationship type
-                addAnnotationFor(persistenceProvider, fragment, association);
+                addAnnotationFor(persistenceProvider, fragmentBuilder, association);
 
                 // add special annotation in case of join table needed
-                addAnnotationJoinTable(fragment, association);
-                addAnnotationIndex(persistenceProvider, fragment, persistenceAssociatonInfo);
+                addAnnotationJoinTable(persistenceProvider, fragmentBuilder, association);
+                addAnnotationIndex(persistenceProvider, fragmentBuilder, persistenceAssociatonInfo);
             } catch (IpsException e) {
                 StdBuilderPlugin.log(e);
             }
 
         }
-        return fragment;
+        return fragmentBuilder.getFragment();
+    }
+
+    private String getAnnotationForRelationshipType(RelationshipType relationShip,
+            IPersistenceProvider persistenceProvider) {
+        switch (relationShip) {
+            case MANY_TO_MANY:
+                return persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToMany);
+            case MANY_TO_ONE:
+                return persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToOne);
+            case ONE_TO_MANY:
+                return persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToMany);
+            case ONE_TO_ONE:
+                return persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToOne);
+
+            default:
+                return null;
+        }
+
     }
 
     private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProvider,
@@ -154,25 +143,27 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         }
     }
 
-    private void addAnnotationFor(IPersistenceProvider persistenceProviderImpl,
-            JavaCodeFragment fragment,
+    private void addAnnotationFor(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
             IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
 
         // add orphan removal annotation, note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
-        if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingOrphanRemoval()
+        if (persistenceProvider != null && persistenceProvider.isSupportingOrphanRemoval()
                 && persistenceAssociatonInfo.isOrphanRemoval()) {
-            persistenceProviderImpl.addAnnotationOrphanRemoval(fragment);
+            persistenceProvider.addAnnotationOrphanRemoval(fragmentBuilder);
         }
 
         if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
-            appendJoinColumn(fragment, persistenceAssociatonInfo.getJoinColumnName(),
+            appendJoinColumn(persistenceProvider, fragmentBuilder, persistenceAssociatonInfo.getJoinColumnName(),
                     persistenceAssociatonInfo.isJoinColumnNullable());
         }
     }
 
-    private void addAnnotationJoinTable(JavaCodeFragment fragment, IPolicyCmptTypeAssociation association) {
+    private void addAnnotationJoinTable(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
+            IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()) {
             return;
@@ -180,20 +171,22 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         if (StringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
             return;
         }
-        fragment.addImport(IMPORT_JOIN_TABLE);
-        fragment.append(ANNOTATION_JOIN_TABLE).append('(');
-        appendName(fragment, persistenceAssociatonInfo.getJoinTableName());
+
+        JavaCodeFragmentBuilder params = new JavaCodeFragmentBuilder();
+        appendName(params.getFragment(), persistenceAssociatonInfo.getJoinTableName());
 
         if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())
                 || !StringUtils.isEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
-            fragment.append(", ");
+            params.append(", ");
         }
-        appendJoinColumns(fragment, persistenceAssociatonInfo.getSourceColumnName(), false);
+        appendJoinColumns(persistenceProvider, params, persistenceAssociatonInfo.getSourceColumnName(), false);
         if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())) {
-            fragment.append(", ");
+            params.append(", ");
         }
-        appendJoinColumns(fragment, persistenceAssociatonInfo.getTargetColumnName(), true);
-        fragment.appendln(')');
+        appendJoinColumns(persistenceProvider, params, persistenceAssociatonInfo.getTargetColumnName(), true);
+
+        fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.JoinTable),
+                params.getFragment());
     }
 
     /**
@@ -202,13 +195,16 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
      * XX=@JoinColumn(name = "columnName") <br>
      * with XX=(joinColumns|inverseJoinColumns) depending on inverse parameter
      */
-    private boolean appendJoinColumns(JavaCodeFragment fragment, String columnName, boolean inverse) {
+    private boolean appendJoinColumns(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
+            String columnName,
+            boolean inverse) {
         if (StringUtils.isEmpty(columnName)) {
             return false;
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
-        fragment.append(lhs);
-        appendJoinColumn(fragment, columnName, false);
+        fragmentBuilder.append(lhs);
+        appendJoinColumn(persistenceProvider, fragmentBuilder, columnName, false);
         return true;
     }
 
@@ -217,26 +213,17 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
      * <p>
      * XX=@JoinColumn(name = "columnName"[, nullable = false])
      */
-    private void appendJoinColumn(JavaCodeFragment fragment, String columnName, boolean nullable) {
-        fragment.addImport(IMPORT_JOIN_COLUMN);
-        fragment.append(ANNOTATION_JOIN_COLUMN).append('(');
-        appendName(fragment, columnName);
+    private void appendJoinColumn(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
+            String columnName,
+            boolean nullable) {
+        JavaCodeFragment params = new JavaCodeFragment();
+        appendName(params, columnName);
         if (!nullable) {
-            fragment.append(", nullable = false");
+            params.append(", nullable = false");
         }
-        fragment.append(")");
-    }
 
-    private void appendAllAttributes(JavaCodeFragment fragment, List<String> attributesToAppend) {
-        fragment.append('(');
-        for (Iterator<String> iterator = attributesToAppend.iterator(); iterator.hasNext();) {
-            String attributeToAppend = iterator.next();
-            fragment.append(attributeToAppend);
-            if (iterator.hasNext()) {
-                fragment.append(",");
-            }
-        }
-        fragment.append(')');
+        fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.JoinColumn), params);
     }
 
     private void addAnnotationAttributesTargetEntity(List<String> attributesToAppend,
@@ -244,30 +231,26 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         attributesToAppend.add("targetEntity = " + xPolicyAssociation.getTargetClassName() + ".class");
     }
 
-    private void addAnnotationAttributeCascadeType(JavaCodeFragment fragment,
+    private void addAnnotationAttributeCascadeType(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
             List<String> attributesToAppend,
             IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         List<String> cascadeTypes = getCascadeTypes(persistenceAssociatonInfo);
-        if (cascadeTypes.size() > 0) {
-            fragment.addImport(IMPORT_CASCADE_TYPE);
-        }
-        if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
-                && persistenceAssociatonInfo.isCascadeTypePersist()
-                && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
-            attributesToAppend.add("cascade=CascadeType.ALL");
-            return;
-        }
         if (cascadeTypes.size() == 0) {
             return;
         }
-        String cascadeTypesAsString = "cascade={";
-        for (Iterator<String> iterator = cascadeTypes.iterator(); iterator.hasNext();) {
-            cascadeTypesAsString += iterator.next();
-            if (iterator.hasNext()) {
-                cascadeTypesAsString += ",";
-            }
+        String enumCascadeType = persistenceProvider.getQualifiedName(PersistenceEnum.CascadeType);
+        fragmentBuilder.addImport(enumCascadeType);
+        String cascadeType = StringUtil.unqualifiedName(enumCascadeType);
+        if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
+                && persistenceAssociatonInfo.isCascadeTypePersist()
+                && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+            attributesToAppend.add("cascade=" + cascadeType + ".ALL");
+            return;
         }
+        String cascadeTypesAsString = "cascade={";
+        cascadeTypesAsString += IpsStringUtils.join(cascadeTypes, t -> cascadeType + '.' + t, ",");
         cascadeTypesAsString += "}";
         attributesToAppend.add(cascadeTypesAsString);
     }
@@ -276,27 +259,30 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         List<String> cascadeTypes;
         cascadeTypes = new ArrayList<>();
         if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
-            cascadeTypes.add("CascadeType.MERGE");
+            cascadeTypes.add("MERGE");
         }
         if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
-            cascadeTypes.add("CascadeType.REMOVE");
+            cascadeTypes.add("REMOVE");
         }
         if (persistenceAssociatonInfo.isCascadeTypePersist()) {
-            cascadeTypes.add("CascadeType.PERSIST");
+            cascadeTypes.add("PERSIST");
         }
         if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
-            cascadeTypes.add("CascadeType.REFRESH");
+            cascadeTypes.add("REFRESH");
         }
         return cascadeTypes;
     }
 
-    private void addAnnotationAttributeFetch(JavaCodeFragment fragment,
+    private void addAnnotationAttributeFetch(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
             List<String> attributesToAppend,
             IPolicyCmptTypeAssociation association) {
-        fragment.addImport(IMPORT_FETCH_TYPE);
+        String enumFetchType = persistenceProvider.getQualifiedName(PersistenceEnum.FetchType);
+        fragmentBuilder.addImport(enumFetchType);
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         // note that the FetchType enumeration must be equal to the FetchType enumeration in JPA
-        attributesToAppend.add("fetch=FetchType." + persistenceAssociatonInfo.getFetchType().toString());
+        attributesToAppend.add("fetch=" + StringUtil.unqualifiedName(enumFetchType) + '.'
+                + persistenceAssociatonInfo.getFetchType().toString());
     }
 
     /*
@@ -395,10 +381,10 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     }
 
     private void addAnnotationIndex(IPersistenceProvider persistenceProvider,
-            JavaCodeFragment fragment,
+            JavaCodeFragmentBuilder fragmentBuilder,
             IPersistentAssociationInfo persistenceAssociatonInfo) {
         if (persistenceProvider.isSupportingIndex()) {
-            fragment.append(persistenceProvider.getIndexAnnotations(persistenceAssociatonInfo));
+            fragmentBuilder.append(persistenceProvider.getIndexAnnotations(persistenceAssociatonInfo));
         }
     }
 
