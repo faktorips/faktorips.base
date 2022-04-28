@@ -60,6 +60,8 @@ public @interface IpsAssociation {
      * matching {@link ProductAssociation}, meaning that the {@link PolicyAssociation}'s
      * cardinalities are not defined for all targets but per target of the
      * {@link ProductAssociation}.
+     * 
+     * @since 22.6
      */
     boolean qualified() default false;
 }
