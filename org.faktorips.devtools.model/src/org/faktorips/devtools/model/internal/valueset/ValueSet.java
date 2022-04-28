@@ -177,6 +177,12 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         if (otherValueSet.isUnrestricted() || otherValueSet.isDerived() || otherValueSet.isStringLength()) {
             return otherValueSet.containsValueSet(this);
         }
+        if (this.isEnum() && otherValueSet.isRange()) {
+            // this is only possible if the method names and return types are unified
+            if (getIpsProject().getIpsArtefactBuilderSet().usesUnifiedValueSets()) {
+                return otherValueSet.containsValueSet(this);
+            }
+        }
         if (!getValueSetType().equals(otherValueSet.getValueSetType())) {
             return false;
         }

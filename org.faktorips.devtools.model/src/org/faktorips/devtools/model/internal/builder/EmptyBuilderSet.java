@@ -112,6 +112,11 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
+    @Override
+    public boolean usesUnifiedValueSets() {
+        return false;
+    }
+
     private static final class EmptyParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
 
         public EmptyParameterIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler) {

@@ -301,4 +301,10 @@ public interface IIpsArtefactBuilderSet {
      * helper for the given data type in this builder set.
      */
     public DatatypeHelper getDatatypeHelper(Datatype datatype);
+
+    /**
+     * Returns whether the type of value set affects the name and/or return type of value set
+     * accessor methods.
+     */
+    public boolean usesUnifiedValueSets();
 }

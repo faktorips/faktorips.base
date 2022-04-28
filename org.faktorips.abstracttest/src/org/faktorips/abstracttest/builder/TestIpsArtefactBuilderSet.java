@@ -49,6 +49,8 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     private final LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> ipsArtefactBuilders;
 
+    private boolean usesUnifiedValueSets;
+
     /**
      * You can put any object for any key into this map. Some of the test methods in this test
      * builder set use this map to return test results instead of null. Just put the expected method
@@ -193,6 +195,15 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         return (DatatypeHelper)testObjectsMap.get(datatype);
+    }
+
+    @Override
+    public boolean usesUnifiedValueSets() {
+        return usesUnifiedValueSets;
+    }
+
+    public void setUsesUnifiedValueSets(boolean usesUnifiedValueSets) {
+        this.usesUnifiedValueSets = usesUnifiedValueSets;
     }
 
     private final class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {

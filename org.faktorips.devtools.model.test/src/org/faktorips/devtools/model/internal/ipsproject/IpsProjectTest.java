@@ -1691,6 +1691,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 return null;
             }
 
+            @Override
+            public boolean usesUnifiedValueSets() {
+                return false;
+            }
+
         };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
@@ -1747,6 +1752,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             @Override
             public DatatypeHelper getDatatypeHelper(Datatype datatype) {
                 return null;
+            }
+
+            @Override
+            public boolean usesUnifiedValueSets() {
+                return false;
             }
 
         };

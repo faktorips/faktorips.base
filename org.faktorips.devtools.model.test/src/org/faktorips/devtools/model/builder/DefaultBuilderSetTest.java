@@ -130,6 +130,11 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
             return null;
         }
 
+        @Override
+        public boolean usesUnifiedValueSets() {
+            return false;
+        }
+
     }
 
 }

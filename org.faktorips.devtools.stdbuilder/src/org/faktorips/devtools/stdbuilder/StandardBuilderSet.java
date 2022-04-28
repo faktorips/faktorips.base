@@ -37,6 +37,7 @@ import org.faktorips.devtools.model.builder.IJavaBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
+import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.datatype.DatatypeDefinition;
@@ -671,6 +672,12 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             datatypeHelperRegistry = new DatatypeHelperRegistry(getIpsProject());
             datatypeHelperFactoryRegistry = new DatatypeHelperFactoryRegistry();
         }
+    }
+
+    @Override
+    public boolean usesUnifiedValueSets() {
+        return ValueSetMethods.Unified.name().equals(
+                getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_UNIFY_VALUE_SET_METHODS));
     }
 
     /** Registry for looking up the {@link DatatypeHelper} for a {@link Datatype}. */
