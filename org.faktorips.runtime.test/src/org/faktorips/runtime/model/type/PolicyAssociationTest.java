@@ -432,6 +432,14 @@ public class PolicyAssociationTest {
                 policyCmptType.getAssociation("targets1toN"));
     }
 
+    @Test
+    public void testIsQualified() {
+        PolicyAssociation qualifiedAssociation = IpsModel.getPolicyCmptType(Source.class)
+                .getAssociation("moreTargets1toN");
+        assertThat(qualifiedAssociation.isQualified(), is(true));
+        assertThat(association1ToN.isQualified(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "MySource")
     @IpsAssociations({ "asso", "asso2", "targets1toN", "moreTargets1toN" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
@@ -480,7 +488,7 @@ public class PolicyAssociationTest {
             targets1toN.remove(objectToRemove);
         }
 
-        @IpsAssociation(name = "moreTargets1toN", pluralName = "moreTargets1toN", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class)
+        @IpsAssociation(name = "moreTargets1toN", pluralName = "moreTargets1toN", min = 0, max = Integer.MAX_VALUE, kind = AssociationKind.Composition, targetClass = Target.class, qualified = true)
         public List<? extends Target> getMoreTargets1toN() {
             return moreTargets1toN;
         }

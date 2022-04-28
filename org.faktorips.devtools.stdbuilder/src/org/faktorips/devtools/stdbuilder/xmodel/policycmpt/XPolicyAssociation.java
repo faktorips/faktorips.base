@@ -73,49 +73,62 @@ public class XPolicyAssociation extends XAssociation {
                     // it is possible that the derived union does not specify a inverse but
                     // subset does
                     if (derivedUnionAssociation.hasInverseAssociation()) {
-                        XPolicyAssociation detailToMasterDerivedUnion = derivedUnionAssociation
-                                .getInverseAssociation();
-                        if (!resultingNames.contains(detailToMasterDerivedUnion.getName())) {
-                            XPolicyAssociation superAssociationWithSameName = detailToMasterDerivedUnion
-                                    .getSuperAssociationWithSameName();
-                            if (superAssociationWithSameName == null) {
-                                XDetailToMasterDerivedUnionAssociation detailToMasterDerivedUnionAssociation = getModelNode(
-                                        detailToMasterDerivedUnion.getAssociation(),
-                                        XDetailToMasterDerivedUnionAssociation.class);
-                                resultingAssociations.add(detailToMasterDerivedUnionAssociation);
-                                resultingNames.add(detailToMasterDerivedUnion.getName());
-                            }
-                            if (superAssociationWithSameName != null
-                                    || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
-                                resultingAssociations.addAll(
-                                        detailToMasterDerivedUnion.getSubsettedDetailToMasterAssociationsInternal(
-                                                resultingNames, currentType));
-                            }
-                        }
+                        addInverseAssociation(resultingNames, currentType, resultingAssociations,
+                                derivedUnionAssociation);
                     }
                 }
             }
             // This part handles the case that there is a derived union with the same name in
             // super class that is not already part of the result.
             if (currentType == getSourceType() && !isSharedAssociation() && !resultingNames.contains(getName())) {
-                XPolicyAssociation superAssociationWithSameName = getSuperAssociationWithSameName();
-                if (superAssociationWithSameName != null) {
-                    XPolicyAssociation inverseOfSuperAssociation = superAssociationWithSameName
-                            .getInverseAssociation();
-                    if (inverseOfSuperAssociation == null) {
-                        throw new RuntimeException(
-                                "Cannot find inverse association of " + superAssociationWithSameName);
-                    }
-                    if (inverseOfSuperAssociation.isDerived()) {
-                        resultingAssociations.add(getModelNode(superAssociationWithSameName.getAssociation(),
-                                XDetailToMasterDerivedUnionAssociation.class));
-                        resultingNames.add(superAssociationWithSameName.getName());
-                    }
-                }
+                addDerivedUnionWithSameNameFromSupertype(resultingNames, resultingAssociations);
             }
 
         }
         return resultingAssociations;
+    }
+
+    private void addInverseAssociation(Set<String> resultingNames,
+            IType currentType,
+            LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations,
+            XPolicyAssociation derivedUnionAssociation) {
+        XPolicyAssociation detailToMasterDerivedUnion = derivedUnionAssociation
+                .getInverseAssociation();
+        if (!resultingNames.contains(detailToMasterDerivedUnion.getName())) {
+            XPolicyAssociation superAssociationWithSameName = detailToMasterDerivedUnion
+                    .getSuperAssociationWithSameName();
+            if (superAssociationWithSameName == null) {
+                XDetailToMasterDerivedUnionAssociation detailToMasterDerivedUnionAssociation = getModelNode(
+                        detailToMasterDerivedUnion.getAssociation(),
+                        XDetailToMasterDerivedUnionAssociation.class);
+                resultingAssociations.add(detailToMasterDerivedUnionAssociation);
+                resultingNames.add(detailToMasterDerivedUnion.getName());
+            }
+            if (superAssociationWithSameName != null
+                    || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
+                resultingAssociations.addAll(
+                        detailToMasterDerivedUnion.getSubsettedDetailToMasterAssociationsInternal(
+                                resultingNames, currentType));
+            }
+        }
+    }
+
+    private void addDerivedUnionWithSameNameFromSupertype(Set<String> resultingNames,
+            LinkedHashSet<XDetailToMasterDerivedUnionAssociation> resultingAssociations) {
+        XPolicyAssociation superAssociationWithSameName = getSuperAssociationWithSameName();
+        if (superAssociationWithSameName != null) {
+            XPolicyAssociation inverseOfSuperAssociation = superAssociationWithSameName
+                    .getInverseAssociation();
+            if (inverseOfSuperAssociation == null) {
+                throw new RuntimeException(
+                        "Cannot find inverse association of " + superAssociationWithSameName);
+            }
+            if (inverseOfSuperAssociation.isDerived()) {
+                resultingAssociations.add(getModelNode(superAssociationWithSameName.getAssociation(),
+                        XDetailToMasterDerivedUnionAssociation.class));
+                resultingNames.add(superAssociationWithSameName.getName());
+            }
+        }
     }
 
     /**
@@ -155,10 +168,6 @@ public class XPolicyAssociation extends XAssociation {
             return getInverseAssociation().isDerivedUnion();
         }
         return false;
-    }
-
-    public boolean isQualified() {
-        return getAssociation().isQualified();
     }
 
     /**

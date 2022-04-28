@@ -59,14 +59,14 @@ public abstract class Association extends TypePart {
      * Returns what kind of association this is.
      */
     public AssociationKind getAssociationKind() {
-        return annotation.kind();
+        return getAnnotation().kind();
     }
 
     /**
      * Returns the minimum cardinality for this association. <code>0</code> if no minimum is set.
      */
     public int getMinCardinality() {
-        return annotation.min();
+        return getAnnotation().min();
     }
 
     /**
@@ -74,7 +74,7 @@ public abstract class Association extends TypePart {
      * maximum is set.
      */
     public int getMaxCardinality() {
-        return annotation.max();
+        return getAnnotation().max();
     }
 
     /**
@@ -82,14 +82,14 @@ public abstract class Association extends TypePart {
      * name is set.
      */
     public String getNamePlural() {
-        return annotation.pluralName();
+        return getAnnotation().pluralName();
     }
 
     /**
      * Returns the target {@link Type} of this association.
      */
     public Type getTarget() {
-        return IpsModel.getType(annotation.targetClass());
+        return IpsModel.getType(getAnnotation().targetClass());
     }
 
     /**
@@ -312,6 +312,10 @@ public abstract class Association extends TypePart {
      */
     protected boolean isToOneAssociation() {
         return getMaxCardinality() == 1;
+    }
+
+    protected IpsAssociation getAnnotation() {
+        return annotation;
     }
 
 }
