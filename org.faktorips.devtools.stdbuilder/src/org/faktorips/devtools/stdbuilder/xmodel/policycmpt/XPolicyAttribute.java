@@ -178,8 +178,8 @@ public class XPolicyAttribute extends XAttribute {
      * 
      * @return The class name of the value set
      */
-    public String getValueSetJavaClassName() {
-        return getValueSetJavaClassName(false);
+    public String getValueSetJavaClassName(GenerateValueSetType generateValueSetType) {
+        return getValueSetJavaClassName(generateValueSetType, false);
     }
 
     /**
@@ -188,13 +188,13 @@ public class XPolicyAttribute extends XAttribute {
      * 
      * @return the class name of the value set
      */
-    public String getValueSetJavaClassNameWithWildcard() {
-        return getValueSetJavaClassName(true);
+    public String getValueSetJavaClassNameWithWildcard(GenerateValueSetType generateValueSetType) {
+        return getValueSetJavaClassName(generateValueSetType, true);
     }
 
-    private String getValueSetJavaClassName(boolean useWildcards) {
+    private String getValueSetJavaClassName(GenerateValueSetType generateValueSetType, boolean useWildcards) {
         String wildcards = useWildcards ? "? extends " : "";
-        if (isValueSetUnrestricted() || isValueSetDerived()) {
+        if (generateValueSetType.isGenerateUnified() || isValueSetUnrestricted() || isValueSetDerived()) {
             String valueSetClass = addImport(ValueSet.class);
             return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetEnum()) {

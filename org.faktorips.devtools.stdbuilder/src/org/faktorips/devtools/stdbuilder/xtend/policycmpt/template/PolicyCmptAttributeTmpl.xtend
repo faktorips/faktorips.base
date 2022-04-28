@@ -37,7 +37,7 @@ class PolicyCmptAttributeTmpl {
        * @generated
        */
       «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
-      public static final «valueSetJavaClassName» «field(constantNameValueSet)» = «valuesetCode»;
+      public static final «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
   '''
   
@@ -227,7 +227,7 @@ class PolicyCmptAttributeTmpl {
       «ENDIF»
       «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule))»
       «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
-      public «IF isAbstract()»abstract «valueSetJavaClassNameWithWildcard»«ELSE»«valueSetJavaClassName»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
+      public «IF isAbstract()»abstract «getValueSetJavaClassNameWithWildcard(rule.fromMethod)»«ELSE»«getValueSetJavaClassName(rule.fromMethod)»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
       «IF genInterface() || isAbstract()»;«ELSE» {
           «IF productRelevant && !rule.isDelegate»
             return «getPropertyValueContainer(published)».«getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
@@ -236,18 +236,18 @@ class PolicyCmptAttributeTmpl {
             «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»
               return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(null);
             «ELSEIF overwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType && !genInterface»
-              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»);
+              return «castFromTo(overwrittenAttribute.getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE), getValueSetJavaClassName(rule.fromMethod))»super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»);
             «ELSEIF overwritingValueSetWithDerived && !genInterface && !rule.isDelegate»
-              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
+              return «castFromTo(overwrittenAttribute.getValueSetJavaClassName(rule.fromMethod), getValueSetJavaClassName(rule.fromMethod))»super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
             «ELSEIF overwritingValueSetWithDerived && !genInterface && rule.isDelegate»
-              return super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
+              return «castFromTo(overwrittenAttribute.getValueSetJavaClassName(rule.fromMethod.inverse), getValueSetJavaClassName(rule.fromMethod))»super.«overwrittenAttribute.getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«overwrittenAttribute.allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
             «ELSE»
               return «valuesetCode»;
             «ENDIF»
             // end-user-code
           «ELSE»
               «IF rule.isDelegate»
-                return «getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
+                return «castFromTo(getValueSetJavaClassName(rule.fromMethod.inverse), getValueSetJavaClassName(rule.fromMethod))»«getMethodNameGetAllowedValuesFor(rule.fromMethod.inverse)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod.inverse)»);
               «ELSE»
                 return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
               «ENDIF»
@@ -266,7 +266,7 @@ class PolicyCmptAttributeTmpl {
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         @Override
-        public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE), IValidationContext(), "context")»
+        public «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE), IValidationContext(), "context")»
         «IF genInterface()»;«ELSE» {
           return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(context);
         }
@@ -282,7 +282,7 @@ class PolicyCmptAttributeTmpl {
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         @Override
-        public «valueSetJavaClassName» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED))»
+        public «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «method(overwrittenAttribute.getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_UNIFIED))»
         «IF genInterface()»;«ELSE» {
           return «getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(null);
         }
@@ -302,9 +302,9 @@ class PolicyCmptAttributeTmpl {
             «attributeSuperType.getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface())»
         «ENDIF»
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
-        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
+        public «attributeSuperType.getValueSetJavaClassName(valueSetMethods)» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
         «IF genInterface() || isAbstract()»;«ELSE» {
-          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+          return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
         }
         «ENDIF»
   '''

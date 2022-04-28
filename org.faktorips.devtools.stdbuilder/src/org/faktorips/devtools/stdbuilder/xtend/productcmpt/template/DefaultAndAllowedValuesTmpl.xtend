@@ -1,8 +1,11 @@
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt.template
 
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType
+import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
 
 import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
@@ -10,11 +13,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductCommonsTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
-import static extension org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptAttributeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
-import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.GenerateValueSetTypeRule
-import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.AllowedValuesForAttributeRule
 
 class DefaultAndAllowedValuesTmpl {
 
@@ -44,7 +43,7 @@ class DefaultAndAllowedValuesTmpl {
          * @generated
          */
         «getAnnotations(DEPRECATION)»
-        private «valueSetJavaClassName» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
+        private «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
     '''
 
     def package static getterAndSetter (XPolicyAttribute it) '''
@@ -66,9 +65,9 @@ class DefaultAndAllowedValuesTmpl {
          */
         «overrideAnnotationForPublishedMethodImplementation»
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
-        public «attributeSuperType.valueSetJavaClassName» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
+        public «attributeSuperType.getValueSetJavaClassName(valueSetMethods)» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
         «IF genInterface() || isAbstract()»;«ELSE» {
-          return super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+          return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
         }
         «ENDIF»
     '''
@@ -118,7 +117,7 @@ class DefaultAndAllowedValuesTmpl {
         «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
         «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
-        public «IF isAbstract»abstract «ENDIF»«valueSetJavaClassName» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
+        public «IF isAbstract»abstract «ENDIF»«getValueSetJavaClassName(rule.fromMethod)» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
         «IF genInterface || isAbstract»;«ELSE»
         {
             return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
@@ -139,7 +138,7 @@ class DefaultAndAllowedValuesTmpl {
         «IF genInterface || isAbstract»;«ELSE»
         {
             «checkRepositoryModifyable»
-            this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),valueSetJavaClassName)»«fieldNameValueSet»;
+            this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE))»«fieldNameValueSet»;
         }
         «ENDIF»
     '''
