@@ -136,6 +136,28 @@ public abstract class PolicyAttribute extends Attribute {
     }
 
     /**
+     * Returns the (product configured) default value of the attribute identified by this
+     * configurable model type attribute. Throws an {@link IllegalStateException} if the model
+     * object has no default value constant or the product has no getDefaultValue~() method for this
+     * attribute.
+     * 
+     * @param modelObject the configurable model object from which product component and (if
+     *            necessary) effective date can be retrieved
+     * @see #getDefaultValue(IProductComponent, Calendar)
+     * @throws IllegalStateException if the model object has no default value constant or the
+     *             product has no getter method for this attribute's default value.
+     * @throws IllegalArgumentException if the invocation of the method that should get the default
+     *             value for this attribute fails for any reason
+     * 
+     * @see #getDefaultValue(IModelObject)
+     * @apiNote this method is supplanted by the more general {@link #getDefaultValue(IModelObject)}
+     *          but remains here for compile time compatibility with older versions.
+     */
+    public Object getDefaultValue(IConfigurableModelObject modelObject) {
+        return getDefaultValue((IModelObject)modelObject);
+    }
+
+    /**
      * Returns the (product configured) default value of the attribute identified by this model type
      * attribute. Throws an {@link IllegalStateException} if the model object has no default value
      * constant or the product has no getDefaultValue~() method for this attribute.
@@ -147,6 +169,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             product has no getter method for this attribute's default value.
      * @throws IllegalArgumentException if the invocation of the method that should get the default
      *             value for this attribute fails for any reason
+     * @since 22.6
      */
     public abstract Object getDefaultValue(IModelObject modelObject);
 
