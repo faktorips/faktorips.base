@@ -68,7 +68,7 @@ public class IpsObjectGenerationDecorator implements IIpsObjectPartDecorator {
         ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(
                 id + "_" + GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        // if image does not exists try to load default image
+        // if image does not exist try to load default image
         if (!exists(imageDescriptor)) {
             imageDescriptor = IIpsDecorators.getImageHandling().createImageDescriptor(GENERATION_IMAGE_BASE + ".gif"); //$NON-NLS-1$
         }

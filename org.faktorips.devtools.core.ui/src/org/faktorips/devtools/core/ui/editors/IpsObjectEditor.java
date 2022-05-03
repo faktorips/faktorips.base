@@ -666,7 +666,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         if (!getIpsSrcFile().exists()) {
-            logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exists."); //$NON-NLS-1$
+            logMethodFinished("checkForInconsistenciesToModel - no need to check, file does not exist."); //$NON-NLS-1$
             return;
         }
 

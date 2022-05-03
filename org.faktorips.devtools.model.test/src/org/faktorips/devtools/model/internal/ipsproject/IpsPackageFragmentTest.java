@@ -264,7 +264,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         pack.findIpsSourceFilesStartingWith(IpsObjectType.PRODUCT_CMPT, "M", true, result);
         assertEquals(0, result.size());
 
-        // pack does not exists
+        // pack does not exist
         IpsPackageFragment pack2 = (IpsPackageFragment)rootPackage.getIpsPackageFragment("notExistingPack");
         pack2.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", true, result);
         assertEquals(0, result.size());

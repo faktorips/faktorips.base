@@ -118,7 +118,7 @@ public interface ITestPolicyCmpt extends ITestObject {
 
     /**
      * Returns the test policy component type parameter or <code>null</code> if the test policy
-     * component type parameter does not exists.
+     * component type parameter does not exist.
      * 
      * @throws IpsException if an error occurs while searching for the policy component type.
      */
@@ -135,7 +135,7 @@ public interface ITestPolicyCmpt extends ITestObject {
     public void setProductCmpt(String productCmpt);
 
     /**
-     * Returns the product component or <code>null</code> if the product component does not exists.
+     * Returns the product component or <code>null</code> if the product component does not exist.
      * 
      * @throws IpsException if an error occurs while searching for the product component.
      */

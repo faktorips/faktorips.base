@@ -474,7 +474,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     private ValueDatatype findValueDatatype(IColumn column) {
-        // referenced column does not exists under known reference name anymore
+        // referenced column does not exist under known reference name anymore
         // the ValueDatatype will be String as a workaround to still show the content of the cells
         if (column == null) {
             return ValueDatatype.STRING;
@@ -484,7 +484,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     private String findColumnName(IColumn column, String referenceName) {
-        // referenced column does not exists under known reference name anymore
+        // referenced column does not exist under known reference name anymore
         // the referenced column name will be displayed in place of the column's name
         if (column == null) {
             return referenceName;

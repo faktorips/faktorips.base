@@ -182,7 +182,7 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
     public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter();
 
     /**
-     * Returns the model attribute or <code>null</code> if the attribute does not exists.
+     * Returns the model attribute or <code>null</code> if the attribute does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      */

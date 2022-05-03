@@ -61,7 +61,7 @@ public interface ITestRule extends ITestObject {
     public void setTestRuleParameter(String testRuleParameter);
 
     /**
-     * Returns the test rule parameter or <code>null</code> if the object does not exists.
+     * Returns the test rule parameter or <code>null</code> if the object does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
@@ -80,7 +80,7 @@ public interface ITestRule extends ITestObject {
     public void setValidationRule(String ruleParameter);
 
     /**
-     * Returns the validation rule or <code>null</code> if the object does not exists.
+     * Returns the validation rule or <code>null</code> if the object does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 
