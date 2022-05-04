@@ -11,9 +11,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -21,12 +18,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.dialogs.PropertyPage;
-import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
@@ -36,7 +29,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * 
  * @author Roman Grutza
  */
-public class IpsObjectPathPropertyPage extends PropertyPage {
+public class IpsObjectPathPropertyPage extends IpsProjectPropertyPage {
 
     private static final String PAGE_SETTINGS = "IpsObjectPathPropertyPage"; //$NON-NLS-1$
     private static final String INDEX = "pageIndex"; //$NON-NLS-1$
@@ -81,34 +74,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
         objectPathsContainer = new IpsObjectPathContainer(getSettings().getInt(INDEX));
         objectPathsContainer.init(ipsProject);
         return objectPathsContainer.createControl(parent);
-    }
-
-    /**
-     * Determine IPS project instance for which the property page has to be created
-     */
-    private IIpsProject getIpsProject() {
-        IProject project = getProject();
-        IIpsProject ipsProject = null;
-
-        if (project != null) {
-            ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
-        }
-        return ipsProject;
-    }
-
-    private IProject getProject() {
-        IAdaptable adaptable = getElement();
-        IProject project = null;
-
-        if (adaptable instanceof IProject) {
-            project = (IProject)adaptable;
-        } else {
-            IJavaElement elem = adaptable.getAdapter(IJavaElement.class);
-            if (elem instanceof IJavaProject) {
-                project = ((IJavaProject)elem).getProject();
-            }
-        }
-        return project;
     }
 
     private IDialogSettings getSettings() {
