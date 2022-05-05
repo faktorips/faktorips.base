@@ -44,6 +44,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -405,10 +406,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
             Manifest manifest = new Manifest(in);
             Attributes mainAttributes = manifest.getMainAttributes();
             String basePackageName = projectCreationProperties.getBasePackageName();
-            String sourcecodeOutput = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
-                    .getProjectRelativePath().toString();
-            String resourceOutput = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                    .getProjectRelativePath().toString();
+            String sourcecodeOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
+                            .getProjectRelativePath());
+            String resourceOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                            .getProjectRelativePath());
             StringBuilder objectDirAttributeBuilder = new StringBuilder();
             objectDirAttributeBuilder
                     .append(projectCreationProperties.getSourceFolderName()).append(";")
@@ -444,8 +447,9 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private void checkMavenResources(Build build) {
         String sourceFolderName = projectCreationProperties.getSourceFolderName();
-        String resourceDirectory = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                .getProjectRelativePath().toString();
+        String resourceDirectory = PathUtil
+                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                        .getProjectRelativePath());
         List<Resource> resources = build.getResources();
         List<Resource> sourceFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(sourceFolderName))
@@ -526,10 +530,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
             assertThat(mainAttributes.getValue("TestEntry"), is("stay"));
 
             String basePackageName = projectCreationProperties.getBasePackageName();
-            String sourcecodeOutput = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
-                    .getProjectRelativePath().toString();
-            String resourceOutput = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                    .getProjectRelativePath().toString();
+            String sourcecodeOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
+                            .getProjectRelativePath());
+            String resourceOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                            .getProjectRelativePath());
             StringBuilder objectDirAttributeBuilder = new StringBuilder();
             objectDirAttributeBuilder
                     .append(projectCreationProperties.getSourceFolderName()).append(";")

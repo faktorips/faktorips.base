@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.w3c.dom.Document;
@@ -57,13 +58,13 @@ public class IpsObjectPathXmlPersister {
                 Boolean.toString(path.isOutputDefinedPerSrcFolder()));
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES,
                 path.getOutputFolderForMergableSources() == null ? StringUtils.EMPTY
-                        : path
-                                .getOutputFolderForMergableSources().getProjectRelativePath().toString());
+                        : PathUtil.toPortableString(path
+                                .getOutputFolderForMergableSources().getProjectRelativePath()));
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE, path.getBasePackageNameForMergableJavaClasses());
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES,
                 path.getOutputFolderForDerivedSources() == null ? StringUtils.EMPTY
-                        : path
-                                .getOutputFolderForDerivedSources().getProjectRelativePath().toString());
+                        : PathUtil.toPortableString(path
+                                .getOutputFolderForDerivedSources().getProjectRelativePath()));
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED, path.getBasePackageNameForDerivedJavaClasses());
 
         // entries

@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -300,16 +301,16 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public Element toXml(Document doc) {
         Element element = super.toXml(doc);
         element.setAttribute(PROPERTY_TYPE, TYPE_SRC_FOLDER);
-        element.setAttribute(PROPERTY_SOURCE_FOLDER, sourceFolder.getProjectRelativePath().toString());
+        element.setAttribute(PROPERTY_SOURCE_FOLDER, PathUtil.toPortableString(sourceFolder.getProjectRelativePath()));
         element.setAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE, outputFolderMergable == null ? StringUtils.EMPTY
-                : outputFolderMergable.getProjectRelativePath().toString());
+                : PathUtil.toPortableString(outputFolderMergable.getProjectRelativePath()));
         element.setAttribute(PROPERTY_BASE_PACKAGE_MERGABLE, basePackageMergable == null ? StringUtils.EMPTY
                 : basePackageMergable);
         element.setAttribute(PROPERTY_TOC_PATH, tocPath == null ? "" : tocPath); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE, validationMessagesBundle == null ? StringUtils.EMPTY
                 : validationMessagesBundle);
         element.setAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED, outputFolderDerived == null ? StringUtils.EMPTY
-                : outputFolderDerived.getProjectRelativePath().toString());
+                : PathUtil.toPortableString(outputFolderDerived.getProjectRelativePath()));
         element.setAttribute(PROPERTY_BASE_PACKAGE_DERIVED, basePackageDerived == null ? StringUtils.EMPTY
                 : basePackageDerived);
         if (StringUtils.isNotEmpty(uniqueQualifier)) {
@@ -325,8 +326,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         result.add(validateIfFolderExists(sourceFolder));
         if (sourceFolder.getProjectRelativePath().getNameCount() > 1) {
             String text = MessageFormat.format(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject,
-                    sourceFolder
-                            .getProjectRelativePath().toString());
+                    PathUtil.toPortableString(sourceFolder
+                            .getProjectRelativePath()));
             Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR,
                     this);
             result.add(msg);
@@ -438,7 +439,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public String toString() {
-        return "SrcFolderEntry[" + sourceFolder.getProjectRelativePath().toString() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+        return "SrcFolderEntry[" + PathUtil.toPortableString(sourceFolder.getProjectRelativePath()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override

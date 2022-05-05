@@ -41,6 +41,7 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
@@ -102,7 +103,8 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         createManifestFile(ipsProject, creationProperties);
 
-        String resourceFolder = ipsObjectPath.getOutputFolderForDerivedSources().getProjectRelativePath().toString();
+        String resourceFolder = PathUtil
+                .toPortableString(ipsObjectPath.getOutputFolderForDerivedSources().getProjectRelativePath());
         try {
             configureMaven(project, resourceFolder, creationProperties);
 
@@ -212,9 +214,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         mainAttributes.putValue("Fips-BasePackage", creationProperties.getBasePackageName());
 
         mainAttributes.putValue("Fips-SourcecodeOutput",
-                ipsObjectPath.getOutputFolderForMergableSources().getProjectRelativePath().toString());
+                PathUtil.toPortableString(ipsObjectPath.getOutputFolderForMergableSources().getProjectRelativePath()));
         mainAttributes.putValue("Fips-ResourceOutput",
-                ipsObjectPath.getOutputFolderForDerivedSources().getProjectRelativePath().toString());
+                PathUtil.toPortableString(ipsObjectPath.getOutputFolderForDerivedSources().getProjectRelativePath()));
 
         StringBuilder objectDirAttributeBuilder = new StringBuilder();
         objectDirAttributeBuilder
