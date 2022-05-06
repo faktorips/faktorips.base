@@ -40,12 +40,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
-import org.faktorips.devtools.model.internal.util.ValidatingDocumentBuilderHolder;
+import org.faktorips.devtools.model.internal.util.XsdValidatorHolder;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -144,7 +145,7 @@ public class XmlUtil {
 
     private static final Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
 
-    private static final Map<IpsObjectType, ThreadLocal<DocumentBuilder>> VALIDATORS = new ConcurrentHashMap<>();
+    private static final Map<IpsObjectType, ThreadLocal<Validator>> VALIDATORS = new ConcurrentHashMap<>();
 
     /**
      * This is a thread local variable because the document builder is not thread safe.
@@ -441,47 +442,38 @@ public class XmlUtil {
     }
 
     /**
-     * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. Per default the
-     * document builder will log XSD errors and warnings and only throws an {@link RuntimeException}
-     * if an fatal errors occurs.
+     * Creates a {@link Validator} for {@link Schema} validation. Per default the validator will log
+     * XSD errors and warnings and only throws a {@link RuntimeException} if a fatal error occurs.
      * 
-     * @param ipsObjectType The ips object type for loading the XSD schema file
-     * @return An document builder with validating support
+     * @param ipsObjectType the IPS object type for loading the XSD schema file
+     * @return an XSD validator
      */
-    public static final DocumentBuilder getValidatingDocumentBuilder(IpsObjectType ipsObjectType) {
-        return VALIDATORS.computeIfAbsent(ipsObjectType, ValidatingDocumentBuilderHolder::new).get();
+    public static final Validator getXsdValidator(IpsObjectType ipsObjectType) {
+        return VALIDATORS.computeIfAbsent(ipsObjectType, XsdValidatorHolder::new).get();
     }
 
-    public static final void resetValidatingDocumentBuilder(IpsObjectType ipsObjectType) {
+    public static final void resetXsdValidator(IpsObjectType ipsObjectType) {
         VALIDATORS.remove(ipsObjectType);
     }
 
-    public static final void resetValidatingDocumentBuilders() {
+    public static final void resetXsdValidators() {
         VALIDATORS.clear();
     }
 
     /**
-     * Creates an {@link DocumentBuilder} with a {@link Schema} for validation. The
-     * {@code customErrorHandler} will be used instead of the default one.
+     * Creates a {@link Validator} for {@link Schema} validation. The {@code customErrorHandler}
+     * will be used instead of the default one.
      * <p>
-     * e.g. use an custom {@link ErrorHandler} that adds all warnings and errors to a list.
+     * e.g. use a custom {@link ErrorHandler} that adds all warnings and errors to a list.
      *
-     * @param ipsObjectType The ips object type for loading the XSD schema file
-     * @param customErrorHandler The error handler to use
-     * @return An document builder with validating support
+     * @param ipsObjectType the IPS object type for loading the XSD schema file
+     * @param customErrorHandler the error handler to use
+     * @return an XSD validator
      */
-    public static final DocumentBuilder getValidatingDocumentBuilder(IpsObjectType ipsObjectType,
-            ErrorHandler customErrorHandler) {
-        DocumentBuilder documentBuilder = getValidatingDocumentBuilder(ipsObjectType);
-        documentBuilder.setErrorHandler(customErrorHandler);
-        return documentBuilder;
-    }
-
-    public static final DocumentBuilder getValidatingDocumentBuilderForIpsProjectProperties(
-            ErrorHandler customErrorHandler) {
-        DocumentBuilder documentBuilder = new ValidatingDocumentBuilderHolder().get();
-        documentBuilder.setErrorHandler(customErrorHandler);
-        return documentBuilder;
+    public static final Validator getXsdValidator(IpsObjectType ipsObjectType, ErrorHandler customErrorHandler) {
+        Validator validator = getXsdValidator(ipsObjectType);
+        validator.setErrorHandler(customErrorHandler);
+        return validator;
     }
 
     /**

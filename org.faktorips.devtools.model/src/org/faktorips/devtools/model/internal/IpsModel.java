@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.dom.DOMSource;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
@@ -992,13 +992,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
         ipsProject.clearCaches();
     }
 
-    private Document validateXMLSchema(InputStream is, XsdValidationHandler validatingErrorHandler)
-            throws SAXException, IOException {
-        DocumentBuilder validator = XmlUtil
-                .getValidatingDocumentBuilderForIpsProjectProperties(validatingErrorHandler);
-        return validator.parse(is);
-    }
-
     /**
      * Reads the project's data from the .ipsproject file.
      */
@@ -1020,14 +1013,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
             return properties;
         }
         try {
+            doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
             if (properties.isValidateIpsSchema()) {
-                doc = validateXMLSchema(is, xsdValidationHandler);
+                XmlUtil.getXsdValidator(IpsProjectType.IPS_PROJECT, xsdValidationHandler).validate(new DOMSource(doc));
                 if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
                     IpsLog.log(new IpsStatus("Schema validation failed for ips project properties file " + file)); //$NON-NLS-1$
                 }
-            } else {
-                doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
             }
+
         } catch (SAXException e) {
             IpsLog.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
             return properties;
@@ -1915,4 +1908,19 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
     }
 
+    /**
+     * Helper to validate the IPS project settings file.
+     * 
+     */
+    private static class IpsProjectType extends IpsObjectType {
+
+        private static final IpsObjectType IPS_PROJECT = new IpsProjectType();
+        private static final String IPS_PROJECT_PROP = "ipsProjectProperties"; //$NON-NLS-1$
+
+        protected IpsProjectType() {
+            super(IPS_PROJECT_PROP, IPS_PROJECT_PROP, IPS_PROJECT_PROP, IPS_PROJECT_PROP,
+                    IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT, false, false,
+                    null);
+        }
+    }
 }

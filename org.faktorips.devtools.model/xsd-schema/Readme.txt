@@ -1,0 +1,1 @@
+This folder is used to distribute our XSD schemas for offline validation.

@@ -163,7 +163,6 @@
 
     <xsd:complexType name="ProductCmptNamingStrategyType">
         <xsd:sequence>
-            <xsd:element name="DateBasedProductCmptNamingStrategy" type="DateBasedProductCmptNamingStrategyType" minOccurs="0" maxOccurs="1"/>
             <xsd:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
         <xsd:attribute name="id" type="string" />

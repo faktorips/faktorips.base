@@ -151,7 +151,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     }
 
     private void writeToFile(IIpsSrcFile srcFile, Element doc) {
-        XmlUtil.resetValidatingDocumentBuilders();
+        XmlUtil.resetXsdValidators();
         try {
             if (getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
                 String xmlNamespace = XmlUtil.XML_IPS_DEFAULT_NAMESPACE;

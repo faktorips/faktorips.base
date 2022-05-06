@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.validation.Validator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -198,10 +200,11 @@ public class IpsSrcFileContent {
         wholeContentChanged();
     }
 
-    private Document validateXMLSchema(InputStream is) throws Exception {
+    private void validateXMLSchema(Document document) throws Exception {
         IpsObjectType type = getIpsSrcFile().getIpsObjectType();
-        DocumentBuilder validator = XmlUtil.getValidatingDocumentBuilder(type, getXsdValidationHandler());
-        return validator.parse(is);
+
+        Validator validator = XmlUtil.getXsdValidator(type, getXsdValidationHandler());
+        validator.validate(new DOMSource(document));
     }
 
     public void initContentFromFile() {
@@ -221,18 +224,18 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                Document doc;
+                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                Document doc = builder.parse(is);
+
                 if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
-                    doc = validateXMLSchema(is);
+                    validateXMLSchema(doc);
                     if (!getXsdValidationHandler().getXsdValidationErrors().isEmpty()) {
                         parsable = false;
                         ipsObject.markAsFromUnparsableFile();
                         return;
                     }
-                } else {
-                    DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
-                    doc = builder.parse(is);
                 }
+
                 ipsObject.initFromXml(doc.getDocumentElement());
             }
             modificationStamp = file.getEnclosingResource().getModificationStamp();
