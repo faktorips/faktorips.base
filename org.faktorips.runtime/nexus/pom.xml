@@ -83,6 +83,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <!-- Needed only when table contents are saved as CSV -->
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>

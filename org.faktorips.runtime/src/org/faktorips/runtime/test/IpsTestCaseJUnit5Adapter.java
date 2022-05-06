@@ -12,18 +12,15 @@ package org.faktorips.runtime.test;
 
 import static org.faktorips.runtime.test.IpsTestCaseJUnitAdapterUtil.createFailureEntries;
 import static org.faktorips.runtime.test.IpsTestCaseJUnitAdapterUtil.runTestCase;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 /**
- * Adapter between JUnit 3/4 test cases and Faktor-IPS test cases.
- * 
- * @author Joerg Ortmann
+ * Adapter between JUnit 5 test cases and Faktor-IPS test cases.
  */
-public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener {
+public class IpsTestCaseJUnit5Adapter implements IpsTestListener {
 
     // The ips test case this adapter works with
     private IpsTestCaseBase ipsTestCase;
@@ -31,33 +28,14 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
     // Contains all failures occurred during the test run for this test case
     private List<IpsTestFailure> failures = new ArrayList<>();
 
-    public IpsTestCaseJUnitAdapter(IpsTestCaseBase ipsTestCase) {
-        super(ipsTestCase.getName());
+    public IpsTestCaseJUnit5Adapter(IpsTestCaseBase ipsTestCase) {
         this.ipsTestCase = ipsTestCase;
-    }
-
-    /**
-     * Dummy constructor to meet the contract to JUnits test case, this prevents the JUnit warning
-     * "has no public constructor TestCase(String name)". By using this constructor the runTest will
-     * suppressed. To run this kind of test cases the constructor
-     * IpsTestCaseJUnitAdapter(IpsTestCaseBase ipsTestCase) has to be called.
-     */
-    public IpsTestCaseJUnitAdapter(String name) {
-        super(name);
-    }
-
-    /**
-     * Dummy test do prevent JUnit "no test found" warning if selecting this test case.
-     */
-    public void testNothing() {
-        // do nothing
     }
 
     /**
      * Runs the ips test case.
      */
-    @Override
-    public void runTest() throws Throwable {
+    public void runTest() {
         runTestCase(ipsTestCase, this);
         if (failures.size() > 0) {
             fail(createFailureEntries(failures));

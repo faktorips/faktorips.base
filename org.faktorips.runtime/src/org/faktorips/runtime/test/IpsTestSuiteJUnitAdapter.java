@@ -14,9 +14,23 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Ips test suite adapter. Adapter between JUnit test suites and ips test suites.
+ * Adapter between JUnit 3/4 test suites and Faktor-IPS test suites.
+ * <p>
+ * Code example to show how the adapter can be integrated:
  * 
- * @author Joerg Ortmann
+ * <pre>
+ * <code>
+ * import org.faktorips.runtime.test.IpsTestSuiteJUnitAdapter;
+ * import junit.framework.Test;
+ * 
+ * public class HomeInsuranceJUnitTest extends IpsTestSuiteJUnitAdapter {
+ *      public static Test suite() {
+ *          IRuntimeRepository repository = [...];
+ *          return createJUnitTest(repository.getIpsTest(""));
+ *      }
+ * }
+ * </code>
+ * </pre>
  */
 public class IpsTestSuiteJUnitAdapter extends TestSuite {
 

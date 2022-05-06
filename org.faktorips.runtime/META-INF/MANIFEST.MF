@@ -35,6 +35,7 @@ Import-Package: com.opencsv;version="3.3.0";resolution:=optional,
  org.faktorips.annotation,
  org.faktorips.values,
  org.faktorips.valueset,
+ org.junit.jupiter.api;resolution:=optional,
  org.w3c.dom,
  org.xml.sax,
  org.xml.sax.helpers
