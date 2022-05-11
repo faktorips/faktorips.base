@@ -6,16 +6,21 @@
 
     <parent>
         <groupId>org.faktorips</groupId>
-        <artifactId>org.faktorips.aggregator.plugins</artifactId>
+        <artifactId>base</artifactId>
         <version>22.6.0-SNAPSHOT</version>
-        <relativePath>../org.faktorips.aggregator/plugins/pom.xml</relativePath>
     </parent>
 
     <artifactId>org.faktorips.runtime.groovy</artifactId>
-    <packaging>eclipse-plugin</packaging>
+    <properties>
+        <java.version>8</java.version>
+    </properties>
+
+    <packaging>bundle</packaging>
+
+	<name>Faktor-IPS Runtime - Groovy Extension</name>
+    <description>Faktor-IPS Runtime Extension for Formula Evaluation with Groovy</description>
 
     <build>
-        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -58,6 +63,58 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <!-- <_nouses>true</_nouses> -->
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            groovy.lang,
+							org.codehaus.groovy.reflection,
+							org.codehaus.groovy.runtime,
+							org.codehaus.groovy.runtime.callsite,
+							org.faktorips.*
+                        </Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.12.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>
