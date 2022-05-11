@@ -20,6 +20,7 @@
         <artifactId>tycho-surefire-plugin</artifactId>
         <configuration>
           <useUIHarness>true</useUIHarness>
+          
           <dependencies>
             <!-- need additional dependency https://bugs.eclipse.org/bugs/show_bug.cgi?id=462862 -->
             <dependency>

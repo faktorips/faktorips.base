@@ -55,8 +55,7 @@
                     <artifacts>
                         ${project.artifactId},
                         faktorips-nexus-base-8,
-                        faktorips-nexus-base-11,
-                        faktorips-runtime-groovy
+                        faktorips-nexus-base-11
                     </artifacts>
                 </configuration>
             </plugin>
