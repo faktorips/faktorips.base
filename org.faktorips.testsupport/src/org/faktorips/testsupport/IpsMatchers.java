@@ -29,10 +29,11 @@ import org.faktorips.testsupport.matchers.MessageListMessageMatcher;
 import org.faktorips.testsupport.matchers.MessageListObjectPropertyMatcher;
 import org.faktorips.testsupport.matchers.MessageListSizeMatcher;
 import org.faktorips.testsupport.matchers.MessageMarkerMatcher;
+import org.faktorips.testsupport.matchers.MessageMatcher;
+import org.faktorips.testsupport.matchers.MessagePropertyMatcher;
 import org.faktorips.testsupport.matchers.MessageSeverityMatcher;
 import org.hamcrest.FeatureMatcher;
 import org.hamcrest.Matcher;
-import org.hamcrest.core.CombinableMatcher;
 
 /**
  * Hamcrest {@link Matcher Matchers} for use in JUnit tests of Faktor-IPS (generated) code.
@@ -200,7 +201,7 @@ public class IpsMatchers {
      * 
      * @param messageMatcher a {@link Matcher} for a single {@link Message}
      */
-    public static MessageListMessageMatcher hasMessageThat(Matcher<Message> messageMatcher) {
+    public static MessageListMessageMatcher hasMessageThat(MessageMatcher messageMatcher) {
         return new MessageListMessageMatcher(messageMatcher);
     }
 
@@ -223,31 +224,31 @@ public class IpsMatchers {
      * 
      * @param text the text to match
      */
-    public static Matcher<Message> containsText(String text) {
-        return hasFeature(Message::getText, containsString(text), "a message where the text is", "text");
+    public static MessageMatcher containsText(String text) {
+        return hasProperty(Message::getText, containsString(text), "has a text");
     }
 
-    public static Matcher<Message> hasSeverity(Severity severity) {
+    public static MessageMatcher hasSeverity(Severity severity) {
         return new MessageSeverityMatcher(severity);
     }
 
-    private static Matcher<Message> codeAndSeverity(String code, Severity severity) {
-        return CombinableMatcher.both(new MessageCodeMatcher(code)).and(new MessageSeverityMatcher(severity));
+    private static MessageMatcher codeAndSeverity(String code, Severity severity) {
+        return new MessageCodeMatcher(code).and(new MessageSeverityMatcher(severity));
     }
 
-    public static Matcher<Message> hasInvalidObject(Object invalidObject) {
+    public static MessageMatcher hasInvalidObject(Object invalidObject) {
         return new MessageInvalidObjectMatcher(invalidObject);
     }
 
-    public static Matcher<Message> hasInvalidObject(Object invalidObject, String propertyName) {
+    public static MessageMatcher hasInvalidObject(Object invalidObject, String propertyName) {
         return new MessageInvalidObjectMatcher(invalidObject, propertyName);
     }
 
-    public static Matcher<Message> hasMessageCodeThat(Matcher<String> messageCodeMatcher) {
+    public static MessageMatcher hasMessageCodeThat(Matcher<String> messageCodeMatcher) {
         return new MessageCodeMatcher(messageCodeMatcher);
     }
 
-    public static Matcher<Message> hasMarker(IMarker marker) {
+    public static MessageMatcher hasMarker(IMarker marker) {
         return new MessageMarkerMatcher(marker);
     }
 
@@ -275,5 +276,23 @@ public class IpsMatchers {
                 return featureExtractor.apply(actual);
             }
         };
+    }
+
+    /**
+     * Creates a {@link MessageMatcher} that extracts a {@code &lt;P&gt;} property from a
+     * {@link Message} and matches it with the given matcher.
+     * 
+     * @param <P> the property type to match
+     * @param propertyExtractor the function to get the property from the object
+     * @param propertyMatcher the matcher for the property
+     * @param propertyDescription the description of the object and property (e.g. "a car where the
+     *            color is") that will be combined with the description of the given matcher
+     * @return a {@link FeatureMatcher}
+     * @since 22.6
+     */
+    public static <P> MessageMatcher hasProperty(Function<Message, P> propertyExtractor,
+            Matcher<P> propertyMatcher,
+            String propertyDescription) {
+        return new MessagePropertyMatcher<P>(propertyExtractor, propertyMatcher, propertyDescription);
     }
 }

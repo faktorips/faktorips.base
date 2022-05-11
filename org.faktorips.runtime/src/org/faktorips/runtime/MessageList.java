@@ -577,11 +577,11 @@ public class MessageList implements Serializable, Iterable<Message> {
     }
 
     /**
-     * Returns all messages in the list separated by a line separator.
+     * Returns all messages in the list separated by a comma and a line separator.
      */
     @Override
     public String toString() {
-        return IpsStringUtils.join(messages, System.lineSeparator());
+        return IpsStringUtils.join(messages, ',' + System.lineSeparator());
     }
 
     @Override

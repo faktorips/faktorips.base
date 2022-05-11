@@ -13,13 +13,12 @@ package org.faktorips.testsupport.matchers;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.Severity;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Matches a {@link Message} if it's {@link Message#getSeverity() severity} is the given
  * {@link Severity}.
  */
-public class MessageSeverityMatcher extends TypeSafeMatcher<Message> {
+public class MessageSeverityMatcher extends MessageMatcher {
 
     private final Severity severity;
 
@@ -28,8 +27,14 @@ public class MessageSeverityMatcher extends TypeSafeMatcher<Message> {
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText("a message with severity " + severity);
+    protected void describeMessageProperty(Description description) {
+        description.appendText("has severity " + severity);
+    }
+
+    @Override
+    protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
+        mismatchDescription.appendText(" has severity ");
+        mismatchDescription.appendValue(message.getSeverity());
     }
 
     @Override

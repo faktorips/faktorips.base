@@ -14,7 +14,6 @@ import org.faktorips.runtime.Message;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -22,7 +21,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
  * Matches a {@link Message} if it's {@link Message#getCode() message code} is the given
  * {@code messageCode}.
  */
-public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
+public class MessageCodeMatcher extends MessageMatcher {
 
     private final Matcher<String> messageCodeMatcher;
     private boolean expectMessage;
@@ -63,18 +62,18 @@ public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
     }
 
     @Override
-    public void describeTo(Description description) {
+    protected void describeMessageProperty(Description description) {
         if (expectMessage) {
-            description.appendText("a message with message code ");
+            description.appendText("has a message code ");
         } else {
-            description.appendText("a message without message code ");
+            description.appendText("does not have a message code ");
         }
         messageCodeMatcher.describeTo(description);
     }
 
     @Override
-    protected void describeMismatchSafely(Message message, Description mismatchDescription) {
-        mismatchDescription.appendText("message has code ");
+    protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
+        mismatchDescription.appendText(" has the message code ");
         mismatchDescription.appendText(message.getCode());
     }
 

@@ -11,16 +11,16 @@
 package org.faktorips.testsupport.matchers;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.ObjectProperty;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Checks whether a {@link Message} contains the given invalid object.
  */
-public class MessageInvalidObjectMatcher extends TypeSafeMatcher<Message> {
+public class MessageInvalidObjectMatcher extends MessageMatcher {
 
     private Object invalidObject;
     private Optional<String> propertyName;
@@ -36,11 +36,30 @@ public class MessageInvalidObjectMatcher extends TypeSafeMatcher<Message> {
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText("a message containing the invalid object: " + invalidObject);
+    protected void describeMessageProperty(Description description) {
+        description.appendText("contains the invalid object: " + invalidObject);
 
         if (propertyName.isPresent()) {
             description.appendText(" for the property: " + propertyName.get());
+        }
+    }
+
+    @Override
+    protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
+        mismatchDescription.appendText("had ");
+        switch (message.getNumOfInvalidObjectProperties()) {
+            case 0:
+                mismatchDescription.appendText("no invalid object properties");
+                break;
+            case 1:
+                mismatchDescription.appendText("only the invalid object property ");
+                mismatchDescription.appendValue(message.getInvalidObjectProperties().get(0));
+                break;
+            default:
+                mismatchDescription.appendText("the invalid object properties ");
+                mismatchDescription.appendValue(message.getInvalidObjectProperties().stream()
+                        .map(ObjectProperty::toString)
+                        .collect(Collectors.joining(", ")));
         }
     }
 

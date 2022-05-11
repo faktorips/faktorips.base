@@ -38,14 +38,18 @@ public class MessageListMessageMatcher extends TypeSafeMatcher<MessageList> {
     @Override
     public void describeTo(Description description) {
         boolean first = true;
-        description.appendText("a " + MessageList.class.getSimpleName() + " containing ");
+        description.appendText("a " + MessageList.class.getSimpleName() + " containing a message that ");
         for (Matcher<Message> matcher : messageMatchers) {
             if (!first) {
                 description.appendText("\n AND ");
             } else {
                 first = false;
             }
-            description.appendDescriptionOf(matcher);
+            if (matcher instanceof MessageMatcher) {
+                ((MessageMatcher)matcher).describeMessageProperty(description);
+            } else {
+                matcher.describeTo(description);
+            }
         }
     }
 
@@ -61,11 +65,23 @@ public class MessageListMessageMatcher extends TypeSafeMatcher<MessageList> {
                     continue matchers;
                 }
             }
-            if (!mismatchDescription.toString().isEmpty()) {
-                mismatchDescription.appendText("\n AND ");
-            }
-            messageMatcher.describeTo(mismatchDescription);
             allMatch = false;
+            break;
+        }
+        if (!allMatch) {
+            mismatchDescription.appendText("the " + MessageList.class.getSimpleName());
+            switch (messageList.size()) {
+                case 0:
+                    mismatchDescription.appendText(" contained no message");
+                    break;
+                case 1:
+                    mismatchDescription.appendText(" only contained the message ");
+                    mismatchDescription.appendValue(messageList);
+                    break;
+                default:
+                    mismatchDescription.appendText(" only contained the messages ");
+                    mismatchDescription.appendValue(messageList);
+            }
         }
         return allMatch;
     }
