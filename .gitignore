@@ -5,6 +5,7 @@ org.faktorips.valuetypes/.classpath
 org.faktorips.valuetypes.joda/.classpath
 org.faktorips.runtime/.classpath
 org.faktorips.runtime.groovy/.classpath
+org.faktorips.testsupport/.classpath
 
 # files generated (temporary) by the tycho maven builds
 .polyglot.*

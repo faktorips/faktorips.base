@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.faktorips</groupId>
-      <artifactId>faktorips-testsupport</artifactId>
+      <artifactId>org.faktorips.testsupport</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
