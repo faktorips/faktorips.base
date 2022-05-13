@@ -32,7 +32,6 @@
 
     <modules>
         <module>../../faktorips-runtime/client</module>
-        <module>../../org.faktorips.testsupport/nexus</module>
     </modules>
 
     <profiles>
