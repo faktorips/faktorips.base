@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.testsupport</artifactId>
+            <artifactId>faktorips-testsupport</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

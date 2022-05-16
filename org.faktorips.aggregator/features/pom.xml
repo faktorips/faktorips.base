@@ -26,4 +26,22 @@
         <module>../../org.faktorips.groovy.feature.nls1</module>
         <module>../../org.faktorips.m2e.feature</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

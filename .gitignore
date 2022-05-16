@@ -1,11 +1,12 @@
 # maven
 target/
 
-org.faktorips.valuetypes/.classpath
-org.faktorips.valuetypes.joda/.classpath
-org.faktorips.runtime/.classpath
-org.faktorips.runtime.groovy/.classpath
-org.faktorips.testsupport/.classpath
+faktorips-valuetypes/.classpath
+faktorips-valuetypes-joda/.classpath
+faktorips-runtime/.classpath
+faktorips-runtime-groovy/.classpath
+faktorips-testsupport/.classpath
+faktorips-util/.classpath
 
 # files generated (temporary) by the tycho maven builds
 .polyglot.*

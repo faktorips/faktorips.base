@@ -73,7 +73,7 @@
                             org.hamcrest,
                             org.hamcrest.core
                         </Import-Package>
-						<Bundle-Name>org.faktorips.testsupport</Bundle-Name>
+						<Bundle-SymbolicName>org.faktorips.testsupport</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>

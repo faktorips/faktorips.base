@@ -13,7 +13,13 @@
   <artifactId>org.faktorips.dtflcommon</artifactId>
   
     <packaging>eclipse-plugin</packaging>
-  
     
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
 </project>

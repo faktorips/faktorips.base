@@ -25,7 +25,7 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <artifactId>org.faktorips.valuetypes</artifactId>
+            <artifactId>faktorips-valuetypes</artifactId>
             <groupId>org.faktorips</groupId>
             <version>${project.version}</version>
         </dependency>

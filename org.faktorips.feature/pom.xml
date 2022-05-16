@@ -30,12 +30,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.testsupport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

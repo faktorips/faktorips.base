@@ -74,7 +74,7 @@
                             org.codehaus.groovy.runtime.callsite,
                             org.faktorips.*
                         </Import-Package>
-						<Bundle-Name>org.faktorips.runtime.groovy</Bundle-Name>
+						<Bundle-SymbolicName>org.faktorips.runtime.groovy</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>

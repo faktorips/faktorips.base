@@ -75,7 +75,7 @@
                         <Import-Package>
                             org.joda.time.*
                         </Import-Package>
-						<Bundle-Name>org.faktorips.valuetypes.joda</Bundle-Name>
+						<Bundle-SymbolicName>org.faktorips.valuetypes.joda</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>

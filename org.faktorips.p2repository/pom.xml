@@ -217,7 +217,7 @@
                                                 includes="faktorips-runtime-client*.jar" />
                                             <fileset
                                                 dir="${project.build.directory}/repository/plugins"
-                                                includes="org.faktorips.valuetypes*.jar" />
+                                                includes="faktorips-valuetypes*.jar" />
                                             <fileset
                                                 dir="${project.build.directory}"
                                                 includes="${deploy.license},${deploy.agpl}" />

@@ -42,45 +42,33 @@
         <module>../../org.faktorips.nls.devtools.model.decorators.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
-        <module>../../org.faktorips.util</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes</artifactId>
+            <artifactId>faktorips-valuetypes</artifactId>
             <version>${project.version}</version>
-<!--             <scope>provided</scope> -->
-<!--             <exclusions> -->
-<!--                 <exclusion> -->
-<!--                     <groupId>*</groupId> -->
-<!--                     <artifactId>*</artifactId> -->
-<!--                 </exclusion> -->
-<!--             </exclusions> -->
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes.joda</artifactId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
             <version>${project.version}</version>
-<!--             <scope>provided</scope> -->
-<!--             <exclusions> -->
-<!--                 <exclusion> -->
-<!--                     <groupId>*</groupId> -->
-<!--                     <artifactId>*</artifactId> -->
-<!--                 </exclusion> -->
-<!--             </exclusions> -->
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-runtime</artifactId>
             <version>${project.version}</version>
-<!--             <scope>provided</scope> -->
-<!--             <exclusions> -->
-<!--                 <exclusion> -->
-<!--                     <groupId>*</groupId> -->
-<!--                     <artifactId>*</artifactId> -->
-<!--                 </exclusion> -->
-<!--             </exclusions> -->
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

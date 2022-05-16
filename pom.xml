@@ -57,6 +57,7 @@
         <module>faktorips-runtime</module>
         <module>faktorips-runtime-groovy</module>
         <module>faktorips-testsupport</module>
+        <module>faktorips-util</module>
         <!-- keep the maven felix bundles above this line -->
         <module>org.faktorips.aggregator</module>
     </modules>

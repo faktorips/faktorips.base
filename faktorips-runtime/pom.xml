@@ -104,7 +104,7 @@
                         	org.faktorips.runtime.*,
                         	org.faktorips.runtime.internal
                         </Export-Package>
-						<Bundle-Name>org.faktorips.runtime</Bundle-Name>
+						<Bundle-SymbolicName>org.faktorips.runtime</Bundle-SymbolicName>
 					</instructions>
 				</configuration>
 			</plugin>

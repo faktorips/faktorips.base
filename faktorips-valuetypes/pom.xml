@@ -116,7 +116,7 @@
                         	org.faktorips.values.xml,
                         	org.faktorips.valueset
                         </Export-Package>
-						<Bundle-Name>org.faktorips.valuetypes</Bundle-Name>
+						<Bundle-SymbolicName>org.faktorips.valuetypes</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>
