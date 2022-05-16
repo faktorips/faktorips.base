@@ -35,7 +35,6 @@
         <module>../../org.faktorips.fl.test</module>
         <module>../../org.faktorips.m2e.test</module>
         <module>../../org.faktorips.testextensions</module>
-        <module>../../org.faktorips.util.test</module>
     </modules>
 
     <build>

@@ -254,11 +254,6 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.util.test</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.valuetypes</artifactId>
             <version>${project.version}</version>
         </dependency>

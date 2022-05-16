@@ -21,6 +21,6 @@ Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resoluti
  org.apache.commons.io;version="2.6.0",
  org.faktorips.runtime;version="22.6.0",
  org.faktorips.runtime.internal;version="22.6.0",
- org.faktorips.util
+ org.faktorips.util;version="22.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation
