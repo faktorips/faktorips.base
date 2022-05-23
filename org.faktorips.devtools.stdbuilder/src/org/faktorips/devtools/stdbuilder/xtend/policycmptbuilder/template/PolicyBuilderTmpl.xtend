@@ -109,13 +109,13 @@ class PolicyBuilderTmpl {
     // This method generates the setter method for an attribute. The setter method of the policy is then called for the attribute.
     // Returns the builder.
     def private static attributeSetter(XPolicyBuilder builder, XPolicyAttribute it) '''
-        «IF !derivedOnTheFly && !constant && !(derivedByExplicitMethodCall && abstract)»
+        «IF !derived && !constant»
             /**
             * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
             *
             * @generated
             */
-            «IF overwrite && !overwrittenAttribute.derivedOnTheFly && !overwrittenAttribute.constant && !(overwrittenAttribute.derivedByExplicitMethodCall && overwrittenAttribute.abstract)»@Override«ENDIF»
+            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
@@ -126,13 +126,13 @@ class PolicyBuilderTmpl {
 
     // Generates setter for attributes of the supertypes in order to overwrite the return type
     def private static superAttributeSetter(XPolicyBuilder builder, XPolicyAttribute it) '''
-        «IF !derivedOnTheFly && !constant && !(derivedByExplicitMethodCall && abstract)»
+        «IF !derived && !constant»
             /**
             * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
             *
             * @generated
             */
-            «IF !(overwrite && overwrittenAttribute.abstract && overwrittenAttribute.derivedByExplicitMethodCall)»@Override«ENDIF»
+            @Override
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);

@@ -163,7 +163,7 @@ class PolicyCmptAttributeTmpl {
   '''
 
   def package static setter(XPolicyAttribute it) '''
-    «IF generateSetter && !(genInterface() && isDerived)»
+    «IF generateSetter»
       /**
        * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
        «IF overwriteAbstract»
@@ -177,7 +177,7 @@ class PolicyCmptAttributeTmpl {
        * @generated
        */
       «getAnnotationsForPublishedInterfaceModifierRelevant(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, genInterface())»
-      «IF !(isDerived && (!overwrite || overwriteAbstract))»«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)»«ENDIF»
+      «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overwrite && !attributeTypeChangedByOverwrite)»
       public void «IF overwriteAbstract»«method(methodNameSetter, overwrittenAttribute.javaClassName, "newValue")»«ELSE»«method(methodNameSetter, javaClassName, "newValue")»«ENDIF»
       «IF genInterface()»;«ELSE» {
           «PropertyChangeSupportTmpl.storeOldValue(it)»

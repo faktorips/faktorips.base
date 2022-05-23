@@ -116,14 +116,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns true for all attributes except for derived on the fly, constant, overridden and
-     * abstract derived by explicit method call attributes.
+     * Returns true for all attributes except for derived, constant and overridden attributes.
      */
     public boolean isGenerateSetter() {
         boolean noDuplicateOverwrite = !isOverwrite() || isAttributeTypeChangedByOverwrite() || isOverwriteAbstract();
-        boolean abstractComputed = isDerivedByExplicitMethodCall() && isAbstract();
-        return !isDerivedOnTheFly() && !abstractComputed && !isConstant()
-                && noDuplicateOverwrite;
+        return !isDerived() && !isConstant() && noDuplicateOverwrite;
     }
 
     /**
@@ -463,11 +460,11 @@ public class XPolicyAttribute extends XAttribute {
         return super.isAbstract() && (isProductRelevant() || getPolicyCmptNode().isAbstract());
     }
 
-    public boolean isDerivedByExplicitMethodCall() {
+    protected boolean isDerivedByExplicitMethodCall() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
-    public boolean isDerivedOnTheFly() {
+    protected boolean isDerivedOnTheFly() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
