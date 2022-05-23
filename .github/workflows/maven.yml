@@ -38,7 +38,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: build config
-      run: mvn -B install --settings settings.xml --file org.faktorips.codequality.config/pom.xml
+      run: mvn -B install --settings settings.xml --file codequality-config/pom.xml
     - name: Check compiles
       run: mvn -B clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests -Dtycho.p2.transport.min-cache-minutes=1440
       if: ${{ matrix.eclipse-release != env.integration-test-release }}
