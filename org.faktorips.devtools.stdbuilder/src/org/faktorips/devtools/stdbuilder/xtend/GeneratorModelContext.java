@@ -108,8 +108,18 @@ public class GeneratorModelContext {
 
         for (IIpsProject referencedIpsProject : ipsProject.getAllReferencedIpsProjects()) {
             for (IIpsPackageFragmentRoot referencedRoot : referencedIpsProject.getIpsPackageFragmentRoots()) {
-                generatorConfigs.put(referencedRoot, new GeneratorConfig(
-                        referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject));
+                GeneratorConfig genConfig;
+                IIpsStorage ipsStorage = referencedRoot.getIpsStorage();
+                if (ipsStorage instanceof AbstractIpsBundle) {
+                    // jar files (LibraryIpsPackageFragmentRoot) overwrites equals, ignoring parents
+                    // if the same jar file is already in the generator config
+                    // we need to read the manifest again
+                    genConfig = createConfigWithOverrides(referencedRoot, ipsStorage);
+                } else {
+                    genConfig = new GeneratorConfig(
+                            referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject);
+                }
+                generatorConfigs.put(referencedRoot, genConfig);
             }
         }
     }

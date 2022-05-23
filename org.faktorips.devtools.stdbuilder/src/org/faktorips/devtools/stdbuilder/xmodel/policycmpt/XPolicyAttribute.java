@@ -515,7 +515,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
             GenerateValueSetType valueSetType) {
-        ValueSetMethods setting = getUnifyValueSetSettingFormSuperType(overwritten);
+        ValueSetMethods setting = getUnifyValueSetSettingFormAttribute(overwritten);
         GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
                 valueSetType);
         return isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(overwritten, genValueSet);
@@ -537,7 +537,7 @@ public class XPolicyAttribute extends XAttribute {
         if (!isOverwrite()) {
             return false;
         }
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         GenerateValueSetType superGenMode = GenerateValueSetType.mapFromSettings(superSetting, rule.getFromMethod());
 
         String thisMethodName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
@@ -628,7 +628,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType() {
         if (isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
-            ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+            ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
             return (superSetting.isByValueSetType() || superSetting.isBoth())
                     && !getUnifyValueSetMethodsSetting().isByValueSetType()
                     && !isOverwritingValueSetEqualType();
@@ -878,8 +878,7 @@ public class XPolicyAttribute extends XAttribute {
         // use getBaseGeneratorConfig here since getGeneratorConfig will use the attribute to find
         // the config, the attribute at this point is from a super type and therefore maybe
         // different than expected
-        return getUnifyValueSetMethodsSetting().isBoth()
-                && valueSetMethods.isGenerateByType();
+        return valueSetMethods.isGenerateByType() && getUnifyValueSetMethodsSetting().isBoth();
     }
 
     /**
@@ -908,7 +907,7 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         return thisSetting.isByValueSetType()
                 && (superSetting.isBoth() || superSetting.isByValueSetType());
     }
@@ -918,11 +917,11 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         return thisSetting.isByValueSetType() && superSetting.isBoth();
     }
 
-    private ValueSetMethods getUnifyValueSetSettingFormSuperType(XPolicyAttribute attribute) {
+    private ValueSetMethods getUnifyValueSetSettingFormAttribute(XPolicyAttribute attribute) {
         return getContext()
                 .getGeneratorConfig(attribute.getAttribute().getIpsObject())
                 .getValueSetMethods();
@@ -930,6 +929,23 @@ public class XPolicyAttribute extends XAttribute {
 
     private ValueSetMethods getUnifyValueSetMethodsSetting() {
         return getContext().getBaseGeneratorConfig().getValueSetMethods();
+    }
+
+    public boolean isUnifyValueSetSettingBothFromSuperType() {
+        return isOverwrite() && getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute()).isBoth();
+    }
+
+    /**
+     * If this project uses the setting {@link ValueSetMethods#Unified} and the super project uses
+     * {@link ValueSetMethods#Both} and a overwritten attribute is not product configured in the
+     * super type, generate only the unified methods.
+     */
+    public boolean isGenerateGetterAllowedValues(GenerateValueSetTypeRule rule) {
+        if (getUnifyValueSetMethodsSetting().isUnified()) {
+            return !(isUnifyValueSetSettingBothFromSuperType() && !getOverwrittenAttribute().isProductRelevant()
+                    && rule.getFromMethod().isGenerateByType());
+        }
+        return true;
     }
 
     /**

@@ -108,20 +108,22 @@ class DefaultAndAllowedValuesTmpl {
     '''
 
     def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
-        /**
-         * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
-        «getAnnotations(ELEMENT_JAVA_DOC)»
-         *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
-         * @generated
-         */
-        «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
-        «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
-        «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
-        public «IF isAbstract»abstract «ENDIF»«getValueSetJavaClassName(rule.fromMethod)» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
-        «IF genInterface || isAbstract»;«ELSE»
-        {
-            return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
-        }
+        «IF isGenerateGetterAllowedValues(rule)»
+            /**
+             * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
+            «getAnnotations(ELEMENT_JAVA_DOC)»
+             *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+             * @generated
+             */
+            «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
+            «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
+            «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
+            public «IF isAbstract»abstract «ENDIF»«getValueSetJavaClassName(rule.fromMethod)» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
+            «IF genInterface || isAbstract»;«ELSE»
+            {
+                return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
+            }
+            «ENDIF»
         «ENDIF»
     '''
 
