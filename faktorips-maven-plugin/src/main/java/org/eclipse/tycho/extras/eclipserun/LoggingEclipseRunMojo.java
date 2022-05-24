@@ -22,7 +22,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.toolchain.ToolchainManager;
@@ -86,7 +85,7 @@ public class LoggingEclipseRunMojo extends EclipseRunMojo {
     }
 
     @Override
-    void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException, MojoFailureException {
+    void runEclipse(EquinoxInstallation runtime) throws MojoExecutionException {
         BuildLogPrintStream logStream = null;
         PrintStream stdStream = null;
         int returnCode;
