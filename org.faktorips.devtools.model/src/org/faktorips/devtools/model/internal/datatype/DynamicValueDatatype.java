@@ -141,7 +141,10 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
             element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
         }
         if (getGetValueByNameMethodName() != null) {
-            element.setAttribute("getValueByName", getGetValueByNameMethodName()); //$NON-NLS-1$
+            element.setAttribute("getValueByNameMethod", getGetValueByNameMethodName()); //$NON-NLS-1$
+        }
+        if (getAllValuesMethodName() != null) {
+            element.setAttribute("getAllValuesMethod", getAllValuesMethodName()); //$NON-NLS-1$
         }
         element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
         if (hasNullObject()) {
