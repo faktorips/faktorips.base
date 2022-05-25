@@ -91,48 +91,52 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <requires>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
-      <import plugin="opencsv" version="2.3.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.collections"/>
-      <import plugin="spotbugs-annotations"/>
-      <import plugin="org.eclipse.jdt.core.manipulation"/>
-      <import plugin="org.eclipse.xtend.lib"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava" version="21.0.0" match="greaterOrEqual"/>
+      <import plugin="com.opencsv" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="com.sun.xml.bind.jaxb-osgi"/>
+      <import plugin="jaxb-api"/>
       <import plugin="joda-time"/>
-      <import plugin="org.eclipse.core.runtime" version="3.10.0" match="compatible"/>
-      <import plugin="org.eclipse.emf.common" version="2.10.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.9.0" match="compatible"/>
-      <import plugin="org.eclipse.jdt.core" version="3.10.0" match="compatible"/>
-      <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.apache.commons.io" version="2.6.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.lang"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.7.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.13.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.15.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.emf.common" version="2.15.0" match="compatible"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.jdt.core" version="3.17.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.13.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.15.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.text" version="3.8.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.xtend.lib"/>
+      <import plugin="org.hamcrest.core"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.mockito.mockito-core"/>
+      <import plugin="org.objenesis"/>
+      <import plugin="spotbugs-annotations"/>
    </requires>
 
    <plugin

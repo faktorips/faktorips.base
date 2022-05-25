@@ -43,6 +43,5 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional;bundle-version="3.1.12",
- org.apache.commons.collections;version="3.2.1",
+Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
  org.apache.commons.lang;version="[2.6.0,2.6.0]"

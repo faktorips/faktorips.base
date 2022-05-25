@@ -250,5 +250,4 @@ Export-Package: org.faktorips.devtools.model,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
- org.apache.commons.collections;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"

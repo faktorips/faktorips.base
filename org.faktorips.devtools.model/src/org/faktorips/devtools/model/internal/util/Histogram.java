@@ -28,7 +28,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.TreeMultimap;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.plugin.IpsLog;
@@ -178,7 +177,7 @@ public class Histogram<V, E> {
      * {@code Multimap}, the value is the number of values to that key in the {@code Multimap}.
      */
     private Map<V, Integer> transformToOccurenceCountMap(Multimap<V, E> map) {
-        return Maps.transformEntries(map.asMap(), ($, elements) -> CollectionUtils.size(elements));
+        return Maps.transformEntries(map.asMap(), ($, elements) -> elements.size());
     }
 
     /**

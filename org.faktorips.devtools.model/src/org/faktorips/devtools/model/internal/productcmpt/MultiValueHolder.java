@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -168,8 +167,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
         if (o == null) {
             return 1;
         } else {
-            @SuppressWarnings("unchecked")
-            Comparator<ISingleValueHolder> naturalComparator = ComparatorUtils.naturalComparator();
+            Comparator<ISingleValueHolder> naturalComparator = Comparator.naturalOrder();
             return ListComparator.listComparator(naturalComparator).compare(values, o.getValue());
         }
     }

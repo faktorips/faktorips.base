@@ -15,7 +15,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.collections.ComparatorUtils;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.util.collections.ListComparator;
 
@@ -58,8 +57,7 @@ public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>
         if (o == null) {
             return 1;
         } else {
-            @SuppressWarnings("unchecked")
-            Comparator<ISingleValueHolder> naturalComparator = ComparatorUtils.naturalComparator();
+            Comparator<ISingleValueHolder> naturalComparator = Comparator.naturalOrder();
             return ListComparator.listComparator(naturalComparator).compare(getValue(), o.getValue());
         }
     }
