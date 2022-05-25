@@ -16,6 +16,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.codegen,
  org.faktorips.codegen.dthelpers,
+ org.faktorips.datatype;version="22.6.0",
+ org.faktorips.datatype.classtypes;version="22.6.0",
  org.faktorips.devtools.abstraction,
  org.faktorips.devtools.abstraction.eclipse.internal,
  org.faktorips.devtools.abstraction.exception,

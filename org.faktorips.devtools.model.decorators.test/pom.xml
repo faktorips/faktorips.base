@@ -14,7 +14,7 @@
 	<artifactId>org.faktorips.devtools.model.decorators.test</artifactId>
 
 	<packaging>eclipse-test-plugin</packaging>
-
+    
 	<build>
 		<plugins>
 			<plugin>

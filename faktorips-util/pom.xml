@@ -26,8 +26,12 @@
 						<!-- <_nouses>true</_nouses> -->
 						<Import-Package>
                             !edu.umd.cs.findbugs.*,
-                            org.faktorips.*
+                            org.faktorips.*,
+                            org.apache.commons.lang;version="[2.6,2.6]"
                         </Import-Package>
+                        <Export-Package>
+                            org.faktorips.util.*
+                        </Export-Package>
 						<Bundle-SymbolicName>org.faktorips.util</Bundle-SymbolicName>
 					</instructions>
 				</configuration>

@@ -73,6 +73,10 @@
                             org.hamcrest,
                             org.hamcrest.core
                         </Import-Package>
+                        <Export-Package>
+                            org.faktorips.testsupport,
+                            org.faktorips.testsupport.matchers
+                        </Export-Package>
 						<Bundle-SymbolicName>org.faktorips.testsupport</Bundle-SymbolicName>
                     </instructions>
                 </configuration>

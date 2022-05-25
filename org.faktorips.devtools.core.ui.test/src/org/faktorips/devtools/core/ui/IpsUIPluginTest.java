@@ -190,7 +190,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         GregorianCalendar defaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
         Thread.sleep(5);
 
-        assertEquals(defaultValidityDate, defaultValidityDate);
+        assertEquals(IpsUIPlugin.getDefault().getDefaultValidityDate(), defaultValidityDate);
     }
 
     @Test

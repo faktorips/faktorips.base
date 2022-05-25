@@ -10197,3 +10197,17 @@ produktivcode
 migrationszwecke
 generieren
 rethrown
+rundet
+negiert
+gegebenen
+boolschen
+ganzzahligen
+potenz
+wurzel
+datumswerten
+kaufmännischen
+kalenders
+schaltjahre
+wandelt
+explizit
+kalendarisch

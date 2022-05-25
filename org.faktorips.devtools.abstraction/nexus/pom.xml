@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.util</artifactId>
+            <artifactId>faktorips-util</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- <dependency>

@@ -18,6 +18,7 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsSame.sameInstance;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -37,6 +38,7 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.testsupport.Wait;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -101,12 +103,12 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testHasBuildState() {
+    public void testHasBuildState() throws InterruptedException {
         assertThat(aJavaProject.hasBuildState(), is(false));
 
         aJavaProject.getProject().build(ABuildKind.FULL, null);
 
-        assertThat(aJavaProject.hasBuildState(), is(true));
+        Wait.atMost(Duration.ofSeconds(5)).until(aJavaProject::hasBuildState, aJavaProject + " has no build state");
     }
 
     @Test

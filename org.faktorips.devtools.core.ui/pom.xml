@@ -14,5 +14,4 @@
 	<artifactId>org.faktorips.devtools.core.ui</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
-
 </project>

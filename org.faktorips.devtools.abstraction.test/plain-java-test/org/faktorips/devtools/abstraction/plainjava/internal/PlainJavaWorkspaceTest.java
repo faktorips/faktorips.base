@@ -15,6 +15,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.File;
+import java.time.Duration;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,6 +23,7 @@ import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.testsupport.Wait;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -51,23 +53,10 @@ public class PlainJavaWorkspaceTest extends PlainJavaAbstractionTestSetup {
 
         Abstractions.getWorkspace().run(runnable, new NullProgressMonitor());
 
-        waitOn(10);
-
-        File project = Abstractions.getWorkspace().getRoot().getLocation().resolve(name).toFile();
-        assertThat(project, is(notNullValue()));
-        assertThat(project.exists(), is(true));
-    }
-
-    private void waitOn(int steps) {
-        try {
-            int i = 0;
-            while (i <= steps) {
-                Thread.sleep(100);
-                i++;
-            }
-        } catch (InterruptedException e) {
-            // ignore
-        }
+        Wait.atMost(Duration.ofSeconds(1)).until(() -> {
+            File project = Abstractions.getWorkspace().getRoot().getLocation().resolve(name).toFile();
+            return project != null & project.exists();
+        }, "Project " + name + " was not created");
     }
 
     @Test

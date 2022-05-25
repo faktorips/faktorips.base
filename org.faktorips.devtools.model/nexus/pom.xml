@@ -48,7 +48,11 @@
             <artifactId>org.eclipse.core.filesystem</artifactId>
             <version>1.7.0</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
