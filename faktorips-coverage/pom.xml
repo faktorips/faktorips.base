@@ -149,22 +149,12 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-dtfl-common.test</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.eclipse.emf.codegen</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.fl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.fl.test</artifactId>
+            <artifactId>faktorips-fl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

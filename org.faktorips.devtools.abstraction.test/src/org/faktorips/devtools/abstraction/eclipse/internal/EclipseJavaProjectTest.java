@@ -18,8 +18,10 @@ import static org.hamcrest.core.IsCollectionContaining.hasItems;
 import static org.hamcrest.core.IsSame.sameInstance;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -101,12 +103,36 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testHasBuildState() {
+    public void testHasBuildState() throws InterruptedException {
         assertThat(aJavaProject.hasBuildState(), is(false));
 
         aJavaProject.getProject().build(ABuildKind.FULL, null);
 
-        assertThat(aJavaProject.hasBuildState(), is(true));
+        Wait.atMost(Duration.ofSeconds(5)).until(aJavaProject::hasBuildState);
+    }
+
+    private static class Wait {
+        private Duration duration;
+
+        public Wait(Duration duration) {
+            this.duration = duration;
+        }
+
+        public static Wait atMost(Duration duration) {
+            return new Wait(duration);
+        }
+
+        public void until(BooleanSupplier check) {
+            long max = duration.getSeconds() * 1000L;
+            for (long l = 1; l < max && !check.getAsBoolean(); l *= 10) {
+                try {
+                    Thread.sleep(l);
+                } catch (InterruptedException e) {
+                    Thread.interrupted();
+                }
+            }
+            assertThat(check.getAsBoolean(), is(true));
+        }
     }
 
     @Test

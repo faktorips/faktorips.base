@@ -27,7 +27,9 @@
 						<!-- <_nouses>true</_nouses> -->
 						<Import-Package>
                             !edu.umd.cs.findbugs.*,
-                            org.faktorips.*
+                            org.faktorips.*,
+                            javax.xml.*,
+                            org.apache.commons.lang;version="[2.6,2.6]"
                         </Import-Package>
                         <Export-Package>
                         	org.faktorips.codegen,

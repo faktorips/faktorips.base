@@ -91,29 +91,20 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <requires>
-      <import plugin="org.apache.commons.lang"/>
-      <import plugin="org.junit"/>
       <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.junit"/>
       <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.2.0" match="greaterOrEqual"/>
-      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.collections"/>
+      <import plugin="org.apache.commons.lang"/>
       <import plugin="spotbugs-annotations"/>
-      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xtend.lib"/>
-      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
@@ -126,9 +117,31 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="joda-time"/>
-      <import plugin="org.eclipse.emf.common" version="2.10.0" match="compatible"/>
-      <import plugin="org.eclipse.text" version="3.5.0" match="compatible"/>
-      <import plugin="net.sf.opencsv.opencsv" version="2.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.jdt.launching" version="3.13.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.15.200" match="greaterOrEqual"/>
+      <import plugin="org.faktorips.abstracttest"/>
+      <import plugin="org.eclipse.jdt.core" version="3.17.0" match="greaterOrEqual"/>
+      <import plugin="com.opencsv"/>
+      <import plugin="org.faktorips.abstracttest.core"/>
+      <import plugin="org.mockito.mockito-core.source"/>
+      <import plugin="org.eclipse.core.resources" version="3.13.300" match="greaterOrEqual"/>
+      <import plugin="org.faktorips.eclipse.emf.codegen" version="22.6.0" match="greaterOrEqual"/>
+      <import plugin="jaxb-api"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.hamcrest.core"/>
+      <import plugin="org.eclipse.ui" version="3.112.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.core.commands"/>
+      <import plugin="org.eclipse.jface" version="3.15.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.emf.common" version="2.15.0" match="compatible"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.7.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.text" version="3.8.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms" version="3.7.500" match="greaterOrEqual"/>
+      <import plugin="org.apache.commons.io"/>
+      <import plugin="org.objenesis"/>
    </requires>
 
    <plugin

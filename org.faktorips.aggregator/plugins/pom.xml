@@ -33,7 +33,6 @@
         <module>../../org.faktorips.devtools.tableconversion</module>
         <module>../../org.faktorips.devtools.tableconversion.nl1</module>
         <module>../../org.faktorips.eclipse.emf.codegen</module>
-        <module>../../org.faktorips.fl</module>
         <module>../../org.faktorips.m2e</module>
         <module>../../org.faktorips.nls.devtools.core.nl1</module>
         <module>../../org.faktorips.nls.devtools.core.ui.nl1</module>
@@ -72,6 +71,11 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-dtfl-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

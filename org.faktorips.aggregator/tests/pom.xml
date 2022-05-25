@@ -31,10 +31,47 @@
         <module>../../org.faktorips.devtools.stdbuilder.test</module>
         <module>../../org.faktorips.devtools.stdbuilder.ui.test</module>
         <module>../../org.faktorips.devtools.tableconversion.test</module>
-        <module>../../org.faktorips.fl.test</module>
         <module>../../org.faktorips.m2e.test</module>
         <module>../../org.faktorips.testextensions</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-dtfl-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <testSourceDirectory>src</testSourceDirectory>
