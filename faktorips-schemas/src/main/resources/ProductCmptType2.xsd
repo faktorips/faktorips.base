@@ -19,9 +19,9 @@
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="changingOverTime" />
             <xsd:attribute name="configurationForPolicyCmptType" type="boolean" use="required" />
-            <xsd:attribute name="instancesIcon" type="string" use="required" />
+            <xsd:attribute name="instancesIcon" type="string" use="optional" />
             <xsd:attribute name="layerSupertype" type="boolean" use="required" />
-            <xsd:attribute name="policyCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="policyCmptType" type="qualifiedName" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attributeGroup ref="supertype" />
             <xsd:attribute ref="xml:space" />
@@ -135,7 +135,7 @@
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
             <xsd:attributeGroup ref="datatype" />
-            <xsd:attribute name="formulaName" type="string" use="required" />
+            <xsd:attribute name="formulaName" type="string" use="optional" />
             <xsd:attribute name="formulaSignatureDefinition" type="boolean" use="required" />
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="mandatory" type="boolean" use="required" />

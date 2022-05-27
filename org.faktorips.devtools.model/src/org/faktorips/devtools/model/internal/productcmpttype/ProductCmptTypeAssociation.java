@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -418,8 +419,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
-        matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
+        matchingAssociationName = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_MATCHING_ASSOCIATION_NAME);
+        matchingAssociationSource = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_MATCHING_ASSOCIATION_SOURCE);
         // use default value in case null
         initPropertyChangingOverTime(element);
         initPropertyVisible(element);
@@ -440,8 +441,12 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
-        newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
+        if (StringUtils.isNotEmpty(matchingAssociationName)) {
+            newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
+        }
+        if (StringUtils.isNotEmpty(matchingAssociationSource)) {
+            newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
+        }
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(changingOverTime));
         newElement.setAttribute(PROPERTY_RELEVANT, Boolean.toString(relevant));
     }

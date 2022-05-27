@@ -41,6 +41,7 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -489,14 +490,16 @@ public abstract class Type extends BaseIpsObject implements IType {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        supertype = element.getAttribute(PROPERTY_SUPERTYPE);
+        supertype = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_SUPERTYPE);
         abstractFlag = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_ABSTRACT);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_SUPERTYPE, supertype);
+        if (StringUtils.isNotEmpty(supertype)) {
+            element.setAttribute(PROPERTY_SUPERTYPE, supertype);
+        }
         element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
     }
 

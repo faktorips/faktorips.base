@@ -17,7 +17,7 @@
                 <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
-            <xsd:attribute name="enumContentName" type="qualifiedName" />
+            <xsd:attribute name="enumContentName" type="qualifiedName" use="optional"/>
             <xsd:attribute name="extensible" type="boolean" />
             <xsd:attribute name="superEnumType" type="qualifiedName" use="optional" />
             <xsd:attributeGroup ref="since" />

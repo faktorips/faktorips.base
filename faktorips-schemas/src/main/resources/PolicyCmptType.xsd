@@ -20,7 +20,7 @@
             <xsd:attribute name="configurableByProductCmptType" type="boolean" use="required" />
             <xsd:attribute name="forceExtensionCompilationUnitGeneration" type="boolean" use="required" />
             <xsd:attribute name="generateValidatorClass" type="boolean" use="required" />
-            <xsd:attribute name="productCmptType" type="string" use="required" />
+            <xsd:attribute name="productCmptType" type="string" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attributeGroup ref="supertype" />
             <xsd:attribute ref="xml:space" />
@@ -44,7 +44,7 @@
             <xsd:attribute name="attributeType" type="attributeType" use="required" />
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
-            <xsd:attribute name="computationMethodSignature" type="javaMethodIdentifier" use="required" />
+            <xsd:attribute name="computationMethodSignature" type="javaMethodIdentifier" use="optional" />
             <xsd:attribute name="genericValidation" type="boolean" use="optional" />
             <xsd:attributeGroup ref="datatype" />
             <xsd:attributeGroup ref="id" />
@@ -138,7 +138,7 @@
             <xsd:attributeGroup ref="constrain" />
             <xsd:attributeGroup ref="derivedUnion" />
             <xsd:attributeGroup ref="id" />
-            <xsd:attribute name="inverseAssociation" type="javaIdentifier" use="required" />
+            <xsd:attribute name="inverseAssociation" type="javaIdentifier" use="optional" />
             <xsd:attributeGroup ref="matchingAssociation" />
             <xsd:attributeGroup ref="cardinality" />
             <xsd:attributeGroup ref="modifier" />

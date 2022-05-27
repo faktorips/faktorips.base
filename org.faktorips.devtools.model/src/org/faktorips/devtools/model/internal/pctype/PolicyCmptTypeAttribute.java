@@ -40,6 +40,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.DatatypeUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -439,7 +440,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         relevanceConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT))
                 .booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
-        computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+        computationMethodSignature = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_COMPUTATION_METHOD_SIGNATURE);
         genericValidationEnabled = Boolean.valueOf(element.getAttribute(PROPERTY_GENERIC_VALIDATION))
                 .booleanValue();
     }
@@ -457,7 +458,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         element.setAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT, "" + valueSetConfiguredByProduct); //$NON-NLS-1$
         element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
-        element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
+        if (StringUtils.isNotEmpty(computationMethodSignature)) {
+            element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
+        }
         if (genericValidationEnabled) {
             element.setAttribute(PROPERTY_GENERIC_VALIDATION, "" + genericValidationEnabled); //$NON-NLS-1$
         }

@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
@@ -116,7 +117,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
         formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
-        formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
+        formulaName = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_FORMULA_NAME);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             changingOverTime = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CHANGING_OVER_TIME);
         }
@@ -128,7 +129,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, String.valueOf(formulaSignatureDefinition));
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
         element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
-        element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
+        if (StringUtils.isNotEmpty(formulaName)) {
+            element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
+        }
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
     }
 

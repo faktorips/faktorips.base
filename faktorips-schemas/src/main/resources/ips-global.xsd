@@ -11,8 +11,8 @@
     <xsd:complexType name="Label">
         <xsd:attribute name="id" type="uuid" />
         <xsd:attribute name="locale" type="locale" use="required" />
-        <xsd:attribute name="pluralValue" type="string" use="required" />
-        <xsd:attribute name="value" use="required">
+        <xsd:attribute name="pluralValue" type="string" use="optional" />
+        <xsd:attribute name="value" use="optional">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                     <xsd:minLength value="0" />
@@ -59,7 +59,7 @@
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="category">
-        <xsd:attribute name="category" type="string" use="required" />
+        <xsd:attribute name="category" type="string" use="optional" />
         <xsd:attribute name="categoryPosition" type="int" use="optional" />
     </xsd:attributeGroup>
 
@@ -76,7 +76,7 @@
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="subsettedDerivedUnion">
-        <xsd:attribute name="subsettedDerivedUnion" type="javaIdentifier" use="required" />
+        <xsd:attribute name="subsettedDerivedUnion" type="javaIdentifier" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="cardinality">
@@ -85,13 +85,13 @@
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="matchingAssociation">
-        <xsd:attribute name="matchingAssociationName" type="javaIdentifier" use="required" />
-        <xsd:attribute name="matchingAssociationSource" type="qualifiedName" use="required" />
+        <xsd:attribute name="matchingAssociationName" type="javaIdentifier" use="optional" />
+        <xsd:attribute name="matchingAssociationSource" type="qualifiedName" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="targetRole">
         <xsd:attribute name="target" type="qualifiedName" use="required" />
-        <xsd:attribute name="targetRolePlural" type="string" use="required" />
+        <xsd:attribute name="targetRolePlural" type="string" use="optional" />
         <xsd:attribute name="targetRoleSingular" type="string" use="required" />
     </xsd:attributeGroup>
 

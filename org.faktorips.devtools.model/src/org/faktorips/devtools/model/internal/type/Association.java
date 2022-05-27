@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -310,7 +311,7 @@ public abstract class Association extends TypePart implements IAssociation {
         }
         target = element.getAttribute(PROPERTY_TARGET);
         targetRoleSingular = element.getAttribute(PROPERTY_TARGET_ROLE_SINGULAR);
-        targetRolePlural = element.getAttribute(PROPERTY_TARGET_ROLE_PLURAL);
+        targetRolePlural = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_TARGET_ROLE_PLURAL);
         try {
             minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
         } catch (NumberFormatException e) {
@@ -327,7 +328,7 @@ public abstract class Association extends TypePart implements IAssociation {
             }
         }
         derivedUnion = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_DERIVED_UNION);
-        subsettedDerivedUnion = element.getAttribute(PROPERTY_SUBSETTED_DERIVED_UNION);
+        subsettedDerivedUnion = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_SUBSETTED_DERIVED_UNION);
         constrain = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CONSTRAIN);
     }
 
@@ -337,7 +338,9 @@ public abstract class Association extends TypePart implements IAssociation {
         newElement.setAttribute(PROPERTY_ASSOCIATION_TYPE, type.getId());
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
-        newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
+        if (StringUtils.isNotEmpty(targetRolePlural)) {
+            newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
+        }
         newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
 
         if (maxCardinality == CARDINALITY_MANY) {
@@ -347,7 +350,9 @@ public abstract class Association extends TypePart implements IAssociation {
         }
 
         newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
+        if (StringUtils.isNotEmpty(subsettedDerivedUnion)) {
+            newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
+        }
         newElement.setAttribute(PROPERTY_CONSTRAIN, String.valueOf(isConstrain()));
     }
 

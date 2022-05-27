@@ -69,6 +69,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
@@ -381,7 +382,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
-        element.setAttribute(PROPERTY_TEMPLATE, template);
+        if (StringUtils.isNotEmpty(template)) {
+            element.setAttribute(PROPERTY_TEMPLATE, template);
+        }
     }
 
     @Override
@@ -389,7 +392,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.initPropertiesFromXml(element, id);
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
-        template = element.getAttribute(PROPERTY_TEMPLATE);
+        template = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_TEMPLATE);
     }
 
     @Override

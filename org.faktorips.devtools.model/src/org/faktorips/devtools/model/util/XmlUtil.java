@@ -192,6 +192,11 @@ public class XmlUtil {
         return value;
     }
 
+    public static final String getAttributeOrEmptyString(Element el, String attribute) {
+        return el.hasAttribute(attribute) ? el.getAttribute(attribute)
+                : StringUtils.EMPTY;
+    }
+
     public static final String dateToXmlDateString(Date date) {
         if (date == null) {
             return StringUtils.EMPTY;

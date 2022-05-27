@@ -45,6 +45,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -317,8 +318,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (element.hasAttribute(PROPERTY_IDENTIFIER_BOUNDARY)) {
             identifierBoundary = element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY);
         }
-        superEnumType = element.getAttribute(PROPERTY_SUPERTYPE);
-        enumContentPackageFragment = element.getAttribute(PROPERTY_ENUM_CONTENT_NAME);
+        superEnumType = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_SUPERTYPE);
+        enumContentPackageFragment = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_ENUM_CONTENT_NAME);
         initDeprecatedProperties(element);
         super.initPropertiesFromXml(element, id);
     }
@@ -333,13 +334,17 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
+        if (StringUtils.isNotEmpty(superEnumType)) {
+            element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
+        }
         element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
         element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
         if (identifierBoundary != null) {
             element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
         }
-        element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
+        if (StringUtils.isNotEmpty(enumContentPackageFragment)) {
+            element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
+        }
     }
 
     @Override

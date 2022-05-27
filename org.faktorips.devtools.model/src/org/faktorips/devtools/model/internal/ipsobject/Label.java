@@ -13,11 +13,13 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.text.MessageFormat;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -99,8 +101,8 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
     protected void initPropertiesFromXml(Element element, String id) {
         String localeCode = element.getAttribute(PROPERTY_LOCALE);
         locale = IpsStringUtils.isBlank(localeCode) ? null : new Locale(localeCode);
-        value = element.getAttribute(PROPERTY_VALUE);
-        pluralValue = element.getAttribute(PROPERTY_PLURAL_VALUE);
+        value = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_VALUE);
+        pluralValue = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_PLURAL_VALUE);
 
         super.initPropertiesFromXml(element, id);
     }
@@ -110,8 +112,12 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_LOCALE, (locale == null) ? "" : locale.getLanguage()); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_VALUE, value);
-        element.setAttribute(PROPERTY_PLURAL_VALUE, pluralValue);
+        if (StringUtils.isNotEmpty(value)) {
+            element.setAttribute(PROPERTY_VALUE, value);
+        }
+        if (StringUtils.isNotEmpty(pluralValue)) {
+            element.setAttribute(PROPERTY_PLURAL_VALUE, pluralValue);
+        }
     }
 
     @Override
