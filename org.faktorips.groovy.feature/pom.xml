@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.groovy</artifactId>
+            <artifactId>faktorips-runtime-groovy</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

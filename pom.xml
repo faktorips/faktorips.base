@@ -52,10 +52,10 @@
 
     <modules>
         <module>codequality-config</module>
-        <module>org.faktorips.valuetypes</module>
-        <module>org.faktorips.valuetypes.joda</module>
-        <module>org.faktorips.runtime</module>
-        <module>org.faktorips.runtime.groovy</module>
+        <module>faktorips-valuetypes</module>
+        <module>faktorips-valuetypes-joda</module>
+        <module>faktorips-runtime</module>
+        <module>faktorips-runtime-groovy</module>
         <module>org.faktorips.aggregator</module>
     </modules>
 

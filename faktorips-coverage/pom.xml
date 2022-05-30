@@ -209,22 +209,22 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime</artifactId>
+            <artifactId>faktorips-runtime</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.test</artifactId>
+            <artifactId>faktorips-runtime.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.groovy</artifactId>
+            <artifactId>faktorips-runtime-groovy</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.groovy.test</artifactId>
+            <artifactId>faktorips-runtime-groovy.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
