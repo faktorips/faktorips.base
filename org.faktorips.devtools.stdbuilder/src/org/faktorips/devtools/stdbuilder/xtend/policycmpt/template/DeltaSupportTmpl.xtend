@@ -13,7 +13,7 @@ class DeltaSupportTmpl {
 
 def package static computeDeltaMethod (XPolicyCmptClass it) '''
     /**
-     * «inheritDoc»
+     *«inheritDoc»
      *
      * @generated
      */

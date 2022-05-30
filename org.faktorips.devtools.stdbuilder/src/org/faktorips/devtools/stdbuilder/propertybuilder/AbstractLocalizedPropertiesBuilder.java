@@ -66,9 +66,9 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
      * property file. In case of {@link IncrementalProjectBuilder#FULL_BUILD} we clear every
      * property file and try to read the existing file.
      * <p>
-     * This method also creates the folder of the property file if it does not exist yet. We need
-     * to do this before building because otherwise the PDE-Builder may mark the folder as not
-     * existing in the MANIFEST.MF.
+     * This method also creates the folder of the property file if it does not exist yet. We need to
+     * do this before building because otherwise the PDE-Builder may mark the folder as not existing
+     * in the MANIFEST.MF.
      * 
      */
     @Override

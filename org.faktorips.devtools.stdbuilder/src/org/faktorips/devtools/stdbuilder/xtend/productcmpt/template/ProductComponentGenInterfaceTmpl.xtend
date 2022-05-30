@@ -17,11 +17,13 @@ class ProductComponentGenInterfaceTmpl {
 
 
             /**
-             * «localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
+             *«localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
             «IF !productCmptType.changingOverTime»
-             * «localizedJDoc("DEPRECATED_INTERFACE", generationConceptNamePlural)»
+             *
+             *«localizedJDoc("DEPRECATED_INTERFACE", generationConceptNamePlural)»
             «ENDIF»
+             *
              * @generated
              */
              «IF !productCmptType.changingOverTime»

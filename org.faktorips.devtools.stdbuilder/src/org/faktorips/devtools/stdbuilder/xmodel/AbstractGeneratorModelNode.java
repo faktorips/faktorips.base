@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.IJavaElement;
@@ -408,7 +409,12 @@ public abstract class AbstractGeneratorModelNode {
         String text = getGeneratorConfig().isGenerateMinimalJavadoc()
                 ? Arrays.toString(replacements).contains(getDescription()) ? getDescription() : ""
                 : getLocalizedText(key + "_JAVADOC", replacements);
-        return text;
+
+        return removeEmptyLines(text);
+    }
+
+    private String removeEmptyLines(String text) {
+        return Arrays.stream(text.split("\\R")).filter(s -> !s.isBlank()).collect(Collectors.joining("\n"));
     }
 
     /**
@@ -543,6 +549,9 @@ public abstract class AbstractGeneratorModelNode {
         if (result.length() <= 3) {
             return IpsStringUtils.EMPTY;
         } else {
+            if (AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type) {
+                return new StringBuilder().append("*").append(System.lineSeparator()).append(result).toString();
+            }
             return result.toString();
         }
     }

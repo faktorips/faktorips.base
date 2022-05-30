@@ -40,7 +40,7 @@ class CommonEnumTypeTmpl {
 
     def private static getter (XEnumAttribute it) '''
        /**
-        * «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
+        *«IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated

@@ -19,7 +19,7 @@ class DerivedUnionAssociationTmpl {
 
     def static getter(XType currentContextType, XDerivedUnionAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(it, !needOverride(currentContextType) && genInterface(), "METHOD_GET_MANY", getName(true), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(it, !needOverride(currentContextType) && genInterface(), "METHOD_GET_MANY", getName(true), descriptionForJDoc)»
          *
          * @generated
          */
@@ -54,7 +54,7 @@ class DerivedUnionAssociationTmpl {
     def static getterForDetailToMaster(XPolicyCmptClass currentContextType,
         XDetailToMasterDerivedUnionAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(it, !needOverride(currentContextType) && genInterface(), "METHOD_GET_ONE", getName(false), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(it, !needOverride(currentContextType) && genInterface(), "METHOD_GET_ONE", getName(false), descriptionForJDoc)»
          *
          * @generated
          */
@@ -78,7 +78,7 @@ class DerivedUnionAssociationTmpl {
 
     def static getterNumOf( XType currentContextType, XDerivedUnionAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(it ,!needOverride(currentContextType) && genInterface(), "METHOD_GET_NUM_OF", getName(true))»
+         *«inheritDocOrJavaDocIf(it ,!needOverride(currentContextType) && genInterface(), "METHOD_GET_NUM_OF", getName(true))»
          *
          * @generated
          */

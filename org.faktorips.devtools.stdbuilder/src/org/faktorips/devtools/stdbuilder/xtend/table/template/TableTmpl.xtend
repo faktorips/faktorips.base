@@ -15,7 +15,7 @@ class TableTmpl {
     def static String body(XTable it) '''
 
         /**
-        * «localizedJDoc("CLASS_DESCRIPTION")» «descriptionForJDoc»
+        *«IF !localizedJDoc("CLASS_DESCRIPTION").nullOrEmpty»«localizedJDoc("CLASS_DESCRIPTION")» «ENDIF»«descriptionForJDoc»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated
@@ -45,7 +45,7 @@ class TableTmpl {
 
     def private static  fields(XIndex it) '''
         /**
-        * «localizedJDoc("FIELD_KEY_MAP")»
+        *«localizedJDoc("FIELD_KEY_MAP")»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated
@@ -55,7 +55,7 @@ class TableTmpl {
 
     def private static  constructors(XTable it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR_DEFAULT")»
+        *«localizedJDoc("CONSTRUCTOR_DEFAULT")»
         *
         * @generated
         */
@@ -66,7 +66,7 @@ class TableTmpl {
         }
 
         /**
-        * «localizedJDoc("CONSTRUCTOR_WITH_ROWS")»
+        *«localizedJDoc("CONSTRUCTOR_WITH_ROWS")»
         *
         * @generated
         */
@@ -79,7 +79,7 @@ class TableTmpl {
 
     def private static  addRow(XTable it) '''
         /**
-        * «localizedJDoc("METHOD_ADD_ROW")»
+        *«localizedJDoc("METHOD_ADD_ROW")»
         *
         * @generated
         */
@@ -96,7 +96,7 @@ class TableTmpl {
 
     def private static  initKeyMaps(XTable it) '''
         /**
-        * «localizedJDoc("METHOD_INIT_KEY_MAPS")»
+        *«localizedJDoc("METHOD_INIT_KEY_MAPS")»
         *
         * @generated
         */
@@ -157,7 +157,7 @@ class TableTmpl {
 
     def private static  getInstanceForSingleContent(XTable it) '''
         /**
-        * «localizedJDoc("METHOD_GET_INSTANCE")»
+        *«localizedJDoc("METHOD_GET_INSTANCE")»
         *
         * @generated
         */
@@ -168,7 +168,7 @@ class TableTmpl {
 
     def private static  getInstanceForMultipleContents(XTable it) '''
         /**
-        * «localizedJDoc("METHOD_GET_INSTANCE")»
+        *«localizedJDoc("METHOD_GET_INSTANCE")»
         *
         * @generated
         */
@@ -187,7 +187,7 @@ class TableTmpl {
 
     def private static  findRow(XTable table, XIndex it) '''
         /**
-        * «IF uniqueKey» «localizedJDoc("METHOD_FIND_ROW")» «ELSE»«localizedJDoc("METHOD_FIND_ROWS")» «ENDIF»
+        *«IF uniqueKey»«localizedJDoc("METHOD_FIND_ROW")»«ELSE»«localizedJDoc("METHOD_FIND_ROWS")»«ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated
@@ -201,7 +201,7 @@ class TableTmpl {
 
     def private static  findRowNullRowReturnedForEmptyResult(XTable table, XIndex it) '''
         /**
-        * «localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
+        *«localizedJDoc("METHOD_FIND_RETURN_NULL_ROW")»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated
@@ -213,7 +213,7 @@ class TableTmpl {
 
     def private static  findExistingRow(XTable table, XIndex it) '''
         /**
-        * «localizedJDoc("METHOD_FIND_EXISTING_ROW")»
+        *«localizedJDoc("METHOD_FIND_EXISTING_ROW")»
         *
         * @return «localizedText("METHOD_FIND_EXISTING_ROW_RETURN_JAVADOC")»
         * @throws «localizedText("METHOD_FIND_EXISTING_ROW_THROW_JAVADOC")»

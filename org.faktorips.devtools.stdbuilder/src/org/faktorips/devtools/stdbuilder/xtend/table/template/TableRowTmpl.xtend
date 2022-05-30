@@ -13,7 +13,7 @@ class TableRowTmpl {
 
 
         /**
-         * «localizedJDoc("CLASS_DESCRIPTION")»
+         *«localizedJDoc("CLASS_DESCRIPTION")»
          *
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»
@@ -56,7 +56,7 @@ class TableRowTmpl {
 
     def private static constructors(XTableRow it) '''
         /**
-         * «localizedJDoc("CONSTRUCTOR")»
+         *«localizedJDoc("CONSTRUCTOR")»
          *
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty»*«ENDIF»

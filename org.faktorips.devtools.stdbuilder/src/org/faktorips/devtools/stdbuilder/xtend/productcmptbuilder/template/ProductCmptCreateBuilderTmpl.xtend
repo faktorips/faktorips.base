@@ -13,8 +13,8 @@ class ProductCmptCreateBuilderTmpl {
     //If no published interfaces are generated, with methods are static methods in the product classes. Else, they are in the factory class
     def static with(boolean isStatic, XProductBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_WITH_IDS_DEFAULT",productName)»
-        «IF changingOverTime»* «localizedJDoc("METHOD_WITH_IDS_DEFAULT_GEN")»«ENDIF»
+        *«localizedJDoc("METHOD_WITH_IDS_DEFAULT",productName)»
+        «IF changingOverTime»*«localizedJDoc("METHOD_WITH_IDS_DEFAULT_GEN")»«ENDIF»
         *
         * @generated
         */
@@ -36,8 +36,8 @@ class ProductCmptCreateBuilderTmpl {
         }
 
         /**
-        * «localizedJDoc("METHOD_WITH_IDS",productName)»
-        «IF changingOverTime»* «localizedJDoc("METHOD_WITH_IDS_DEFAULT_GEN")»«ENDIF»
+        *«localizedJDoc("METHOD_WITH_IDS",productName)»
+        «IF changingOverTime»*«localizedJDoc("METHOD_WITH_IDS_DEFAULT_GEN")»«ENDIF»
         *
         * @generated
         */
@@ -58,7 +58,7 @@ class ProductCmptCreateBuilderTmpl {
         }
 
         /**
-        * «localizedJDoc("METHOD_WITH_PRODID", typeImplClassName)»
+        *«localizedJDoc("METHOD_WITH_PRODID", typeImplClassName)»
         *
         * @generated
         */
@@ -76,7 +76,7 @@ class ProductCmptCreateBuilderTmpl {
     // Method to get a builder from a product
     def static builder(XProductBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_BUILDER", name)»
+        *«localizedJDoc("METHOD_BUILDER", name)»
         *
         * @generated
         */

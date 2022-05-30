@@ -75,7 +75,7 @@ class ClassEnumTypeTmpl {
     def private static enumValueId(XEnumType it) '''
         «IF identifierAttribute.isDeclaredIn(it)»
             /**
-             * «localizedJDoc("METHOD_GET_ENUM_VALUE_BY_ID")»
+             *«localizedJDoc("METHOD_GET_ENUM_VALUE_BY_ID")»
              *
              * @generated
              */
@@ -87,7 +87,7 @@ class ClassEnumTypeTmpl {
 
     def private static serialVersionUID(XEnumType it) '''
         /**
-        * «localizedJDoc("SERIALVERSIONUID")»
+        *«localizedJDoc("SERIALVERSIONUID")»
         *
         * @generated
         */
@@ -117,7 +117,7 @@ class ClassEnumTypeTmpl {
 
     def private static publicConstructor(XEnumType it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR", name)»
+        *«localizedJDoc("CONSTRUCTOR", name)»
         *
         * @generated
         */
@@ -129,7 +129,7 @@ class ClassEnumTypeTmpl {
 
     def private static protectedConstructor(XEnumType it) '''
         /**
-        * «localizedJDoc("PROTECTED_CONSTRUCTOR", name)»
+        *«localizedJDoc("PROTECTED_CONSTRUCTOR", name)»
         *
         * @generated
         */
@@ -168,7 +168,7 @@ class ClassEnumTypeTmpl {
     def private static valuesConstant(XEnumType it) '''
         «IF !enumValues.isEmpty»
             /**
-            * «localizedJDoc("CONSTANT_VALUES")»
+            *«localizedJDoc("CONSTANT_VALUES")»
             *
             * @generated
             */

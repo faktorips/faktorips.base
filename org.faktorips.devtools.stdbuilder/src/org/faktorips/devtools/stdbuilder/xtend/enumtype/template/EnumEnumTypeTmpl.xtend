@@ -17,7 +17,6 @@ class EnumEnumTypeTmpl {
         /**
         «IF described»
             *  «description»
-            *
         «ENDIF»
         «getAnnotations(ELEMENT_JAVA_DOC)»
         *
@@ -65,7 +64,7 @@ class EnumEnumTypeTmpl {
 
     def private static staticIdMap(XEnumType it) '''
         /**
-        * «localizedJDoc("ID_MAP")»
+        *«localizedJDoc("ID_MAP")»
         *
         * @generated
         */
@@ -75,7 +74,7 @@ class EnumEnumTypeTmpl {
 
     def private static initKeyMaps(XEnumType it) '''
         /**
-        * «localizedJDoc("STATIC")»
+        *«localizedJDoc("STATIC")»
         *
         * @generated
         */
@@ -89,7 +88,7 @@ class EnumEnumTypeTmpl {
 
     def private static constructors(XEnumType it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR", name)»
+        *«localizedJDoc("CONSTRUCTOR", name)»
         *
         * @generated
         */
@@ -100,7 +99,7 @@ class EnumEnumTypeTmpl {
 
     def private static methodGetValueBy(XEnumType enumType, XEnumAttribute it) '''
         /**
-        * «localizedJDoc("METHOD_GET_VALUE_BY_XXX", memberVarName)»
+        *«localizedJDoc("METHOD_GET_VALUE_BY_XXX", memberVarName)»
         *
         * @generated
         */
@@ -127,7 +126,7 @@ class EnumEnumTypeTmpl {
     
      def private static methodGetExistingValueBy(XEnumType enumType, XEnumAttribute it) '''
         /**
-        * «localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX", memberVarName)»
+        *«localizedJDoc("METHOD_GET_EXISTING_VALUE_BY_XXX", memberVarName)»
         *
         * @throws IllegalArgumentException «localizedText("METHOD_GET_EXISTING_VALUE_BY_XXX_EXCEPTION_JAVADOC")»
         *
@@ -164,7 +163,7 @@ class EnumEnumTypeTmpl {
 
     def private static methodIsValueBy(XEnumType enumType, XEnumAttribute it) '''
         /**
-        * «localizedJDoc("METHOD_IS_VALUE_BY_XXX")»
+        *«localizedJDoc("METHOD_IS_VALUE_BY_XXX")»
         *
         * @generated
         */

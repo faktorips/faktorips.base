@@ -29,7 +29,7 @@ class ProductCommonsTmpl {
     def package static writeToXmlMethods (XProductClass it) '''
         «IF generateToXmlSupport»
             /**
-             * «inheritDoc»
+             *«inheritDoc»
              *
              * @generated
              */

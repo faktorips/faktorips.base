@@ -16,10 +16,10 @@ class PolicyValidatorTmpl {
   def static String body(XPolicyCmptClass it) '''
     «importConstants»
     /**
-    * «localizedJDoc("VALIDATOR_CLASS", implClassName)»
+    *«localizedJDoc("VALIDATOR_CLASS", implClassName)»
     «IF !type.generateValidatorClass»
     * <p>
-    * «localizedJDoc("DEPRECATED_VALIDATOR_CLASS")»
+    *«localizedJDoc("DEPRECATED_VALIDATOR_CLASS")»
     «ENDIF»
     *
     * @generated
@@ -70,7 +70,8 @@ class PolicyValidatorTmpl {
 
   def private static validationMethod(XPolicyCmptClass it) '''
     /**
-    * «localizedJDoc("VALIDATOR_METHOD_VALIDATE", implClassName)»
+    *«localizedJDoc("VALIDATOR_METHOD_VALIDATE", implClassName)»
+    *
     * @generated
     */        
     «overrideAnnotationIfHasSuperclass»

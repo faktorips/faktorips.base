@@ -16,7 +16,7 @@ class ProductBuilderTmpl{
 
     def static String body (XProductBuilder it) '''
         /**
-        * «localizedJDoc("CLASS",implClassName,productName)»
+        *«localizedJDoc("CLASS",implClassName,productName)»
         *
         * @generated
         */
@@ -114,7 +114,7 @@ def private static variableDeclaration (XProductBuilder it) '''
 
 def private static constructors (XProductBuilder it) '''
     /**
-    * «localizedJDoc("CONSTRUCTOR_INTERNAL", implClassName)»
+    *«localizedJDoc("CONSTRUCTOR_INTERNAL", implClassName)»
     *
     * @generated
     */
@@ -141,7 +141,7 @@ def private static constructors (XProductBuilder it) '''
 
 def private static attributeSetter(XProductBuilder builder, XProductAttribute it, boolean overrideSuper) '''
     /**
-    * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+    *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
@@ -158,7 +158,7 @@ def private static attributeSetter(XProductBuilder builder, XProductAttribute it
 
 def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
-    * «localizedJDoc("METHOD_SET_DEFAULTVALUE", name, descriptionForJDoc)»
+    *«localizedJDoc("METHOD_SET_DEFAULTVALUE", name, descriptionForJDoc)»
     *
     * @generated
     */
@@ -177,7 +177,7 @@ def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, b
 
 def private static allowedValuesSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
-    * «localizedJDoc("METHOD_SET_VALUESET", name, descriptionForJDoc)»
+    *«localizedJDoc("METHOD_SET_VALUESET", name, descriptionForJDoc)»
     *
     * @generated
     */
@@ -203,7 +203,7 @@ def private static allowedValuesSetter(XProductBuilder builder, XPolicyAttribute
 
 def private static anpSetter (XProductBuilder it) '''
     /**
-    * «localizedJDoc("METHOD_ANP_SETTER", productName)»
+    *«localizedJDoc("METHOD_ANP_SETTER", productName)»
     *
     * @generated
     */
@@ -227,7 +227,7 @@ def private static anpSetter (XProductBuilder it) '''
     }
 
     /**
-    * «localizedJDoc("METHOD_LATEST_GEN")»
+    *«localizedJDoc("METHOD_LATEST_GEN")»
     *
     * @generated
     */
@@ -244,7 +244,7 @@ def private static anpSetter (XProductBuilder it) '''
 def private static getBuilderValue (XProductBuilder it) '''
     «IF !hasSupertype»
         /**
-        * «localizedJDoc("METHOD_GET_RUNTIMEREPOSITORY")»
+        *«localizedJDoc("METHOD_GET_RUNTIMEREPOSITORY")»
         *
         * @generated
         */
@@ -254,7 +254,7 @@ def private static getBuilderValue (XProductBuilder it) '''
     «ENDIF»
 
     /**
-    * «localizedJDoc("METHOD_GET_VALUE", productName)»
+    *«localizedJDoc("METHOD_GET_VALUE", productName)»
     *
     * @generated
     */
@@ -269,7 +269,7 @@ def private static getBuilderValue (XProductBuilder it) '''
 
     «IF changingOverTime»
         /**
-        * «localizedJDoc("METHOD_GET_GENERATION", prodGenImplClassName)»
+        *«localizedJDoc("METHOD_GET_GENERATION", prodGenImplClassName)»
         *
         * @generated
         */
@@ -283,7 +283,7 @@ def private static getBuilderValue (XProductBuilder it) '''
         }
 
         /**
-        * «localizedJDoc("METHOD_GET_LATEST_GEN", prodGenImplClassName)»
+        *«localizedJDoc("METHOD_GET_LATEST_GEN", prodGenImplClassName)»
         *
         * @generated
         */
@@ -301,7 +301,7 @@ def private static getBuilderValue (XProductBuilder it) '''
 //internal method used for association setter with generic type  if (no interfaces are generated. BUILD has)  to be called from the product class
 def private static getProductClass (XProductBuilder it) '''
     /**
-    * «localizedJDoc("METHOD_GET_CLASS")»
+    *«localizedJDoc("METHOD_GET_CLASS")»
     *
     * @generated
     */
@@ -314,7 +314,7 @@ def private static getProductClass (XProductBuilder it) '''
 def private static from (XProductBuilder it) '''
     «IF changingOverTime»
         /**
-        * «localizedJDoc("METHOD_FROM_REPO_CHANGING", name, productName)»
+        *«localizedJDoc("METHOD_FROM_REPO_CHANGING", name, productName)»
         *
         * @generated
         */
@@ -324,8 +324,8 @@ def private static from (XProductBuilder it) '''
     «ENDIF»
 
     /**
-    * «localizedJDoc("METHOD_FROM_REPO", name, productName)»
-    «IF changingOverTime» * «localizedJDoc("METHOD_FROM_REPO_CHANGING_LATEST")» «ENDIF»
+    *«localizedJDoc("METHOD_FROM_REPO", name, productName)»
+    «IF changingOverTime» *«localizedJDoc("METHOD_FROM_REPO_CHANGING_LATEST")»«ENDIF»
     *
     * @generated
     */
@@ -341,7 +341,7 @@ def private static from (XProductBuilder it) '''
 def private static associationClass (XProductBuilder it) '''
     «IF builderAssociations.size > 0»
         /**
-        * «localizedJDoc("METHOD_ASSOCIATION")»
+        *«localizedJDoc("METHOD_ASSOCIATION")»
         *
         * @generated
         */
@@ -353,7 +353,7 @@ def private static associationClass (XProductBuilder it) '''
 
     «IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 »
         /**
-        * «localizedJDoc("METHOD_ADD_ASSOCIATION")»
+        *«localizedJDoc("METHOD_ADD_ASSOCIATION")»
         *
         * @generated
         */
@@ -368,7 +368,7 @@ def private static associationClass (XProductBuilder it) '''
 def private static factoryClass (XProductBuilder it) '''
     «IF !isAbstract && generatePublishedInterfaces»
         /**
-        * «localizedJDoc("CLASS_FACTORY", name)»
+        *«localizedJDoc("CLASS_FACTORY", name)»
         *
         * @generated
         */

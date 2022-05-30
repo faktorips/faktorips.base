@@ -26,7 +26,7 @@ class DefaultAndAllowedValuesTmpl {
 
     def private static defaultField (XPolicyAttribute it) '''
         /**
-         * «localizedJDoc("FIELD_DEFAULTVALUE", name)»
+         *«localizedJDoc("FIELD_DEFAULTVALUE", name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -37,7 +37,7 @@ class DefaultAndAllowedValuesTmpl {
 
     def private static allowedValueSetField (XPolicyAttribute it) '''
         /**
-         * «localizedJDoc(getJavadocKey("FIELD"), name)»
+         *«localizedJDoc(getJavadocKey("FIELD"), name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -59,8 +59,10 @@ class DefaultAndAllowedValuesTmpl {
 
     def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XProductClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
         /**
-         * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
-         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         *«localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
+         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»
+            *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+         «ENDIF»
          * @generated
          */
         «overrideAnnotationForPublishedMethodImplementation»
@@ -74,7 +76,7 @@ class DefaultAndAllowedValuesTmpl {
 
     def private static getterDefaultValue (XPolicyAttribute it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_DEFAULTVALUE", name)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_DEFAULTVALUE", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -91,7 +93,7 @@ class DefaultAndAllowedValuesTmpl {
     
     def private static setterDefaultValue (XPolicyAttribute it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_DEFAULTVALUE", name)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_SET_DEFAULTVALUE", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -110,9 +112,12 @@ class DefaultAndAllowedValuesTmpl {
     def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
         «IF isGenerateGetterAllowedValues(rule)»
             /**
-             * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
+             *«inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
-             *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+            *
+            «IF isGetAllowedValuesMethodDeprecated(rule)»
+                * @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+            «ENDIF»
              * @generated
              */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
@@ -129,7 +134,7 @@ class DefaultAndAllowedValuesTmpl {
 
     def private static setterAllowedValues (XPolicyAttribute it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_SET_VALUESET", name)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_SET_VALUESET", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated

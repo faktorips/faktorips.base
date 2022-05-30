@@ -15,7 +15,7 @@ class PolicyAssociationBuilderTmpl{
     def static body (XPolicyBuilder it) '''
         «IF builderAssociations.size > 0»
             /**
-            * «localizedJDoc("CLASS_BUILDER")»
+            *«localizedJDoc("CLASS_BUILDER")»
             *
             * @generated
             */
@@ -35,7 +35,7 @@ class PolicyAssociationBuilderTmpl{
 
     «IF builderAssociations.size > 0 || superBuilderAssociations.size > 0»
             /**
-            * «localizedJDoc("CLASS_BUILDER_MULTI", implClassName)»
+            *«localizedJDoc("CLASS_BUILDER_MULTI", implClassName)»
             *
             * @generated
             */
@@ -112,7 +112,7 @@ class PolicyAssociationBuilderTmpl{
 
     def private static standardAssociationSetter(XPolicyBuilder builder, XPolicyBuilderAssociation association, boolean isSuper, XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_ASS_STD", policyName, association.name)»
+        *«localizedJDoc("METHOD_ASS_STD", policyName, association.name)»
         *
         * @generated
         */
@@ -130,7 +130,7 @@ class PolicyAssociationBuilderTmpl{
     //Association target setter for generic subtype of the target. see associationEvaluation. super:wether this is for inherited associations
     def private static associationSetterWithType(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_ASS_TYPE", policyName,  association.name)»
+        *«localizedJDoc("METHOD_ASS_TYPE", policyName,  association.name)»
         *
         * @generated
         */
@@ -148,7 +148,7 @@ class PolicyAssociationBuilderTmpl{
     // Create and set association target for non abstract targets
     def private static associationSetter(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_ASS", policyName, association.name)»
+        *«localizedJDoc("METHOD_ASS", policyName, association.name)»
         *
         * @generated
         */
@@ -170,7 +170,7 @@ class PolicyAssociationBuilderTmpl{
 
         «IF configured»
             /**
-            * «localizedJDoc("METHOD_ASS_PROD", policyName, association.name)»
+            *«localizedJDoc("METHOD_ASS_PROD", policyName, association.name)»
             *
             * @generated
             */

@@ -16,7 +16,7 @@ class PolicyCmptInterfaceTmpl {
     def static String body(XPolicyCmptClass it) '''
 
         /**
-        * «localizedJDoc("INTERFACE", name)» «description»
+        *«IF !localizedJDoc("INTERFACE", name).nullOrEmpty»«localizedJDoc("INTERFACE", name)» «ENDIF»«description»
        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         *
         * @generated

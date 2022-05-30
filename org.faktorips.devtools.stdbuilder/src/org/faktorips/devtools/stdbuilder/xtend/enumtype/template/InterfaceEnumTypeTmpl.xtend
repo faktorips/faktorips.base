@@ -29,9 +29,9 @@ class InterfaceEnumTypeTmpl {
     def private static getterMethod(XEnumAttribute it) '''
         /**
         «IF multilingual»
-            * «localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»
+            *«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»
         «ELSE»
-            * «localizedJDoc("GETTER", name, descriptionForJDoc)»
+            *«localizedJDoc("GETTER", name, descriptionForJDoc)»
         «ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *

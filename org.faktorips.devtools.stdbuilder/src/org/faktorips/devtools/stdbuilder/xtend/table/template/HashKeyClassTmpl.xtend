@@ -9,7 +9,7 @@ class HashKeyClassTmpl {
     def package static body(XIndex it) '''
         «val hashKeyClassName = classOrTypeName»
         /**
-        * «localizedJDoc("CLASS_DESCRIPTION")»
+        *«localizedJDoc("CLASS_DESCRIPTION")»
         *
         * @generated
         */
@@ -33,7 +33,7 @@ class HashKeyClassTmpl {
         «ENDFOR»
 
         /**
-        * «localizedJDoc("FIELD_HASHCODE")»
+        *«localizedJDoc("FIELD_HASHCODE")»
         *
         * @generated
         */
@@ -43,7 +43,7 @@ class HashKeyClassTmpl {
     def private static constructor(XIndex it) '''
         «val hashKeyClassName = classOrTypeName»
             /**
-            * «localizedJDoc("CONSTRUCTOR")»
+            *«localizedJDoc("CONSTRUCTOR")»
             *
             * @generated
             */
@@ -71,7 +71,7 @@ class HashKeyClassTmpl {
     def private static equals(XIndex it) '''
         «val hashKeyClassName = classOrTypeName»
             /**
-            * «localizedJDoc("METHOD_EQUALS")»
+            *«localizedJDoc("METHOD_EQUALS")»
                *
                * @generated
                */
@@ -90,7 +90,7 @@ class HashKeyClassTmpl {
 
     def package static hashCode(XIndex it) '''
         /**
-        * «localizedJDoc("METHOD_HASHCODE")»
+        *«localizedJDoc("METHOD_HASHCODE")»
         *
         * @generated
         */

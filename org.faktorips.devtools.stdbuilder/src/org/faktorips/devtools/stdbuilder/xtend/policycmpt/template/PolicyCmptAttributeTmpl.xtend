@@ -18,7 +18,7 @@ class PolicyCmptAttributeTmpl {
   def package static constantForPropertyName(XPolicyAttribute it) '''
     «IF !overwrite»
       /**
-       * «localizedJDoc("FIELD_PROPERTY_NAME", name)»
+       *«localizedJDoc("FIELD_PROPERTY_NAME", name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -31,7 +31,7 @@ class PolicyCmptAttributeTmpl {
   def package static constantForValueSet(XPolicyAttribute it) '''
     «IF generateConstantForValueSet»
       /**
-       * «localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
+       *«localizedJDoc(getJavadocKey("FIELD_MAX"), name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -44,7 +44,7 @@ class PolicyCmptAttributeTmpl {
     def package static constantForDefaultValue(XPolicyAttribute it) '''
     «IF generateField»
       /**
-       * «localizedJDoc("FIELD_DEFAULTVALUE_CONSTANT", name)»
+       *«localizedJDoc("FIELD_DEFAULTVALUE_CONSTANT", name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -57,7 +57,7 @@ class PolicyCmptAttributeTmpl {
   def package static constantField(XPolicyAttribute it) '''
     «IF constant»
       /**
-       * «localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
+       *«localizedJDoc("FIELD_ATTRIBUTE_CONSTANT", name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -70,7 +70,7 @@ class PolicyCmptAttributeTmpl {
   def package static memberField(XPolicyAttribute it) '''
     «IF generateField»
       /**
-       * «localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
+       *«localizedJDoc("FIELD_ATTRIBUTE_VALUE", name)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -83,7 +83,7 @@ class PolicyCmptAttributeTmpl {
 
   def package static abstractGetter(XPolicyAttribute it) '''
     /**
-     * «inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
+     *«inheritDocOrJavaDocIf(genInterface, "METHOD_GETVALUE", name, descriptionForJDoc)»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      *
      * @generated
@@ -96,7 +96,7 @@ class PolicyCmptAttributeTmpl {
   def package static abstractSetter(XPolicyAttribute it) '''
     «IF isGenerateSetter()»
       /**
-       * «inheritDocOrJavaDocIf(genInterface, "METHOD_SETVALUE", name, descriptionForJDoc)»
+       *«inheritDocOrJavaDocIf(genInterface, "METHOD_SETVALUE", name, descriptionForJDoc)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -117,7 +117,7 @@ class PolicyCmptAttributeTmpl {
   def package static getter(XPolicyAttribute it) '''
     «IF isGenerateGetter(genInterface())»
       /**
-       * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
+       *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * «IF !genInterface()&&!generateField&&(generateDefaultForOnTheFlyDerivedAttribute||!overwrite)»@restrainedmodifiable«ELSE»@generated«ENDIF»
@@ -165,12 +165,12 @@ class PolicyCmptAttributeTmpl {
   def package static setter(XPolicyAttribute it) '''
     «IF generateSetter»
       /**
-       * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
+       *«inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE", name, descriptionForJDoc)»«IF generateChangeSupport && (!generatePublishedInterfaces || genInterface())» «inheritDocOrJavaDocIf(genInterface(), "METHOD_SETVALUE_LISTENERS", name, descriptionForJDoc)»«ENDIF»
        «IF overwriteAbstract»
          *
-         * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_PARAM", javaClassName, addImport(ClassCastException))»
+         *«localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_PARAM", javaClassName, addImport(ClassCastException))»
          *
-         * «localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_THROWS", addImport(ClassCastException), javaClassName)»
+         *«localizedJDoc("OVERWRITTEN_ABSTRACT_SETTER_THROWS", addImport(ClassCastException), javaClassName)»
        «ENDIF»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
@@ -195,7 +195,7 @@ class PolicyCmptAttributeTmpl {
   def package static setterInternal(XPolicyAttribute it) '''
     «IF generateSetterInternal»
       /**
-       * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+       *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
       «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        *
        * @generated
@@ -212,12 +212,15 @@ class PolicyCmptAttributeTmpl {
     «IF generateGetAllowedValuesForAndGetDefaultValue»
       /**
        «IF isOverwritingValueSetWithMoreConcreteType(rule.fromMethod) && !isValueSetDerived»
-       * «inheritDoc»
+       *«inheritDoc»
        «ELSE»
-       * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
+       *«inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), name, descriptionForJDoc)»
        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
        «ENDIF»
-       *«IF isGetAllowedValuesMethodDeprecated(rule)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+       *
+       «IF isGetAllowedValuesMethodDeprecated(rule)»
+        *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+       «ENDIF»
        *«IF isValueSetDerived»@restrainedmodifiable«ELSE»@generated«ENDIF»
        */
       «IF isPublishedInterfaceModifierRelevant(rule)»
@@ -261,7 +264,8 @@ class PolicyCmptAttributeTmpl {
   
     «IF generateAllowedValuesMethodWithMoreConcreteTypeForByType && generateGetAllowedValuesForAndGetDefaultValue && overwritingValueSetWithMoreConcreteTypeForByType»
         /**
-         * «inheritDoc»
+         *«inheritDoc»
+         *
          * @generated
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
@@ -277,7 +281,8 @@ class PolicyCmptAttributeTmpl {
    def package static allowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent(XPolicyAttribute it) '''
      «IF generateAllowedValuesMethodWithMoreConcreteTypeForByTypeWithBothTypeParent && generateGetAllowedValuesForAndGetDefaultValue && isOverwritingValueSetWithMoreConcreteTypeForByTypeWithBothTypeParent»
         /**
-         * «inheritDoc»
+         *«inheritDoc»
+         *
          * @generated
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
@@ -293,7 +298,10 @@ class PolicyCmptAttributeTmpl {
   def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XPolicyCmptClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
         /**
          * «localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
-         *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)» @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»«ENDIF»
+         *
+         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»
+            *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+         «ENDIF»
          * @generated
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
