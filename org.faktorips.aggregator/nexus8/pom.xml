@@ -31,7 +31,7 @@
     </scm>
 
     <modules>
-        <module>../../org.faktorips.runtime/client</module>
+        <module>../../faktorips-runtime/client</module>
         <module>../../org.faktorips.testsupport/nexus</module>
     </modules>
 

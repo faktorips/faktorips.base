@@ -11,11 +11,11 @@
         <version>22.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>org.faktorips.valuetypes</artifactId>
+    <artifactId>faktorips-valuetypes</artifactId>
     <version>22.6.0-SNAPSHOT</version>
 
     <packaging>bundle</packaging>
-    <name>IPS Valuetypes for Java 8</name>
+    <name>Faktor-IPS Value Types</name>
 
     <properties>
         <java.version>8</java.version>
@@ -87,20 +87,13 @@
                             <jvmVersion>11</jvmVersion>
                             <module>
                                 <moduleInfoSource>
-                                    module
-                                    org.faktorips.valuetypes {
-                                    requires
-                                    static
-                                    com.github.spotbugs.annotations;
-                                    requires java.xml.bind;
-                                    exports
-                                    org.faktorips.annotation;
-                                    exports
-                                    org.faktorips.values;
-                                    exports
-                                    org.faktorips.values.xml;
-                                    exports
-                                    org.faktorips.valueset;
+                                    module org.faktorips.valuetypes {
+                                    	requires static com.github.spotbugs.annotations;
+                                    	requires java.xml.bind;
+                                    	exports org.faktorips.annotation;
+                                    	exports org.faktorips.values;
+                                    	exports org.faktorips.values.xml;
+                                    	exports org.faktorips.valueset;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -117,6 +110,13 @@
                             !edu.umd.cs.findbugs.*,
                             javax.xml.bind.*
                         </Import-Package>
+                        <Export-Package>
+                        	org.faktorips.annotation,
+                        	org.faktorips.values,
+                        	org.faktorips.values.xml,
+                        	org.faktorips.valueset
+                        </Export-Package>
+						<Bundle-Name>org.faktorips.valuetypes</Bundle-Name>
                     </instructions>
                 </configuration>
             </plugin>

@@ -73,7 +73,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime</artifactId>
+            <artifactId>faktorips-runtime</artifactId>
             <version>${project.version}</version>
 <!--             <scope>provided</scope> -->
 <!--             <exclusions> -->

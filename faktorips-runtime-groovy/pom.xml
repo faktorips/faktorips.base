@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -11,23 +8,21 @@
         <version>22.6.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>org.faktorips.runtime</artifactId>
+    <artifactId>faktorips-runtime-groovy</artifactId>
     <properties>
         <java.version>8</java.version>
     </properties>
 
     <packaging>bundle</packaging>
 
-
-    <name>Faktor-IPS Runtime</name>
-    <description>Runtime library for Faktor-IPS</description>
+    <name>Faktor-IPS Runtime - Groovy Extension</name>
+    <description>Faktor-IPS Runtime Extension for Formula Evaluation with Groovy</description>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>create-javadoc</id>
@@ -54,33 +49,10 @@
                             <jvmVersion>11</jvmVersion>
                             <module>
                                 <moduleInfoSource>
-                                    module
-                                    org.faktorips.runtime {
-                                    requires transitive org.faktorips.valuetypes;
-                                    requires transitive opencsv;
-                                    requires transitive junit;
-                                    requires transitive java.desktop;
-                                    requires transitive java.xml;
-                                    requires transitive java.xml.bind;
-                                    exports org.faktorips.runtime;
-                                    exports org.faktorips.runtime.annotation;
-                                    exports org.faktorips.runtime.caching;
-                                    exports org.faktorips.runtime.formula;
-                                    exports org.faktorips.runtime.internal;
-                                    exports org.faktorips.runtime.internal.tableindex;
-                                    exports org.faktorips.runtime.internal.toc;
-                                    exports org.faktorips.runtime.jaxb;
-                                    exports org.faktorips.runtime.model;
-                                    exports org.faktorips.runtime.model.annotation;
-                                    exports org.faktorips.runtime.model.enumtype;
-                                    exports org.faktorips.runtime.model.table;
-                                    exports org.faktorips.runtime.model.type;
-                                    exports org.faktorips.runtime.model.type.read;
-                                    exports org.faktorips.runtime.productdataprovider;
-                                    exports org.faktorips.runtime.test;
-                                    exports org.faktorips.runtime.util;
-                                    exports org.faktorips.runtime.util.function;
-                                    exports org.faktorips.runtime.validation;
+                                    module org.faktorips.runtime.groovy {
+                                        requires transitive org.faktorips.runtime;
+                                        requires transitive org.codehaus.groovy;
+                                        exports org.faktorips.runtime.formula.groovy;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -96,13 +68,13 @@
                         <!-- <_nouses>true</_nouses> -->
                         <Import-Package>
                             !edu.umd.cs.findbugs.*,
-                            com.opencsv;version="3.3.0";resolution:=optional,
-                            javax.xml.bind.*;resolution:=optional,
-                            junit.framework;resolution:=optional,
-                            org.w3c.dom,
-                            org.xml.sax.*,
+                            groovy.lang,
+                            org.codehaus.groovy.reflection,
+                            org.codehaus.groovy.runtime,
+                            org.codehaus.groovy.runtime.callsite,
                             org.faktorips.*
                         </Import-Package>
+						<Bundle-Name>org.faktorips.runtime.groovy</Bundle-Name>
                     </instructions>
                 </configuration>
             </plugin>
@@ -120,9 +92,15 @@
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes</artifactId>
+            <artifactId>faktorips-runtime</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>3.0.9</version>
+        </dependency>
+        <!-- Test -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -133,19 +111,6 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>3.12.4</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Needed only when table contents are saved as CSV -->
-            <groupId>com.opencsv</groupId>
-            <artifactId>opencsv</artifactId>
-            <version>3.3</version>
-            <optional>true</optional>
-        </dependency> 
-        <dependency>
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
