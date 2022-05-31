@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.plugin;
 
+import static java.util.Objects.requireNonNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -243,15 +245,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                 return null;
             }
 
-            URL installLocation;
             try {
-                installLocation = getBundleEntry(bundle, sources);
+                File local = getBundleEntry(bundle, sources);
                 String fullPath;
-                if (installLocation != null) {
-                    URL local = FileLocator.toFileURL(installLocation);
-                    fullPath = new File(local.getPath()).getAbsolutePath();
+                if (local != null) {
+                    fullPath = local.getCanonicalFile().getAbsolutePath();
                 } else {
                     fullPath = getBundleFileName(pluginId, bundle, sources);
+                    requireNonNull(fullPath, "Can't get bundle file name for " + pluginId); //$NON-NLS-1$
                 }
                 return Path.fromOSString(fullPath);
             } catch (IOException e) {
@@ -261,8 +262,19 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             }
         }
 
-        private URL getBundleEntry(Bundle bundle, boolean sources) {
-            return bundle.getEntry(sources ? "src" : "bin"); //$NON-NLS-1$//$NON-NLS-2$
+        private File getBundleEntry(Bundle bundle, boolean sources) throws IOException {
+            var plainBundle = bundle.getEntry(sources ? "src" : "bin"); //$NON-NLS-1$//$NON-NLS-2$
+            if (plainBundle != null) {
+                URL local = FileLocator.toFileURL(plainBundle);
+                return new File(local.getPath());
+            } else {
+                URL mavenBundle = bundle.getEntry("/"); //$NON-NLS-1$
+                URL local = FileLocator.toFileURL(mavenBundle);
+                if (sources) {
+                    local = new URL(local, "../../src/main/java"); //$NON-NLS-1$
+                }
+                return new File(local.getPath());
+            }
         }
 
         private String getBundleFileName(String pluginId, Bundle bundle, boolean sourceBundle) throws IOException {

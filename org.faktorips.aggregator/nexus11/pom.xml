@@ -39,7 +39,6 @@
         <module>../../org.faktorips.devtools.model.decorators/nexus</module>
         <module>../../org.faktorips.devtools.htmlexport/nexus</module>
         <module>../../org.faktorips.eclipse.emf.codegen/nexus</module>
-        <module>../../org.faktorips.dtflcommon/nexus</module>
         <module>../../org.faktorips.fl/nexus</module>
         <module>../../org.faktorips.util/nexus</module>
     </modules>

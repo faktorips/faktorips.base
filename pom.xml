@@ -36,6 +36,7 @@
         <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
         <maven-bundle-plugin-version>5.1.4</maven-bundle-plugin-version>
         <version.joda>2.1</version.joda>
+        <moditect-maven-plugin-version>1.0.0.RC2</moditect-maven-plugin-version>
         <!-- java and compiler options -->
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -58,6 +59,7 @@
         <module>faktorips-runtime-groovy</module>
         <module>faktorips-testsupport</module>
         <module>faktorips-util</module>
+        <module>faktorips-dtfl-common</module>
         <!-- keep the maven felix bundles above this line -->
         <module>org.faktorips.aggregator</module>
     </modules>
@@ -231,6 +233,11 @@
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin-version}</version>
+                </plugin>
+                <plugin>                
+					<groupId>org.moditect</groupId>
+					<artifactId>moditect-maven-plugin</artifactId>
+					<version>${moditect-maven-plugin-version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>

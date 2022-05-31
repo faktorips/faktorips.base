@@ -7,6 +7,7 @@ faktorips-runtime/.classpath
 faktorips-runtime-groovy/.classpath
 faktorips-testsupport/.classpath
 faktorips-util/.classpath
+faktorips-dtfl-common/.classpath
 
 # files generated (temporary) by the tycho maven builds
 .polyglot.*

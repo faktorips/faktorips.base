@@ -31,7 +31,6 @@
         <module>../../org.faktorips.devtools.stdbuilder.test</module>
         <module>../../org.faktorips.devtools.stdbuilder.ui.test</module>
         <module>../../org.faktorips.devtools.tableconversion.test</module>
-        <module>../../org.faktorips.dtflcommon.test</module>
         <module>../../org.faktorips.fl.test</module>
         <module>../../org.faktorips.m2e.test</module>
         <module>../../org.faktorips.testextensions</module>

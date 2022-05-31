@@ -43,5 +43,10 @@
             <artifactId>faktorips-valuetypes-joda</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-dtfl-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

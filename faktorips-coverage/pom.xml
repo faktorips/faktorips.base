@@ -144,12 +144,12 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.dtflcommon</artifactId>
+            <artifactId>faktorips-dtfl-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.dtflcommon.test</artifactId>
+            <artifactId>faktorips-dtfl-common.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
