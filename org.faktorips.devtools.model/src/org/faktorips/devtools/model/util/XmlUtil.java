@@ -192,6 +192,10 @@ public class XmlUtil {
         return value;
     }
 
+    public static final boolean getBooleanAttributeOrFalse(Element el, String attribute) {
+        return el.hasAttribute(attribute) ? Boolean.parseBoolean(el.getAttribute(attribute)) : false;
+    }
+
     public static final String getAttributeOrEmptyString(Element el, String attribute) {
         return el.hasAttribute(attribute) ? el.getAttribute(attribute)
                 : StringUtils.EMPTY;

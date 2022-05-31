@@ -313,8 +313,8 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
-        isAbstract = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
-        extensible = Boolean.parseBoolean(element.getAttribute(PROPERTY_EXTENSIBLE));
+        isAbstract = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_ABSTRACT);
+        extensible = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_EXTENSIBLE);
         if (element.hasAttribute(PROPERTY_IDENTIFIER_BOUNDARY)) {
             identifierBoundary = element.getAttribute(PROPERTY_IDENTIFIER_BOUNDARY);
         }
@@ -337,8 +337,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (StringUtils.isNotEmpty(superEnumType)) {
             element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         }
-        element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
-        element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
+        if (isAbstract) {
+            element.setAttribute(PROPERTY_ABSTRACT, String.valueOf(isAbstract));
+        }
+        if (extensible) {
+            element.setAttribute(PROPERTY_EXTENSIBLE, String.valueOf(extensible));
+        }
         if (identifierBoundary != null) {
             element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
         }

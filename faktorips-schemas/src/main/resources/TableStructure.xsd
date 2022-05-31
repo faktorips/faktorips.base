@@ -73,7 +73,7 @@
                 <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
-            <xsd:attribute name="uniqueKey" type="boolean" use="required" />
+            <xsd:attribute name="uniqueKey" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
         </xsd:complexType>
     </xsd:element>

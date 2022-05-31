@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -523,8 +524,8 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        ownerOfManyToManyAssociation = Boolean
-                .valueOf(element.getAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
+        ownerOfManyToManyAssociation = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION);
         sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
         targetColumnName = element.getAttribute(PROPERTY_TARGET_COLUMN_NAME);
         joinTableName = element.getAttribute(PROPERTY_JOIN_TABLE_NAME);
@@ -536,33 +537,49 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
                 : Boolean
                         .valueOf(strJoinColumnNullable);
 
-        orphanRemoval = Boolean.valueOf(element.getAttribute(PROPERTY_ORPHAN_REMOVAL));
+        orphanRemoval = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_ORPHAN_REMOVAL);
 
-        cascadeTypeOverwriteDefault = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT));
-        cascadeTypePersist = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_PERSIST));
-        cascadeTypeRefresh = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_REFRESH));
-        cascadeTypeMerge = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_MERGE));
-        cascadeTypeRemove = Boolean.valueOf(element.getAttribute(PROPERTY_CASCADE_TYPE_REMOVE));
+        cascadeTypeOverwriteDefault = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
+        cascadeTypePersist = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_CASCADE_TYPE_PERSIST);
+        cascadeTypeRefresh = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_CASCADE_TYPE_REFRESH);
+        cascadeTypeMerge = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_CASCADE_TYPE_MERGE);
+        cascadeTypeRemove = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_CASCADE_TYPE_REMOVE);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION,
-                Boolean.toString(ownerOfManyToManyAssociation));
+        if (ownerOfManyToManyAssociation) {
+            element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION,
+                    Boolean.toString(ownerOfManyToManyAssociation));
+        }
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, sourceColumnName);
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, targetColumnName);
         element.setAttribute(PROPERTY_JOIN_TABLE_NAME, joinTableName);
         element.setAttribute(PROPERTY_FETCH_TYPE, String.valueOf(fetchType));
         element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, joinColumnName);
         element.setAttribute(PROPERTY_JOIN_COLUMN_NULLABLE, Boolean.toString(joinColumnNullable));
-        element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
+        if (orphanRemoval) {
+            element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
+        }
 
-        element.setAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.toString(cascadeTypeOverwriteDefault));
-        element.setAttribute(PROPERTY_CASCADE_TYPE_MERGE, Boolean.toString(cascadeTypeMerge));
-        element.setAttribute(PROPERTY_CASCADE_TYPE_PERSIST, Boolean.toString(cascadeTypePersist));
-        element.setAttribute(PROPERTY_CASCADE_TYPE_REMOVE, Boolean.toString(cascadeTypeRemove));
-        element.setAttribute(PROPERTY_CASCADE_TYPE_REFRESH, Boolean.toString(cascadeTypeRefresh));
+        if (cascadeTypeOverwriteDefault) {
+            element.setAttribute(PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT,
+                    Boolean.toString(cascadeTypeOverwriteDefault));
+        }
+        if (cascadeTypeMerge) {
+            element.setAttribute(PROPERTY_CASCADE_TYPE_MERGE, Boolean.toString(cascadeTypeMerge));
+        }
+        if (cascadeTypePersist) {
+            element.setAttribute(PROPERTY_CASCADE_TYPE_PERSIST, Boolean.toString(cascadeTypePersist));
+        }
+        if (cascadeTypeRemove) {
+            element.setAttribute(PROPERTY_CASCADE_TYPE_REMOVE, Boolean.toString(cascadeTypeRemove));
+        }
+        if (cascadeTypeRefresh) {
+            element.setAttribute(PROPERTY_CASCADE_TYPE_REFRESH, Boolean.toString(cascadeTypeRefresh));
+        }
     }
 
     @Override

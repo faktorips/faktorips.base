@@ -19,6 +19,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
@@ -77,14 +78,16 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        transientPart = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
+        transientPart = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_TRANSIENT);
         indexName = element.getAttribute(PROPERTY_INDEX_NAME);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientPart));
+        if (transientPart) {
+            element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientPart));
+        }
         element.setAttribute(PROPERTY_INDEX_NAME, indexName);
     }
 

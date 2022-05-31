@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKey;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -176,16 +177,15 @@ public class Index extends Key implements IIndex {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(XML_ATTRIBUTE_UNIQUE_KEY, Boolean.valueOf(isUniqueKey()).toString());
+        if (uniqueKey) {
+            element.setAttribute(XML_ATTRIBUTE_UNIQUE_KEY, "" + uniqueKey); //$NON-NLS-1$
+        }
     }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        if (element.hasAttribute(XML_ATTRIBUTE_UNIQUE_KEY)) {
-            String uniqueKeyAttributeValue = element.getAttribute(XML_ATTRIBUTE_UNIQUE_KEY);
-            uniqueKey = Boolean.valueOf(uniqueKeyAttributeValue);
-        }
+        uniqueKey = XmlUtil.getBooleanAttributeOrFalse(element, XML_ATTRIBUTE_UNIQUE_KEY);
     }
 
 }

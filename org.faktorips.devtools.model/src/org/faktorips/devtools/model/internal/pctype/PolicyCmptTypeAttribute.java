@@ -435,14 +435,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         boolean productRelevant = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_PRODUCT_RELEVANT);
-        valueSetConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT))
-                .booleanValue() || productRelevant;
-        relevanceConfiguredByProduct = Boolean.valueOf(element.getAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT))
-                .booleanValue();
+        valueSetConfiguredByProduct = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT) || productRelevant;
+        relevanceConfiguredByProduct = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT);
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_COMPUTATION_METHOD_SIGNATURE);
-        genericValidationEnabled = Boolean.valueOf(element.getAttribute(PROPERTY_GENERIC_VALIDATION))
-                .booleanValue();
+        genericValidationEnabled = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_GENERIC_VALIDATION);
     }
 
     @Override
@@ -455,8 +454,12 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT, "" + valueSetConfiguredByProduct); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
+        if (valueSetConfiguredByProduct) {
+            element.setAttribute(PROPERTY_VALUESET_CONFIGURED_BY_PRODUCT, "" + valueSetConfiguredByProduct); //$NON-NLS-1$
+        }
+        if (relevanceConfiguredByProduct) {
+            element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
+        }
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
         if (StringUtils.isNotEmpty(computationMethodSignature)) {
             element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$

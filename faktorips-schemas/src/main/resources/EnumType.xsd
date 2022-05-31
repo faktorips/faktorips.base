@@ -18,7 +18,7 @@
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attribute name="enumContentName" type="qualifiedName" use="optional"/>
-            <xsd:attribute name="extensible" type="boolean" />
+            <xsd:attribute name="extensible" type="boolean" use="optional"/>
             <xsd:attribute name="superEnumType" type="qualifiedName" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attribute name="identifierBoundary" type="string" use="optional" />
@@ -88,12 +88,12 @@
 
     <xsd:attributeGroup name="enumAttributeAttributes">
         <xsd:attributeGroup ref="id" />
-        <xsd:attribute name="identifier" type="boolean" />
-        <xsd:attribute name="inherited" type="boolean" />
-        <xsd:attribute name="multilingual" type="boolean" />
+        <xsd:attribute name="identifier" type="boolean" use="optional"/>
+        <xsd:attribute name="inherited" type="boolean" use="optional"/>
+        <xsd:attribute name="multilingual" type="boolean" use="optional"/>
         <xsd:attributeGroup ref="name" />
-        <xsd:attribute name="unique" type="boolean" />
-        <xsd:attribute name="usedAsNameInFaktorIpsUi" type="boolean" />
+        <xsd:attribute name="unique" type="boolean" use="optional"/>
+        <xsd:attribute name="usedAsNameInFaktorIpsUi" type="boolean" use="optional"/>
         <xsd:attributeGroup ref="since" />
     </xsd:attributeGroup>
 

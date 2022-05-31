@@ -29,7 +29,6 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -327,9 +326,9 @@ public abstract class Association extends TypePart implements IAssociation {
                 maxCardinality = 0;
             }
         }
-        derivedUnion = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_DERIVED_UNION);
+        derivedUnion = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_DERIVED_UNION);
         subsettedDerivedUnion = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_SUBSETTED_DERIVED_UNION);
-        constrain = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CONSTRAIN);
+        constrain = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_CONSTRAIN);
     }
 
     @Override
@@ -348,12 +347,15 @@ public abstract class Association extends TypePart implements IAssociation {
         } else {
             newElement.setAttribute(PROPERTY_MAX_CARDINALITY, "" + maxCardinality); //$NON-NLS-1$
         }
-
-        newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
+        if (derivedUnion) {
+            newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
+        }
         if (StringUtils.isNotEmpty(subsettedDerivedUnion)) {
             newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
         }
-        newElement.setAttribute(PROPERTY_CONSTRAIN, String.valueOf(isConstrain()));
+        if (isConstrain()) {
+            newElement.setAttribute(PROPERTY_CONSTRAIN, String.valueOf(isConstrain()));
+        }
     }
 
     @Override

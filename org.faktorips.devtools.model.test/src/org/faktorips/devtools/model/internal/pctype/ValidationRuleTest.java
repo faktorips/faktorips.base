@@ -172,18 +172,6 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXml_ChangingOverTimeDefaultsToTrueIfNotConfiguredAndProductTypeChanging() {
-        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Prod", policyCmptType);
-        productCmptType.setChangingOverTime(true);
-        policyCmptType.setProductCmptType("Prod");
-        Document doc = getTestDocument();
-        doc.getDocumentElement().removeAttribute(IValidationRule.PROPERTY_CHANGING_OVER_TIME);
-        doc.getDocumentElement().setAttribute(IValidationRule.PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT, "false");
-        validationRule.initFromXml(doc.getDocumentElement());
-        assertTrue(validationRule.isChangingOverTime());
-    }
-
-    @Test
     public void testToXmlDocument() {
         validationRule = policyCmptType.newRule(); // => id=1 because it's the second validationRule
         validationRule.setName("checkAge");

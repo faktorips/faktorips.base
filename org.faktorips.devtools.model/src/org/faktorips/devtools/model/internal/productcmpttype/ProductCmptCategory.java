@@ -34,6 +34,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
@@ -522,15 +523,15 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
-        defaultForFormulaSignatureDefinitions = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS));
-        defaultForPolicyCmptTypeAttributes = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES));
-        defaultForProductCmptTypeAttributes = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES));
-        defaultForTableStructureUsages = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES));
-        defaultForValidationRules = Boolean.parseBoolean(element.getAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES));
+        defaultForFormulaSignatureDefinitions = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS);
+        defaultForPolicyCmptTypeAttributes = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES);
+        defaultForProductCmptTypeAttributes = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES);
+        defaultForTableStructureUsages = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES);
+        defaultForValidationRules = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
         position = Position.getValueById(element.getAttribute(PROPERTY_POSITION));
 
         super.initPropertiesFromXml(element, id);
@@ -541,15 +542,25 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_NAME, name);
-        element.setAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS,
-                Boolean.toString(defaultForFormulaSignatureDefinitions));
-        element.setAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
-                Boolean.toString(defaultForPolicyCmptTypeAttributes));
-        element.setAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
-                Boolean.toString(defaultForProductCmptTypeAttributes));
-        element.setAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES,
-                Boolean.toString(defaultForTableStructureUsages));
-        element.setAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Boolean.toString(defaultForValidationRules));
+        if (defaultForFormulaSignatureDefinitions) {
+            element.setAttribute(PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS,
+                    Boolean.toString(defaultForFormulaSignatureDefinitions));
+        }
+        if (defaultForPolicyCmptTypeAttributes) {
+            element.setAttribute(PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES,
+                    Boolean.toString(defaultForPolicyCmptTypeAttributes));
+        }
+        if (defaultForProductCmptTypeAttributes) {
+            element.setAttribute(PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES,
+                    Boolean.toString(defaultForProductCmptTypeAttributes));
+        }
+        if (defaultForTableStructureUsages) {
+            element.setAttribute(PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES,
+                    Boolean.toString(defaultForTableStructureUsages));
+        }
+        if (defaultForValidationRules) {
+            element.setAttribute(PROPERTY_DEFAULT_FOR_VALIDATION_RULES, Boolean.toString(defaultForValidationRules));
+        }
         element.setAttribute(PROPERTY_POSITION, position.getId());
     }
 

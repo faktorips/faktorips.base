@@ -50,7 +50,7 @@
             <xsd:attribute name="minInstances" type="int" use="required" />
             <xsd:attributeGroup ref="name" />
             <xsd:attribute name="policyCmptType" type="qualifiedName" use="required" />
-            <xsd:attribute name="requiresProductCmpt" type="boolean" use="required" />
+            <xsd:attribute name="requiresProductCmpt" type="boolean" use="optional" />
             <xsd:attribute name="testParameterType" type="testType" use="required" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInPolicyCmptTypeParameter">

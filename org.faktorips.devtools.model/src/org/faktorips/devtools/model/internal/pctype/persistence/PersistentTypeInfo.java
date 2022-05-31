@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.PersistenceUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -574,10 +575,14 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
         element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
-                + Boolean.valueOf(definesDiscriminatorColumn).toString());
-        element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
-                + Boolean.valueOf(useTableDefinedInSupertype).toString());
+        if (definesDiscriminatorColumn) {
+            element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
+                    + Boolean.valueOf(definesDiscriminatorColumn).toString());
+        }
+        if (useTableDefinedInSupertype) {
+            element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
+                    + Boolean.valueOf(useTableDefinedInSupertype).toString());
+        }
         element.setAttribute(PROPERTY_PERSISTENT_TYPE, "" + persistentType); //$NON-NLS-1$
     }
 
@@ -594,8 +599,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                 : null;
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
         initPersistentTypeWithWorkaround(element);
-        definesDiscriminatorColumn = Boolean.valueOf(element.getAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-        useTableDefinedInSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+        definesDiscriminatorColumn = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
+        useTableDefinedInSupertype = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
     }
 
     /**

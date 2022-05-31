@@ -44,7 +44,6 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.DatatypeComparator;
 import org.w3c.dom.Element;
@@ -491,7 +490,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         supertype = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_SUPERTYPE);
-        abstractFlag = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_ABSTRACT);
+        abstractFlag = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_ABSTRACT);
     }
 
     @Override
@@ -500,7 +499,9 @@ public abstract class Type extends BaseIpsObject implements IType {
         if (StringUtils.isNotEmpty(supertype)) {
             element.setAttribute(PROPERTY_SUPERTYPE, supertype);
         }
-        element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
+        if (abstractFlag) {
+            element.setAttribute(PROPERTY_ABSTRACT, "" + abstractFlag); //$NON-NLS-1$
+        }
     }
 
     @Override

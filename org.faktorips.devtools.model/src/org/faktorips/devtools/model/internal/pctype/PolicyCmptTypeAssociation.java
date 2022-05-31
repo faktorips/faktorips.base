@@ -37,7 +37,6 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -713,29 +712,28 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        qualified = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_QUALIFIED);
+        qualified = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_QUALIFIED);
         inverseAssociation = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_INVERSE_ASSOCIATION);
-        sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
+        sharedAssociation = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_SHARED_ASSOCIATION);
         matchingAssociationName = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_MATCHING_ASSOCIATION_NAME);
         matchingAssociationSource = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_MATCHING_ASSOCIATION_SOURCE);
-        initConfigurable(element);
-    }
-
-    private void initConfigurable(Element element) {
-        if (element.hasAttribute(PROPERTY_CONFIGURABLE)) {
-            String attribute = element.getAttribute(PROPERTY_CONFIGURABLE);
-            configurable = Boolean.parseBoolean(attribute);
-        }
+        configurable = element.hasAttribute(PROPERTY_CONFIGURABLE)
+                ? Boolean.parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE))
+                : true;
     }
 
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
+        if (qualified) {
+            newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
+        }
         if (StringUtils.isNotEmpty(inverseAssociation)) {
             newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
         }
-        newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
+        if (sharedAssociation) {
+            newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
+        }
         if (StringUtils.isNotEmpty(matchingAssociationName)) {
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
         }

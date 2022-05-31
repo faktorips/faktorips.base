@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.w3c.dom.Document;
@@ -152,10 +153,7 @@ public abstract class Method extends TypePart implements IMethod {
     }
 
     private void initAbstractFromXml(Element element) {
-        String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
-        if (abstractString != null) {
-            abstractFlag = Boolean.valueOf(abstractString).booleanValue();
-        }
+        abstractFlag = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_ABSTRACT);
     }
 
     /**
@@ -173,7 +171,9 @@ public abstract class Method extends TypePart implements IMethod {
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(isAbstract()));
+        if (abstractFlag) {
+            newElement.setAttribute(PROPERTY_ABSTRACT, Boolean.toString(isAbstract()));
+        }
     }
 
     @Override

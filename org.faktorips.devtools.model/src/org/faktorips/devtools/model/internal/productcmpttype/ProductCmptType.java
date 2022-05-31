@@ -78,7 +78,6 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -446,21 +445,25 @@ public class ProductCmptType extends Type implements IProductCmptType {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         policyCmptType = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_POLICY_CMPT_TYPE);
-        configurationForPolicyCmptType = Boolean
-                .valueOf(element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
-        layerSupertype = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_LAYER_SUPERTYPE);
+        configurationForPolicyCmptType = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE);
+        layerSupertype = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_LAYER_SUPERTYPE);
         instancesIconPath = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_ICON_FOR_INSTANCES);
-        String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-        changingOverTime = StringUtils.isEmpty(changingOverTimeValue) ? true
-                : Boolean.valueOf(changingOverTimeValue).booleanValue();
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+        }
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
-                String.valueOf(configurationForPolicyCmptType));
-        element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
+        if (configurationForPolicyCmptType) {
+            element.setAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE,
+                    String.valueOf(configurationForPolicyCmptType));
+        }
+        if (layerSupertype) {
+            element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
+        }
         if (StringUtils.isNotEmpty(policyCmptType)) {
             element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
         }

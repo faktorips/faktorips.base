@@ -27,7 +27,6 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 
 /**
@@ -114,25 +113,28 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
                     .booleanValue();
         }
-        overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
-        String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
-        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
+        overloadsFormula = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERLOADS_FORMULA);
         formulaName = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_FORMULA_NAME);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            changingOverTime = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CHANGING_OVER_TIME);
+            changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
+        String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
+        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION, String.valueOf(formulaSignatureDefinition));
-        element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
-        element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
+        if (overloadsFormula) {
+            element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
+        }
         if (StringUtils.isNotEmpty(formulaName)) {
             element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
         }
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
+
+        element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
     }
 
     @Override

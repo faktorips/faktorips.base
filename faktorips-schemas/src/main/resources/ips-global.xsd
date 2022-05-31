@@ -39,7 +39,7 @@
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="abstract">
-        <xsd:attribute name="abstract" type="boolean" use="required" />
+        <xsd:attribute name="abstract" type="boolean" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="changingOverTime">
@@ -68,11 +68,11 @@
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="constrain">
-        <xsd:attribute name="constrain" type="boolean" use="required" />
+        <xsd:attribute name="constrain" type="boolean" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="derivedUnion">
-        <xsd:attribute name="derivedUnion" type="boolean" use="required" />
+        <xsd:attribute name="derivedUnion" type="boolean" use="optional" />
     </xsd:attributeGroup>
 
     <xsd:attributeGroup name="subsettedDerivedUnion">
@@ -210,7 +210,7 @@
             <xsd:element name="Derived" minOccurs="1" maxOccurs="1" type="DerivedValueSet" />
             <xsd:element name="StringLength" minOccurs="1" maxOccurs="1" type="StringLengthValueSet" />
         </xsd:choice>
-        <xsd:attribute name="abstract" type="boolean" use="required" />
+        <xsd:attribute name="abstract" type="boolean" use="optional" />
         <xsd:attribute name="id" type="uuid" />
     </xsd:complexType>
 

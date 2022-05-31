@@ -133,7 +133,7 @@
 
     <xsd:element name="ValidationRuleConfig">
         <xsd:complexType>
-            <xsd:attribute name="active" type="boolean" use="required" />
+            <xsd:attribute name="active" type="boolean" use="optional" />
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="ruleName" type="javaIdentifier" use="required" />
             <xsd:attributeGroup ref="templateValueStatus" />

@@ -18,9 +18,9 @@
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="changingOverTime" />
-            <xsd:attribute name="configurationForPolicyCmptType" type="boolean" use="required" />
+            <xsd:attribute name="configurationForPolicyCmptType" type="boolean" use="optional" />
             <xsd:attribute name="instancesIcon" type="string" use="optional" />
-            <xsd:attribute name="layerSupertype" type="boolean" use="required" />
+            <xsd:attribute name="layerSupertype" type="boolean" use="optional" />
             <xsd:attribute name="policyCmptType" type="qualifiedName" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attributeGroup ref="supertype" />
@@ -46,10 +46,10 @@
             <xsd:attributeGroup ref="datatype" />
             <xsd:attributeGroup ref="id" />
             <xsd:attributeGroup ref="modifier" />
-            <xsd:attribute name="multiValueAttribute" type="boolean" use="required" />
-            <xsd:attribute name="multilingual" type="boolean" use="required" />
+            <xsd:attribute name="multiValueAttribute" type="boolean" use="optional" />
+            <xsd:attribute name="multilingual" type="boolean" use="optional" />
             <xsd:attributeGroup ref="name" />
-            <xsd:attribute name="overwrite" type="boolean" use="required" />
+            <xsd:attribute name="overwrite" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attribute name="visible" type="boolean" use="required" />
         </xsd:complexType>
@@ -66,11 +66,11 @@
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
-            <xsd:attribute name="defaultForFormulaSignatureDefinitions" type="boolean" use="required" />
-            <xsd:attribute name="defaultForPolicyCmptTypeAttributes" type="boolean" use="required" />
-            <xsd:attribute name="defaultForProductCmptTypeAttributes" type="boolean" use="required" />
-            <xsd:attribute name="defaultForTableStructureUsages" type="boolean" use="required" />
-            <xsd:attribute name="defaultForValidationRules" type="boolean" use="required" />
+            <xsd:attribute name="defaultForFormulaSignatureDefinitions" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForPolicyCmptTypeAttributes" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForProductCmptTypeAttributes" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForTableStructureUsages" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForValidationRules" type="boolean" use="optional" />
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="name" type="string" use="required" />
             <xsd:attribute name="position" use="required">
@@ -141,7 +141,7 @@
             <xsd:attribute name="mandatory" type="boolean" use="required" />
             <xsd:attributeGroup ref="modifier" />
             <xsd:attributeGroup ref="name" />
-            <xsd:attribute name="overloadsFormula" type="boolean" use="required" />
+            <xsd:attribute name="overloadsFormula" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInMethod">
@@ -169,7 +169,7 @@
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
             <xsd:attributeGroup ref="id" />
-            <xsd:attribute name="mandatoryTableContent" type="boolean" use="required" />
+            <xsd:attribute name="mandatoryTableContent" type="boolean" use="optional" />
             <xsd:attributeGroup ref="modifier" />
             <xsd:attribute name="roleName" type="javaIdentifier" use="required" />
             <xsd:attributeGroup ref="since" />

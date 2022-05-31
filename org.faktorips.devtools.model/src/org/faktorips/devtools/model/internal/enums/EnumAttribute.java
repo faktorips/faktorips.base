@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.DatatypeUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -108,11 +109,11 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     protected void initPropertiesFromXml(Element element, String id) {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
-        unique = Boolean.parseBoolean(element.getAttribute(PROPERTY_UNIQUE));
-        multilingual = Boolean.parseBoolean(element.getAttribute(PROPERTY_MULTILINGUAL));
-        identifier = Boolean.parseBoolean(element.getAttribute(PROPERTY_IDENTIFIER));
-        usedAsNameInFaktorIpsUi = Boolean.parseBoolean(element.getAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI));
-        inherited = Boolean.parseBoolean(element.getAttribute(PROPERTY_INHERITED));
+        unique = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_UNIQUE);
+        multilingual = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MULTILINGUAL);
+        identifier = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_IDENTIFIER);
+        usedAsNameInFaktorIpsUi = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI);
+        inherited = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_INHERITED);
 
         super.initPropertiesFromXml(element, id);
     }
@@ -123,11 +124,21 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
-        element.setAttribute(PROPERTY_UNIQUE, String.valueOf(unique));
-        element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(multilingual));
-        element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(identifier));
-        element.setAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, String.valueOf(usedAsNameInFaktorIpsUi));
-        element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
+        if (unique) {
+            element.setAttribute(PROPERTY_UNIQUE, String.valueOf(unique));
+        }
+        if (multilingual) {
+            element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(multilingual));
+        }
+        if (identifier) {
+            element.setAttribute(PROPERTY_IDENTIFIER, String.valueOf(identifier));
+        }
+        if (usedAsNameInFaktorIpsUi) {
+            element.setAttribute(PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI, String.valueOf(usedAsNameInFaktorIpsUi));
+        }
+        if (inherited) {
+            element.setAttribute(PROPERTY_INHERITED, String.valueOf(inherited));
+        }
     }
 
     @Override
