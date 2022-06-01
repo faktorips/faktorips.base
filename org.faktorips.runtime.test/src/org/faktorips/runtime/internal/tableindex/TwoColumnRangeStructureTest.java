@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
+import org.faktorips.values.Decimal;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -413,6 +414,14 @@ public class TwoColumnRangeStructureTest {
     @Test()
     public void testGet_Null() {
         assertEquals(0, structure.get(null).get().size());
+    }
+
+    @Test()
+    public void testGet_NullObject() {
+        TwoColumnRangeStructure<Decimal, ResultStructure<String>, String> decimalStructure = TwoColumnRangeStructure
+                .create();
+        decimalStructure.put(Decimal.valueOf(0), Decimal.valueOf(5), new ResultStructure<>("A"));
+        assertEquals(0, structure.get(Decimal.NULL).get().size());
     }
 
     /**
