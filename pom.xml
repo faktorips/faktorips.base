@@ -22,19 +22,19 @@
 
     <properties>
         <!-- User properties -->
-        <target-platform>eclipse-2019-03</target-platform>
+        <target-platform>eclipse-2022-03</target-platform>
         <!-- plugin versions -->
         <tycho-version>3.0.0-SNAPSHOT</tycho-version>
         <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
         <maven-checkstyle-plugin-version>2.17</maven-checkstyle-plugin-version>
         <maven-surefire-plugin-version>2.22.0</maven-surefire-plugin-version>
-        <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+        <maven-compiler-plugin-version>3.10.1</maven-compiler-plugin-version>
         <maven-jar-plugin-version>2.6</maven-jar-plugin-version>
         <maven-scm-plugin-version>1.12.2</maven-scm-plugin-version>
         <xtend-maven-plugin-version>2.25.0</xtend-maven-plugin-version>
         <maven-javadoc-plugin-version>3.3.1</maven-javadoc-plugin-version>
         <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
-        <maven-bundle-plugin-version>5.1.4</maven-bundle-plugin-version>
+        <maven-bundle-plugin-version>5.1.6</maven-bundle-plugin-version>
         <version.joda>2.1</version.joda>
         <moditect-maven-plugin-version>1.0.0.RC2</moditect-maven-plugin-version>
         <!-- java and compiler options -->
@@ -61,6 +61,9 @@
         <module>faktorips-util</module>
         <module>faktorips-dtfl-common</module>
         <module>faktorips-fl</module>
+        <module>faktorips-abstraction</module>
+        <module>faktorips-abstraction-testsetup</module>
+        <module>faktorips-abstraction-plainjava</module>
         <!-- keep the maven felix bundles above this line -->
         <module>org.faktorips.aggregator</module>
     </modules>

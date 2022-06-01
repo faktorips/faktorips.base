@@ -17,7 +17,7 @@
 
     <modules>
         <!-- plugins of feature org.faktorips.feature -->
-        <module>../../org.faktorips.devtools.abstraction</module>
+        <module>../../org.faktorips.devtools.abstraction.eclipse</module>
         <module>../../org.faktorips.devtools.ant</module>
         <module>../../org.faktorips.devtools.core</module>
         <module>../../org.faktorips.devtools.core.refactor</module>
@@ -76,6 +76,17 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-fl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- TODO: keine Dependency mehr zu plainjava -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-plainjava</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

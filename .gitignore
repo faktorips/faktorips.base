@@ -1,14 +1,6 @@
 # maven
 target/
 
-faktorips-valuetypes/.classpath
-faktorips-valuetypes-joda/.classpath
-faktorips-runtime/.classpath
-faktorips-runtime-groovy/.classpath
-faktorips-testsupport/.classpath
-faktorips-util/.classpath
-faktorips-dtfl-common/.classpath
-faktorips-fl/.classpath
 # files generated (temporary) by the tycho maven builds
 .polyglot.*
 .META-INF_*
@@ -16,8 +8,14 @@ pom.tycho
 .tycho-consumer-pom.xml
 
 # Eclipse
-.project
-.settings
+/.project
+/.settings
+faktorips-*/.classpath
+faktorips-*/.project
+faktorips-*/.settings/org.eclipse.core.resources.prefs
+faktorips-*/.settings/org.eclipse.m2e.core.prefs
+faktorips-*/.settings/org.eclipse.pde.core.prefs
+faktorips-*/.settings/org.moreunit.prefs
 
 # IntelliJ
 .idea

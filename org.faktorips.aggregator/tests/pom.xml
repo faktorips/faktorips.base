@@ -19,7 +19,7 @@
     <modules>
         <module>../../org.faktorips.abstracttest</module>
         <module>../../org.faktorips.abstracttest.core</module>
-        <module>../../org.faktorips.devtools.abstraction.test</module>
+        <module>../../org.faktorips.devtools.abstraction.eclipse.test</module>
         <module>../../org.faktorips.devtools.ant.test</module>
         <module>../../org.faktorips.devtools.core.test</module>
         <module>../../org.faktorips.devtools.core.refactor.test</module>
@@ -69,6 +69,11 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-fl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-testsetup</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
