@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.runtime.IPath;
@@ -132,7 +133,6 @@ public class JarFileFactory {
     /**
      * Inner class holding the reference to the jar file and the thread for delaying the close
      * method.
-     * 
      */
     private class OpenedJar {
 
@@ -160,18 +160,19 @@ public class JarFileFactory {
             if (closer == null) {
                 closer = new Closer();
                 new Thread(closer, "Closer for " + jarFile.getName()).start(); //$NON-NLS-1$
+            } else {
+                closer.closeIsOkForMe();
             }
         }
 
         private class Closer implements Runnable {
 
-            private volatile boolean shouldClose = true;
+            private AtomicInteger opened = new AtomicInteger(0);
 
             @Override
             public void run() {
-                shouldClose = true;
-                while (shouldClose) {
-                    if (shouldClose && lastCallToClose + closeDelay <= System.currentTimeMillis()) {
+                while (true) {
+                    if (opened.get() <= 0 && lastCallToClose + closeDelay <= System.currentTimeMillis()) {
                         try {
                             jarFile.close();
                             CACHE.remove(jarPath);
@@ -191,7 +192,11 @@ public class JarFileFactory {
             }
 
             protected void dontCloseYet() {
-                shouldClose = false;
+                opened.incrementAndGet();
+            }
+
+            protected void closeIsOkForMe() {
+                opened.decrementAndGet();
             }
 
         }
