@@ -282,8 +282,9 @@ public class IpsBundleManifest {
      * old values.
      *
      * @param ipsProject the Faktor-IPS project this manifest belongs to
+     * @param manifestFile the location of the manifest
      */
-    public void writeBuilderSettings(IIpsProject ipsProject) {
+    public void writeBuilderSettings(IIpsProject ipsProject, AFile manifestFile) {
         String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
         Attributes attributes = manifest.getMainAttributes();
         if (attributes != null) {
@@ -310,12 +311,11 @@ public class IpsBundleManifest {
             });
             attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
         }
-        AFile manifestFileInProject = ipsProject.getProject().getFile(MANIFEST_NAME);
-        File manifestFile = manifestFileInProject.getLocation().toFile();
-        try (FileOutputStream outputStream = new FileOutputStream(manifestFile)) {
+        File actualManifestFile = manifestFile.getLocation().toFile();
+        try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);
         } catch (IOException e) {
-            throw new IpsException(new IpsStatus("Can't write " + manifestFileInProject, e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Can't write " + actualManifestFile, e)); //$NON-NLS-1$
         }
     }
 

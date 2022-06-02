@@ -176,11 +176,14 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     private void updateManifest() {
         IIpsProject ipsProject = getIpsProject();
         AFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        if (!manifestFile.exists()) {
+            manifestFile = ipsProject.getProject().getFile("src/main/resources/" + IpsBundleManifest.MANIFEST_NAME); //$NON-NLS-1$
+        }
         if (manifestFile.exists()) {
             try {
                 Manifest manifest = new Manifest(manifestFile.getContents());
                 IpsBundleManifest ipsBundleManifest = new IpsBundleManifest(manifest);
-                ipsBundleManifest.writeBuilderSettings(ipsProject);
+                ipsBundleManifest.writeBuilderSettings(ipsProject, manifestFile);
             } catch (IOException e) {
                 throw new IpsException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
             }

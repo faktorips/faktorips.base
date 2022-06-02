@@ -405,7 +405,7 @@ public class IpsBundleManifestTest {
         when(eclipseManifestPath.toFile()).thenReturn(manifestFile);
         Attributes mainAttributes = manifest.getMainAttributes();
 
-        ipsBundleManifest.writeBuilderSettings(ipsProject);
+        ipsBundleManifest.writeBuilderSettings(ipsProject, eclipseManifestFile);
 
         verify(mainAttributes).put(new Attributes.Name(IpsBundleManifest.HEADER_GENERATOR_CONFIG),
                 "org.faktorips.devtools.stdbuilder.StandardBuilderSet;booleanAttr=\"true\";intAttr=\"42\";stringAttr=\"Foo \\\"quoted\\\" Bar\"");
