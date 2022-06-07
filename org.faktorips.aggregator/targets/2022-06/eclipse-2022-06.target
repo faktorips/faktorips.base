@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2022-06)" sequenceNumber="1">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2022-06)" sequenceNumber="3">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -53,6 +53,8 @@
       <unit id="org.eclipse.xtext.xbase.lib" version="0.0.0"/>
       <unit id="org.eclipse.xtend.lib.macro" version="0.0.0"/>
       <unit id="org.eclipse.xsd.feature.group" version="0.0.0"/>
+      <unit id="org.sat4j.core" version="0.0.0"/>
+      <unit id="org.sat4j.pb" version="0.0.0"/>
       <unit id="org.slf4j.api" version="0.0.0"/>
       <repository location="https://update.faktorzehn.org/p2repositories/2022-06/"/>
     </location>

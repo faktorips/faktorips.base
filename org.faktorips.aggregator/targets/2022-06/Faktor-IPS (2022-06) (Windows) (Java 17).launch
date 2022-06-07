@@ -55,14 +55,12 @@
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.lang@default:default"/>
         <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
-        <setEntry value="org.apache.commons.logging*1.2.0@default:default"/>
         <setEntry value="org.apache.felix.gogo.command@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.gogo.shell@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
-        <setEntry value="org.apache.log4j@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
@@ -305,6 +303,12 @@
         <setEntry value="org.objenesis*1.4.0@default:default"/>
         <setEntry value="org.objenesis*2.1.0@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
+        <setEntry value="org.osgi.service.prefs@default:default"/>
+        <setEntry value="org.osgi.util.function@default:default"/>
+        <setEntry value="org.osgi.util.measurement@default:default"/>
+        <setEntry value="org.osgi.util.position@default:default"/>
+        <setEntry value="org.osgi.util.promise@default:default"/>
+        <setEntry value="org.osgi.util.xml@default:default"/>
         <setEntry value="org.sat4j.core@default:default"/>
         <setEntry value="org.sat4j.pb@default:default"/>
         <setEntry value="org.slf4j.api@default:default"/>
