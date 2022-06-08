@@ -287,30 +287,31 @@ public class IpsBundleManifest {
     public void writeBuilderSettings(IIpsProject ipsProject, AFile manifestFile) {
         String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
         Attributes attributes = manifest.getMainAttributes();
-        if (attributes != null) {
-            String delimiter = ";"; //$NON-NLS-1$
-            StringBuilder sb = new StringBuilder(builderSetId);
-            sb.append(delimiter);
-            IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
-            Map<String, Object> properties = new TreeMap<>(
-                    Arrays.stream(config.getPropertyNames())
-                            .map(p -> new Object() {
-                                private final String key = p;
-                                private final Object value = config.getPropertyValue(p);
-                            })
-                            .filter(p -> p.value != null)
-                            .collect(Collectors.toMap(p -> p.key, p -> p.value)));
-
-            StringBuilderJoiner.join(sb, properties.entrySet(), delimiter, p -> {
-                sb.append(p.getKey());
-                sb.append('=');
-                sb.append('"');
-                String value = Objects.toString(p.getValue());
-                sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
-                sb.append('"');
-            });
-            attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
+        if (!attributes.containsKey(Name.MANIFEST_VERSION)) {
+            attributes.put(Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         }
+        String delimiter = ";"; //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder(builderSetId);
+        sb.append(delimiter);
+        IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
+        Map<String, Object> properties = new TreeMap<>(
+                Arrays.stream(config.getPropertyNames())
+                        .map(p -> new Object() {
+                            private final String key = p;
+                            private final Object value = config.getPropertyValue(p);
+                        })
+                        .filter(p -> p.value != null)
+                        .collect(Collectors.toMap(p -> p.key, p -> p.value)));
+
+        StringBuilderJoiner.join(sb, properties.entrySet(), delimiter, p -> {
+            sb.append(p.getKey());
+            sb.append('=');
+            sb.append('"');
+            String value = Objects.toString(p.getValue());
+            sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
+            sb.append('"');
+        });
+        attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
         File actualManifestFile = manifestFile.getLocation().toFile();
         try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);

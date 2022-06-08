@@ -1,0 +1,5 @@
+Fips-BasePackage: org.faktorips.devtools.core.internal.migrationextensions
+Fips-SourcecodeOutput: src
+Fips-ResourceOutput: extension
+Fips-ObjectDir: productdef;toc="faktorips-repository-toc.xml";validation-mes
+ sages="validation-messages"

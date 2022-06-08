@@ -194,6 +194,66 @@ public class Migration_22_6_0Test extends AbstractStdBuilderTest {
         assertThat(ipsProjectFile, containsString("<Property name=\"valueSetMethods\" value=\"ByValueSetType\"/>"));
     }
 
+    @SuppressWarnings({ "deprecation", "unchecked" })
+    @Test
+    public void testMigrate_Manifest() throws Exception {
+        IIpsProject ipsProject = newIpsProject("Migration_22_6_0Test_MF");
+        IProject project = ipsProject.getProject().unwrap();
+        copy("ipsproject", project);
+        project.getFile(".ipsproject").delete(true, null);
+        project.getFile("ipsproject").move(Path.fromPortableString(".ipsproject"), true, null);
+        IFolder metaInf = project.getFolder("META-INF");
+        metaInf.create(true, true, null);
+        IFile manifest = copy("MANIFEST.MF", metaInf);
+
+        IpsModel.reInit();
+        ipsProject = IIpsModel.get().getIpsProject("Migration_22_6_0Test_MF");
+
+        Migration_22_6_0 migration = new Migration_22_6_0(ipsProject, "irrelevant");
+        ((IpsMigrationOption<ValueSetMethods>)migration.getOptions().iterator().next())
+                .setSelectedValue(ValueSetMethods.Unified);
+
+        migration.migrate(new NullProgressMonitor());
+
+        String manifestContent = Files.readString(manifest.getLocation().toFile().toPath(), StandardCharsets.UTF_8);
+        manifestContent = manifestContent.replace("\n ", "");
+        assertThat(manifestContent, containsString("Manifest-Version: 1.0"));
+        assertThat(manifestContent,
+                containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
+        assertThat(manifestContent, containsString("valueSetMethods=\"Unified\""));
+    }
+
+    @SuppressWarnings({ "deprecation", "unchecked" })
+    @Test
+    public void testMigrate_Manifest_MissingVersion() throws Exception {
+        IIpsProject ipsProject = newIpsProject("Migration_22_6_0Test_MF2");
+        IProject project = ipsProject.getProject().unwrap();
+        copy("ipsproject", project);
+        project.getFile(".ipsproject").delete(true, null);
+        project.getFile("ipsproject").move(Path.fromPortableString(".ipsproject"), true, null);
+        IFolder metaInf = project.getFolder("META-INF");
+        metaInf.create(true, true, null);
+        IFile manifestTmp = copy("MANIFEST.MF_missingVersion", metaInf);
+        IFile manifest = metaInf.getFile("MANIFEST.MF");
+        manifestTmp.move(manifest.getFullPath(), true, null);
+
+        IpsModel.reInit();
+        ipsProject = IIpsModel.get().getIpsProject("Migration_22_6_0Test_MF2");
+
+        Migration_22_6_0 migration = new Migration_22_6_0(ipsProject, "irrelevant");
+        ((IpsMigrationOption<ValueSetMethods>)migration.getOptions().iterator().next())
+                .setSelectedValue(ValueSetMethods.Both);
+
+        migration.migrate(new NullProgressMonitor());
+
+        String manifestContent = Files.readString(manifest.getLocation().toFile().toPath(), StandardCharsets.UTF_8);
+        manifestContent = manifestContent.replace("\n ", "");
+        assertThat(manifestContent, containsString("Manifest-Version: 1.0"));
+        assertThat(manifestContent,
+                containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
+        assertThat(manifestContent, containsString("valueSetMethods=\"Both\""));
+    }
+
     private IFile copy(String fileName, IContainer container) throws CoreException {
         IFile file = container.getFile(new Path(fileName));
         InputStream inputStream = getClass().getResourceAsStream(getClass().getSimpleName() + '.' + fileName);
