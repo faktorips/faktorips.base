@@ -536,6 +536,21 @@ public abstract class AbstractGeneratorModelNode {
      * @return the string containing the annotations
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
+        return getAnnotations(type, false);
+    }
+
+    /**
+     * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
+     * the {@link IIpsObjectPartContainer} that is represented by this model node.
+     * 
+     * @see #getIpsObjectPartContainer()
+     * 
+     * @param type The type you want to generate
+     * @param isFirstJavadoc whether the annotations are the first Javadoc element (or following
+     *            some other Javadoc, therefore need to be separated by a blank Javadoc line)
+     * @return the string containing the annotations
+     */
+    public String getAnnotations(AnnotatedJavaElementType type, boolean isFirstJavadoc) {
         List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
         StringBuilder result = new StringBuilder(AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type ? " * " : "");
         for (IAnnotationGenerator generator : generators) {
@@ -549,7 +564,7 @@ public abstract class AbstractGeneratorModelNode {
         if (result.length() <= 3) {
             return IpsStringUtils.EMPTY;
         } else {
-            if (AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type) {
+            if (AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type && !isFirstJavadoc) {
                 return new StringBuilder().append("*").append(System.lineSeparator()).append(result).toString();
             }
             return result.toString();

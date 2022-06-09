@@ -26,7 +26,7 @@ class CommonEnumTypeTmpl {
 
     def private static field (XEnumAttribute it) '''
         /**
-        «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC, true)»
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty» *«ENDIF»
          * @generated
          */

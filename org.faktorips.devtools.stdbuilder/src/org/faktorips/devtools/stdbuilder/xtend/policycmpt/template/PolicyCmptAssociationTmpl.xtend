@@ -252,7 +252,7 @@ def private static generateSetter (XPolicyAssociation it) '''
     «IF compositionDetailToMaster»
         «IF !sharedAssociationImplementedInSuperclass && !genInterface()»
             /** 
-            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC, true)»
              *
              * @generated
              */
