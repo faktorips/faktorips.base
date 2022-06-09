@@ -11,6 +11,7 @@
 package org.faktorips.values;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import org.faktorips.annotation.UtilityClass;
 
@@ -66,16 +67,10 @@ public final class Decimals {
      * @param d1 a {@link Decimal} that may be {@code null}
      * @param d2 a {@link Decimal} that may be {@code null}
      * @return {@code true} if d1 is less than d2
+     * @see #nullsLastComparator()
      */
     public static boolean lessThanIncludingNull(@CheckForNull Decimal d1, @CheckForNull Decimal d2) {
-        if (isNull(d1)) {
-            return false;
-        }
-        if (isNull(d2)) {
-            return true;
-        }
-
-        return d1.lessThan(d2);
+        return nullsLastComparator().compare(d1, d2) < 0;
     }
 
     /**
@@ -110,6 +105,30 @@ public final class Decimals {
      */
     public static Decimal maxIgnoreNull(Decimal... values) {
         return Arrays.stream(values).filter(Decimals::isNotNull).reduce(Decimal::max).orElse(Decimal.NULL);
+    }
+
+    /**
+     * Returns a {@link Decimal#NULL}-friendly comparator that considers {@link Decimal#NULL} to be
+     * less than non-null. When both are {@link Decimal#NULL}, they are considered equal. If both
+     * are non-null, they are compared according to their natural order.
+     * 
+     * @return a comparator that considers {@link Decimal#NULL} to be less than non-null.
+     * @since 22.6
+     */
+    public static Comparator<Decimal> nullsFirstComparator() {
+        return NullObjectComparator.nullsFirst();
+    }
+
+    /**
+     * Returns a {@link Decimal#NULL}-friendly comparator that considers {@link Decimal#NULL} to be
+     * more than non-null. When both are {@link Decimal#NULL}, they are considered equal. If both
+     * are non-null, they are compared according to their natural order.
+     * 
+     * @return a comparator that considers {@link Decimal#NULL} to be more than non-null.
+     * @since 22.6
+     */
+    public static Comparator<Decimal> nullsLastComparator() {
+        return NullObjectComparator.nullsLast();
     }
 
 }
