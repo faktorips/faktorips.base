@@ -21,11 +21,16 @@
         "code" : "java.class.externalClassExposedInAPI",
         "new" : "interface org.faktorips.runtime..*",
         "justification" : "Reexported runtime API"
-      },{
+      }, {
         "regex" : true,
         "code" : "java.class.externalClassExposedInAPI",
         "new" : "class org.faktorips.values..*",
         "justification" : "Reexported values API"
+      }, {
+        "ignore": true,
+        "code": "java.annotation.added",
+        "annotation": "@java.lang.Override",
+        "justification": "false positive"
       } ]
     }
   }

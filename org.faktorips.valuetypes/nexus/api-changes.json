@@ -17,6 +17,38 @@
           "code": "java.annotation.removed",
           "annotation": "@java.lang.Override",
           "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "method <C extends org.faktorips.values.NullObjectSupport & java.lang.Comparable<C>> java.util.Comparator<C> org.faktorips.values.NullObjectComparator<N extends org.faktorips.values.NullObjectSupport>::nullsFirst()",
+          "new": "method <C extends org.faktorips.values.NullObjectSupport & java.lang.Comparable<C>> java.util.Comparator<C> org.faktorips.values.NullObjectComparator<N extends org.faktorips.values.NullObjectSupport>::nullsFirst()",
+          "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+          "justification": "clean up"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "method <C extends org.faktorips.values.NullObjectSupport & java.lang.Comparable<C>> org.faktorips.values.NullObjectComparator<C> org.faktorips.values.NullObjectComparator<N extends org.faktorips.values.NullObjectSupport>::nullsLast()",
+          "new": "method <C extends org.faktorips.values.NullObjectSupport & java.lang.Comparable<C>> org.faktorips.values.NullObjectComparator<C> org.faktorips.values.NullObjectComparator<N extends org.faktorips.values.NullObjectSupport>::nullsLast()",
+          "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+          "justification": "clean up"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::equals(java.lang.Object)",
+          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::equals(java.lang.Object)",
+          "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+          "justification": "clean up"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "old": "method boolean org.faktorips.valueset.OrderedValueSet<E>::equals(java.lang.Object)",
+          "new": "method boolean org.faktorips.valueset.OrderedValueSet<E>::equals(java.lang.Object)",
+          "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+          "justification": "clean up"
         }
       ]
     }
