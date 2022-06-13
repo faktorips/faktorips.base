@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Test Support
 Bundle-SymbolicName: org.faktorips.testsupport
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.6.1.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations,

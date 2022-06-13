@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>org.faktorips.aggregator.plugins</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
+        <version>22.6.1-SNAPSHOT</version>
         <relativePath>../org.faktorips.aggregator/plugins/pom.xml</relativePath>
     </parent>
 
