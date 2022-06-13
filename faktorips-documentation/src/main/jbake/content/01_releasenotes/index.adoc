@@ -6,6 +6,9 @@
 
 == Release Notes
 
+=== Version 21.12.5
+Bei der Division eines `Decimal`-Werts durch `Decimal.NULL` wird jetzt wie bereits zuvor im Javadoc dokumentiert `Decimal.NULL` zurück gegeben. (https://jira.faktorzehn.de/browse/FIPS-8989[FIPS-8989])
+
 === Version 21.12.4
 
 Faktor-IPS kann mit Version 21.12.4 Konfigurationen für andere Faktor-IPS-Features (z.B. die Produktvarianten) in der .ipsproject-Datei ablegen. Dies hat keine Auswirkungen auf die Runtime. 
