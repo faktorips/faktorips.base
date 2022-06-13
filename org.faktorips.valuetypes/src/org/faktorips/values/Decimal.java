@@ -486,7 +486,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      */
     public Decimal divide(Decimal d, int scale, RoundingMode roundingMode) {
         if (isNull() || d.isNull()) {
-            return this;
+            return Decimal.NULL;
         }
         return new Decimal(value.divide(d.value, scale, roundingMode));
     }

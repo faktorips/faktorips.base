@@ -29,6 +29,33 @@
           "code": "java.missing.oldClass",
           "old": "missing-class javax.xml.bind.annotation.adapters.XmlAdapter",
           "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "annotation": "@java.lang.Override",
+          "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "returnTypeErasureChanged",
+          "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<?, T> org.faktorips.runtime.IEnumValueLookupService<T>::getXmlAdapter()",
+          "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<?, T> org.faktorips.runtime.IEnumValueLookupService<T>::getXmlAdapter()",
+          "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "returnTypeErasureChanged",
+          "old": "parameter void org.faktorips.runtime.InMemoryRuntimeRepository::addEnumXmlAdapter(===javax.xml.bind.annotation.adapters.XmlAdapter<?, ?>===)",
+          "new": "parameter void org.faktorips.runtime.InMemoryRuntimeRepository::addEnumXmlAdapter(===javax.xml.bind.annotation.adapters.XmlAdapter<?, ?>===)",
+          "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "returnTypeErasureChanged",
+          "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+          "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+          "justification": "false positive"
         }
       ]
     }

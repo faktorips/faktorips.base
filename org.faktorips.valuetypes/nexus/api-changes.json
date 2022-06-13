@@ -1,5 +1,26 @@
 {
   "all-versions": [
+  {
+    "extension": "revapi.differences",
+  "id": "all-versions",
+    "configuration": {
+      "ignore": true,
+      "differences": [
+        {
+          "ignore": true,
+          "code": "java.annotation.added",
+          "annotation": "@java.lang.Override",
+          "justification": "false positive"
+        },
+        {
+          "ignore": true,
+          "code": "java.annotation.removed",
+          "annotation": "@java.lang.Override",
+          "justification": "false positive"
+        }
+      ]
+    }
+   }, 
     {
       "extension": "revapi.filter",
       "configuration": {
