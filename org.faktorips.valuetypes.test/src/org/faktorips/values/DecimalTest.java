@@ -10,6 +10,8 @@
 
 package org.faktorips.values;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -277,6 +279,38 @@ public class DecimalTest {
         assertEquals(Decimal.valueOf("2.2"), d1.multiply((long)2));
 
         assertTrue(Decimal.NULL.multiply((long)2).isNull());
+    }
+
+    @Test
+    public void testDivide() {
+        Decimal d1 = Decimal.valueOf("3.5");
+        Decimal d2 = Decimal.valueOf("2");
+
+        assertThat(d1.divide(d2, 1, RoundingMode.HALF_UP), is(Decimal.valueOf("1.8")));
+        assertThat(d1.divide(d2, 1, RoundingMode.HALF_DOWN), is(Decimal.valueOf("1.7")));
+        assertThat(d1.divide(d2, 2, RoundingMode.HALF_UP), is(Decimal.valueOf("1.75")));
+        assertThat(d1.divide(Decimal.NULL, 2, RoundingMode.HALF_UP), is(Decimal.NULL));
+        assertThat(Decimal.NULL.divide(d2, 2, RoundingMode.HALF_UP), is(Decimal.NULL));
+    }
+
+    @Test
+    public void testDivide_int() {
+        Decimal d1 = Decimal.valueOf("3.5");
+
+        assertThat(d1.divide(2, 1, RoundingMode.HALF_UP), is(Decimal.valueOf("1.8")));
+        assertThat(d1.divide(2, 1, RoundingMode.HALF_DOWN), is(Decimal.valueOf("1.7")));
+        assertThat(d1.divide(2, 2, RoundingMode.HALF_UP), is(Decimal.valueOf("1.75")));
+        assertThat(Decimal.NULL.divide(2, 2, RoundingMode.HALF_UP), is(Decimal.NULL));
+    }
+
+    @Test
+    public void testDivide_long() {
+        Decimal d1 = Decimal.valueOf("3.5");
+
+        assertThat(d1.divide(2L, 1, RoundingMode.HALF_UP), is(Decimal.valueOf("1.8")));
+        assertThat(d1.divide(2L, 1, RoundingMode.HALF_DOWN), is(Decimal.valueOf("1.7")));
+        assertThat(d1.divide(2L, 2, RoundingMode.HALF_UP), is(Decimal.valueOf("1.75")));
+        assertThat(Decimal.NULL.divide(2L, 2, RoundingMode.HALF_UP), is(Decimal.NULL));
     }
 
     @Test
