@@ -47,7 +47,7 @@ public class EnumTypeTest {
         List<EnumAttribute> fooAttributes = new EnumType(Foo.class).getAttributes();
         assertThat(fooAttributes.size(), is(3));
         assertThat(fooAttributes.get(0).getName(), is(equalTo("x")));
-        assertThat(fooAttributes.get(1).getName(), is(equalTo("z")));
+        assertThat(fooAttributes.get(1).getName(), is(equalTo("Z")));
         assertThat(fooAttributes.get(2).getName(), is(equalTo("y")));
         assertThat(new EnumType(Bar.class).getAttributes().size(), is(0));
     }
@@ -55,6 +55,7 @@ public class EnumTypeTest {
     @Test
     public void testGetAttribute() {
         assertThat(new EnumType(Foo.class).getAttribute("x").getName(), is(equalTo("x")));
+        assertThat(new EnumType(Foo.class).getAttribute("Z").getName(), is(equalTo("Z")));
     }
 
     @Test
@@ -62,7 +63,7 @@ public class EnumTypeTest {
         List<String> fooAttributes = new EnumType(Foo.class).getAttributenames();
         assertThat(fooAttributes.size(), is(3));
         assertThat(fooAttributes.get(0), is(equalTo("x")));
-        assertThat(fooAttributes.get(1), is(equalTo("z")));
+        assertThat(fooAttributes.get(1), is(equalTo("Z")));
         assertThat(fooAttributes.get(2), is(equalTo("y")));
     }
 
@@ -95,7 +96,7 @@ public class EnumTypeTest {
         new EnumType(Bar.class).getDisplayNameAttribute().getName();
     }
 
-    @IpsEnumType(name = "my.foo", attributeNames = { "x", "z", "y" })
+    @IpsEnumType(name = "my.foo", attributeNames = { "x", "Z", "y" })
     private static class Foo {
 
         private Integer x;
@@ -112,7 +113,7 @@ public class EnumTypeTest {
             return y;
         }
 
-        @IpsEnumAttribute(name = "z")
+        @IpsEnumAttribute(name = "Z")
         public Boolean getZ() {
             return z;
         }

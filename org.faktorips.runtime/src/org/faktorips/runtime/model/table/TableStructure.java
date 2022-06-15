@@ -73,7 +73,7 @@ public class TableStructure extends ModelElement {
      * @return TableColumn of the column with the given name
      */
     public TableColumn getColumn(String columnName) {
-        return columnModels.get(columnName);
+        return columnModels.get(IpsStringUtils.toLowerFirstChar(columnName));
     }
 
     /**

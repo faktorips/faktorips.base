@@ -57,7 +57,7 @@ public class TestTableRow {
     /**
      * @generated
      */
-    @IpsTableColumn(name = "gender")
+    @IpsTableColumn(name = "Gender")
     public Integer getGender() {
         return gender;
     }
