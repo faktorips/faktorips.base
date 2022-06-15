@@ -43,6 +43,17 @@
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.text</artifactId>
             <version>3.8.100</version>
+            <exclusions>
+              <exclusion>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.preferences</artifactId>
+              </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.preferences</artifactId>
+            <version>3.7.300</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.emf</groupId>

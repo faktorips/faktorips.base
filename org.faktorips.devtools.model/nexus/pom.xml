@@ -37,13 +37,13 @@
             <artifactId>opencsv</artifactId>
             <version>3.3</version>
         </dependency>
-        <!-- IMPlEMENTATION DEPENDENCIES -->
+        <!-- IMPlEMENTATION DEPENDENCIES 
         <dependency>
             <groupId>org.eclipse.platform</groupId>
             <artifactId>org.eclipse.core.filesystem</artifactId>
             <version>1.7.0</version>
         </dependency>
-
+-->
     </dependencies>
 
     <build>

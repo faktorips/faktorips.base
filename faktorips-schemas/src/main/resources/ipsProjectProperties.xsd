@@ -13,6 +13,7 @@
             <xsd:element name="IpsObjectPath" type="IpsObjectPathType" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Datatypes" type="DatatypesType" minOccurs="1" maxOccurs="1" />
             <xsd:element name="ResourcesExcludedFromProductDefinition" type="ResourcesExcludedFromProductDefinitionType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ProductRelease" type="ProductReleaseType" minOccurs="0" maxOccurs="1" />
             <xsd:element name="Version" type="VersionType" minOccurs="0" maxOccurs="1" />
             <xsd:element name="AdditionalSettings" type="AdditionalSettingsType" minOccurs="0" maxOccurs="1" />
             <xsd:element name="PersistenceOptions" type="PersistenceOptionsType" minOccurs="0" maxOccurs="1" />
@@ -88,6 +89,10 @@
 
     <xsd:complexType name="ResourceType">
         <xsd:attribute name="path" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ProductReleaseType">
+        <xsd:attribute name="releaseExtensionId" type="string" />
     </xsd:complexType>
 
     <xsd:complexType name="DatatypesType">
