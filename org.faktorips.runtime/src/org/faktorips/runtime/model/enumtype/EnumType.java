@@ -86,7 +86,7 @@ public class EnumType extends ModelElement {
      * exists.
      */
     public EnumAttribute getAttribute(String name) {
-        return attributeModels.get(name);
+        return attributeModels.get(IpsStringUtils.toLowerFirstChar(name));
     }
 
     /**
