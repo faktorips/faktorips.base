@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.junit.Test;
@@ -81,8 +82,7 @@ public class Migration_22_6_0Test extends AbstractStdBuilderTest {
         assertThat(pcWithRules.getNumOfRules(), is(3));
         String pcWithRulesXml = new String(pcWithRules.getIpsSrcFile().getContentFromEnclosingResource().readAllBytes(),
                 StandardCharsets.UTF_8);
-        assertThat(pcWithRulesXml,
-                containsString("https://doc.faktorzehn.org/schema/faktor-ips/22.6/PolicyCmptType.xsd"));
+        assertThat(pcWithRulesXml, containsString(XmlUtil.getSchemaLocation(IpsObjectType.POLICY_CMPT_TYPE)));
         assertThat(pcWithRulesXml, not(containsString("BusinessFunction")));
         assertThat(pcWithRulesXml, not(containsString("appliedForAllBusinessFunctions")));
 
