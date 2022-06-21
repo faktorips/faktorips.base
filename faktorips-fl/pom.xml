@@ -10,7 +10,7 @@
 
     <artifactId>faktorips-fl</artifactId>
     <packaging>bundle</packaging>
-    
+
     <name>Faktor-IPS Formula Language</name>
     <description>Formula language for the Faktor-IPS design time tools</description>
 
@@ -31,7 +31,7 @@
                             org.faktorips.fl,
                             org.faktorips.fl.*
                         </Export-Package>
-						<Bundle-SymbolicName>org.faktorips.fl</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>org.faktorips.fl</Bundle-SymbolicName>
                     </instructions>
                 </configuration>
             </plugin>
@@ -42,6 +42,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

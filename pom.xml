@@ -10,9 +10,7 @@
 <!-- restrictions as well as the possibility of alternative license terms. -->
 <!-- -->
 <!-- ########################################################################### -->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.faktorips</groupId>
     <artifactId>base</artifactId>
@@ -37,6 +35,7 @@
         <maven-bundle-plugin-version>5.1.6</maven-bundle-plugin-version>
         <version.joda>2.1</version.joda>
         <moditect-maven-plugin-version>1.0.0.RC2</moditect-maven-plugin-version>
+        <flatten-maven-plugin-version>1.2.7</flatten-maven-plugin-version>
         <!-- java and compiler options -->
         <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -238,10 +237,10 @@
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>${spotbugs-maven-plugin-version}</version>
                 </plugin>
-                <plugin>                
-					<groupId>org.moditect</groupId>
-					<artifactId>moditect-maven-plugin</artifactId>
-					<version>${moditect-maven-plugin-version}</version>
+                <plugin>
+                    <groupId>org.moditect</groupId>
+                    <artifactId>moditect-maven-plugin</artifactId>
+                    <version>${moditect-maven-plugin-version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.felix</groupId>
@@ -266,6 +265,36 @@
                             <Export-Package>org.faktorips.*</Export-Package>
                         </instructions>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>flatten-maven-plugin</artifactId>
+                    <version>${flatten-maven-plugin-version}</version>
+                    <configuration>
+                        <pomElements>
+                            <build>remove</build>
+                            <name>keep</name>
+                            <description>keep</description>
+                        </pomElements>
+                    </configuration>
+                    <executions>
+                        <!-- enable flattening -->
+                        <execution>
+                            <id>flatten</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>flatten</goal>
+                            </goals>
+                        </execution>
+                        <!-- ensure proper cleanup -->
+                        <execution>
+                            <id>flatten.clean</id>
+                            <phase>clean</phase>
+                            <goals>
+                                <goal>clean</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
