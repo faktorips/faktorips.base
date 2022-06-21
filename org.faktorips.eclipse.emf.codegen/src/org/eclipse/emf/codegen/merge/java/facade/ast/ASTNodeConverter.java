@@ -458,7 +458,6 @@ public class ASTNodeConverter implements NodeConverter {
          * of any public static final field are replaced by the name of that field.
          * <li><code>AnonymousClassDeclaration is the body of enum constant
          * </ul>
-         * <p>
          * 
          * @param field
          * @param enumConstant

@@ -39,7 +39,6 @@ public class TocHierarchyCreator {
     /**
      * Creates a {@link IRuntimeRepository} with a hierarchy from a list of runtime packages.
      * Supports flat and nested packages.
-     * <p>
      * 
      * <pre>
      *       Basis

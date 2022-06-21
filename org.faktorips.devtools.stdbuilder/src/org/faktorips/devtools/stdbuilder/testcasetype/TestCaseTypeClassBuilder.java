@@ -530,8 +530,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
      * For each test rule parameter in the given list.
      * <p>
      * Example (one rule):
-     * <p>
-     * 
+     *
      * <pre>
      * erwartetVerletztRegeln = new ArrayList();
      * erwartetNichtVerletztRegeln = new ArrayList();

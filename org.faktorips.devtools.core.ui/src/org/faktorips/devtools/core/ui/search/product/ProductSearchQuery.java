@@ -31,8 +31,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
  * Contains the logic of the Faktor-IPS Product Search. It contains a
  * {@link ProductSearchPresentationModel} with the conditions for the search and the result is
  * stored in the {@link IpsSearchResult}
- * <p>
- * 
+ *
  * @author dicker
  */
 public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPresentationModel> {

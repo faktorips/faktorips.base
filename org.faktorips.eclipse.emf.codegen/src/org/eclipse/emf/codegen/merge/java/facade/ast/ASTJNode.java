@@ -51,7 +51,6 @@ import org.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;
  * Removed ASTNode (returned by {@link #getRemovedASTNode()}) is used to keep reference to the node
  * that was removed. This allows to notify the range computer when the removed node is inserted
  * again.
- * <p>
  * 
  * @see #getWrappedObject()
  * @see #getASTNode()
@@ -106,7 +105,6 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * addition, for the cloned nodes ASTNode parent attribute might not be set either.
      * <p>
      * When ASTJNode is deleted, parent is set to <code>null</code>.
-     * <p>
      */
     private ASTJNode<?> parent = null;
 
@@ -689,7 +687,6 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * <p>
      * Note that the type <code>value</code> parameter will only be checked by
      * {@link ASTRewrite#set(ASTNode, StructuralPropertyDescriptor, Object, org.eclipse.text.edits.TextEditGroup)}
-     * <p>
      * 
      * @param node
      * @param value
@@ -707,7 +704,6 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
      * <p>
      * Note that the type <code>value</code> parameter will only be checked by
      * {@link ASTRewrite#set(ASTNode, StructuralPropertyDescriptor, Object, org.eclipse.text.edits.TextEditGroup)}
-     * <p>
      * 
      * @param node
      * @param stringValue

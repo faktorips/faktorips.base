@@ -205,8 +205,7 @@ public abstract class XProductClass extends XType {
      * Getting the list of associations defined in this type. With the parameter
      * changableAssociations you could specify whether you want the associations that are changeable
      * over time or not changeable (sometimes called static) associations.
-     * <p>
-     * 
+     *
      * @param changableAssociations true if you want only associations changeable over time, false
      *            to get only not changeable over time associations
      * @return The list of associations without derived unions
@@ -246,8 +245,7 @@ public abstract class XProductClass extends XType {
      * Getting the list of {@link ITableStructureUsage} defined in this type. With the parameter
      * changableAssociations you could specify whether you want the {@link ITableStructureUsage}
      * that are changeable over time or not changeable (sometimes called static).
-     * <p>
-     * 
+     *
      * @param changableTableStructureUsage true if you want only {@link ITableStructureUsage}
      *            changeable over time, false to get only not changeable over time
      *            {@link ITableStructureUsage}

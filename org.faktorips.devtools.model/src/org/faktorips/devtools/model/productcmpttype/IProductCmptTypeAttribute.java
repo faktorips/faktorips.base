@@ -190,7 +190,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * If this attribute is marked as multi Lingual, the text of this attribute can be entered in
      * different languages. If it is not marked as multi Lingual, the text of this attribute can
      * only be entered in one language in the Product-Component editor.
-     * <p>
      * 
      * @param multiLingual to mark this attribute as multi lingual attribute, false to mark it as
      *            not supporting multi-lingual

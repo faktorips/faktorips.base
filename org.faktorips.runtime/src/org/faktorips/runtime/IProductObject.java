@@ -24,7 +24,6 @@ public interface IProductObject extends IProductComponentLinkSource {
      * Creates a new policy component that is configured by this product component generation. After
      * creating the policy component it is automatically initialized. The new policy component is
      * not added to any parent structure.
-     * <p>
      * 
      * @throws RuntimeException if this product component does not configure a policy component.
      */

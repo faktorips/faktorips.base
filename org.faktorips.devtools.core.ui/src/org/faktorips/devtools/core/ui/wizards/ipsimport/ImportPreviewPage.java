@@ -79,8 +79,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     /**
      * Displays a preview of the external file which optionally can be adjusted with custom
      * controls.
-     * <p>
-     * 
+     *
      * @param filename The name of the file to show the preview for.
      * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
      *            they are created using this table format by looking up the <code>guiClass</code>
@@ -297,8 +296,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     /**
      * Reinitializes the contents of this page.
-     * <p>
-     * 
+     *
      * @param filename The name of the file to show the preview for.
      * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
      *            they are created using this table format by looking up the <code>guiClass</code>

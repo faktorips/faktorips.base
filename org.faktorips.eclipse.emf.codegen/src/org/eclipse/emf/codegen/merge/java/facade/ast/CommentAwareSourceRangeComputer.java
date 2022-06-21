@@ -480,7 +480,6 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      * with only whitespace between <code>position</code> and the start of the line comment.
      * <p>
      * Uses source contents and comment arrays.
-     * <p>
      * 
      * @param position
      * @return original position if no such comment exist
@@ -509,7 +508,6 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      * ends before <code>nodeExtendedEnd</code>.
      * <p>
      * Does not use source contents.
-     * <p>
      * 
      * @param nodeEnd
      * @param nodeExtendedEnd line comment must end before this position

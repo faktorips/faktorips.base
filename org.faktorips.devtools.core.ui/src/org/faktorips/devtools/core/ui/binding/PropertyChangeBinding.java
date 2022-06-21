@@ -20,8 +20,7 @@ import org.eclipse.swt.widgets.Control;
  * recognize any changes done to the given object (for example a {@link PresentationModelObject}) at
  * the specified property. The method is also called if the binding context does not know which
  * property has changed (property name is <code>null</code>).
- * <p>
- * 
+ *
  * @param <T> The expected type of the property's value.
  * 
  * @author dirmeier

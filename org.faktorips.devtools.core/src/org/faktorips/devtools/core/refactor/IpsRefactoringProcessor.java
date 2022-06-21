@@ -145,7 +145,6 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
     /**
      * Adds an entry to the provided {@link RefactoringStatus} for every messages contained in the
      * provided {@link MessageList}.
-     * <p>
      * 
      * @param validationMessageList {@link MessageList} from which messages shall be added to the
      *            {@link RefactoringStatus}

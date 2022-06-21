@@ -624,8 +624,7 @@ public abstract class AbstractGeneratorModelNode {
      * <p>
      * Use to register a method that should be included in the refactoring support and the
      * jump-to-source-code feature.
-     * <p>
-     * 
+     *
      * @param methodName the name of the generated method
      * @param parameterTypesAndNames The types and names for the parameters of the generated method.
      *            If you want to create the Method {@link String#indexOf(String, int)}, you would
