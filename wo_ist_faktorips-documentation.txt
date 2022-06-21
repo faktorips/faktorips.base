@@ -1,0 +1,1 @@
+Die Dokumentation ist im branch v21_12_patches im Repository https://gerrit.faktorzehn.de/faktorips/faktorips.doc

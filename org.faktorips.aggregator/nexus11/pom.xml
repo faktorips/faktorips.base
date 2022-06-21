@@ -10,12 +10,13 @@
         <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
         <javadoc.failOnError>true</javadoc.failOnError>
         <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
+        <revapi.skip>true</revapi.skip>
     </properties>
 
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-nexus</artifactId>
-        <version>1.2.5</version>
+        <version>1.2.9</version>
         <relativePath></relativePath>
     </parent>
 
@@ -52,7 +53,7 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
+  <dependencies>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>

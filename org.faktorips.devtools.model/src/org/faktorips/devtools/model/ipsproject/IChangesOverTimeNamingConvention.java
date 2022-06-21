@@ -17,15 +17,13 @@ import java.util.Locale;
  * <p>
  * We distinguish between two different types of product changes over time.
  * <ol>
- * <li>
- * <h3>Version:</h3> A new product version affects only new insurance policies. Existing policies
- * are not affected by a new product version in any way. Existing policies have to be explicitly
- * converted to the product version, e.g. by a batch program. Perhaps the customer rejects changing
- * to the product version and wants to remain with the old one.</li>
- * <li>
- * <h3>Generation:</h3> A new product generation affects existing policies (and of course new
- * policies). If a policy is changed in a way where product data is necessary, the appropriate
- * product is determined automatically based on the change's effective date.</li>
+ * <li><strong>Version:</strong> A new product version affects only new insurance policies. Existing
+ * policies are not affected by a new product version in any way. Existing policies have to be
+ * explicitly converted to the product version, e.g. by a batch program. Perhaps the customer
+ * rejects changing to the product version and wants to remain with the old one.</li>
+ * <li><strong>Generation:</strong> A new product generation affects existing policies (and of
+ * course new policies). If a policy is changed in a way where product data is necessary, the
+ * appropriate product is determined automatically based on the change's effective date.</li>
  * </ol>
  * <p>
  * While the above concepts are everywhere the same, there is no commonly accepted naming standard

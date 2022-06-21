@@ -10,6 +10,7 @@
         <java.version>11</java.version>
         <target-platform>eclipse-2019-03</target-platform>
         <checkstyle.header.file>${project.basedir}/../org.faktorips.aggregator/checkstyle.java.header</checkstyle.header.file>
+        <tycho-version>2.4.0</tycho-version>
     </properties>
 
     <groupId>org.faktorips</groupId>
@@ -20,7 +21,7 @@
     <parent>
         <groupId>de.faktorzehn</groupId>
         <artifactId>faktorzehn-tycho-build</artifactId>
-        <version>1.2.2</version>
+        <version>1.2.8</version>
     </parent>
 
     <!-- These are all modules that are included in the Faktor-IPS build -->
@@ -34,7 +35,6 @@
         <module>tests</module>
         <module>../faktorips-maven-archetype</module>
         <module>../faktorips-maven-plugin</module>
-        <module>../faktorips-documentation</module>
         <module>../faktorips-schemas</module>
         <module>sites</module>
         <module>../faktorips-coverage</module>
