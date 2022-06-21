@@ -3,19 +3,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <maven-source-plugin-version>2.4</maven-source-plugin-version>
+        <maven-source-plugin-version>3.2.1</maven-source-plugin-version>
         <maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
 
         <!-- Use this to override the default javadoc settings in the parent pom -->
         <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
         <javadoc.failOnError>true</javadoc.failOnError>
         <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
+        <revapi.skip>true</revapi.skip>
     </properties>
 
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-nexus</artifactId>
-        <version>1.2.5</version>
+        <version>1.2.9</version>
         <relativePath></relativePath>
     </parent>
 
