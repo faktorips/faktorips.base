@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Runtime
 Bundle-SymbolicName: org.faktorips.runtime
-Bundle-Version: 22.6.1.qualifier
+Bundle-Version: 22.6.2.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Export-Package: org.faktorips.runtime,
  org.faktorips.runtime.caching,
