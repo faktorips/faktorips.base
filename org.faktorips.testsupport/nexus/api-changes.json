@@ -6,9 +6,25 @@
         "elements": {
           "exclude": [
             "(missing-class|class|interface|enum|field|method .*) org\\.faktorips\\.runtime\\..*",
+            "(missing-class|class|interface|enum|field|method .*) org\\.faktorips\\.valueset\\..*",
             "(missing-class|class|interface|enum|field|method .*) org\\.hamcrest\\..*"
           ]
         }
+      }
+    },
+    {
+      "extension": "revapi.differences",
+      "id": "all-versions",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "annotation": "@java.lang.Override",
+            "justification": "false positive"
+          }
+        ]
       }
     }
   ],

@@ -40,6 +40,11 @@
         "code" : "java.class.nonPublicPartOfAPI",
         "new" : "class org.faktorips.fl.parser.JJTFlParserState",
         "justification" : "old API, won't refactor"
+      }, {
+        "ignore": true,
+        "code": "java.annotation.added",
+        "annotation": "@java.lang.Override",
+        "justification": "false positive"
       } ]
     }
   }

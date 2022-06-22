@@ -1,0 +1,69 @@
+{
+  "all-versions": [
+    {
+      "extension": "revapi.differences",
+      "id": "all-versions",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "annotation": "@java.lang.Override",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.missing.oldClass",
+            "old": "missing-class org.faktorips.runtime.formula.IFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.class.externalClassNoLongerExposedInAPI",
+            "old": "missing-class org.faktorips.runtime.formula.IFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.class.externalClassExposedInAPI",
+            "new": "interface org.faktorips.runtime.formula.IFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.field.addedStaticField",
+            "new": "field org.faktorips.runtime.formula.AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG @ org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.added",
+            "new": "method java.lang.Object org.faktorips.runtime.formula.AbstractFormulaEvaluator::evaluate(java.lang.String, java.lang.Object[]) @ org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.added",
+            "new": "method java.util.Map<java.lang.String, java.lang.String> org.faktorips.runtime.formula.AbstractFormulaEvaluator::getNameToExpressionMap() @ org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.added",
+            "new": "method java.lang.Object org.faktorips.runtime.formula.AbstractFormulaEvaluator::getObject() @ org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.missing.oldSuperType",
+            "old": "class org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "new": "class org.faktorips.runtime.formula.groovy.GroovyFormulaEvaluator",
+            "superClass": "org.faktorips.runtime.formula.AbstractFormulaEvaluator",
+            "justification": "false positive"
+          }
+        ]
+      }
+    }
+  ]
+}

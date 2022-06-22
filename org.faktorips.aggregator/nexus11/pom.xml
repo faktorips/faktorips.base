@@ -1,101 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <properties>
-        <jdk.version>11</jdk.version>
-        <javax.activation.version>1.2.0</javax.activation.version>
+  <properties>
+    <jdk.version>11</jdk.version>
+    <javax.activation.version>1.2.0</javax.activation.version>
 
-        <!-- Use this to override the default javadoc settings in the parent pom -->
-        <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
-        <javadoc.failOnError>true</javadoc.failOnError>
-        <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
-        <revapi.skip>true</revapi.skip>
-    </properties>
+    <!-- Use this to override the default javadoc settings in the parent pom -->
+    <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
+    <javadoc.failOnError>true</javadoc.failOnError>
+    <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
+  </properties>
 
-    <parent>
-        <groupId>org.faktorips</groupId>
-        <artifactId>faktorips-nexus</artifactId>
-        <version>1.2.9</version>
-        <relativePath></relativePath>
-    </parent>
-
+  <parent>
     <groupId>org.faktorips</groupId>
-    <artifactId>faktorips-nexus-base-11</artifactId>
-    <version>21.12.6-SNAPSHOT</version>
-    <packaging>pom</packaging>
+    <artifactId>faktorips-nexus</artifactId>
+        <version>1.2.9</version>
+    <relativePath></relativePath>
+  </parent>
 
-    <name>Faktor-IPS Library for Maven Java11</name>
+  <groupId>org.faktorips</groupId>
+  <artifactId>faktorips-nexus-base-11</artifactId>
+  <version>21.12.6-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <scm>
-        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-    </scm>
+  <name>Faktor-IPS Library for Maven Java11</name>
 
-    <modules>
-        <module>../../org.faktorips.devtools.model/nexus</module>
-        <module>../../org.faktorips.devtools.model.builder/nexus</module>
-        <module>../../org.faktorips.devtools.model.decorators/nexus</module>
-        <module>../../org.faktorips.devtools.htmlexport/nexus</module>
-        <module>../../org.faktorips.devtools.stdbuilder/nexus</module>
-        <module>../../org.faktorips.eclipse.emf.codegen/nexus</module>
-        <module>../../org.faktorips.dtflcommon/nexus</module>
-        <module>../../org.faktorips.fl/nexus</module>
-        <module>../../org.faktorips.util/nexus</module>
-    </modules>
+  <scm>
+    <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+  </scm>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <release>${jdk.version}</release>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <modules>
+    <module>../../org.faktorips.devtools.model/nexus</module>
+    <module>../../org.faktorips.devtools.model.builder/nexus</module>
+    <module>../../org.faktorips.devtools.model.decorators/nexus</module>
+    <module>../../org.faktorips.devtools.htmlexport/nexus</module>
+    <module>../../org.faktorips.devtools.stdbuilder/nexus</module>
+    <module>../../org.faktorips.eclipse.emf.codegen/nexus</module>
+    <module>../../org.faktorips.dtflcommon/nexus</module>
+    <module>../../org.faktorips.fl/nexus</module>
+    <module>../../org.faktorips.util/nexus</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <release>${jdk.version}</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
   <dependencies>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-            <version>${jaxb.impl.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
-            <version>${javax.activation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb.api.version}</version>
-        </dependency>
-    </dependencies>
-    <profiles>
-        <profile>
-            <id>CI</id>
-            <distributionManagement>
-                <repository>
-                    <id>releases</id>
-                    <name>Faktor-IPS Releases</name>
-                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>snapshots</id>
-                    <name>Faktor-IPS Snapshots</name>
-                    <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
+      <version>${jaxb.impl.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.activation</groupId>
+      <artifactId>javax.activation</artifactId>
+      <version>${javax.activation.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>${jaxb.api.version}</version>
+    </dependency>
+  </dependencies>
+  <profiles>
+    <profile>
+      <id>CI</id>
+      <distributionManagement>
+        <repository>
+          <id>releases</id>
+          <name>Faktor-IPS Releases</name>
+          <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+          <id>snapshots</id>
+          <name>Faktor-IPS Snapshots</name>
+          <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+      </distributionManagement>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+              <skip>false</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

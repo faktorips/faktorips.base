@@ -10,7 +10,6 @@
         <javadoc.doclint.string>accessibility,html,reference,syntax,-missing</javadoc.doclint.string>
         <javadoc.failOnError>true</javadoc.failOnError>
         <javadoc.detectJavaApiLink>true</javadoc.detectJavaApiLink>
-        <revapi.skip>true</revapi.skip>
     </properties>
 
     <parent>

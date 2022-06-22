@@ -1,40 +1,246 @@
 {
   "all-versions": [
-  {
-    "extension": "revapi.differences",
-	"id": "all-versions",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.missing.oldClass",
-          "old": "missing-class junit.framework.Test",
-          "new": "missing-class junit.framework.Test",
-          "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter and RevAPI is confused"
-        },
-        {
-          "code": "java.missing.newClass",
-          "old": "missing-class junit.framework.Test",
-          "new": "missing-class junit.framework.Test",
-          "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter"
-        },
-        {
-          "ignore": true,
-          "code": "java.missing.oldClass",
-          "old": "missing-class javax.xml.bind.JAXBContext",
-          "justification": "false positive"
-        },
-        {
-          "ignore": true,
-          "code": "java.missing.oldClass",
-          "old": "missing-class javax.xml.bind.annotation.adapters.XmlAdapter",
-          "justification": "false positive"
+    {
+      "extension": "revapi.filter",
+      "configuration": {
+        "elements": {
+          "exclude": [
+            "(missing-class|class|interface|enum|field|method .*) org\\.faktorips\\.values\\..*",
+            "(missing-class|class|interface|enum|field|method .*) org\\.faktorips\\.valueset\\..*"
+          ]
         }
-      ]
-    }
-   }, 
-   {
-   "extension": "revapi.filter",
+      }
+    },
+    {
+      "extension": "revapi.differences",
+      "id": "all-versions",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.missing.oldClass",
+            "old": "missing-class junit.framework.Test",
+            "new": "missing-class junit.framework.Test",
+            "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter and RevAPI is confused"
+          },
+          {
+            "code": "java.missing.newClass",
+            "old": "missing-class junit.framework.Test",
+            "new": "missing-class junit.framework.Test",
+            "justification": "JUnit dependency has always been there for IpsTestSuiteJUnitAdapter"
+          },
+          {
+            "ignore": true,
+            "code": "java.missing.oldClass",
+            "old": "missing-class javax.xml.bind.JAXBContext",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.missing.oldClass",
+            "old": "missing-class javax.xml.bind.annotation.adapters.XmlAdapter",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "annotation": "@java.lang.Override",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<?, T> org.faktorips.runtime.IEnumValueLookupService<T>::getXmlAdapter()",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<?, T> org.faktorips.runtime.IEnumValueLookupService<T>::getXmlAdapter()",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.parameterTypeErasureChanged",
+            "old": "parameter void org.faktorips.runtime.InMemoryRuntimeRepository::addEnumXmlAdapter(===javax.xml.bind.annotation.adapters.XmlAdapter<?, ?>===)",
+            "new": "parameter void org.faktorips.runtime.InMemoryRuntimeRepository::addEnumXmlAdapter(===javax.xml.bind.annotation.adapters.XmlAdapter<?, ?>===)",
+            "parameterIndex": "0",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method T org.faktorips.runtime.internal.ProductComponentLink<T extends org.faktorips.runtime.IProductComponent>::getTarget()",
+            "new": "method T org.faktorips.runtime.internal.ProductComponentLink<T extends org.faktorips.runtime.IProductComponent>::getTarget()",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult()",
+            "new": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult()",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.KeyStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "new": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.KeyStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.RangeStructure<K extends java.lang.Comparable<? super K>, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "new": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.RangeStructure<K extends java.lang.Comparable<? super K>, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<K extends java.lang.Comparable<? super K>, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "new": "method org.faktorips.runtime.internal.tableindex.SearchStructure<R> org.faktorips.runtime.internal.tableindex.AbstractMapStructure<K, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>::emptyResult() @ org.faktorips.runtime.internal.tableindex.TwoColumnRangeStructure<K extends java.lang.Comparable<? super K>, V extends org.faktorips.runtime.internal.tableindex.SearchStructure<R> & org.faktorips.runtime.internal.tableindex.MergeAndCopyStructure<V>, R>",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.IpsModel::getTableStructure(org.faktorips.runtime.ITable<?>)",
+            "new": "method org.faktorips.runtime.model.table.TableStructure org.faktorips.runtime.model.IpsModel::getTableStructure(org.faktorips.runtime.ITable<?>)",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method void org.faktorips.runtime.CardinalityRange::<init>(java.lang.Integer, java.lang.Integer, java.lang.Integer)",
+            "new": "method void org.faktorips.runtime.CardinalityRange::<init>(java.lang.Integer, java.lang.Integer, java.lang.Integer)",
+            "annotation": "@java.lang.SuppressWarnings({\"deprecation\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.ClassloaderRuntimeRepository",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.ClassloaderRuntimeRepository",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.annotation.added",
+            "old": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepository",
+            "new": "method javax.xml.bind.annotation.adapters.XmlAdapter<java.lang.String, ?> org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::createEnumXmlAdapter(java.lang.String, org.faktorips.runtime.IRuntimeRepository) throws java.lang.Exception @ org.faktorips.runtime.productdataprovider.DetachedContentRuntimeRepository",
+            "annotation": "@java.lang.SuppressWarnings({\"unchecked\"})",
+            "justification": "clean up"
+          },
+          {
+            "ignore": true,
+            "code": "java.missing.oldSuperType",
+            "old": "class org.faktorips.runtime.CardinalityRange",
+            "new": "class org.faktorips.runtime.CardinalityRange",
+            "superClass": "org.faktorips.valueset.IntegerRange",
+            "justification": "RevAPI is confused"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ConstantPolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ConstantPolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ConstantPolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ConstantPolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.DefaultPolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.DefaultPolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.DefaultPolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.DefaultPolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ModelObjectAttribute::getValueSet()",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.ModelObjectAttribute::getValueSet()",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.returnTypeErasureChanged",
+            "old": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "new": "method org.faktorips.valueset.ValueSet<?> org.faktorips.runtime.model.type.PolicyAttribute::getValueSet(org.faktorips.runtime.IProductComponent, java.util.Calendar, org.faktorips.runtime.IValidationContext)",
+            "justification": "false positive"
+          },
+          {
+            "ignore": true,
+            "code": "java.method.parameterTypeErasureChanged",
+            "old": "parameter org.faktorips.runtime.model.type.ModelObjectAttribute org.faktorips.runtime.model.type.ModelObjectAttribute::setValueSet(===org.faktorips.valueset.ValueSet<?>===)",
+            "new": "parameter org.faktorips.runtime.model.type.ModelObjectAttribute org.faktorips.runtime.model.type.ModelObjectAttribute::setValueSet(===org.faktorips.valueset.ValueSet<?>===)",
+            "parameterIndex": "0",
+            "justification": "false positive"
+          }
+        ]
+      }
+    },
+    {
+      "extension": "revapi.filter",
       "configuration": {
         "elements": {
           "exclude": [
@@ -47,227 +253,226 @@
     }
   ],
   "19.12.0": [
-  {
-    "extension": "revapi.differences",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.method.addedToInterface",
-          "new": "method <T> T org.faktorips.runtime.IRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
-          "justification": "FIPS-6032"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method <T> T org.faktorips.runtime.internal.AbstractRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
-          "justification": "FIPS-6032"
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.runtime.CardinalityRange",
-          "justification": "FIPS-5811"
-        },
-        {
-          "code": "java.method.parameterTypeParameterChanged",
-          "old": "parameter boolean org.faktorips.valueset.UnrestrictedValueSet<T>::contains(===java.lang.Object===)",
-          "new": "parameter boolean org.faktorips.valueset.UnrestrictedValueSet<T>::contains(===T===)",
-          "justification": "FIPS-5811"
-        },
-        {
-          "code": "java.method.parameterTypeParameterChanged",
-          "old": "parameter boolean org.faktorips.valueset.ValueSet<T>::contains(===java.lang.Object===)",
-          "new": "parameter boolean org.faktorips.valueset.ValueSet<T>::contains(===T===)",
-          "justification": "FIPS-5811"
-        },
-        {
-          "code": "java.method.removed",
-          "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.valueset.IntegerRange",
-          "justification": "FIPS-5811"
-        },
-        {
-          "code": "java.method.addedToInterface",
-          "new": "method boolean org.faktorips.runtime.IDeltaComputationOptions::ignoreAssociations()",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.addedToInterface",
-          "new": "method org.faktorips.runtime.model.type.AssociationKind org.faktorips.runtime.IModelObjectDelta::getAssociationKind()",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newAddDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newDifferentObjectAtPositionChangedDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind)",
-          "justification": "FIPS-5998: Delta for Associations"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newRemoveDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
-          "justification": "FIPS-5998: Delta for Associations"
-       }
-      ]
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method <T> T org.faktorips.runtime.IRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
+            "justification": "FIPS-6032"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method <T> T org.faktorips.runtime.internal.AbstractRuntimeRepository::getExistingEnumValue(java.lang.Class<T>, java.lang.Object)",
+            "justification": "FIPS-6032"
+          },
+          {
+            "code": "java.method.removed",
+            "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.runtime.CardinalityRange",
+            "justification": "FIPS-5811"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter boolean org.faktorips.valueset.UnrestrictedValueSet<T>::contains(===java.lang.Object===)",
+            "new": "parameter boolean org.faktorips.valueset.UnrestrictedValueSet<T>::contains(===T===)",
+            "justification": "FIPS-5811"
+          },
+          {
+            "code": "java.method.parameterTypeParameterChanged",
+            "old": "parameter boolean org.faktorips.valueset.ValueSet<T>::contains(===java.lang.Object===)",
+            "new": "parameter boolean org.faktorips.valueset.ValueSet<T>::contains(===T===)",
+            "justification": "FIPS-5811"
+          },
+          {
+            "code": "java.method.removed",
+            "old": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T extends java.lang.Comparable<? super T>>>::contains(java.lang.Object) @ org.faktorips.valueset.IntegerRange",
+            "justification": "FIPS-5811"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method boolean org.faktorips.runtime.IDeltaComputationOptions::ignoreAssociations()",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method org.faktorips.runtime.model.type.AssociationKind org.faktorips.runtime.IModelObjectDelta::getAssociationKind()",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.util.List<? extends org.faktorips.runtime.IModelObject>, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method void org.faktorips.runtime.internal.ModelObjectDelta::createAssociatedChildDeltas(org.faktorips.runtime.internal.ModelObjectDelta, org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.IDeltaComputationOptions)",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newAddDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newDifferentObjectAtPositionChangedDelta(org.faktorips.runtime.IModelObject, org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind)",
+            "justification": "FIPS-5998: Delta for Associations"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method org.faktorips.runtime.internal.ModelObjectDelta org.faktorips.runtime.internal.ModelObjectDelta::newRemoveDelta(org.faktorips.runtime.IModelObject, java.lang.String, org.faktorips.runtime.model.type.AssociationKind, org.faktorips.runtime.IDeltaComputationOptions)",
+            "justification": "FIPS-5998: Delta for Associations"
+          }
+        ]
+      }
     }
-   }
   ],
   "19.12.1": [
-  {
-    "extension": "revapi.differences",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.method.added",
-          "new": "method java.lang.String org.faktorips.runtime.test.IpsTestFailure::getActualValueAsString()",
-          "justification": "FIPS-5985"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method boolean org.faktorips.runtime.model.IpsModel::isEnumType(java.lang.Class<?>)",
-          "justification": "FIPS-5985"
-        }
-      ]
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.method.added",
+            "new": "method java.lang.String org.faktorips.runtime.test.IpsTestFailure::getActualValueAsString()",
+            "justification": "FIPS-5985"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method boolean org.faktorips.runtime.model.IpsModel::isEnumType(java.lang.Class<?>)",
+            "justification": "FIPS-5985"
+          }
+        ]
+      }
     }
-  }
   ],
   "20.12.0": [
-  {
-    "extension": "revapi.differences",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.method.added",
-          "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.method.addedToInterface",
-          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.IRuntimeRepository::getAllEnumClasses()",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method void org.faktorips.runtime.InMemoryRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses()",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.method.abstractMethodAdded",
-          "new": "method void org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
-          "justification": "FIPS-7016: Product info for data warehouse"
-        },
-        {
-          "code": "java.class.externalClassExposedInAPI",
-          "new": "class org.faktorips.valueset.StringLengthValueSet",
-          "justification": "FIPS-6980: Handle product-configured StringLengthValueSets"
-        },
-        {
-          "regex": true,
-          "code": "java.missing.oldClass",
-          "old": "missing-class javax.xml..*",
-          "justification": "Java 11"
-        },
-        {
-          "regex": true,
-          "code": "java.class.externalClassExposedInAPI",
-          "new": "(class|interface) javax.activation..*",
-          "justification": "Java 11"
-        },
-        {
-          "regex": true,
-          "code": "java.class.externalClassExposedInAPI",
-          "new": "(class|interface) javax.xml..*",
-          "justification": "Java 11"
-        },
-        {
-          "regex": true,
-          "code": "java.missing.oldSuperType",
-          "old": "class org.faktorips.runtime.jaxb..*",
-          "new": "class org.faktorips.runtime.jaxb..*",
-          "superClass": "javax.xml.bind..*",
-          "justification": "Java 11"
-        },
-        {
-          "code": "java.method.finalMethodAddedToNonFinalClass",
-          "new": "method org.faktorips.values.Money org.faktorips.values.Money::valueOf(org.faktorips.values.Decimal, java.util.Currency, java.math.RoundingMode)",
-          "justification": "FIPS-6234: Use RoundingMode enum instead of BigDecimal rounding mode int constants"
-        }
-      ]
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.method.added",
+            "new": "method java.lang.Class<?> org.faktorips.runtime.model.enumtype.EnumType::getEnumClass()",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.IRuntimeRepository::getAllEnumClasses()",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method void org.faktorips.runtime.InMemoryRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method java.util.List<java.lang.Class<?>> org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses()",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.method.abstractMethodAdded",
+            "new": "method void org.faktorips.runtime.internal.AbstractRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method void org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository::getAllEnumClasses(java.util.LinkedHashSet<java.lang.Class<?>>)",
+            "justification": "FIPS-7016: Product info for data warehouse"
+          },
+          {
+            "code": "java.class.externalClassExposedInAPI",
+            "new": "class org.faktorips.valueset.StringLengthValueSet",
+            "justification": "FIPS-6980: Handle product-configured StringLengthValueSets"
+          },
+          {
+            "regex": true,
+            "code": "java.missing.oldClass",
+            "old": "missing-class javax.xml..*",
+            "justification": "Java 11"
+          },
+          {
+            "regex": true,
+            "code": "java.class.externalClassExposedInAPI",
+            "new": "(class|interface) javax.activation..*",
+            "justification": "Java 11"
+          },
+          {
+            "regex": true,
+            "code": "java.class.externalClassExposedInAPI",
+            "new": "(class|interface) javax.xml..*",
+            "justification": "Java 11"
+          },
+          {
+            "regex": true,
+            "code": "java.missing.oldSuperType",
+            "old": "class org.faktorips.runtime.jaxb..*",
+            "new": "class org.faktorips.runtime.jaxb..*",
+            "superClass": "javax.xml.bind..*",
+            "justification": "Java 11"
+          },
+          {
+            "code": "java.method.finalMethodAddedToNonFinalClass",
+            "new": "method org.faktorips.values.Money org.faktorips.values.Money::valueOf(org.faktorips.values.Decimal, java.util.Currency, java.math.RoundingMode)",
+            "justification": "FIPS-6234: Use RoundingMode enum instead of BigDecimal rounding mode int constants"
+          }
+        ]
+      }
     }
-   }
   ],
   "21.6.1": [
-  {
-    "extension": "revapi.differences",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.method.added",
-          "new": "method <T> org.faktorips.valueset.ValueSet<T> org.faktorips.runtime.validation.Relevance::asValueSetFor(org.faktorips.runtime.IModelObject, java.lang.String, java.util.Collection<T>)",
-          "justification": "FIPS-7954"
-        }
-      ]
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.method.added",
+            "new": "method <T> org.faktorips.valueset.ValueSet<T> org.faktorips.runtime.validation.Relevance::asValueSetFor(org.faktorips.runtime.IModelObject, java.lang.String, java.util.Collection<T>)",
+            "justification": "FIPS-7954"
+          }
+        ]
+      }
     }
-  }
   ],
   "21.12.0": [
-  {
-    "extension": "revapi.differences",
-    "configuration": {
-      "ignore": true,
-      "differences": [
-        {
-          "code": "java.method.added",
-          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.runtime.CardinalityRange",
-          "justification": "FIPS-7980"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.valueset.IntegerRange",
-          "justification": "FIPS-7980"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method boolean org.faktorips.valueset.StringLengthValueSet::isUnrestricted(boolean)",
-          "justification": "FIPS-7980"
-        },
-        {
-          "code": "java.method.added",
-          "new": "method boolean org.faktorips.valueset.UnrestrictedValueSet<T>::isUnrestricted(boolean)",
-          "justification": "FIPS-7980"
-        },
-        {
-          "code": "java.method.addedToInterface",
-          "new": "method boolean org.faktorips.valueset.ValueSet<T>::isUnrestricted(boolean)",
-          "justification": "FIPS-7980"
-        }
-      ]
+    {
+      "extension": "revapi.differences",
+      "configuration": {
+        "ignore": true,
+        "differences": [
+          {
+            "code": "java.method.added",
+            "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.runtime.CardinalityRange",
+            "justification": "FIPS-7980"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method boolean org.faktorips.valueset.DefaultRange<T extends java.lang.Comparable<? super T>>::isUnrestricted(boolean) @ org.faktorips.valueset.IntegerRange",
+            "justification": "FIPS-7980"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method boolean org.faktorips.valueset.StringLengthValueSet::isUnrestricted(boolean)",
+            "justification": "FIPS-7980"
+          },
+          {
+            "code": "java.method.added",
+            "new": "method boolean org.faktorips.valueset.UnrestrictedValueSet<T>::isUnrestricted(boolean)",
+            "justification": "FIPS-7980"
+          },
+          {
+            "code": "java.method.addedToInterface",
+            "new": "method boolean org.faktorips.valueset.ValueSet<T>::isUnrestricted(boolean)",
+            "justification": "FIPS-7980"
+          }
+        ]
+      }
     }
-   }
   ]
 }
-
