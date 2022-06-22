@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Formula Language
 Bundle-SymbolicName: org.faktorips.fl
-Bundle-Version: 21.12.5.qualifier
+Bundle-Version: 21.12.6.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.faktorips.util,
  org.faktorips.dtflcommon,
