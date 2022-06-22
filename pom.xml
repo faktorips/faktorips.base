@@ -18,6 +18,40 @@
     <packaging>pom</packaging>
     <name>Platform for Developing Insurance Applications</name>
 
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License Version 3 with additional permissions</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+            <distribution>repo</distribution>
+            <comments>The following additional permissions and restrictions are 
+stated by Faktor Zehn GmbH in accordance with section 7 of the AGPL: 
+
+If you modify the Program or any covered work, by linking or 
+combining it with libraries of the namespace org.eclipse.* and 
+org.junit (including dependencies or a modified version of
+these libraries), thus containing parts covered by the terms of 
+Eclipse Public License Version 1.0 (EPL), the licensors of this 
+Program grant you the additional permission to convey the 
+resulting work.
+
+If you modify the Program or any covered work, without changing 
+its source code, only by linking or combining some or all 
+bundles of the Program with separate works covered by AGPL-
+incompatible license terms, the licensors of this Program grant
+you the additional permission to convey the resulting work.
+
+You are not allowed to remove or alter any legal notices in the
+covered work or in the Appropriate Legal Notices.</comments>
+        </license>
+        <license>
+            <name>Alternative Faktor-IPS License</name>
+            <distribution>repo</distribution>
+            <comments>If AGPL licensing 
+is incompatible with your use of Faktor-IPS, alternative 
+license terms are available from Faktor Zehn GmbH.</comments>
+        </license>
+    </licenses>
+
     <properties>
         <!-- User properties -->
         <target-platform>eclipse-2022-03</target-platform>
