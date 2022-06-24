@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
     </parent>
 
 
     <artifactId>faktorips-maven-plugin</artifactId>
-    <version>22.6.0-SNAPSHOT</version>
+    <version>22.12.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
 
@@ -31,8 +31,11 @@
         <jdk.version>11</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <!-- TODO should there be a different version for build and dependency? -->
-        <tycho-dependency-version>2.4.0</tycho-dependency-version>
+
+        <tycho-version>2.7.3</tycho-version>
+        <tycho-extras-version>2.7.3</tycho-extras-version>
+        <maven-core-version>3.8.1</maven-core-version>
+        <maven-shared-utils-version>3.3.4</maven-shared-utils-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
         <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
@@ -50,6 +53,17 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>${maven-shared-utils-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-core</artifactId>
+            <version>${maven-core-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>${maven-plugin-api-version}</version>
@@ -63,12 +77,12 @@
         <dependency>
             <groupId>org.eclipse.tycho.extras</groupId>
             <artifactId>tycho-eclipserun-plugin</artifactId>
-            <version>${tycho-dependency-version}</version>
+            <version>${tycho-extras-version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>sisu-equinox-launching</artifactId>
-            <version>${tycho-dependency-version}</version>
+            <version>${tycho-version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -134,7 +148,7 @@
             <extension>
                 <groupId>org.faktorips</groupId>
                 <artifactId>codequality-config</artifactId>
-                <version>22.6.0-SNAPSHOT</version>
+                <version>22.12.0-SNAPSHOT</version>
             </extension>
         </extensions>
         <pluginManagement>

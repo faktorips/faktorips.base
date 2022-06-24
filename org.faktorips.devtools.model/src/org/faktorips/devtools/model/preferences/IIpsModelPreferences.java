@@ -11,11 +11,13 @@
 package org.faktorips.devtools.model.preferences;
 
 import java.text.DateFormat;
+import java.util.Locale;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.runtime.IpsTestCase;
 
 /**
@@ -32,6 +34,11 @@ public interface IIpsModelPreferences {
      * Returns the formatter to convert values of different {@link Datatype Datatypes} to Strings
      */
     IDatatypeFormatter getDatatypeFormatter();
+
+    /**
+     * Returns the configured {@link Locale}
+     */
+    Locale getDatatypeFormattingLocale();
 
     /**
      * Returns the {@code null}-representation String.
@@ -60,4 +67,11 @@ public interface IIpsModelPreferences {
      */
     boolean isBuilderEnabled();
 
+    /**
+     * Returns the named data type display setting. Specifies the text display of name data type
+     * edit fields. E.g. display id or name only, or display both.
+     * 
+     * @see NamedDataTypeDisplay
+     */
+    NamedDataTypeDisplay getNamedDataTypeDisplay();
 }

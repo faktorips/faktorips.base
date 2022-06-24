@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools Table Im/Export
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion;singleton:=true
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Activator: org.faktorips.devtools.tableconversion.TableConversionPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.15.200",
@@ -37,6 +37,6 @@ Import-Package: com.opencsv;version="3.3.0",
  org.faktorips.devtools.model.tablecontents,
  org.faktorips.devtools.model.tablestructure,
  org.faktorips.devtools.model.value,
- org.faktorips.runtime;version="22.6.0",
+ org.faktorips.runtime;version="22.12.0",
  org.faktorips.runtime.util,
- org.faktorips.values;version="22.6.0"
+ org.faktorips.values;version="22.12.0"

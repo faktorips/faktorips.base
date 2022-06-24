@@ -13,13 +13,14 @@
                 <xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="ValidationRuleDef" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:element ref="Persistence" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
 
             <xsd:attributeGroup ref="abstract" />
-            <xsd:attribute name="configurableByProductCmptType" type="boolean" use="required" />
-            <xsd:attribute name="forceExtensionCompilationUnitGeneration" type="boolean" use="required" />
-            <xsd:attribute name="generateValidatorClass" type="boolean" use="required" />
-            <xsd:attribute name="productCmptType" type="string" use="required" />
+            <xsd:attribute name="configurableByProductCmptType" type="boolean" use="optional" />
+            <xsd:attribute name="forceExtensionCompilationUnitGeneration" type="boolean" use="optional" />
+            <xsd:attribute name="generateValidatorClass" type="boolean" use="optional" />
+            <xsd:attribute name="productCmptType" type="string" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attributeGroup ref="supertype" />
             <xsd:attribute ref="xml:space" />
@@ -38,20 +39,21 @@
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="ValueSet" type="ValueSet" minOccurs="1" maxOccurs="1" />
                 <xsd:element name="PersistenceAttribute" type="PersistenceAttribute" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="attributeType" type="attributeType" use="required" />
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
-            <xsd:attribute name="computationMethodSignature" type="javaMethodIdentifier" use="required" />
+            <xsd:attribute name="computationMethodSignature" type="javaMethodIdentifier" use="optional" />
             <xsd:attribute name="genericValidation" type="boolean" use="optional" />
             <xsd:attributeGroup ref="datatype" />
             <xsd:attributeGroup ref="id" />
             <xsd:attributeGroup ref="modifier" />
             <xsd:attributeGroup ref="name" />
-            <xsd:attribute name="overwrite" type="boolean" use="required" />
-            <xsd:attribute name="relevanceConfiguredByProduct" type="boolean" use="required" />
+            <xsd:attribute name="overwrite" type="boolean" use="optional" />
+            <xsd:attribute name="relevanceConfiguredByProduct" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
-            <xsd:attribute name="valueSetConfiguredByProduct" type="boolean" use="required" />
+            <xsd:attribute name="valueSetConfiguredByProduct" type="boolean" use="optional" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInAttribute">
             <xsd:selector xpath="./*" />
@@ -77,12 +79,13 @@
                 <xsd:element name="MessageText" type="MessageText" minOccurs="1" maxOccurs="1" />
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="activatedByDefault" type="boolean" use="required" />
             <xsd:attributeGroup ref="category" />
             <xsd:attributeGroup ref="changingOverTime" />
-            <xsd:attribute name="checkValueAgainstValueSetRule" type="boolean" use="required" />
-            <xsd:attribute name="configurableByProductComponent" type="boolean" use="required" />
+            <xsd:attribute name="checkValueAgainstValueSetRule" type="boolean" use="optional" />
+            <xsd:attribute name="configurableByProductComponent" type="boolean" use="optional" />
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="messageCode" type="string" use="required" />
             <xsd:attribute name="messageSeverity" use="required">
@@ -98,7 +101,7 @@
             <xsd:attributeGroup ref="modifier" />
             <xsd:attribute name="name" type="string" use="required" />
             <xsd:attributeGroup ref="since" />
-            <xsd:attribute name="validatedAttrSpecifiedInSrc" type="boolean" use="required" />
+            <xsd:attribute name="validatedAttrSpecifiedInSrc" type="boolean" use="optional" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInValidationRuleDef">
             <xsd:selector xpath="./*" />
@@ -118,6 +121,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
                 <xsd:element name="PersistenceAssociation" type="PersistenceAssociation" minOccurs="0" maxOccurs="1"></xsd:element>
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="associationType" use="required">
                 <xsd:simpleType>
@@ -134,12 +138,12 @@
             <xsd:attributeGroup ref="constrain" />
             <xsd:attributeGroup ref="derivedUnion" />
             <xsd:attributeGroup ref="id" />
-            <xsd:attribute name="inverseAssociation" type="javaIdentifier" use="required" />
+            <xsd:attribute name="inverseAssociation" type="javaIdentifier" use="optional" />
             <xsd:attributeGroup ref="matchingAssociation" />
             <xsd:attributeGroup ref="cardinality" />
             <xsd:attributeGroup ref="modifier" />
-            <xsd:attribute name="qualified" type="boolean" use="required" />
-            <xsd:attribute name="sharedAssociation" type="boolean" use="required" />
+            <xsd:attribute name="qualified" type="boolean" use="optional" />
+            <xsd:attribute name="sharedAssociation" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attributeGroup ref="subsettedDerivedUnion" />
             <xsd:attributeGroup ref="targetRole" />
@@ -170,6 +174,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Parameter" type="MethodParameter" minOccurs="0" maxOccurs="unbounded" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
             <xsd:attributeGroup ref="category" />
@@ -186,11 +191,11 @@
     </xsd:element>
 
     <xsd:complexType name="PersistenceAssociation">
-        <xsd:attribute name="cascadeTypeMerge" type="boolean" use="required" />
-        <xsd:attribute name="cascadeTypeOverwriteDefault" type="boolean" use="required" />
-        <xsd:attribute name="cascadeTypePersist" type="boolean" use="required" />
-        <xsd:attribute name="cascadeTypeRefresh" type="boolean" use="required" />
-        <xsd:attribute name="cascadeTypeRemove" type="boolean" use="required" />
+        <xsd:attribute name="cascadeTypeMerge" type="boolean" use="optional" />
+        <xsd:attribute name="cascadeTypeOverwriteDefault" type="boolean" use="optional" />
+        <xsd:attribute name="cascadeTypePersist" type="boolean" use="optional" />
+        <xsd:attribute name="cascadeTypeRefresh" type="boolean" use="optional" />
+        <xsd:attribute name="cascadeTypeRemove" type="boolean" use="optional" />
         <xsd:attribute name="fetchType" use="required">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -205,11 +210,11 @@
         <xsd:attribute name="joinColumnName" type="string" use="required" />
         <xsd:attribute name="joinColumnNullable" type="boolean" use="required" />
         <xsd:attribute name="joinTableName" type="string" use="required" />
-        <xsd:attribute name="orphanRemoval" type="boolean" use="required" />
-        <xsd:attribute name="ownerOfManyToManyAssociation" type="boolean" use="required" />
+        <xsd:attribute name="orphanRemoval" type="boolean" use="optional" />
+        <xsd:attribute name="ownerOfManyToManyAssociation" type="boolean" use="optional" />
         <xsd:attribute name="sourceColumnName" type="string" use="required" />
         <xsd:attribute name="targetColumnName" type="string" use="required" />
-        <xsd:attribute name="transient" type="boolean" use="required" />
+        <xsd:attribute name="transient" type="boolean" use="optional" />
     </xsd:complexType>
 
     <xsd:complexType name="PersistenceAttribute">
@@ -222,7 +227,7 @@
         <xsd:attribute name="tableColumnPrecision" type="int" use="required" />
         <xsd:attribute name="tableColumnScale" type="int" use="required" />
         <xsd:attribute name="tableColumnSize" type="int" use="required" />
-        <xsd:attribute name="tableColumnUnique" type="boolean" use="required" />
+        <xsd:attribute name="tableColumnUnique" type="boolean" use="optional" />
         <xsd:attribute name="temporalMapping" use="required">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
@@ -233,15 +238,16 @@
                 </xsd:restriction>
             </xsd:simpleType>
         </xsd:attribute>
-        <xsd:attribute name="transient" type="boolean" use="required" />
+        <xsd:attribute name="transient" type="boolean" use="optional" />
     </xsd:complexType>
     <xsd:element name="Persistence">
         <xsd:complexType>
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
             </xsd:sequence>
-            <xsd:attribute name="definesDiscriminatorColumn" type="boolean" use="required" />
+            <xsd:attribute name="definesDiscriminatorColumn" type="boolean" use="optional" />
             <xsd:attribute name="discriminatorColumnName" type="string" use="required" />
+            <xsd:attribute name="discriminatorColumnLength" type="int" use="optional" />
             <xsd:attribute name="discriminatorDatatype" use="required">
                 <xsd:simpleType>
                     <xsd:restriction base="xsd:string">
@@ -275,7 +281,7 @@
                 </xsd:simpleType>
             </xsd:attribute>
             <xsd:attribute name="tableName" type="string" use="required" />
-            <xsd:attribute name="useTableDefinedInSupertype" type="boolean" use="required" />
+            <xsd:attribute name="useTableDefinedInSupertype" type="boolean" use="optional" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInPersistence">
             <xsd:selector xpath="./*" />

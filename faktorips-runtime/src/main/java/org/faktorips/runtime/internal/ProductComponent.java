@@ -161,6 +161,22 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return null;
     }
 
+    /**
+     * Sets the varied base product, marking this product as its variant.
+     *
+     * @see #isVariant()
+     * @see #getVariedBase()
+     * @throws IllegalRepositoryModificationException if the {@link #getRepository() repository}
+     *             this product component belongs to is not {@link IRuntimeRepository#isModifiable()
+     *             modifiable}.
+     */
+    public void setVariedBase(ProductComponent variedBase) {
+        if (getRepository() != null && !getRepository().isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
+        this.variedBase = variedBase == null ? null : variedBase.id;
+    }
+
     @Override
     public DateTime getValidFrom() {
         return validFrom;

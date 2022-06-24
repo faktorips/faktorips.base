@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsObjectPartDecorator;
 import org.faktorips.devtools.model.decorators.OverlayIcons;
@@ -42,14 +43,17 @@ public class AttributeDecorator implements IIpsObjectPartDecorator {
 
             if (attribute instanceof IPolicyCmptTypeAttribute
                     && ((IPolicyCmptTypeAttribute)attribute).isProductRelevant()) {
-                overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
+                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_RELEVANT;
 
                 if (!attribute.isChangingOverTime()) {
-                    overlays[0] = OverlayIcons.STATIC;
+                    overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
                 }
             }
             if (attribute.isOverwrite()) {
-                overlays[3] = OverlayIcons.OVERRIDE;
+                overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE;
+            }
+            if (attribute.isDeprecated()) {
+                overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
             }
 
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseImage, overlays);

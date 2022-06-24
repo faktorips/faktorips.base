@@ -60,7 +60,7 @@ public class RecursiveCopyTest {
             c.copyDir(tmpDir.toPath().toAbsolutePath(), tmpDir3.toPath().toAbsolutePath());
             File expectedDir = new File(tmpDir3, tmpDir2.getName());
             expectedDir.deleteOnExit();
-            assertTrue("expected directory does not exists", expectedDir.exists());
+            assertTrue("expected directory does not exist", expectedDir.exists());
             File expected = new File(expectedDir, tmpFile2.getName());
             expected.deleteOnExit();
             assertTrue("recursive dircopy failed", expected.exists());

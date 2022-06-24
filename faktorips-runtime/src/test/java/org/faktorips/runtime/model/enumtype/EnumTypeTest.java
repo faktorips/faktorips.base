@@ -16,10 +16,13 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
+import org.faktorips.runtime.model.type.Deprecation;
 import org.junit.Test;
 
 public class EnumTypeTest {
@@ -95,6 +98,21 @@ public class EnumTypeTest {
         new EnumType(Bar.class).getDisplayNameAttribute().getName();
     }
 
+    @Test
+    public void testIsDeprecated() {
+        assertThat(IpsModel.getEnumType(Foo.class).isDeprecated(), is(false));
+        assertThat(IpsModel.getEnumType(DeprecatedEnum.class).isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecated() {
+        assertThat(IpsModel.getEnumType(Foo.class).getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = IpsModel.getEnumType(DeprecatedEnum.class).getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     @IpsEnumType(name = "my.foo", attributeNames = { "x", "z", "y" })
     private static class Foo {
 
@@ -122,6 +140,13 @@ public class EnumTypeTest {
     @IpsExtensibleEnum(enumContentName = "my.baz")
     @IpsEnumType(name = "my.bar", attributeNames = {})
     private static class Bar {
+
+    }
+
+    @IpsExtensibleEnum(enumContentName = "deprecated.content")
+    @IpsEnumType(name = "deprecated.structure", attributeNames = {})
+    @Deprecated
+    private static class DeprecatedEnum {
 
     }
 

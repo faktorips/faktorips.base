@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.aggregator.tests</artifactId>
-		<version>22.6.0-SNAPSHOT</version>
-		<relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>org.faktorips.aggregator.tests</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>org.faktorips.devtools.core.ui.test</artifactId>
+    <artifactId>org.faktorips.devtools.core.ui.test</artifactId>
 
-	<packaging>eclipse-test-plugin</packaging>
+    <packaging>eclipse-test-plugin</packaging>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<configuration>
-					<useUIHarness>true</useUIHarness>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<configuration>
-					<dependency-resolution>
-						<extraRequirements>
-							<!-- to get the org.eclipse.osgi.compatibility.state plugin iff 
-							the targeted Eclipse version (e.g., Luna) has it
-							(backwards compatible with kepler and previous versions) -->
-							<requirement>
-								<type>eclipse-feature</type>
-								<id>org.eclipse.rcp</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-						</extraRequirements>
-					</dependency-resolution>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-surefire-plugin</artifactId>
+                <configuration>
+                    <useUIHarness>true</useUIHarness>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>target-platform-configuration</artifactId>
+                <configuration>
+                    <dependency-resolution>
+                        <extraRequirements>
+                            <!-- to get the org.eclipse.osgi.compatibility.state plugin iff 
+                            the targeted Eclipse version (e.g., Luna) has it
+                            (backwards compatible with kepler and previous versions) -->
+                            <requirement>
+                                <type>eclipse-feature</type>
+                                <id>org.eclipse.rcp</id>
+                                <versionRange>0.0.0</versionRange>
+                            </requirement>
+                        </extraRequirements>
+                    </dependency-resolution>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

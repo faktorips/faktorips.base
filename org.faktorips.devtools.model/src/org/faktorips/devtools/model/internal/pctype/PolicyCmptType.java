@@ -57,6 +57,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -317,23 +318,30 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        configurableByProductCmptType = Boolean.valueOf(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE))
-                .booleanValue();
-        generateValidatorClass = Boolean.valueOf(element.getAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS))
-                .booleanValue();
-        productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
-        forceExtensionCompilationUnitGeneration = Boolean
-                .valueOf(element.getAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU)).booleanValue();
+        configurableByProductCmptType = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE);
+        generateValidatorClass = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_GENERATE_VALIDATOR_CLASS);
+        productCmptType = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_PRODUCT_CMPT_TYPE);
+        forceExtensionCompilationUnitGeneration = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU);
     }
 
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS, "" + generateValidatorClass); //$NON-NLS-1$
-        newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
-        newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU,
-                "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
+        if (configurableByProductCmptType) {
+            newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE, "" + configurableByProductCmptType); //$NON-NLS-1$
+        }
+        if (generateValidatorClass) {
+            newElement.setAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS, "" + generateValidatorClass); //$NON-NLS-1$
+        }
+        if (StringUtils.isNotEmpty(productCmptType)) {
+            newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
+        }
+        if (forceExtensionCompilationUnitGeneration) {
+            newElement.setAttribute(PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU,
+                    "" + forceExtensionCompilationUnitGeneration); //$NON-NLS-1$
+        }
     }
 
     @Override

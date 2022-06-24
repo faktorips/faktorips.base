@@ -113,6 +113,17 @@ public class EnumAttributeDecoratorTest {
     }
 
     @Test
+    public void testGetImageDescriptor_Deprecated() {
+        IEnumAttribute enumAttribute = mock(IEnumAttribute.class);
+        when(enumAttribute.isDeprecated()).thenReturn(true);
+
+        ImageDescriptor imageDescriptor = enumAttributeDecorator.getImageDescriptor(enumAttribute);
+
+        assertThat(imageDescriptor, hasBaseImage(EnumAttributeDecorator.ENUM_ATTRIBUTE_ICON));
+        assertThat(imageDescriptor, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
+    }
+
+    @Test
     public void testGetLabel_Null() {
         assertThat(enumAttributeDecorator.getLabel(null), is(IpsStringUtils.EMPTY));
     }

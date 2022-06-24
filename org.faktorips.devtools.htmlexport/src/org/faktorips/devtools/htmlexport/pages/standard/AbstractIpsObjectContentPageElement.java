@@ -24,6 +24,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageEleme
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -86,6 +87,16 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
 
         addPageElements(new TextPageElement(getContext().getLabel(getDocumentedIpsObject()), TextType.HEADING_2,
                 getContext()));
+
+        if (getDocumentedIpsObject() instanceof IVersionControlledElement
+                && ((IVersionControlledElement)getDocumentedIpsObject()).isDeprecated()) {
+            TextPageElement deprecationElement = new TextPageElement(
+                    ((IVersionControlledElement)getDocumentedIpsObject()).getDeprecation().toString(),
+                    TextType.HEADING_3,
+                    getContext());
+            deprecationElement.addStyles(Style.ITALIC);
+            addPageElements(deprecationElement);
+        }
 
         addStructureData();
 

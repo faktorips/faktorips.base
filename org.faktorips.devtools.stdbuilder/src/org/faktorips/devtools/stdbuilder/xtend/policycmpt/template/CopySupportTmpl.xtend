@@ -25,7 +25,7 @@ class CopySupportTmpl {
     def private static copyMethodsDecl(XPolicyCmptClass it) '''
 
             /**
-             * «inheritDoc»
+             *«inheritDoc»
              *
              * @generated
              */
@@ -38,7 +38,7 @@ class CopySupportTmpl {
 
            «IF !abstract»
                /**
-                * «inheritDoc»
+                *«inheritDoc»
                 *
                 * @generated
                 */
@@ -54,7 +54,7 @@ class CopySupportTmpl {
         «ENDIF»
 
         /**
-         * «localizedJDoc("METHOD_NEW_COPY_INTERNAL")»
+         *«localizedJDoc("METHOD_NEW_COPY_INTERNAL")»
          *
          * @generated
          */
@@ -79,7 +79,7 @@ class CopySupportTmpl {
 
         «IF firstConfigurableInHierarchy»
             /**
-             * «localizedJDoc("METHOD_COPY_PRODUCT_AND_GENERATION")»
+             *«localizedJDoc("METHOD_COPY_PRODUCT_AND_GENERATION")»
              *
              * @generated
              */
@@ -89,7 +89,7 @@ class CopySupportTmpl {
         «ENDIF»
 
         /**
-         * «localizedJDoc("METHOD_COPY_PROPERTIES")»
+         *«localizedJDoc("METHOD_COPY_PROPERTIES")»
          *
          * @generated
          */
@@ -109,7 +109,7 @@ class CopySupportTmpl {
         }
 
         /**
-         * «localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
+         *«localizedJDoc("METHOD_COPY_ASSOCIATIONS_INTERNAL")»
          *
          * @generated
          */

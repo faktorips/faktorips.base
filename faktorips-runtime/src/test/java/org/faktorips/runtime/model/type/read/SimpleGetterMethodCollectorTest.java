@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.type.DocumentationKind;
@@ -83,7 +84,7 @@ public class SimpleGetterMethodCollectorTest {
     private static class DummyElement extends ModelElement {
 
         public DummyElement(String name) {
-            super(name, null);
+            super(name, null, Optional.empty());
         }
 
         @Override

@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.EnumClassNode.EnumClass;
@@ -133,6 +134,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     }
 
     private String getLabel(String enumValueId, EnumDatatype enumDatatype) {
-        return enumValueId + "(" + enumDatatype.getValueName(enumValueId) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+        return enumValueId + "(" + enumDatatype.getValueName(enumValueId, //$NON-NLS-1$
+                IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale()) + ")"; //$NON-NLS-1$
     }
 }

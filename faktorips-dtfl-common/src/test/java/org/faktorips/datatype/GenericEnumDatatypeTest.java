@@ -10,13 +10,23 @@
 
 package org.faktorips.datatype;
 
+import static org.faktorips.datatype.GenericValueDatatype.MSGCODE_PREFIX_GET_ALL_VALUES_METHOD;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageCodeThat;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.faktorips.values.NullObjectSupport;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,8 +40,8 @@ public class GenericEnumDatatypeTest {
     }
 
     @Test
-    public void testGetAllValueIds() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+    public void testGetAllValueIds_FromArray() {
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setNullObjectDefined(false);
         String[] valueIds = datatype.getAllValueIds(false);
@@ -56,21 +66,64 @@ public class GenericEnumDatatypeTest {
     }
 
     @Test
+    public void testGetAllValueIds_FromList() {
+        datatype = new DefaultGenericEnumDatatype(TestValueClassWithListOfAllValues.class);
+        datatype.setAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setNullObjectDefined(false);
+        String[] valueIds = datatype.getAllValueIds(false);
+        assertEquals(3, valueIds.length);
+        assertEquals("1", valueIds[0]); //$NON-NLS-1$
+        assertEquals("2", valueIds[1]); //$NON-NLS-1$
+        assertEquals("3", valueIds[2]); //$NON-NLS-1$
+
+        valueIds = datatype.getAllValueIds(true);
+        assertEquals(4, valueIds.length);
+        assertEquals("1", valueIds[0]); //$NON-NLS-1$
+        assertEquals("2", valueIds[1]); //$NON-NLS-1$
+        assertEquals("3", valueIds[2]); //$NON-NLS-1$
+        assertEquals(null, valueIds[3]);
+    }
+
+    @Test
+    public void testGetAllValueIds_FromSet() {
+        datatype = new DefaultGenericEnumDatatype(TestValueClassWithSetOfAllValuesAndNullObject.class);
+        datatype.setAllValuesMethodName("getAllValues"); //$NON-NLS-1$
+        datatype.setToStringMethodName("getId"); //$NON-NLS-1$
+        datatype.setNullObjectDefined(true);
+        datatype.setNullObjectId("0"); //$NON-NLS-1$
+        String[] valueIds = datatype.getAllValueIds(false);
+        assertEquals(3, valueIds.length);
+        assertEquals("1", valueIds[0]); //$NON-NLS-1$
+        assertEquals("2", valueIds[1]); //$NON-NLS-1$
+        assertEquals("3", valueIds[2]); //$NON-NLS-1$
+
+        valueIds = datatype.getAllValueIds(true);
+        assertEquals(4, valueIds.length);
+        assertEquals("1", valueIds[0]); //$NON-NLS-1$
+        assertEquals("0", valueIds[1]); //$NON-NLS-1$
+        assertEquals("2", valueIds[2]); //$NON-NLS-1$
+        assertEquals("3", valueIds[3]); //$NON-NLS-1$
+    }
+
+    @Test
     public void testGetGetAllValuesMethod() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
-        assertNotNull(datatype.getGetAllValuesMethod());
-        datatype.setGetAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
-        try {
-            datatype.getGetAllValuesMethod();
-            fail();
-        } catch (RuntimeException e) {
-            // Expected exception
-        }
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        assertThat(datatype.checkReadyToUse(),
+                not(
+                        hasMessageThat(
+                                hasMessageCodeThat(
+                                        startsWith(MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)))));
+        datatype.setAllValuesMethodName("unknownMethod"); //$NON-NLS-1$
+        assertThat(datatype.checkReadyToUse(),
+                hasMessageThat(
+                        hasMessageCodeThat(
+                                startsWith(MSGCODE_PREFIX_GET_ALL_VALUES_METHOD))));
     }
 
     @Test
     public void testGetValueName() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setGetNameMethodName("getName"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
@@ -84,7 +137,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValue() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
@@ -96,7 +149,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testIsParsable() {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setCacheData(false);
@@ -110,7 +163,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValueIdsFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
         String[] ids = datatype.getAllValueIdsFromCache();
@@ -129,7 +182,7 @@ public class GenericEnumDatatypeTest {
 
     @Test
     public void testGetValueNamesFromCache() throws Exception {
-        datatype.setGetAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
+        datatype.setAllValuesMethodName("getAllPaymentModes"); //$NON-NLS-1$
         datatype.setValueOfMethodName("getPaymentMode"); //$NON-NLS-1$
         datatype.setToStringMethodName("getId"); //$NON-NLS-1$
 
@@ -155,6 +208,71 @@ public class GenericEnumDatatypeTest {
         datatype.setCacheData(false);
         names = datatype.getAllValueNamesFromCache();
         assertNull(names); // should have cleared the cached
+    }
+
+    public static class TestValueClassWithListOfAllValues {
+        private final int value;
+
+        private TestValueClassWithListOfAllValues(int value) {
+            this.value = value;
+        }
+
+        public static TestValueClassWithListOfAllValues of(String id) {
+            return new TestValueClassWithListOfAllValues(Integer.parseInt(id));
+        }
+
+        public static List<TestValueClassWithListOfAllValues> getAllValues() {
+            return List.of(of("1"), of("2"), of("3")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
+        public String getId() {
+            return Integer.toString(value);
+        }
+    }
+
+    public static class TestValueClassWithSetOfAllValuesAndNullObject implements NullObjectSupport {
+
+        public static TestValueClassWithSetOfAllValuesAndNullObject NULL = new TestValueClassWithSetOfAllValuesAndNullObject(
+                0) {
+            @Override
+            public boolean isNull() {
+                return true;
+            }
+
+            @Override
+            public boolean isNotNull() {
+                return false;
+            }
+        };
+
+        private final int value;
+
+        private TestValueClassWithSetOfAllValuesAndNullObject(int value) {
+            this.value = value;
+        }
+
+        public static TestValueClassWithSetOfAllValuesAndNullObject of(String id) {
+            return new TestValueClassWithSetOfAllValuesAndNullObject(Integer.parseInt(id));
+        }
+
+        public static Set<TestValueClassWithSetOfAllValuesAndNullObject> getAllValues() {
+            return new LinkedHashSet<>(List.of(of("1"), NULL, of("2"), of("3"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        }
+
+        public String getId() {
+            return Integer.toString(value);
+        }
+
+        @Override
+        public boolean isNull() {
+            return false;
+        }
+
+        @Override
+        public boolean isNotNull() {
+            return true;
+        }
+
     }
 
 }

@@ -10,14 +10,15 @@ class AssociationTmpl {
 
     def static getNumOf(XAssociation it) '''
         «IF oneToMany && !derived && !constrain»
-            /**
-             * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
+           /**
+            *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_NUM_OF", getName(true))»
            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
             *
             * @generated
             */
-               «overrideAnnotationForPublishedMethodImplementation()»
-            public int «method(methodNameGetNumOf)»
+           «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+           «overrideAnnotationForPublishedMethodImplementation()»
+           public int «method(methodNameGetNumOf)»
               «IF genInterface()»;
               «ELSE»
                   {
@@ -31,7 +32,7 @@ class AssociationTmpl {
         «IF isGenerateAbstractGetter(genInterface())»
             «IF oneToMany»
                 /**
-                * «localizedJDoc("METHOD_GET_MANY", getName(true), descriptionForJDoc)»
+                *«localizedJDoc("METHOD_GET_MANY", getName(true), descriptionForJDoc)»
                «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
                 *
                 * @generated
@@ -46,7 +47,7 @@ class AssociationTmpl {
                 «ENDIF»
 
                 /**
-                * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
+                *«localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
                «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
                 *
                 * @generated
@@ -60,7 +61,7 @@ class AssociationTmpl {
                 «ENDIF»
             «ELSE»
                 /**
-                * «localizedJDoc("METHOD_GET_ONE", name, descriptionForJDoc)»
+                *«localizedJDoc("METHOD_GET_ONE", name, descriptionForJDoc)»
                «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
                 *
                 * @generated

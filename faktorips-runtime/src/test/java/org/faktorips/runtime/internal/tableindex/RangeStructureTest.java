@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.faktorips.values.Decimal;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -55,6 +56,7 @@ public class RangeStructureTest {
         resultSetForKeyGreaterThanGreatestUpperBound(hasItem("C"));
         resultSetForKeyWayOutOfUpperBound(hasItem("C"));
         resultSetForKeyNull(isEmpty());
+        resultSetForKeyNullObject(isEmpty(), RangeType.LOWER_BOUND_EQUAL);
     }
 
     @SuppressWarnings({ "deprecation", "javadoc" })
@@ -76,6 +78,7 @@ public class RangeStructureTest {
         resultSetForKeyGreaterThanGreatestUpperBound(hasItem("C"));
         resultSetForKeyWayOutOfUpperBound(hasItem("C"));
         resultSetForKeyNull(isEmpty());
+        resultSetForKeyNullObject(isEmpty(), RangeType.LOWER_BOUND);
     }
 
     @Test
@@ -92,6 +95,7 @@ public class RangeStructureTest {
         resultSetForKeyGreaterThanGreatestUpperBound(isEmpty());
         resultSetForKeyWayOutOfUpperBound(isEmpty());
         resultSetForKeyNull(isEmpty());
+        resultSetForKeyNullObject(isEmpty(), RangeType.UPPER_BOUND_EQUAL);
     }
 
     @SuppressWarnings({ "deprecation", "javadoc" })
@@ -113,6 +117,7 @@ public class RangeStructureTest {
         resultSetForKeyGreaterThanGreatestUpperBound(isEmpty());
         resultSetForKeyWayOutOfUpperBound(isEmpty());
         resultSetForKeyNull(isEmpty());
+        resultSetForKeyNullObject(isEmpty(), RangeType.UPPER_BOUND);
     }
 
     private void createStructure(RangeType keyType) {
@@ -164,6 +169,12 @@ public class RangeStructureTest {
 
     public void resultSetForKeyNull(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(null).get(), matcher);
+    }
+
+    public void resultSetForKeyNullObject(Matcher<Iterable<? super String>> matcher, RangeType keyType) {
+        RangeStructure<Decimal, ResultStructure<String>, String> decimalStructure = RangeStructure.createWith(keyType,
+                Decimal.ZERO, new ResultStructure<>("Foo"));
+        assertThat(decimalStructure.get(Decimal.NULL).get(), matcher);
     }
 
     private static Matcher<Iterable<? super String>> isEmpty() {

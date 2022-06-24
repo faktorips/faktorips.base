@@ -14,10 +14,11 @@
                     <xsd:element ref="EnumAttribute" maxOccurs="unbounded" minOccurs="0" />
                     <xsd:element ref="EnumLiteralNameAttribute" maxOccurs="1" minOccurs="1" />
                 </xsd:choice>
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="abstract" />
-            <xsd:attribute name="enumContentName" type="qualifiedName" />
-            <xsd:attribute name="extensible" type="boolean" />
+            <xsd:attribute name="enumContentName" type="qualifiedName" use="optional"/>
+            <xsd:attribute name="extensible" type="boolean" use="optional"/>
             <xsd:attribute name="superEnumType" type="qualifiedName" use="optional" />
             <xsd:attributeGroup ref="since" />
             <xsd:attribute name="identifierBoundary" type="string" use="optional" />
@@ -74,6 +75,7 @@
             <xsd:sequence>
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="datatype" type="string" use="required" />
             <xsd:attributeGroup ref="enumAttributeAttributes" />
@@ -86,12 +88,12 @@
 
     <xsd:attributeGroup name="enumAttributeAttributes">
         <xsd:attributeGroup ref="id" />
-        <xsd:attribute name="identifier" type="boolean" />
-        <xsd:attribute name="inherited" type="boolean" />
-        <xsd:attribute name="multilingual" type="boolean" />
+        <xsd:attribute name="identifier" type="boolean" use="optional"/>
+        <xsd:attribute name="inherited" type="boolean" use="optional"/>
+        <xsd:attribute name="multilingual" type="boolean" use="optional"/>
         <xsd:attributeGroup ref="name" />
-        <xsd:attribute name="unique" type="boolean" />
-        <xsd:attribute name="usedAsNameInFaktorIpsUi" type="boolean" />
+        <xsd:attribute name="unique" type="boolean" use="optional"/>
+        <xsd:attribute name="usedAsNameInFaktorIpsUi" type="boolean" use="optional"/>
         <xsd:attributeGroup ref="since" />
     </xsd:attributeGroup>
 
@@ -100,6 +102,7 @@
             <xsd:sequence>
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="datatype" type="string" use="required" />
             <xsd:attribute name="defaultValueProviderAttribute" type="string" use="optional" />

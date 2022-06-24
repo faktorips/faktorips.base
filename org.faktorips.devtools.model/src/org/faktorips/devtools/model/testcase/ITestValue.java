@@ -46,7 +46,7 @@ public interface ITestValue extends ITestObject {
     public void setTestValueParameter(String valueParameter);
 
     /**
-     * Returns the test value or <code>null</code> if the object does not exists.
+     * Returns the test value or <code>null</code> if the object does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 

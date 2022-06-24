@@ -48,7 +48,7 @@ public interface ITestValueParameter extends ITestParameter {
     public void setValueDatatype(String datatype);
 
     /**
-     * Returns the data type or <code>null</code> if the object does not exists.
+     * Returns the data type or <code>null</code> if the object does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      */

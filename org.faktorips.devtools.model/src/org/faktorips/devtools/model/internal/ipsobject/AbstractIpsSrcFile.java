@@ -168,12 +168,12 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
 
     @Override
     public Set<String> getXsdValidationErrors() {
-        return getFromContentOrEmptySet(IpsSrcFileContent::getXsdValidationErrors);
+        return getFromContentOrEmptySet(c -> c.getXsdValidationHandler().getXsdValidationErrors());
     }
 
     @Override
     public Set<String> getXsdValidationWarnings() {
-        return getFromContentOrEmptySet(IpsSrcFileContent::getXsdValidationWarnings);
+        return getFromContentOrEmptySet(c -> c.getXsdValidationHandler().getXsdValidationWarnings());
     }
 
     private Set<String> getFromContentOrEmptySet(Function<IpsSrcFileContent, Set<String>> getter) {

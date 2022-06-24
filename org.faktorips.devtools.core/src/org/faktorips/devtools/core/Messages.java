@@ -27,9 +27,9 @@ public class Messages extends NLS {
     public static String DatatypeFormatter_booleanFalse;
     public static String DatatypeFormatter_booleanTrue;
 
-    public static String EnumTypeDisplay_id;
-    public static String EnumTypeDisplay_name;
-    public static String EnumTypeDisplay_nameAndId;
+    public static String NamedDataTypeDisplay_id;
+    public static String NamedDataTypeDisplay_name;
+    public static String NamedDataTypeDisplay_nameAndId;
 
     public static String IpsClasspathContainerInitializer_containerDescription;
     public static String IpsPlugin_languagePackLanguage;

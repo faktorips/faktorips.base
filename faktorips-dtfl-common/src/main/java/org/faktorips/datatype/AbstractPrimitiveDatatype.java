@@ -40,6 +40,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return true;
     }
 
+    @Override
     public String valueToString(Object value) {
         return "" + value; //$NON-NLS-1$
     }

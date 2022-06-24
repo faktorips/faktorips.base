@@ -77,22 +77,22 @@ public class GeneratorModelContext {
 
     private final Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 
-    private final IJavaPackageStructure javaPackageStructure;
-
     private final Map<IIpsPackageFragmentRoot, GeneratorConfig> generatorConfigs = new HashMap<>();
 
     private final GeneratorConfig baseGeneratorConfig;
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
+    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
+            IJavaPackageStructure javaPackageStructure,
             IIpsProject ipsProject) {
         this(config, javaPackageStructure, new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>(),
                 ipsProject);
         annotationGeneratorMap.putAll(new AnnotationGeneratorBuilder(ipsProject).createAnnotationGenerators());
     }
 
-    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
-            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap, IIpsProject ipsProject) {
-        this.javaPackageStructure = javaPackageStructure;
+    public GeneratorModelContext(IIpsArtefactBuilderSetConfig config,
+            IJavaPackageStructure javaPackageStructure,
+            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap,
+            IIpsProject ipsProject) {
         this.annotationGeneratorMap = annotationGeneratorMap;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
@@ -108,8 +108,18 @@ public class GeneratorModelContext {
 
         for (IIpsProject referencedIpsProject : ipsProject.getAllReferencedIpsProjects()) {
             for (IIpsPackageFragmentRoot referencedRoot : referencedIpsProject.getIpsPackageFragmentRoots()) {
-                generatorConfigs.put(referencedRoot, new GeneratorConfig(
-                        referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject));
+                GeneratorConfig genConfig;
+                IIpsStorage ipsStorage = referencedRoot.getIpsStorage();
+                if (ipsStorage instanceof AbstractIpsBundle) {
+                    // jar files (LibraryIpsPackageFragmentRoot) overwrites equals, ignoring parents
+                    // if the same jar file is already in the generator config
+                    // we need to read the manifest again
+                    genConfig = createConfigWithOverrides(referencedRoot, ipsStorage);
+                } else {
+                    genConfig = new GeneratorConfig(
+                            referencedIpsProject.getIpsArtefactBuilderSet().getConfig(), referencedIpsProject);
+                }
+                generatorConfigs.put(referencedRoot, genConfig);
             }
         }
     }
@@ -357,9 +367,8 @@ public class GeneratorModelContext {
     }
 
     public String getValidationMessageBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = javaPackageStructure.getBasePackageName(entry, true, false) + "."
+        return entry.getUniqueBasePackageNameForDerivedArtifacts() + "."
                 + entry.getValidationMessagesBundle();
-        return baseName;
     }
 
 }

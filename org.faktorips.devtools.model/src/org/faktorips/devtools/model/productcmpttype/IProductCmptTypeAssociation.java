@@ -91,7 +91,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
 
     /**
      * Returns the target product component type or <code>null</code> if either this relation hasn't
-     * got a target or the target does not exists.
+     * got a target or the target does not exist.
      * 
      * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.

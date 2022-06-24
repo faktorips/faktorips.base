@@ -36,9 +36,10 @@ public interface IDeltaComputationOptions {
     /**
      * Returns if the delta computation computes child deltas per position/index or per object.
      * <p>
-     * <h3>1. Example for a 1-many association:</h3> A contract version A has three coverages c0,
-     * c1, and c2. A second version B of the same contract has a new coverage cNew inserted between
-     * coverage c0 and c1. The coverages c0, c1,and c2 are unchanged except for their position.
+     * <strong>1. Example for a 1-many association:</strong> A contract version A has three
+     * coverages c0, c1, and c2. A second version B of the same contract has a new coverage cNew
+     * inserted between coverage c0 and c1. The coverages c0, c1,and c2 are unchanged except for
+     * their position.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
      * computed.
@@ -57,8 +58,8 @@ public interface IDeltaComputationOptions {
      * <li>cNew: version A:position none, version B:position 1 ⇒ added</li>
      * </ul>
      * <p>
-     * <h3>2. Example for a 1-many association:</h3> Same scenario as above, but now c1 is removed
-     * and no coverage is added.
+     * <strong>2. Example for a 1-many association:</strong> Same scenario as above, but now c1 is
+     * removed and no coverage is added.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following deltas are
      * computed.
@@ -75,8 +76,8 @@ public interface IDeltaComputationOptions {
      * <li>c1: version A:position 1, version B:position none ⇒ removed</li>
      * <li>c2: version A:position 2, version B:position 1 ⇒ moved</li>
      * </ul>
-     * <h3>Example for a 1-1 association:</h3> A contract version A has the insured person p0. A
-     * second contract version B has the insured person p1.
+     * <strong>Example for a 1-1 association:</strong> A contract version A has the insured person
+     * p0. A second contract version B has the insured person p1.
      * <p>
      * If this method returns {@link ComputationMethod#BY_POSITION}, the following delta is
      * computed.

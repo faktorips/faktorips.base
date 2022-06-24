@@ -82,7 +82,7 @@ public interface ITestPolicyCmptLink extends IIpsObjectPart {
     public void setTarget(String target);
 
     /**
-     * Returns the target or <code>null</code> if the target does not exists.
+     * Returns the target or <code>null</code> if the target does not exist.
      */
     public ITestPolicyCmpt findTarget();
 

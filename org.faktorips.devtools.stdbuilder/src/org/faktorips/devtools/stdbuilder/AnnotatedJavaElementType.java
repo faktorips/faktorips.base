@@ -140,6 +140,9 @@ public enum AnnotatedJavaElementType {
 
     ENUM_ATTRIBUTE_GETTER,
 
+    /** Usable when {@link Deprecated} is the only annotation relevant for an element **/
+    DEPRECATION,
+
     /**
      * Using this type the annotation generator provides java doc tags for any {@link IIpsElement}.
      */

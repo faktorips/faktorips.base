@@ -174,6 +174,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setDiscriminatorValue("value");
         persTypeInfo.setDiscriminatorColumnName("invali?");
+        persTypeInfo.setDiscriminatorColumnLength(10);
         MessageList msgList = persTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
@@ -239,6 +240,28 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         assertTrue(persistenceTypeInfo.isUseTableDefinedInSupertype());
         assertEquals("persistence descr", persistenceTypeInfo.getDescriptionText(Locale.US));
         assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
+        assertNull(persistenceTypeInfo.getDiscriminatorColumnLength());
+        assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
+        assertEquals("422", persistenceTypeInfo.getDiscriminatorValue());
+        assertEquals(InheritanceStrategy.SINGLE_TABLE, persistenceTypeInfo.getInheritanceStrategy());
+        assertEquals("POLICY1", persistenceTypeInfo.getTableName());
+    }
+
+    @Test
+    public void testInitFromXml_DiscriminatorLength() {
+        NodeList nodeList = getTestDocument("2").getElementsByTagName(IPersistentTypeInfo.XML_TAG);
+        assertEquals(1, nodeList.getLength());
+
+        Element element = (Element)nodeList.item(0);
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persistenceTypeInfo.initFromXml(element);
+
+        assertTrue(persistenceTypeInfo.isEnabled());
+        assertTrue(persistenceTypeInfo.isDefinesDiscriminatorColumn());
+        assertTrue(persistenceTypeInfo.isUseTableDefinedInSupertype());
+        assertEquals("persistence descr", persistenceTypeInfo.getDescriptionText(Locale.US));
+        assertEquals("D_COLUMN", persistenceTypeInfo.getDiscriminatorColumnName());
+        assertEquals(Integer.valueOf(2), persistenceTypeInfo.getDiscriminatorColumnLength());
         assertEquals(DiscriminatorDatatype.INTEGER, persistenceTypeInfo.getDiscriminatorDatatype());
         assertEquals("422", persistenceTypeInfo.getDiscriminatorValue());
         assertEquals(InheritanceStrategy.SINGLE_TABLE, persistenceTypeInfo.getInheritanceStrategy());
@@ -252,6 +275,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persTypeInfo.setDefinesDiscriminatorColumn(true);
         persTypeInfo.setUseTableDefinedInSupertype(true);
         persTypeInfo.setDiscriminatorColumnName("D_COLUMN");
+        persTypeInfo.setDiscriminatorColumnLength(2);
         persTypeInfo.setDiscriminatorDatatype(DiscriminatorDatatype.CHAR);
         persTypeInfo.setDiscriminatorValue("A");
         persTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
@@ -266,6 +290,39 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
         assertEquals("persistence descr", copy.getDescriptionText(Locale.US));
         assertEquals("D_COLUMN", copy.getDiscriminatorColumnName());
+        assertEquals(Integer.valueOf(2), copy.getDiscriminatorColumnLength());
+        assertEquals(DiscriminatorDatatype.CHAR, copy.getDiscriminatorDatatype());
+        assertEquals("A", copy.getDiscriminatorValue());
+        assertEquals(InheritanceStrategy.JOINED_SUBCLASS, copy.getInheritanceStrategy());
+        assertEquals("Table1", copy.getTableName());
+        assertTrue(copy.isEnabled());
+        assertTrue(copy.isDefinesDiscriminatorColumn());
+        assertTrue(copy.isUseTableDefinedInSupertype());
+    }
+
+    @Test
+    public void testToXml_DiscriminatorLengthNull() {
+        IPersistentTypeInfo persTypeInfo = policyCmptType.getPersistenceTypeInfo();
+        persTypeInfo.setPersistentType(PersistentType.ENTITY);
+        persTypeInfo.setDefinesDiscriminatorColumn(true);
+        persTypeInfo.setUseTableDefinedInSupertype(true);
+        persTypeInfo.setDiscriminatorColumnName("D_COLUMN");
+        persTypeInfo.setDiscriminatorColumnLength(null);
+        persTypeInfo.setDiscriminatorDatatype(DiscriminatorDatatype.CHAR);
+        persTypeInfo.setDiscriminatorValue("A");
+        persTypeInfo.setInheritanceStrategy(InheritanceStrategy.JOINED_SUBCLASS);
+        persTypeInfo.setTableName("Table1");
+        IDescription description = persTypeInfo.getDescription(Locale.US);
+        description.setText("persistence descr");
+        Element element = policyCmptType.toXml(newDocument());
+
+        PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
+        copyOfPcType.initFromXml(element);
+        IPersistentTypeInfo copy = copyOfPcType.getPersistenceTypeInfo();
+
+        assertEquals("persistence descr", copy.getDescriptionText(Locale.US));
+        assertEquals("D_COLUMN", copy.getDiscriminatorColumnName());
+        assertNull(copy.getDiscriminatorColumnLength());
         assertEquals(DiscriminatorDatatype.CHAR, copy.getDiscriminatorDatatype());
         assertEquals("A", copy.getDiscriminatorValue());
         assertEquals(InheritanceStrategy.JOINED_SUBCLASS, copy.getInheritanceStrategy());
@@ -434,6 +491,34 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         msgList = persistenceTypeInfo1.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
         msgList = superPcType.validate(ipsProject);
+        assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+    }
+
+    @Test
+    public void testValidateDiscriminator_ColumnLength() {
+        MessageList msgList = null;
+        PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy");
+        policyCmptType.setSupertype(superPcType.getQualifiedName());
+
+        IPersistentTypeInfo persistenceTypeInfoSuper = superPcType.getPersistenceTypeInfo();
+        IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
+
+        persistenceTypeInfoSuper.setPersistentType(PersistentType.ENTITY);
+        persistenceTypeInfo.setPersistentType(PersistentType.ENTITY);
+
+        persistenceTypeInfoSuper.setDefinesDiscriminatorColumn(true);
+        persistenceTypeInfoSuper.setDiscriminatorColumnName("DTYPE");
+        persistenceTypeInfoSuper.setDiscriminatorDatatype(DiscriminatorDatatype.STRING);
+
+        persistenceTypeInfoSuper.setDiscriminatorColumnLength(2);
+        persistenceTypeInfo.setDiscriminatorValue("123");
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
+        assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
+
+        persistenceTypeInfoSuper.setDiscriminatorColumnLength(null);
+
+        msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
     }
 

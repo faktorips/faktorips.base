@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>faktorips-runtime</artifactId>
@@ -133,7 +133,13 @@
             <artifactId>junit</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
-        </dependency>
+        </dependency> 
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <optional>true</optional>
+        </dependency>        
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

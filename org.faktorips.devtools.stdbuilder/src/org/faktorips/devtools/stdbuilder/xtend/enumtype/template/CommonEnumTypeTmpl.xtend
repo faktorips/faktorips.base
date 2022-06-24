@@ -26,10 +26,11 @@ class CommonEnumTypeTmpl {
 
     def private static field (XEnumAttribute it) '''
         /**
-        «getAnnotations(ELEMENT_JAVA_DOC)»
+        «getAnnotations(ELEMENT_JAVA_DOC, true)»
         «IF !getAnnotations(ELEMENT_JAVA_DOC).nullOrEmpty» *«ENDIF»
          * @generated
          */
+        «getAnnotations(DEPRECATION)»
         private final «datatypeNameForConstructor» «field(memberVarName)»;
     '''
 
@@ -39,7 +40,7 @@ class CommonEnumTypeTmpl {
 
     def private static getter (XEnumAttribute it) '''
        /**
-        * «IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
+        *«IF multilingual»«localizedJDoc("GETTER_MULTILINGUAL", name, descriptionForJDoc)»«ELSE»«localizedJDoc("GETTER", name, descriptionForJDoc)»«ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
         * @generated

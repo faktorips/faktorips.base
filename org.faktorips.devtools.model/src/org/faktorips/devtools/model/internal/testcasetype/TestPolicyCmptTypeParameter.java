@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.util.ListElementMover;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
@@ -220,14 +221,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         super.initPropertiesFromXml(element, id);
         policyCmptType = element.getAttribute(PROPERTY_POLICYCMPTTYPE);
         association = element.getAttribute(PROPERTY_ASSOCIATION);
-        String needsProductCmptAttr = element.getAttribute(PROPERTY_REQUIRES_PRODUCTCMT);
-        if (StringUtils.isNotEmpty(needsProductCmptAttr)) {
-            requiresProductCmpt = "yes".equalsIgnoreCase(needsProductCmptAttr) ? true //$NON-NLS-1$
-                    : "true".equalsIgnoreCase(needsProductCmptAttr) ? true //$NON-NLS-1$
-                            : "1".equalsIgnoreCase(needsProductCmptAttr) ? true : false; //$NON-NLS-1$
-        } else {
-            requiresProductCmpt = false;
-        }
+        requiresProductCmpt = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_REQUIRES_PRODUCTCMT);
         try {
             minInstances = Integer.parseInt(element.getAttribute(PROPERTY_MIN_INSTANCES));
         } catch (NumberFormatException e) {
@@ -245,7 +239,9 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_POLICYCMPTTYPE, policyCmptType);
         element.setAttribute(PROPERTY_ASSOCIATION, association);
-        element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, requiresProductCmpt ? "true" : "false"); //$NON-NLS-1$ //$NON-NLS-2$
+        if (requiresProductCmpt) {
+            element.setAttribute(PROPERTY_REQUIRES_PRODUCTCMT, "" + requiresProductCmpt); //$NON-NLS-1$
+        }
         element.setAttribute(PROPERTY_MIN_INSTANCES, "" + minInstances); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MAX_INSTANCES, "" + maxInstances); //$NON-NLS-1$
     }

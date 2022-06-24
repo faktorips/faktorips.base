@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -157,8 +158,37 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         IValueSet set2 = owner2.changeValueSetType(ValueSetType.UNRESTRICTED);
         assertFalse(set2.isDetailedSpecificationOf(set1));
 
+        // abstract enum
         set2 = owner2.changeValueSetType(ValueSetType.ENUM);
         assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // not unified value set methods
+        ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // concrete enum of concrete range
+        IRangeValueSet range1 = (IRangeValueSet)set1;
+        range1.setAbstract(false);
+        range1.setLowerBound("0");
+        range1.setUpperBound("10");
+        IEnumValueSet enum2 = (IEnumValueSet)set2;
+        enum2.addValue("1");
+        enum2.addValue("5");
+        assertTrue(set2.isDetailedSpecificationOf(set1));
+
+        // concrete enum of concrete range - step mismatch
+        range1.setStep("5");
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        // concrete enum of concrete range - outside range
+        range1.setStep("1");
+        enum2.addValue("99");
+        assertFalse(set2.isDetailedSpecificationOf(set1));
+
+        range1.setStep("");
+        range1.setLowerBound("");
+        range1.setUpperBound("");
+        range1.setAbstract(true);
 
         // both ranges abstract => true
         set2 = owner2.changeValueSetType(ValueSetType.RANGE);
@@ -176,7 +206,7 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertFalse(set1.isDetailedSpecificationOf(range2));
 
         // super range candidate concrete, 'this' range concrete
-        IRangeValueSet range1 = (IRangeValueSet)set1;
+        range1 = (IRangeValueSet)set1;
         range1.setAbstract(false);
         range1.setLowerBound("0");
         range1.setUpperBound("9");

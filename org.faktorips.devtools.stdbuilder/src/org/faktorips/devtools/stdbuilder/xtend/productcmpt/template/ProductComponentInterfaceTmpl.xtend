@@ -17,7 +17,7 @@ class ProductComponentInterfaceTmpl{
 
     def static String body (XProductCmptClass it) '''
         /**
-         * «localizedJDoc("INTERFACE", name)»
+         *«localizedJDoc("INTERFACE", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated

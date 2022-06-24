@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core;
 
-import org.faktorips.devtools.model.plugin.EnumTypeDisplay;
 import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
+import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -34,8 +34,8 @@ public class DatatypeFormatter implements IDatatypeFormatter {
     }
 
     @Override
-    public EnumTypeDisplay getEnumTypeDisplay() {
-        return preferences.getEnumTypeDisplay();
+    public NamedDataTypeDisplay getNamedDataTypeDisplay() {
+        return preferences.getNamedDataTypeDisplay();
     }
 
     /**
@@ -43,10 +43,10 @@ public class DatatypeFormatter implements IDatatypeFormatter {
      * how the name and id will be formated. E.g. display only id or only name, or display both.
      */
     public String getFormatedEnumText(String id, String name) {
-        EnumTypeDisplay enumTypeDisplay = preferences.getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
+        NamedDataTypeDisplay dataTypeDisplay = preferences.getNamedDataTypeDisplay();
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME_AND_ID)) {
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-        } else if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
+        } else if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME)) {
             return name;
         } else {
             return id;

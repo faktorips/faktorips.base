@@ -59,8 +59,6 @@
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
-        <setEntry value="org.apache.commons.collections@default:default"/>
-        <setEntry value="org.apache.commons.compress@default:default"/>
         <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
@@ -277,6 +275,7 @@
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.faktorips.abstracttest.core@default:default"/>
         <setEntry value="org.faktorips.abstracttest@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.test@default:false"/>

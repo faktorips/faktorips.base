@@ -16,18 +16,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.validation.Validator;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -35,7 +33,7 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.XmlSaxSupport;
 import org.faktorips.devtools.model.internal.IpsModel;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.internal.XsdValidationHandler;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
@@ -47,10 +45,7 @@ import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * 
@@ -58,13 +53,9 @@ import org.xml.sax.SAXParseException;
  */
 public class IpsSrcFileContent {
 
-    private static final Set<String> ELEMENTS_AND_CHILDREN_WITH_ID = Set.of("ExtensionProperties"); //$NON-NLS-1$
-
     private final IpsObject ipsObject;
 
-    private final Set<String> xsdValidationErrors = new LinkedHashSet<>();
-
-    private final Set<String> xsdValidationWarnings = new LinkedHashSet<>();
+    private XsdValidationHandler xsdValidationHandler;
 
     /** Map containing the root properties of the source file. */
     private Map<String, String> rootProperties = null;
@@ -209,15 +200,15 @@ public class IpsSrcFileContent {
         wholeContentChanged();
     }
 
-    private Document validateXMLSchema(InputStream is) throws Exception {
+    private void validateXMLSchema(Document document) throws Exception {
         IpsObjectType type = getIpsSrcFile().getIpsObjectType();
-        DocumentBuilder validator = XmlUtil.getValidatingDocumentBuilder(type, new ValidatingErrorHandler());
-        return validator.parse(is);
+
+        Validator validator = XmlUtil.getXsdValidator(type, getXsdValidationHandler());
+        validator.validate(new DOMSource(document));
     }
 
     public void initContentFromFile() {
-        xsdValidationErrors.clear();
-        xsdValidationWarnings.clear();
+        setXsdValidationHandler(new XsdValidationHandler());
         IIpsSrcFile file = getIpsSrcFile();
         InputStream is = null;
         try {
@@ -233,18 +224,18 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                Document doc;
+                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                Document doc = builder.parse(is);
+
                 if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
-                    doc = validateXMLSchema(is);
-                    if (!xsdValidationErrors.isEmpty()) {
+                    validateXMLSchema(doc);
+                    if (!getXsdValidationHandler().getXsdValidationErrors().isEmpty()) {
                         parsable = false;
                         ipsObject.markAsFromUnparsableFile();
                         return;
                     }
-                } else {
-                    DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
-                    doc = builder.parse(is);
                 }
+
                 ipsObject.initFromXml(doc.getDocumentElement());
             }
             modificationStamp = file.getEnclosingResource().getModificationStamp();
@@ -355,7 +346,7 @@ public class IpsSrcFileContent {
                 Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
                 String encoding = ipsObject.getIpsProject().getXmlFileCharset();
                 Element xml = getIpsObject().toXml(doc);
-                removeIds(xml);
+                XmlUtil.removeIds(xml);
                 String newXml = XmlUtil.nodeToString(xml, encoding,
                         ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));
@@ -384,24 +375,6 @@ public class IpsSrcFileContent {
         Abstractions.getWorkspace().run(runnable, monitor);
     }
 
-    private void removeIds(Element element) {
-        if (isElementWithChildrenExcludedFromRemove(element)) {
-            return;
-        }
-        element.removeAttribute(IIpsObjectPart.PROPERTY_ID);
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            if (childNodes.item(i) instanceof Element) {
-                Element child = (Element)childNodes.item(i);
-                removeIds(child);
-            }
-        }
-    }
-
-    private boolean isElementWithChildrenExcludedFromRemove(Element element) {
-        return ELEMENTS_AND_CHILDREN_WITH_ID.contains(element.getNodeName());
-    }
-
     /**
      * Returns <code>true</code> if the given mod stamp is the result of saving the content to disk
      * via the save() method. The method should be called by the IpsModel's resource delta visitor
@@ -423,50 +396,11 @@ public class IpsSrcFileContent {
         return "IpsSrcFileContent " + getIpsSrcFile(); //$NON-NLS-1$
     }
 
-    public Set<String> getXsdValidationErrors() {
-        return Set.copyOf(xsdValidationErrors);
+    public XsdValidationHandler getXsdValidationHandler() {
+        return xsdValidationHandler;
     }
 
-    public Set<String> getXsdValidationWarnings() {
-        return Set.copyOf(xsdValidationWarnings);
-    }
-
-    private final class ValidatingErrorHandler implements ErrorHandler {
-        @Override
-        public void warning(SAXParseException exception) throws SAXException {
-            String localizedMessage = exception.getLocalizedMessage();
-            IpsLog.log(new IpsStatus(IStatus.WARNING, createLogMessage(localizedMessage)));
-
-            if (isXsdSchemaMissingError(localizedMessage)) {
-                xsdValidationWarnings.add(Messages.IpsSrcFileContent_msgXsdValidationReferenzIsMissing);
-            } else {
-                xsdValidationWarnings.add(localizedMessage);
-            }
-        }
-
-        @Override
-        public void fatalError(SAXParseException exception) throws SAXException {
-            throw exception;
-        }
-
-        @Override
-        public void error(SAXParseException exception) throws SAXException {
-            String localizedMessage = exception.getLocalizedMessage();
-            if (isXsdSchemaMissingError(localizedMessage)) {
-                warning(exception);
-            } else {
-                IpsLog.log(new IpsStatus(IStatus.ERROR, createLogMessage(localizedMessage)));
-                xsdValidationErrors.add(localizedMessage);
-            }
-        }
-
-        private boolean isXsdSchemaMissingError(String localizedMessage) {
-            return StringUtils.startsWith(localizedMessage, "cvc-elt.1.a"); //$NON-NLS-1$
-        }
-
-        private String createLogMessage(String localizedMessage) {
-            return new StringBuilder().append("XSD validation: ").append(getIpsSrcFile().getCorrespondingFile()) //$NON-NLS-1$
-                    .append(" | ").append(localizedMessage).toString(); //$NON-NLS-1$
-        }
+    public void setXsdValidationHandler(XsdValidationHandler xsdValidationHandler) {
+        this.xsdValidationHandler = xsdValidationHandler;
     }
 }

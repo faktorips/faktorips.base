@@ -192,7 +192,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     /**
      * Returns the target policy component type or <code>null</code> if either this relation hasn't
-     * got a target or the target does not exists.
+     * got a target or the target does not exist.
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      */

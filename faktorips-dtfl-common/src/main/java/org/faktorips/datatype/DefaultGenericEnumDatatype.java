@@ -10,6 +10,10 @@
 
 package org.faktorips.datatype;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
+
 public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
 
     private Class<?> adaptedClass;
@@ -29,4 +33,12 @@ public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
         return adaptedClass.getName();
     }
 
+    @Override
+    public Object getValueByName(String name) {
+        return Arrays.stream(getAllValueIds(false))
+                .map(this::getValue)
+                .filter(v -> StringUtils.equals(name, getNameFromValue(v)))
+                .findFirst()
+                .orElse(null);
+    }
 }

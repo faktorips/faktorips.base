@@ -22,6 +22,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -495,6 +496,34 @@ public class DefaultPolicyAttributeTest {
         assertEquals("foobar", defaultValue);
     }
 
+    @Test
+    public void testGetDefaultValue_ModelObject_NotProductRelevant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attr2");
+        Object defaultValue = attribute.getDefaultValue(new ConfVertrag());
+
+        assertEquals(ConfVertrag.DEFAULT_VALUE_FOR_ATTR2, defaultValue);
+    }
+
+    @Test
+    public void testGetDefaultValue_ModelObject_NotProductRelevant_CamelCaseName() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
+        Object defaultValue = attribute.getDefaultValue(new ConfVertrag());
+
+        assertEquals(TestExtensibleEnum.ENUM2, defaultValue);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testGetDefaultValue_ModelObject_MissingConstant() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(DummyVertrag.class);
+
+        PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
+        attribute.getDefaultValue(new DummyVertrag());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testGetDefaultValue_NotProductRelevant() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -824,20 +853,43 @@ public class DefaultPolicyAttributeTest {
         assertEquals("MeinAttribut (überschrieben)", overwritingAttribute.getLabel(Locale.GERMAN));
     }
 
+    @Test
+    public void testIsDeprecated() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThat(modelType.getAttribute("attr1").isDeprecated(), is(false));
+        assertThat(modelType.getAttribute("deprecatedAttribute").isDeprecated(), is(true));
+    }
+
+    @Test
+    public void testGetDeprecation() throws Exception {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        assertThat(modelType.getAttribute("attr1").getDeprecation().isPresent(), is(false));
+        Optional<Deprecation> deprecation = modelType.getAttribute("deprecatedAttribute").getDeprecation();
+        assertThat(deprecation.isPresent(), is(true));
+        assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
+        assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
-            "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured" })
+            "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
+            "deprecatedAttribute" })
     private class ConfVertrag implements IConfigurableModelObject {
+
+        @IpsDefaultValue("attr2")
+        public static final String DEFAULT_VALUE_FOR_ATTR2 = "foo";
+        @IpsDefaultValue("attrExtensibleEnum")
+        public /* static */ final TestExtensibleEnum DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM = TestExtensibleEnum.ENUM2;
 
         private Produkt produkt;
 
         private String attr1;
-        private String attr2;
+        private String attr2 = DEFAULT_VALUE_FOR_ATTR2;
         private String attrChangingOverTime;
         private String attrWithValueSetWithoutValidationContext;
         private String attrWithValueSetWithTooManyArgs;
-        private TestExtensibleEnum attrExtensibleEnum;
+        private TestExtensibleEnum attrExtensibleEnum = DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM;
         private TestExtensibleEnum attrExtensibleEnumConfigured;
         private Calendar effectiveFrom;
 
@@ -976,6 +1028,12 @@ public class DefaultPolicyAttributeTest {
         @Override
         public void setProductComponent(IProductComponent productComponent) {
             produkt = (Produkt)productComponent;
+        }
+
+        @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @Deprecated
+        public int getDeprecatedAttribute() {
+            return -1;
         }
     }
 

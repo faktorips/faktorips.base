@@ -72,6 +72,10 @@ public class NetUtil {
         return isUrlReachable(XmlUtil.getSchemaLocation(ipsObjectType));
     }
 
+    public static boolean isIpsProjectPropertiesSchemaReachable() {
+        return isUrlReachable(XmlUtil.getIpsProjectPropertiesSchemaLocation());
+    }
+
     /**
      * Gets the content of an URL with a timeout of 500 ms.
      * <p>

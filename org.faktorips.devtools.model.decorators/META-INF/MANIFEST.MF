@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Model Decorators
 Bundle-SymbolicName: org.faktorips.devtools.model.decorators;singleton:=true
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
 Require-Bundle: 
@@ -49,7 +49,7 @@ Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.devtools.model.testcasetype,
  org.faktorips.devtools.model.type,
  org.faktorips.devtools.model.util,
- org.faktorips.runtime.internal;version="22.6.0",
- org.faktorips.runtime.util;version="22.6.0",
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.faktorips.runtime.util;version="22.12.0",
  org.faktorips.util
 Bundle-Activator: org.faktorips.devtools.model.decorators.internal.IpsModelDecoratorsPluginActivator

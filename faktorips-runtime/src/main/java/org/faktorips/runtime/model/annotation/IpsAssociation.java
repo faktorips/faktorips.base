@@ -17,6 +17,8 @@ import java.lang.annotation.Target;
 
 import org.faktorips.runtime.model.type.Association;
 import org.faktorips.runtime.model.type.AssociationKind;
+import org.faktorips.runtime.model.type.PolicyAssociation;
+import org.faktorips.runtime.model.type.ProductAssociation;
 
 /**
  * Preserves design time information about a model association for runtime reference via
@@ -52,4 +54,14 @@ public @interface IpsAssociation {
      * Maximal number of targets for this association
      */
     int max();
+
+    /**
+     * Whether the association is "qualified". A {@link PolicyAssociation} can be "qualified" by its
+     * matching {@link ProductAssociation}, meaning that the {@link PolicyAssociation}'s
+     * cardinalities are not defined for all targets but per target of the
+     * {@link ProductAssociation}.
+     * 
+     * @since 22.6
+     */
+    boolean qualified() default false;
 }

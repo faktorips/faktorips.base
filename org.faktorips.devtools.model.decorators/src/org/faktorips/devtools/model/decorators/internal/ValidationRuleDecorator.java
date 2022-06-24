@@ -10,7 +10,10 @@
 
 package org.faktorips.devtools.model.decorators.internal;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
@@ -33,15 +36,21 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
         if (ipsElement instanceof IValidationRule) {
             IValidationRule rule = (IValidationRule)ipsElement;
             if (rule.isConfigurableByProductComponent()) {
-                overlays[1] = OverlayIcons.PRODUCT_RELEVANT;
+                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_RELEVANT;
                 if (!rule.isChangingOverTime()) {
-                    overlays[0] = OverlayIcons.STATIC;
+                    overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
                 }
-                return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE,
-                        overlays);
+            }
+            if (rule.isDeprecated()) {
+                overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
             }
         }
-        return getDefaultImageDescriptor();
+        if (Arrays.equals(new String[4], overlays)) {
+            return getDefaultImageDescriptor();
+        } else {
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(VALIDATION_RULE_DEF_BASE_IMAGE,
+                    overlays);
+        }
     }
 
     /**

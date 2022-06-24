@@ -33,10 +33,10 @@ public class ExcelHelper {
     }
 
     /**
-     * @param sourceFile A platform-dependant String which denotes the full path to an Excel file.
+     * @param sourceFile A platform-dependent String which denotes the full path to an Excel file.
      * @return A workbook constructed from the given source file.
      * 
-     * @throws FileNotFoundException if the file provided by sourceFile does not exists
+     * @throws FileNotFoundException if the file provided by sourceFile does not exist
      * @throws IOException if the file is not readable or accessible
      */
     public static Workbook getWorkbook(String sourceFile) throws IOException {
@@ -58,7 +58,7 @@ public class ExcelHelper {
      * @param sourceFile A platform-dependent String which denotes the full path to an Excel file.
      * @param indexOfWorkbook The zero-based index of the desired worksheet.
      * 
-     * @throws FileNotFoundException if the file provided by sourceFile does not exists
+     * @throws FileNotFoundException if the file provided by sourceFile does not exist
      * @throws IOException if the file is not readable or accessible
      */
     public static Sheet getWorksheetFromWorkbook(String sourceFile, int indexOfWorkbook) throws IOException {

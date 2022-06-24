@@ -36,6 +36,7 @@ import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.IpsObjectDependency;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObject;
+import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.model.internal.ipsobject.TimedIpsObject;
@@ -408,6 +409,8 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
+        DeprecationValidation.validateTableStructureIsNotDeprecated(this, this.getQualifiedName(), tableStructure,
+                ipsProject, list);
         validateColumnReferences(list, tableStructure);
         SingleTableContentsValidator singleTableContentsValidator = SingleTableContentsValidator.createFor(this);
         list.add(singleTableContentsValidator.validateIfPossible());

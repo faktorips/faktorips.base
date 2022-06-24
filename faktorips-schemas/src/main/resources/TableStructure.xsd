@@ -12,6 +12,7 @@
                 <xsd:element ref="Range" maxOccurs="unbounded" minOccurs="0" />
                 <xsd:element ref="Index" maxOccurs="unbounded" minOccurs="0" />
                 <xsd:element ref="ForeignKey" maxOccurs="unbounded" minOccurs="0" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="tableStructureType" use="required">
                 <xsd:simpleType>
@@ -54,6 +55,7 @@
             <xsd:sequence minOccurs="1" maxOccurs="unbounded">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="datatype" />
             <xsd:attributeGroup ref="id" />
@@ -68,9 +70,10 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element ref="Item" minOccurs="1" maxOccurs="unbounded" />
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
-            <xsd:attribute name="uniqueKey" type="boolean" use="required" />
+            <xsd:attribute name="uniqueKey" type="boolean" use="optional" />
             <xsd:attributeGroup ref="since" />
         </xsd:complexType>
     </xsd:element>
@@ -81,6 +84,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element ref="Item" minOccurs="1" maxOccurs="unbounded" />
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="referencedUniqueKey" type="string" use="required" />
@@ -93,6 +97,7 @@
             <xsd:sequence minOccurs="1" maxOccurs="unbounded">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Description" type="Description" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="columnRangeType" use="required">

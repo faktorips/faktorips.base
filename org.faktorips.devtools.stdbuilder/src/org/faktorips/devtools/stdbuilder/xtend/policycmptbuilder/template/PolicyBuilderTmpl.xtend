@@ -13,7 +13,7 @@ class PolicyBuilderTmpl {
     def static String body(XPolicyBuilder it) '''
         
         /**
-        * «localizedJDoc("CLASS", policyName)»
+        *«localizedJDoc("CLASS", policyName)»
         *
         * @generated
         */
@@ -76,8 +76,8 @@ class PolicyBuilderTmpl {
     // Internal constructors
     def private static constructors(XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR_WITH_REPO", implClassName)»
-        * «localizedJDoc("CONSTRUCTOR_INTERNAL")»
+        *«localizedJDoc("CONSTRUCTOR_WITH_REPO", implClassName)»
+        *«localizedJDoc("CONSTRUCTOR_INTERNAL")»
         *
         * @generated
         */
@@ -109,13 +109,13 @@ class PolicyBuilderTmpl {
     // This method generates the setter method for an attribute. The setter method of the policy is then called for the attribute.
     // Returns the builder.
     def private static attributeSetter(XPolicyBuilder builder, XPolicyAttribute it) '''
-        «IF !derivedOnTheFly && !constant && !(derivedByExplicitMethodCall && abstract)»
+        «IF !derived && !constant»
             /**
-            * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+            *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
             *
             * @generated
             */
-            «IF overwrite && !overwrittenAttribute.derivedOnTheFly && !overwrittenAttribute.constant && !(overwrittenAttribute.derivedByExplicitMethodCall && overwrittenAttribute.abstract)»@Override«ENDIF»
+            «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
@@ -126,13 +126,13 @@ class PolicyBuilderTmpl {
 
     // Generates setter for attributes of the supertypes in order to overwrite the return type
     def private static superAttributeSetter(XPolicyBuilder builder, XPolicyAttribute it) '''
-        «IF !derivedOnTheFly && !constant && !(derivedByExplicitMethodCall && abstract)»
+        «IF !derived && !constant»
             /**
-            * «localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+            *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
             *
             * @generated
             */
-            «IF !(overwrite && overwrittenAttribute.abstract && overwrittenAttribute.derivedByExplicitMethodCall)»@Override«ENDIF»
+            @Override
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
                 «safeGetResult(builder)».«methodNameSetter»(«parameterName»);
@@ -143,7 +143,7 @@ class PolicyBuilderTmpl {
 
     def private static getPolicy(XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_GET_VALUE", policyName)»
+        *«localizedJDoc("METHOD_GET_VALUE", policyName)»
         *
         * @generated
         */
@@ -168,7 +168,7 @@ class PolicyBuilderTmpl {
 
     def private static getPolicyClass(XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_GET_CLASS")»
+        *«localizedJDoc("METHOD_GET_CLASS")»
         *
         * @generated
         */
@@ -180,7 +180,7 @@ class PolicyBuilderTmpl {
     // A static method to create builder from a policy instance
     def static from(XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_FROM", name, policyName)»
+        *«localizedJDoc("METHOD_FROM", name, policyName)»
         *
         * @generated
         */
@@ -189,7 +189,7 @@ class PolicyBuilderTmpl {
         }
         
         /**
-        * «localizedJDoc("METHOD_FROM_REPO", name, policyName)»
+        *«localizedJDoc("METHOD_FROM_REPO", name, policyName)»
         *
         * @generated
         */
@@ -201,7 +201,7 @@ class PolicyBuilderTmpl {
     def private static associationClass(XPolicyBuilder it) '''
         «IF builderAssociations.size > 0»
             /**
-            * «localizedJDoc("METHOD_ASSOCIATION")»
+            *«localizedJDoc("METHOD_ASSOCIATION")»
             *
             * @generated
             */
@@ -212,7 +212,7 @@ class PolicyBuilderTmpl {
         «ENDIF»
         «IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 »
             /**
-            * «localizedJDoc("METHOD_ADD_ASSOCIATION")»
+            *«localizedJDoc("METHOD_ADD_ASSOCIATION")»
             *
             * @generated
             */
@@ -227,7 +227,7 @@ class PolicyBuilderTmpl {
     def private static factoryClass(XPolicyBuilder it) '''
         «IF !abstract && generatePublishedInterfaces»
             /**
-            * «localizedJDoc("CLASS_FACTORY", name)»
+            *«localizedJDoc("CLASS_FACTORY", name)»
             *
             * @generated
             */

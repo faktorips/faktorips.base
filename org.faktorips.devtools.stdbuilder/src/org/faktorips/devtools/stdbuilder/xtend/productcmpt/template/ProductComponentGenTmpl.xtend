@@ -26,12 +26,13 @@ class ProductComponentGenTmpl {
 
             /**
             «IF generatePublishedInterfaces»
-             * «localizedJDoc("CLASS", interfaceName)»
+             *«localizedJDoc("CLASS", interfaceName)»
             «ELSE»
-             * «localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, productCmptClassNode.name, description)»
+             *«localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, productCmptClassNode.name, description)»
             «ENDIF»
             «IF !productCmptType.changingOverTime»
-             * «localizedJDoc("DEPRECATED_CLASS", generationConceptNamePlural)»
+             *
+             *«localizedJDoc("DEPRECATED_CLASS", generationConceptNamePlural)»
             «ENDIF»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
@@ -39,6 +40,8 @@ class ProductComponentGenTmpl {
              */
             «IF !productCmptType.changingOverTime»
              @Deprecated
+            «ELSE»
+              «getAnnotations(DEPRECATION)»
             «ENDIF»
             public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)»
              {
@@ -63,11 +66,12 @@ class ProductComponentGenTmpl {
 
 
                 /**
-                 * «localizedJDoc("CONSTRUCTOR", getSimpleName(IMPLEMENTATION))»
+                 *«localizedJDoc("CONSTRUCTOR", getSimpleName(IMPLEMENTATION))»
                 «getAnnotations(ELEMENT_JAVA_DOC)»
                  *
                  * @generated
                  */
+                «getAnnotations(DEPRECATION)»
                 public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
                     super(productCmpt);
                     «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
@@ -113,7 +117,7 @@ class ProductComponentGenTmpl {
                 «getProductCmpt(productCmptClassNode)»
 
                 /**
-                 * «inheritDoc»
+                 *«inheritDoc»
                  *
                  * @generated
                  */
@@ -159,7 +163,7 @@ class ProductComponentGenTmpl {
 
                 «IF generateMethodGenericCreatePolicyComponent»
                     /**
-                     * «inheritDoc»
+                     *«inheritDoc»
                      *
                      * @generated
                      */
@@ -185,7 +189,7 @@ class ProductComponentGenTmpl {
 
     def package static getProductCmpt (XProductCmptClass it) '''
             /**
-             * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_PRODUCTCMPT_IN_GEN", name, generationConceptNameSingular)»
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_PRODUCTCMPT_IN_GEN", name, generationConceptNameSingular)»
              *
              * @generated
              */
@@ -203,7 +207,7 @@ class ProductComponentGenTmpl {
     def package static createPolicyCmpt(XProductCmptClass currentType, XPolicyCmptClass it) '''
         «IF currentType.isGenerateMethodCreatePolicyCmpt(it)»
             /**
-             * «inheritDocOrJavaDocIf(genInterface, "METHOD_CREATE_POLICY_CMPT_IN_GEN")»
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_CREATE_POLICY_CMPT_IN_GEN")»
              *
              * @generated
              */

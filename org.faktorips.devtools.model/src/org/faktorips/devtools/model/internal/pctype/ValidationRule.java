@@ -38,6 +38,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.MarkerEnumUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -267,22 +268,14 @@ public class ValidationRule extends TypePart implements IValidationRule {
         name = element.getAttribute(PROPERTY_NAME);
         msgCode = element.getAttribute(PROPERTY_MESSAGE_CODE);
         msgSeverity = MessageSeverity.getMessageSeverity(element.getAttribute(PROPERTY_MESSAGE_SEVERITY));
-        checkValueAgainstValueSetRule = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE));
-        validatedAttrSpecifiedInSrc = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC));
-        configurableByProductComponent = Boolean
-                .parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT));
-        String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-        if (StringUtils.isBlank(changingOverTimeValue)) {
-            if (configurableByProductComponent) {
-                // if changingOverTime is not set, the product was written before 3.22 and true was
-                // the implicit value.
-                changingOverTime = true;
-            }
-            // else the default has been set by initDefaultChangingOverTime()
-        } else {
-            changingOverTime = Boolean.parseBoolean(changingOverTimeValue);
+        checkValueAgainstValueSetRule = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_CHECK_AGAINST_VALUE_SET_RULE);
+        validatedAttrSpecifiedInSrc = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
+        configurableByProductComponent = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT);
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
         if (element.hasAttribute(PROPERTY_ACTIVATED_BY_DEFAULT)) {
             activatedByDefault = Boolean.parseBoolean(element.getAttribute(PROPERTY_ACTIVATED_BY_DEFAULT));
@@ -337,10 +330,18 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_NAME, name);
         newElement.setAttribute(PROPERTY_MESSAGE_CODE, msgCode);
         newElement.setAttribute(PROPERTY_MESSAGE_SEVERITY, msgSeverity.getId());
-        newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC, String.valueOf(validatedAttrSpecifiedInSrc));
-        newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE, String.valueOf(checkValueAgainstValueSetRule));
-        newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
-                String.valueOf(configurableByProductComponent));
+        if (checkValueAgainstValueSetRule) {
+            newElement.setAttribute(PROPERTY_CHECK_AGAINST_VALUE_SET_RULE,
+                    String.valueOf(checkValueAgainstValueSetRule));
+        }
+        if (validatedAttrSpecifiedInSrc) {
+            newElement.setAttribute(PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC,
+                    String.valueOf(validatedAttrSpecifiedInSrc));
+        }
+        if (configurableByProductComponent) {
+            newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
+                    String.valueOf(configurableByProductComponent));
+        }
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
         appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);

@@ -29,9 +29,11 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.PersistenceUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -62,6 +64,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     private DiscriminatorDatatype discriminatorDatatype = DiscriminatorDatatype.STRING;
 
     private String discriminatorColumnName = ""; //$NON-NLS-1$
+
+    private Integer discriminatorColumnLength = 3;
 
     /** per default the persistent is disabled */
     private PersistentType persistentType = PersistentType.NONE;
@@ -103,7 +107,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
         PersistentType oldValue = this.persistentType;
         this.persistentType = persistentType;
-        valueChanged(oldValue, persistentType);
+        valueChanged(oldValue, persistentType, PROPERTY_PERSISTENT_TYPE);
     }
 
     @Override
@@ -113,7 +117,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         }
         boolean oldValue = this.definesDiscriminatorColumn;
         this.definesDiscriminatorColumn = definesDiscriminatorColumn;
-        valueChanged(oldValue, definesDiscriminatorColumn);
+        valueChanged(oldValue, definesDiscriminatorColumn, PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
     }
 
     @Override
@@ -121,7 +125,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         setTableName(""); //$NON-NLS-1$
         boolean oldValue = this.useTableDefinedInSupertype;
         this.useTableDefinedInSupertype = useTableDefinedInSupertype;
-        valueChanged(oldValue, useTableDefinedInSupertype);
+        valueChanged(oldValue, useTableDefinedInSupertype, PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
     }
 
     @Override
@@ -155,12 +159,25 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     @Override
+    public Integer getDiscriminatorColumnLength() {
+        return discriminatorColumnLength;
+    }
+
+    @Override
+    public void setDiscriminatorColumnLength(Integer newDiscriminatorColumnLength) {
+        Integer oldValue = discriminatorColumnLength;
+        discriminatorColumnLength = newDiscriminatorColumnLength;
+
+        valueChanged(oldValue, newDiscriminatorColumnLength, PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
+    }
+
+    @Override
     public void setDiscriminatorColumnName(String newDiscriminatorColumnName) {
         ArgumentCheck.notNull(newDiscriminatorColumnName);
         String oldValue = discriminatorColumnName;
         discriminatorColumnName = newDiscriminatorColumnName;
 
-        valueChanged(oldValue, newDiscriminatorColumnName);
+        valueChanged(oldValue, newDiscriminatorColumnName, PROPERTY_DISCRIMINATOR_COLUMN_NAME);
     }
 
     @Override
@@ -169,7 +186,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         DiscriminatorDatatype oldValue = discriminatorDatatype;
         discriminatorDatatype = newDescriminatorDatatype;
 
-        valueChanged(oldValue, newDescriminatorDatatype);
+        valueChanged(oldValue, newDescriminatorDatatype, PROPERTY_DISCRIMINATOR_DATATYPE);
     }
 
     @Override
@@ -178,7 +195,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         String oldValue = discriminatorValue;
         discriminatorValue = newDescriminatorValue;
 
-        valueChanged(oldValue, newDescriminatorValue);
+        valueChanged(oldValue, newDescriminatorValue, PROPERTY_DISCRIMINATOR_VALUE);
     }
 
     @Override
@@ -188,7 +205,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         setInheritanceStrategyInternal(newStrategy);
 
-        valueChanged(oldValue, newStrategy);
+        valueChanged(oldValue, newStrategy, PROPERTY_INHERITANCE_STRATEGY);
     }
 
     public void setInheritanceStrategyInternal(InheritanceStrategy newStrategy) {
@@ -207,7 +224,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         String oldValue = tableName;
         tableName = newTableName;
 
-        valueChanged(oldValue, tableName);
+        valueChanged(oldValue, tableName, PROPERTY_TABLE_NAME);
     }
 
     public boolean isSecondaryTableNameRequired() {
@@ -224,7 +241,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
 
         validateInheritanceStrategy(msgList, rootEntityFinder.rooEntity, ipsProject);
         validateTableName(msgList, rootEntityFinder.rooEntity);
-        validateDisriminator(msgList, rootEntityFinder.rooEntity);
+        validateDiscriminator(msgList, rootEntityFinder.rooEntity);
         validateUniqueColumnNameInHierarchy(msgList);
     }
 
@@ -338,7 +355,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         return rooEntityFinder.rooEntity;
     }
 
-    private void validateDisriminator(MessageList msgList, IPolicyCmptType rootEntity) {
+    private void validateDiscriminator(MessageList msgList, IPolicyCmptType rootEntity) {
         validatePersistentType(msgList);
 
         // check if this type not defines the discriminator column
@@ -350,6 +367,115 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             return;
         }
 
+        if (!validateRootEntityNotDefined(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateDefinesDiscriminatorColumnAndRootEntryNotNull(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateDiscriminatorEmptinessOrConformity(msgList, rootEntity)) {
+            return;
+        }
+
+        if (!validateMaxDiscriminatorLength(msgList, rootEntity)) {
+            return;
+        }
+
+        validatePolicyCmptType(msgList);
+    }
+
+    /**
+     * The discriminator value exceeds the maximum length of the defined in the root entity.
+     * 
+     * @return false if the validation fails
+     */
+    private boolean validateMaxDiscriminatorLength(MessageList msgList, IPolicyCmptType rootEntity) {
+        Integer maxDiscriminatorColumnLength = rootEntity.getPersistenceTypeInfo().getDiscriminatorColumnLength();
+        if (maxDiscriminatorColumnLength != null && getDiscriminatorValue().length() > maxDiscriminatorColumnLength) {
+            String text = MessageFormat.format(Messages.PersistentTypeInfo_msgDiscriminatorValueTooLong,
+                    maxDiscriminatorColumnLength);
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     *
+     * The discriminator value must <strong>not be empty</strong> if the root entity defines the
+     * discriminator column and the type is not abstract.
+     * <p>
+     * The discriminator value must <strong>be empty</strong> if the root entity does not define a
+     * discriminator column or the type is abstract.
+     * <p>
+     * The discriminator value does <strong>not conform</strong> to the specified discriminator
+     * datatype.
+     *
+     * @return false if one of the validation fails
+     */
+    private boolean validateDiscriminatorEmptinessOrConformity(MessageList msgList, IPolicyCmptType rootEntity) {
+        boolean discriminatorValueMustBeEmpty = isDiscrValueEmpty(rootEntity);
+
+        if (!discriminatorValueMustBeEmpty) {
+            if (StringUtils.isEmpty(discriminatorValue)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+                return false;
+            }
+        } else {
+            if (!StringUtils.isEmpty(discriminatorValue)) {
+                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmpty;
+                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+                return false;
+            }
+        }
+
+        if (!rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
+            // discriminator not defined in hierarchy,
+            // skip next validation steps
+            return false;
+        }
+
+        if (!discriminatorValueMustBeEmpty
+                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype()
+                        .isParsableToDiscriminatorDatatype(discriminatorValue)) {
+            String text = Messages.PersistentTypeInfo_msgDiscriminatorValueNotConform;
+            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The discriminator definition is not allowed here because this type is not the root entity
+     *
+     * @return false if the validation fails
+     */
+    private boolean validateDefinesDiscriminatorColumnAndRootEntryNotNull(MessageList msgList,
+            IPolicyCmptType rootEntity) {
+        // discriminator necessary if single table or joined table inheritance strategy
+        // and the root entity defines a discriminator
+        if (isDefinesDiscriminatorColumnAndRootEntryNotNull(rootEntity)) {
+            String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
+            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
+                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * The discriminator must be defined in the root entity
+     *
+     * @return false if the validation fails
+     */
+    private boolean validateRootEntityNotDefined(MessageList msgList, IPolicyCmptType rootEntity) {
         if (checkIsRootEntityNotDefined(rootEntity)) {
             // TODO JPA Joerg wenn das mit getPolicyCmptType().getAttributes().length > 0 stimmt
             // zus. noch transiente attribute ausschliessen
@@ -357,52 +483,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
                     rootEntity.getUnqualifiedName());
             msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING, text, Message.ERROR, this,
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            return;
+            return false;
         }
-
-        // discriminator necessary if single table or joined table inheritance strategy
-        // and the root entity defines a discriminator
-        if (isDefinesDiscriminatorColumnAndRootEntryNotNull(rootEntity)) {
-            String text = Messages.PersistentTypeInfo_msgDiscriminatorDefinitionNotAllowedNotRootEntity;
-            msgList.add(new Message(MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-            return;
-        }
-
-        boolean discrValueMustBeEmpty = isDiscrValueEmpty(rootEntity);
-
-        if (!discrValueMustBeEmpty) {
-            if (StringUtils.isEmpty(discriminatorValue)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustNotBeEmpty;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-                return;
-            }
-        } else {
-            if (!StringUtils.isEmpty(discriminatorValue)) {
-                String text = Messages.PersistentTypeInfo_msgDiscriminatorValueMustBeEmpty;
-                msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                        IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-                return;
-            }
-        }
-
-        if (!rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
-            // discriminator not defined in hierarchy,
-            // skip next validation steps
-            return;
-        }
-
-        if (!discrValueMustBeEmpty
-                && !rootEntity.getPersistenceTypeInfo().getDiscriminatorDatatype()
-                        .isParsableToDiscriminatorDatatype(discriminatorValue)) {
-            String text = Messages.PersistentTypeInfo_msgDiscriminatorValueNotConform;
-            msgList.add(new Message(MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID, text, Message.ERROR, this,
-                    IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE));
-            return;
-        }
-
-        validatePolicyCmptType(msgList);
+        return true;
     }
 
     private boolean isDefinesDiscriminatorColumnAndRootEntryNotNull(IPolicyCmptType rootEntity) {
@@ -487,12 +570,19 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         element.setAttribute(PROPERTY_TABLE_NAME, "" + tableName); //$NON-NLS-1$
         element.setAttribute(PROPERTY_INHERITANCE_STRATEGY, "" + inheritanceStrategy); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME, "" + discriminatorColumnName); //$NON-NLS-1$
+        if (discriminatorColumnLength != null) {
+            element.setAttribute(PROPERTY_DISCRIMINATOR_COLUMN_LENGTH, "" + discriminatorColumnLength); //$NON-NLS-1$
+        }
         element.setAttribute(PROPERTY_DISCRIMINATOR_DATATYPE, "" + discriminatorDatatype); //$NON-NLS-1$
         element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
-                + Boolean.valueOf(definesDiscriminatorColumn).toString());
-        element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
-                + Boolean.valueOf(useTableDefinedInSupertype).toString());
+        if (definesDiscriminatorColumn) {
+            element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
+                    + Boolean.valueOf(definesDiscriminatorColumn).toString());
+        }
+        if (useTableDefinedInSupertype) {
+            element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
+                    + Boolean.valueOf(useTableDefinedInSupertype).toString());
+        }
         element.setAttribute(PROPERTY_PERSISTENT_TYPE, "" + persistentType); //$NON-NLS-1$
     }
 
@@ -503,10 +593,15 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         inheritanceStrategy = InheritanceStrategy.valueOf(element.getAttribute(PROPERTY_INHERITANCE_STRATEGY));
         discriminatorColumnName = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_NAME);
         discriminatorDatatype = DiscriminatorDatatype.valueOf(element.getAttribute(PROPERTY_DISCRIMINATOR_DATATYPE));
+        String discriminatorColumnLengthString = element.getAttribute(PROPERTY_DISCRIMINATOR_COLUMN_LENGTH);
+        discriminatorColumnLength = IpsStringUtils.isNotBlank(discriminatorColumnLengthString)
+                ? Integer.parseInt(discriminatorColumnLengthString)
+                : null;
         discriminatorValue = element.getAttribute(PROPERTY_DISCRIMINATOR_VALUE);
         initPersistentTypeWithWorkaround(element);
-        definesDiscriminatorColumn = Boolean.valueOf(element.getAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN));
-        useTableDefinedInSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE));
+        definesDiscriminatorColumn = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
+        useTableDefinedInSupertype = XmlUtil.getBooleanAttributeOrFalse(element,
+                PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE);
     }
 
     /**

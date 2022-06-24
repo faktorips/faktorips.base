@@ -62,8 +62,8 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
 
     /**
      * Returns whether the product component type of the given {@link IIpsSrcFile} is changing over
-     * time or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time
-     * to delete previously created java files.
+     * time or not. If the {@link IIpsSrcFile} does not exist we assume it was changing over time to
+     * delete previously created java files.
      */
     private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) {
         return !ipsSrcFile.exists()

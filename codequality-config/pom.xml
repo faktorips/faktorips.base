@@ -5,7 +5,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>codequality-config</artifactId>
-    <version>22.6.0-SNAPSHOT</version>
+    <version>22.12.0-SNAPSHOT</version>
     <name>Faktor IPS Build Configurations</name>
 
     <build>

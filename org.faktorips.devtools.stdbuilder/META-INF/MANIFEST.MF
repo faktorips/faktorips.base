@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Standard Code Generator
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder; singleton:=true
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Activator: org.faktorips.devtools.stdbuilder.StdBuilderPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.xtend.lib,
  org.eclipse.jdt.core;bundle-version="3.17.0",
  org.eclipse.core.runtime;bundle-version="3.15.200",
  org.eclipse.core.resources;bundle-version="3.13.300",
- org.faktorips.eclipse.emf.codegen;bundle-version="22.6.0"
+ org.faktorips.eclipse.emf.codegen;bundle-version="22.12.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.stdbuilder,
  org.faktorips.devtools.stdbuilder.enumtype,
@@ -86,19 +86,19 @@ Import-Package: com.google.common.base;version="18.0.0",
  org.faktorips.devtools.model.util,
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
- org.faktorips.fl;version="22.6.0",
- org.faktorips.runtime;version="22.6.0",
- org.faktorips.runtime.formula;version="22.6.0",
- org.faktorips.runtime.internal;version="22.6.0",
- org.faktorips.runtime.internal.tableindex;version="22.6.0",
- org.faktorips.runtime.internal.toc;version="22.6.0",
- org.faktorips.runtime.jaxb;version="22.6.0",
- org.faktorips.runtime.model.annotation;version="22.6.0",
- org.faktorips.runtime.model.table;version="22.6.0",
- org.faktorips.runtime.model.type;version="22.6.0",
- org.faktorips.runtime.test;version="22.6.0",
- org.faktorips.runtime.util;version="22.6.0",
- org.faktorips.runtime.validation;version="22.6.0",
+ org.faktorips.fl;version="22.12.0",
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.runtime.formula;version="22.12.0",
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.faktorips.runtime.internal.tableindex;version="22.12.0",
+ org.faktorips.runtime.internal.toc;version="22.12.0",
+ org.faktorips.runtime.jaxb;version="22.12.0",
+ org.faktorips.runtime.model.annotation;version="22.12.0",
+ org.faktorips.runtime.model.table;version="22.12.0",
+ org.faktorips.runtime.model.type;version="22.12.0",
+ org.faktorips.runtime.test;version="22.12.0",
+ org.faktorips.runtime.util;version="22.12.0",
+ org.faktorips.runtime.validation;version="22.12.0",
  org.faktorips.util,
- org.faktorips.values;version="22.6.0",
- org.faktorips.valueset;version="22.6.0"
+ org.faktorips.values;version="22.12.0",
+ org.faktorips.valueset;version="22.12.0"

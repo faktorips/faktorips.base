@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.type.AttributeProperty;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.DatatypeUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
@@ -116,6 +117,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         initPropertyDefaultChangingOverTime();
+        // defaults to true
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
             setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
@@ -123,7 +125,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
-        overwrites = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_OVERWRITES);
+        overwrites = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERWRITES);
     }
 
     protected abstract void initPropertyDefaultChangingOverTime();
@@ -159,7 +161,9 @@ public abstract class Attribute extends TypePart implements IAttribute {
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
+        if (overwrites) {
+            element.setAttribute(PROPERTY_OVERWRITES, "" + overwrites); //$NON-NLS-1$
+        }
     }
 
     @Override

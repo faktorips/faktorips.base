@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
@@ -281,39 +282,41 @@ public class IpsBundleManifest {
      * old values.
      *
      * @param ipsProject the Faktor-IPS project this manifest belongs to
+     * @param manifestFile the location of the manifest
      */
-    public void writeBuilderSettings(IIpsProject ipsProject) {
+    public void writeBuilderSettings(IIpsProject ipsProject, AFile manifestFile) {
         String builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
         Attributes attributes = manifest.getMainAttributes();
-        if (attributes != null) {
-            String delimiter = ";"; //$NON-NLS-1$
-            StringBuilder sb = new StringBuilder(builderSetId);
-            sb.append(delimiter);
-            IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
-            Map<String, Object> properties = new TreeMap<>(
-                    Arrays.stream(config.getPropertyNames())
-                            .map(p -> new Object() {
-                                private final String key = p;
-                                private final Object value = config.getPropertyValue(p);
-                            })
-                            .filter(p -> p.value != null)
-                            .collect(Collectors.toMap(p -> p.key, p -> p.value)));
-
-            StringBuilderJoiner.join(sb, properties.entrySet(), delimiter, p -> {
-                sb.append(p.getKey());
-                sb.append('=');
-                sb.append('"');
-                sb.append(p.getValue());
-                sb.append('"');
-            });
-            attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
+        if (!attributes.containsKey(Name.MANIFEST_VERSION)) {
+            attributes.put(Name.MANIFEST_VERSION, "1.0"); //$NON-NLS-1$
         }
-        AFile manifestFileInProject = ipsProject.getProject().getFile(MANIFEST_NAME);
-        File manifestFile = manifestFileInProject.getLocation().toFile();
-        try (FileOutputStream outputStream = new FileOutputStream(manifestFile)) {
+        String delimiter = ";"; //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder(builderSetId);
+        sb.append(delimiter);
+        IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
+        Map<String, Object> properties = new TreeMap<>(
+                Arrays.stream(config.getPropertyNames())
+                        .map(p -> new Object() {
+                            private final String key = p;
+                            private final Object value = config.getPropertyValue(p);
+                        })
+                        .filter(p -> p.value != null)
+                        .collect(Collectors.toMap(p -> p.key, p -> p.value)));
+
+        StringBuilderJoiner.join(sb, properties.entrySet(), delimiter, p -> {
+            sb.append(p.getKey());
+            sb.append('=');
+            sb.append('"');
+            String value = Objects.toString(p.getValue());
+            sb.append(value.replace("\"", "\\\"")); //$NON-NLS-1$//$NON-NLS-2$
+            sb.append('"');
+        });
+        attributes.put(new Name(HEADER_GENERATOR_CONFIG), sb.toString());
+        File actualManifestFile = manifestFile.getLocation().toFile();
+        try (FileOutputStream outputStream = new FileOutputStream(actualManifestFile)) {
             manifest.write(outputStream);
         } catch (IOException e) {
-            throw new IpsException(new IpsStatus("Can't write " + manifestFileInProject, e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Can't write " + actualManifestFile, e)); //$NON-NLS-1$
         }
     }
 

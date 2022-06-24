@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.IJavaElement;
@@ -26,6 +27,7 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
@@ -220,7 +222,10 @@ public abstract class AbstractGeneratorModelNode {
      */
     public String getSinceVersion() {
         if (hasSinceVersion()) {
-            return ((IVersionControlledElement)getIpsObjectPartContainer()).getSinceVersion().asString();
+            IVersion<?> sinceVersion = ((IVersionControlledElement)getIpsObjectPartContainer()).getSinceVersion();
+            if (sinceVersion != null) {
+                return sinceVersion.asString();
+            }
         }
         return null;
     }
@@ -404,7 +409,12 @@ public abstract class AbstractGeneratorModelNode {
         String text = getGeneratorConfig().isGenerateMinimalJavadoc()
                 ? Arrays.toString(replacements).contains(getDescription()) ? getDescription() : ""
                 : getLocalizedText(key + "_JAVADOC", replacements);
-        return text;
+
+        return removeEmptyLines(text);
+    }
+
+    private String removeEmptyLines(String text) {
+        return Arrays.stream(text.split("\\R")).filter(s -> !s.isBlank()).collect(Collectors.joining("\n"));
     }
 
     /**
@@ -526,6 +536,21 @@ public abstract class AbstractGeneratorModelNode {
      * @return the string containing the annotations
      */
     public String getAnnotations(AnnotatedJavaElementType type) {
+        return getAnnotations(type, false);
+    }
+
+    /**
+     * Returns a string containing all annotations to the given {@link AnnotatedJavaElementType} and
+     * the {@link IIpsObjectPartContainer} that is represented by this model node.
+     * 
+     * @see #getIpsObjectPartContainer()
+     * 
+     * @param type The type you want to generate
+     * @param isFirstJavadoc whether the annotations are the first Javadoc element (or following
+     *            some other Javadoc, therefore need to be separated by a blank Javadoc line)
+     * @return the string containing the annotations
+     */
+    public String getAnnotations(AnnotatedJavaElementType type, boolean isFirstJavadoc) {
         List<IAnnotationGenerator> generators = getContext().getAnnotationGenerator(type);
         StringBuilder result = new StringBuilder(AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type ? " * " : "");
         for (IAnnotationGenerator generator : generators) {
@@ -539,6 +564,9 @@ public abstract class AbstractGeneratorModelNode {
         if (result.length() <= 3) {
             return IpsStringUtils.EMPTY;
         } else {
+            if (AnnotatedJavaElementType.ELEMENT_JAVA_DOC == type && !isFirstJavadoc) {
+                return new StringBuilder().append("*").append(System.lineSeparator()).append(result).toString();
+            }
             return result.toString();
         }
     }
@@ -554,7 +582,13 @@ public abstract class AbstractGeneratorModelNode {
                 || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsObjectPartContainer().getIpsProject())) {
             return getAnnotations(type);
         } else {
-            return "";
+            switch (type) {
+                case POLICY_CMPT_DECL_CLASS:
+                case PRODUCT_CMPT_DECL_CLASS:
+                    return "";
+                default:
+                    return getAnnotations(AnnotatedJavaElementType.DEPRECATION);
+            }
         }
     }
 

@@ -11,9 +11,15 @@
 package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.decorators.OverlayIcons;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 public class SimpleIpsElementDecorator implements IIpsElementDecorator {
 
@@ -29,7 +35,22 @@ public class SimpleIpsElementDecorator implements IIpsElementDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
+        if (ipsElement instanceof IVersionControlledElement
+                && ((IVersionControlledElement)ipsElement).isDeprecated()) {
+            return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(imageDescriptor,
+                    OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT);
+        } else if (ipsElement instanceof IIpsSrcFile) {
+            @SuppressWarnings("deprecation")
+            boolean cached = IpsModel.get().isCached((IIpsSrcFile)ipsElement);
+            if (cached) {
+                IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                if (ipsObject instanceof IVersionControlledElement
+                        && ((IVersionControlledElement)ipsObject).isDeprecated()) {
+                    return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(imageDescriptor,
+                            OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT);
+                }
+            }
+        }
         return imageDescriptor;
     }
-
 }

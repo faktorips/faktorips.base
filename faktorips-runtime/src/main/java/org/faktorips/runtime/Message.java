@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -271,7 +271,7 @@ public class Message implements Serializable {
         this.text = text;
         this.severity = severity;
         if (markers != null) {
-            this.markers = Collections.unmodifiableSet(new HashSet<IMarker>(markers));
+            this.markers = Collections.unmodifiableSet(new LinkedHashSet<IMarker>(markers));
         } else {
             this.markers = Collections.emptySet();
         }
@@ -675,11 +675,11 @@ public class Message implements Serializable {
 
         private String code;
 
-        private List<ObjectProperty> invalidObjectProperties;
+        private final List<ObjectProperty> invalidObjectProperties = new ArrayList<>();
 
-        private List<MsgReplacementParameter> replacementParams;
+        private final List<MsgReplacementParameter> replacementParams = new ArrayList<>();
 
-        private Set<? extends IMarker> markers;
+        private final Set<IMarker> markers = new LinkedHashSet<>();
 
         /**
          * Creates a new builder that is able to create a proper {@link Message} with all needed
@@ -702,9 +702,9 @@ public class Message implements Serializable {
         public Builder(Message message) {
             this(message.text, message.severity);
             this.code = message.code;
-            this.invalidObjectProperties = message.getInvalidObjectProperties();
-            this.replacementParams = message.getReplacementParameters();
-            this.markers = message.getMarkers();
+            this.invalidObjectProperties.addAll(message.getInvalidObjectProperties());
+            this.replacementParams.addAll(message.getReplacementParameters());
+            this.markers.addAll(message.getMarkers());
         }
 
         /**
@@ -742,20 +742,20 @@ public class Message implements Serializable {
         }
 
         /**
-         * Add a list of object properties that message refers to.
+         * Add a list of object properties that the message refers to.
          * 
-         * @param invalidObjectProperties A list of object properties that message refers to
+         * @param invalidObjectProperties A list of object properties that the message refers to
          * @return This builder instance to directly add further properties
          */
         public Builder invalidObjects(List<ObjectProperty> invalidObjectProperties) {
-            this.invalidObjectProperties = invalidObjectProperties;
+            this.invalidObjectProperties.addAll(invalidObjectProperties);
             return this;
         }
 
         /**
-         * Set an object property that message refers to.
+         * Add an object property that the message refers to.
          * 
-         * @param invalidObjectProperty An object property that message refers to
+         * @param invalidObjectProperty An object property that the message refers to
          * @return This builder instance to directly add further properties
          * 
          */
@@ -764,9 +764,9 @@ public class Message implements Serializable {
         }
 
         /**
-         * Set object properties that message refers to.
+         * Add object properties that the message refers to.
          * 
-         * @param invalidObjectProperties Object properties that message refers to
+         * @param invalidObjectProperties Object properties that the message refers to
          * @return This builder instance to directly add further properties
          */
         public Builder invalidObjects(ObjectProperty... invalidObjectProperties) {
@@ -783,7 +783,6 @@ public class Message implements Serializable {
          * 
          */
         public Builder invalidObjectWithProperties(Object object, String... properties) {
-            invalidObjectProperties = new ArrayList<>();
             if (properties.length == 0) {
                 invalidObjectProperties.add(new ObjectProperty(object));
             } else {
@@ -801,7 +800,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder replacements(List<MsgReplacementParameter> replacementParams) {
-            this.replacementParams = replacementParams;
+            this.replacementParams.addAll(replacementParams);
             return this;
         }
 
@@ -812,7 +811,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder replacements(MsgReplacementParameter... replacementParams) {
-            this.replacementParams = Arrays.asList(replacementParams);
+            this.replacementParams.addAll(Arrays.asList(replacementParams));
             return this;
         }
 
@@ -824,7 +823,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder replacements(String name, Object value) {
-            this.replacementParams = Arrays.asList(new MsgReplacementParameter(name, value));
+            this.replacementParams.add(new MsgReplacementParameter(name, value));
             return this;
         }
 
@@ -835,7 +834,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder markers(Collection<? extends IMarker> markers) {
-            this.markers = new HashSet<IMarker>(markers);
+            this.markers.addAll(markers);
             return this;
         }
 
@@ -846,7 +845,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder markers(IMarker... markers) {
-            this.markers = new HashSet<>(Arrays.asList(markers));
+            this.markers.addAll(Arrays.asList(markers));
             return this;
         }
 

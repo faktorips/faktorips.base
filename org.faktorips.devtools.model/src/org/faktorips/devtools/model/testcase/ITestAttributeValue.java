@@ -47,7 +47,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
     public void setTestAttribute(String attribute);
 
     /**
-     * Returns the test attribute or <code>null</code> if the test attribute does not exists.
+     * Returns the test attribute or <code>null</code> if the test attribute does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      * 

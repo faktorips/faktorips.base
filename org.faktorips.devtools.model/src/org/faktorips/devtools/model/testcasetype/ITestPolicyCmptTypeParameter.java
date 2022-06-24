@@ -128,7 +128,7 @@ public interface ITestPolicyCmptTypeParameter extends ITestParameter {
     public void setAssociation(String association);
 
     /**
-     * Returns the association or <code>null</code> if the association does not exists.
+     * Returns the association or <code>null</code> if the association does not exist.
      * 
      * @param ipsProject the IpsProject where to start the search from
      * 

@@ -18,11 +18,14 @@ import java.util.ResourceBundle;
 import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.Message.Builder;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.Range;
 import org.faktorips.valueset.ValueSet;
+
+import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Default implementation of {@link IGenericAttributeValidationConfiguration} that uses a
@@ -37,6 +40,11 @@ import org.faktorips.valueset.ValueSet;
  * To add {@link IMarker markers} or other information to messages, you can override this class'
  * methods and use {@link org.faktorips.runtime.Message.Builder} to modify the messages returned
  * from them.
+ * <p>
+ * An {@link IMarker} for {@link IMarker#isRequiredInformationMissing() missing required
+ * information}, that will be used in the default implementation of
+ * {@link #createMessageForMissingMandatoryValue(PolicyAttribute, IModelObject, Class)} can be
+ * provided in the constructor.
  */
 public class DefaultGenericAttributeValidationConfiguration implements IGenericAttributeValidationConfiguration {
 
@@ -64,14 +72,26 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
 
     private final Locale locale;
     private final ResourceBundle messages;
+    private final IMarker missingMandatoryValueMarker;
 
     public DefaultGenericAttributeValidationConfiguration(Locale locale) {
-        this(ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale), locale);
+        this(locale, null);
+    }
+
+    public DefaultGenericAttributeValidationConfiguration(Locale locale,
+            @CheckForNull IMarker requiredInformationMissingMarker) {
+        this(ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale), locale, requiredInformationMissingMarker);
     }
 
     public DefaultGenericAttributeValidationConfiguration(ResourceBundle messages, Locale locale) {
+        this(messages, locale, null);
+    }
+
+    public DefaultGenericAttributeValidationConfiguration(ResourceBundle messages, Locale locale,
+            @CheckForNull IMarker requiredInformationMissingMarker) {
         this.messages = requireNonNull(messages, "messages must not be null");
         this.locale = requireNonNull(locale, "locale must not be null");
+        this.missingMandatoryValueMarker = requiredInformationMissingMarker;
     }
 
     /**
@@ -88,6 +108,15 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
         return messages;
     }
 
+    /**
+     * Returns the {@link IMarker} used to
+     * {@link #createMessageForMissingMandatoryValue(PolicyAttribute, IModelObject, Class) create a
+     * message for a missing mandatory value}.
+     */
+    public IMarker getMissingMandatoryValueMarker() {
+        return missingMandatoryValueMarker;
+    }
+
     @Override
     public boolean shouldValidate(PolicyAttribute policyAttribute, IModelObject modelObject) {
         return true;
@@ -97,17 +126,35 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
      * Creates an error message with a message code created from the given prefix via
      * {@link #createMsgCode(GenericRelevanceValidation.Error, PolicyAttribute, Class)} and an
      * invalid object property for the given attribute.
+     *
+     * @implSpec calling
+     *           {@link #builderForErrorMessage(PolicyAttribute, IModelObject, org.faktorips.runtime.validation.GenericRelevanceValidation.Error, Class, String)}
+     *           is preferred if you want to adapt the message.
      */
     protected Message createErrorMessage(PolicyAttribute policyAttribute,
             IModelObject modelObject,
             GenericRelevanceValidation.Error error,
             Class<? extends IModelObject> definingModelObjectClass,
             String message) {
-        String msgCode = createMsgCode(error, policyAttribute, definingModelObjectClass);
-        return Message.error(message)
-                .code(msgCode)
-                .invalidObjectWithProperties(modelObject, policyAttribute.getName())
+        return builderForErrorMessage(policyAttribute, modelObject, error, definingModelObjectClass, message)
                 .create();
+    }
+
+    /**
+     * Creates an error message builder with a message code created from the given prefix via
+     * {@link #createMsgCode(GenericRelevanceValidation.Error, PolicyAttribute, Class)} and an
+     * invalid object property for the given attribute.
+     */
+    protected Message.Builder builderForErrorMessage(PolicyAttribute policyAttribute,
+            IModelObject modelObject,
+            GenericRelevanceValidation.Error error,
+            Class<? extends IModelObject> definingModelObjectClass,
+            String message) {
+        String msgCode = createMsgCode(error, policyAttribute, definingModelObjectClass);
+        Builder messageBuilder = Message.error(message)
+                .code(msgCode)
+                .invalidObjectWithProperties(modelObject, policyAttribute.getName());
+        return messageBuilder;
     }
 
     /**
@@ -150,9 +197,15 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
     public Message createMessageForMissingMandatoryValue(PolicyAttribute policyAttribute,
             IModelObject modelObject,
             Class<? extends IModelObject> definingModelObjectClass) {
-        return createErrorMessage(policyAttribute, modelObject, GenericRelevanceValidation.Error.MandatoryValueMissing,
+        Message message = createErrorMessage(policyAttribute, modelObject,
+                GenericRelevanceValidation.Error.MandatoryValueMissing,
                 definingModelObjectClass,
                 format(ERROR_MANDATORY_MSG_CODE_PREFIX, getLabelFor(policyAttribute, modelObject)));
+        IMarker marker = getMissingMandatoryValueMarker();
+        if (marker != null) {
+            message = new Message.Builder(message).markers(marker).create();
+        }
+        return message;
     }
 
     @Override

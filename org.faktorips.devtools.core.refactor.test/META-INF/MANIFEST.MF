@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.core.refactor
 Bundle-SymbolicName: org.faktorips.devtools.core.refactor.test
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.core.refactor
 Bundle-RequiredExecutionEnvironment: JavaSE-11
@@ -32,8 +32,8 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
  org.faktorips.devtools.stdbuilder,
- org.faktorips.runtime;version="22.6.0",
- org.faktorips.testsupport;version="22.6.0",
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.testsupport;version="22.12.0",
  org.faktorips.util,
  org.hamcrest;version="1.3.0",
  org.hamcrest.core;version="1.3.0",

@@ -13,7 +13,7 @@ package org.faktorips.datatype;
 import java.util.Objects;
 
 /**
- * The datatype void representing <code>java.lang.Void</code>.
+ * The datatype void representing {@link java.lang.Void}.
  * 
  * @author Jan Ortmann
  */

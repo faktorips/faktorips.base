@@ -36,6 +36,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.Abstractions;
@@ -236,6 +237,13 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
+        ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
+        configuredValueSet.changeValueSetType(ValueSetType.RANGE);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+
+        ml = configuredValueSet.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
         attribute.changeValueSetType(ValueSetType.UNRESTRICTED);
         ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
@@ -258,9 +266,15 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
                 lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         templateValueSet.changeValueSetType(ValueSetType.ENUM);
-        // expect messages, as enum value set is empty and thus does not contain the value 12
         assertThat(configuredValueSet.validate(ipsProject),
                 hasMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
+
+        ((TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet()).setUsesUnifiedValueSets(true);
+        configuredValueSet.changeValueSetType(ValueSetType.RANGE);
+        configuredValueSet.changeValueSetType(ValueSetType.ENUM);
+
+        assertThat(configuredValueSet.validate(ipsProject),
+                lacksMessageCode(IConfiguredValueSet.MSGCODE_VALUESET_TYPE_MISMATCH));
 
         attribute.changeValueSetType(ValueSetType.UNRESTRICTED);
         assertThat(configuredValueSet.validate(ipsProject),

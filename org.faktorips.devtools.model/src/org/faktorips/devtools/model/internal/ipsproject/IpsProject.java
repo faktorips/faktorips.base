@@ -237,7 +237,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         try {
             contents = XmlUtil.nodeToString(doc, charset);
         } catch (TransformerException e) {
-            throw new IpsException(new IpsStatus("Error tranforming project data to xml string", e)); //$NON-NLS-1$
+            throw new IpsException(new IpsStatus("Error transforming project data to xml string", e)); //$NON-NLS-1$
         }
         ByteArrayInputStream is = null;
         try {
@@ -1303,6 +1303,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         IpsProjectProperties props = getPropertiesInternal();
         if (!props.isCreatedFromParsableFileContents()) {
+            if (props.isValidateIpsSchema()) {
+                for (String xsdError : props.getXsdValidationHandler().getXsdValidationErrors()) {
+                    Message msg = new Message(IIpsProject.MSGCODE_XSD_VALIDATION_ERROR, xsdError, Message.ERROR, this);
+                    result.add(msg);
+                }
+            }
             String text = Messages.IpsProject_msgUnparsableDotIpsprojectFile;
             Message msg = new Message(IIpsProject.MSGCODE_UNPARSABLE_PROPERTY_FILE, text, Message.ERROR, this);
             result.add(msg);
@@ -1313,6 +1319,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
         result.add(list);
         if (list.containsErrorMsg()) {
             return result;
+        }
+
+        if (props.isValidateIpsSchema()) {
+            for (String xsdWarning : props.getXsdValidationHandler().getXsdValidationWarnings()) {
+                Message msg = new Message(IIpsProject.MSGCODE_XSD_VALIDATION_WARNING, xsdWarning, Message.WARNING,
+                        this);
+                result.add(msg);
+            }
         }
 
         validateRequiredFeatures(result, props);

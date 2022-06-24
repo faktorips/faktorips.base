@@ -10,11 +10,13 @@
 
 package org.faktorips.datatype;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Objects;
+
+import org.faktorips.runtime.MessageList;
+import org.faktorips.util.MethodAccess;
 
 /**
  * Generic enum datatype. See the superclass for more Details.
@@ -23,11 +25,7 @@ import java.util.Objects;
  */
 public abstract class GenericEnumDatatype extends GenericValueDatatype implements EnumDatatype {
 
-    private Method getAllValuesMethod;
-
-    private Method getNameMethod;
-
-    private String getAllValuesMethodName = "getAllValues"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_GET_NAME_METHOD = MSGCODE_PREFIX + "getNameMethod"; //$NON-NLS-1$
 
     private String getNameMethodName = "getName"; //$NON-NLS-1$
 
@@ -41,16 +39,15 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     /**
-     * Returns <code>true</code> if the values' id and names are cached, <code>false</code>
-     * otherwise.
+     * Returns {@code true} if the values' id and names are cached, {@code false} otherwise.
      */
     public boolean isCacheData() {
         return cacheData;
     }
 
     /**
-     * Sets to <code>true</code> if the values' ids and names should be cached, otherwise
-     * <code>false</code>. Setting <code>false</code> also clears the cache.
+     * Sets to {@code true} if the values' ids and names should be cached, otherwise {@code false}.
+     * Setting {@code false} also clears the cache.
      */
     public void setCacheData(boolean cacheData) {
         this.cacheData = cacheData;
@@ -59,14 +56,19 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         }
     }
 
-    public String getGetAllValuesMethodName() {
-        return getAllValuesMethodName;
+    private MethodAccess getNameMethod() {
+        return MethodAccess.of(getAdaptedClass(), getGetNameMethodName());
     }
 
-    public void setGetAllValuesMethodName(String getAllValuesMethodName) {
-        this.getAllValuesMethodName = getAllValuesMethodName;
-        getAllValuesMethod = null;
-        clearCache();
+    @Override
+    public MessageList checkReadyToUse() {
+        MessageList ml = super.checkReadyToUse();
+        getNameMethod()
+                .check(ml, MSGCODE_PREFIX_GET_NAME_METHOD)
+                .exists()
+                .isNotStatic()
+                .returnTypeIsCompatible(String.class);
+        return ml;
     }
 
     /**
@@ -80,7 +82,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * Sets the name of the getName(String) method.
      */
     public void setGetNameMethodName(String getNameMethodName) {
-        getNameMethod = null;
         this.getNameMethodName = getNameMethodName;
         clearCache();
     }
@@ -119,17 +120,22 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             // CSOFF: Illegal Catch
         } catch (Exception e) {
             // CSON: Illegal Catch
-            throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e); //$NON-NLS-1$
+            throw new RuntimeException("Error invoking method " + getAllValuesMethodName(), e); //$NON-NLS-1$
         }
     }
 
     /**
-     * Returns the value id's from the underlying enum class' via it's getAllValuesMethod().
-     * 
-     * throws IllegalArgumentException
+     * Returns the value id's from the underlying enum class' via it's get-all-values method.
      */
-    private String[] getAllValueIdsFromClass() throws IllegalAccessException, InvocationTargetException {
-        Object[] values = (Object[])getGetAllValuesMethod().invoke(null);
+    private String[] getAllValueIdsFromClass() {
+        Object result = getAllValuesMethod()
+                .invokeStatic("to get all values"); //$NON-NLS-1$
+        Object[] values;
+        if (result instanceof Collection) {
+            values = ((Collection<?>)result).toArray(Object[]::new);
+        } else {
+            values = (Object[])result;
+        }
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
             ids[i] = valueToString(values[i]);
@@ -147,47 +153,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             }
         }
         return -1;
-    }
-
-    /**
-     * Returns the method to get all enum values from the adapted class.
-     * 
-     * @throws RuntimeException if the method can't be found.
-     */
-    public Method getGetAllValuesMethod() {
-        if (getAllValuesMethod == null && getAllValuesMethodName != null) {
-            try {
-                getAllValuesMethod = getAdaptedClass().getMethod(getAllValuesMethodName);
-                if (getAllValuesMethod == null) {
-                    throw new NullPointerException();
-                }
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Can't get method getAllValues(), Class: " + getAdaptedClass() //$NON-NLS-1$
-                        + ", Methodname: " + getAllValuesMethodName); //$NON-NLS-1$
-            }
-        }
-        return getAllValuesMethod;
-    }
-
-    /**
-     * Returns the method to get the name for a given valueId from the adapted class.
-     * 
-     * @throws RuntimeException if the method can't be found.
-     */
-    public Method getGetNameMethod() {
-        if (getNameMethod == null && getNameMethodName != null) {
-            try {
-                getNameMethod = getAdaptedClass().getMethod(getNameMethodName);
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
-                        + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
-            }
-        }
-        return getNameMethod;
     }
 
     @Override
@@ -210,19 +175,15 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     private String getValueNameFromClass(String id) {
-        try {
-            Object value = getValue(id);
-            if (value == null) {
-                return null;
-            }
-            return (String)getGetNameMethod().invoke(value);
+        Object value = getValue(id);
+        return getNameFromValue(value);
+    }
 
-            // CSOFF: Illegal Catch
-        } catch (Exception e) {
-            // CSON: Illegal Catch
-            throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
-                    + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
+    protected String getNameFromValue(Object value) {
+        if (value == null) {
+            return null;
         }
+        return getNameMethod().invoke("to get the name for a value", value); //$NON-NLS-1$
     }
 
     @Override
@@ -243,11 +204,11 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     }
 
     /**
-     * Returns all value ids from the cache. If caching is enabled, but the cache is empty, the
-     * cahce is populated with the date. If caching is disabled, the method returns
-     * <code>null</code>.
+     * Returns all value IDs from the cache. If caching is enabled, but the cache is empty, the
+     * cache is populated with the IDs retrieved from {@link #getAllValueIdsFromClass()}. If caching
+     * is disabled, the method returns {@code null}.
      * <p>
-     * Package private to allows testing.
+     * Package private to allow testing.
      */
     String[] getAllValueIdsFromCache() {
         if (!cacheData) {
@@ -261,10 +222,10 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
     /**
      * Returns all value names from the cache. If caching is enabled, but the cache is empty, the
-     * cahce is populated with the date. If caching is disabled, the method returns
-     * <code>null</code>.
+     * cache is populated with the names for all values retrieved from
+     * {@link #getAllValueIdsFromClass()}. If caching is disabled, the method returns {@code null}.
      * <p>
-     * Package private to allows testing.
+     * Package private to allow testing.
      */
     String[] getAllValueNamesFromCache() {
         if (!isSupportingNames) {
@@ -306,7 +267,6 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     @Override
     protected void clearCache() {
         super.clearCache();
-        getAllValuesMethod = null;
         cachedValueIds = null;
         cachedValueNames = null;
     }

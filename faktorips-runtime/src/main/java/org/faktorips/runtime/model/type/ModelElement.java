@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.runtime.IProductComponent;
@@ -40,9 +41,12 @@ public abstract class ModelElement {
     private final String name;
 
     private final Map<String, Object> extPropertyValues;
+    
+    private final Optional<Deprecation> deprecation;
 
-    public ModelElement(String name, IpsExtensionProperties extensionProperties) {
+    public ModelElement(String name, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
         this.name = name;
+        this.deprecation = deprecation;
         extPropertyValues = initExtensionPropertyMap(extensionProperties);
     }
 
@@ -148,7 +152,7 @@ public abstract class ModelElement {
         return extPropertyValues.keySet();
     }
 
-    protected Object invokeMethod(Method method, Object source, Object... arguments) {
+    protected static Object invokeMethod(Method method, Object source, Object... arguments) {
         try {
             return method.invoke(source, arguments);
         } catch (NullPointerException e) {
@@ -164,12 +168,15 @@ public abstract class ModelElement {
         }
     }
 
-    private IllegalArgumentException createGetterError(Object source, Method method, Object[] args, Throwable e) {
+    private static IllegalArgumentException createGetterError(Object source,
+            Method method,
+            Object[] args,
+            Throwable e) {
         return new IllegalArgumentException(String.format("Could not call %s(%s) on source object %s.",
                 method.getName(), IpsStringUtils.join(args), source), e);
     }
 
-    protected Object invokeField(Field field, Object source) {
+    protected static Object invokeField(Field field, Object source) {
         try {
             return field.get(source);
         } catch (NullPointerException e) {
@@ -183,7 +190,7 @@ public abstract class ModelElement {
         }
     }
 
-    private IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
+    private static IllegalArgumentException createFieldError(Object source, Field field, Exception e) {
         return new IllegalArgumentException(
                 String.format("Could not get value of %s on source object %s.", field.getName(), source), e);
     }
@@ -219,5 +226,13 @@ public abstract class ModelElement {
     @Override
     public String toString() {
         return getName();
+    }
+
+    public boolean isDeprecated() {
+        return deprecation.isPresent();
+    }
+
+    public Optional<Deprecation> getDeprecation() {
+        return deprecation;
     }
 }

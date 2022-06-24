@@ -124,7 +124,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
      * value. Considering {@link #getNullPresentationInValueSet()} we always use the configured null
      * presentation. Hence only a datatype like String, where an empty String is a legal value,
      * returns <code>true</code>. For other datatypes we assume that no entry should be parsed to
-     * <unrestricted>, hence it is no enum value set.
+     * <em>unrestricted</em>, hence it is no enum value set.
      * 
      */
     private boolean textLooksLikeEnum(String text) {

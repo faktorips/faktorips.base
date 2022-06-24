@@ -283,9 +283,11 @@ class PersistenceSupport {
 
     // Names of possible persistence supports
     private final String ECLIPSE_LINK_25 = "EclipseLink 2.5"
+    private final String ECLIPSE_LINK_30 = "EclipseLink 3.0"
     private final String GENERIC_JPA_20 = "Generic JPA 2.0"
     private final String GENERIC_JPA_21 = "Generic JPA 2.1"
     private final String JAKARTA_PERSISTENCE_2_2 = "Jakarta Persistence 2.2"
+    private final String JAKARTA_PERSISTENCE_3_0 = "Jakarta Persistence 3.0"
 
     // Templates to be replaced
     private final String IPS_PROJECT_TEMPLATE = '$IPS-PersistenceDatabase$'
@@ -297,6 +299,16 @@ class PersistenceSupport {
             <groupId>org.eclipse.persistence</groupId>$lineSeparator\
             <artifactId>eclipselink</artifactId>$lineSeparator\
             <version>2.5.0</version>$lineSeparator\
+        </dependency>"""
+    private final String ECLIPSE_LINK_30_DEPENDENCY = """<dependency>$lineSeparator\
+            <groupId>org.eclipse.persistence</groupId>$lineSeparator\
+            <artifactId>eclipselink</artifactId>$lineSeparator\
+            <version>3.0.2</version>$lineSeparator\
+        </dependency>$lineSeparator\
+        <dependency>$lineSeparator\
+            <groupId>jakarta.persistence</groupId>$lineSeparator\
+            <artifactId>jakarta.persistence-api</artifactId>$lineSeparator\
+            <version>3.0.0</version>$lineSeparator\
         </dependency>"""
     private final String JPA_20_DEPENDENCY = """<dependency>$lineSeparator\
             <groupId>org.eclipse.persistence</groupId>$lineSeparator\
@@ -312,6 +324,11 @@ class PersistenceSupport {
             <groupId>jakarta.persistence</groupId>$lineSeparator\
             <artifactId>jakarta.persistence-api</artifactId>$lineSeparator\
             <version>2.2.3</version>$lineSeparator\
+        </dependency>"""
+    private final String JAKARTA_30_DEPENDENCY = """<dependency>$lineSeparator\
+            <groupId>jakarta.persistence</groupId>$lineSeparator\
+            <artifactId>jakarta.persistence-api</artifactId>$lineSeparator\
+            <version>3.0.0</version>$lineSeparator\
         </dependency>"""
 
     private final Path projectPath
@@ -359,9 +376,11 @@ class PersistenceSupport {
     private PersistenceApi getPersistenceApi() {
         String possibilities = "Select index for choosing persistence support:" +
                 "$lineSeparator(1) $ECLIPSE_LINK_25," +
-                "$lineSeparator(2) $GENERIC_JPA_20," +
-                "$lineSeparator(3) $GENERIC_JPA_21," +
-                "$lineSeparator(4) $JAKARTA_PERSISTENCE_2_2:"
+                "$lineSeparator(2) $ECLIPSE_LINK_30," +
+                "$lineSeparator(3) $GENERIC_JPA_20," +
+                "$lineSeparator(4) $GENERIC_JPA_21," +
+                "$lineSeparator(5) $JAKARTA_PERSISTENCE_2_2," +
+                "$lineSeparator(6) $JAKARTA_PERSISTENCE_3_0:"
 
         LogUtil.printSeparator(2)
 
@@ -375,13 +394,19 @@ class PersistenceSupport {
                     persistenceApi = new PersistenceApi(ECLIPSE_LINK_25, ECLIPSE_LINK_25_DEPENDENCY)
                     break
                 case "2":
-                    persistenceApi = new PersistenceApi(GENERIC_JPA_20, JPA_20_DEPENDENCY)
+                    persistenceApi = new PersistenceApi(ECLIPSE_LINK_30, ECLIPSE_LINK_30_DEPENDENCY)
                     break
                 case "3":
-                    persistenceApi = new PersistenceApi(GENERIC_JPA_21, JPA_21_DEPENDENCY)
+                    persistenceApi = new PersistenceApi(GENERIC_JPA_20, JPA_20_DEPENDENCY)
                     break
                 case "4":
+                    persistenceApi = new PersistenceApi(GENERIC_JPA_21, JPA_21_DEPENDENCY)
+                    break
+                case "5":
                     persistenceApi = new PersistenceApi(JAKARTA_PERSISTENCE_2_2, JAKARTA_22_DEPENDENCY)
+                    break
+                case "6":
+                    persistenceApi = new PersistenceApi(JAKARTA_PERSISTENCE_3_0, JAKARTA_30_DEPENDENCY)
                     break
                 default:
                     LogUtil.printErrorMessage("Invalid index, please try again...")

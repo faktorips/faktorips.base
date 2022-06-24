@@ -71,12 +71,12 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
 
     @Override
     public String getValueName(String id) {
-        throw new RuntimeException("Not supported");
+        throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
     public Object getValue(String value) {
-        throw new RuntimeException("Not supported");
+        throw new UnsupportedOperationException("Not supported");
     }
 
     @Override
@@ -107,6 +107,11 @@ public class EnumDatatypePaymentMode extends AbstractDatatype implements EnumDat
     @Override
     public boolean isMutable() {
         return false;
+    }
+
+    @Override
+    public Object getValueByName(String name) {
+        throw new UnsupportedOperationException("Not supported");
     }
 
 }

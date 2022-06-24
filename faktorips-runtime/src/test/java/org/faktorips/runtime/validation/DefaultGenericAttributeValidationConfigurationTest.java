@@ -129,6 +129,22 @@ public class DefaultGenericAttributeValidationConfigurationTest {
     }
 
     @Test
+    public void testCreateMessageForMissingMandatoryValue_SetsMarker() throws Exception {
+        DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.GERMANY, MandatoryMarker.INSTANCE);
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        IModelObject modelObject = new TestPolicyWithVisitor();
+
+        Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertNotNull(message);
+        assertThat(message.hasMarker(MandatoryMarker.INSTANCE), is(true));
+        assertThat(config.getMissingMandatoryValueMarker(), is(MandatoryMarker.INSTANCE));
+    }
+
+    @Test
     public void testCreateMessageForValuePresentForIrrelevantAttribute_DE() throws Exception {
         DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
                 Locale.GERMANY);

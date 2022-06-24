@@ -52,9 +52,9 @@ public class MethodDecoratorTest {
 
     @Test
     public void testGetImageDescriptor() {
-        IMethod overwritingMethod = mock(IMethod.class);
+        IMethod method = mock(IMethod.class);
 
-        ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(overwritingMethod);
+        ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(method);
 
         assertThat(imageDescriptor, hasBaseImage(MethodDecorator.METHOD_IMAGE_NAME));
         assertThat(imageDescriptor, hasNoOverlay());
@@ -62,10 +62,10 @@ public class MethodDecoratorTest {
 
     @Test
     public void testGetImageDescriptor_Abstract() {
-        IMethod overwritingMethod = mock(IMethod.class);
-        when(overwritingMethod.isAbstract()).thenReturn(true);
+        IMethod abstractMethod = mock(IMethod.class);
+        when(abstractMethod.isAbstract()).thenReturn(true);
 
-        ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(overwritingMethod);
+        ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(abstractMethod);
 
         assertThat(imageDescriptor, hasBaseImage(MethodDecorator.METHOD_IMAGE_NAME));
         assertThat(imageDescriptor, hasOverlay(OverlayIcons.ABSTRACT, IDecoration.TOP_RIGHT));
@@ -83,6 +83,17 @@ public class MethodDecoratorTest {
 
         assertThat(imageDescriptor, hasBaseImage(MethodDecorator.METHOD_IMAGE_NAME));
         assertThat(imageDescriptor, hasOverlay(OverlayIcons.OVERRIDE, IDecoration.BOTTOM_RIGHT));
+    }
+
+    @Test
+    public void testGetImageDescriptor_Deprecated() {
+        IMethod deprecatedMethod = mock(IMethod.class);
+        when(deprecatedMethod.isDeprecated()).thenReturn(true);
+
+        ImageDescriptor imageDescriptor = methodDecorator.getImageDescriptor(deprecatedMethod);
+
+        assertThat(imageDescriptor, hasBaseImage(MethodDecorator.METHOD_IMAGE_NAME));
+        assertThat(imageDescriptor, hasOverlay(OverlayIcons.DEPRECATED, IDecoration.BOTTOM_LEFT));
     }
 
     @Test

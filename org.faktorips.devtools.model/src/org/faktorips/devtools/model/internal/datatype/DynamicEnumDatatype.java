@@ -10,11 +10,17 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
+import java.util.Arrays;
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.DefaultGenericEnumDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -23,12 +29,6 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynamicEnumDatatype {
-
-    private String getAllValuesMethodName = ""; //$NON-NLS-1$
-
-    private String getNameMethodName = ""; //$NON-NLS-1$
-
-    private boolean isSupportingNames = false;
 
     public DynamicEnumDatatype(IIpsProject ipsProject) {
         super(ipsProject);
@@ -42,55 +42,26 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
         datatype.setToStringMethodName(getToStringMethodName());
-        datatype.setGetAllValuesMethodName(getAllValuesMethodName);
+        datatype.setAllValuesMethodName(getAllValuesMethodName());
 
         return datatype.getAllValueIds(includeNull);
     }
 
     @Override
-    public void setAllValuesMethodName(String getAllValuesMethodName) {
-        this.getAllValuesMethodName = getAllValuesMethodName;
-    }
-
-    @Override
-    public String getAllValuesMethodName() {
-        return getAllValuesMethodName;
-    }
-
-    @Override
-    public void setIsSupportingNames(boolean supporting) {
-        isSupportingNames = supporting;
-    }
-
-    @Override
-    public void setGetNameMethodName(String getNameMethodName) {
-        this.getNameMethodName = getNameMethodName;
-    }
-
-    @Override
-    public String getGetNameMethodName() {
-        return getNameMethodName;
-    }
-
-    @Override
-    public boolean isSupportingNames() {
-        return isSupportingNames;
-    }
-
-    @Override
     public String getValueName(String id) {
-        if (!isSupportingNames) {
+        if (!isSupportingNames()) {
             IpsLog.log(new IpsStatus(
                     "The getName(String) method is not supported by this enumeration class: " + getAdaptedClass())); //$NON-NLS-1$ )
             return id;
         }
         DefaultGenericEnumDatatype datatype = new DefaultGenericEnumDatatype(getAdaptedClass());
-        datatype.setIsSupportingNames(isSupportingNames);
-        datatype.setGetNameMethodName(getNameMethodName);
+        datatype.setIsSupportingNames(isSupportingNames());
+        datatype.setGetNameMethodName(getGetNameMethodName());
         datatype.setValueOfMethodName(getValueOfMethodName());
         datatype.setToStringMethodName(getToStringMethodName());
         try {
-            return datatype.getValueName(id);
+            return datatype.getValueName(id,
+                    IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale());
             // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error getting name for enum value id " + id, e)); //$NON-NLS-1$
@@ -100,18 +71,24 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
     }
 
     @Override
+    public Object getValueByName(String name, Locale locale) {
+        if (IpsStringUtils.isBlank(getGetValueByNameMethodName())) {
+            return Arrays.stream(getAllValueIds(false))
+                    .map(this::getValue)
+                    .filter(v -> StringUtils.equals(name, getNameFromValue(v, locale)))
+                    .findFirst()
+                    .orElse(null);
+        }
+        return super.getValueByName(name, locale);
+    }
+
+    @Override
     public void writeToXml(Element element) {
         super.writeToXml(element);
         element.setAttribute("isEnumType", "true"); //$NON-NLS-1$ //$NON-NLS-2$
         if (getAllValuesMethodName() != null) {
             element.setAttribute("getAllValuesMethod", getAllValuesMethodName()); //$NON-NLS-1$
         }
-        if (getGetNameMethodName() != null) {
-            element.setAttribute("getNameMethod", getGetNameMethodName()); //$NON-NLS-1$
-
-        }
-        element.setAttribute("isSupportingNames", Boolean.toString(isSupportingNames())); //$NON-NLS-1$
-
     }
 
 }

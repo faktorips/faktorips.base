@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.Messages;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFilter;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 /**
  * This composite contains two columns. On the left hand you see a list of {@link IDescribedElement
@@ -159,18 +160,37 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         if (element == null) {
             description.setText(StringUtils.EMPTY);
         } else {
+            String deprecationDescription = getDeprecationDescription(element);
             String descriptionString = getDescription(element);
-            if (StringUtils.isEmpty(descriptionString)) {
+
+            if (StringUtils.isNotEmpty(deprecationDescription)) {
                 StyledTextUtil.clear(description);
-                StyledTextUtil.appendStyled(description, Messages.TypeSelectionComposite_label_noDescriptionAvailable,
+                StyledTextUtil.appendStyled(description, deprecationDescription,
+                        SWT.BOLD);
+                description.append(System.lineSeparator());
+            }
+
+            if (StringUtils.isEmpty(descriptionString) && StringUtils.isEmpty(deprecationDescription)) {
+                StyledTextUtil.clear(description);
+                StyledTextUtil.appendStyled(description,
+                        Messages.TypeSelectionComposite_label_noDescriptionAvailable,
                         SWT.ITALIC);
                 description.setEnabled(false);
             } else {
-                description.setText(descriptionString);
+                description.append(descriptionString);
                 description.setEnabled(true);
                 description.setEditable(false);
             }
+
         }
+    }
+
+    private String getDeprecationDescription(E element) {
+        if (element instanceof IVersionControlledElement
+                && ((IVersionControlledElement)element).isDeprecated()) {
+            return ((IVersionControlledElement)element).getDeprecation().toString();
+        }
+        return null;
     }
 
     private String getDescription(E element) {

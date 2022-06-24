@@ -147,7 +147,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns whether this file is mutable or not. An IPS source file is immutable in the following
      * cases:
      * <ul>
-     * <li>The underlying file does not exists.</li>
+     * <li>The underlying file does not exist.</li>
      * <li>The underlying file is read-only.</li>
      * <li>The IPS source file is contained in an IPS archive.</li>
      * <li>The IPS source file is created from an input stream to show an old revision /
@@ -160,7 +160,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns whether this file is read-only or not. An IPS source file is read-only in the
      * following cases:
      * <ul>
-     * <li>The underlying file does not exists.</li>
+     * <li>The underlying file does not exist.</li>
      * <li>The underlying file is read-only.</li>
      * <li>The IPS source file is contained in an IPS archive.</li>
      * <li>The IPS source file is created from an input stream to show an old revision /

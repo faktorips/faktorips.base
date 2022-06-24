@@ -13,9 +13,9 @@ def package static method (XMethod it) '''
     «IF published || !genInterface()»
         /**
         «IF published && !genInterface()»
-         * «inheritDocOrText(description)»
+         *«inheritDocOrText(description)»
         «ELSEIF description.length > 0»
-         * «description»
+         *«description»
         «ENDIF»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *

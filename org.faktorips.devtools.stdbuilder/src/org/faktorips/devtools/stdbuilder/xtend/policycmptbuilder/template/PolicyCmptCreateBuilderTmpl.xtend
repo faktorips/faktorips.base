@@ -16,7 +16,7 @@ class PolicyCmptCreateBuilderTmpl {
 
     «««    new policy, no repository
         /**
-        * «localizedJDoc("METHOD_WITH_NO_ARG", implClassName)»
+        *«localizedJDoc("METHOD_WITH_NO_ARG", implClassName)»
         *
         * @generated
         */
@@ -26,8 +26,8 @@ class PolicyCmptCreateBuilderTmpl {
 
     «««    new policy, with repository
         /**
-        * «localizedJDoc("METHOD_WITH_NO_ARG", implClassName)»
-        * «localizedJDoc("METHOD_WITH_REPO")»
+        *«localizedJDoc("METHOD_WITH_NO_ARG", implClassName)»
+        *«localizedJDoc("METHOD_WITH_REPO")»
         *
         * @generated
         */
@@ -37,7 +37,7 @@ class PolicyCmptCreateBuilderTmpl {
 
         «IF configured»
             /**
-            * «localizedJDoc("METHOD_WITH_PROD", implClassName)»
+            *«localizedJDoc("METHOD_WITH_PROD", implClassName)»
             *
             * @generated
             */
@@ -47,8 +47,8 @@ class PolicyCmptCreateBuilderTmpl {
 
     «««        policy from repository with id
             /**
-            * «localizedJDoc("METHOD_WITH_PROD_ID", implClassName)»
-            «IF productCmptNode.changingOverTime»* «localizedJDoc("METHOD_WITH_PROD_ID_GEN")»«ENDIF»
+            *«localizedJDoc("METHOD_WITH_PROD_ID", implClassName)»
+            «IF productCmptNode.changingOverTime»*«localizedJDoc("METHOD_WITH_PROD_ID_GEN")»«ENDIF»
             *
             * @generated
             */
@@ -75,7 +75,7 @@ class PolicyCmptCreateBuilderTmpl {
             «IF productCmptNode.changingOverTime»
     «««        policy from repository with id and validity date
             /**
-            * «localizedJDoc("METHOD_WITH_PROD_ID_DATE", implClassName)»
+            *«localizedJDoc("METHOD_WITH_PROD_ID_DATE", implClassName)»
             *
             * @generated
             */
@@ -99,7 +99,7 @@ class PolicyCmptCreateBuilderTmpl {
     //Methods to get a builder from a policy
     def static builder (XPolicyBuilder it) '''
         /**
-        * «localizedJDoc("METHOD_BUILDER", name)»
+        *«localizedJDoc("METHOD_BUILDER", name)»
         *
         * @generated
         */
@@ -116,7 +116,7 @@ class PolicyCmptCreateBuilderTmpl {
         «ENDIF»
 
         /**
-        * «localizedJDoc("METHOD_BUILDER_REPO",name)»
+        *«localizedJDoc("METHOD_BUILDER_REPO",name)»
         *
         * @generated
         */

@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistableTypeConverter;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
@@ -206,7 +207,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         tableColumnSize = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SIZE));
         tableColumnScale = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SCALE));
         tableColumnPrecision = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_PRECISION));
-        tableColumnUnique = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_UNIQE));
+        tableColumnUnique = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_TABLE_COLUMN_UNIQE);
         tableColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_NULLABLE));
         temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
         sqlColumnDefinition = element.getAttribute(PROPERTY_SQL_COLUMN_DEFINITION);
@@ -220,7 +221,9 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, String.valueOf(tableColumnSize));
         element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, String.valueOf(tableColumnScale));
         element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, String.valueOf(tableColumnPrecision));
-        element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, String.valueOf(tableColumnUnique));
+        if (tableColumnUnique) {
+            element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, String.valueOf(tableColumnUnique));
+        }
         element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, String.valueOf(tableColumnNullable));
         element.setAttribute(PROPERTY_TEMPORAL_MAPPING, String.valueOf(temporalMapping));
         element.setAttribute(PROPERTY_SQL_COLUMN_DEFINITION, sqlColumnDefinition);

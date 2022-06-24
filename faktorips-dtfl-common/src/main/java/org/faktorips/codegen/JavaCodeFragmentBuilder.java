@@ -1068,6 +1068,7 @@ public class JavaCodeFragmentBuilder {
      * annotation name and optionally separated by a space character an annotation text needs to be
      * specified. The '@' character will be automatically added.
      */
+    @SuppressWarnings("null")
     public JavaCodeFragmentBuilder javaDoc(String text, String... annotations) {
         if (text == null && annotations == null) {
             return this;

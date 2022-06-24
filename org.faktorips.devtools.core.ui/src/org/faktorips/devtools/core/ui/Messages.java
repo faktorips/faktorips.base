@@ -42,7 +42,7 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_label_twoSections;
 
-    public static String FaktorIpsPreferencePage_labelEnumTypeDisplay;
+    public static String FaktorIpsPreferencePage_labelNamedDataTypeDisplay;
 
     public static String FaktorIpsPreferencePage_labeRangeEditFieldsInOneRow;
 

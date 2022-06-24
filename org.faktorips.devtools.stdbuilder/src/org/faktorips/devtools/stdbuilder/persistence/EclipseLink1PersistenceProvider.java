@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.model.builder.IPersistenceProvider;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypePartInfo;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
@@ -21,7 +20,7 @@ import org.faktorips.util.StringUtil;
 /**
  * Persistence provider for EclipseLink 1.1
  */
-public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
+public class EclipseLink1PersistenceProvider extends AbstractPersistenceProvider {
 
     /**
      * @deprecated Use {@link PersistenceSupportNames#ID_ECLIPSE_LINK_1_1} instead.
@@ -37,6 +36,11 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     private static final String ANNOTATION_CONVERT = "org.eclipse.persistence.annotations.Convert"; //$NON-NLS-1$
 
     @Override
+    public String getPackagePrefix() {
+        return GenericJPA2PersistenceProvider.PACKAGE_PREFIX_JAVAX_PERSISTENCE;
+    }
+
+    @Override
     public boolean isSupportingConverters() {
         return true;
     }
@@ -47,8 +51,8 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public void addAnnotationOrphanRemoval(JavaCodeFragment javaCodeFragment) {
-        javaCodeFragment.append(new JavaCodeFragmentBuilder().annotationLn(ANNOTAITON_PRIVATE_OWNED).getFragment());
+    public void addAnnotationOrphanRemoval(JavaCodeFragmentBuilder fragmentBuilder) {
+        fragmentBuilder.annotationLn(ANNOTAITON_PRIVATE_OWNED);
     }
 
     @Override

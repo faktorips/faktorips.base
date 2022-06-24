@@ -57,9 +57,9 @@ public class LabelAndDescriptionPropertiesBuilder extends AbstractLocalizedPrope
 
     @Override
     public String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
-        String baseName = entry.getBasePackageNameForDerivedJavaClasses() + "." + entry.getIpsPackageFragmentRootName()
+        return entry.getUniqueBasePackageNameForDerivedArtifacts() + "."
+                + entry.getIpsPackageFragmentRootName()
                 + LABEL_AND_DESCRIPTIONS_SUFFIX;
-        return baseName;
     }
 
     @Override

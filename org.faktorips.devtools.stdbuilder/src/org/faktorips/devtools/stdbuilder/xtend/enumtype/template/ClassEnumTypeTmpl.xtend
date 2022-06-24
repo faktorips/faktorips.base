@@ -2,12 +2,12 @@ package org.faktorips.devtools.stdbuilder.xtend.enumtype.template
 
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumValue
+import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 
 import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.enumtype.template.CommonEnumTypeTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
-import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 
 class ClassEnumTypeTmpl {
 
@@ -31,6 +31,7 @@ class ClassEnumTypeTmpl {
             «valuesConstant»
             «indexField»
             «fields»
+            «repo»
             «constructors»
             «getters»
             «toString(it)»
@@ -38,7 +39,16 @@ class ClassEnumTypeTmpl {
             «hashCode(it)»
             «enumValueId»
             «compareTo»
+            «serialization»
         }
+    '''
+    
+    def private static repo(XEnumType it) '''
+      /**
+       * @generated
+       */
+      private final «IRuntimeRepository» «varnameProductRepository»;
+      
     '''
 
     def private static compareTo(XEnumType it) '''
@@ -65,7 +75,7 @@ class ClassEnumTypeTmpl {
     def private static enumValueId(XEnumType it) '''
         «IF identifierAttribute.isDeclaredIn(it)»
             /**
-             * «localizedJDoc("METHOD_GET_ENUM_VALUE_BY_ID")»
+             *«localizedJDoc("METHOD_GET_ENUM_VALUE_BY_ID")»
              *
              * @generated
              */
@@ -77,11 +87,11 @@ class ClassEnumTypeTmpl {
 
     def private static serialVersionUID(XEnumType it) '''
         /**
-        * «localizedJDoc("SERIALVERSIONUID")»
+        *«localizedJDoc("SERIALVERSIONUID")»
         *
         * @generated
         */
-        public static final long serialVersionUID = 1L;
+        public static final long serialVersionUID = 2L;
     '''
 
     def private static hashCode(XEnumType it) '''
@@ -107,23 +117,25 @@ class ClassEnumTypeTmpl {
 
     def private static publicConstructor(XEnumType it) '''
         /**
-        * «localizedJDoc("CONSTRUCTOR", name)»
+        *«localizedJDoc("CONSTRUCTOR", name)»
         *
         * @generated
         */
         public «method(name, constructorParameters)»{
           «fieldInitializations(indexFieldRequired, it)»
-          }
+          this.«varnameProductRepository» = null;
+        }
     '''
 
     def private static protectedConstructor(XEnumType it) '''
         /**
-        * «localizedJDoc("PROTECTED_CONSTRUCTOR", name)»
+        *«localizedJDoc("PROTECTED_CONSTRUCTOR", name)»
         *
         * @generated
         */
         protected «method(name, stringConstructorParameters)»{
             «stringFieldInitializations»
+            this.«varnameProductRepository» = «varnameProductRepository»;
         }
     '''
 
@@ -156,7 +168,7 @@ class ClassEnumTypeTmpl {
     def private static valuesConstant(XEnumType it) '''
         «IF !enumValues.isEmpty»
             /**
-            * «localizedJDoc("CONSTANT_VALUES")»
+            *«localizedJDoc("CONSTANT_VALUES")»
             *
             * @generated
             */
@@ -178,6 +190,63 @@ class ClassEnumTypeTmpl {
                 «memberVariableValue»
             «ENDFOR»
         );
+    '''
+
+    def private static serialization(XEnumType it) '''
+      /**
+       * @generated
+       */
+      private Object writeReplace() {
+        return new SerializationProxy(«identifierAttribute.name», getRepositoryLookup());
+      }
+
+      /**
+       * @generated
+       */
+      private «IRuntimeRepositoryLookup» getRepositoryLookup() {
+        if («varnameProductRepository» != null) {
+          «IRuntimeRepositoryLookup» runtimeRepositoryLookup = «varnameProductRepository».getRuntimeRepositoryLookup();
+          if (runtimeRepositoryLookup == null) {
+            throw new «IllegalStateException»(
+                "For serialization of «name» instances you need to set an «IRuntimeRepositoryLookup» in your runtime repository.");
+          }
+          return runtimeRepositoryLookup;
+        } else {
+          return null;
+        }
+      }
+
+      /**
+       * @generated
+       */
+      private void readObject(@«SuppressWarnings»("unused") «ObjectInputStream» s) throws «IOException» {
+        throw new «InvalidObjectException»("SerializationProxy required");
+      }
+
+      /**
+       * @generated
+       */
+      private static class SerializationProxy implements «Serializable» {
+        private static final long serialVersionUID = 1L;
+
+        private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name»;
+        private final «IRuntimeRepositoryLookup» runtimeRepositoryLookup;
+
+        /**
+         * @generated
+         */
+        SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
+          this.«identifierAttribute.name» = «identifierAttribute.name»;
+          this.runtimeRepositoryLookup = runtimeRepositoryLookup;
+        }
+
+        /**
+         * @generated
+         */
+        private Object readResolve() {
+          return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.name»);
+        }
+      }
     '''
 
 }

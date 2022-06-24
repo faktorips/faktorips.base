@@ -15,6 +15,7 @@ import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ContentViewer;
@@ -354,7 +355,14 @@ class CategoryComposite extends ViewerButtonComposite {
 
     private boolean isPropertyOfContextType(IProductCmptProperty property) {
         return property.isOfType(contextType.getQualifiedNameType())
-                || property.isOfType(new QualifiedNameType(contextType.getPolicyCmptType(),
+                || isPropertyOfPolicyCmptTypeConfiguredByContextType(property);
+    }
+
+    private boolean isPropertyOfPolicyCmptTypeConfiguredByContextType(IProductCmptProperty property) {
+        return contextType.isConfigurationForPolicyCmptType()
+                && Objects.equals(contextType.findPolicyCmptType(contextType.getIpsProject()).getProductCmptType(),
+                        contextType.getQualifiedName())
+                && property.isOfType(new QualifiedNameType(contextType.getPolicyCmptType(),
                         IpsObjectType.POLICY_CMPT_TYPE));
     }
 

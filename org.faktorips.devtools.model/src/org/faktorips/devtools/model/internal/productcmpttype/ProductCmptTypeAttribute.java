@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.AttributeProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
@@ -55,31 +56,26 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         initPropertyDefaultVisible();
     }
 
-    private void initPropertyDefaultVisible() {
-        setProperty(AttributeProperty.VISIBLE, true);
-    }
-
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }
 
+    private void initPropertyDefaultVisible() {
+        setProperty(AttributeProperty.VISIBLE, true);
+    }
+
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        initPropertyDefaultVisible();
-        if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
-            String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
-            setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
-        }
+        setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE,
+                XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MULTI_VALUE_ATTRIBUTE));
         if (element.hasAttribute(PROPERTY_VISIBLE)) {
             String visibleElement = element.getAttribute(PROPERTY_VISIBLE);
             setProperty(AttributeProperty.VISIBLE, Boolean.parseBoolean(visibleElement));
         }
-        if (element.hasAttribute(PROPERTY_MULTILINGUAL)) {
-            String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTILINGUAL);
-            setProperty(AttributeProperty.MULTILINGUAL, Boolean.parseBoolean(multiLanguageAttribute));
-        }
+        setProperty(AttributeProperty.MULTILINGUAL,
+                XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MULTILINGUAL));
     }
 
     @Override
@@ -90,9 +86,13 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE, String.valueOf(isMultiValueAttribute()));
+        if (isMultiValueAttribute()) {
+            element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE, String.valueOf(isMultiValueAttribute()));
+        }
         element.setAttribute(PROPERTY_VISIBLE, String.valueOf(isVisible()));
-        element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(isMultilingual()));
+        if (isMultilingual()) {
+            element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(isMultilingual()));
+        }
     }
 
     @Override

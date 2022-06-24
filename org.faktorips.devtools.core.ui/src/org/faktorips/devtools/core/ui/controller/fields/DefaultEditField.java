@@ -45,7 +45,9 @@ public abstract class DefaultEditField<T> implements EditField<T> {
     public final T getValue() {
         try {
             return parseContent();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             return null;
         }
     }
@@ -62,7 +64,9 @@ public abstract class DefaultEditField<T> implements EditField<T> {
         try {
             T content = parseContent();
             return supportsNullStringRepresentation() ? true : content != null;
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             return false;
         }
     }
@@ -133,7 +137,9 @@ public abstract class DefaultEditField<T> implements EditField<T> {
         notifyChangeListeners = triggerValueChanged;
         try {
             setValue(newValue);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             IpsPlugin.log(e);
         } finally {
             notifyChangeListeners = true;
@@ -185,10 +191,9 @@ public abstract class DefaultEditField<T> implements EditField<T> {
      * If the edit field does not supports the null string representation it does not mean that the
      * {@link #parseContent()} method never returns null. For example formatted text fields may
      * return null if the input text could not be parsed to the expected data type. In this case the
-     * method {@link #isTextContentParsable()} should return false. Another exasmple is an edit
-     * field that handles a selection. If nothing is selected, {@link #parseContent()} would return
-     * null and as far this is an valid state, the method {@link #isTextContentParsable()} return
-     * true.
+     * method {@link #isTextContentParsable()} should return false. Another example is an edit field
+     * that handles a selection. If nothing is selected, {@link #parseContent()} would return null
+     * and as far this is an valid state, the method {@link #isTextContentParsable()} return true.
      */
     public void setSupportsNullStringRepresentation(boolean supportsNull) {
         this.supportNullStringRepresentation = supportsNull;

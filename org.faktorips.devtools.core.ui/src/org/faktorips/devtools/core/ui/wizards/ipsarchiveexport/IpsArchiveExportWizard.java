@@ -103,7 +103,7 @@ public class IpsArchiveExportWizard extends Wizard implements IExportWizard {
     // TODO AW: Internationalize
     private boolean askForCreateParent(File folder) {
         if (MessageDialog.openQuestion(getShell(), "Create Directory", //$NON-NLS-1$
-                NLS.bind("Directory {0} does not exists. Do you want to create it?", folder.getAbsolutePath()))) { //$NON-NLS-1$
+                NLS.bind("Directory {0} does not exist. Do you want to create it?", folder.getAbsolutePath()))) { //$NON-NLS-1$
             try {
                 folder.mkdirs();
                 return true;

@@ -11,13 +11,14 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 class MethodsTmpl {
 
     def package static formulaMethod (XMethod it) '''
-        /** «inheritDocOrTextIf(genInterface, description)»
+        /** 
+         *«inheritDocOrTextIf(genInterface, description)»
         «IF formulaOptional && (!published || genInterface())»
             «IF description.length > 0»
-                * <p>
+                *<p>
             «ENDIF»
-            * «localizedJDoc("METHOD_GETFORMULAR")»
-            * @see #«methodNameIsFormulaAvailable»
+            *«localizedJDoc("METHOD_GETFORMULAR")»
+            *@see #«methodNameIsFormulaAvailable»
         «ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
@@ -46,7 +47,7 @@ class MethodsTmpl {
         «IF overloadsFormula && !genInterface»
             «val overloaded = overloadedFormulaMethod»
                 /**
-                 * «inheritDoc»
+                 *«inheritDoc»
                  *
                  * @generated
                  */
@@ -62,9 +63,9 @@ class MethodsTmpl {
         «IF formulaOptional && !overloadsFormula»
             /**
             «IF published && !genInterface»
-            * «inheritDoc»
+             *«inheritDoc»
             «ELSE»
-             * «localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
+             *«localizedJDoc("METHOD_IS_FORMULAR_AVAILABLE")»
             «ENDIF»
            «getAnnotations(ELEMENT_JAVA_DOC)»
             *
@@ -83,9 +84,9 @@ class MethodsTmpl {
     def package static method (XMethod it) '''
         /**
         «IF published && !genInterface»
-         * «inheritDoc»
+         *«inheritDoc»
         «ELSEIF description.length > 0»
-         * «description»
+         *«description»
         «ENDIF»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *

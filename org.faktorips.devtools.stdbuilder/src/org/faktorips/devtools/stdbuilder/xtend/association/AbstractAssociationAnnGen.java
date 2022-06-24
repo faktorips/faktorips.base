@@ -59,6 +59,9 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
         } else {
             paramsBuilder.append("max = " + association.getMaxCardinality());
         }
+        if (association.isQualified()) {
+            paramsBuilder.append(", qualified = true");
+        }
         return new JavaCodeFragmentBuilder().annotationLn(IpsAssociation.class, paramsBuilder.getFragment())
                 .getFragment();
     }

@@ -44,6 +44,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -171,12 +172,34 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
-        Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
+        Optional<Dependency> eclipseLink25 = mavenProject.getDependencies().stream()
                 .filter(dependency -> dependency.getArtifactId().equals("eclipselink"))
                 .findAny();
-        assertThat(eclipseLink11.isPresent(), is(true));
-        assertThat(eclipseLink11.get().getGroupId(), is("org.eclipse.persistence"));
-        assertThat(eclipseLink11.get().getVersion(), is("2.5.0"));
+        assertThat(eclipseLink25.isPresent(), is(true));
+        assertThat(eclipseLink25.get().getGroupId(), is("org.eclipse.persistence"));
+        assertThat(eclipseLink25.get().getVersion(), is("2.5.0"));
+    }
+
+    @Test
+    public void testConfigureIpsProject_persistenceEclipseLink30() throws Exception {
+        projectCreationProperties.setPersistentProject(true);
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_ECLIPSE_LINK_3_0);
+        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
+                .getMavenProject(new NullProgressMonitor());
+
+        Optional<Dependency> eclipseLink30 = mavenProject.getDependencies().stream()
+                .filter(dependency -> dependency.getArtifactId().equals("eclipselink"))
+                .findAny();
+        assertThat(eclipseLink30.isPresent(), is(true));
+        assertThat(eclipseLink30.get().getGroupId(), is("org.eclipse.persistence"));
+        assertThat(eclipseLink30.get().getVersion(), is("3.0.2"));
+        Optional<Dependency> jakarta30 = mavenProject.getDependencies().stream()
+                .filter(dependency -> dependency.getArtifactId().equals("jakarta.persistence-api"))
+                .findAny();
+        assertThat(jakarta30.isPresent(), is(true));
+        assertThat(jakarta30.get().getGroupId(), is("jakarta.persistence"));
+        assertThat(jakarta30.get().getVersion(), is("3.0.0"));
     }
 
     @Test
@@ -187,12 +210,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
-        Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
+        Optional<Dependency> jpa20 = mavenProject.getDependencies().stream()
                 .filter(dependency -> dependency.getArtifactId().equals("javax.persistence"))
                 .findAny();
-        assertThat(eclipseLink11.isPresent(), is(true));
-        assertThat(eclipseLink11.get().getGroupId(), is("org.eclipse.persistence"));
-        assertThat(eclipseLink11.get().getVersion(), is("2.0.0"));
+        assertThat(jpa20.isPresent(), is(true));
+        assertThat(jpa20.get().getGroupId(), is("org.eclipse.persistence"));
+        assertThat(jpa20.get().getVersion(), is("2.0.0"));
     }
 
     @Test
@@ -203,12 +226,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
-        Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
+        Optional<Dependency> jpa21 = mavenProject.getDependencies().stream()
                 .filter(dependency -> dependency.getArtifactId().equals("javax.persistence"))
                 .findAny();
-        assertThat(eclipseLink11.isPresent(), is(true));
-        assertThat(eclipseLink11.get().getGroupId(), is("org.eclipse.persistence"));
-        assertThat(eclipseLink11.get().getVersion(), is("2.1.0"));
+        assertThat(jpa21.isPresent(), is(true));
+        assertThat(jpa21.get().getGroupId(), is("org.eclipse.persistence"));
+        assertThat(jpa21.get().getVersion(), is("2.1.0"));
     }
 
     @Test
@@ -219,12 +242,28 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
                 .getMavenProject(new NullProgressMonitor());
 
-        Optional<Dependency> eclipseLink11 = mavenProject.getDependencies().stream()
+        Optional<Dependency> jakarta22 = mavenProject.getDependencies().stream()
                 .filter(dependency -> dependency.getArtifactId().equals("jakarta.persistence-api"))
                 .findAny();
-        assertThat(eclipseLink11.isPresent(), is(true));
-        assertThat(eclipseLink11.get().getGroupId(), is("jakarta.persistence"));
-        assertThat(eclipseLink11.get().getVersion(), is("2.2.3"));
+        assertThat(jakarta22.isPresent(), is(true));
+        assertThat(jakarta22.get().getGroupId(), is("jakarta.persistence"));
+        assertThat(jakarta22.get().getVersion(), is("2.2.3"));
+    }
+
+    @Test
+    public void testConfigureIpsProject_persistenceJakartaPersistence30() throws Exception {
+        projectCreationProperties.setPersistentProject(true);
+        projectCreationProperties.setPersistenceSupport(PersistenceSupportNames.ID_JAKARTA_PERSISTENCE_3_0);
+        mavenIpsProjectConfigurator.configureIpsProject(ipsProject, projectCreationProperties);
+        MavenProject mavenProject = MavenPlugin.getMavenProjectRegistry().getProject(ipsProject.getProject().unwrap())
+                .getMavenProject(new NullProgressMonitor());
+
+        Optional<Dependency> jakarta30 = mavenProject.getDependencies().stream()
+                .filter(dependency -> dependency.getArtifactId().equals("jakarta.persistence-api"))
+                .findAny();
+        assertThat(jakarta30.isPresent(), is(true));
+        assertThat(jakarta30.get().getGroupId(), is("jakarta.persistence"));
+        assertThat(jakarta30.get().getVersion(), is("3.0.0"));
     }
 
     @Test(expected = IpsException.class)
@@ -367,10 +406,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
             Manifest manifest = new Manifest(in);
             Attributes mainAttributes = manifest.getMainAttributes();
             String basePackageName = projectCreationProperties.getBasePackageName();
-            String sourcecodeOutput = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
-                    .getProjectRelativePath().toString();
-            String resourceOutput = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                    .getProjectRelativePath().toString();
+            String sourcecodeOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
+                            .getProjectRelativePath());
+            String resourceOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                            .getProjectRelativePath());
             StringBuilder objectDirAttributeBuilder = new StringBuilder();
             objectDirAttributeBuilder
                     .append(projectCreationProperties.getSourceFolderName()).append(";")
@@ -406,8 +447,9 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
 
     private void checkMavenResources(Build build) {
         String sourceFolderName = projectCreationProperties.getSourceFolderName();
-        String resourceDirectory = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                .getProjectRelativePath().toString();
+        String resourceDirectory = PathUtil
+                .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                        .getProjectRelativePath());
         List<Resource> resources = build.getResources();
         List<Resource> sourceFolderResources = resources.stream()
                 .filter(r -> r.getDirectory() != null && r.getDirectory().endsWith(sourceFolderName))
@@ -488,10 +530,12 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
             assertThat(mainAttributes.getValue("TestEntry"), is("stay"));
 
             String basePackageName = projectCreationProperties.getBasePackageName();
-            String sourcecodeOutput = ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
-                    .getProjectRelativePath().toString();
-            String resourceOutput = ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
-                    .getProjectRelativePath().toString();
+            String sourcecodeOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForMergableSources()
+                            .getProjectRelativePath());
+            String resourceOutput = PathUtil
+                    .toPortableString(ipsProject.getIpsObjectPath().getOutputFolderForDerivedSources()
+                            .getProjectRelativePath());
             StringBuilder objectDirAttributeBuilder = new StringBuilder();
             objectDirAttributeBuilder
                     .append(projectCreationProperties.getSourceFolderName()).append(";")

@@ -21,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
@@ -191,7 +192,7 @@ public class SimpleTypeModelPartsReaderTest {
         private final Method getterMethod;
 
         public DummyElement(ModelElement parentElement, String name, Method getterMethod) {
-            super(name, null);
+            super(name, null, Optional.empty());
             this.parentElement = parentElement;
             this.getterMethod = getterMethod;
         }

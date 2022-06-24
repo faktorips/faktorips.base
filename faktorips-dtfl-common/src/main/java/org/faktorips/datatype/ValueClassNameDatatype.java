@@ -78,10 +78,8 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
      * method must be parsable by the {@link #getValue(String)} method.
      * 
      * @see #getValue(String)
-     * 
-     * @deprecated see {@link #getValue(String)}
      */
-    @Deprecated
+    @Override
     public String valueToString(Object value) {
         return value.toString();
     }
@@ -161,7 +159,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
      * value from one class to another (e.g. if the string representation is 42 you can change the
      * datatype from integer to string without converting the integer object to a string object.
      * 
-     * @param value string represenation of the value
+     * @param value string representation of the value
      * @return The value as instance of the class this datatype represents.
      * 
      * @see #valueToString(Object)

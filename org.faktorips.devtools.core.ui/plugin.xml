@@ -3039,9 +3039,9 @@
             <datatype class="org.faktorips.datatype.classtypes.MoneyDatatype" />
         </inputformat>
          <inputformat
-               class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
+               class="org.faktorips.devtools.core.ui.inputformat.NamedDatatypeInputFormatFactory">
             <datatype
-                  class="org.faktorips.datatype.EnumDatatype">
+                  class="org.faktorips.datatype.NamedDatatype">
             </datatype>
          </inputformat>
          <inputformat

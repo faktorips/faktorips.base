@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
@@ -43,8 +45,10 @@ import java.util.Map;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
@@ -54,6 +58,7 @@ import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttr
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.model.internal.productcmpttype.TableStructureUsage;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -96,6 +101,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.values.DateUtil;
@@ -238,6 +244,65 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         type.setAbstract(true);
         list = productTemplate.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+    }
+
+    @Test
+    public void testValidate_ProductCmptTypeIsNotDeprecated() {
+        IProductCmptType type = newProductCmptType(ipsProject, "DeprecatedProduct");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+
+        var messageList = productCmpt.validate(ipsProject);
+        assertThat(messageList, not(hasMessageCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE)));
+    }
+
+    @Test
+    public void testValidate_ProductCmptTypeIsDeprecated() {
+        IProductCmptType type = newProductCmptType(ipsProject, "DeprecatedProduct");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+        ((IpsObjectPartContainer)type).setDeprecated(true);
+        var deprecation = type.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        var locale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        IDescription description = deprecation.newDescription();
+        description.setLocale(locale);
+        deprecation.setDescriptionText(locale, "Use Foo instead");
+
+        var messageList = productCmpt.validate(ipsProject);
+
+        assertThat(messageList, hasMessageCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE));
+        Message message = messageList.getMessageByCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE);
+        assertThat(message, hasInvalidObject(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Use Foo instead"));
+    }
+
+    @Test
+    public void testValidate_ProductCmptTypeIsDeprecated_UseExistingDeprecationDescription() {
+        var properties = ipsProject.getProperties();
+        var usedLanguagePackLocale = IIpsModel.get().getMultiLanguageSupport().getUsedLanguagePackLocale();
+        var defaultLocale = usedLanguagePackLocale.equals(Locale.ITALIAN) ? Locale.CHINESE : Locale.ITALIAN;
+        properties.addSupportedLanguage(defaultLocale);
+        var otherLocale = usedLanguagePackLocale.equals(Locale.FRENCH) ? Locale.KOREAN : Locale.FRENCH;
+        properties.addSupportedLanguage(otherLocale);
+        properties.setDefaultLanguage(defaultLocale);
+        ipsProject.setProperties(properties);
+        IProductCmptType type = newProductCmptType(ipsProject, "DeprecatedProduct");
+        productCmpt.setProductCmptType(type.getQualifiedName());
+        ((IpsObjectPartContainer)type).setDeprecated(true);
+        var deprecation = type.getDeprecation();
+        deprecation.setSinceVersionString("1.2.3");
+        deprecation.setForRemoval(true);
+        deprecation.setDescriptionText(defaultLocale, "Default Description");
+        deprecation.setDescriptionText(otherLocale, "Other Description");
+
+        var messageList = productCmpt.validate(ipsProject);
+
+        assertThat(messageList, hasMessageCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE));
+        Message message = messageList.getMessageByCode(IProductCmpt.MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE);
+        assertThat(message, hasInvalidObject(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
+        assertThat(message, containsText("1.2.3"));
+        assertThat(message, containsText("Default Description"));
     }
 
     @Test

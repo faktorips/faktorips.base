@@ -44,7 +44,9 @@ import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A page for presenting {@link DescriptionItem}s similar to the outline view.
@@ -115,6 +117,14 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
      * Creates DescriptionItems
      */
     protected void createDescriptionItem(IDescribedElement describedElement, List<DescriptionItem> descriptions) {
+        String label = createLabel(describedElement);
+        String description = createDescription(describedElement);
+        String deprecation = createDeprecation(describedElement);
+        DescriptionItem item = new DescriptionItem(label, description, deprecation);
+        descriptions.add(item);
+    }
+
+    private String createLabel(IDescribedElement describedElement) {
         String label;
         if (describedElement instanceof IAssociation) {
             IAssociation association = (IAssociation)describedElement;
@@ -130,9 +140,29 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         } else {
             label = describedElement.getName();
         }
-        String description = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(describedElement);
-        DescriptionItem item = new DescriptionItem(label, description);
-        descriptions.add(item);
+        return label;
+    }
+
+    private String createDescription(IDescribedElement describedElement) {
+        return IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(describedElement);
+    }
+
+    DescriptionItem createStructureDescriptionItem() {
+        IIpsObject structure = getIpsObject();
+        String localizedDescription = createDescription(structure);
+        String deprecation = createDeprecation(structure);
+        DescriptionItem descriptionItem = new DescriptionItem(
+                Messages.DefaultModelDescriptionPage_GeneralInformation,
+                localizedDescription, deprecation);
+        return descriptionItem;
+    }
+
+    private String createDeprecation(IDescribedElement describedElement) {
+        if (describedElement instanceof IVersionControlledElement
+                && ((IVersionControlledElement)describedElement).isDeprecated()) {
+            return ((IVersionControlledElement)describedElement).getDeprecation().toString();
+        }
+        return null;
     }
 
     @Override
@@ -224,8 +254,11 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
         // Set faktorips.attribute name
         excomposite.setText(StringUtils.capitalize(item.getName()));
+
         if ((index % 2) == 0 && !item.hasChildren()) {
             excomposite.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
+            excomposite.setForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
+            excomposite.setTitleBarForeground(parent.getDisplay().getSystemColor(SWT.COLOR_INFO_FOREGROUND));
         }
 
         excomposite.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
@@ -238,6 +271,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
         Composite clientGroup = toolkit.createComposite(excomposite);
         clientGroup.setBackground(excomposite.getBackground());
+        clientGroup.setForeground(excomposite.getForeground());
         clientGroup.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
         TableWrapLayout layout = new TableWrapLayout();
         layout.verticalSpacing = 7;
@@ -251,24 +285,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
         // Set faktorips.attribute description
         if ((!item.hasChildren() && StringUtils.isEmpty(description)) || !StringUtils.isEmpty(description)) {
-            FormText client = toolkit.createFormText(clientGroup, true);
-            client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-            client.setBackground(excomposite.getBackground());
-            client.setWhitespaceNormalized(false);
-            if (StringUtils.isEmpty(description) && !item.hasChildren()) {
-                client.setColor("gray", colorGray); //$NON-NLS-1$
-                sb.append("<form>"); //$NON-NLS-1$
-                // if no description is given show the default text in gray foreground color
-                sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
-                sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
-                sb.append("</span></p>"); //$NON-NLS-1$
-                sb.append("</form>"); //$NON-NLS-1$
-                client.setText(sb.toString(), true, true);
-            } else {
-                sb.append(description);
-                client.setText(sb.toString(), false, true);
-            }
-            // don't ignore whitespaces and newlines
+            createDescriptionContent(item, excomposite, clientGroup, sb, description);
         }
 
         if (item.hasChildren()) {
@@ -281,6 +298,39 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         }
 
         excomposite.setClient(clientGroup);
+    }
+
+    private void createDescriptionContent(DescriptionItem item,
+            ExpandableComposite excomposite,
+            Composite clientGroup,
+            StringBuilder sb,
+            String description) {
+        FormText client = toolkit.createFormText(clientGroup, true);
+        client.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+        client.setBackground(excomposite.getBackground());
+        client.setForeground(excomposite.getForeground());
+        client.setWhitespaceNormalized(false);
+        sb.append("<form>"); //$NON-NLS-1$
+        String deprecation = item.getDeprecation();
+        if (IpsStringUtils.isNotBlank(deprecation)) {
+            sb.append("<p><b>"); //$NON-NLS-1$
+            sb.append(deprecation);
+            sb.append("</b></p>"); //$NON-NLS-1$
+        }
+        if (IpsStringUtils.isBlank(description) && !item.hasChildren()) {
+            client.setColor("gray", colorGray); //$NON-NLS-1$
+            // if no description is given show the default text in gray foreground color
+            sb.append("<p><span color=\"gray\">"); //$NON-NLS-1$
+            sb.append(Messages.DefaultModelDescriptionPage_NoDescriptionAvailable);
+            sb.append("</span></p>"); //$NON-NLS-1$
+        } else {
+            sb.append("<p>"); //$NON-NLS-1$
+            sb.append(description);
+            sb.append("</p>"); //$NON-NLS-1$
+        }
+        sb.append("</form>"); //$NON-NLS-1$
+        client.setText(sb.toString(), true, true);
+        // don't ignore whitespaces and newlines
     }
 
     @Override
@@ -418,6 +468,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         DescriptionItem copyItem = new DescriptionItem();
         copyItem.setName(item.getName());
         copyItem.setDescription(item.getDescription());
+        copyItem.setDeprecation(item.getDeprecation());
         copyItem.setChildren(copyDescriptionItems(item.getChildren()));
         return copyItem;
     }

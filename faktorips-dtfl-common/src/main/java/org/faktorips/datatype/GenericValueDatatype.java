@@ -10,14 +10,15 @@
 
 package org.faktorips.datatype;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.Collection;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.util.MethodAccess;
+import org.faktorips.util.MethodAccess.MethodAccessException;
 import org.faktorips.util.StringUtil;
 import org.faktorips.values.NullObjectSupport;
 
@@ -34,20 +35,29 @@ public abstract class GenericValueDatatype implements ValueDatatype {
 
     public static final String MSGCODE_PREFIX = "GENERIC DATATYPE-"; //$NON-NLS-1$
     public static final String MSGCODE_JAVACLASS_NOT_FOUND = MSGCODE_PREFIX + "Java class not found"; //$NON-NLS-1$
-    public static final String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "getValue() Method not found"; //$NON-NLS-1$
-    public static final String MSGCODE_ISPARSABLE_METHOD_NOT_FOUND = MSGCODE_PREFIX + "isParsable() Method not found"; //$NON-NLS-1$
-    public static final String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX + "toString() Method not found"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_GET_VALUE_METHOD = MSGCODE_PREFIX + "getValueMethod"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_IS_PARSABLE_METHOD = MSGCODE_PREFIX + "isParsable"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_TO_STRING_METHOD = MSGCODE_PREFIX + "toString"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX_VALUE_OF_METHOD = MSGCODE_PREFIX + "valueOf"; //$NON-NLS-1$
     public static final String MSGCODE_SPECIALCASE_NULL_NOT_FOUND = MSGCODE_PREFIX + "Special case null not found"; //$NON-NLS-1$
     public static final String MSGCODE_SPECIALCASE_NULL_IS_NOT_NULL = MSGCODE_PREFIX + "Special case null is not null"; //$NON-NLS-1$
-
-    private Method valueOfMethod;
-    private Method isParsableMethod;
-    private Method toStringMethod;
+    public static final String MSGCODE_GETVALUE_METHOD_NOT_FOUND = MSGCODE_PREFIX_GET_VALUE_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_ISPARSABLE_METHOD_NOT_FOUND = MSGCODE_PREFIX_IS_PARSABLE_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_TOSTRING_METHOD_NOT_FOUND = MSGCODE_PREFIX_TO_STRING_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_VALUE_OF_METHOD_NOT_FOUND = MSGCODE_PREFIX_VALUE_OF_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
+    public static final String MSGCODE_PREFIX_GET_ALL_VALUES_METHOD = MSGCODE_PREFIX + "getAllValuesMethod"; //$NON-NLS-1$
+    public static final String MSGCODE_GET_ALL_VALUES_METHOD_NOT_FOUND = MSGCODE_PREFIX_GET_ALL_VALUES_METHOD
+            + MethodAccess.Check.MSG_CODE_SUFFIX_DOES_NOT_EXIST;
 
     private String qualifiedName;
     private String valueOfMethodName = "valueOf"; //$NON-NLS-1$
     private String isParsableMethodName = "isParsable"; //$NON-NLS-1$
     private String toStringMethodName = "toString"; //$NON-NLS-1$
+    private String getAllValuesMethodName = ""; //$NON-NLS-1$
 
     private boolean nullObjectDefined = false;
     private String nullObjectId = null;
@@ -80,55 +90,58 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
             return list;
         }
-        checkParsableMethodName(list);
-        checkStringMethodName(list);
-        try {
-            getValueOfMethod();
-            // CSOFF: Illegal Catch
-        } catch (RuntimeException e) {
-            // CSON: Illegal Catch
-            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
-            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
-            return list;
-        }
-        if (valueOfMethod != null && !getAdaptedClass().isAssignableFrom(valueOfMethod.getReturnType())) {
-            String text = "The method " + valueOfMethod + " does not return a " //$NON-NLS-1$ //$NON-NLS-2$
-                    + getAdaptedClass().getSimpleName();
-            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
-            return list;
-        }
+        checkIsParsableMethodName(list);
+        checkToStringMethodName(list);
         checkNullObjectDefined(list);
+        checkValueOfMethodName(list);
+        checkGetAllValues(list);
         return list;
     }
 
-    private void checkParsableMethodName(MessageList list) {
-        if (isParsableMethodName != null) {
-            try {
-                getIsParsableMethod();
-                // CSOFF: Illegal Catch
-            } catch (RuntimeException e) {
-                // CSON: Illegal Catch
-                String text = "The Java class hasn't got a method " + getIsParsableMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
-            }
-            if (isParsableMethod != null && !(Boolean.class.isAssignableFrom(isParsableMethod.getReturnType())
-                    || Boolean.TYPE.isAssignableFrom(isParsableMethod.getReturnType()))) {
-                String text = "The method " + isParsableMethod + " does not return a boolean value type"; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
-            }
+    private MethodAccess getValueOfMethod() {
+        return MethodAccess.of(getAdaptedClass(), getValueOfMethodName(), CharSequence.class);
+    }
+
+    private void checkValueOfMethodName(MessageList list) {
+        if (StringUtils.isBlank(getValueOfMethodName()) && StringUtils.isBlank(getAllValuesMethodName())) {
+            list.add(Message.newError(MSGCODE_VALUE_OF_METHOD_NOT_FOUND,
+                    "valueOfMethod must be configured for the datatype " + getName() //$NON-NLS-1$
+                            + " if no getAllValuesMethod is configured.")); //$NON-NLS-1$
+        }
+        if (valueOfMethodName != null) {
+            getValueOfMethod()
+                    .check(list, MSGCODE_PREFIX_GET_VALUE_METHOD)
+                    .exists()
+                    .isStatic()
+                    .returnTypeIsCompatible(getAdaptedClass());
         }
     }
 
-    private void checkStringMethodName(MessageList list) {
+    private MethodAccess getIsParsableMethod() {
+        return MethodAccess.of(getAdaptedClass(), getIsParsableMethodName(), CharSequence.class);
+    }
+
+    private void checkIsParsableMethodName(MessageList list) {
+        if (isParsableMethodName != null) {
+            getIsParsableMethod()
+                    .check(list, MSGCODE_PREFIX_IS_PARSABLE_METHOD)
+                    .exists()
+                    .isStatic()
+                    .returnTypeIsCompatible(Boolean.TYPE);
+        }
+    }
+
+    protected MethodAccess getToStringMethod() {
+        return MethodAccess.of(getAdaptedClass(), getToStringMethodName());
+    }
+
+    private void checkToStringMethodName(MessageList list) {
         if (toStringMethodName != null) {
-            try {
-                getToStringMethod();
-                // CSOFF: Illegal Catch
-            } catch (RuntimeException e) {
-                // CSON: Illegal Catch
-                String text = "The Java class hasn't got a method " + getToStringMethodName() + "(Object)"; //$NON-NLS-1$ //$NON-NLS-2$
-                list.add(Message.newError(MSGCODE_TOSTRING_METHOD_NOT_FOUND, text));
-            }
+            getToStringMethod()
+                    .check(list, MSGCODE_PREFIX_TO_STRING_METHOD)
+                    .exists()
+                    .isNotStatic()
+                    .returnTypeIsCompatible(String.class);
         }
     }
 
@@ -157,7 +170,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
 
     public void setIsParsableMethodName(String isParsableMethodName) {
         this.isParsableMethodName = isParsableMethodName;
-        isParsableMethod = null;
     }
 
     /**
@@ -179,6 +191,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     /**
      * Returns the String identification of the special NullObject.
      */
+    @Override
     public String getNullObjectId() {
         return nullObjectId;
     }
@@ -196,7 +209,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
 
     public void setValueOfMethodName(String valueOfMethodName) {
         this.valueOfMethodName = valueOfMethodName;
-        valueOfMethod = null;
     }
 
     public String getToStringMethodName() {
@@ -205,7 +217,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
 
     public void setToStringMethodName(String toStringMethodName) {
         this.toStringMethodName = toStringMethodName;
-        toStringMethod = null;
     }
 
     public void setQualifiedName(String qualifiedName) {
@@ -222,42 +233,17 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (value == null) {
             return true;
         }
-        getIsParsableMethod();
-        if (isParsableMethod != null) {
-            try {
-                Object o = isParsableMethod.invoke(null, value);
-                return ((Boolean)o).booleanValue();
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException("Error executing method " + isParsableMethod); //$NON-NLS-1$
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Error executing method " + isParsableMethod); //$NON-NLS-1$
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Error executing method " + isParsableMethod); //$NON-NLS-1$
-            }
+        if (getIsParsableMethodName() != null) {
+            return getIsParsableMethod().invokeStatic("to check whether a String is parsable", value); //$NON-NLS-1$
         }
         try {
-            getValueOfMethod().invoke(null, value);
-            // getValue() has executed without exception, the value can be parsed.
+            getValueOfMethod().invokeStatic("to create a " + getAdaptedClassName() + " from a String", value); //$NON-NLS-1$ //$NON-NLS-2$
+            // valueOf(String) has executed without exception, the value can be parsed.
             return true;
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod, e); //$NON-NLS-1$
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error executing method " + valueOfMethod, e); //$NON-NLS-1$
-        } catch (InvocationTargetException e) {
-            // getValue() has thrown an exception, the value can't be parsed.
+        } catch (MethodAccessException e) {
+            // valueOf(String) has thrown an exception, the value can't be parsed.
             return false;
         }
-    }
-
-    protected Method getIsParsableMethod() {
-        if (isParsableMethodName != null && isParsableMethod == null) {
-            // @formatter:off
-            isParsableMethod = findMethodWithCharSequenceSubclassParameter(isParsableMethodName)
-                    .orElseThrow(() -> new RuntimeException("Can't get isParsable-method, Class: " + getAdaptedClass() //$NON-NLS-1$
-                            + ", Methodname: " + isParsableMethodName)); //$NON-NLS-1$
-            // @formatter:on
-        }
-        return isParsableMethod;
     }
 
     @Override
@@ -265,66 +251,39 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (!nullObjectDefined && value == null) {
             return null;
         }
-        try {
-            return getValueOfMethod().invoke(null, value);
-            // CSOFF: Illegal Catch
-        } catch (Exception e) {
-            // CSON: Illegal Catch
-            throw new RuntimeException("Error invoking method to get the value " + valueOfMethod, e); //$NON-NLS-1$
+        if (StringUtils.isBlank(valueOfMethodName)) {
+            return findValueInAllValues(value);
         }
+        return getValueOfMethod()
+                .invokeStatic("to get a value", value); //$NON-NLS-1$
     }
 
-    protected Method getValueOfMethod() {
-        if (valueOfMethodName != null && valueOfMethod == null) {
-            // @formatter:off
-            valueOfMethod = findMethodWithCharSequenceSubclassParameter(valueOfMethodName)
-                    .orElseThrow(() -> new RuntimeException("Can't get valueOf-method, Class: " + getAdaptedClass() //$NON-NLS-1$
-                            + ", Methodname: " + valueOfMethodName)); //$NON-NLS-1$
-            // @formatter:on
+    private Object findValueInAllValues(String value) {
+        Object result = getAllValuesMethod()
+                .invokeStatic("to get all values"); //$NON-NLS-1$
+        Object[] values;
+        if (result instanceof Collection) {
+            values = ((Collection<?>)result).toArray(Object[]::new);
+        } else {
+            values = (Object[])result;
         }
-        return valueOfMethod;
+        return Arrays.stream(values)
+                .filter(v -> StringUtils.equals(value,
+                        valueToString(v)))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(value + " could not be found in all values.")); //$NON-NLS-1$
     }
 
-    private Optional<Method> findMethodWithCharSequenceSubclassParameter(String methodname) {
-        return Arrays.stream(getAdaptedClass().getMethods()).filter(m -> methodname.equals(m.getName()))
-                .filter(m -> m.getParameterCount() == 1)
-                .filter(m -> CharSequence.class.isAssignableFrom(m.getParameterTypes()[0])).findFirst();
-    }
-
+    @Override
     public String valueToString(Object value) {
-        getToStringMethod();
-        if (toStringMethod == null) {
+        if (getToStringMethodName() == null) {
             if (value == null) {
                 return null;
             }
             return value.toString();
         }
-        try {
-            return (String)toStringMethod.invoke(value);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Error executing method " + toStringMethod); //$NON-NLS-1$
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Error executing method " + toStringMethod); //$NON-NLS-1$
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException("Error executing method " + toStringMethod); //$NON-NLS-1$
-        }
-    }
-
-    protected Method getToStringMethod() {
-        if (toStringMethod == null && toStringMethodName != null) {
-            try {
-                toStringMethod = getAdaptedClass().getMethod(toStringMethodName);
-                if (toStringMethod == null) {
-                    throw new NullPointerException();
-                }
-                // CSOFF: Illegal Catch
-            } catch (Exception e) {
-                // CSON: Illegal Catch
-                throw new RuntimeException("Can't get method toString(String), Class: " + getAdaptedClass() //$NON-NLS-1$
-                        + ", Methodname: " + toStringMethodName); //$NON-NLS-1$
-            }
-        }
-        return toStringMethod;
+        return getToStringMethod()
+                .invoke("to get the String representation", value); //$NON-NLS-1$
     }
 
     @Override
@@ -407,9 +366,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     protected void clearCache() {
-        isParsableMethod = null;
-        valueOfMethod = null;
-        toStringMethod = null;
+        // no cache
     }
 
     @Override
@@ -451,6 +408,33 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     @Override
     public boolean isMutable() {
         return false;
+    }
+
+    private void checkGetAllValues(MessageList ml) {
+        if (StringUtils.isBlank(getAllValuesMethodName())) {
+            if (this instanceof EnumDatatype) {
+                ml.add(Message.newError(MSGCODE_GET_ALL_VALUES_METHOD_NOT_FOUND,
+                        "getAllValuesMethod must be configured for the enum datatype " + getName())); //$NON-NLS-1$
+            }
+            return;
+        }
+        getAllValuesMethod()
+                .check(ml, MSGCODE_PREFIX_GET_ALL_VALUES_METHOD)
+                .exists()
+                .isStatic()
+                .returnTypeIsCompatible(Object[].class, Collection.class);
+    }
+
+    public MethodAccess getAllValuesMethod() {
+        return MethodAccess.of(getAdaptedClass(), getAllValuesMethodName());
+    }
+
+    public void setAllValuesMethodName(String getAllValuesMethodName) {
+        this.getAllValuesMethodName = getAllValuesMethodName;
+    }
+
+    public String getAllValuesMethodName() {
+        return getAllValuesMethodName;
     }
 
 }

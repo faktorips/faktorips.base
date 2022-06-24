@@ -101,7 +101,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             return false;
         }
         if (delta.findMember(
-                org.eclipse.core.runtime.Path.fromOSString(file.getProjectRelativePath().toString())) != null) {
+                org.eclipse.core.runtime.Path
+                        .fromOSString(PathUtil.toPortableString(file.getProjectRelativePath()))) != null) {
             return true;
         }
         return false;

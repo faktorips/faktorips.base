@@ -130,4 +130,9 @@ public class PaymentMode extends AbstractDatatype implements EnumDatatype {
         return false;
     }
 
+    @Override
+    public PaymentMode getValueByName(String name) {
+        return new PaymentMode();
+    }
+
 }

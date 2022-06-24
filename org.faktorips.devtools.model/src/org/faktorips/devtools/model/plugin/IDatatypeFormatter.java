@@ -11,9 +11,11 @@
 package org.faktorips.devtools.model.plugin;
 
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 
 public interface IDatatypeFormatter {
@@ -36,8 +38,8 @@ public interface IDatatypeFormatter {
         if (datatype instanceof EnumTypeDatatypeAdapter) {
             return formatValue((EnumDatatype)datatype, value);
         }
-        if (datatype instanceof EnumDatatype) {
-            return formatValue((EnumDatatype)datatype, value);
+        if (datatype instanceof NamedDatatype) {
+            return formatValue((NamedDatatype)datatype, value);
         }
         if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
             if (Boolean.valueOf(value).booleanValue()) {
@@ -53,25 +55,26 @@ public interface IDatatypeFormatter {
      * 
      * @param datatype The data type the value is a value of.
      */
-    default String formatValue(EnumDatatype datatype, String id) {
+    default String formatValue(NamedDatatype datatype, String id) {
         if (!datatype.isSupportingNames()) {
             return id;
         }
-        EnumTypeDisplay enumTypeDisplay = getEnumTypeDisplay();
-        if (enumTypeDisplay.equals(EnumTypeDisplay.ID)) {
+        NamedDataTypeDisplay dataTypeDisplay = getNamedDataTypeDisplay();
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.ID)) {
             return id;
         }
         if (!datatype.isParsable(id)) {
             return id;
         }
-        String name = datatype.getValueName(id);
+        String name = datatype.getValueName(id,
+                IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale());
         if (name == null) {
             return id;
         }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME)) {
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME)) {
             return name;
         }
-        if (enumTypeDisplay.equals(EnumTypeDisplay.NAME_AND_ID)) {
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.NAME_AND_ID)) {
             return name + " (" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
         }
         return id;
@@ -81,8 +84,8 @@ public interface IDatatypeFormatter {
         return DEFAULT_NULL_REPRESENTATION;
     }
 
-    default EnumTypeDisplay getEnumTypeDisplay() {
-        return EnumTypeDisplay.NAME_AND_ID;
+    default NamedDataTypeDisplay getNamedDataTypeDisplay() {
+        return NamedDataTypeDisplay.NAME_AND_ID;
     }
 
 }

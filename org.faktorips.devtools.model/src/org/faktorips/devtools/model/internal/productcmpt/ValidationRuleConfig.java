@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -80,7 +81,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         validationRuleName = element.getAttribute(TAG_NAME_RULE_NAME);
-        isActive = Boolean.valueOf(element.getAttribute(TAG_NAME_ACTIVE));
+        isActive = XmlUtil.getBooleanAttributeOrFalse(element, TAG_NAME_ACTIVE);
         templateValueSettings.initPropertiesFromXml(element);
     }
 
@@ -88,7 +89,9 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(TAG_NAME_RULE_NAME, validationRuleName);
-        element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive()));
+        if (isActive()) {
+            element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive()));
+        }
         templateValueSettings.propertiesToXml(element);
     }
 

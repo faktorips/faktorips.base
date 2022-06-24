@@ -155,9 +155,6 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
                 .getTextContent());
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_UNIQUE).getTextContent()));
         assertTrue(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_IDENTIFIER).getTextContent()));
-        assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI)
-                .getTextContent()));
-        assertFalse(Boolean.parseBoolean(attributes.getNamedItem(IEnumAttribute.PROPERTY_INHERITED).getTextContent()));
 
         IEnumAttribute loadedEnumAttribute = genderEnumType.newEnumAttribute();
         loadedEnumAttribute.initFromXml(xmlElement);

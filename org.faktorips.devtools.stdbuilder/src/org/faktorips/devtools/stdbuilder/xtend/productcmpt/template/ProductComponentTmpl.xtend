@@ -28,9 +28,9 @@ class ProductComponentTmpl {
 
         /**
             «IF generatePublishedInterfaces»
-                * «localizedJDoc("CLASS", interfaceName)»
+                *«localizedJDoc("CLASS", interfaceName)»
             «ELSE»
-                * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
+                *«localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
             «ENDIF»
        «getAnnotations(ELEMENT_JAVA_DOC)»
         *
@@ -38,8 +38,7 @@ class ProductComponentTmpl {
         */
         «getAnnotations(PRODUCT_CMPT_IMPL_CLASS)»
         «getAnnotationsForPublishedInterface(PRODUCT_CMPT_DECL_CLASS, genInterface)»
-            public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)»
-            {
+       public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)» {
 
              «FOR it : associations» «privateConstants»«ENDFOR»
 
@@ -59,16 +58,17 @@ class ProductComponentTmpl {
 
              «FOR it : tables» «memberField» «ENDFOR»
 
-            /**
-            * «localizedJDoc("CONSTRUCTOR", implClassName)»
-           «getAnnotations(ELEMENT_JAVA_DOC)»
-            *
-            * @generated
-            */
-                public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {
-                    super(repository, id, kindId, versionId);
-                    «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
-                }
+             /**
+               *«localizedJDoc("CONSTRUCTOR", implClassName)»
+             «getAnnotations(ELEMENT_JAVA_DOC)»
+               *
+               * @generated
+               */
+             «getAnnotations(DEPRECATION)»
+             public «method(implClassName, IRuntimeRepository, "repository", "String", "id", "String", "kindId", "String", "versionId")» {
+                 super(repository, id, kindId, versionId);
+                 «FOR it : attributesIncludingNoContentGeneration» «setDefaultValue» «ENDFOR»
+             }
 
                 «IF generateGenerationAccessMethods»
                     «getProductComponentGeneration(productCmptGenerationNode)»
@@ -76,7 +76,7 @@ class ProductComponentTmpl {
 
                 «IF generateIsChangingOverTimeAccessMethod»
                     /**
-                      * «inheritDoc»
+                      *«inheritDoc»
                       *
                       * @generated
                       */
@@ -125,7 +125,7 @@ class ProductComponentTmpl {
                 «ENDFOR»
 
                 /**
-                * «inheritDoc»
+                *«inheritDoc»
                 *
                 * @generated
                 */
@@ -171,7 +171,7 @@ class ProductComponentTmpl {
 
                 «IF generateMethodGenericCreatePolicyComponent»
                     /**
-                     * «inheritDoc»
+                     *«inheritDoc»
                      *
                      * @generated
                      */
@@ -199,7 +199,7 @@ class ProductComponentTmpl {
 
     def package static getProductComponentGeneration(XProductCmptGenerationClass it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_GENERATION", generationConceptNameSingular)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_GENERATION", generationConceptNameSingular)»
          *
          * @generated
          */
@@ -216,7 +216,7 @@ class ProductComponentTmpl {
     def package static createPolicyCmpt(XProductCmptClass currentType, XPolicyCmptClass it) '''
         «IF currentType.isGenerateMethodCreatePolicyCmpt(it)»
             /**
-             * «inheritDocOrJavaDocIf(genInterface, "METHOD_CREATE_POLICY_CMPT", name)»
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_CREATE_POLICY_CMPT", name)»
              *
              * @generated
              */

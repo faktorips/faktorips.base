@@ -23,23 +23,24 @@ import org.faktorips.datatype.classtypes.MoneyDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.faktorips.values.NullObject;
 
 /**
  * The type of data similar to a Java class. In most cases a datatype corresponds directly to a Java
  * class, e.g. a datatype that represents text data (String) corresponds to the class
- * <code>java.lang.String</code>. However a datatype can exists while the corresponding Java class
- * does not exists (yet because it's being generated at a later point in time).
+ * {@code java.lang.String}. However a datatype can exist while the corresponding Java class does
+ * not exist (yet, because it's being generated at a later point in time).
  * <p>
- * If the datatype represents a value, you can safely cast the datatype to
- * <code>ValueDatatype</code>. The value datatype provides a uniform way to transform values into
- * Strings and parse Strings back into values.
+ * If the datatype represents a value, you can safely cast the datatype to {@code ValueDatatype}.
+ * The value datatype provides a uniform way to transform values into Strings and parse Strings back
+ * into values.
  * 
  * @author Jan Ortmann
  */
 public interface Datatype extends Comparable<Datatype> {
 
     /**
-     * Datatype Void.
+     * Datatype representing {@link java.lang.Void}.
      */
     public static final Void VOID = new Void();
 
@@ -79,28 +80,28 @@ public interface Datatype extends Comparable<Datatype> {
     public static final MoneyDatatype MONEY = new MoneyDatatype();
 
     /**
-     * Datatype representing the primitive <code>boolean</code>.
+     * Datatype representing the primitive {@code boolean}.
      */
     public static final PrimitiveBooleanDatatype PRIMITIVE_BOOLEAN = new PrimitiveBooleanDatatype();
 
     /**
-     * Datatype representing the primitive <code>int</code>.
+     * Datatype representing the primitive {@code int}.
      */
     public static final PrimitiveIntegerDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
 
     /**
-     * Datatype representing the primitive <code>long</code>.
+     * Datatype representing the primitive {@code long}.
      */
     public static final PrimitiveLongDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
 
     /**
-     * Datatype representing <code>java.lang.String</code>
+     * Datatype representing {@code java.lang.String}
      */
     public static final StringDatatype STRING = new StringDatatype();
 
     /**
-     * Datatype representing <code>java.util.GregorianCalendar</code>. Note that in Faktor-IPS
-     * values of that datatype only contain the information about the date, not the time.
+     * Datatype representing {@link java.util.GregorianCalendar}. Note that in Faktor-IPS values of
+     * that datatype only contain the information about the date, not the time.
      */
     public static final GregorianCalendarAsDateDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
 
@@ -117,38 +118,40 @@ public interface Datatype extends Comparable<Datatype> {
     public String getQualifiedName();
 
     /**
-     * Returns <code>true</code> if this is the Datatype Void, otherwise <code>false</code>.
+     * Returns {@code true} if this is the Datatype {@link Void}, otherwise {@code false}.
      */
     public boolean isVoid();
 
     /**
-     * Returns <code>true</code> if this datatype represents one Java's primitive types.
+     * Returns {@code true} if this datatype represents one of Java's primitive types.
      */
     public boolean isPrimitive();
 
     /**
-     * Returns <code>true</code> if this datatype is an abstract datatype in means of the object
-     * oriented paradigm.
+     * Returns {@code true} if this datatype is an abstract datatype in means of the object oriented
+     * paradigm.
      */
     public boolean isAbstract();
 
     /**
-     * Returns <code>true</code> if this datatype represents values.
+     * Returns {@code true} if this datatype represents values.
      * <p>
-     * If the method returns true, the datatype can be safely casted to <code>ValueDatatype</code>.
+     * If the method returns {@code true}, the datatype can be safely casted to
+     * {@code ValueDatatype}.
      */
     public boolean isValueDatatype();
 
     /**
-     * Returns <code>true</code> if this value datatype is an enum datatype. In this case the
-     * instance be be casted to {@link EnumDatatype}. Returns <code>false</code> otherwise.
+     * Returns {@code true} if this value datatype is an enum datatype. In this case the instance
+     * can be cast to {@link EnumDatatype}. Returns {@code false} otherwise.
      */
     public boolean isEnum();
 
     /**
-     * Returns <code>true</code> if the datatype has a special instance representing
-     * <code>null</code>, otherwise <code>false</code>. The design pattern is called the
-     * <em>NullObject</em> pattern.
+     * Returns {@code true} if the datatype has a special instance representing {@code null},
+     * otherwise {@code false}. The design pattern is called the null-object pattern.
+     *
+     * @see NullObject
      */
     public boolean hasNullObject();
 

@@ -116,14 +116,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns true for all attributes except for derived on the fly, constant, overridden and
-     * abstract derived by explicit method call attributes.
+     * Returns true for all attributes except for derived, constant and overridden attributes.
      */
     public boolean isGenerateSetter() {
         boolean noDuplicateOverwrite = !isOverwrite() || isAttributeTypeChangedByOverwrite() || isOverwriteAbstract();
-        boolean abstractComputed = isDerivedByExplicitMethodCall() && isAbstract();
-        return !isDerivedOnTheFly() && !abstractComputed && !isConstant()
-                && noDuplicateOverwrite;
+        return !isDerived() && !isConstant() && noDuplicateOverwrite;
     }
 
     /**
@@ -178,8 +175,8 @@ public class XPolicyAttribute extends XAttribute {
      * 
      * @return The class name of the value set
      */
-    public String getValueSetJavaClassName() {
-        return getValueSetJavaClassName(false);
+    public String getValueSetJavaClassName(GenerateValueSetType generateValueSetType) {
+        return getValueSetJavaClassName(generateValueSetType, false);
     }
 
     /**
@@ -188,13 +185,13 @@ public class XPolicyAttribute extends XAttribute {
      * 
      * @return the class name of the value set
      */
-    public String getValueSetJavaClassNameWithWildcard() {
-        return getValueSetJavaClassName(true);
+    public String getValueSetJavaClassNameWithWildcard(GenerateValueSetType generateValueSetType) {
+        return getValueSetJavaClassName(generateValueSetType, true);
     }
 
-    private String getValueSetJavaClassName(boolean useWildcards) {
+    private String getValueSetJavaClassName(GenerateValueSetType generateValueSetType, boolean useWildcards) {
         String wildcards = useWildcards ? "? extends " : "";
-        if (isValueSetUnrestricted() || isValueSetDerived()) {
+        if (generateValueSetType.isGenerateUnified() || isValueSetUnrestricted() || isValueSetDerived()) {
             String valueSetClass = addImport(ValueSet.class);
             return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
         } else if (isValueSetEnum()) {
@@ -463,11 +460,11 @@ public class XPolicyAttribute extends XAttribute {
         return super.isAbstract() && (isProductRelevant() || getPolicyCmptNode().isAbstract());
     }
 
-    public boolean isDerivedByExplicitMethodCall() {
+    protected boolean isDerivedByExplicitMethodCall() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL;
     }
 
-    public boolean isDerivedOnTheFly() {
+    protected boolean isDerivedOnTheFly() {
         return getAttribute().getAttributeType() == AttributeType.DERIVED_ON_THE_FLY;
     }
 
@@ -518,7 +515,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isMethodNameGetAllowedValuesEqualIncludingUnifyMethodsSetting(XPolicyAttribute overwritten,
             GenerateValueSetType valueSetType) {
-        ValueSetMethods setting = getUnifyValueSetSettingFormSuperType(overwritten);
+        ValueSetMethods setting = getUnifyValueSetSettingFormAttribute(overwritten);
         GenerateValueSetType genValueSet = GenerateValueSetType.mapFromSettings(setting,
                 valueSetType);
         return isMethodNameGetAllowedValuesEqualWithOverwrittenAttribute(overwritten, genValueSet);
@@ -540,7 +537,7 @@ public class XPolicyAttribute extends XAttribute {
         if (!isOverwrite()) {
             return false;
         }
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         GenerateValueSetType superGenMode = GenerateValueSetType.mapFromSettings(superSetting, rule.getFromMethod());
 
         String thisMethodName = getMethodNameGetAllowedValuesFor(rule.getFromMethod());
@@ -631,7 +628,7 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType() {
         if (isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
-            ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+            ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
             return (superSetting.isByValueSetType() || superSetting.isBoth())
                     && !getUnifyValueSetMethodsSetting().isByValueSetType()
                     && !isOverwritingValueSetEqualType();
@@ -676,11 +673,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public String getConstantNameValueSet() {
-        String name = getName();
-        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
-            name = StringUtil.camelCaseToUnderscore(name, false);
-        }
-        String constName = StringUtils.upperCase(name);
+        String constName = convertNameForConstant(getName());
         if (isValueSetRange()) {
             return "MAX_ALLOWED_RANGE_FOR_" + constName;
         } else if (isValueSetStringLength()) {
@@ -688,6 +681,18 @@ public class XPolicyAttribute extends XAttribute {
         } else {
             return "MAX_ALLOWED_VALUES_FOR_" + constName;
         }
+    }
+
+    public String getConstantNameDefaultValue() {
+        return "DEFAULT_VALUE_FOR_" + convertNameForConstant(getFieldName());
+    }
+
+    private String convertNameForConstant(String name) {
+        String constName = name;
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        return StringUtils.upperCase(constName);
     }
 
     /**
@@ -873,8 +878,7 @@ public class XPolicyAttribute extends XAttribute {
         // use getBaseGeneratorConfig here since getGeneratorConfig will use the attribute to find
         // the config, the attribute at this point is from a super type and therefore maybe
         // different than expected
-        return getUnifyValueSetMethodsSetting().isBoth()
-                && valueSetMethods.isGenerateByType();
+        return valueSetMethods.isGenerateByType() && getUnifyValueSetMethodsSetting().isBoth();
     }
 
     /**
@@ -903,7 +907,7 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         return thisSetting.isByValueSetType()
                 && (superSetting.isBoth() || superSetting.isByValueSetType());
     }
@@ -913,11 +917,11 @@ public class XPolicyAttribute extends XAttribute {
             return false;
         }
         ValueSetMethods thisSetting = getUnifyValueSetMethodsSetting();
-        ValueSetMethods superSetting = getUnifyValueSetSettingFormSuperType(getOverwrittenAttribute());
+        ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
         return thisSetting.isByValueSetType() && superSetting.isBoth();
     }
 
-    private ValueSetMethods getUnifyValueSetSettingFormSuperType(XPolicyAttribute attribute) {
+    private ValueSetMethods getUnifyValueSetSettingFormAttribute(XPolicyAttribute attribute) {
         return getContext()
                 .getGeneratorConfig(attribute.getAttribute().getIpsObject())
                 .getValueSetMethods();
@@ -925,6 +929,23 @@ public class XPolicyAttribute extends XAttribute {
 
     private ValueSetMethods getUnifyValueSetMethodsSetting() {
         return getContext().getBaseGeneratorConfig().getValueSetMethods();
+    }
+
+    public boolean isUnifyValueSetSettingBothFromSuperType() {
+        return isOverwrite() && getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute()).isBoth();
+    }
+
+    /**
+     * If this project uses the setting {@link ValueSetMethods#Unified} and the super project uses
+     * {@link ValueSetMethods#Both} and a overwritten attribute is not product configured in the
+     * super type, generate only the unified methods.
+     */
+    public boolean isGenerateGetterAllowedValues(GenerateValueSetTypeRule rule) {
+        if (getUnifyValueSetMethodsSetting().isUnified()) {
+            return !(isUnifyValueSetSettingBothFromSuperType() && !getOverwrittenAttribute().isProductRelevant()
+                    && rule.getFromMethod().isGenerateByType());
+        }
+        return true;
     }
 
     /**

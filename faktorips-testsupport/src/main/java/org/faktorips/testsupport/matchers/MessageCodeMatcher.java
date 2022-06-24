@@ -10,11 +10,10 @@
 
 package org.faktorips.testsupport.matchers;
 
-import java.util.Objects;
-
 import org.faktorips.runtime.Message;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Description;
-import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.Matcher;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -22,18 +21,16 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
  * Matches a {@link Message} if it's {@link Message#getCode() message code} is the given
  * {@code messageCode}.
  */
-public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
+public class MessageCodeMatcher extends MessageMatcher {
 
-    @CheckForNull
-    private final String messageCode;
+    private final Matcher<String> messageCodeMatcher;
     private boolean expectMessage;
 
     /**
      * @param messageCode the expected message code
      */
     public MessageCodeMatcher(@CheckForNull String messageCode) {
-        this.messageCode = messageCode;
-        this.expectMessage = true;
+        this(messageCode, true);
     }
 
     /**
@@ -43,22 +40,46 @@ public class MessageCodeMatcher extends TypeSafeMatcher<Message> {
      *            (negates result).
      */
     public MessageCodeMatcher(@CheckForNull String messageCode, boolean expectMessage) {
-        this.messageCode = messageCode;
+        this(CoreMatchers.equalTo(messageCode), expectMessage);
+    }
+
+    /**
+     * @param messageCodeMatcher a {@link Matcher} for the message code
+     */
+    public MessageCodeMatcher(Matcher<String> messageCodeMatcher) {
+        this(messageCodeMatcher, true);
+    }
+
+    /**
+     * @param messageCodeMatcher a {@link Matcher} for the message code
+     * @param expectMessage whether a message is expected. <code>true</code> if a message is
+     *            expected, <code>false</code> if no message matched by the given message is
+     *            expected (negates result).
+     */
+    public MessageCodeMatcher(Matcher<String> messageCodeMatcher, boolean expectMessage) {
+        this.messageCodeMatcher = messageCodeMatcher;
         this.expectMessage = expectMessage;
     }
 
     @Override
-    public void describeTo(Description description) {
+    protected void describeMessageProperty(Description description) {
         if (expectMessage) {
-            description.appendText("a message with message code " + messageCode);
+            description.appendText("has a message code ");
         } else {
-            description.appendText("a message without message code: " + messageCode);
+            description.appendText("does not have a message code ");
         }
+        messageCodeMatcher.describeTo(description);
     }
 
     @Override
-    protected boolean matchesSafely(Message m) {
-        return Objects.equals(messageCode, m.getCode()) == expectMessage;
+    protected void describeMismatchedProperty(Message message, Description mismatchDescription) {
+        mismatchDescription.appendText(" has the message code ");
+        mismatchDescription.appendText(message.getCode());
+    }
+
+    @Override
+    protected boolean matchesSafely(Message message) {
+        return messageCodeMatcher.matches(message.getCode()) == expectMessage;
     }
 
 }

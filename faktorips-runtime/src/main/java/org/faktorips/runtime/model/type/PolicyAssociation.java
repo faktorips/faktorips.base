@@ -354,4 +354,15 @@ public class PolicyAssociation extends Association {
             addTargetObjects(source, new IModelObject[] { null });
         }
     }
+
+    /**
+     * Returns whether this association is "qualified". A "qualified" {@link PolicyAssociation}'s
+     * cardinalities are not defined for all targets but per target of the matching
+     * {@link ProductAssociation}.
+     *
+     * @since 22.6
+     */
+    public boolean isQualified() {
+        return getAnnotation().qualified();
+    }
 }

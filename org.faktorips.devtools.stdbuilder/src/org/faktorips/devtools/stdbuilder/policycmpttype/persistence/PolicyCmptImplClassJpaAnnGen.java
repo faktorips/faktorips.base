@@ -10,9 +10,15 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
+import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceAnnotation;
+import org.faktorips.devtools.model.builder.IPersistenceProvider.PersistenceEnum;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo;
@@ -32,32 +38,13 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
  * which is part of persistent {@link IPolicyCmptType}s.
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS
- * 
- * @author Roman Grutza
  */
 public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator {
 
-    private static final String ANNOTATION_ENTITY = "@Entity";
-    private static final String ANNOTATION_MAPPED_SUPERCLASS = "@MappedSuperclass";
-    private static final String ANNOTATION_TABLE = "@Table";
-    private static final String ANNOTATION_DISCRIMINATOR_COLUMN = "@DiscriminatorColumn";
-    private static final String ANNOTATION_DISCRIMINATOR_VALUE = "@DiscriminatorValue";
-    private static final String ANNOTATION_INHERITANCE = "@Inheritance";
-
-    private static final String IMPORT_ENTITY = "javax.persistence.Entity";
-    private static final String IMPORT_MAPPED_SUPERCLASS = "javax.persistence.MappedSuperclass";
-    private static final String IMPORT_TABLE = "javax.persistence.Table";
-    private static final String IMPORT_DISCRIMINATOR_COLUMN = "javax.persistence.DiscriminatorColumn";
-    private static final String IMPORT_DISCRIMINATOR_TYPE = "javax.persistence.DiscriminatorType";
-    private static final String IMPORT_DISCRIMINATOR_VALUE = "javax.persistence.DiscriminatorValue";
-    private static final String IMPORT_INHERITANCE = "javax.persistence.Inheritance";
-    private static final String IMPORT_INHERITANCE_TYPE = "javax.persistence.InheritanceType";
-
-    private static final String ATTRIBUTE_INHERITANCE_TYPE = "InheritanceType";
-
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
-        JavaCodeFragment fragment = new JavaCodeFragment();
+        JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
+        IPersistenceProvider persistenceProvider = getPersistenceProvider(generatorModelNode.getIpsProject());
         if (generatorModelNode instanceof XPolicyCmptClass) {
             XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
 
@@ -66,22 +53,23 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
             IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();
 
             if (persistenceTypeInfo.getPersistentType() == PersistentType.ENTITY) {
-                fragment.addImport(IMPORT_ENTITY);
-                fragment.appendln(ANNOTATION_ENTITY);
-                addAnnotationsForInheritanceStrategy(fragment, persistenceTypeInfo);
-                addAnnotationsForDescriminator(fragment, persistenceTypeInfo);
+                fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Entity));
+
+                addAnnotationsForInheritanceStrategy(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
+                addAnnotationsForDiscriminator(persistenceProvider, fragmentBuilder, persistenceTypeInfo);
             } else if (persistenceTypeInfo.getPersistentType() == PersistentType.MAPPED_SUPERCLASS) {
-                fragment.addImport(IMPORT_MAPPED_SUPERCLASS);
-                fragment.appendln(ANNOTATION_MAPPED_SUPERCLASS);
+                fragmentBuilder
+                        .annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.MappedSuperclass));
             } else {
                 throw new RuntimeException("Unknown persistent type: " + persistenceTypeInfo.getPersistentType());
             }
 
         }
-        return fragment;
+        return fragmentBuilder.getFragment();
     }
 
-    private void addAnnotationsForInheritanceStrategy(JavaCodeFragment fragment,
+    private void addAnnotationsForInheritanceStrategy(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
             IPersistentTypeInfo persistenceTypeInfo) {
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
         String tableName = persistenceTypeInfo.getTableName();
@@ -93,8 +81,8 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         }
 
         if (StringUtils.isNotEmpty(tableName) && !persistenceTypeInfo.isUseTableDefinedInSupertype()) {
-            fragment.addImport(IMPORT_TABLE);
-            fragment.appendln(ANNOTATION_TABLE + "(name = \"" + tableName + "\")");
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Table), "name",
+                    tableName);
         }
 
         // the inheritance strategy must only be add to the root entity class
@@ -106,17 +94,21 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         }
 
         if (inhStrategy == InheritanceStrategy.JOINED_SUBCLASS) {
-            fragment.append(ANNOTATION_INHERITANCE).append("(strategy = ");
-            fragment.append(ATTRIBUTE_INHERITANCE_TYPE).append(".JOINED)");
-            fragment.addImport(IMPORT_INHERITANCE);
-            fragment.addImport(IMPORT_INHERITANCE_TYPE);
+            JavaCodeFragment param = new JavaCodeFragment();
+            param.append("strategy = ");
+            param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
+            param.append(".JOINED");
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
+                    param);
         } else if (inhStrategy == InheritanceStrategy.SINGLE_TABLE) {
             // note that the single table inheritance strategy is the default
             // strategy, nevertheless we add this annotation
-            fragment.append(ANNOTATION_INHERITANCE).append("(strategy = ");
-            fragment.append(ATTRIBUTE_INHERITANCE_TYPE).append(".SINGLE_TABLE)");
-            fragment.addImport(IMPORT_INHERITANCE);
-            fragment.addImport(IMPORT_INHERITANCE_TYPE);
+            JavaCodeFragment param = new JavaCodeFragment();
+            param.append("strategy = ");
+            param.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.InheritanceType));
+            param.append(".SINGLE_TABLE");
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
+                    param);
         }
     }
 
@@ -127,11 +119,15 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         return searchTableNameInSuperTypes.tableName;
     }
 
-    private void addAnnotationsForDescriminator(JavaCodeFragment fragment, IPersistentTypeInfo persistenceTypeInfo) {
+    private void addAnnotationsForDiscriminator(IPersistenceProvider persistenceProvider,
+            JavaCodeFragmentBuilder fragmentBuilder,
+            IPersistentTypeInfo persistenceTypeInfo) {
         String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
         if (!StringUtils.isEmpty(discriminatorValue)) {
-            fragment.appendln(ANNOTATION_DISCRIMINATOR_VALUE + "(\"" + discriminatorValue + "\")");
-            fragment.addImport(IMPORT_DISCRIMINATOR_VALUE);
+            JavaCodeFragment param = new JavaCodeFragment();
+            param.appendQuoted(discriminatorValue);
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.DiscriminatorValue),
+                    param);
         }
 
         if (!persistenceTypeInfo.isDefinesDiscriminatorColumn()) {
@@ -140,12 +136,20 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
 
         DiscriminatorDatatype discriminatorDatatype = persistenceTypeInfo.getDiscriminatorDatatype();
         String discriminatorColumnName = persistenceTypeInfo.getDiscriminatorColumnName();
+        Integer discriminatorColumnLength = persistenceTypeInfo.getDiscriminatorColumnLength();
 
-        fragment.appendln(ANNOTATION_DISCRIMINATOR_COLUMN + "(name = \"" + discriminatorColumnName
-                + "\", discriminatorType = DiscriminatorType." + discriminatorDatatype + ")");
-
-        fragment.addImport(IMPORT_DISCRIMINATOR_COLUMN);
-        fragment.addImport(IMPORT_DISCRIMINATOR_TYPE);
+        JavaCodeFragment params = new JavaCodeFragment("name = ");
+        params.appendQuoted(discriminatorColumnName);
+        params.append(", discriminatorType = ");
+        params.appendClassName(persistenceProvider.getQualifiedName(PersistenceEnum.DiscriminatorType));
+        params.append('.');
+        params.append(Objects.toString(discriminatorDatatype));
+        if (discriminatorColumnLength != null) {
+            params.append(", length = ");
+            params.append(discriminatorColumnLength);
+        }
+        fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.DiscriminatorColumn),
+                params);
     }
 
     @Override

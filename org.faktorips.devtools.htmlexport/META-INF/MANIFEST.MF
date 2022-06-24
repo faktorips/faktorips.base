@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.swt,
  org.eclipse.jface,
@@ -48,5 +48,5 @@ Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.faktorips.devtools.model.testcasetype,
  org.faktorips.devtools.model.type,
  org.faktorips.devtools.model.valueset,
- org.faktorips.runtime;version="22.6.0",
- org.faktorips.values;version="22.6.0"
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.values;version="22.12.0"

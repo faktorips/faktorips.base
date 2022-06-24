@@ -15,11 +15,12 @@ class ProductAssociationTmpl {
 
     def package static privateConstants(XProductAssociation it) '''
         «IF !derivedUnion && !constrain»
-            /** «localizedJDoc("CONSTANT_XML_TAG_ASSOCIATION", fieldName)»
+            /**«localizedJDoc("CONSTANT_XML_TAG_ASSOCIATION", fieldName)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
+            «getAnnotations(DEPRECATION)»
             private static final String «field(constantNameXmlTag)» = "«name»";
         «ENDIF»
     '''
@@ -27,11 +28,12 @@ class ProductAssociationTmpl {
     def package static field(XProductAssociation it) '''
         «IF !derivedUnion && !constrain»
             /**
-             * «localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
+             *«localizedJDoc("FIELD_ASSOCIATION", getName(oneToMany).toFirstUpper())»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
+            «getAnnotations(DEPRECATION)»
             «IF oneToMany»
                 private «Map("String", IProductComponentLink(targetInterfaceName))» «field(fieldName)»  = new «LinkedHashMap»(0);
             «ELSE»
@@ -66,13 +68,13 @@ class ProductAssociationTmpl {
 
     def private static getterProductCmpt(XProductAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface(), getJavadocKey("METHOD_GET"), getName(oneToMany), descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
          «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface)»
-         «overrideAnnotationForConstainedAssociation»
+         «overrideAnnotationForConstrainedAssociation»
            «IF oneToMany»
                public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
                «IF genInterface»;«ELSE»
@@ -106,12 +108,13 @@ class ProductAssociationTmpl {
 
     def private static getterProductCmptGen(XProductAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_GEN"), getName(oneToMany), descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-         «overrideAnnotationForConstainedAssociation»
+        «getAnnotations(DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation»
            «IF oneToMany»
                public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar, "effectiveDate")»
                «IF genInterface»;«ELSE»
@@ -148,12 +151,13 @@ class ProductAssociationTmpl {
     def private static getterProductCmptPerIndex(XProductAssociation it) '''
         «IF oneToMany»
             /**
-             * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_AT_INDEX", name, descriptionForJDoc)»
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_AT_INDEX", name, descriptionForJDoc)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
-             «overrideAnnotationForConstainedAssociation»
+            «getAnnotations(DEPRECATION)»
+            «overrideAnnotationForConstrainedAssociation»
             public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
             «IF genInterface»;«ELSE»
                         {
@@ -169,7 +173,7 @@ class ProductAssociationTmpl {
 
     def private static getterLinksFor(XProductAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET_CMPT_LINK"), getName(oneToMany), descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -195,12 +199,13 @@ class ProductAssociationTmpl {
 
     def private static getterSingleLinkFor(XProductAssociation it) '''
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_LINK_AT_INDEX", name, descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CMPT_LINK_AT_INDEX", name, descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-         «overrideAnnotationForPublishedMethodImplementation»
+        «getAnnotations(DEPRECATION)»
+        «overrideAnnotationForPublishedMethodImplementation»
         public «IProductComponentLink(targetInterfaceName)» «method(methodNameGetLinkFor, targetInterfaceName, "productComponent")»
         «IF genInterface»;«ELSE»
                     {
@@ -216,7 +221,7 @@ class ProductAssociationTmpl {
     def private static addMethod(XProductAssociation it) '''
         «IF oneToMany»
             /**
-             * «localizedJDoc("METHOD_ADD_CMPT")»
+             *«localizedJDoc("METHOD_ADD_CMPT")»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -239,9 +244,9 @@ class ProductAssociationTmpl {
         «IF oneToMany»
             /**
             «IF matchingAssociation!==null»
-             * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
+             *«localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY")»
             «ELSE»
-             * «localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION")»
+             *«localizedJDoc("METHOD_ADD_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION")»
             «ENDIF»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
@@ -264,7 +269,7 @@ class ProductAssociationTmpl {
     def private static removeMethod(XProductAssociation it) '''
         «IF oneToMany»
             /**
-             * «localizedJDoc("METHOD_REMOVE_CMPT")»
+             *«localizedJDoc("METHOD_REMOVE_CMPT")»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -286,7 +291,7 @@ class ProductAssociationTmpl {
     def private static setterMethodForToOne(XProductAssociation it) '''
         «IF !oneToMany»
             /**
-             * «localizedJDoc("METHOD_SET_CMPT", name)»
+             *«localizedJDoc("METHOD_SET_CMPT", name)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -309,9 +314,9 @@ class ProductAssociationTmpl {
         «IF !oneToMany»
             /**
             «IF matchingAssociation!==null»
-             * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY", name)»
+             *«localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY", name)»
             «ELSE»
-             * «localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION", name)»
+             *«localizedJDoc("METHOD_SET_CMPT_WITH_CARDINALITY_WITHOUT_MATCHING_ASSOCIATION", name)»
             «ENDIF»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
@@ -334,12 +339,13 @@ class ProductAssociationTmpl {
     def private static getCardinalityFor(XProductAssociation it) '''
         «IF hasMatchingAssociation»
             /**
-             * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CARDINALITY_FOR", nameOfMatchingAssociation)»
+             *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_CARDINALITY_FOR", nameOfMatchingAssociation)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
-             «overrideAnnotationForPublishedMethodImplementation»
+            «getAnnotations(DEPRECATION)»
+            «overrideAnnotationForPublishedMethodImplementation»
             public «CardinalityRange» «matchingMethod(methodNameGetCardinalityFor, targetInterfaceName, "productCmpt")»
             «IF genInterface»;«ELSE»
                         {
@@ -365,11 +371,12 @@ class ProductAssociationTmpl {
 
     def private static getLinkMethod(XProductClass it) '''
         /**
-         * «inheritDoc»
+         *«inheritDoc»
          *
          * @generated
          */
         @Override
+        «getAnnotations(DEPRECATION)»
         public «IProductComponentLink("? extends " + IProductComponent)» «getLink("String linkName", IProductComponent + " target")» {
             «FOR it : associations»
                 «IF !derivedUnion && !constrain»
@@ -388,11 +395,12 @@ class ProductAssociationTmpl {
 
     def private static getLinksMethod(XProductClass it) '''
         /**
-         * «inheritDoc»
+         *«inheritDoc»
          *
          * @generated
          */
         @Override
+        «getAnnotations(DEPRECATION)»
         public «List_(IProductComponentLink("? extends " + IProductComponent))» «getLinks()» {
             «List_(IProductComponentLink("? extends " + IProductComponent))» list =
             «IF hasSupertype»
@@ -424,8 +432,8 @@ class ProductAssociationTmpl {
     def package static doInitFromXmlMethod(XProductAssociation it) '''
         «IF !derivedUnion && !constrain»
             /**
-              * @generated
-            */
+             * @generated
+             */
             private void «method(methodNameDoInitFromXml, Map("String", List_(Element)), "elementsMap")» {
                 «List_(Element)» associationElements = elementsMap.get(«constantNameXmlTag»);
                 if (associationElements != null) {

@@ -376,7 +376,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
                 return;
             }
             if (ipsSrcFile.exists()) {
-                // getPropertyValue simply returns null if the property does not exists
+                // getPropertyValue simply returns null if the property does not exist
                 String superType = ipsSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
                 if (superType != null) {
                     if (hierarchyTreeViewer.isPartOfHierarchy(superType)) {

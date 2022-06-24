@@ -84,11 +84,13 @@
                <value value="None" />
                <value value="EclipseLink 1.1" />
                <value value="EclipseLink 2.5" />
+               <value value="EclipseLink 3.0" />
                <value value="Generic JPA 2.0" />
                <value value="Generic JPA 2.1" />
                <value value="Jakarta Persistence 2.2" />
-            </discreteValues>               
-         </builderSetPropertyDef>         
+               <value value="Jakarta Persistence 3.0" />
+            </discreteValues>
+         </builderSetPropertyDef>
          <builderSetPropertyDef
             defaultValue="Both"
             description="%formulaCompilingDescription"

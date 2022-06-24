@@ -10,18 +10,9 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.ui.dialogs.PropertyPage;
-import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * Property page for configuring IPS builder sets. Changes made in this page are persisted in an IPS
@@ -29,25 +20,14 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * 
  * @author Roman Grutza
  */
-public class BuilderSetPropertyPage extends PropertyPage {
+public class BuilderSetPropertyPage extends IpsProjectPropertyPage {
 
-    private IAdaptable element;
     private BuilderSetContainer builderSetContainer;
 
     @Override
     protected Control createContents(Composite parent) {
         builderSetContainer = new BuilderSetContainer(getIpsProject());
         return builderSetContainer.createContents(parent);
-    }
-
-    @Override
-    public IAdaptable getElement() {
-        return element;
-    }
-
-    @Override
-    public void setElement(IAdaptable element) {
-        this.element = element;
     }
 
     @Override
@@ -68,9 +48,8 @@ public class BuilderSetPropertyPage extends PropertyPage {
                     } else if (res == 1) {
                         // discard
                         builderSetContainer.init(getIpsProject());
-                    } else {
-                        // apply later
                     }
+                    // else apply later
                 }
             } else {
                 if (builderSetContainer.hasChangesInDialog() && builderSetContainer.hasChangesInIpsprojectFile()) {
@@ -97,23 +76,6 @@ public class BuilderSetPropertyPage extends PropertyPage {
         if (builderSetContainer != null) {
             builderSetContainer.performDefaults();
         }
-    }
-
-    /**
-     * Returns the IPS project instance the property page was invoked for
-     */
-    private IIpsProject getIpsProject() {
-        IIpsProject ipsProject = null;
-        if (element instanceof IProject) {
-            ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(element).as(AProject.class));
-        } else {
-            IJavaElement javaElement = element.getAdapter(IJavaElement.class);
-            if (javaElement instanceof IJavaProject) {
-                IProject project = ((IJavaProject)javaElement).getProject();
-                ipsProject = IIpsModel.get().getIpsProject(Wrappers.wrap(project).as(AProject.class));
-            }
-        }
-        return ipsProject;
     }
 
 }

@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>base</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -17,7 +17,7 @@
     </properties>
 
     <artifactId>org.faktorips.aggregator</artifactId>
-    <version>22.6.0-SNAPSHOT</version>
+    <version>22.12.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- These are all modules that are included in the Faktor-IPS build -->

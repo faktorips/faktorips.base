@@ -121,6 +121,12 @@ public final class DescriptionEditComposite extends Composite {
         }
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        textArea.setEnabled(enabled);
+        languageCombo.setEnabled(enabled);
+    }
+
     /**
      * Sets the element to be described.
      * 

@@ -31,7 +31,7 @@ public class ProductAttribute extends Attribute {
 
     public ProductAttribute(Type type, boolean changingOverTime, Method getter, Method setter) {
         super(type, getter.getAnnotation(IpsAttribute.class), getter.getAnnotation(IpsExtensionProperties.class),
-                getInnermostGenericClass(getter.getGenericReturnType()), changingOverTime);
+                getInnermostGenericClass(getter.getGenericReturnType()), changingOverTime, Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
     }

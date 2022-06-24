@@ -85,6 +85,9 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
         if (association.isConstrain()) {
             overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE;
         }
+        if (association.isDeprecated()) {
+            overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
+        }
         return overlays;
     }
 

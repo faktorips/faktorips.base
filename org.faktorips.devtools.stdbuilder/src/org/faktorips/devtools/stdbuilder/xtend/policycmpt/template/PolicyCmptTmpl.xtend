@@ -29,9 +29,9 @@ def static String body(XPolicyCmptClass it) '''
     
     /**
      «IF generatePublishedInterfaces»
-         *    «localizedJDoc("CLASS", getSimpleName(BuilderAspect.INTERFACE))»
+         *«localizedJDoc("CLASS", getSimpleName(BuilderAspect.INTERFACE))»
      «ELSE»
-         * «localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
+         *«localizedJDocOrDescription("CLASS_NO_INTERFACE", name, description)»
      «ENDIF»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      *
@@ -50,6 +50,7 @@ def static String body(XPolicyCmptClass it) '''
             «IF !published || !generatePublishedInterfaces»
                 «PolicyCmptAttributeTmpl.constantForPropertyName(it)»
                 «PolicyCmptAttributeTmpl.constantForValueSet(it)»
+                «PolicyCmptAttributeTmpl.constantForDefaultValue(it)»
             «ENDIF»
         «ENDFOR»
 
@@ -83,7 +84,7 @@ def static String body(XPolicyCmptClass it) '''
 
         «IF firstConfigurableInHierarchy»
             /**
-             * «localizedJDoc("PRODUCTCONFIGURATION_FIELD")»
+             *«localizedJDoc("PRODUCTCONFIGURATION_FIELD")»
              *
              * @generated
              */
@@ -139,7 +140,7 @@ def static String body(XPolicyCmptClass it) '''
         «FOR table : productTables» «getterForTables(it, table)» «ENDFOR»
 
         /**
-     * «localizedJDoc("METHOD_INITIALIZE")»
+     *«localizedJDoc("METHOD_INITIALIZE")»
      *
      * @restrainedmodifiable
      */
@@ -202,11 +203,12 @@ def private static initializeAttributes(String methodNameGetProductConfiguration
 
 def private static constructors(XPolicyCmptClass it) '''
     /**
-     * «localizedJDoc("CONSTRUCTOR", implClassName)»
+     *«localizedJDoc("CONSTRUCTOR", implClassName)»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      *
      * @generated
      */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     public «method(implClassName)» {
         super();
         «IF firstConfigurableInHierarchy»
@@ -216,11 +218,12 @@ def private static constructors(XPolicyCmptClass it) '''
     }
     «IF configured»
         /**
-         * «localizedJDoc("CONSTRUCTOR", implClassName)»
+         *«localizedJDoc("CONSTRUCTOR", implClassName)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public «method(implClassName, productCmptClassName, "productCmpt")» {
             «IF firstConfigurableInHierarchy»
                 super();
@@ -236,12 +239,13 @@ def private static constructors(XPolicyCmptClass it) '''
 def private static getterForProductAttributes(XPolicyCmptClass currentClass, XProductAttribute it) '''
     «IF generateInterfaceGetter»
          /**
-         * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, descriptionForJDoc)»
+         *«localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name, descriptionForJDoc)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-         «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
         «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
             «IF changingOverTime»
                 return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
@@ -254,11 +258,12 @@ def private static getterForProductAttributes(XPolicyCmptClass currentClass, XPr
 
 def private static getterForTables(XPolicyCmptClass policyClass, XTableUsage it) '''
     /**
-     * «localizedJDoc("METHOD_GET_TABLE_IN_POLICY", name)»
+     *«localizedJDoc("METHOD_GET_TABLE_IN_POLICY", name)»
     «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
      *
      * @generated
      */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     public «tableClassName» «method(methodNameGetter)» {
         «IF changingOverTime»
             «policyClass.productCmptGenerationNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptGenerationNode.implClassName)»«policyClass.methodNameGetProductCmptGeneration»();
@@ -282,14 +287,14 @@ def private static initializationForOverrideAttributes(XPolicyCmptClass it) '''
 
 def package static getAndSetProductComponent(XProductCmptClass it) '''
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
+     *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
      *
      * @generated
      */
-     «overrideAnnotationForPublishedMethodImplementation()»
-     public «interfaceName» «method(methodNameGetProductCmpt)»
+    «overrideAnnotationForPublishedMethodImplementation()»
+    public «interfaceName» «method(methodNameGetProductCmpt)»
      «IF genInterface()»
-        ;
+      ;
      «ELSE»
          {
              return («interfaceName») «getProductComponent()»;
@@ -297,7 +302,7 @@ def package static getAndSetProductComponent(XProductCmptClass it) '''
      «ENDIF»
 
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
+     *«inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT",  name, nameForVariable, "initPropertiesWithConfiguratedDefaults")»
      *
      * @generated
      */
@@ -324,7 +329,7 @@ def package static getAndSetProductComponent(XProductCmptClass it) '''
           }
          
              /**
-              * «localizedJDoc("METHOD_SET_PRODUCT_COMPONENT")»
+              *«localizedJDoc("METHOD_SET_PRODUCT_COMPONENT")»
               *
               * @generated
               */
@@ -337,7 +342,7 @@ def package static getAndSetProductComponent(XProductCmptClass it) '''
 
 def package static getAndSetProductComponentGeneration(XProductCmptGenerationClass it) '''
     /**
-     * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, policyCmptClass.name)»
+     *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, policyCmptClass.name)»
      *
      * @generated
      */
@@ -361,7 +366,7 @@ def package static getAndSetProductComponentGeneration(XProductCmptGenerationCla
          }
 
              /**
-             * «localizedJDoc("METHOD_SET_PRODUCT_COMPONENT_GENERATION")»
+             *«localizedJDoc("METHOD_SET_PRODUCT_COMPONENT_GENERATION")»
              *
              * @generated
              */
@@ -375,7 +380,7 @@ def package static getAndSetProductComponentGeneration(XProductCmptGenerationCla
 def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '''
 
     /**
-     * «inheritDocOrJavaDocIf(!hasConfiguredSupertype(), "METHOD_EFFECTIVE_FROM_HAS_CHANGED")»
+     *«inheritDocOrJavaDocIf(!hasConfiguredSupertype(), "METHOD_EFFECTIVE_FROM_HAS_CHANGED")»
      *
      * @generated
      */
@@ -393,7 +398,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
     
     «IF firstConfigurableInHierarchy»
         /**
-         * «localizedJDoc("METHOD_RESET_PRODUCT_CMPT")»
+         *«localizedJDoc("METHOD_RESET_PRODUCT_CMPT")»
          *
          * @generated
          */
@@ -405,7 +410,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
     «IF isGenerateGetEffectiveFromAsCalendar»
         «IF firstDependantConfiguredTypeInHierarchy»
             /**
-             * «inheritDoc»
+             *«inheritDoc»
              *
              * @generated
              */
@@ -419,7 +424,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
             }
         «ELSEIF aggregateRoot»
             /**
-             * «inheritDoc»
+             *«inheritDoc»
              *
              * @generated
              */
@@ -441,7 +446,7 @@ def private static generalMethodsForConfiguredPolicyCmpts(XPolicyCmptClass it) '
 def private static generateCodeForDependentObject(XPolicyCmptClass it) '''
     «IF generateGetParentModelObject»
         /**
-         * «inheritDoc»
+         *«inheritDoc»
          *
          * @generated
          */
@@ -468,7 +473,7 @@ def private static generalMethods(XPolicyCmptClass it) '''
 
     «IF firstConfigurableInHierarchy»
         /**
-        * «inheritDoc»
+        *«inheritDoc»
         *
         * @generated
         */
@@ -490,7 +495,7 @@ def private static generalMethods(XPolicyCmptClass it) '''
 
     «IF generateInitPropertiesFromXML»
         /**
-         * «inheritDoc»
+         *«inheritDoc»
          *
          * @generated
          */
@@ -503,7 +508,7 @@ def private static generalMethods(XPolicyCmptClass it) '''
     «ENDIF»
 
     /**
-     * «inheritDoc»
+     *«inheritDoc»
      *
      * @generated
      */
@@ -521,7 +526,7 @@ def private static generalMethods(XPolicyCmptClass it) '''
 
     «IF generateMethodCreateUnresolvedReference»
         /**
-         * «inheritDoc»
+         *«inheritDoc»
          *
          * @generated
          */
@@ -568,7 +573,7 @@ def private static validateMethods(XPolicyCmptClass it) '''
 
     «IF type.generateValidatorClass && !hasSupertype()»
         /**
-         * «localizedJDoc("GET_VALIDATOR", name, validatorClassName)»
+         *«localizedJDoc("GET_VALIDATOR", name, validatorClassName)»
          *
          * @generated
          */
@@ -583,7 +588,7 @@ def private static validateMethods(XPolicyCmptClass it) '''
 
     «IF type.generateValidatorClass»
         /**
-         * «localizedJDoc("CREATE_VALIDATOR", name, validatorClassName)»
+         *«localizedJDoc("CREATE_VALIDATOR", name, validatorClassName)»
          *
          * @restrainedmodifiable
          */
@@ -596,7 +601,7 @@ def private static validateMethods(XPolicyCmptClass it) '''
     «ENDIF»
 
     /**
-     * «localizedJDoc("VALIDATE_SELF", name)»
+     *«localizedJDoc("VALIDATE_SELF", name)»
      *
      * @generated
      */
@@ -619,7 +624,7 @@ def private static validateMethods(XPolicyCmptClass it) '''
     }
 
     /**
-     * «localizedJDoc("VALIDATE_DEPENDANTS", name)»
+     *«localizedJDoc("VALIDATE_DEPENDANTS", name)»
      *
      * @generated
      */

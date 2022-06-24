@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools
 Bundle-SymbolicName: org.faktorips.devtools.core; singleton:=true
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Activator: org.faktorips.devtools.core.IpsPlugin
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
@@ -25,7 +25,11 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.internal.model.adapter;x-friends:="org.faktorips.productvariant.core",
  org.faktorips.devtools.core.internal.model.pctype.validationrule;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.internal.model.testcase;x-friends:="org.faktorips.devtools.core.ui",
- org.faktorips.devtools.core.internal.productrelease;x-friends:="org.faktorips.devtools.core.ui",
+ org.faktorips.devtools.core.internal.productrelease;
+  x-friends:="org.faktorips.devtools.core.ui,
+   org.faktorips.productrelease.test,
+   org.faktorips.productrelease.cvs,
+   org.faktorips.productrelease.svn",
  org.faktorips.devtools.core.internal.refactor;x-friends:="org.faktorips.devtools.core.ui",
  org.faktorips.devtools.core.model,
  org.faktorips.devtools.core.model.ipsobject.refactor,
@@ -39,9 +43,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.opencsv;version="3.3.0",
  com.opencsv.bean;version="3.3.0",
  edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
- org.apache.commons.collections;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]",
- org.faktorips.annotation;version="22.6.0",
+ org.faktorips.annotation;version="22.12.0",
  org.faktorips.datatype,
  org.faktorips.datatype.classtypes,
  org.faktorips.devtools.abstraction,
@@ -78,8 +81,8 @@ Import-Package: com.opencsv;version="3.3.0",
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.versionmanager,
  org.faktorips.devtools.model.versionmanager.options,
- org.faktorips.runtime;version="22.6.0",
- org.faktorips.runtime.internal;version="22.6.0",
- org.faktorips.runtime.test;version="22.6.0",
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.faktorips.runtime.test;version="22.12.0",
  org.faktorips.util,
- org.faktorips.values;version="22.6.0"
+ org.faktorips.values;version="22.12.0"

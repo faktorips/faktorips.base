@@ -582,16 +582,19 @@ public class MessageTest extends XmlAbstractTestCase {
 
         Message message = Message.error("messageText") //
                 .code("TestCode") //
-                .invalidObjectWithProperties(new Object())
+                .invalidObjectWithProperties("O1")
                 .replacements(new MsgReplacementParameter("ReplaceName", "ReplaceValue")) //
                 .markers(markers) //
                 .create();
 
-        List<ObjectProperty> invalidObjectProperties = Arrays.asList(new ObjectProperty(new Object()),
-                new ObjectProperty(new Object()));
+        List<ObjectProperty> invalidObjectProperties = Arrays.asList(new ObjectProperty("O2"),
+                new ObjectProperty("O3"));
         Message messageCreated = new Builder(message).invalidObjects(invalidObjectProperties).create();
 
-        assertEquals(2, messageCreated.getNumOfInvalidObjectProperties());
+        assertEquals(3, messageCreated.getNumOfInvalidObjectProperties());
+        assertEquals("O1", messageCreated.getInvalidObjectProperties().get(0).getObject());
+        assertEquals("O2", messageCreated.getInvalidObjectProperties().get(1).getObject());
+        assertEquals("O3", messageCreated.getInvalidObjectProperties().get(2).getObject());
         assertEquals(message.getText(), messageCreated.getText());
         assertEquals(message.getCode(), messageCreated.getCode());
         assertEquals(message.getSeverity(), messageCreated.getSeverity());

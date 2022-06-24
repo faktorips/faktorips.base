@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.faktorips</groupId>
     <artifactId>base</artifactId>
-    <version>22.6.0-SNAPSHOT</version>
+    <version>22.12.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Platform for Developing Insurance Applications</name>
 

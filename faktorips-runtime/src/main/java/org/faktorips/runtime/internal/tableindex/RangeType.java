@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * Defines how the bounds of ranges in a {@link RangeStructure} are handled. Ranges in a
  * {@link RangeStructure} are defined by only one value. The {@link RangeType} specifies whether
@@ -46,6 +48,9 @@ public enum RangeType {
 
         @Override
         public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
+            if (ObjectUtil.isNull(key)) {
+                return Optional.empty();
+            }
             Entry<K, V> floorEntry = tree.floorEntry(key);
             if (floorEntry == null) {
                 return Optional.empty();
@@ -65,6 +70,9 @@ public enum RangeType {
 
         @Override
         public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
+            if (ObjectUtil.isNull(key)) {
+                return Optional.empty();
+            }
             Entry<K, V> floorEntry = tree.floorEntry(key);
             return getOptionalValue(floorEntry);
         }
@@ -88,6 +96,9 @@ public enum RangeType {
 
         @Override
         public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
+            if (ObjectUtil.isNull(key)) {
+                return Optional.empty();
+            }
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             if (ceilingEntry == null) {
                 return Optional.empty();
@@ -107,6 +118,9 @@ public enum RangeType {
 
         @Override
         public <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key) {
+            if (ObjectUtil.isNull(key)) {
+                return Optional.empty();
+            }
             Entry<K, V> ceilingEntry = tree.ceilingEntry(key);
             return getOptionalValue(ceilingEntry);
         }

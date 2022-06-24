@@ -35,6 +35,8 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import javax.xml.transform.dom.DOMSource;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
@@ -996,6 +998,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     private IpsProjectProperties readProjectProperties(IIpsProject ipsProject) {
         AFile file = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = new IpsProjectProperties(ipsProject);
+        XsdValidationHandler xsdValidationHandler = new XsdValidationHandler();
         properties.setCreatedFromParsableFileContents(false);
         if (!file.exists()) {
             return properties;
@@ -1011,6 +1014,13 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         try {
             doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
+            if (properties.isValidateIpsSchema()) {
+                XmlUtil.getXsdValidator(IpsProjectType.IPS_PROJECT, xsdValidationHandler).validate(new DOMSource(doc));
+                if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
+                    IpsLog.log(new IpsStatus("Schema validation failed for ips project properties file " + file)); //$NON-NLS-1$
+                }
+            }
+
         } catch (SAXException e) {
             IpsLog.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
             return properties;
@@ -1028,7 +1038,10 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         try {
             properties = IpsProjectProperties.createFromXml(ipsProject, doc.getDocumentElement());
-            properties.setCreatedFromParsableFileContents(true);
+            properties.setXsdValidationHandler(xsdValidationHandler);
+            if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
+                properties.setCreatedFromParsableFileContents(false);
+            }
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error creating properties from xml, file:  " //$NON-NLS-1$
@@ -1254,7 +1267,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             if (file.exists()) {
                 // new content
                 content = readContentFromFile(file, loadCompleteContent);
-                ipsObjectsMap.put(file, content);
+                cache(file, content);
                 return content;
             } else {
                 return null;
@@ -1279,6 +1292,14 @@ public class IpsModel extends IpsElement implements IIpsModel {
             content.initRootPropertiesFromFile();
         }
         return content;
+    }
+
+    /**
+     * @deprecated FOR TESTING ONLY
+     */
+    @Deprecated
+    public void cache(IIpsSrcFile file, IpsSrcFileContent content) {
+        ipsObjectsMap.put(file, content);
     }
 
     private IpsSrcFileContent readContentFromFile(IIpsSrcFile file, boolean loadCompleteContent) {
@@ -1887,4 +1908,19 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
     }
 
+    /**
+     * Helper to validate the IPS project settings file.
+     * 
+     */
+    private static class IpsProjectType extends IpsObjectType {
+
+        private static final IpsObjectType IPS_PROJECT = new IpsProjectType();
+        private static final String IPS_PROJECT_PROP = "ipsProjectProperties"; //$NON-NLS-1$
+
+        protected IpsProjectType() {
+            super(IPS_PROJECT_PROP, IPS_PROJECT_PROP, IPS_PROJECT_PROP, IPS_PROJECT_PROP,
+                    IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT, false, false,
+                    null);
+        }
+    }
 }

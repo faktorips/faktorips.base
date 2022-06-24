@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Custom Ant-Tasks
 Bundle-SymbolicName: org.faktorips.devtools.ant;singleton:=true
-Bundle-Version: 22.6.0.qualifier
+Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.apache.ant,
  org.eclipse.ant.core,
@@ -27,5 +27,5 @@ Import-Package: org.faktorips.devtools.abstraction.exception,
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,
  org.faktorips.devtools.model.versionmanager,
- org.faktorips.runtime.internal;version="22.6.0",
- org.faktorips.runtime.util;version="22.6.0"
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.faktorips.runtime.util;version="22.12.0"

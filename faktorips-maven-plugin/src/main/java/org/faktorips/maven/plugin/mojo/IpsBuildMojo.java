@@ -56,6 +56,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
+import org.eclipse.tycho.ReactorProject;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
 import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
@@ -695,12 +696,7 @@ public class IpsBuildMojo extends AbstractMojo {
         boolean alreadyBuilt = getPluginContext().put("BUILT" + getProjectName(), Boolean.TRUE) != null;
 
         if (!alreadyBuilt) {
-            // add default repositories if no repositories are specified in the pom.xml
-            if (repositories.isEmpty()) {
-                addRepository(eclipseRepository);
-                addRepository(getFipsRepository());
-            }
-            repositories.addAll(additionalRepositories);
+            addRepositories();
 
             addDependencies();
 
@@ -728,25 +724,9 @@ public class IpsBuildMojo extends AbstractMojo {
 
             String statusFile = createStatusFile();
 
-            if (isGitStatusPorcelain()) {
-                String failBuild = gitStatusPorcelain.getFailBuild();
-                if (gitFailBuild != null) {
-                    failBuild = gitFailBuild.toString();
-                }
-                jvmArgs.add("-Dfail.build=" + failBuild);
-                jvmArgs.add("-Dverbosity=" + gitStatusPorcelain.getVerbosity().getName());
-            }
-            if (debug) {
-                jvmArgs.add("-Xdebug");
-                jvmArgs.add("-Xnoagent");
-                jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
-            }
+            configureGitDiff();
 
-            if (isInDebugMode()) {
-                jvmArgs.add("-Declipse.log.level=DEBUG");
-                applicationsArgs.add("-debug");
-                applicationsArgs.add(writeDebugLogSettings());
-            }
+            configureDebug();
 
             if (StringUtils.isBlank(executionEnvironment)) {
                 executionEnvironment = "JavaSE-" + Runtime.version().feature();
@@ -758,10 +738,46 @@ public class IpsBuildMojo extends AbstractMojo {
 
             copyMavenSettings();
 
+            copyMavenToolchains();
+
             executePlatform();
 
             failBuildForAntStatusError(statusFile);
         }
+    }
+
+    private void configureDebug() {
+        if (debug) {
+            jvmArgs.add("-Xdebug");
+            jvmArgs.add("-Xnoagent");
+            jvmArgs.add("-Xrunjdwp:transport=dt_socket,address=" + debugPort + ",server=y,suspend=y");
+        }
+
+        if (isInDebugMode()) {
+            jvmArgs.add("-Declipse.log.level=DEBUG");
+            applicationsArgs.add("-debug");
+            applicationsArgs.add(writeDebugLogSettings());
+        }
+    }
+
+    private void configureGitDiff() {
+        if (isGitStatusPorcelain()) {
+            String failBuild = gitStatusPorcelain.getFailBuild();
+            if (gitFailBuild != null) {
+                failBuild = gitFailBuild.toString();
+            }
+            jvmArgs.add("-Dfail.build=" + failBuild);
+            jvmArgs.add("-Dverbosity=" + gitStatusPorcelain.getVerbosity().getName());
+        }
+    }
+
+    private void addRepositories() {
+        // add default repositories if no repositories are specified in the pom.xml
+        if (repositories.isEmpty()) {
+            addRepository(eclipseRepository);
+            addRepository(getFipsRepository());
+        }
+        repositories.addAll(additionalRepositories);
     }
 
     private String createStatusFile() {
@@ -824,7 +840,6 @@ public class IpsBuildMojo extends AbstractMojo {
     }
 
     private void executePlatform() throws MojoExecutionException, MojoFailureException {
-
         // no need to clean as the IpsCleanMojo deleted the parent directory in the clean phase
         boolean clearWorkspaceBeforeLaunch = false;
         EclipseRunMojo eclipseRunMojo = null;
@@ -835,7 +850,22 @@ public class IpsBuildMojo extends AbstractMojo {
             eclipseRunMojo = createLoggingEclipseRunMojo(clearWorkspaceBeforeLaunch);
         }
 
+        removeIncompatibleTychoProjectsFromContextCache();
+
         eclipseRunMojo.execute();
+    }
+
+    private void removeIncompatibleTychoProjectsFromContextCache() {
+        /**
+         * org.eclipse.tycho.core.osgitools.DefaultReactorProject.CTX_REACTOR_PROJECT
+         */
+        String tychoReactorProject = "tycho.reactor-project";
+        for (MavenProject mavenProject : session.getProjects()) {
+            Object reactorProject = mavenProject.getContextValue(tychoReactorProject);
+            if (!(reactorProject instanceof ReactorProject)) {
+                mavenProject.setContextValue(tychoReactorProject, null);
+            }
+        }
     }
 
     private EclipseRunMojo createLoggingEclipseRunMojo(boolean clearWorkspaceBeforeLaunch) {
@@ -951,6 +981,24 @@ public class IpsBuildMojo extends AbstractMojo {
 
         } catch (IOException e) {
             getLog().error("Error while copying the maven settings into the workspace", e);
+        }
+    }
+
+    private void copyMavenToolchains() {
+        File toolchainsFile = session.getRequest().getUserToolchainsFile();
+        if (toolchainsFile == null || !toolchainsFile.exists()) {
+            toolchainsFile = session.getRequest().getGlobalToolchainsFile();
+        }
+        if (toolchainsFile != null && toolchainsFile.exists()) {
+            String copyUserSettingsDirPath = work.getAbsolutePath() + "\\data\\.metadata\\.plugins";
+            String copyUserToolchainsPath = copyUserSettingsDirPath + "\\toolchains.xml";
+            try {
+                FileUtils.forceMkdir(new File(copyUserSettingsDirPath));
+                FileUtils.copyFile(toolchainsFile, new File(copyUserToolchainsPath));
+            } catch (IOException e) {
+                getLog().error("Can't create a copy of the user toolchains" + copyUserToolchainsPath, e);
+            }
+            jvmArgs.add("-Dmaven.conf=" + copyUserSettingsDirPath);
         }
     }
 

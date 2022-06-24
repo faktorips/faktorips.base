@@ -5,12 +5,12 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>org.faktorips.aggregator.tests</artifactId>
-        <version>22.6.0-SNAPSHOT</version>
+        <version>22.12.0-SNAPSHOT</version>
         <relativePath>../org.faktorips.aggregator/tests/pom.xml</relativePath>
     </parent>
 
     <artifactId>org.faktorips.devtools.core.refactor.test</artifactId>
 
-
     <packaging>eclipse-test-plugin</packaging>
+
 </project>

@@ -632,7 +632,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildMethodExecuteAsserts(JavaCodeFragmentBuilder codeBuilder) {
         StringBuilder javaDoc = new StringBuilder();
         appendln(javaDoc, getLocalizedText(EXECUTEASSERTS_JAVADOC));
-        appendln(javaDoc, " ");
+        appendln(javaDoc, "<p>");
         appendln(javaDoc, getLocalizedText(ASSERT_TODO_1));
         appendln(javaDoc, getLocalizedText(ASSERT_TODO_2));
         appendln(javaDoc, getLocalizedText(ASSERT_TODO_3));

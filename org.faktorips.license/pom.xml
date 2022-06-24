@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<license.result>lizenzvertrag_fips.pdf</license.result>
-		<deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
-		<license.versionfile>${project.basedir}/src/main/latex/lizenzvertrag_fips/version.txt</license.versionfile>
-	</properties>
+    <properties>
+        <license.result>lizenzvertrag_fips.pdf</license.result>
+        <deploy.license>Faktor-IPS_Lizenzvertrag.pdf</deploy.license>
+        <license.versionfile>${project.basedir}/src/main/latex/lizenzvertrag_fips/version.txt</license.versionfile>
+    </properties>
 
-	<parent>
-		<groupId>org.faktorips</groupId>
-		<artifactId>org.faktorips.aggregator</artifactId>
-		<version>22.6.0-SNAPSHOT</version>
-		<relativePath>../org.faktorips.aggregator/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>org.faktorips.aggregator</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../org.faktorips.aggregator/pom.xml</relativePath>
+    </parent>
 
-	<artifactId>org.faktorips.license</artifactId>
+    <artifactId>org.faktorips.license</artifactId>
 
-	<packaging>eclipse-feature</packaging>
+    <packaging>eclipse-feature</packaging>
 
 </project>

@@ -310,4 +310,25 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         assertThat(string, containsString(
                 "For&#160;some&#8239;reason,&#65279;someone&#8192;used&#8193;a&#8194;lot&#8195;of&#8196;different&#8197;spaces.&#8198;Thanks&#8199;to&#8200;apache&#8201;commons&#8202;we&#8287;can&#12288;replace them."));
     }
+
+    @Test
+    public void testRemoveIds() {
+        Document inputDoc = newDocument();
+        Element root = inputDoc.createElement("root"); //$NON-NLS-1$
+        root.setAttribute("id", "4711");
+        Element element = inputDoc.createElement("element"); //$NON-NLS-1$
+        element.setAttribute("id", "23");
+        root.appendChild(element);
+        Element extensionPropertiesElement = inputDoc.createElement("ExtensionProperties"); //$NON-NLS-1$
+        extensionPropertiesElement.setAttribute("id", "ext");
+        root.appendChild(extensionPropertiesElement);
+        inputDoc.appendChild(root);
+
+        XmlUtil.removeIds(root);
+
+        assertThat(root.hasAttribute("id"), is(false));
+        assertThat(element.hasAttribute("id"), is(false));
+        assertThat(extensionPropertiesElement.hasAttribute("id"), is(true));
+        assertThat(extensionPropertiesElement.getAttribute("id"), is("ext"));
+    }
 }

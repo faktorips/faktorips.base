@@ -32,7 +32,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * 
      * @param version The version-string that should be set as since-version
      */
-    public void setSinceVersionString(String version);
+    void setSinceVersionString(String version);
 
     /**
      * Returns the version since which this part is available as a string. The version was set by
@@ -41,7 +41,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * @return the version since which this element is available
      * @see #getSinceVersion()
      */
-    public String getSinceVersionString();
+    String getSinceVersionString();
 
     /**
      * Returns the version since which this part is available. The version was set by
@@ -52,7 +52,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      *             to the configured {@link IVersionProvider}
      * @see #isValidSinceVersion()
      */
-    public IVersion<?> getSinceVersion();
+    IVersion<?> getSinceVersion();
 
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
@@ -63,6 +63,27 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
      *         return a valid version. Otherwise <code>false</code>.
      */
-    public boolean isValidSinceVersion();
+    boolean isValidSinceVersion();
+
+    /**
+     * Creates a new {@link IDeprecation} for this element. If it already had a deprecation, it is
+     * replaced by the new one.
+     */
+    IDeprecation newDeprecation();
+
+    /**
+     * Returns the deprecation information for this part, if it is deprecated or {@code null}
+     * otherwise.
+     */
+    IDeprecation getDeprecation();
+
+    /**
+     * Returns whether this part is deprecated.
+     *
+     * @see #getDeprecation()
+     */
+    default boolean isDeprecated() {
+        return getDeprecation() != null;
+    }
 
 }

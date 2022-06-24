@@ -30,9 +30,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.model.util.ListElementMover;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -118,9 +118,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
-        mandatoryTableContent = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_MANDATORY_TABLE_CONTENT);
+        mandatoryTableContent = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_MANDATORY_TABLE_CONTENT);
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            changingOverTime = ValueToXmlHelper.isAttributeTrue(element, PROPERTY_CHANGING_OVER_TIME);
+            changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
     }
 
@@ -128,7 +128,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, name);
-        element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
+        if (mandatoryTableContent) {
+            element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
+        }
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, "" + changingOverTime); //$NON-NLS-1$
     }
 

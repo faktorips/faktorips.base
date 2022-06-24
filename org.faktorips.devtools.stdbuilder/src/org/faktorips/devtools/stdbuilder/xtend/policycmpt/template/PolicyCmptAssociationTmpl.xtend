@@ -17,21 +17,23 @@ class PolicyCmptAssociationTmpl {
 def package static constants (XPolicyAssociation it) '''
     «IF !compositionDetailToMaster && !derived && !constrain»
         /**
-         * «localizedJDoc("FIELD_MAX_CARDINALITY", name)»
+         *«localizedJDoc("FIELD_MAX_CARDINALITY", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public static final «IntegerRange()» «field(constantNameMaxCardinalityFor)» = «IntegerRange()».valueOf(«minCardinality», «maxCardinality»);
     «ENDIF»
 
     «IF !hasSuperAssociationWithSameName()»
         /**
-         * «localizedJDoc("FIELD_ASSOCIATION_NAME", fieldName)»
+         *«localizedJDoc("FIELD_ASSOCIATION_NAME", fieldName)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public static final String «field(constantNamePropertyName)» = "«fieldName»";
     «ENDIF»
 '''
@@ -40,7 +42,7 @@ def package static field (XPolicyAssociation it) '''
     «IF generateField»
         «IF masterToDetail || typeAssociation»
             /**
-             * «localizedJDoc("FIELD_ASSOCIATION", name)»
+             *«localizedJDoc("FIELD_ASSOCIATION", name)»
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -54,7 +56,7 @@ def package static field (XPolicyAssociation it) '''
             «ENDIF»
         «ELSEIF compositionDetailToMaster»
             /**
-             * «localizedJDoc("FIELD_PARENT", targetClassName)»
+             *«localizedJDoc("FIELD_PARENT", targetClassName)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -79,11 +81,12 @@ def package static methods (XPolicyAssociation it) '''
 def private static contains (XAssociation it) '''
     «IF oneToMany && !constrain»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_CONTAINS_OBJECT")»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
+         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
          «overrideAnnotationForPublishedMethodImplementation()»
         public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")»
         «IF genInterface()»;«ELSE»
@@ -102,13 +105,13 @@ def private static getters (XPolicyAssociation it) '''
     «IF generateGetter»
         «IF oneToMany»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true), descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_MANY", getName(true), descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-         «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
+        «overrideAnnotationForConstrainedAssociation()»
         public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
         «IF genInterface()»;«ELSE»
             {
@@ -120,12 +123,13 @@ def private static getters (XPolicyAssociation it) '''
             }
         «ENDIF»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name, descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_REF_OBJECT_BY_INDEX", name, descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation()»
         public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
          «IF genInterface()»;«ELSE»
              {
@@ -138,13 +142,13 @@ def private static getters (XPolicyAssociation it) '''
          «ENDIF»
         «ELSE»
             /**
-             * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name, descriptionForJDoc)»
+             *«inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_ONE", name, descriptionForJDoc)»
             «getAnnotations(ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
             «getAnnotationsForPublishedInterface(annotatedJavaElementTypeForGetter, genInterface())»
-            «overrideAnnotationForConstainedAssociation()»
+            «overrideAnnotationForConstrainedAssociation()»
             public «targetInterfaceName» «method(methodNameGetter)»
             «IF genInterface()»;«ELSE»
                 {
@@ -159,12 +163,13 @@ def private static getters (XPolicyAssociation it) '''
     «ENDIF»
     «IF generateQualifiedGetter»
         /**
-         * «inheritDocOrJavaDocIf(genInterface, "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name, descriptionForJDoc)»
+         *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_REF_OBJECT_BY_QUALIFIER", name, descriptionForJDoc)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-        «overrideAnnotationForConstainedAssociation()»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationForConstrainedAssociation()»
          «IF oneToManyIgnoringQualifier»
             public  «List_("? extends " +targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceNameBase, "qualifier")»
             «IF genInterface»;«ELSE»
@@ -247,7 +252,7 @@ def private static generateSetter (XPolicyAssociation it) '''
     «IF compositionDetailToMaster»
         «IF !sharedAssociationImplementedInSuperclass && !genInterface()»
             /** 
-            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
+            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC, true)»
              *
              * @generated
              */
@@ -275,13 +280,13 @@ def private static generateSetter (XPolicyAssociation it) '''
     «ELSE»
         «IF !constrain || !generateInternalSetterOrAdder»
             /**
-             * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
+             *«inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_OBJECT", name)»
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
             «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
-            «overrideAnnotationForConstainedAssociation()»
+            «overrideAnnotationForConstrainedAssociation()»
             public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
             «IF genInterface()»;«ELSE»
             {
@@ -298,7 +303,7 @@ def private static generateSetter (XPolicyAssociation it) '''
 
         «IF generateInternalSetterOrAdder && !genInterface()»
             /**
-             * «localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
+             *«localizedJDoc("METHOD_SET_OBJECT_INTERNAL", name)»
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              *
              * @generated
@@ -343,13 +348,13 @@ def private static setterMethodCode(String methodName, XPolicyAssociation it) ''
 def private static generateAdder (XPolicyAssociation it) '''
     «IF !constrain || !generateInternalSetterOrAdder»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_ADD_OBJECT", name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
         «getAnnotationsForPublishedInterface(POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER, genInterface())»
-        «overrideAnnotationForConstainedAssociation()»
+        «overrideAnnotationForConstrainedAssociation()»
         public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "objectToAdd")»
         «IF genInterface()»;«ELSE»
         {
@@ -365,12 +370,13 @@ def private static generateAdder (XPolicyAssociation it) '''
 
     «IF generateInternalSetterOrAdder && !genInterface()»
         /**
-         * «localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
+         *«localizedJDoc("METHOD_ADD_OBJECT_INTERNAL", name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
-         «overrideAnnotationIf(constrain)»
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+        «overrideAnnotationIf(constrain)»
         public void «method(methodNameSetOrAddInternal, targetInterfaceNameBase, "objectToAdd")»{
             «addMethodCode(methodNameSetOrAddInternal, it)»
         }
@@ -435,11 +441,12 @@ def private static cleanupOldReferenceInner(String varToCleanUp, XPolicyAssociat
 def private static newChildMethods (XPolicyAssociation it) '''
     «IF generateNewChildMethods»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD", targetName, name)»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD", targetName, name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
          */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
         public «targetInterfaceName» «method(methodNameNew)»
         «IF genInterface()»;«ELSE»
@@ -451,12 +458,13 @@ def private static newChildMethods (XPolicyAssociation it) '''
 
         «IF generateNewChildWithArgumentsMethod»
             /**
-             * «inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
+             *«inheritDocOrJavaDocIf(genInterface(), "METHOD_NEW_CHILD_WITH_PRODUCTCMPT_ARG", targetName, getName(false), targetProductCmptVariableName)»
             «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
              *
              * @generated
              */
-             «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+            «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)»
             public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
             «IF genInterface()»;«ELSE»
             {
@@ -517,7 +525,7 @@ def private static varNameNullCheckIfNecessary(String varName, XPolicyAssociatio
 def private static remove (XPolicyAssociation it) '''
     «IF generateAddAndRemoveMethod && !constrain»
         /**
-         * «inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
+         *«inheritDocOrJavaDocIf(genInterface(), "METHOD_REMOVE_OBJECT", name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
          *
          * @generated
@@ -551,10 +559,12 @@ def private static removeAndDetach (XPolicyAssociation it) '''
 def private static detachRemovedObject (XPolicyAssociation it) '''
     «IF hasInverseAssociation()»
         «IF inverseAssociation.oneToMany»
-            objectToRemove.«inverseAssociation.methodNameRemove»(this);
+                objectToRemove.«inverseAssociation.methodNameRemove»(this);
         «ELSE»
             «IF inverseAssociation.typeAssociation»
-                «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+                if («castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameGetter»() == this) {
+                    «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+                }
             «ELSE»
                 «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
             «ENDIF»

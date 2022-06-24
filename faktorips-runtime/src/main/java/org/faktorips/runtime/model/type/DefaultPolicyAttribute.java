@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.model.type;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     private Method defaultValueGetter;
     private Method defaultValueSetter;
+    private Field defaultField;
 
     private Map<Type, Method> valueSetMethods = new HashMap<>(2);
     private Method allowedValuesSetter;
@@ -59,7 +61,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
             boolean changingOverTime) {
         super(policyCmptType, getter.getAnnotation(IpsAttribute.class),
-                getter.getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime);
+                getter.getAnnotation(IpsExtensionProperties.class), getter.getReturnType(), changingOverTime,
+                Deprecation.of(getter));
         this.getter = getter;
         this.setter = setter;
     }
@@ -89,8 +92,28 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     @Override
-    public Object getDefaultValue(IConfigurableModelObject modelObject) {
-        return getDefaultValue(modelObject.getProductComponent(), modelObject.getEffectiveFromAsCalendar());
+    public Object getDefaultValue(IModelObject modelObject) {
+        if (!isProductRelevant()) {
+            return invokeField(getDefaultValueField(), modelObject);
+        } else {
+            IConfigurableModelObject configurableModelObject = (IConfigurableModelObject)modelObject;
+            return getDefaultValue(configurableModelObject.getProductComponent(),
+                    configurableModelObject.getEffectiveFromAsCalendar());
+        }
+    }
+
+    private Field getDefaultValueField() {
+        if (defaultField == null) {
+            defaultField = findDefaultValueField(getType());
+        }
+        return defaultField;
+    }
+
+    private Field findDefaultValueField(Type type) {
+        return type.findDeclaredField(IpsDefaultValue.class, a -> a.value().equals(getName()))
+                .orElseThrow(() -> new IllegalStateException(
+                        "No field found for retrieving the default value of attribute: " + getType().getName()
+                                + '.' + getName()));
     }
 
     @Override
@@ -114,7 +137,8 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     private Method findDefaultValueGetter(Type type) {
         return type.findDeclaredMethod(IpsDefaultValue.class, a -> a.value().equals(getName()))
                 .orElseThrow(() -> new IllegalStateException(
-                        "No method found for retrieving the default value of attribute: " + getName()));
+                        "No method found for retrieving the default value of attribute: " + getType().getName()
+                                + '.' + getName()));
     }
 
     @Override

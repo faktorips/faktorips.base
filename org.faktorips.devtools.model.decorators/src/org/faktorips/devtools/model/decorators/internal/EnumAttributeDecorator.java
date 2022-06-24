@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.decorators.internal;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
@@ -30,7 +31,7 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IEnumAttribute) {
             IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPart;
-            String[] overlays = new String[2];
+            String[] overlays = new String[4];
 
             try {
                 IIpsProject ipsProject = enumAttribute.getIpsProject();
@@ -43,7 +44,10 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
             }
 
             if (enumAttribute.isInherited()) {
-                overlays[1] = OverlayIcons.OVERRIDE;
+                overlays[IDecoration.TOP_RIGHT] = OverlayIcons.OVERRIDE;
+            }
+            if (enumAttribute.isDeprecated()) {
+                overlays[IDecoration.BOTTOM_LEFT] = OverlayIcons.DEPRECATED;
             }
 
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(ENUM_ATTRIBUTE_ICON, overlays);

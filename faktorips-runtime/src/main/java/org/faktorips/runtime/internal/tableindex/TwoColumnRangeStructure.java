@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * A {@link SearchStructure} that maps ranges (keys) to nested {@link SearchStructure
  * SearchStructures} i.e. sets of values. Each {@link TwoColumnRange range} in a
@@ -122,7 +124,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
 
     @Override
     public SearchStructure<R> get(Object key) {
-        if (key == null) {
+        if (ObjectUtil.isNull(key)) {
             return emptyResult();
         } else {
             TwoColumnRange<K> twoColumnKey = createTwoColumnKey(key);

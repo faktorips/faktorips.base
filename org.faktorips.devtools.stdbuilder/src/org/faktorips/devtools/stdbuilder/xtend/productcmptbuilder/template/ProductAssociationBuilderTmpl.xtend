@@ -13,7 +13,7 @@ class ProductAssociationBuilderTmpl {
     def package static body (XProductBuilder it) '''
         «IF builderAssociations.size > 0»
             /**
-            * «localizedJDoc("CLASS_BUILDER")»
+            *«localizedJDoc("CLASS_BUILDER")»
             *
             * @generated
             */
@@ -35,7 +35,7 @@ class ProductAssociationBuilderTmpl {
 
         «IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 »
             /**
-            * «localizedJDoc("CLASS_BUILDER_MULTI", implClassName)»
+            *«localizedJDoc("CLASS_BUILDER_MULTI", implClassName)»
             *
             * @generated
             */
@@ -121,7 +121,7 @@ class ProductAssociationBuilderTmpl {
     def private static standardAssociationSetter(XProductBuilder builder, XProductBuilderAssociation association,
         boolean isSuper, XProductBuilder it, boolean withCardinality) '''
         /**
-        * «localizedJDoc("METHOD_ASS_STD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_STD", productName, association.name)»
         *
         * @generated
         */
@@ -139,7 +139,7 @@ class ProductAssociationBuilderTmpl {
     def private static associationSetterWithType(XProductBuilder builder, XProductBuilderAssociation association,
         boolean multi, boolean isSuper, XProductBuilder it, boolean withCardinality) '''
         /**
-        * «localizedJDoc("METHOD_ASS_TYPE_PROD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_TYPE_PROD", productName, association.name)»
         *
         * @generated
         */
@@ -165,7 +165,7 @@ class ProductAssociationBuilderTmpl {
     def private static associationSetter(XProductBuilder builder, XProductBuilderAssociation association, boolean multi,
         boolean isSuper, XProductBuilder it, boolean withCardinality) '''
         /**
-        * «localizedJDoc("METHOD_ASS_PROD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_PROD", productName, association.name)»
         *
         * @generated
         */
@@ -186,7 +186,7 @@ class ProductAssociationBuilderTmpl {
         }
         
         /**
-        * «localizedJDoc("METHOD_ASS_IDS", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_IDS", productName, association.name)»
         *
         * @generated
         */

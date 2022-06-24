@@ -9,7 +9,7 @@
     <version>@version@</version>
     <packaging>jar</packaging>
     
-    <name>Faktor-IPS Model/name>
+    <name>Faktor-IPS Model</name>
     <description>Model for the Faktor-IPS design time tools</description>
     <url>http://faktorzehn.org</url>
 
@@ -54,11 +54,6 @@
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.2.1</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.platform</groupId>
