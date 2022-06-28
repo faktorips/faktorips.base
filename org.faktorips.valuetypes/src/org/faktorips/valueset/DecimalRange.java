@@ -179,8 +179,10 @@ public class DecimalRange extends DefaultRange<Decimal> {
 
     @Override
     protected int sizeForDiscreteValuesExcludingNull() {
-        Decimal size = getUpperBound().subtract(getLowerBound()).abs()
-                .divide(getStep(), 0, RoundingMode.UNNECESSARY).add(Decimal.valueOf(1));
+        Decimal absSize = getUpperBound().subtract(getLowerBound()).abs();
+        Decimal size = absSize.equals(Decimal.ZERO)
+                ? Decimal.valueOf(1)
+                : absSize.divide(getStep(), 0, RoundingMode.UNNECESSARY).add(Decimal.valueOf(1));
         if (size.longValue() > Integer.MAX_VALUE) {
             throw new RuntimeException(
                     "The number of values contained within this range is to huge to be supported by this operation.");
