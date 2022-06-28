@@ -129,6 +129,16 @@ public class DecimalRangeTest {
         range.getValues(false);
     }
 
+    @Test
+    public void testGetValues_StepNull_UpperEqualsLower() {
+        DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(100), Decimal.valueOf(100), Decimal.NULL);
+
+        Set<Decimal> values = range.getValues(false);
+
+        assertEquals(1, values.size());
+        assertEquals(Decimal.valueOf(100), values.iterator().next());
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testGetValues_NoUpper() {
         DecimalRange range = DecimalRange.valueOf(Decimal.valueOf(Integer.valueOf(10)), null,
