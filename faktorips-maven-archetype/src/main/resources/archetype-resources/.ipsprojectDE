@@ -30,7 +30,7 @@
         <OptionalConstraints/>                             Definition of optional constraints. Details below.
         <SupportedLanguages/>                              List of supported natural languages. Details below.
     </IpsProject>
---><IpsProject changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}">
+--><IpsProject xmlns="http://www.faktorzehn.org" changesInTimeNamingConvention="\${IPS-NamingConvention}" modelProject="\${IPS-IsModelProject}" persistentProject="\${IPS-IsPersistentProject}" productDefinitionProject="\${IPS-IsProductDefinitionProject}" runtimeIdPrefix="\${IPS-RuntimeIdPrefix}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/22.6/ipsProjectProperties.xsd">
 
  <!--
         Required Ips-Features
