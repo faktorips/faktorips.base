@@ -69,7 +69,7 @@ public class IpsSrcFileWrapperAdapterFactory extends AbstractIpsAdapterFactory {
 
         if (!IpsPlugin.getDefault().getIpsPreferences().isSimpleContextMenuEnabled()
                 && adapterType.isAssignableFrom(IFile.class)) {
-            return adaptedIpsSrcFile.getCorrespondingFile();
+            return adaptedIpsSrcFile.getCorrespondingFile().unwrap();
         }
 
         return null;
