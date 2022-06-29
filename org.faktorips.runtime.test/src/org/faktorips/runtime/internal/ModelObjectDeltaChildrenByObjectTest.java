@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -441,6 +442,37 @@ public class ModelObjectDeltaChildrenByObjectTest extends AbstractModelObjectDel
     }
 
     @Test
+    public void testCreateChildDeltas_toMany_Moved_WithoutSubtree_Ignored() {
+        ModelObjectDelta delta = emptyParentDelta();
+        TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
+        TestModelObject oldChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
+        TestModelObject newChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild3"));
+        TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
+        IDeltaComputationOptions options = computationByObjectIgnoreMoved();
+
+        ModelObjectDelta.createChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+                "children", options);
+
+        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
+        assertEquals(2, childDeltas.size());
+        IModelObjectDelta childDelta1 = childDeltas.get(0);
+        assertFalse(childDelta1.isMoved());
+        assertEquals(oldChild1, childDelta1.getOriginalObject());
+        assertEquals(newChild1, childDelta1.getReferenceObject());
+        // subtree only affects added/removed, not moved
+        assertEquals(2, childDelta1.getChildDeltas().size());
+        assertEquals(oldChild1.reference, childDelta1.getChildDeltas().get(0).getOriginalObject());
+        assertEquals(newChild1.reference, childDelta1.getChildDeltas().get(1).getReferenceObject());
+        IModelObjectDelta childDelta2 = childDeltas.get(1);
+        assertFalse(childDelta2.isMoved());
+        assertEquals(oldChild2, childDelta2.getOriginalObject());
+        assertEquals(newChild2, childDelta2.getReferenceObject());
+        assertEquals(2, childDelta2.getChildDeltas().size());
+        assertEquals(oldChild2.reference, childDelta2.getChildDeltas().get(0).getOriginalObject());
+        assertEquals(newChild2.reference, childDelta2.getChildDeltas().get(1).getReferenceObject());
+    }
+
+    @Test
     public void testCreateChildDeltas_toMany_Moved_WithSubtree() {
         ModelObjectDelta delta = emptyParentDelta();
         TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
@@ -463,6 +495,36 @@ public class ModelObjectDeltaChildrenByObjectTest extends AbstractModelObjectDel
         assertEquals(newChild1.reference, childDelta1.getChildDeltas().get(1).getReferenceObject());
         IModelObjectDelta childDelta2 = childDeltas.get(1);
         assertTrue(childDelta2.isMoved());
+        assertEquals(oldChild2, childDelta2.getOriginalObject());
+        assertEquals(newChild2, childDelta2.getReferenceObject());
+        assertEquals(2, childDelta2.getChildDeltas().size());
+        assertEquals(oldChild2.reference, childDelta2.getChildDeltas().get(0).getOriginalObject());
+        assertEquals(newChild2.reference, childDelta2.getChildDeltas().get(1).getReferenceObject());
+    }
+
+    @Test
+    public void testCreateChildDeltas_toMany_Moved_WithSubtree_Ignored() {
+        ModelObjectDelta delta = emptyParentDelta();
+        TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
+        TestModelObject oldChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
+        TestModelObject newChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild3"));
+        TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
+        IDeltaComputationOptions options = computationByObjectIgnoreMoved().withSubtreeDelta();
+
+        ModelObjectDelta.createChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+                "children", options);
+
+        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
+        assertEquals(2, childDeltas.size());
+        IModelObjectDelta childDelta1 = childDeltas.get(0);
+        assertFalse(childDelta1.isMoved());
+        assertEquals(oldChild1, childDelta1.getOriginalObject());
+        assertEquals(newChild1, childDelta1.getReferenceObject());
+        assertEquals(2, childDelta1.getChildDeltas().size());
+        assertEquals(oldChild1.reference, childDelta1.getChildDeltas().get(0).getOriginalObject());
+        assertEquals(newChild1.reference, childDelta1.getChildDeltas().get(1).getReferenceObject());
+        IModelObjectDelta childDelta2 = childDeltas.get(1);
+        assertFalse(childDelta2.isMoved());
         assertEquals(oldChild2, childDelta2.getOriginalObject());
         assertEquals(newChild2, childDelta2.getReferenceObject());
         assertEquals(2, childDelta2.getChildDeltas().size());
@@ -583,6 +645,22 @@ public class ModelObjectDeltaChildrenByObjectTest extends AbstractModelObjectDel
     }
 
     @Test
+    public void testCreateAssociatedChildDeltas_toMany_Moved_WithoutSubtree_Ignored() {
+        ModelObjectDelta delta = emptyParentDelta();
+        TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
+        TestModelObject oldChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
+        TestModelObject newChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild3"));
+        TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
+        IDeltaComputationOptions options = computationByObjectIgnoreMoved();
+
+        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+                "children", options);
+
+        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
+        assertEquals(0, childDeltas.size());
+    }
+
+    @Test
     public void testCreateAssociatedChildDeltas_toMany_Moved_WithoutSubtree() {
         ModelObjectDelta delta = emptyParentDelta();
         TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
@@ -634,8 +712,33 @@ public class ModelObjectDeltaChildrenByObjectTest extends AbstractModelObjectDel
         assertTrue(childDelta2.getChildDeltas().isEmpty());
     }
 
+    @Test
+    public void testCreateAssociatedChildDeltas_toMany_Moved_WithSubtree_Ignored() {
+        ModelObjectDelta delta = emptyParentDelta();
+        TestModelObject oldChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild1"));
+        TestModelObject oldChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild2"));
+        TestModelObject newChild1 = new TestModelObject("Child1", new TestModelObject("Grandchild3"));
+        TestModelObject newChild2 = new TestModelObject("Child2", new TestModelObject("Grandchild4"));
+        IDeltaComputationOptions options = computationByObjectIgnoreMoved().withSubtreeDelta();
+
+        ModelObjectDelta.createAssociatedChildDeltas(delta, asList(oldChild1, oldChild2), asList(newChild2, newChild1),
+                "children", options);
+
+        List<IModelObjectDelta> childDeltas = delta.getChildDeltas();
+        assertEquals(0, childDeltas.size());
+    }
+
     private static TestOptions computationByObject() {
         return new TestOptions(IDeltaComputationOptions.ComputationMethod.BY_OBJECT);
+    }
+
+    private static TestOptions computationByObjectIgnoreMoved() {
+        return new TestOptions(IDeltaComputationOptions.ComputationMethod.BY_OBJECT) {
+            @Override
+            public boolean ignoreMoved() {
+                return true;
+            }
+        };
     }
 
 }

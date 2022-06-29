@@ -384,6 +384,21 @@
       ]
     }
    }
+  ],
+  "22.6.2": [ 
+  {
+    "extension": "revapi.differences",
+    "configuration": {
+      "ignore": true,
+      "differences": [
+        {
+          "code": "java.method.defaultMethodAddedToInterface",
+          "new": "method boolean org.faktorips.runtime.IDeltaComputationOptions::ignoreMoved()",
+          "justification": "FIPS-9052"
+        }      
+      ]
+    }
+   }
   ]
 }
 
