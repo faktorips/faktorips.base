@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Abstract Tests for Faktor-IPS
 Bundle-SymbolicName: org.faktorips.abstracttest
-Bundle-Version: 22.6.2.qualifier
+Bundle-Version: 22.6.3.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.eclipse.draw2d;visibility:=reexport,
  org.eclipse.ltk.core.refactoring;visibility:=reexport,
