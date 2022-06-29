@@ -15,7 +15,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>org.faktorips.aggregator</artifactId>
-    <version>21.12.6-SNAPSHOT</version>
+    <version>21.12.7-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
