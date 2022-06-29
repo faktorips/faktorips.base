@@ -102,6 +102,21 @@
             <artifactId>faktorips-maven-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.groovy.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.m2e.feature</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
