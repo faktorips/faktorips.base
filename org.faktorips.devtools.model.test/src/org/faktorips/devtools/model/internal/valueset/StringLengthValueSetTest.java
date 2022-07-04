@@ -132,7 +132,7 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
     public void testContainsValue() throws Exception {
         StringLengthValueSet sl = new StringLengthValueSet(cValueSet, "50", "20");
 
-        assertFalse(sl.containsValue("", ipsProject));
+        assertTrue(sl.containsValue("", ipsProject));
         assertTrue(sl.containsValue("A", ipsProject));
         assertTrue(sl.containsValue("maximumlength-string", ipsProject));
         assertFalse(sl.containsValue("maximumlength-string2", ipsProject));
@@ -140,8 +140,8 @@ public class StringLengthValueSetTest extends AbstractIpsPluginTest {
 
         sl.setContainsNull(false);
         assertFalse(sl.containsValue(null, ipsProject));
-        assertFalse(sl.containsValue("", ipsProject));
-        assertFalse(sl.containsValue(" ", ipsProject));
+        assertTrue(sl.containsValue("", ipsProject));
+        assertTrue(sl.containsValue(" ", ipsProject));
 
         sl.setContainsNull(true);
         assertTrue(sl.containsValue(null, ipsProject));
