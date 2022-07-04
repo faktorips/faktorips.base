@@ -48,7 +48,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
         }
 
         IpsObjectType type = file.getIpsObjectType();
-        if (type.equals(IpsObjectType.PRODUCT_CMPT_TYPE) || type.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
+        if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(type) || IpsObjectType.POLICY_CMPT_TYPE.equals(type)) {
             try {
                 return (IType)file.getIpsObject();
             } catch (IpsException e) {

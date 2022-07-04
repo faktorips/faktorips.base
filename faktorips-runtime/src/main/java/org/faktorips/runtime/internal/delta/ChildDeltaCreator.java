@@ -208,17 +208,23 @@ public class ChildDeltaCreator {
                 if (options.isSame(original, refObject)) {
                     if (kind == AssociationKind.Composition) {
                         IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refObject, options);
-                        ((ModelObjectDelta)childDelta).markMoved();
+                        markMoved((ModelObjectDelta)childDelta);
                         return childDelta;
                     } else {
                         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(original, refObject);
-                        delta.markMoved();
+                        markMoved(delta);
                         return delta;
                     }
                 }
             }
         }
         return ModelObjectDelta.newRemoveDelta(original, association, kind, options);
+    }
+
+    private void markMoved(ModelObjectDelta delta) {
+        if (!options.ignoreMoved()) {
+            delta.markMoved();
+        }
     }
 
     private static IDeltaComputationOptions withoutSubtrees(final IDeltaComputationOptions options) {
@@ -261,6 +267,11 @@ public class ChildDeltaCreator {
         @Override
         public boolean ignoreAssociations() {
             return options.ignoreAssociations();
+        }
+
+        @Override
+        public boolean ignoreMoved() {
+            return options.ignoreMoved();
         }
     }
 

@@ -59,7 +59,7 @@ public class TableStructureTest {
         assertNotNull(columns);
         assertEquals(3, columns.size());
 
-        List<String> names = Arrays.asList("company", "gender", "rate");
+        List<String> names = Arrays.asList("company", "Gender", "rate");
         List<Class<?>> datatypes = Arrays.asList(String.class, Integer.class, Decimal.class);
 
         for (int i = 0; i <= 2; i++) {
@@ -75,12 +75,13 @@ public class TableStructureTest {
         assertEquals("company", companyColumn.getName());
         assertEquals(String.class, companyColumn.getDatatype());
 
-        assertTrue(tableStructure.getColumn("Company") == null);
+        assertEquals(companyColumn, tableStructure.getColumn("Company"));
+        assertEquals("Gender", tableStructure.getColumn("Gender").getName());
     }
 
     @Test
     public void testGetColumnnames() {
-        List<String> names = Arrays.asList("company", "gender", "rate");
+        List<String> names = Arrays.asList("company", "Gender", "rate");
         assertEquals(names, tableStructure.getColumnNames());
     }
 

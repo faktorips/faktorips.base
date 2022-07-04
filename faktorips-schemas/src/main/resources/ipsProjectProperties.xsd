@@ -164,6 +164,7 @@
         <xsd:attribute name="uniqueQualifier" type="string" />
         <xsd:attribute name="container" type="string" />
         <xsd:attribute name="path" type="string" />
+        <xsd:attribute name="referencedIpsProject" type="string" />
     </xsd:complexType>
 
     <xsd:complexType name="ProductCmptNamingStrategyType">

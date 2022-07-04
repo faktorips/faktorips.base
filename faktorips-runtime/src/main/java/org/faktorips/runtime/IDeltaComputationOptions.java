@@ -157,4 +157,20 @@ public interface IDeltaComputationOptions {
      */
     boolean ignoreAssociations();
 
+    /**
+     * Controls whether {@link IModelObjectDelta#MOVED moved} associations should be ignored when
+     * computing deltas. If set to <code>true</code>, moved associations are treated as unchanged as
+     * long as they don't contain any other changes.
+     * <p>
+     * Associations are only considered moved when the {@link #getMethod(String) delta computation
+     * method} is set to {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT BY_OBJECT}.
+     * 
+     * @return whether {@link IModelObjectDelta#MOVED moved} associations should be ignored.
+     * 
+     * @since 22.6
+     */
+    default boolean ignoreMoved() {
+        return false;
+    }
+
 }
