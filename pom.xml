@@ -140,6 +140,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         <jdkToolchain>
                             <version>${java.version}</version>
                         </jdkToolchain>
+                        <argLine>-Duser.language=${user.language} -Dfile.encoding=${file.encoding} -Duser.country=${user.country}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>

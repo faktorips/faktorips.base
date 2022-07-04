@@ -33,7 +33,7 @@
         <module>../faktorips-maven-plugin</module>
         <module>../faktorips-schemas</module>
         <module>../faktorips-coverage</module>
-        <!-- <module>sites</module> -->
+        <module>sites</module>
     </modules>
 
     <scm>

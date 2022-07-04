@@ -35,6 +35,7 @@
         <tycho-version>2.7.3</tycho-version>
         <tycho-extras-version>2.7.3</tycho-extras-version>
         <maven-core-version>3.8.1</maven-core-version>
+        <tycho-maven-plugin-version>3.0.0-SNAPSHOT</tycho-maven-plugin-version>
         <maven-shared-utils-version>3.3.4</maven-shared-utils-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
@@ -194,6 +195,11 @@
                     <version>${maven-surefire-plugin}</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-maven-plugin</artifactId>
+                    <version>${tycho-maven-plugin-version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.1.2</version>
@@ -330,6 +336,11 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-maven-plugin</artifactId>
+                <extensions>true</extensions>
             </plugin>
         </plugins>
     </build>
