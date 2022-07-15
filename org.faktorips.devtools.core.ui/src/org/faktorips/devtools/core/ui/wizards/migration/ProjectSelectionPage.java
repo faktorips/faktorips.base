@@ -21,8 +21,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -37,6 +39,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class ProjectSelectionPage extends WizardPage {
     private CheckboxTreeViewer treeViewer;
     private List<IIpsProject> preSelected;
+    private ContentProvider contentProvider;
 
     protected ProjectSelectionPage(List<IIpsProject> preSelected) {
         super(Messages.ProjectSelectionPage_titleSelectProjects);
@@ -49,7 +52,8 @@ public class ProjectSelectionPage extends WizardPage {
         root.setLayout(new GridLayout(1, true));
         root.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         treeViewer = new CheckboxTreeViewer(root);
-        treeViewer.setContentProvider(new ContentProvider());
+        contentProvider = new ContentProvider();
+        treeViewer.setContentProvider(contentProvider);
         treeViewer.setLabelProvider(new TreeLabelProvider());
         treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         treeViewer.setInput(""); //$NON-NLS-1$
@@ -57,8 +61,35 @@ public class ProjectSelectionPage extends WizardPage {
         treeViewer.setCheckedElements(preSelected.toArray());
 
         treeViewer.addSelectionChangedListener($ -> setPageComplete(getProjects().length > 0));
+        createSelectionButtons(root);
         setPageComplete(false);
         super.setControl(root);
+    }
+
+    /**
+     * Creates and configures the 'Select all' and 'Deselect all' buttons.
+     */
+    private void createSelectionButtons(Composite pageControl) {
+        Composite selectionButtonsComposite = new Composite(pageControl, SWT.NONE);
+        FillLayout buttonLayout = new FillLayout();
+        buttonLayout.marginHeight = 1;
+        buttonLayout.spacing = 5;
+        selectionButtonsComposite.setLayout(buttonLayout);
+
+        Button selectAllButton = new Button(selectionButtonsComposite, SWT.NONE);
+        selectAllButton.setText(Messages.ProjectSelectionPage_buttonSelectAll);
+        selectAllButton.addListener(SWT.Selection, $ -> setAllChecked(true));
+
+        Button deselectAllButton = new Button(selectionButtonsComposite, SWT.NONE);
+        deselectAllButton.setText(Messages.ProjectSelectionPage_buttonDeselectAll);
+        deselectAllButton.addListener(SWT.Selection, $ -> setAllChecked(false));
+    }
+
+    /** Sets all elements to the checked/unchecked state. */
+    private void setAllChecked(boolean checked) {
+        Object[] checkedElements = checked ? contentProvider.getElements(new Object()) : new Object[0];
+        treeViewer.setCheckedElements(checkedElements);
+        setPageComplete(checked);
     }
 
     /**

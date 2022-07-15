@@ -25,6 +25,8 @@ public class Messages extends NLS {
     }
 
     public static String ProjectSelectionPage_titleSelectProjects;
+    public static String ProjectSelectionPage_buttonSelectAll;
+    public static String ProjectSelectionPage_buttonDeselectAll;
     public static String MigrationPage_titleMigrationOperations;
     public static String MigrationPage_labelHeader;
     public static String MigrationPage_labelError;
@@ -37,5 +39,4 @@ public class Messages extends NLS {
     public static String ProjectSelectionPage_msgSelectProjects;
     public static String MigrationPage_msgShortDescription;
     public static String MigrationPage_titleProject;
-
 }
