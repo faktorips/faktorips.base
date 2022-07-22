@@ -165,8 +165,11 @@ public class IpsBuilder {
                 return builder.getProject().getReferencedProjects();
             }
 
+            printBuildExceptionMessages(buildStatus);
+
             // Re-initialize the builders of the current builder set if an error occurs.
             getIpsProject().reinitializeIpsArtefactBuilderSet();
+
             throw new CoreException(buildStatus);
 
         } catch (OperationCanceledException e) {
@@ -183,6 +186,19 @@ public class IpsBuilder {
             monitor.done();
         }
         return builder.getProject().getReferencedProjects();
+    }
+
+    private void printBuildExceptionMessages(MultiStatus buildStatus) {
+        IStatus[] builds = buildStatus.getChildren();
+        for (int i = 0; i < builds.length; i++) {
+            IStatus[] buildResults = builds[i].getChildren();
+            for (int j = 0; j < buildResults.length; j++) {
+                Throwable exception = buildResults[j].getException();
+                if (exception != null) {
+                    System.out.println("ERROR: " + exception.getMessage()); //$NON-NLS-1$
+                }
+            }
+        }
     }
 
     @SuppressWarnings("deprecation")

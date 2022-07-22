@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.util.DatatypeUtil;
@@ -82,6 +83,13 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     }
 
     public final ValueDatatype getDatatype() {
+        if (getDatatypeHelper() == null) {
+            IAttribute attribute = getAttribute();
+            throw new IpsException("When building \"" + getIpsProject().getName() + "\", the datatype \""
+                    + attribute.getDatatype() + "\" of the attribute \"" + attribute.getIpsObject().getName()
+                    + "#" + attribute.getName()
+                    + "\" could not be found.");
+        }
         return (ValueDatatype)getDatatypeHelper().getDatatype();
     }
 
