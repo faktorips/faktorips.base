@@ -184,10 +184,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
 
     private IContributionItem pinEditorContributionItem;
 
-    // TODO FIPS-7874 Replace Preferences with IEclipsePreferences
-    @SuppressWarnings("deprecation")
-    private org.eclipse.core.runtime.Preferences.IPropertyChangeListener prefListener;
-
     private IPageListener pageListener;
 
     private IResourceChangeListener resourceListener;
@@ -522,7 +518,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
      * Disposes any resources and unhooks any listeners that are no longer needed. Called when the
      * window is closed.
      */
-    @SuppressWarnings("deprecation")
     @Override
     public void dispose() {
         if (isDisposed) {
@@ -532,10 +527,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         if (pageListener != null) {
             window.removePageListener(pageListener);
             pageListener = null;
-        }
-        if (prefListener != null) {
-            ResourcesPlugin.getPlugin().getPluginPreferences().removePropertyChangeListener(prefListener);
-            prefListener = null;
         }
         if (resourceListener != null) {
             ResourcesPlugin.getWorkspace().removeResourceChangeListener(resourceListener);
@@ -605,7 +596,6 @@ class IpsActionBarAdvisor extends ActionBarAdvisor {
         cleanProjectsAction = null;
         newWizardMenu = null;
         pinEditorContributionItem = null;
-        prefListener = null;
         super.dispose();
     }
 
