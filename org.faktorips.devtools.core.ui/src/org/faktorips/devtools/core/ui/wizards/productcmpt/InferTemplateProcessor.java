@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.template.ProductCmptLinkHistograms;
@@ -64,7 +65,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
 
     private final List<IProductCmpt> productCmpts;
 
-    private IProgressMonitor monitor;
+    private SubMonitor monitor;
 
     /**
      * @deprecated use {@link #InferTemplateProcessor(IProductCmptGeneration, List)}
@@ -91,12 +92,11 @@ public class InferTemplateProcessor implements ICoreRunnable {
 
     @Override
     public void run(IProgressMonitor monitor) {
-        if (monitor == null) {
-            this.monitor = new NullProgressMonitor();
-        } else {
-            this.monitor = monitor;
+        IProgressMonitor progressMonitor = monitor;
+        if (progressMonitor == null) {
+            progressMonitor = new NullProgressMonitor();
         }
-        inferTemplate();
+        inferTemplate(progressMonitor);
     }
 
     /**
@@ -105,20 +105,19 @@ public class InferTemplateProcessor implements ICoreRunnable {
      * relative distribution of at least
      * {@link IIpsProjectProperties#getInferredTemplateLinkThreshold()}.
      */
-    private void inferTemplate() {
-        monitor.beginTask(Messages.InferTemplateOperation_progress_inferringTemplate, propertyValueHistograms.size()
-                + productCmptLinkHistograms.size() + generationLinkHistograms.size() + (productCmpts.size() * 2));
-        try {
-            preSrcFileChanged(templateGeneration.getIpsSrcFile());
-            updateProductCmpts();
-            for (PropertyValueType type : PropertyValueType.values()) {
-                updatePropertyValues(type.getInterfaceClass(), type.getValueSetter());
-            }
-            updateLinks();
-            save();
-        } finally {
-            monitor.done();
+    private void inferTemplate(IProgressMonitor progressMonitor) {
+        monitor = SubMonitor.convert(progressMonitor,
+                Messages.InferTemplateOperation_progress_inferringTemplate, propertyValueHistograms.size()
+                        + productCmptLinkHistograms.size() + generationLinkHistograms.size()
+                        + (productCmpts.size() * 2));
+
+        preSrcFileChanged(templateGeneration.getIpsSrcFile());
+        updateProductCmpts();
+        for (PropertyValueType type : PropertyValueType.values()) {
+            updatePropertyValues(type.getInterfaceClass(), type.getValueSetter());
         }
+        updateLinks();
+        save();
     }
 
     protected IpsModel getIpsModel() {
@@ -142,13 +141,11 @@ public class InferTemplateProcessor implements ICoreRunnable {
         return templateGeneration.getProductCmpt().getQualifiedName();
     }
 
-    @SuppressWarnings("deprecation")
     private void save() {
-        org.eclipse.core.runtime.SubProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
-                monitor, productCmpts.size());
+        SubMonitor saveMonitor = monitor.split(productCmpts.size());
         saveMonitor.beginTask(Messages.InferTemplateOperation_progress_save, srcFilesToSave.size() + 1);
         for (IIpsSrcFile ipsSrcFile : srcFilesToSave) {
-            ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            ipsSrcFile.save(monitor.split(1));
         }
     }
 

@@ -21,6 +21,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -66,7 +67,6 @@ public class DeepCopyPreview {
      * 
      * @param progressMonitor a progress monitor to show state of work
      */
-    @SuppressWarnings("deprecation")
     public void createTargetNodes(IProgressMonitor progressMonitor) {
         errorElements.clear();
         filename2referenceMap.clear();
@@ -74,7 +74,7 @@ public class DeepCopyPreview {
         patternMatched = false;
 
         Set<IProductCmptStructureReference> toCopy = presentationModel.getAllCopyElements(false);
-        progressMonitor.beginTask("", toCopy.size() + 5); //$NON-NLS-1$
+        SubMonitor subProgressMonitor = SubMonitor.convert(progressMonitor, toCopy.size() + 5);
         int segmentsToIgnore = getSegmentsToIgnore(toCopy);
         IIpsPackageFragment base = presentationModel.getTargetPackage();
         IIpsPackageFragmentRoot root = presentationModel.getTargetPackageRoot();
@@ -87,14 +87,12 @@ public class DeepCopyPreview {
                         element,
                         NLS.bind(Messages.SourcePage_msgInvalidPattern, getPresentationModel().getSearchInput())
                                 + e.getLocalizedMessage());
-                progressMonitor.done();
                 return;
             } catch (IllegalArgumentException e) {
                 errorElements.put(element, e.getMessage());
-                progressMonitor.done();
                 return;
             }
-            progressMonitor.worked(1);
+            subProgressMonitor.worked(1);
         }
 
         String searchInput = presentationModel.getSearchInput();
@@ -106,8 +104,7 @@ public class DeepCopyPreview {
 
         MessageList validationResult = new MessageList();
         int noOfMessages = validationResult.size();
-        org.eclipse.core.runtime.SubProgressMonitor subProgress = new org.eclipse.core.runtime.SubProgressMonitor(
-                progressMonitor, 5);
+        SubMonitor subProgress = subProgressMonitor.split(5);
         subProgress.beginTask("", noOfMessages); //$NON-NLS-1$
         for (int i = 0; i < noOfMessages; i++) {
             Message currMessage = validationResult.getMessage(i);
@@ -116,8 +113,6 @@ public class DeepCopyPreview {
             addMessage(object, currMessage.getText());
             subProgress.worked(1);
         }
-        subProgress.done();
-        progressMonitor.done();
     }
 
     private void validateTarget(IProductCmptStructureReference modified,

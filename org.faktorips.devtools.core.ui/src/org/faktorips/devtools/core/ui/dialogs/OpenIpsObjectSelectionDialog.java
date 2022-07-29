@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
@@ -137,21 +138,15 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     protected void fillContentProvider(AbstractContentProvider contentProvider,
             ItemsFilter itemsFilter,
             IProgressMonitor progressMonitorParam) {
-
-        IProgressMonitor progressMonitor = progressMonitorParam;
-        if (progressMonitorParam == null) {
-            progressMonitor = new NullProgressMonitor();
-        }
-        progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, 100);
-        @SuppressWarnings("deprecation")
-        org.eclipse.core.runtime.SubProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
-                progressMonitor, 90);
-        List<IIpsSrcFile> srcFiles = context.getIpsSrcFiles(subMonitor);
+        IProgressMonitor progressMonitor = (progressMonitorParam == null) ? new NullProgressMonitor()
+                : progressMonitorParam;
+        SubMonitor subMonitor = SubMonitor.convert(progressMonitor, Messages.OpenIpsObjectSelectionDialog_processName,
+                100);
+        List<IIpsSrcFile> srcFiles = context.getIpsSrcFiles(subMonitor.split(90));
         for (IIpsSrcFile srcFile : srcFiles) {
             contentProvider.add(srcFile, itemsFilter);
         }
-        progressMonitor.worked(10);
-        progressMonitor.done();
+        subMonitor.worked(10);
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.util.SortedSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AResource;
@@ -46,18 +47,19 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         MessageList messages = new MessageList();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getSourceIpsPackageFragmentRoots();
         try {
-            monitor.beginTask("Migrate project: " + getIpsProject().getName(), countPackages() * 10); //$NON-NLS-1$
+            SubMonitor subMonitor = SubMonitor.convert(monitor, "Migrate project: " + getIpsProject().getName(), //$NON-NLS-1$
+                    countPackages() * 10);
+
             beforeFileMigration();
             for (IIpsPackageFragmentRoot root : roots) {
                 IIpsPackageFragment[] packs = root.getIpsPackageFragments();
                 for (IIpsPackageFragment pack : packs) {
-                    migrate(pack, messages, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
+                    migrate(pack, messages, subMonitor.split(10));
                     if (monitor.isCanceled()) {
                         return messages;
                     }

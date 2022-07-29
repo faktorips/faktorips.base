@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ColumnPixelData;
@@ -768,18 +769,14 @@ public class SourcePage extends WizardPage {
         try {
             isRefreshing = true;
             getWizard().getContainer().run(false, false, monitor -> {
-                IProgressMonitor progressMonitor = monitor;
-                if (progressMonitor == null) {
-                    progressMonitor = new NullProgressMonitor();
-                }
-                progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
-                @SuppressWarnings("deprecation")
-                org.eclipse.core.runtime.SubProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(
-                        progressMonitor, 6);
+                IProgressMonitor progressMonitor = (monitor == null) ? new NullProgressMonitor() : monitor;
+                SubMonitor subMonitor = SubMonitor.convert(progressMonitor,
+                        Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
+                SubMonitor subProgressMonitor = subMonitor.split(6);
                 getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
-                progressMonitor.worked(1);
+                subMonitor.worked(1);
                 tree.refresh();
-                progressMonitor.worked(1);
+                subMonitor.worked(1);
             });
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);

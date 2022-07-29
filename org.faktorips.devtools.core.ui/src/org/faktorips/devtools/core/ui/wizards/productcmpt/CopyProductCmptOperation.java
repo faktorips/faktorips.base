@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -30,12 +31,11 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
     }
 
     @Override
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
+    protected IIpsSrcFile createIpsSrcFile(SubMonitor monitor) {
         return copyIpsSrcFile(monitor);
     }
 
-    @SuppressWarnings("deprecation")
-    private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) {
+    private IIpsSrcFile copyIpsSrcFile(SubMonitor monitor) {
         IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
         String fileName = getPmo().getCopyProductCmpt().getIpsObjectType().getFileName(getPmo().getName());
         // @formatter:off
@@ -43,7 +43,7 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
                 fileName,
                 getContentsOfIpsObject(getPmo().getCopyProductCmpt()),
                 true,
-                new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                monitor.split(1));
         // @formatter:on
     }
 

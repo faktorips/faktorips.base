@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.Point;
@@ -204,12 +205,11 @@ public class DeepCopyWizard extends ResizableWizard {
                     .getCorrespondingResource().getWorkspace().getRoot().unwrap();
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 
-                @SuppressWarnings("deprecation")
                 @Override
                 protected void execute(IProgressMonitor monitor) throws IpsException, InterruptedException {
-                    monitor.beginTask("", 2); //$NON-NLS-1$
+                    SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
                     final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview
-                            .getHandles(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1), toCopy);
+                            .getHandles(subMonitor.split(1), toCopy);
                     DeepCopyOperation dco = new DeepCopyOperation(getStructure().getRoot(), toCopy, toLink, handles,
                             getStructure().getValidAt(), presentationModel.getNewValidFrom());
                     dco.setIpsPackageFragmentRoot(presentationModel.getTargetPackageRoot());
@@ -218,7 +218,7 @@ public class DeepCopyWizard extends ResizableWizard {
                     dco.setCreateEmptyTableContents(createEmptyTableContents);
                     dco.setCopyExistingGenerations(presentationModel.isCopyExistingGenerations());
                     configureFixups(dco);
-                    dco.run(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                    dco.run(subMonitor.split(1));
                     copyResultRoot = dco.getCopiedRoot();
                 }
             };

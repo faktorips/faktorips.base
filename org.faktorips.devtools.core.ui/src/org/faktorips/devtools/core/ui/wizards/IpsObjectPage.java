@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.wizards;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -477,11 +478,10 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         setPageComplete(complete);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
         return getIpsPackageFragment().createIpsFile(getIpsObjectType(), getIpsObjectName(), true,
-                new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                ((SubMonitor)monitor).split(1));
     }
 
     /**

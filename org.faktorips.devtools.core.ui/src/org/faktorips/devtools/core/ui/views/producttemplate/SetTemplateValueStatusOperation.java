@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 
@@ -28,18 +29,17 @@ public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOpera
         this.status = status;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) {
         int count = values.size();
-        monitor.beginTask(Messages.SetTemplateValueStatusOperation_progress, count + 10);
+        SubMonitor subMonitor = SubMonitor.convert(monitor, Messages.SetTemplateValueStatusOperation_progress,
+                count + 10);
         for (ITemplatedValue propertyValue : values) {
             checkForSave(propertyValue);
             propertyValue.setTemplateValueStatus(status);
-            monitor.worked(1);
+            subMonitor.worked(1);
         }
-        save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
-        monitor.done();
+        save(subMonitor.split(10));
     }
 
     public static boolean isValid(Collection<ITemplatedValue> selectedValues) {

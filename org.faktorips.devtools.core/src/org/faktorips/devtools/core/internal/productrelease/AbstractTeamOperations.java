@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.ITeamStatus;
 import org.eclipse.team.core.RepositoryProvider;
@@ -39,43 +40,39 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
         this.observableProgressMessages = observableProgressMessages;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
-        monitor.beginTask(null, 2);
-        try {
-            RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
-            if (repositoryProvider == null) {
-                observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
-                return;
-            }
-            Subscriber subscriber = repositoryProvider.getSubscriber();
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
 
-            SyncInfoSet outOfSync = new SyncInfoSet();
-            subscriber.collectOutOfSync(resources, 0, outOfSync, monitor);
-            IResource[] underControl = outOfSync.getResources();
-
-            subscriber.refresh(underControl, IResource.DEPTH_ZERO,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-            List<IResource> syncResources = new ArrayList<>();
-            for (IResource aResource : underControl) {
-                SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
-                if (syncInfo == null || syncInfo.getRemote() == null) {
-                    // file seems to be ignored
-                    continue;
-                }
-                if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
-                    throw new InterruptedException(Messages.CvsTeamOperations_exception_remoteChanges);
-                }
-                syncResources.add(aResource);
-            }
-
-            commitFiles(syncResources, comment, monitor);
-            observableProgressMessages.info(Messages.ProductReleaseProcessor_status_commit_success);
-        } finally {
-            monitor.done();
+        RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
+        if (repositoryProvider == null) {
+            observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
+            return;
         }
+        Subscriber subscriber = repositoryProvider.getSubscriber();
+
+        SyncInfoSet outOfSync = new SyncInfoSet();
+        subscriber.collectOutOfSync(resources, 0, outOfSync, subMonitor);
+        IResource[] underControl = outOfSync.getResources();
+
+        subscriber.refresh(underControl, IResource.DEPTH_ZERO,
+                subMonitor.split(1));
+        List<IResource> syncResources = new ArrayList<>();
+        for (IResource aResource : underControl) {
+            SyncInfo syncInfo = subscriber.getSyncInfo(aResource);
+            if (syncInfo == null || syncInfo.getRemote() == null) {
+                // file seems to be ignored
+                continue;
+            }
+            if (syncInfo.getKind() != 0 && (syncInfo.getKind() & SyncInfo.OUTGOING) != SyncInfo.OUTGOING) {
+                throw new InterruptedException(Messages.CvsTeamOperations_exception_remoteChanges);
+            }
+            syncResources.add(aResource);
+        }
+
+        commitFiles(syncResources, comment, monitor);
+        observableProgressMessages.info(Messages.ProductReleaseProcessor_status_commit_success);
     }
 
     /**
@@ -84,7 +81,6 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
     protected abstract void commitFiles(List<IResource> syncResources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean isProjectSynchronized(IProject project, IProgressMonitor monitor) {
         try {
@@ -96,14 +92,13 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
             SyncInfoSet syncInfoSet = new SyncInfoSet();
             Subscriber subscriber = repositoryProvider.getSubscriber();
             IResource[] resources = new IResource[] { project };
-            monitor.beginTask(null, 2);
+
+            SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
+
             if (subscriber != null) {
 
-                subscriber.refresh(resources, IResource.DEPTH_INFINITE,
-                        new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-                subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet,
-                        new org.eclipse.core.runtime.SubProgressMonitor(
-                                monitor, 1));
+                subscriber.refresh(resources, IResource.DEPTH_INFINITE, subMonitor.split(1));
+                subscriber.collectOutOfSync(resources, IResource.DEPTH_INFINITE, syncInfoSet, subMonitor.split(1));
                 final boolean empty = syncInfoSet.isEmpty();
                 if (empty) {
                     observableProgressMessages.info(Messages.ProductReleaseProcessor_status_synchon);

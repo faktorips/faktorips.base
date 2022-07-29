@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -162,7 +163,6 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
                 Messages.ValidationRuleCsvImporter_status_multipleUsedMessageCodes, null);
     }
 
-    @SuppressWarnings("deprecation")
     private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
@@ -173,7 +173,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
             importValidationMessages(pcType);
             getMonitor().worked(1);
             if (!dirtyState && ipsSrcFile.isDirty()) {
-                ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(getMonitor(), 1));
+                ipsSrcFile.save(SubMonitor.convert(getMonitor(), 1));
             }
         }
     }

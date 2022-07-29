@@ -21,6 +21,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -93,23 +94,20 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
         }
 
         List<IProductCmptGeneration> generations = productCmpt.getProductCmptGenerations();
-        try {
-            monitor.beginTask(productCmpt.getName(), generations.size());
-            for (IProductCmptGeneration generation : generations) {
-                result.addAll(collectValidFromDates(generation, generation.getValidFrom(), alreadyPassed, ipsProject,
-                        monitor));
-            }
-        } finally {
-            monitor.done();
+        SubMonitor subMonitor = SubMonitor.convert(monitor, productCmpt.getName(), generations.size());
+        for (IProductCmptGeneration generation : generations) {
+            result.addAll(collectValidFromDates(generation, generation.getValidFrom(), alreadyPassed, ipsProject,
+                    subMonitor));
         }
         return result;
+
     }
 
     private Set<GregorianCalendar> collectValidFromDates(IProductCmptGeneration generation,
             GregorianCalendar smallestValidFrom,
             Set<IProductCmptGeneration> alreadyPassed,
             IIpsProject ipsProject,
-            IProgressMonitor monitor) {
+            SubMonitor monitor) {
         GregorianCalendar theSmallestValidFrom = smallestValidFrom;
         Set<GregorianCalendar> result = new HashSet<>();
         if (monitor.isCanceled()) {
@@ -120,32 +118,27 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
             theSmallestValidFrom = generation.getValidFrom();
         }
         List<IProductCmptLink> links = generation.getLinksIncludingProductCmpt();
-        @SuppressWarnings("deprecation")
-        IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1);
-        try {
-            subMonitor.beginTask(null, links.size());
-            for (IProductCmptLink link : links) {
-                if (monitor.isCanceled()) {
-                    return result;
-                }
-                IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
-                if (linkAssociation != null && !linkAssociation.isAssoziation()) {
-                    IProductCmpt target = link.findTarget(ipsProject);
-                    if (target != null) {
-                        @SuppressWarnings("deprecation")
-                        IProgressMonitor recMonitor = new org.eclipse.core.runtime.SubProgressMonitor(subMonitor, 1);
-                        List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
-                        for (IProductCmptGeneration aGeneration : relevantGenerations) {
-                            if (alreadyPassed.add(aGeneration)) {
-                                result.addAll(collectValidFromDates(aGeneration, theSmallestValidFrom, alreadyPassed,
-                                        ipsProject, recMonitor));
-                            }
+        SubMonitor subMonitor = monitor.split(1);
+
+        subMonitor.beginTask(null, links.size());
+        for (IProductCmptLink link : links) {
+            if (monitor.isCanceled()) {
+                return result;
+            }
+            IProductCmptTypeAssociation linkAssociation = link.findAssociation(ipsProject);
+            if (linkAssociation != null && !linkAssociation.isAssoziation()) {
+                IProductCmpt target = link.findTarget(ipsProject);
+                if (target != null) {
+                    SubMonitor recMonitor = subMonitor.split(1);
+                    List<IProductCmptGeneration> relevantGenerations = getRelevantGenerations(target, generation);
+                    for (IProductCmptGeneration aGeneration : relevantGenerations) {
+                        if (alreadyPassed.add(aGeneration)) {
+                            result.addAll(collectValidFromDates(aGeneration, theSmallestValidFrom, alreadyPassed,
+                                    ipsProject, recMonitor));
                         }
                     }
                 }
             }
-        } finally {
-            subMonitor.done();
         }
         return result;
     }

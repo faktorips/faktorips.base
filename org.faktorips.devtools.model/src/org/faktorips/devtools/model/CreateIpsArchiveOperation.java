@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -96,65 +97,56 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
 
     @Override
     public void run(IProgressMonitor monitor) {
-        IProgressMonitor theMonitor = monitor;
-        if (theMonitor == null) {
-            theMonitor = new NullProgressMonitor();
+        IProgressMonitor theMonitor = monitor == null ? new NullProgressMonitor() : monitor;
+
+        SubMonitor subMonitor = SubMonitor.convert(theMonitor, Messages.CreateIpsArchiveOperation_Task_CreateArchive,
+                100);
+
+        SubMonitor exportMonitor = subMonitor.split(98);
+        exportMonitor.beginTask(null, getWorkload());
+
+        AFile workspaceFile = getWorkspaceFile();
+        if (workspaceFile != null && workspaceFile.getLocalTimeStamp() == archive.lastModified()) {
+            try {
+                /*
+                 * Force the archive's file to have different time stamp than the cached IFile. This
+                 * is necessary so we can call refreshLocal() after finishing the archive, as
+                 * eclipse refreshes only if a file had its time stamp changed.
+                 * 
+                 * The reason for the 1010ms wait is that the windows file system does not track
+                 * milliseconds but only full seconds with a file's last-modified date. Thus waiting
+                 * for more than a second is necessary to guarantee that different time stamp.
+                 * 
+                 * This little hack needs to be done, as we have to use JarOutputStream and thereby
+                 * bypass eclipse's file-tracking.
+                 */
+                Thread.sleep(1010);
+            } catch (InterruptedException e) {
+                throw new IpsException(new IpsStatus(e));
+            }
         }
+
+        JarOutputStream os;
         try {
-            theMonitor.beginTask(Messages.CreateIpsArchiveOperation_Task_CreateArchive, 100);
-            @SuppressWarnings("deprecation")
-            IProgressMonitor exportMonitor = new org.eclipse.core.runtime.SubProgressMonitor(theMonitor, 98);
-            exportMonitor.beginTask(null, getWorkload());
-
-            AFile workspaceFile = getWorkspaceFile();
-            if (workspaceFile != null && workspaceFile.getLocalTimeStamp() == archive.lastModified()) {
-                try {
-                    /*
-                     * Force the archive's file to have different time stamp than the cached IFile.
-                     * This is necessary so we can call refreshLocal() after finishing the archive,
-                     * as eclipse refreshes only if a file had its time stamp changed.
-                     * 
-                     * The reason for the 1010ms wait is that the windows file system does not track
-                     * milliseconds but only full seconds with a file's last-modified date. Thus
-                     * waiting for more than a second is necessary to guarantee that different time
-                     * stamp.
-                     * 
-                     * This little hack needs to be done, as we have to use JarOutputStream and
-                     * thereby bypass eclipse's file-tracking.
-                     */
-                    Thread.sleep(1010);
-                } catch (InterruptedException e) {
-                    throw new IpsException(new IpsStatus(e));
-                }
-            }
-
-            JarOutputStream os;
-            try {
-                os = new JarOutputStream(new FileOutputStream(archive));
-            } catch (IOException e) {
-                throw new IpsException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
-            }
-            Properties ipsObjectsProperties = new Properties();
-            for (IIpsPackageFragmentRoot root : roots) {
-                @SuppressWarnings("deprecation")
-                IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(exportMonitor,
-                        root.getIpsPackageFragments().length);
-                addToArchive(root, os, ipsObjectsProperties, subMonitor);
-            }
-            createIpsObjectsPropertiesEntry(os, ipsObjectsProperties);
-            try {
-                os.close();
-                // CSOFF: IllegalCatch
-            } catch (Exception e) {
-                throw new IpsException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
-            }
-            // CSON: IllegalCatch
-            @SuppressWarnings("deprecation")
-            IProgressMonitor refreshMonitor = new org.eclipse.core.runtime.SubProgressMonitor(theMonitor, 2);
-            refreshInWorkspaceIfNecessary(refreshMonitor);
-        } finally {
-            theMonitor.done();
+            os = new JarOutputStream(new FileOutputStream(archive));
+        } catch (IOException e) {
+            throw new IpsException(new IpsStatus("Error opening output stream for jar file " + archive, e)); //$NON-NLS-1$
         }
+        Properties ipsObjectsProperties = new Properties();
+        for (IIpsPackageFragmentRoot root : roots) {
+            SubMonitor subExportMonitor = exportMonitor.split(root.getIpsPackageFragments().length);
+            addToArchive(root, os, ipsObjectsProperties, subExportMonitor);
+        }
+        createIpsObjectsPropertiesEntry(os, ipsObjectsProperties);
+        try {
+            os.close();
+            // CSOFF: IllegalCatch
+        } catch (Exception e) {
+            throw new IpsException(new IpsStatus("Error closing output stream for jar file " + archive, e)); //$NON-NLS-1$
+        }
+        // CSON: IllegalCatch
+        SubMonitor refreshMonitor = subMonitor.split(2);
+        refreshInWorkspaceIfNecessary(refreshMonitor);
     }
 
     /**
@@ -198,22 +190,16 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
             Properties ipsObjectsProperties,
             IProgressMonitor monitor) {
 
-        try {
-            IIpsPackageFragment[] packs = root.getIpsPackageFragments();
-            monitor.beginTask(null, packs.length);
-            for (IIpsPackageFragment pack : packs) {
-                @SuppressWarnings("deprecation")
-                IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1);
-                addToArchive(pack, os, ipsObjectsProperties, subMonitor);
-                if (monitor.isCanceled()) {
-                    throw new OperationCanceledException();
-                }
+        IIpsPackageFragment[] packs = root.getIpsPackageFragments();
+        SubMonitor subMonitor = SubMonitor.convert(monitor, packs.length);
+        for (IIpsPackageFragment pack : packs) {
+            addToArchive(pack, os, ipsObjectsProperties, subMonitor.split(1));
+            if (monitor.isCanceled()) {
+                throw new OperationCanceledException();
             }
-            if (inclJavaBinaries || inclJavaSources) {
-                addJavaFiles(root, os, monitor);
-            }
-        } finally {
-            monitor.done();
+        }
+        if (inclJavaBinaries || inclJavaSources) {
+            addJavaFiles(root, os, monitor);
         }
     }
 

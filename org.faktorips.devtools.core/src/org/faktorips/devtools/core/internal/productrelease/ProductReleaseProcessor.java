@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
@@ -85,22 +86,15 @@ public class ProductReleaseProcessor {
             observableProgressMessages.error(Messages.ReleaseAndDeploymentOperation_exception_noDeploymentExtension);
             return false;
         }
-        monitor.beginTask(null, 100);
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 100);
+
         observableProgressMessages.info(Messages.ProductReleaseProcessor_status_start);
 
-        try {
-            @SuppressWarnings("deprecation")
-            String tag = buildRelease(ipsProject, newVersion,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 50));
-            // start extended release
-            @SuppressWarnings("deprecation")
-            boolean buildReleaseAndDeployment = getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
-                    ipsProject, tag, selectedTargetSystems,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 50));
-            return buildReleaseAndDeployment;
-        } finally {
-            monitor.done();
-        }
+        String tag = buildRelease(ipsProject, newVersion, subMonitor.split(50));
+        // start extended release
+        boolean buildReleaseAndDeployment = getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
+                ipsProject, tag, selectedTargetSystems, subMonitor.split(50));
+        return buildReleaseAndDeployment;
     }
 
     /**
@@ -108,50 +102,45 @@ public class ProductReleaseProcessor {
      * 
      * @return the tag used to tag the project in version control system
      */
-    @SuppressWarnings("deprecation")
     private String buildRelease(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws JavaModelException, InterruptedException, CoreException, TeamException {
-        monitor.beginTask(null, 95);
-        try {
-            monitor.worked(1);
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 95);
 
-            // check project is synchrony with filesystem
-            checkSyncWithFilesystem(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 4));
+        subMonitor.worked(1);
 
-            // check project is synchrony with repository
-            checkSynchronization(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
+        // check project is synchrony with filesystem
+        checkSyncWithFilesystem(ipsProject, subMonitor.split(4));
 
-            // update version in project
-            updateVersionProperty(ipsProject, newVersion);
-            monitor.worked(2);
+        // check project is synchrony with repository
+        checkSynchronization(ipsProject, subMonitor.split(10));
 
-            // build project
-            buildProject(ipsProject, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 40));
+        // update version in project
+        updateVersionProperty(ipsProject, newVersion);
+        monitor.worked(2);
 
-            // check for fips error markers
-            validateIpsProject(ipsProject);
-            monitor.worked(2);
+        // build project
+        buildProject(ipsProject, subMonitor.split(40));
 
-            // check for other error markers
-            checkProblemMarkers(ipsProject);
-            monitor.worked(1);
+        // check for fips error markers
+        validateIpsProject(ipsProject);
+        monitor.worked(2);
 
-            if (!getReleaseAndDeploymentOperation().preCommit(ipsProject,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 5))) {
-                throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
-            }
+        // check for other error markers
+        checkProblemMarkers(ipsProject);
+        monitor.worked(1);
 
-            // commit property file and toc file
-            commitFiles(ipsProject, newVersion, new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
-
-            // tag the project with the new version
-            String tagProject = tagProject(ipsProject, newVersion,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 20));
-
-            return tagProject;
-        } finally {
-            monitor.done();
+        if (!getReleaseAndDeploymentOperation().preCommit(ipsProject,
+                subMonitor.split(5))) {
+            throw new InterruptedException(Messages.ProductReleaseProcessor_error_custom_validation_failed);
         }
+
+        // commit property file and toc file
+        commitFiles(ipsProject, newVersion, subMonitor.split(10));
+
+        // tag the project with the new version
+        String tagProject = tagProject(ipsProject, newVersion, subMonitor.split(20));
+
+        return tagProject;
     }
 
     public IReleaseAndDeploymentOperation loadReleaseDeploymentOperation(IIpsProject ipsProject) throws CoreException {
@@ -204,8 +193,7 @@ public class ProductReleaseProcessor {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
+    private void commitFiles(IIpsProject ipsProject, String newVersion, SubMonitor monitor) throws CoreException,
             InterruptedException {
         List<IResource> resources = new ArrayList<>();
         resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT).unwrap());
@@ -221,8 +209,7 @@ public class ProductReleaseProcessor {
         teamOperation
                 .commitFiles(ipsProject.getProject().unwrap(), resources.toArray(new IResource[0]),
                         Messages.ReleaseAndDeploymentOperation_commit_comment + newVersion,
-                        new org.eclipse.core.runtime.SubProgressMonitor(
-                                monitor, 10));
+                        monitor.split(10));
         if (!teamOperation.isProjectSynchronized(ipsProject.getProject().unwrap(), monitor)) {
             throw new InterruptedException(NLS.bind(Messages.ReleaseAndDeploymentOperation_exception_noLongerSynchron,
                     teamOperation.getVersionControlSystem()));

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -102,23 +103,19 @@ public class MigrationWizard extends Wizard implements IWorkbenchWizard {
         @Override
         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
             IIpsProject[] projects = projectSelectionPage.getProjects();
-            monitor.beginTask("Migration", projects.length * 10000); //$NON-NLS-1$
-            try {
-                for (IIpsProject project : projects) {
-                    @SuppressWarnings("deprecation")
-                    IProgressMonitor subMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10000);
-                    try {
-                        AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
-                                .getMigrationOperation(project);
-                        setSelectedMigrationOptions(migrationOperation);
-                        migrationOperation.run(subMonitor);
-                        messageList = migrationOperation.getMessageList();
-                    } catch (IpsException e) {
-                        IpsPlugin.log(e);
-                    }
+            SubMonitor subMonitor = SubMonitor.convert(monitor, "Migration", projects.length * 10000); //$NON-NLS-1$
+
+            for (IIpsProject project : projects) {
+                SubMonitor subProgressMonitor = subMonitor.split(10000);
+                try {
+                    AbstractIpsFeatureMigrationOperation migrationOperation = IpsPlugin.getDefault()
+                            .getMigrationOperation(project);
+                    setSelectedMigrationOptions(migrationOperation);
+                    migrationOperation.run(subProgressMonitor);
+                    messageList = migrationOperation.getMessageList();
+                } catch (IpsException e) {
+                    IpsPlugin.log(e);
                 }
-            } finally {
-                monitor.done();
             }
         }
 
