@@ -573,11 +573,6 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     public class UnfocusableTextCellEditor extends TextCellEditor {
 
         private Object fOriginalValue;
-        // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
-        // support
-        @SuppressWarnings("deprecation")
-        private org.eclipse.jface.contentassist.SubjectControlContentAssistant fContentAssistant;
-        private boolean fSaveNextModification;
 
         public UnfocusableTextCellEditor(Composite parent) {
             super(parent);
@@ -600,35 +595,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
         @Override
         protected void focusLost() {
-            if (fContentAssistant != null && fContentAssistant.hasProposalPopupFocus()) {
-                fSaveNextModification = true;
-            } else {
-                super.focusLost();
-            }
-        }
-
-        // TODO FIPS-7874 Replace SubjectControlContentAssistant with Platform UI's field assist
-        // support
-        @SuppressWarnings("deprecation")
-        public void setContentAssistant(org.eclipse.jface.contentassist.SubjectControlContentAssistant assistant,
-                final int property) {
-            fContentAssistant = assistant;
-            /*
-             * The following comment was copied along with the code when "reusing" functionality
-             * from eclipse. Thus the bug numbers are eclipse bugs.
-             * 
-             * "workaround for bugs 53629, 58777:"
-             */
-            text.addModifyListener($ -> {
-                if (fSaveNextModification) {
-                    fSaveNextModification = false;
-                    final String newValue = text.getText();
-                    tableViewer.getCellModifier().modify(
-                            ((IStructuredSelection)tableViewer.getSelection()).getFirstElement(),
-                            getProperty(property), newValue);
-                    editColumnOrNextPossible(property);
-                }
-            });
+            super.focusLost();
         }
     }
 }

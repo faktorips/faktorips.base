@@ -56,7 +56,7 @@ public class ConfiguredValueSetField extends FormattingTextField<IValueSet> {
             IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype, getIpsProject());
             AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configuredValueSet,
                     valueDatatype, inputFormat);
-            ContentProposalAdapter contentProposalAdapter = new UIToolkit(null).attachContentProposalAdapter(
+            ContentProposalAdapter contentProposalAdapter = UIToolkit.attachContentProposalAdapter(
                     getTextControl(), proposalProvider, ContentProposalAdapter.PROPOSAL_IGNORE, null);
             ContentProposalListener contentProposalListener = new ContentProposalListener(contentProposalAdapter);
             contentProposalAdapter.addContentProposalListener(contentProposalListener);

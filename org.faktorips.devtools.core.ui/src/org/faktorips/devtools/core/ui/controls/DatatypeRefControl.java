@@ -38,7 +38,7 @@ public class DatatypeRefControl extends TextButtonControl {
         this.toolkit = toolkit;
 
         proposalProvider = new DatatypeContentProposalProvider(ipsProject);
-        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
+        UIToolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new DatatypeContentProposalLabelProvider());
     }
 

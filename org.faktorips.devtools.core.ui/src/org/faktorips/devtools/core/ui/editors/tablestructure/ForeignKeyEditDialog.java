@@ -15,6 +15,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
@@ -70,7 +71,7 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
 
     protected void setupContentAssist(Text ukRefControl) {
         contentProposalProvider = new UniqueKeysProposalProvider(pmo);
-        getToolkit().attachContentProposalAdapter(ukRefControl, contentProposalProvider,
+        UIToolkit.attachContentProposalAdapter(ukRefControl, contentProposalProvider,
                 ContentProposalAdapter.PROPOSAL_REPLACE, null);
     }
 

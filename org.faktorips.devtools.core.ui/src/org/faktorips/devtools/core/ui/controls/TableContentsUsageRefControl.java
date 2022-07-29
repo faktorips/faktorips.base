@@ -65,7 +65,7 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
 
         filter = new IpsSrcFileFilter(tableUsage.findTableStructureUsage(project));
         proposalProvider.setFilter(filter);
-        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
+        UIToolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());
     }
 
@@ -116,9 +116,11 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
                     setText(""); //$NON-NLS-1$
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        // CSON: IllegalCatch
     }
 
     private void updateTextControlAfterDialogOK(IIpsSrcFile srcFile) {

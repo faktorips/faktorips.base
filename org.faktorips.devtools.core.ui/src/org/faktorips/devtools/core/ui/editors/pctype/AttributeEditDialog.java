@@ -16,8 +16,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.fieldassist.ContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -40,8 +40,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.AbstractCompletionProcessor;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -55,6 +53,8 @@ import org.faktorips.devtools.core.ui.controller.fields.IntegerField;
 import org.faktorips.devtools.core.ui.controller.fields.MessageDecoration;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractPrefixContentProposalProvider;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
@@ -428,13 +428,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 editMethodInDialog();
             }
         });
-        Text compuationMethodText = getToolkit().createText(temp);
-        MethodSignatureCompletionProcessor processor = new MethodSignatureCompletionProcessor(getProductCmptType());
-        CompletionUtil.createHandlerForText(compuationMethodText, processor);
+        Text computationMethodText = getToolkit().createText(temp);
+        ContentProposals.forText(computationMethodText,
+                new MethodSignatureContentProposalProvider(getProductCmptType()));
 
-        getBindingContext().bindContent(compuationMethodText, attribute,
+        getBindingContext().bindContent(computationMethodText, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_COMPUTATION_METHOD_SIGNATURE);
-        getBindingContext().bindEnabled(compuationMethodText, attribute,
+        getBindingContext().bindEnabled(computationMethodText, attribute,
                 IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
 
         Link link = new Link(area, SWT.NONE);
@@ -1042,37 +1042,31 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         refactoringOperation.runDirectExecution();
     }
 
-    private static class MethodSignatureCompletionProcessor extends AbstractCompletionProcessor {
+    private static class MethodSignatureContentProposalProvider extends AbstractPrefixContentProposalProvider {
 
         private final IType type;
 
-        public MethodSignatureCompletionProcessor(IType type) {
-            super(type == null ? null : type.getIpsProject());
+        public MethodSignatureContentProposalProvider(IType type) {
             this.type = type;
-            setComputeProposalForEmptyPrefix(true);
         }
 
         @Override
-        protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
-                throws Exception {
-
-            if (type == null) {
-                return;
+        public IContentProposal[] getProposals(String prefix) {
+            if (type != null) {
+                String lowerCasePrefix = prefix.toLowerCase();
+                return type.getMethods().stream()
+                        .filter(method -> method.getSignatureString().startsWith(lowerCasePrefix))
+                        .map(this::toProposal)
+                        .toArray(IContentProposal[]::new);
             }
-            List<IMethod> methods = type.getMethods();
-            for (IMethod method : methods) {
-                if (method.getSignatureString().startsWith(prefix)) {
-                    addToResult(result, method, documentOffset);
-                }
-            }
+            return EMPTY_PROPOSALS;
         }
 
-        private void addToResult(List<ICompletionProposal> result, IMethod method, int documentOffset) {
+        private IContentProposal toProposal(IMethod method) {
             String name = method.getSignatureString();
             String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(method);
-            CompletionProposal proposal = new CompletionProposal(name, 0, documentOffset, name.length(),
-                    IpsUIPlugin.getImageHandling().getImage(method), name, null, localizedDescription);
-            result.add(proposal);
+
+            return new ContentProposal(name, name, localizedDescription);
         }
 
     }

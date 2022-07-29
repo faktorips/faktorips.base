@@ -522,6 +522,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             });
             // support switching rows while editing:
             editor.getControl().addKeyListener(new KeyAdapter() {
+                // CSOFF: CyclomaticComplexity
                 @Override
                 public void keyPressed(KeyEvent e) {
                     if (e.stateMask == SWT.MOD1 || e.stateMask == SWT.MOD2) {
@@ -567,6 +568,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
                             break;
                     }
                 }
+                // CSON: CyclomaticComplexity
             });
 
             editor.addListener(new ICellEditorListener() {
@@ -609,7 +611,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         DatatypeContentProposalProvider provider = new DatatypeContentProposalProvider(ipsProject);
         provider.setValueDatatypesOnly(false);
         provider.setIncludeAbstract(true);
-        uiToolkit.attachContentProposalAdapter(text, provider, new DatatypeContentProposalLabelProvider());
+        UIToolkit.attachContentProposalAdapter(text, provider, new DatatypeContentProposalLabelProvider());
     }
 
     @Override

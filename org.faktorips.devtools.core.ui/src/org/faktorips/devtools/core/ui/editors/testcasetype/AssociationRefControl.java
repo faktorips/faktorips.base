@@ -18,10 +18,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.util.StringUtil;
@@ -45,10 +45,7 @@ public class AssociationRefControl extends TextButtonControl {
         this.dialogMessage = Messages.AssociationRefControl_Description;
         this.parentPolicyCmptType = parentPolicyCmptType;
 
-        AssociationCompletionProcessor completionProcessor = new AssociationCompletionProcessor(parentPolicyCmptType,
-                true);
-        completionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText(getTextControl(), completionProcessor);
+        ContentProposals.forText(getTextControl(), new AssociationContentProposalProvider(parentPolicyCmptType, true));
     }
 
     @Override
@@ -69,13 +66,15 @@ public class AssociationRefControl extends TextButtonControl {
                     setText(""); //$NON-NLS-1$
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        // CSON: IllegalCatch
     }
 
     /**
-     * Returns all associations of the parentPolicyCmptType which are assoziations or forward
+     * Returns all associations of the parentPolicyCmptType which are associations or forward
      * compositions
      * 
      * @throws IpsException in case of an error

@@ -109,7 +109,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             addDeleteButton();
         }
 
-        toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
+        UIToolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());
 
         setIpsProjects(projects);

@@ -28,10 +28,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controls.EditTableControl;
 import org.faktorips.devtools.core.ui.controls.TableLayoutComposite;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -74,9 +74,7 @@ public class ValidatedAttributesControl extends EditTableControl {
         UnfocusableTextCellEditor[] editors = new UnfocusableTextCellEditor[2];
         editors[0] = null;
         editors[1] = new UnfocusableTextCellEditor(getTable());
-        ValidatedAttributesCompletionProcessor completionProcessor = new ValidatedAttributesCompletionProcessor(rule);
-        completionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText((Text)editors[1].getControl(), completionProcessor);
+        ContentProposals.forText((Text)editors[1].getControl(), new ValidatedAttributesContentProposalProvider(rule));
         return editors;
     }
 

@@ -16,8 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.function.Function;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -67,6 +65,7 @@ import org.faktorips.devtools.core.ui.controls.Radiobutton;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.devtools.model.INamedValue;
@@ -1130,16 +1129,8 @@ public class UIToolkit {
             IControlContentAdapter contentAdapter,
             IContentProposalProvider proposalProvider,
             ILabelProvider labelProvider) {
-
-        KeyStroke keyStroke = null;
-        try {
-            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-        } catch (final ParseException e) {
-            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
-        }
-        ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, contentAdapter,
-                proposalProvider, keyStroke, null);
-        contentProposalAdapter.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
+        ContentProposalAdapter contentProposalAdapter = ContentProposals.addContentProposalAdapter(control,
+                contentAdapter, proposalProvider);
         contentProposalAdapter.setLabelProvider(labelProvider);
     }
 
@@ -1152,7 +1143,7 @@ public class UIToolkit {
      *            content
      * @param labelProvider Specifies how the content proposals are shown to the user
      */
-    public void attachContentProposalAdapter(Control control,
+    public static void attachContentProposalAdapter(Control control,
             IContentProposalProvider proposalProvider,
             ILabelProvider labelProvider) {
         attachContentProposalAdapter(control, proposalProvider, ContentProposalAdapter.PROPOSAL_REPLACE, labelProvider);
@@ -1173,18 +1164,12 @@ public class UIToolkit {
      *            to simply provide {@link ContentProposal#getLabel()}
      * @return The created {@link ContentProposalAdapter}
      */
-    public ContentProposalAdapter attachContentProposalAdapter(Control control,
+    public static ContentProposalAdapter attachContentProposalAdapter(Control control,
             IContentProposalProvider proposalProvider,
             int proposalAcceptanceStyle,
             ILabelProvider labelProvider) {
-        KeyStroke keyStroke = null;
-        try {
-            keyStroke = KeyStroke.getInstance("Ctrl+Space"); //$NON-NLS-1$
-        } catch (final ParseException e) {
-            throw new IllegalArgumentException("KeyStroke \"Ctrl+Space\" could not be parsed.", e); //$NON-NLS-1$
-        }
         ContentProposalAdapter contentProposalAdapter = new ContentProposalAdapter(control, new TextContentAdapter(),
-                proposalProvider, keyStroke, null);
+                proposalProvider, ContentProposals.AUTO_COMPLETION_KEY_STROKE, null);
         contentProposalAdapter.setProposalAcceptanceStyle(proposalAcceptanceStyle);
         contentProposalAdapter.setLabelProvider(labelProvider);
         if (proposalProvider instanceof ICachedContentProposalProvider) {
@@ -1239,7 +1224,7 @@ public class UIToolkit {
         return new MessageDecoration(control, position, getSectionClientArea(control.getParent()));
     }
 
-    private Composite getSectionClientArea(Composite composite) {
+    private static Composite getSectionClientArea(Composite composite) {
         if (composite != null && composite.getParent() instanceof Section) {
             return composite;
         } else if (composite != null) {

@@ -33,7 +33,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
@@ -45,6 +44,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
@@ -314,10 +314,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             Text inverseRelationText = getToolkit().createText(inverseAssoComposite);
             getBindingContext().bindContent(inverseRelationText, association,
                     IPolicyCmptTypeAssociation.PROPERTY_INVERSE_ASSOCIATION);
-            InverseAssociationCompletionProcessor inverseAssociationCompletionProcessor = new InverseAssociationCompletionProcessor(
-                    association);
-            inverseAssociationCompletionProcessor.setComputeProposalForEmptyPrefix(true);
-            CompletionUtil.createHandlerForText(inverseRelationText, inverseAssociationCompletionProcessor);
+
+            ContentProposals.forText(inverseRelationText, new InverseAssociationContentProposalProvider(association));
 
             // shared associations
             if (ipsProject.getReadOnlyProperties().isSharedDetailToMasterAssociations()) {

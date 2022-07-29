@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.controls;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.IpsPackageSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -26,12 +26,9 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
 
     private IIpsPackageFragmentRoot ipsPckFragmentRoot;
 
-    private IpsPckFragmenCompletionProcessor completionProcessor;
-
     public IpsPckFragmentRefControl(Composite parent, UIToolkit toolkit) {
         super(parent, toolkit, Messages.IpsPckFragmentRefControl_titleBrowse);
-        completionProcessor = new IpsPckFragmenCompletionProcessor(this);
-        CompletionUtil.createHandlerForText(getTextControl(), completionProcessor);
+        ContentProposals.forText(getTextControl(), new IpsPckFragmenContentProposalProvider(this));
     }
 
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
@@ -72,9 +69,11 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
                     setText(""); //$NON-NLS-1$
                 }
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
+        // CSON: IllegalCatch
     }
 
 }

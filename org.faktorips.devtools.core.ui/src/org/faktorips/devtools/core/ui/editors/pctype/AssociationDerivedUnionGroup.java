@@ -22,13 +22,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
+import org.faktorips.devtools.core.ui.editors.type.DerivedUnionContentProposalProvider;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
@@ -116,7 +116,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         bindingContext.bindContent(constrainCheckBox, association, IAssociation.PROPERTY_CONSTRAIN);
         bindingContext.bindEnabled(constrainCheckBox, pmoAssociation, PmoAssociation.PROPERTY_CONSTRAIN_ENABLED);
 
-        addCompletionProcessor(association);
+        ContentProposals.forCombobox(derivedUnionCombo, new DerivedUnionContentProposalProvider(association));
 
         bindingContext.bindContent(derivedUnionCheckbox, association, IAssociation.PROPERTY_DERIVED_UNION);
 
@@ -155,12 +155,6 @@ public class AssociationDerivedUnionGroup extends Composite {
      */
     public void setDefaultSubset(boolean subset) {
         pmoAssociation.setSubset(subset);
-    }
-
-    private void addCompletionProcessor(IAssociation association) {
-        DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
-        completionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForCombo(derivedUnionCombo, completionProcessor);
     }
 
     public class PmoAssociation extends IpsObjectPartPmo {

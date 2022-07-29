@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.controls.contentproposal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.viewers.IFilter;
@@ -31,14 +30,13 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  * 
  * @author dicker
  */
-public abstract class AbstractIpsSrcFileContentProposalProvider implements IContentProposalProvider {
+public abstract class AbstractIpsSrcFileContentProposalProvider extends AbstractPrefixContentProposalProvider {
 
     private SearchPattern searchPattern = new SearchPattern();
     private IFilter filter;
 
     @Override
-    public IContentProposal[] getProposals(String contents, int position) {
-        String prefix = StringUtils.left(contents, position);
+    public IContentProposal[] getProposals(String prefix) {
         searchPattern.setPattern(prefix);
         List<IContentProposal> result = new ArrayList<>();
         for (IIpsSrcFile ipsSrcFile : getIpsSrcFiles()) {
