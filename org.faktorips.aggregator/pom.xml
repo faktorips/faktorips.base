@@ -8,7 +8,7 @@
     <properties>
         <git.user>${user.name}</git.user>
         <java.version>11</java.version>
-        <target-platform>eclipse-2019-03</target-platform>
+        <target-platform>eclipse-2020-03</target-platform>
         <checkstyle.header.file>${project.basedir}/../org.faktorips.aggregator/checkstyle.java.header</checkstyle.header.file>
     </properties>
 

@@ -51,12 +51,9 @@ import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * A page for presenting {@link DescriptionItem}s similar to the outline view.
- * 
- * The attributes and their description are presented within a ExpandableComposite.
- * 
- * @author Markus Blum
- * 
+ * A page for presenting {@link DescriptionItem DescriptionItems} similar to the outline view. 
+ *
+ * The attributes and their descriptions are presented within an ExpandableComposite.
  */
 public abstract class DefaultModelDescriptionPage extends Page implements IIpsSrcFilesChangeListener {
 

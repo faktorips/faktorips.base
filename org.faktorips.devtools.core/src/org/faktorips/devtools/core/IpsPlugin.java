@@ -17,8 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.IPerspectiveDescriptor;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
@@ -84,6 +86,11 @@ public class IpsPlugin extends AbstractUIPlugin {
      */
     public static IpsPlugin getDefault() {
         return plugin;
+    }
+
+    @Override
+    public IWorkbench getWorkbench() {
+        return PlatformUI.getWorkbench();
     }
 
     /**

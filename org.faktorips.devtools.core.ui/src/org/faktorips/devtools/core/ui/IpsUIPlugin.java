@@ -77,6 +77,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.ISaveableFilter;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -430,6 +431,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      */
     public static IpsUIPlugin getDefault() {
         return plugin;
+    }
+
+    @Override
+    public IWorkbench getWorkbench() {
+        return PlatformUI.getWorkbench();
     }
 
     @Override
