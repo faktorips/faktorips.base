@@ -359,7 +359,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.11/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.15/")
     private String eclipseRepository;
 
     /**
