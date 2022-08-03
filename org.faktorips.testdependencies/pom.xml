@@ -16,7 +16,7 @@
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho.extras</groupId>
-                <artifactId>tycho-source-feature-plugin</artifactId>
+                <artifactId>tycho-source-plugin</artifactId>
                 <configuration>
                     <!-- skip source generation because we want to package mockito but do not have the source in oure target platform -->
                     <skip>true</skip>

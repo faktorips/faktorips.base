@@ -10,7 +10,6 @@
 
 
     <artifactId>faktorips-maven-plugin</artifactId>
-    <version>22.12.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
 
@@ -32,10 +31,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <tycho-version>2.7.3</tycho-version>
-        <tycho-extras-version>2.7.3</tycho-extras-version>
+        <tycho-version>2.7.4</tycho-version>
+        <tycho-extras-version>2.7.4</tycho-extras-version>
+        <tycho-maven-plugin-version>2.7.4</tycho-maven-plugin-version>
         <maven-core-version>3.8.1</maven-core-version>
-        <tycho-maven-plugin-version>3.0.0-SNAPSHOT</tycho-maven-plugin-version>
         <maven-shared-utils-version>3.3.4</maven-shared-utils-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
         <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
@@ -336,11 +335,6 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-maven-plugin</artifactId>
-                <extensions>true</extensions>
             </plugin>
         </plugins>
     </build>

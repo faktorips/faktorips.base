@@ -16,7 +16,7 @@
         <plugins>
             <plugin>
                 <groupId>org.eclipse.tycho.extras</groupId>
-                <artifactId>tycho-source-feature-plugin</artifactId>
+                <artifactId>tycho-source-plugin</artifactId>
                 <configuration>
                     <excludes>
                         <plugin id="joda-time" />

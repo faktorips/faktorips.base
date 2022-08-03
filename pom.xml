@@ -89,6 +89,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>faktorips-valuetypes</module>
         <module>faktorips-valuetypes-joda</module>
         <module>faktorips-runtime</module>
+        <module>faktorips-runtime/client</module>
         <module>faktorips-runtime-groovy</module>
         <module>faktorips-testsupport</module>
         <module>faktorips-util</module>
@@ -264,9 +265,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <!-- TODO this is deprecated -->
                     <groupId>org.eclipse.tycho.extras</groupId>
-                    <artifactId>tycho-source-feature-plugin</artifactId>
+                    <artifactId>tycho-source-plugin</artifactId>
                     <version>${tycho-version}</version>
                 </plugin>
                 <!-- others -->
