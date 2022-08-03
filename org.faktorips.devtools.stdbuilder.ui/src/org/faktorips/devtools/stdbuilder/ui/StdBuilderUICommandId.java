@@ -32,7 +32,7 @@ public enum StdBuilderUICommandId {
 
     private String id;
 
-    private StdBuilderUICommandId(String id) {
+    StdBuilderUICommandId(String id) {
         this.id = id;
     }
 

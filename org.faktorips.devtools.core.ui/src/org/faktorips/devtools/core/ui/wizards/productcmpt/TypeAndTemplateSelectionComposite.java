@@ -88,7 +88,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         super(parent, SWT.NONE);
         this.toolkit = toolkit;
         this.pmo = pmo;
-        this.resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        resourceManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
 
         setLayoutAndLayoutData();

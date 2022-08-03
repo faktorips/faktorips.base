@@ -19,84 +19,84 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
  */
 public interface IAttributeValue extends IPropertyValue {
 
-    public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
+    String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
+    String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALUE_HOLDER = "valueHolder"; //$NON-NLS-1$
+    String PROPERTY_VALUE_HOLDER = "valueHolder"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "ATTRIBUTEVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the value provides the value for,
      * can't be found.
      */
-    public static final String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
+    String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value is not an element of the value set defined
      * in the model attribute.
      */
-    public static final String MSGCODE_VALUE_NOT_IN_SET = MSGCODE_PREFIX + "ValueNotInSet"; //$NON-NLS-1$
+    String MSGCODE_VALUE_NOT_IN_SET = MSGCODE_PREFIX + "ValueNotInSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the value provides the value for,
      * can't be found.
      */
-    public static final String MSGCODE_INVALID_VALUE_HOLDER = MSGCODE_PREFIX + "InvalidValueHolder"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VALUE_HOLDER = MSGCODE_PREFIX + "InvalidValueHolder"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute defines the wrong Valuetype
      */
-    public static final String MSGCODE_INVALID_VALUE_TYPE = MSGCODE_PREFIX + "InvalidValueType"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VALUE_TYPE = MSGCODE_PREFIX + "InvalidValueType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that one supported language not set
      */
-    public static final String MSGCODE_MULTILINGUAL_NOT_SET = MSGCODE_PREFIX + "MultilingualNotSet"; //$NON-NLS-1$
+    String MSGCODE_MULTILINGUAL_NOT_SET = MSGCODE_PREFIX + "MultilingualNotSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the hidden attribute value is not set to its default
      * value
      */
-    public static final String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
+    String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
 
     @Override
-    public String getPropertyValue();
+    String getPropertyValue();
 
     /**
      * Getting the value holder object containing one or multiple values.
      * 
      * @return The value holder object holding the value of this attribute value.
      */
-    public IValueHolder<?> getValueHolder();
+    IValueHolder<?> getValueHolder();
 
     /**
      * Setting the value holder object containing one or multiple values.
      * 
      * @param valueHolder A value holder containing the values for this attribute value.
      */
-    public void setValueHolder(IValueHolder<?> valueHolder);
+    void setValueHolder(IValueHolder<?> valueHolder);
 
     /**
      * Returns the name of the product component type's attribute this is a value for.
      */
-    public String getAttribute();
+    String getAttribute();
 
     /**
      * Sets the name of the product component type's attribute this is a value for.
      * 
      * @throws NullPointerException if name is <code>null</code>.
      */
-    public void setAttribute(String name);
+    void setAttribute(String name);
 
     /**
      * Returns the product component type attribute this object provides the value for.
      */
-    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject);
+    IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject);
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
@@ -105,6 +105,6 @@ public interface IAttributeValue extends IPropertyValue {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
+    IAttributeValue findTemplateProperty(IIpsProject ipsProject);
 
 }

@@ -22,6 +22,6 @@ public interface ContentsChangeListener {
      * Notifies the listener that an object has changed.
      * 
      */
-    public void contentsChanged(ContentChangeEvent event);
+    void contentsChanged(ContentChangeEvent event);
 
 }

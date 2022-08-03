@@ -91,7 +91,7 @@ public abstract class CellTrackingEditingSupport<T> extends EditingSupport {
     /**
      * 
      * @return the currently active cell editor, or <code>null</code> if no cell editor is active
-     *         for the column (or editing support respectively).
+     *             for the column (or editing support respectively).
      */
     protected IpsCellEditor getCurrentCellEditor() {
         return currentCellEditor;

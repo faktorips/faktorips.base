@@ -59,7 +59,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
     @Test
     public void testGetKeyItems() {
         assertEquals(0, key.getKeyItemNames().length);
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
         assertNotSame(items, key.getKeyItemNames()); // defensive copy should be made
         assertEquals(2, key.getKeyItemNames().length);
@@ -69,7 +69,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetKeyItems() {
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
         assertTrue(ipsSrcFile.isDirty());
     }
@@ -79,7 +79,7 @@ public class ForeignKeyTest extends AbstractIpsPluginTest {
         key = (ForeignKey)table.newForeignKey();
         key.setReferencedTableStructure("RefTable");
         key.setReferencedUniqueKey("key");
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
         Element element = key.toXml(newDocument());
 

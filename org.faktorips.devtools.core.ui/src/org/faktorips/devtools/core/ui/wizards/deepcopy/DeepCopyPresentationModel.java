@@ -101,8 +101,8 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
     }
 
     public void setOldValidFrom(GenerationDate newValue) {
-        GenerationDate oldValue = this.oldValidFrom;
-        this.oldValidFrom = newValue;
+        GenerationDate oldValue = oldValidFrom;
+        oldValidFrom = newValue;
 
         try {
             IProductCmpt productCmpt = productCmptGeneration.getProductCmpt();
@@ -231,7 +231,7 @@ public class DeepCopyPresentationModel extends PresentationModelObject {
      * @see DeepCopyTreeStatus#isEnabled(IProductCmptStructureReference)
      */
     public Set<IProductCmptStructureReference> getAllCopyElements(boolean includingAssociations) {
-        return treeStatus.getAllEnabledElements(CopyOrLink.COPY, this.structure, includingAssociations);
+        return treeStatus.getAllEnabledElements(CopyOrLink.COPY, structure, includingAssociations);
     }
 
     /**

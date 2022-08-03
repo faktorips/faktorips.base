@@ -17,7 +17,7 @@ class ReferencedIpsProjectViewItem {
     private final IIpsProject ipsProject;
 
     ReferencedIpsProjectViewItem(IIpsProject project) {
-        this.ipsProject = project;
+        ipsProject = project;
     }
 
     IIpsProject getIpsProject() {

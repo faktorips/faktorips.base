@@ -55,7 +55,7 @@ public class EnumSaxHandler extends DefaultHandler {
             enumValue = new ArrayList<>();
         } else if (ENUM_ATTRIBUTE_VALUE_NAME.equals(qName)) {
             stringBuilder = new StringBuilder();
-            isNull = Boolean.valueOf(attributes.getValue(XML_ATTR_IS_NULL)).booleanValue();
+            isNull = Boolean.parseBoolean(attributes.getValue(XML_ATTR_IS_NULL));
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
             localizedStrings = new ArrayList<>();
             String language = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_DEFAULT_LOCALE);

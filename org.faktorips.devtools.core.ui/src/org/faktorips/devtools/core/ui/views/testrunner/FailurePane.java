@@ -79,7 +79,7 @@ public class FailurePane implements IMenuListener {
     private boolean showStackTrace = false;
 
     // Contains the last reported failures in this pane
-    private String[] lastFailures = new String[0];
+    private String[] lastFailures = {};
     private IpsTestRunnerViewPart viewPart;
 
     public FailurePane(Composite parent, ToolBar toolBar, final IpsTestRunnerViewPart viewPart, Clipboard clipboard) {
@@ -164,9 +164,7 @@ public class FailurePane implements IMenuListener {
             }
             textEditor
                     .selectAndReveal(document.getLineOffset(tli.getLine() - 1), document.getLineLength(tli.getLine()));
-        } catch (BadLocationException x) {
-            // marker refers to invalid text position -> do nothing
-        } catch (StringIndexOutOfBoundsException x) {
+        } catch (BadLocationException | StringIndexOutOfBoundsException x) {
             // invalid text -> do nothing
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -305,7 +303,7 @@ public class FailurePane implements IMenuListener {
         private final IpsTestRunnerViewPart vp;
 
         private TableSelectionListener(IpsTestRunnerViewPart viewPart) {
-            this.vp = viewPart;
+            vp = viewPart;
         }
 
         @Override
@@ -381,7 +379,7 @@ public class FailurePane implements IMenuListener {
     /*
      * Class to represent the corresponding object in the trace line of the stacktrace.
      */
-    private class TraceLineElement {
+    private static class TraceLineElement {
         private String testName = ""; //$NON-NLS-1$
         private String fileName = ""; //$NON-NLS-1$
         private int line = 0;
@@ -400,7 +398,7 @@ public class FailurePane implements IMenuListener {
             try {
                 String lineNumber = traceLine;
                 lineNumber = lineNumber.substring(lineNumber.indexOf(':') + 1, lineNumber.lastIndexOf(')'));
-                line = Integer.valueOf(lineNumber).intValue();
+                line = Integer.parseInt(lineNumber);
                 fileName = traceLine.substring(traceLine.lastIndexOf('(') + 1, traceLine.lastIndexOf(':'));
             } catch (NumberFormatException ignored) {
                 // ignore number exception,

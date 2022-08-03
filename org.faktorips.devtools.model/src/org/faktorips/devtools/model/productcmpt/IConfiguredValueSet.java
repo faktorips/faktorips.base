@@ -26,16 +26,16 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 
 public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
 
-    public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
+    String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE_SET;
 
-    public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
+    String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_VALUE_SET;
 
-    public static final String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
+    String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "CONFIGUREDVALUESET-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "CONFIGUREDVALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the config'elements value set is not of a type that
@@ -44,30 +44,30 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * configuration element all types are allowed. If <code>RANGE</code> is specified in the model,
      * then only <code>RANGE</code> is allowed in the configuration element.
      */
-    public static final String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
+    String MSGCODE_VALUESET_TYPE_MISMATCH = MSGCODE_PREFIX + "ValueSetTypeMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the config'elements value set is not a subset of the
      * value set defined in the model.
      */
-    public static final String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
+    String MSGCODE_VALUESET_IS_NOT_A_SUBSET = MSGCODE_PREFIX + "ValueSetIsNotASubset"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value-set of the attribute (in the model) is
      * invalid.
      */
-    public static final String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
+    String MSGCODE_UNKNWON_VALUESET = MSGCODE_PREFIX + "InvalidAttirbuteValueSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a string is too long to fit into the value set.
      */
-    public static final String MSGCODE_STRING_TOO_LONG = MSGCODE_PREFIX + "StringTooLong"; //$NON-NLS-1$
+    String MSGCODE_STRING_TOO_LONG = MSGCODE_PREFIX + "StringTooLong"; //$NON-NLS-1$
 
     /**
      * Returns the set of allowed values.
      */
     @Override
-    public IValueSet getValueSet();
+    IValueSet getValueSet();
 
     /**
      * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
@@ -86,7 +86,7 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * @see IValueSet#isUnrestricted()
      */
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
+    List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the type of the value set defining the values valid for this configuration element. If
@@ -94,7 +94,7 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * informations (e.g. bounds and step for a range value set) are removed.
      */
     @Override
-    public void setValueSetType(ValueSetType type);
+    void setValueSetType(ValueSetType type);
 
     /**
      * Converts the current value set to an enumeration type value set. If the current value set
@@ -104,11 +104,11 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * the set.
      * 
      * @return the new enumeration value set or the unchanged set if it has already been of type
-     *         enumeration.
+     *             enumeration.
      * 
      * @since 3.9
      */
-    public IEnumValueSet convertValueSetToEnumType();
+    IEnumValueSet convertValueSetToEnumType();
 
     /**
      * Returns the element's value data type, or <code>null</code> if it can't be found. The
@@ -118,12 +118,12 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * 
      */
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
+    ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
     /**
      * Creates a copy of the given value set and applies this copy to this configuration element.
      */
-    public void setValueSetCopy(IValueSet source);
+    void setValueSetCopy(IValueSet source);
 
     void setValueSet(IValueSet source);
 
@@ -134,5 +134,5 @@ public interface IConfiguredValueSet extends IConfigElement, IValueSetOwner {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public IConfiguredValueSet findTemplateProperty(IIpsProject ipsProject);
+    IConfiguredValueSet findTemplateProperty(IIpsProject ipsProject);
 }

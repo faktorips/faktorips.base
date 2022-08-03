@@ -29,79 +29,79 @@ public interface IIpsObjectPathEntry {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "IIPSOBJECTPATHENTRY-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IIPSOBJECTPATHENTRY-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a related folder is missing.
      */
-    public static final String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
+    String MSGCODE_MISSING_FOLDER = MSGCODE_PREFIX + "MissingFolder"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the related project is missing.
      */
-    public static final String MSGCODE_PROJECT_NOT_SPECIFIED = MSGCODE_PREFIX + "ProjectNotSpecified"; //$NON-NLS-1$
+    String MSGCODE_PROJECT_NOT_SPECIFIED = MSGCODE_PREFIX + "ProjectNotSpecified"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the related project is missing.
      */
-    public static final String MSGCODE_MISSING_PROJECT = MSGCODE_PREFIX + "MissingProject"; //$NON-NLS-1$
+    String MSGCODE_MISSING_PROJECT = MSGCODE_PREFIX + "MissingProject"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a related archive is missing.
      */
-    public static final String MSGCODE_MISSING_ARCHVE = MSGCODE_PREFIX + "MissingArchive"; //$NON-NLS-1$
+    String MSGCODE_MISSING_ARCHVE = MSGCODE_PREFIX + "MissingArchive"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a related bundle is missing.
      */
-    public static final String MSGCODE_MISSING_BUNDLE = MSGCODE_PREFIX + "MissingBundle"; //$NON-NLS-1$
+    String MSGCODE_MISSING_BUNDLE = MSGCODE_PREFIX + "MissingBundle"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a related archive is invalid.
      */
-    public static final String MSGCODE_INVALID_ARCHVE = MSGCODE_PREFIX + "InvalidArchive"; //$NON-NLS-1$
+    String MSGCODE_INVALID_ARCHVE = MSGCODE_PREFIX + "InvalidArchive"; //$NON-NLS-1$
 
     /**
      * Warning message used to mark invalid cast attempts instead of leaving the path empty. See
      * FIPS-6417
      */
-    public static final String ERROR_CAST_EXCEPTION_PATH = "Operation failed: Cannot cast to IpsSourceFolderEntry"; //$NON-NLS-1$
+    String ERROR_CAST_EXCEPTION_PATH = "Operation failed: Cannot cast to IpsSourceFolderEntry"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a source folder entry.
      */
-    public static final String TYPE_SRC_FOLDER = "src"; //$NON-NLS-1$
+    String TYPE_SRC_FOLDER = "src"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a project reference entry.
      */
-    public static final String TYPE_PROJECT_REFERENCE = "project"; //$NON-NLS-1$
+    String TYPE_PROJECT_REFERENCE = "project"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a archive (library) containing the model files.
      */
-    public static final String TYPE_ARCHIVE = "archive"; //$NON-NLS-1$
+    String TYPE_ARCHIVE = "archive"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a container entry.
      */
-    public static final String TYPE_CONTAINER = "container"; //$NON-NLS-1$
+    String TYPE_CONTAINER = "container"; //$NON-NLS-1$
 
     /**
      * Type constant indicating a jar bundle entry.
      * 
      */
-    public static final String TYPE_BUNDLE = "bundle"; //$NON-NLS-1$
+    String TYPE_BUNDLE = "bundle"; //$NON-NLS-1$
 
     /**
      * Returns the object path this is an entry of.
      */
-    public IIpsObjectPath getIpsObjectPath();
+    IIpsObjectPath getIpsObjectPath();
 
     /**
      * Returns the IPS project this project belongs to.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the type of this entry as one of the type constant defined in this interface.
@@ -111,46 +111,46 @@ public interface IIpsObjectPathEntry {
      * @see #TYPE_PROJECT_REFERENCE
      * @see #TYPE_CONTAINER
      */
-    public String getType();
+    String getType();
 
     /**
      * Returns <code>true</code> if this is a container entry that can be resolved to "real"
      * entries.
      */
-    public boolean isContainer();
+    boolean isContainer();
 
     /**
      * Returns the (zero based) index of this entry in the path.
      */
-    public int getIndex();
+    int getIndex();
 
     /**
      * Returns the name of the IPS package fragment root this entry defines or <code>null</code> if
      * this is a project reference entry.
      */
-    public abstract String getIpsPackageFragmentRootName();
+    String getIpsPackageFragmentRootName();
 
     /**
      * Returns the package fragment root this entry defines or <code>null</code> if this is a
      * project reference entry. Note that is not guaranteed that the returned package fragment root
      * exists.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot();
+    IIpsPackageFragmentRoot getIpsPackageFragmentRoot();
 
     /**
      * Validates the object path entry and returns the result as list of messages.
      */
-    public MessageList validate();
+    MessageList validate();
 
     /**
      * Returns the IPS source file with the indicated qualified name type.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
+    IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
      * Returns IPS source files with the {@link IpsObjectType}.
      */
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
+    List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
 
     /**
      * This method checks whether this entry has a resource with the specified path.
@@ -161,9 +161,9 @@ public interface IIpsObjectPathEntry {
      * 
      * @param resourcePath The path of the requested resource
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
-     *         not
+     *             not
      */
-    public boolean containsResource(String resourcePath);
+    boolean containsResource(String resourcePath);
 
     /**
      * Returns an {@link InputStream} that provides a resource's/file's contents. The given path is
@@ -180,14 +180,14 @@ public interface IIpsObjectPathEntry {
      * 
      * @param path The path of the requested resource
      * @return The {@link InputStream} of the resource. Make sure to close the input stream after
-     *         reading.
+     *             reading.
      */
-    public InputStream getResourceAsStream(String path);
+    InputStream getResourceAsStream(String path);
 
     /**
      * Returns <code>true</code> if this entry should be reexported.
      */
-    public boolean isReexported();
+    boolean isReexported();
 
     /**
      * Sets the flag that this entry should reexported.

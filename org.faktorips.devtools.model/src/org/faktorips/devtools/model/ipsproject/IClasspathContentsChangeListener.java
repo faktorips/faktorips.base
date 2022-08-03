@@ -24,6 +24,6 @@ public interface IClasspathContentsChangeListener {
     /**
      * Is called when the contents of the indicated project's classpath has changed.
      */
-    public void classpathContentsChanges(AJavaProject project);
+    void classpathContentsChanges(AJavaProject project);
 
 }

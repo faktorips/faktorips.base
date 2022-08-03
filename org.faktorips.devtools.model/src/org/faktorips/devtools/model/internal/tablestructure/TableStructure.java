@@ -479,7 +479,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
     /**
      * @deprecated Load old XML format for backwards compatibility. May be removed when cleaning up
-     *             deprecated API in future releases.
+     *                 deprecated API in future releases.
      */
     @Deprecated
     private IIpsObjectPart newPartForDeprecatedXml(String xmlTagName, String id) {

@@ -38,7 +38,7 @@ public interface IProductDataProvider {
      * 
      * @return The loaded toc
      */
-    public IReadonlyTableOfContents getToc();
+    IReadonlyTableOfContents getToc();
 
     /**
      * Getting the product component data element for given tocEntry. If the toc has been modified
@@ -49,7 +49,7 @@ public interface IProductDataProvider {
      * @return the xml element of the requested product component
      * @throws DataModifiedException when toc data was modified
      */
-    public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException;
+    Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the product component generation data element for given tocEntry. If the toc has been
@@ -60,7 +60,7 @@ public interface IProductDataProvider {
      * @return the xml element of the requested product component generation
      * @throws DataModifiedException when toc data was modified
      */
-    public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException;
+    Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the test case data element for given tocEntry. If the toc has been modified this
@@ -71,7 +71,7 @@ public interface IProductDataProvider {
      * @return the xml element of the requested test case element
      * @throws DataModifiedException when toc data was modified
      */
-    public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException;
+    Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the input stream of table content for given tocEntry. If the toc has been modified
@@ -82,7 +82,7 @@ public interface IProductDataProvider {
      * @return the input stream of the requested table content
      * @throws DataModifiedException when toc data was modified
      */
-    public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException;
+    InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the input stream of enum content for given tocEntry. If the toc has been modified
@@ -93,7 +93,7 @@ public interface IProductDataProvider {
      * @return the input stream of the requested enum content
      * @throws DataModifiedException when toc data was modified
      */
-    public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
+    InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException;
 
     /**
      * Getting the version of the product data provider. This is the version of the product data
@@ -103,7 +103,7 @@ public interface IProductDataProvider {
      * 
      * @return the version of the product data provider
      */
-    public String getVersion();
+    String getVersion();
 
     /**
      * Return true if the version is compatible to the base version of this
@@ -112,7 +112,7 @@ public interface IProductDataProvider {
      * 
      * @return true if version is compatible
      */
-    public boolean isCompatibleToBaseVersion();
+    boolean isCompatibleToBaseVersion();
 
     /**
      * Getting the data element for the given tocEntry. If the toc has been modified this method
@@ -124,6 +124,6 @@ public interface IProductDataProvider {
      * @return the xml element of the requested object
      * @throws DataModifiedException when toc data was modified
      */
-    public <T> Element getTocEntryData(CustomTocEntryObject<T> tocEntry) throws DataModifiedException;
+    <T> Element getTocEntryData(CustomTocEntryObject<T> tocEntry) throws DataModifiedException;
 
 }

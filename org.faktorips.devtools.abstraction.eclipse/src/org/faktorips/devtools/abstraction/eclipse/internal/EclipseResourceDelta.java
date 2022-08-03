@@ -12,7 +12,6 @@ package org.faktorips.devtools.abstraction.eclipse.internal;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AResource;
@@ -68,13 +67,7 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
     @Override
     public void accept(AResourceDeltaVisitor visitor) {
         try {
-            resourceDelta().accept(new IResourceDeltaVisitor() {
-
-                @Override
-                public boolean visit(IResourceDelta delta) throws CoreException {
-                    return visitor.visit(new EclipseResourceDelta(delta));
-                }
-            });
+            resourceDelta().accept(delta -> visitor.visit(new EclipseResourceDelta(delta)));
         } catch (CoreException e) {
             throw new IpsException(e);
         }

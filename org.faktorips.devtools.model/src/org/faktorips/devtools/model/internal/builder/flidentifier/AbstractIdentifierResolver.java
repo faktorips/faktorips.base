@@ -64,8 +64,7 @@ public abstract class AbstractIdentifierResolver<T extends CodeFragment> impleme
     }
 
     public IdentifierNode parseIdentifier(String identifier) {
-        IdentifierNode identifierNode = getParser().parse(identifier);
-        return identifierNode;
+        return getParser().parse(identifier);
     }
 
     protected abstract IdentifierNodeGeneratorFactory<T> getGeneratorFactory();

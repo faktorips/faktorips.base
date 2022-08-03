@@ -32,7 +32,7 @@ public enum IpsColor {
     private String symbolicName;
     private RGB defaultRgb;
 
-    private IpsColor(String symbolicName, RGB defaultRgb) {
+    IpsColor(String symbolicName, RGB defaultRgb) {
         this.symbolicName = symbolicName;
         this.defaultRgb = defaultRgb;
     }

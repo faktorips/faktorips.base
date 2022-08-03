@@ -25,13 +25,13 @@ public class AbstractImportStatement {
 
     public AbstractImportStatement(String qualifiedName) {
         String[] packageAndClassName = splitPackageAndClassName(qualifiedName);
-        this.packageName = packageAndClassName[0];
-        this.className = packageAndClassName[1];
+        packageName = packageAndClassName[0];
+        className = packageAndClassName[1];
     }
 
     public AbstractImportStatement(Class<?> clazz) {
-        this.packageName = clazz.getPackage().getName();
-        this.className = clazz.getSimpleName();
+        packageName = clazz.getPackage().getName();
+        className = clazz.getSimpleName();
     }
 
     protected String getPackageName() {

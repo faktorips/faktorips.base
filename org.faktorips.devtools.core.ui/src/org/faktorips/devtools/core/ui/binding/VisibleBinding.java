@@ -37,7 +37,7 @@ public class VisibleBinding extends ControlPropertyBinding {
             Control controlToSpan) {
         super(control, object, propertyName, Boolean.TYPE);
         this.excludeWhenInvisible = excludeWhenInvisible;
-        this.spanningControl = controlToSpan;
+        spanningControl = controlToSpan;
     }
 
     @Override

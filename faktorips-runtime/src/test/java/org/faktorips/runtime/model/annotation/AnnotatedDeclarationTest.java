@@ -110,8 +110,8 @@ public class AnnotatedDeclarationTest {
     }
 
     @IpsPublishedInterface(implementation = Implementation.class)
-    private static interface PublishedInterface {
-
+    private interface PublishedInterface {
+        // an interface
     }
 
     private static class Implementation implements Serializable, PublishedInterface {

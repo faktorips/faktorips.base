@@ -29,31 +29,31 @@ import org.faktorips.util.collections.ListComparator;
  */
 public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>> {
 
-    public static final String SEPARATOR = "|"; //$NON-NLS-1$
+    String SEPARATOR = "|"; //$NON-NLS-1$
 
-    public static final String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
+    String XML_TYPE_NAME = "MultiValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "MULTIVALUEHOLDER-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "MULTIVALUEHOLDER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there an error in any value of this multi value
      * holder
      */
-    public static final String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
+    String MSGCODE_CONTAINS_INVALID_VALUE = MSGCODE_PREFIX + "ContainsInvalidValue"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that this {@link IMultiValueHolder value holder's} values
      * are not unique. At least one value has a duplicate.
      */
-    public static final String MSGCODE_CONTAINS_DUPLICATE_VALUE = MSGCODE_PREFIX + "ContainsDuplicateValue"; //$NON-NLS-1$
+    String MSGCODE_CONTAINS_DUPLICATE_VALUE = MSGCODE_PREFIX + "ContainsDuplicateValue"; //$NON-NLS-1$
 
     @Override
-    public default List<IValue<?>> getValueList() {
+    default List<IValue<?>> getValueList() {
         return getValue().stream().map(ISingleValueHolder::getValue).collect(Collectors.toList());
     }
 
     @Override
-    public default int compareTo(IValueHolder<List<ISingleValueHolder>> o) {
+    default int compareTo(IValueHolder<List<ISingleValueHolder>> o) {
         if (o == null) {
             return 1;
         } else {
@@ -69,7 +69,7 @@ public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>
      * <code>[value1, value2, value3]</code>.
      */
     @Override
-    public default String getStringValue() {
+    default String getStringValue() {
         List<String> stringList = new ArrayList<>();
         for (ISingleValueHolder holder : getValue()) {
             stringList.add(holder.getStringValue());
@@ -83,12 +83,12 @@ public interface IMultiValueHolder extends IValueHolder<List<ISingleValueHolder>
      * IMultiValueHolder Is never null, because the list can be empty but never null.
      */
     @Override
-    public default boolean isNullValue() {
+    default boolean isNullValue() {
         return false;
     }
 
     @Override
-    public default boolean isMultiValue() {
+    default boolean isMultiValue() {
         return true;
     }
 

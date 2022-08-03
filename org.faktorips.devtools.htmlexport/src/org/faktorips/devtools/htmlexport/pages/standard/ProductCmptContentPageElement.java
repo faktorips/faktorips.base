@@ -64,10 +64,8 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     }
 
     private IProductCmptType findProductCmptType() {
-        IProductCmptType productCmptType = null;
-        productCmptType = getContext().getIpsProject().findProductCmptType(
+        return getContext().getIpsProject().findProductCmptType(
                 getDocumentedIpsObject().getProductCmptType());
-        return productCmptType;
     }
 
     @Override

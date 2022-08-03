@@ -34,10 +34,10 @@ public interface IIpsProjectConfigurator {
      * Checks whether the passed project can be configured using this extension.
      * 
      * @implSpec Check for hints that this project is not just a standard Eclipse-Java-project, for
-     *           example the existence of a file for a different kind of dependency management.
+     *               example the existence of a file for a different kind of dependency management.
      * 
      * @implNote If no extension is responsible for a project, the standard configurator
-     *           {@link StandardJavaProjectConfigurator} will be used.
+     *               {@link StandardJavaProjectConfigurator} will be used.
      * 
      * @param javaProject the project to be configured
      * @return whether this configurator can configure the project
@@ -61,8 +61,8 @@ public interface IIpsProjectConfigurator {
      * @param javaProject the {@link IJavaProject} to be configured
      * @param creationProperties the properties defining how the project should be configured
      * @return an empty {@link MessageList} if this configurator can configure the project with the
-     *         given properties, otherwise a {@link MessageList} that
-     *         {@link MessageList#containsErrorMsg() contains an error message}
+     *             given properties, otherwise a {@link MessageList} that
+     *             {@link MessageList#containsErrorMsg() contains an error message}
      */
     default MessageList validate(AJavaProject javaProject, IpsProjectCreationProperties creationProperties) {
         return MessageList.of();

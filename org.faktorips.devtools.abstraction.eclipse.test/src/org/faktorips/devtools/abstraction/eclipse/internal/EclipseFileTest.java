@@ -76,7 +76,7 @@ public class EclipseFileTest extends EclipseAbstractionTestSetup {
     }
 
     @Test(expected = IpsException.class)
-    public void testSetContents_doesNotExist() throws CoreException {
+    public void testSetContents_doesNotExist() {
         AFile newFile = testProject.getFile("newFile");
 
         newFile.setContents(writeTo("SomeOtherTestString"), false, new NullProgressMonitor());

@@ -19,22 +19,22 @@ import org.faktorips.devtools.abstraction.AFolder;
  */
 public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
 
-    public static final String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
+    String MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT = "SourceFolder must be a direct child of the project."; //$NON-NLS-1$
 
-    public static final String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING = "OutputFolderMergableMissing"; //$NON-NLS-1$
+    String MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING = "OutputFolderMergableMissing"; //$NON-NLS-1$
 
-    public static final String MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST = "OutputFolderMergableDoesntExist"; //$NON-NLS-1$
+    String MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST = "OutputFolderMergableDoesntExist"; //$NON-NLS-1$
 
-    public static final String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING = "OutputFolderDerivedMissing"; //$NON-NLS-1$
+    String MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING = "OutputFolderDerivedMissing"; //$NON-NLS-1$
 
-    public static final String MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST = "OutputFolderDeriveddDoesntExist"; //$NON-NLS-1$
+    String MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST = "OutputFolderDeriveddDoesntExist"; //$NON-NLS-1$
 
-    public static final String MSGCODE_DUPLICATE_BASE_PACKAGE = "DuplicateBasePackage"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_BASE_PACKAGE = "DuplicateBasePackage"; //$NON-NLS-1$
 
     /**
      * Returns the folder containing the IPS source files.
      */
-    public AFolder getSourceFolder();
+    AFolder getSourceFolder();
 
     /**
      * Returns the output folder for generated but mergeable Java source files. The content of the
@@ -42,25 +42,25 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * every build cycle . If a specific output folder is set for this entry, the specific output
      * folder is returned, otherwise the output folder defined in the object path is returned.
      */
-    public AFolder getOutputFolderForMergableJavaFiles();
+    AFolder getOutputFolderForMergableJavaFiles();
 
     /**
      * Returns the entry's own output folder for generated but mergeable Java source files. This
      * output folder is used only for this entry.
      */
-    public AFolder getSpecificOutputFolderForMergableJavaFiles();
+    AFolder getSpecificOutputFolderForMergableJavaFiles();
 
     /**
      * Sets the entry's output folder for generated but mergeable Java source files.
      */
-    public void setSpecificOutputFolderForMergableJavaFiles(AFolder outputFolder);
+    void setSpecificOutputFolderForMergableJavaFiles(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for generated but mergeable Java source files. If a
      * specific base package name is set for this entry, the specific base package name is returned,
      * otherwise the base package name defined in the object path is returned.
      */
-    public String getBasePackageNameForMergableJavaClasses();
+    String getBasePackageNameForMergableJavaClasses();
 
     /**
      * Returns a unique base package name for mergeable artifacts. Unique means that this base
@@ -69,7 +69,7 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * {@link #getBasePackageNameForMergableJavaClasses()} concatenated with the unique qualifier. A
      * unique qualifier may be empty if the base package is already unique.
      */
-    public String getUniqueBasePackageNameForMergableArtifacts();
+    String getUniqueBasePackageNameForMergableArtifacts();
 
     /**
      * Returns partial TOC resource name. The fully qualified TOC resource name is obtained by
@@ -77,63 +77,63 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * 
      * @see #getBasePackageNameForMergableJavaClasses()
      */
-    public String getBasePackageRelativeTocPath();
+    String getBasePackageRelativeTocPath();
 
     /**
      * Sets the partial TOC resource name.
      * 
      * @see #getBasePackageRelativeTocPath()
      */
-    public void setBasePackageRelativeTocPath(String newName);
+    void setBasePackageRelativeTocPath(String newName);
 
     /**
      * Returns the name of the entry's own base package for generated but mergeable Java source
      * files.
      */
-    public String getSpecificBasePackageNameForMergableJavaClasses();
+    String getSpecificBasePackageNameForMergableJavaClasses();
 
     /**
      * Sets the name of entry's own base package for generated but mergeable Java source files.
      */
-    public void setSpecificBasePackageNameForMergableJavaClasses(String name);
+    void setSpecificBasePackageNameForMergableJavaClasses(String name);
 
     /**
      * Returns the output folder containing generated derived Java source files. If a specific
      * output folder is set for this entry, the specific output folder is returned, otherwise the
      * output folder defined in the object path is returned.
      */
-    public AFolder getOutputFolderForDerivedJavaFiles();
+    AFolder getOutputFolderForDerivedJavaFiles();
 
     /**
      * Returns the entry's own output folder containing generated derived Java source files. This
      * output folder is used only for this entry.
      */
-    public AFolder getSpecificOutputFolderForDerivedJavaFiles();
+    AFolder getSpecificOutputFolderForDerivedJavaFiles();
 
     /**
      * Sets the entry's output folder containing generated derived Java source files. This output
      * folder is used only for this entry.
      */
-    public void setSpecificOutputFolderForDerivedJavaFiles(AFolder outputFolder);
+    void setSpecificOutputFolderForDerivedJavaFiles(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for the generated derived Java source files. If a
      * specific base package name is set for this entry, the specific base package name is returned,
      * otherwise the base package name defined in the object path is returned.
      */
-    public String getBasePackageNameForDerivedJavaClasses();
+    String getBasePackageNameForDerivedJavaClasses();
 
     /**
      * Returns the name of the entry's own base package for generated derived Java source files. All
      * generated Java types are contained in this package or one of the child packages.
      */
-    public String getSpecificBasePackageNameForDerivedJavaClasses();
+    String getSpecificBasePackageNameForDerivedJavaClasses();
 
     /**
      * Sets the name of the entry's own base package for the generated derived Java source files.
      * All generated Java types are contained in this package or one of the child packages.
      */
-    public void setSpecificBasePackageNameForDerivedJavaClasses(String name);
+    void setSpecificBasePackageNameForDerivedJavaClasses(String name);
 
     /**
      * Returns a unique base package name for derived artifacts. Unique means that this base package
@@ -142,17 +142,17 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * {@link #getBasePackageNameForDerivedJavaClasses()} concatenated with the unique qualifier. A
      * unique qualifier may be empty if the base package is already unique.
      */
-    public String getUniqueBasePackageNameForDerivedArtifacts();
+    String getUniqueBasePackageNameForDerivedArtifacts();
 
     /**
      * @param validationMessagesBundle The validationMessagesBundle to set.
      */
-    public void setValidationMessagesBundle(String validationMessagesBundle);
+    void setValidationMessagesBundle(String validationMessagesBundle);
 
     /**
      * @return Returns the validationMessagesBundle.
      */
-    public String getValidationMessagesBundle();
+    String getValidationMessagesBundle();
 
     /**
      * Returns the unique qualifier that is used to get unique base packages for source entries with
@@ -162,7 +162,7 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * @see #getUniqueBasePackageNameForMergableArtifacts()
      * @see #getUniqueBasePackageNameForDerivedArtifacts()
      */
-    public String getUniqueQualifier();
+    String getUniqueQualifier();
 
     /**
      * Specify the unique qualifier to get unique base packages for source entries with same base
@@ -172,6 +172,6 @@ public interface IIpsSrcFolderEntry extends IIpsObjectPathEntry {
      * @see #getUniqueBasePackageNameForMergableArtifacts()
      * @see #getUniqueBasePackageNameForDerivedArtifacts()
      */
-    public void setUniqueQualifier(String uniqueQualifier);
+    void setUniqueQualifier(String uniqueQualifier);
 
 }

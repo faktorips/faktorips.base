@@ -52,7 +52,7 @@ public abstract class AbstractTemplateValuePmo<T extends ITemplatedValue> extend
 
     /**
      * @return the template's name. If the template cannot be found, returns the saved qualified
-     *         name.
+     *             name.
      */
     protected String getTemplateName() {
         T templateProperty = findTemplateProperty();

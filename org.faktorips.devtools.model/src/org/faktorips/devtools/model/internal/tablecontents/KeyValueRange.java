@@ -42,8 +42,8 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
 
         super(structure, uniqueKey, row);
         this.columnRange = columnRange;
-        this.valueDatatype = getValueDatatypeOfColumnRange(structure, datatypes, columnRange);
-        this.valueFrom = evalValueFrom(row, columnRange);
+        valueDatatype = getValueDatatypeOfColumnRange(structure, datatypes, columnRange);
+        valueFrom = evalValueFrom(row, columnRange);
     }
 
     /**
@@ -57,8 +57,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
             Row row,
             ColumnRange columnRange) {
 
-        KeyValueRange keyValue = new KeyValueRange(structure, datatypes, uniqueKey, columnRange, row);
-        return keyValue;
+        return new KeyValueRange(structure, datatypes, uniqueKey, columnRange, row);
     }
 
     /**
@@ -176,7 +175,6 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
                 }
             } catch (IpsException e) {
                 IpsLog.log(new IpsStatus("Column " + columnRange.getFromColumn() + " not found!")); //$NON-NLS-1$ //$NON-NLS-2$
-                return null;
             }
         }
         return null;

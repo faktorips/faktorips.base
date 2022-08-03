@@ -66,6 +66,6 @@ public enum FluentAssert {
 
     @FunctionalInterface
     public static interface SetUp {
-        public void setUp() throws Exception;
+        void setUp() throws Exception;
     }
 }

@@ -61,9 +61,7 @@ public class EnableBinding extends ControlPropertyBinding {
             if (isDataChangeable() || !enabled) {
                 uiToolkit.setEnabled(getControl(), enabled);
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

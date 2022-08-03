@@ -19,11 +19,11 @@ import org.faktorips.datatype.Datatype;
  */
 public interface PropertyDatatype extends Datatype {
 
-    public Datatype getDatatype();
+    Datatype getDatatype();
 
     /**
      * Returns a Java sourcecode fragment to access the property.
      */
-    public String getGetterMethod();
+    String getGetterMethod();
 
 }

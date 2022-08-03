@@ -29,7 +29,7 @@ public interface ICustomValidation<T extends IIpsObjectPartContainer> {
      * validation.
      * 
      * @return The extended class or interface of the Faktor-IPS model, e.g. IAttribute or
-     *         IPolicyCmptType.
+     *             IPolicyCmptType.
      */
     Class<T> getExtendedClass();
 

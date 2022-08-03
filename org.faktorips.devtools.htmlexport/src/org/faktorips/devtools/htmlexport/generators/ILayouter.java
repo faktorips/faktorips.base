@@ -32,57 +32,57 @@ public interface ILayouter extends IGenerator {
      * 
      * @param pageElement AbstractRootPageElement
      */
-    public void layoutRootPageElement(AbstractRootPageElement pageElement);
+    void layoutRootPageElement(AbstractRootPageElement pageElement);
 
     /**
      * Layout for the Text
      * 
      * @param pageElement TextPageElement
      */
-    public void layoutTextPageElement(TextPageElement pageElement);
+    void layoutTextPageElement(TextPageElement pageElement);
 
     /**
      * Layout for a Link
      * 
      * @param pageElement LinkPageElement
      */
-    public void layoutLinkPageElement(LinkPageElement pageElement);
+    void layoutLinkPageElement(LinkPageElement pageElement);
 
     /**
      * Layout for a List
      * 
      * @param pageElement ListPageElement
      */
-    public void layoutListPageElement(ListPageElement pageElement);
+    void layoutListPageElement(ListPageElement pageElement);
 
     /**
      * Layout for a Table
      * 
      * @param pageElement TablePageElement
      */
-    public void layoutTablePageElement(TablePageElement pageElement);
+    void layoutTablePageElement(TablePageElement pageElement);
 
     /**
      * Layout for a WrapperElement
      * 
      * @param pageElement WrapperPageElement
      */
-    public void layoutWrapperPageElement(AbstractCompositePageElement pageElement);
+    void layoutWrapperPageElement(AbstractCompositePageElement pageElement);
 
     /**
      * clears the data
      */
-    public void clear();
+    void clear();
 
     /**
      * returns the {@link LayoutResource} for the Page
      */
-    public Set<LayoutResource> getLayoutResources();
+    Set<LayoutResource> getLayoutResources();
 
     /**
      * Layout for an Image
      * 
      * @param pageElement ImagePageElement
      */
-    public void layoutImagePageElement(ImagePageElement pageElement);
+    void layoutImagePageElement(ImagePageElement pageElement);
 }

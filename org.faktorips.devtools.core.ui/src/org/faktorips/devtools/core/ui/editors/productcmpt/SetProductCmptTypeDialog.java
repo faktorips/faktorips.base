@@ -39,7 +39,7 @@ public class SetProductCmptTypeDialog extends EditDialog {
     public SetProductCmptTypeDialog(IProductCmpt cmpt, Shell parentShell, String message) {
         super(parentShell, Messages.SetTemplateDialog_titleNewTemplate, false);
         this.message = message;
-        this.productCmpt = cmpt;
+        productCmpt = cmpt;
     }
 
     @Override

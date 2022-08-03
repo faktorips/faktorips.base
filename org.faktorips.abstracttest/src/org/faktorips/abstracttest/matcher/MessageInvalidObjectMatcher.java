@@ -21,7 +21,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Checks whether a {@link Message} contains the given invalid object.
  * 
  * @deprecated since 21.12. Use
- *             {@link org.faktorips.testsupport.matchers.MessageInvalidObjectMatcher} instead
+ *                 {@link org.faktorips.testsupport.matchers.MessageInvalidObjectMatcher} instead
  */
 @Deprecated
 public class MessageInvalidObjectMatcher extends TypeSafeMatcher<Message> {

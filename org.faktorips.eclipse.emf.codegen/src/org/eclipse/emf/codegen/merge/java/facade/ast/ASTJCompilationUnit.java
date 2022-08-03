@@ -239,7 +239,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
     @Override
     public void setHeader(String header) {
         if (header != null) {
-            this.headerString = header;
+            headerString = header;
         }
     }
 
@@ -293,11 +293,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
                     getFacadeHelper()
                             .logInfo("Document after ASTRewrite:\n<" + targetDoc.get() + ">\nEnd of document.");
                 }
-            } catch (MalformedTreeException e) {
-                if (ASTFacadeHelper.DEBUG) {
-                    getFacadeHelper().logError("Error applying edits: ", e);
-                }
-            } catch (BadLocationException e) {
+            } catch (MalformedTreeException | BadLocationException e) {
                 if (ASTFacadeHelper.DEBUG) {
                     getFacadeHelper().logError("Error applying edits: ", e);
                 }
@@ -387,9 +383,8 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
         } else if (newSibling instanceof ASTJAbstractType<?>) {
             if (node instanceof ASTJAbstractType<?>) {
                 insert(newSibling, CompilationUnit.TYPES_PROPERTY, node, before);
-            } else if (node instanceof ASTJImport) {
-                insertFirst(newSibling, CompilationUnit.TYPES_PROPERTY);
-            } else if (node instanceof ASTJPackage) {
+            } else if ((node instanceof ASTJImport)
+                    || (node instanceof ASTJPackage)) {
                 insertFirst(newSibling, CompilationUnit.TYPES_PROPERTY);
             } else {
                 return false;
@@ -432,10 +427,10 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
 
     /**
      * @return map of all nodes of the compilation unit and its children (<code>ASTNode</code> to
-     *         <code>String</code> contents of the node).
-     *         <p>
-     *         This map will be used during rewrite to track the nodes and set the exact contents of
-     *         them.
+     *             <code>String</code> contents of the node).
+     *             <p>
+     *             This map will be used during rewrite to track the nodes and set the exact
+     *             contents of them.
      */
     protected Map<ASTNode, String> getAllTrackedContentsMap() {
         return allTrackedContentsMap;
@@ -873,7 +868,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
             protected char[] charContent;
 
             protected LineBreakInserter() {
-                this.charContent = getDocument().get().toCharArray();
+                charContent = getDocument().get().toCharArray();
             }
 
             /**
@@ -953,7 +948,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
              * @param lineStart the first character of the line excluding <code>CR</code> or
              *            <code>LF</code> characters.
              * @return indent of the line starting at <code>lineStart</code>, empty string if there
-             *         is no indent or <code>lineStart</code> is invalid position
+             *             is no indent or <code>lineStart</code> is invalid position
              * @see IndentManipulation#isIndentChar(char)
              */
             protected String getIndent(int lineStart) {
@@ -973,7 +968,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
              * @param start
              * @param end
              * @return <code>true</code> if only whitespace characters are between
-             *         <code>start</code> and <code>end</code>
+             *             <code>start</code> and <code>end</code>
              * 
              * @see Character#isWhitespace(char)
              */

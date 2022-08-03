@@ -31,7 +31,7 @@ public class DummyTocEntryFactory implements ITocEntryFactory<DummyTypedTocEntry
     }
 
     public static class DummyRuntimeObject extends RuntimeObject {
-
+        // another class
     }
 
     public static class DummyTypedTocEntryObject extends CustomTocEntryObject<DummyRuntimeObject> {

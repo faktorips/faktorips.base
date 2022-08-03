@@ -106,11 +106,10 @@ public class MethodAccess {
      * 
      * @throws MethodAccessException if invocation of the method fails
      */
+    @SuppressWarnings("unchecked")
     public <T> T invoke(String methodDescription, Object object, Object... args) {
         try {
-            @SuppressWarnings("unchecked")
-            T result = (T)method.orElseThrow(() -> exception).invoke(object, args);
-            return result;
+            return (T)method.orElseThrow(() -> exception).invoke(object, args);
         } catch (IllegalArgumentException | InvocationTargetException | IllegalAccessException
                 | IllegalStateException | NullPointerException e) {
             throw new MethodAccessException(

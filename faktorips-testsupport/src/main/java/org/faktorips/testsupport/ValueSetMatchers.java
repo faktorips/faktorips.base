@@ -110,9 +110,7 @@ public class ValueSetMatchers {
 
             @Override
             protected boolean matchesSafely(ValueSet<T> valueSet) {
-                return Arrays.stream(values).allMatch(v -> {
-                    return valueSet.contains(v);
-                });
+                return Arrays.stream(values).allMatch(v -> valueSet.contains(v));
             }
         };
     }

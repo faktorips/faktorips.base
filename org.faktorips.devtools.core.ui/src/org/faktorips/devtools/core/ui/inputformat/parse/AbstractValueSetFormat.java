@@ -59,7 +59,7 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     }
 
     private boolean isAllowedValueSetType(ValueSetType valueSetType, boolean only) {
-        List<ValueSetType> allowedValueSetTypes = this.valueSetOwner.getAllowedValueSetTypes(this.valueSetOwner
+        List<ValueSetType> allowedValueSetTypes = valueSetOwner.getAllowedValueSetTypes(valueSetOwner
                 .getIpsProject());
         if (only) {
             return allowedValueSetTypes.size() == 1 && allowedValueSetTypes.get(0).equals(valueSetType);
@@ -69,11 +69,11 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     }
 
     protected IValueSetOwner getValueSetOwner() {
-        return this.valueSetOwner;
+        return valueSetOwner;
     }
 
     protected IValueSet getValueSet() {
-        return this.valueSetOwner.getValueSet();
+        return valueSetOwner.getValueSet();
     }
 
     protected String getNextPartId() {
@@ -98,8 +98,7 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
 
     protected String parseValue(String value) {
         IInputFormat<String> inputFormat = getInputFormat();
-        String parsedValue = inputFormat.parse(value.trim());
-        return parsedValue;
+        return inputFormat.parse(value.trim());
     }
 
     public abstract boolean isResponsibleFor(String resultingText);

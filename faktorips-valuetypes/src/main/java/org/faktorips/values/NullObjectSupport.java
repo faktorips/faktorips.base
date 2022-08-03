@@ -24,12 +24,12 @@ public interface NullObjectSupport {
      * Returns <code>true</code> if this is the object representing <code>null</code>, otherwise
      * <code>false</code>.
      */
-    public boolean isNull();
+    boolean isNull();
 
     /**
      * Returns <code>false</code> if this is the object representing <code>null</code>, otherwise
      * <code>true</code>.
      */
-    public boolean isNotNull();
+    boolean isNotNull();
 
 }

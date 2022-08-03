@@ -22,31 +22,31 @@ public interface IProductComponentLink<T extends IProductComponent> extends IRun
     /**
      * @return this link's min and max cardinality as a <code>IntegerRange</code>.
      */
-    public CardinalityRange getCardinality();
+    CardinalityRange getCardinality();
 
     /**
      * Returns the {@link IProductComponentLinkSource} this link originates from. This may be a
      * {@link IProductComponentGeneration} or a {@link IProductComponent} (since 3.8).
      * 
      * @since The return value of this method changed in version 3.8 from
-     *        {@link IProductComponentGeneration} to {@link IProductComponentLinkSource} because the
-     *        link source may be a product component or a product component generation.
+     *            {@link IProductComponentGeneration} to {@link IProductComponentLinkSource} because
+     *            the link source may be a product component or a product component generation.
      */
-    public IProductComponentLinkSource getSource();
+    IProductComponentLinkSource getSource();
 
     /**
      * Returns the target product component.
      */
-    public T getTarget();
+    T getTarget();
 
     /**
      * Returns the target product component's id.
      */
-    public String getTargetId();
+    String getTargetId();
 
     /**
      * Returns the name of the association this link belongs to.
      */
-    public String getAssociationName();
+    String getAssociationName();
 
 }

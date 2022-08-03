@@ -29,6 +29,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
@@ -57,7 +58,6 @@ import org.faktorips.runtime.internal.XmlCallback;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestResult;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
 
@@ -317,8 +317,8 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         String className = getUnqualifiedClassName();
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
-        String[] argNames = new String[] { "qualifiedName" };
-        String[] argClassNames = new String[] { "java.lang.String" };
+        String[] argNames = { "qualifiedName" };
+        String[] argClassNames = { "java.lang.String" };
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("super(qualifiedName);");
         body.appendln(MARKER_BEGIN_USER_CODE);
@@ -713,11 +713,11 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         String javaDoc = getLocalizedText(ASSERT_RULE_METHOD_JAVADOC);
         JavaCodeFragment body = new JavaCodeFragment();
 
-        String[] ruleListNames = new String[] { ruleContainerNameViolated, ruleContainerNameNotViolated };
-        String[] expectedValues = new String[] { violatedConstantName, notViolatedConstantName };
-        String[] actualValues = new String[] { notViolatedConstantName, violatedConstantName };
-        String[] failureMessages = new String[] { assertFailViolationExpected, assertFailNoValidationExpected };
-        String[] compareOperations = new String[] { " == ", " != " };
+        String[] ruleListNames = { ruleContainerNameViolated, ruleContainerNameNotViolated };
+        String[] expectedValues = { violatedConstantName, notViolatedConstantName };
+        String[] actualValues = { notViolatedConstantName, violatedConstantName };
+        String[] failureMessages = { assertFailViolationExpected, assertFailNoValidationExpected };
+        String[] compareOperations = { " == ", " != " };
         for (int i = 0; i < ruleListNames.length; i++) {
             body.append("for (");
             body.appendClassName(Iterator.class.getName());

@@ -61,7 +61,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     public TableContentUsage(IPropertyValueContainer parent, String id, String structureUsage) {
         super(parent, id);
         this.structureUsage = structureUsage;
-        this.templateValueSettings = new TemplateValueSettings(this);
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -239,7 +239,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy table name values from template (if present)
-            this.tableContentName = getTableContentName();
+            tableContentName = getTableContentName();
         }
         TemplateValueStatus oldStatus = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);

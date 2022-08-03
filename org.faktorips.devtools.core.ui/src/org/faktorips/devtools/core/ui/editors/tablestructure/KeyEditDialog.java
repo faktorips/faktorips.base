@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.tablestructure;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -307,8 +306,8 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         }
         List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator<?> it = structuredSelection.iterator(); it.hasNext();) {
-            IKeyItem item = (IKeyItem)it.next();
+        for (Object name : structuredSelection) {
+            IKeyItem item = (IKeyItem)name;
             items.add(item.getName());
         }
         key.setKeyItems(items.toArray(new String[items.size()]));
@@ -325,8 +324,8 @@ public abstract class KeyEditDialog extends IpsPartEditDialog2 {
         }
         List<String> items = CollectionUtil.toArrayList(key.getKeyItemNames());
         IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-        for (Iterator<?> it = structuredSelection.iterator(); it.hasNext();) {
-            String item = (String)it.next();
+        for (Object name : structuredSelection) {
+            String item = (String)name;
             items.remove(item);
         }
         key.setKeyItems(items.toArray(new String[items.size()]));

@@ -32,9 +32,9 @@ public class FunctionSignatureImpl implements FunctionSignature {
      */
     public FunctionSignatureImpl(String name, FunctionSignatures signature) {
         this.name = name;
-        this.type = signature.getType();
-        this.argTypes = signature.getArgTypes();
-        this.hasVarArgs = signature.hasVarArgs();
+        type = signature.getType();
+        argTypes = signature.getArgTypes();
+        hasVarArgs = signature.hasVarArgs();
     }
 
     /**
@@ -44,7 +44,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
         this.name = name;
         this.type = type;
         this.argTypes = argTypes;
-        this.hasVarArgs = false;
+        hasVarArgs = false;
     }
 
     /**
@@ -57,8 +57,8 @@ public class FunctionSignatureImpl implements FunctionSignature {
     public FunctionSignatureImpl(String name, Datatype type, Datatype argType) {
         this.name = name;
         this.type = type;
-        this.argTypes = new Datatype[] { argType };
-        this.hasVarArgs = true;
+        argTypes = new Datatype[] { argType };
+        hasVarArgs = true;
     }
 
     /**
@@ -107,7 +107,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
             }
             return true;
         }
-        if (this.argTypes.length != otherArgTypes.length) {
+        if (argTypes.length != otherArgTypes.length) {
             return false;
         }
         for (int i = 0; i < otherArgTypes.length; i++) {
@@ -139,7 +139,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * Overridden method.
      * 
      * @see org.faktorips.fl.FunctionSignature#matchUsingConversion(java.lang.String,
-     *      org.faktorips.datatype.Datatype[], org.faktorips.datatype.ConversionMatrix)
+     *          org.faktorips.datatype.Datatype[], org.faktorips.datatype.ConversionMatrix)
      */
     @Override
     public boolean matchUsingConversion(String name, Datatype[] otherArgTypes, ConversionMatrix matrix) {
@@ -154,7 +154,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
             }
             return true;
         }
-        if (this.argTypes.length != otherArgTypes.length) {
+        if (argTypes.length != otherArgTypes.length) {
             return false;
         }
         for (int i = 0; i < otherArgTypes.length; i++) {
@@ -169,9 +169,8 @@ public class FunctionSignatureImpl implements FunctionSignature {
     public boolean isSame(FunctionSignature fctSignature) {
         // this check is also done in #match(name, datatypes) but for performance issue we do it
         // before getting the argTypes of fctSignature
-        if (!this.name.equals(fctSignature.getName())) {
-            return false;
-        } else if (!match(fctSignature.getName(), fctSignature.getArgTypes())) {
+        if (!name.equals(fctSignature.getName())
+                || !match(fctSignature.getName(), fctSignature.getArgTypes())) {
             return false;
         } else {
             return type.equals(fctSignature.getType());

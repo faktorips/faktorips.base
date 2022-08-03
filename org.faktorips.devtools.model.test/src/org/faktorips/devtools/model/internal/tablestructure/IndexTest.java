@@ -71,7 +71,7 @@ public class IndexTest extends AbstractIpsPluginTest {
     @Test
     public void testGetKeyItemNames() {
         assertEquals(0, key.getKeyItemNames().length);
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
         assertNotSame(items, key.getKeyItemNames()); // defensive copy should be made
         assertEquals(2, key.getKeyItemNames().length);
@@ -98,7 +98,7 @@ public class IndexTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetKeyItems() {
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
         assertTrue(ipsSrcFile.isDirty());
     }
@@ -253,7 +253,7 @@ public class IndexTest extends AbstractIpsPluginTest {
         assertEquals(columnSmoker, key.getItemCandidates()[1]);
         assertEquals(range, key.getItemCandidates()[2]);
 
-        String[] items = new String[] { "gender", range.getName() };
+        String[] items = { "gender", range.getName() };
         key.setKeyItems(items);
         assertEquals(1, key.getItemCandidates().length);
         assertEquals(columnSmoker, key.getItemCandidates()[0]);
@@ -263,7 +263,7 @@ public class IndexTest extends AbstractIpsPluginTest {
     public void testToXml() {
         key = (Index)table.newIndex();
         key.setUniqueKey(false);
-        String[] items = new String[] { "age", "gender" };
+        String[] items = { "age", "gender" };
         key.setKeyItems(items);
 
         Element element = key.toXml(newDocument());

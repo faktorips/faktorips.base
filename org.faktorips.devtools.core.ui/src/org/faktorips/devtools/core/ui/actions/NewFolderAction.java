@@ -162,10 +162,8 @@ public class NewFolderAction extends IpsAction {
             if (newText.indexOf(BLANK) != -1) {
                 return Messages.NewFolderAction_FoldernameMustNotContainBlanks;
             }
-            if (newText.trim().equals(EMPTY_STRING)) {
-                return Messages.NewFolderAction_InvalidFoldername;
-            }
-            if (JavaConventions.validatePackageName(newText, "1.3", "1.3").getSeverity() == IStatus.ERROR) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (newText.trim().equals(EMPTY_STRING)
+                    || (JavaConventions.validatePackageName(newText, "1.3", "1.3").getSeverity() == IStatus.ERROR)) { //$NON-NLS-1$ //$NON-NLS-2$
                 return Messages.NewFolderAction_InvalidFoldername;
             }
             IFolder folder = getFolder(parent, newText);

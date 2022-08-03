@@ -268,13 +268,13 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return testParameterChild2;
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(otherPolicyCmptType);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for product component type configuration update
             assertEquals(newQualifiedName, productCmptType.getPolicyCmptType());
 
@@ -342,13 +342,13 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return superTestAttribute;
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(superPolicyCmptType);
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(testCaseType);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for test attribute update
             assertEquals(newQualifiedName, superTestAttribute.getPolicyCmptType());
 
@@ -429,13 +429,13 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return productCmptTypeAssociation;
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(policyCmptType);
             saveIpsSrcFile(otherProductCmptType);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for policy component type configuration update
             assertEquals(newQualifiedName, policyCmptType.getProductCmptType());
 
@@ -470,12 +470,12 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return productCmptType;
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(superProductCmptType);
             saveIpsSrcFile(productCmptType);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for subtype update
             assertEquals(newQualifiedName, productCmptType.getSupertype());
         }
@@ -497,12 +497,12 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return newTestCase(testCaseType, "TestCase");
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(testCaseType);
             saveIpsSrcFile(testCase);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for test case reference update
             assertEquals(newQualifiedName, testCase.getTestCaseType());
         }
@@ -524,12 +524,12 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return newEnumContent(enumType, "EnumContent");
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(enumType);
             saveIpsSrcFile(enumContent);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for enumeration content reference update
             assertEquals(newQualifiedName, enumContent.getEnumType());
         }
@@ -551,12 +551,12 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return newTableContents(tableStructure, "TableContents");
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(tableStructure);
             saveIpsSrcFile(tableContents);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for table contents reference update
             assertEquals(newQualifiedName, tableContents.getTableStructure());
         }
@@ -604,14 +604,14 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractCoreIpsPlu
             return otherProductCmpt;
         }
 
-        protected final void saveIpsSrcFiles() {
+        protected void saveIpsSrcFiles() {
             saveIpsSrcFile(productCmptType);
             saveIpsSrcFile(otherProductCmptType);
             saveIpsSrcFile(productCmpt);
             saveIpsSrcFile(otherProductCmpt);
         }
 
-        protected final void check(String newQualifiedName) {
+        protected void check(String newQualifiedName) {
             // Check for update of referring product component generation
             IProductCmptGeneration generation = otherProductCmpt.getFirstGeneration();
             IProductCmptLink[] links = generation.getLinks();

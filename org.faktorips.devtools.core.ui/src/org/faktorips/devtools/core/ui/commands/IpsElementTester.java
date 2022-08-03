@@ -51,10 +51,7 @@ public class IpsElementTester extends PropertyTester {
     }
 
     private boolean isEditable(IIpsElement ipsElement) {
-        if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse()) {
-            return false;
-        }
-        if (ipsElement.isContainedInArchive()) {
+        if (IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse() || ipsElement.isContainedInArchive()) {
             return false;
         }
         if (ipsElement instanceof IIpsObjectPartContainer) {

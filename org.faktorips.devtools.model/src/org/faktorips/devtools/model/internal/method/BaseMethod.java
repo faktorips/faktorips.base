@@ -68,7 +68,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     @Override
     public void setDatatype(String newDatatype) {
         String oldDatatype = getDatatype();
-        this.datatype = newDatatype;
+        datatype = newDatatype;
         valueChanged(oldDatatype, newDatatype, PROPERTY_DATATYPE);
     }
 
@@ -208,10 +208,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
 
     @Override
     public boolean isSameSignature(IBaseMethod other) {
-        if (!getName().equals(other.getName())) {
-            return false;
-        }
-        if (getNumOfParameters() != other.getNumOfParameters()) {
+        if (!getName().equals(other.getName()) || (getNumOfParameters() != other.getNumOfParameters())) {
             return false;
         }
         IParameter[] otherParams = other.getParameters();

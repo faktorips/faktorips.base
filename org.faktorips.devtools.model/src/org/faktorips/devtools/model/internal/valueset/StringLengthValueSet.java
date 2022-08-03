@@ -146,7 +146,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean old = this.isContainsNull();
+        boolean old = isContainsNull();
         this.containsNull = containsNull;
         valueChanged(old, containsNull, PROPERTY_CONTAINS_NULL);
     }

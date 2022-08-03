@@ -26,18 +26,18 @@ public interface IIpsDropAdapterProvider {
     /**
      * @return The list of supported {@link Transfer} types.
      */
-    public List<Transfer> getSupportedTransferTypes();
+    List<Transfer> getSupportedTransferTypes();
 
     /**
      * @return The bitwise OR'ing of allowed operations; this may be a combination of any of
-     *         {@link DND#DROP_NONE}, {@link DND#DROP_COPY}, {@link DND#DROP_MOVE},
-     *         {@link DND#DROP_LINK}
+     *             {@link DND#DROP_NONE}, {@link DND#DROP_COPY}, {@link DND#DROP_MOVE},
+     *             {@link DND#DROP_LINK}
      */
-    public int getSupportedOperations();
+    int getSupportedOperations();
 
     /**
      * @return The adapter to handle a drop for the given viewer
      */
-    public IpsViewerDropAdapter getDropAdapter(Viewer viewer);
+    IpsViewerDropAdapter getDropAdapter(Viewer viewer);
 
 }

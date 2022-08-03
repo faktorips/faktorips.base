@@ -150,7 +150,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
 
         IValidationRule foundRule = ruleConfig.findValidationRule(ipsProject);
         assertNotNull(foundRule);
-        assertEquals(this.rule, foundRule);
+        assertEquals(rule, foundRule);
     }
 
     @Test

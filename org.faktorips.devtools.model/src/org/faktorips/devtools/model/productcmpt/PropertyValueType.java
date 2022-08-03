@@ -410,7 +410,7 @@ public enum PropertyValueType {
     private final Class<? extends IpsObjectPart> implClass;
     private final String xmlTag;
 
-    private PropertyValueType(Class<? extends IPropertyValue> interfaceClass, Class<? extends IpsObjectPart> implClass,
+    PropertyValueType(Class<? extends IPropertyValue> interfaceClass, Class<? extends IpsObjectPart> implClass,
             String xmlTag) {
         this.interfaceClass = interfaceClass;
         this.implClass = implClass;
@@ -545,16 +545,14 @@ public enum PropertyValueType {
      * @param partId The part id of the generated {@link IPropertyValue}
      * @param clazz The class that specifies the type of the created element
      */
+
+    @SuppressWarnings("unchecked")
     public static <T extends IPropertyValue> T createPropertyValue(IPropertyValueContainer parent,
             IProductCmptProperty productCmptProperty,
             String partId,
             Class<T> clazz) {
-
-        @SuppressWarnings("unchecked")
-        // The enum could not be specialized with generics but the implementation is type safe
-        T propertyValue = (T)PropertyValueType.getTypeForValueClass(clazz).createPropertyValue(parent,
+        return (T)PropertyValueType.getTypeForValueClass(clazz).createPropertyValue(parent,
                 productCmptProperty, partId);
-        return propertyValue;
     }
 
     private static class ValueSetComparator<T> implements Comparator<T>, Serializable {

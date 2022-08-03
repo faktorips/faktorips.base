@@ -169,7 +169,7 @@ public class ConstantPolicyAttributeTest {
 
         @IpsPolicyCmptType(name = "SubPolicy")
         class SubPolicy extends ConstPolicy {
-
+            // a policy
         }
         Attribute overwritingAttribute = policyAttribute
                 .createOverwritingAttributeFor(IpsModel.getPolicyCmptType(SubPolicy.class));
@@ -222,6 +222,7 @@ public class ConstantPolicyAttributeTest {
 
         @Override
         public void initialize() {
+            // nothing to do
         }
 
         @Override

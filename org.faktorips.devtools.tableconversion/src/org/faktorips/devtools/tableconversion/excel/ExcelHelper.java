@@ -41,15 +41,11 @@ public class ExcelHelper {
      */
     public static Workbook getWorkbook(String sourceFile) throws IOException {
         File importFile = new File(sourceFile);
-        FileInputStream fis = null;
         Workbook workbook = null;
-        fis = new FileInputStream(importFile);
-        try {
+        try (FileInputStream fis = new FileInputStream(importFile)) {
             workbook = WorkbookFactory.create(fis);
         } catch (InvalidFormatException e) {
             IpsPlugin.logAndShowErrorDialog(e);
-        } finally {
-            fis.close();
         }
         return workbook;
     }

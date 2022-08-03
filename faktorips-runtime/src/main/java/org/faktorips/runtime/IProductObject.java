@@ -28,14 +28,14 @@ public interface IProductObject extends IProductComponentLinkSource {
      * 
      * @throws RuntimeException if this product component does not configure a policy component.
      */
-    public IConfigurableModelObject createPolicyComponent();
+    IConfigurableModelObject createPolicyComponent();
 
     /**
      * Returns the date from which this generation is valid.
      * 
      * @return The valid from date of this generation
      */
-    public DateTime getValidFrom();
+    DateTime getValidFrom();
 
     /**
      * Returns the point in time this generation is valid from in the given time zone. This method
@@ -43,7 +43,7 @@ public interface IProductObject extends IProductComponentLinkSource {
      * 
      * @throws NullPointerException if zone is <code>null</code>.
      */
-    public Date getValidFrom(TimeZone zone);
+    Date getValidFrom(TimeZone zone);
 
     /**
      * Returns whether the validation rule with the given name is configured as active in this
@@ -58,7 +58,7 @@ public interface IProductObject extends IProductComponentLinkSource {
      * @return <code>true</code> if the rule was activated, <code>false</code> else.
      * @since 3.22
      */
-    public boolean isValidationRuleActivated(String ruleName);
+    boolean isValidationRuleActivated(String ruleName);
 
     /**
      * Enables or disables validation for a specific rule.
@@ -70,6 +70,6 @@ public interface IProductObject extends IProductComponentLinkSource {
      *             modifiable}
      * @since 3.22
      */
-    public void setValidationRuleActivated(String ruleName, boolean active);
+    void setValidationRuleActivated(String ruleName, boolean active);
 
 }

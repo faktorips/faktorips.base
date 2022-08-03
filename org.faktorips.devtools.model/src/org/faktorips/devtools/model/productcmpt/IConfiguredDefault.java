@@ -16,31 +16,31 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
 
 public interface IConfiguredDefault extends IConfigElement {
 
-    public static final String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE;
+    String LEGACY_TAG_NAME = ValueToXmlHelper.XML_TAG_VALUE;
 
-    public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
+    String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIGURED_DEFAULT;
 
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "CONFIGUREDDEFAULT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "CONFIGUREDDEFAULT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value is not contained in the value set.
      */
-    public static final String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
+    String MSGCODE_VALUE_NOT_IN_VALUESET = MSGCODE_PREFIX + "ValueNotInValueSet"; //$NON-NLS-1$
 
     /**
      * Returns the attribute's value.
      */
-    public String getValue();
+    String getValue();
 
     /**
      * Sets the attribute's value.
      */
-    public void setValue(String newValue);
+    void setValue(String newValue);
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
@@ -49,7 +49,7 @@ public interface IConfiguredDefault extends IConfigElement {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public IConfiguredDefault findTemplateProperty(IIpsProject ipsProject);
+    IConfiguredDefault findTemplateProperty(IIpsProject ipsProject);
 
     /**
      * Returns the {@link IValueSet} that defines the allowed values for this configured default
@@ -57,5 +57,5 @@ public interface IConfiguredDefault extends IConfigElement {
      * always allowed unless in case of a primitive datatype.
      * 
      */
-    public IValueSet getValueSet();
+    IValueSet getValueSet();
 }

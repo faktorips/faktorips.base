@@ -293,6 +293,6 @@ public class IpsMatchers {
     public static <P> MessageMatcher hasProperty(Function<Message, P> propertyExtractor,
             Matcher<P> propertyMatcher,
             String propertyDescription) {
-        return new MessagePropertyMatcher<P>(propertyExtractor, propertyMatcher, propertyDescription);
+        return new MessagePropertyMatcher<>(propertyExtractor, propertyMatcher, propertyDescription);
     }
 }

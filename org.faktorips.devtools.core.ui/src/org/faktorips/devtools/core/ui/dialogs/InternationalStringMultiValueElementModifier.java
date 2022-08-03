@@ -32,9 +32,8 @@ public class InternationalStringMultiValueElementModifier implements
     public LocalizedString getValue(SingleValueViewItem element) {
         IInternationalString internationalString = getInternationalString(element);
         if (internationalString != null) {
-            LocalizedString locString = internationalString.get(IIpsModel.get().getMultiLanguageSupport()
+            return internationalString.get(IIpsModel.get().getMultiLanguageSupport()
                     .getLocalizationLocaleOrDefault(element.getSingleValueHolder().getIpsProject()));
-            return locString;
         }
         return null;
     }

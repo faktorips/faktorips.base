@@ -128,7 +128,7 @@ public interface IDeltaComputationOptions {
      * performance issue if used in massive delta computation with many added or removed subtrees.
      * 
      * @return <code>true</code> if a delta should be created for every element of an added or
-     *         removed subtree.
+     *             removed subtree.
      * 
      * @since 3.15
      */

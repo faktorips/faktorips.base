@@ -39,9 +39,9 @@ public class IpsSrcFilesSearch extends AbstractSearch {
      */
     public IpsSrcFilesSearch(IpsObjectType... ipsObjectTypesVarArg) {
         if (ipsObjectTypesVarArg.length == 0) {
-            this.ipsObjectTypes = IIpsModel.get().getIpsObjectTypes();
+            ipsObjectTypes = IIpsModel.get().getIpsObjectTypes();
         } else {
-            this.ipsObjectTypes = ipsObjectTypesVarArg;
+            ipsObjectTypes = ipsObjectTypesVarArg;
         }
     }
 

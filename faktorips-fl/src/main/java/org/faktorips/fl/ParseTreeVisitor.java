@@ -61,7 +61,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.SimpleNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(SimpleNode node, Object data) {
@@ -72,7 +72,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTStart,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTStart node, Object data) {
@@ -84,7 +84,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTEQNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTEQNode node, Object data) {
@@ -95,7 +95,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTNotEQNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTNotEQNode node, Object data) {
@@ -106,7 +106,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTLTNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTLTNode node, Object data) {
@@ -117,7 +117,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTGTNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTGTNode node, Object data) {
@@ -128,7 +128,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTLENode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTLENode node, Object data) {
@@ -139,7 +139,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTGENode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTGENode node, Object data) {
@@ -150,7 +150,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTAddNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTAddNode node, Object data) {
@@ -161,7 +161,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTSubNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTSubNode node, Object data) {
@@ -172,7 +172,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMultNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTMultNode node, Object data) {
@@ -183,7 +183,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTDivNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTDivNode node, Object data) {
@@ -194,7 +194,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTPlusNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTPlusNode node, Object data) {
@@ -205,7 +205,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMinusNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTMinusNode node, Object data) {
@@ -216,7 +216,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTNotNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTNotNode node, Object data) {
@@ -227,7 +227,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTParenthesisNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTParenthesisNode node, Object data) {
@@ -238,21 +238,20 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTIdentifierNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTIdentifierNode node, Object data) {
         String identifier = node.getLastToken().toString();
-        AbstractCompilationResult<T> result = (AbstractCompilationResult<T>)compiler.getIdentifierResolver().compile(
+        return compiler.getIdentifierResolver().compile(
                 identifier, compiler, compiler.getLocale());
-        return result;
     }
 
     /**
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTBooleanNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTBooleanNode node, Object data) {
@@ -263,7 +262,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTIntegerNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTIntegerNode node, Object data) {
@@ -274,7 +273,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTDecimalNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTDecimalNode node, Object data) {
@@ -285,7 +284,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTStringNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTStringNode node, Object data) {
@@ -308,7 +307,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTMoneyNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTMoneyNode node, Object data) {
@@ -326,7 +325,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTNullNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTNullNode node, Object data) {
@@ -338,7 +337,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTFunctionCallNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTFunctionCallNode node, Object data) {
@@ -386,7 +385,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
      * Overridden method.
      * 
      * @see org.faktorips.fl.parser.FlParserVisitor#visit(org.faktorips.fl.parser.ASTArgListNode,
-     *      java.lang.Object)
+     *          java.lang.Object)
      */
     @Override
     public Object visit(ASTArgListNode node, Object data) {
@@ -429,8 +428,7 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
         for (UnaryOperation<T> operation2 : operations) {
             // exact match?
             if (operation2.getDatatype().equals(argResult.getDatatype())) {
-                CompilationResult<T> compilationResult = operation2.generate(argResult);
-                return compilationResult;
+                return operation2.generate(argResult);
             }
             // match with implicit casting
             if (compiler.getConversionCodeGenerator().canConvert(argResult.getDatatype(), operation2.getDatatype())) {
@@ -444,10 +442,9 @@ public abstract class ParseTreeVisitor<T extends CodeFragment> implements FlPars
             AbstractCompilationResult<T> convertedArgResult = newCompilationResultImpl(converted,
                     operation.getDatatype());
             convertedArgResult.addMessages(argResult.getMessages());
-            CompilationResult<T> compilationResult = operation.generate(convertedArgResult);
-            return compilationResult;
+            return operation.generate(convertedArgResult);
         }
-        Object[] replacements = new Object[] { operator, argResult.getDatatype().getName() };
+        Object[] replacements = { operator, argResult.getDatatype().getName() };
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR,
                 compiler.getLocale(), replacements);
         return newCompilationResultImpl(Message.newError(ExprCompiler.UNDEFINED_OPERATOR, text));

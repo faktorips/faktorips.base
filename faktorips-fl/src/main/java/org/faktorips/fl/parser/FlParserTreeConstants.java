@@ -16,33 +16,33 @@
 package org.faktorips.fl.parser;
 
 public interface FlParserTreeConstants {
-    public int JJTSTART = 0;
-    public int JJTVOID = 1;
-    public int JJTEQNODE = 2;
-    public int JJTNOTEQNODE = 3;
-    public int JJTLTNODE = 4;
-    public int JJTGTNODE = 5;
-    public int JJTLENODE = 6;
-    public int JJTGENODE = 7;
-    public int JJTADDNODE = 8;
-    public int JJTSUBNODE = 9;
-    public int JJTMULTNODE = 10;
-    public int JJTDIVNODE = 11;
-    public int JJTPLUSNODE = 12;
-    public int JJTMINUSNODE = 13;
-    public int JJTNOTNODE = 14;
-    public int JJTPARENTHESISNODE = 15;
-    public int JJTFUNCTIONCALLNODE = 16;
-    public int JJTARGLISTNODE = 17;
-    public int JJTIDENTIFIERNODE = 18;
-    public int JJTBOOLEANNODE = 19;
-    public int JJTINTEGERNODE = 20;
-    public int JJTDECIMALNODE = 21;
-    public int JJTSTRINGNODE = 22;
-    public int JJTMONEYNODE = 23;
-    public int JJTNULLNODE = 24;
+    int JJTSTART = 0;
+    int JJTVOID = 1;
+    int JJTEQNODE = 2;
+    int JJTNOTEQNODE = 3;
+    int JJTLTNODE = 4;
+    int JJTGTNODE = 5;
+    int JJTLENODE = 6;
+    int JJTGENODE = 7;
+    int JJTADDNODE = 8;
+    int JJTSUBNODE = 9;
+    int JJTMULTNODE = 10;
+    int JJTDIVNODE = 11;
+    int JJTPLUSNODE = 12;
+    int JJTMINUSNODE = 13;
+    int JJTNOTNODE = 14;
+    int JJTPARENTHESISNODE = 15;
+    int JJTFUNCTIONCALLNODE = 16;
+    int JJTARGLISTNODE = 17;
+    int JJTIDENTIFIERNODE = 18;
+    int JJTBOOLEANNODE = 19;
+    int JJTINTEGERNODE = 20;
+    int JJTDECIMALNODE = 21;
+    int JJTSTRINGNODE = 22;
+    int JJTMONEYNODE = 23;
+    int JJTNULLNODE = 24;
 
-    public String[] jjtNodeName = { "Start", "void", "EQNode", "NotEQNode", "LTNode", "GTNode", "LENode", "GENode",
+    String[] jjtNodeName = { "Start", "void", "EQNode", "NotEQNode", "LTNode", "GTNode", "LENode", "GENode",
             "AddNode", "SubNode", "MultNode", "DivNode", "PlusNode", "MinusNode", "NotNode", "ParenthesisNode",
             "FunctionCallNode", "ArgListNode", "IdentifierNode", "BooleanNode", "IntegerNode", "DecimalNode",
             "StringNode", "MoneyNode", "NullNode", };

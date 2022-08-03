@@ -26,14 +26,14 @@ public interface IJavaClassNameProvider {
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to get the implementation name for
      * @return the unqualified name of the generated implementation class
      */
-    public String getImplClassName(IIpsSrcFile ipsSrcFile);
+    String getImplClassName(IIpsSrcFile ipsSrcFile);
 
     /**
      * Returns whether the implementation is a internal artifact or not.
      * 
      * @return True if the implementation class is a internal artifact, false if not
      */
-    public boolean isImplClassInternalArtifact();
+    boolean isImplClassInternalArtifact();
 
     /**
      * Returns the name of the interface generated for this {@link IIpsSrcFile} if there is any
@@ -51,13 +51,13 @@ public interface IJavaClassNameProvider {
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to get the interface name for
      * @return The unqualified name of the published interface
      */
-    public String getInterfaceName(IIpsSrcFile ipsSrcFile);
+    String getInterfaceName(IIpsSrcFile ipsSrcFile);
 
     /**
      * Returns whether the interface is a internal artifact or not.
      * 
      * @return True if the interface class is a internal artifact, false if not
      */
-    public boolean isInterfaceInternalArtifact();
+    boolean isInterfaceInternalArtifact();
 
 }

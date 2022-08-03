@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
+import java.util.Objects;
+
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
@@ -37,15 +39,15 @@ public class AssociationComponentNode extends ComponentNode {
     private AssociationComponentNode(IType targetType, ComponentNode parent, IIpsProject rootProject,
             IAssociation targetingAssociation) {
         super(targetType, rootProject);
-        this.targetingType = targetingAssociation.getType();
-        this.minCardinality = targetingAssociation.getMinCardinality();
-        this.maxCardinality = targetingAssociation.getMaxCardinality();
-        this.targetRoleSingular = targetingAssociation.getTargetRoleSingular();
-        this.isInherited = false;
-        this.isDerivedUnion = targetingAssociation.isDerivedUnion();
-        this.isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
-        this.subsettedDerivedUnion = targetingAssociation.getSubsettedDerivedUnion();
-        this.setParent(parent);
+        targetingType = targetingAssociation.getType();
+        minCardinality = targetingAssociation.getMinCardinality();
+        maxCardinality = targetingAssociation.getMaxCardinality();
+        targetRoleSingular = targetingAssociation.getTargetRoleSingular();
+        isInherited = false;
+        isDerivedUnion = targetingAssociation.isDerivedUnion();
+        isSubsetOfADerivedUnion = targetingAssociation.isSubsetOfADerivedUnion();
+        subsettedDerivedUnion = targetingAssociation.getSubsettedDerivedUnion();
+        setParent(parent);
     }
 
     /**
@@ -80,30 +82,30 @@ public class AssociationComponentNode extends ComponentNode {
     }
 
     public void setTargetingType(IType type) {
-        this.targetingType = type;
+        targetingType = type;
     }
 
     public IType getTargetingType() {
-        return this.targetingType;
+        return targetingType;
     }
 
     public int getMinCardinality() {
-        return this.minCardinality;
+        return minCardinality;
     }
 
     public int getMaxCardinality() {
-        return this.maxCardinality;
+        return maxCardinality;
     }
 
     public String getTargetRoleSingular() {
-        return this.targetRoleSingular;
+        return targetRoleSingular;
     }
 
     /**
      * Indicates if the underlying association is inherited.
      */
     public boolean isInherited() {
-        return this.isInherited;
+        return isInherited;
     }
 
     @Override
@@ -113,8 +115,7 @@ public class AssociationComponentNode extends ComponentNode {
         result = prime * result + (isInherited ? 1231 : 1237);
         result = prime * result + maxCardinality;
         result = prime * result + minCardinality;
-        result = prime * result + ((targetRoleSingular == null) ? 0 : targetRoleSingular.hashCode());
-        return result;
+        return prime * result + ((targetRoleSingular == null) ? 0 : targetRoleSingular.hashCode());
     }
 
     @Override
@@ -122,30 +123,14 @@ public class AssociationComponentNode extends ComponentNode {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (!super.equals(obj) || (getClass() != obj.getClass())) {
             return false;
         }
         AssociationComponentNode other = (AssociationComponentNode)obj;
-        if (isInherited != other.isInherited) {
-            return false;
-        }
-        if (maxCardinality != other.maxCardinality) {
-            return false;
-        }
-        if (minCardinality != other.minCardinality) {
-            return false;
-        }
-        if (targetRoleSingular == null) {
-            if (other.targetRoleSingular != null) {
-                return false;
-            }
-        } else if (!targetRoleSingular.equals(other.targetRoleSingular)) {
-            return false;
-        }
-        return true;
+        return (isInherited == other.isInherited)
+                && (maxCardinality == other.maxCardinality)
+                && (minCardinality == other.minCardinality)
+                && Objects.equals(targetRoleSingular, other.targetRoleSingular);
     }
 
     public boolean isDerivedUnion() {
@@ -161,6 +146,6 @@ public class AssociationComponentNode extends ComponentNode {
     }
 
     public void setInherited(boolean inherited) {
-        this.isInherited = inherited;
+        isInherited = inherited;
     }
 }

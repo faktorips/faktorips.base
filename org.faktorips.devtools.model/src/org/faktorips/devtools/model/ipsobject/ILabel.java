@@ -21,46 +21,46 @@ import java.util.Locale;
  */
 public interface ILabel extends IIpsObjectPart {
 
-    public static final String XML_TAG_NAME = "Label"; //$NON-NLS-1$
+    String XML_TAG_NAME = "Label"; //$NON-NLS-1$
 
-    public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
+    String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
-    public static final String PROPERTY_PLURAL_VALUE = "pluralValue"; //$NON-NLS-1$
+    String PROPERTY_PLURAL_VALUE = "pluralValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "LABEL-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "LABEL-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the locale of this label is not supported by the IPS
      * project.
      */
-    public static final String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
+    String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
             + "LocaleNotSupportedByIpsProject"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the locale of this label is missing.
      */
-    public static final String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
+    String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
 
     /**
      * Returns the locale of this label or null if this information is for some reason not
      * available.
      */
-    public Locale getLocale();
+    Locale getLocale();
 
     /**
      * Sets the locale of this label.
      * 
      * @param locale The locale of this label
      */
-    public void setLocale(Locale locale);
+    void setLocale(Locale locale);
 
     /**
      * Returns the value of the label or null if this label has no value.
      */
-    public String getValue();
+    String getValue();
 
     /**
      * Sets the value of the label.
@@ -69,12 +69,12 @@ public interface ILabel extends IIpsObjectPart {
      * 
      * @param value The value for the label
      */
-    public void setValue(String value);
+    void setValue(String value);
 
     /**
      * Returns the plural value of the label or null if this label has no plural label.
      */
-    public String getPluralValue();
+    String getPluralValue();
 
     /**
      * Sets the plural value of the label.
@@ -83,6 +83,6 @@ public interface ILabel extends IIpsObjectPart {
      * 
      * @param pluralValue The plural value for the label
      */
-    public void setPluralValue(String pluralValue);
+    void setPluralValue(String pluralValue);
 
 }

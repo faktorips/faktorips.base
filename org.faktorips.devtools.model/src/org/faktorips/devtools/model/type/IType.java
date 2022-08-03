@@ -28,89 +28,89 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionControlledElement {
 
-    public static final String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "Type-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "Type-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the supertype hierarchy contains a cycle.
      */
-    public static final String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInSupertypeHierarchy"; //$NON-NLS-1$
+    String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists an error within the type hierarchy of
      * this type.
      */
-    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
+    String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the supertype can not be found.
      */
-    public static final String MSGCODE_SUPERTYPE_NOT_FOUND = MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
+    String MSGCODE_SUPERTYPE_NOT_FOUND = MSGCODE_PREFIX + "SupertypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an abstract method exists in the type's supertype
      * hierarchy that must be overridden in the concrete type.
      */
-    public static final String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
+    String MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD = MSGCODE_PREFIX + "MustOverrideAbstractMethod"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least one abstract method is defined, but this
      * type is not marked as abstract.
      */
-    public static final String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
+    String MSGCODE_ABSTRACT_MISSING = MSGCODE_PREFIX + "AbstractMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two properties (attribute, associations)
      * share the same name.
      */
-    public static final String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_PROPERTY_NAME = MSGCODE_PREFIX + "DuplicatePropertyName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of a derived union the type must be abstract
      * or at lease one implementation of the derived union must exists in the type.
      */
-    public static final String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
+    String MSGCODE_MUST_SPECIFY_DERIVED_UNION = MSGCODE_PREFIX + "MustSpecifyDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of an inverse derived union the type must be
      * abstract or at lease one inverse of an implementation of the derived union must exists in the
      * type.
      */
-    public static final String MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION = MSGCODE_PREFIX
+    String MSGCODE_MUST_SPECIFY_INVERSE_OF_DERIVED_UNION = MSGCODE_PREFIX
             + "MustSpecifyInverseDerivedUnion"; //$NON-NLS-1$
 
-    public static final String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX
+    String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameExists"; //$NON-NLS-1$
 
-    public static final String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX
+    String MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS = MSGCODE_PREFIX
             + "OtherTypeWithSameNameInDependentProjectExists"; //$NON-NLS-1$
 
     @Override
-    public boolean isAbstract();
+    boolean isAbstract();
 
     /**
      * Sets whether this is an abstract type or not.
      */
-    public void setAbstract(boolean newValue);
+    void setAbstract(boolean newValue);
 
     /**
      * Returns the qualified name of the type's supertype. Returns an empty string if this type has
      * no supertype.
      */
-    public String getSupertype();
+    String getSupertype();
 
     /**
      * Returns <code>true</code> if this type has a supertype, otherwise <code>false</code>. This
      * method also returns <code>true</code> if the type refers to a supertype but the supertype
      * does not exist.
      */
-    public boolean hasSupertype();
+    boolean hasSupertype();
 
     /**
      * Returns whether this <code>IType</code> has a supertype that really exists.
@@ -119,7 +119,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            search for the supertype.
      * 
      */
-    public boolean hasExistingSupertype(IIpsProject ipsProject);
+    boolean hasExistingSupertype(IIpsProject ipsProject);
 
     /**
      * Returns the type's supertype if the type is derived from a supertype and the supertype can be
@@ -130,14 +130,14 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      */
-    public IType findSupertype(IIpsProject ipsProject);
+    IType findSupertype(IIpsProject ipsProject);
 
     /**
      * Sets the type's supertype.
      * 
      * @throws IllegalArgumentException If <code>newSupertype</code> is <code>null</code>.
      */
-    public void setSupertype(String newSupertype);
+    void setSupertype(String newSupertype);
 
     /**
      * Returns <code>true</code> if this type is a subtype of the given supertype candidate, returns
@@ -149,7 +149,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      */
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject);
+    boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this type is a subtype of the given candidate, or if the
@@ -162,12 +162,12 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      */
-    public boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject);
+    boolean isSubtypeOrSameType(IType candidate, IIpsProject ipsProject);
 
     /**
      * Returns the type's attributes.
      */
-    public List<IAttribute> getAttributes();
+    List<IAttribute> getAttributes();
 
     /**
      * Returns this type's attributes and the attributes within the supertype hierarchy. It
@@ -177,7 +177,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @throws IpsException If an exception occurs while collecting the attributes.
      */
-    public List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws IpsException;
+    List<IAttribute> findAllAttributes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this type's associations within the supertype hierarchy.
@@ -187,7 +187,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @throws IpsException If an exception occurs while collecting the associations.
      */
-    public List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws IpsException;
+    List<IAssociation> findAllAssociations(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -195,7 +195,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * first attribute with the name is returned. Returns <code>null</code> if no attribute with the
      * given name exists.
      */
-    public IAttribute getAttribute(String name);
+    IAttribute getAttribute(String name);
 
     /**
      * Searches an attribute with the given name in the type and its supertype hierarchy and returns
@@ -207,17 +207,17 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @throws NullPointerException If <code>project</code> is <code>null</code>.
      */
-    public IAttribute findAttribute(String name, IIpsProject ipsProject);
+    IAttribute findAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
      */
-    public IAttribute newAttribute();
+    IAttribute newAttribute();
 
     /**
      * Returns the number of attributes.
      */
-    public int getNumOfAttributes();
+    int getNumOfAttributes();
 
     /**
      * Moves the attributes identified by the indices up or down by one position. If one of the
@@ -233,7 +233,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             attribute.
      */
-    public int[] moveAttributes(int[] indices, boolean up);
+    int[] moveAttributes(int[] indices, boolean up);
 
     /**
      * Returns the association with the given name defined in <strong>this</strong> type. This
@@ -245,7 +245,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param roleNameSingular The association's role name singular.
      */
-    public IAssociation getAssociation(String roleNameSingular);
+    IAssociation getAssociation(String roleNameSingular);
 
     /**
      * Returns the association with the given role name in plural form defined in
@@ -257,7 +257,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param roleNamePlural The association's role name plural.
      */
-    public IAssociation getAssociationByRoleNamePlural(String roleNamePlural);
+    IAssociation getAssociationByRoleNamePlural(String roleNamePlural);
 
     /**
      * Searches an association with the given name in the type and it's supertype hierarchy and
@@ -267,7 +267,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public IAssociation findAssociation(String name, IIpsProject ipsProject);
+    IAssociation findAssociation(String name, IIpsProject ipsProject);
 
     /**
      * Searches an association with the given role name plural in the type and it's supertype
@@ -279,7 +279,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @throws IpsException If an error occurs while searching.
      */
-    public IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
+    IAssociation findAssociationByRoleNamePlural(String roleNamePlural, IIpsProject ipsProject)
             throws IpsException;
 
     /**
@@ -295,7 +295,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param includeSupertypes <code>true</code> if the supertype hierarchy should be included in
      *            the search, <code>false</code> otherwise.
      */
-    public List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
+    List<IAssociation> findAssociationsForTargetAndAssociationType(String target,
             AssociationType associationType,
             IIpsProject ipsProject,
             boolean includeSupertypes) throws IpsException;
@@ -303,7 +303,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
     /**
      * Returns the type's associations.
      */
-    public List<IAssociation> getAssociations();
+    List<IAssociation> getAssociations();
 
     /**
      * Returns all {@link IAssociation associations} that have one of the indicated
@@ -311,7 +311,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param types an array of desired {@link AssociationType AssociationTypes}
      */
-    public List<IAssociation> getAssociations(AssociationType... types);
+    List<IAssociation> getAssociations(AssociationType... types);
 
     /**
      * Returns all associations that have the indicated target. Returns an empty array if no such
@@ -321,17 +321,17 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param target The qualified name of the target type.
      */
-    public List<IAssociation> getAssociationsForTarget(String target);
+    List<IAssociation> getAssociationsForTarget(String target);
 
     /**
      * Creates a new association and returns it.
      */
-    public IAssociation newAssociation();
+    IAssociation newAssociation();
 
     /**
      * Returns the number of associations.
      */
-    public int getNumOfAssociations();
+    int getNumOfAssociations();
 
     /**
      * Moves the associations identified by the given indices up or down by one position. If one of
@@ -348,7 +348,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws IndexOutOfBoundsException If one of the <code>indices</code> does not identify an
      *             association.
      */
-    public int[] moveAssociations(int[] indices, boolean up);
+    int[] moveAssociations(int[] indices, boolean up);
 
     /**
      * Returns all methods of this type including the methods of the types within the supertype
@@ -358,12 +358,12 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            hierarchy.
      * @throws IpsException If an exception occurs during the execution of this method.
      */
-    public List<IMethod> findAllMethods(IIpsProject ipsProject) throws IpsException;
+    List<IMethod> findAllMethods(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the type's methods.
      */
-    public List<IMethod> getMethods();
+    List<IMethod> getMethods();
 
     /**
      * Returns the first method with the given name and the given parameters in this type. This
@@ -373,7 +373,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param methodName The method's name.
      * @param datatypes The data types of the method's parameters.
      */
-    public IMethod getMethod(String methodName, String[] datatypes);
+    IMethod getMethod(String methodName, String[] datatypes);
 
     /**
      * Returns the first method with the given signature. This method does not search the supertype
@@ -381,7 +381,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @param signature The method's signature, e.g. <code>calcPremium(base.Vertrag, Integer)</code>
      */
-    public IMethod getMethod(String signature);
+    IMethod getMethod(String signature);
 
     /**
      * Searches a method with the given signature in the type and its supertype hierarchy and
@@ -395,7 +395,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws NullPointerException If project is <code>null</code>.
      * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findMethod(String signature, IIpsProject ipsProject) throws IpsException;
+    IMethod findMethod(String signature, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches a method with the given name and the given parameters in the type and its supertype
@@ -409,17 +409,17 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws NullPointerException If project is <code>null</code>.
      * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws IpsException;
+    IMethod findMethod(String name, String[] datatypes, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new method and returns it.
      */
-    public IMethod newMethod();
+    IMethod newMethod();
 
     /**
      * Returns the number of methods.
      */
-    public int getNumOfMethods();
+    int getNumOfMethods();
 
     /**
      * Moves the methods identified by the indices up or down by one position. If one of the indices
@@ -434,7 +434,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a method.
      */
-    public int[] moveMethods(int[] indices, boolean up);
+    int[] moveMethods(int[] indices, boolean up);
 
     /**
      * Returns a list of methods defined in any of the type's supertypes that can be overridden (and
@@ -445,21 +445,21 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
+    List<IMethod> findOverrideMethodCandidates(boolean onlyNotImplementedAbstractMethods, IIpsProject ipsProject)
             throws IpsException;
 
     /**
      * Creates new methods in this type that override the given methods. Note that it is not checked
      * whether the methods really belong to one of the type's supertypes.
      */
-    public List<IMethod> overrideMethods(List<IMethod> methods);
+    List<IMethod> overrideMethods(List<IMethod> methods);
 
     /**
      * Returns true if this type has a method equal to the indicated one. Two methods are considered
      * to be equal when they have the same name, the same number of parameters and the parameter's
      * data types are equal.
      */
-    public boolean hasSameMethod(IMethod method);
+    boolean hasSameMethod(IMethod method);
 
     /**
      * Returns the method that matches the indicated one regarding it's signature. Two methods match
@@ -467,7 +467,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * equal. Returns <code>null</code> if the type does not contain a matching method or the
      * indicated method is <code>null</code>.
      */
-    public IMethod getMatchingMethod(IMethod method);
+    IMethod getMatchingMethod(IMethod method);
 
     /**
      * Finds sub types extending this type by searching in the given project root.
@@ -483,7 +483,7 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param project the root for finding types
      * 
      * @return a list of types extending the current type, directly or indirectly depends on
-     *         parameter transitive
+     *             parameter transitive
      * @see #searchSubtypes(boolean, boolean)
      */
     List<IType> findSubtypes(boolean transitive, boolean includingSelf, IIpsProject project);
@@ -513,18 +513,18 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * 
      * @return The created attributes.
      */
-    public List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes);
+    List<IAttribute> overrideAttributes(List<? extends IAttribute> attributes);
 
     /**
      * Creates a new super type hierarchy for the type and returns it.
      */
-    public ITypeHierarchy getSupertypeHierarchy();
+    ITypeHierarchy getSupertypeHierarchy();
 
     /**
      * Returns an array of all attributes of all super types not yet overwritten by this component
      * type.
      */
-    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject);
+    List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject);
 
     /**
      * Creates new association in this type that override the given association with type.
@@ -532,17 +532,17 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * @param association that will be constrain
      * @return new created associations
      */
-    public IAssociation constrainAssociation(IAssociation association, IType targetType);
+    IAssociation constrainAssociation(IAssociation association, IType targetType);
 
     /**
      * Returns an array of all associations of all super types not yet overwritten by this component
      * type.
      */
-    public List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws IpsException;
+    List<IAssociation> findConstrainableAssociationCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new sub type hierarchy for the type and returns it.
      */
-    public ITypeHierarchy getSubtypeHierarchy() throws IpsException;
+    ITypeHierarchy getSubtypeHierarchy() throws IpsException;
 
 }

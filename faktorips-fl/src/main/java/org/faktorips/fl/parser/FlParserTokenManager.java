@@ -143,12 +143,11 @@ public class FlParserTokenManager implements FlParserConstants {
     static final long[] jjbitVec3 = { 0x0L, 0x0L, 0x0L, 0x1040801010408010L };
 
     private final int jjMoveNfa_0(int startState, int curPos) {
-        int[] nextStates;
         int startsAt = 0;
         jjnewStateCnt = 206;
         int i = 1;
         jjstateSet[0] = startState;
-        int j, kind = 0x7fffffff;
+        int kind = 0x7fffffff;
         for (;;) {
             if (++jjround == 0x7fffffff) {
                 ReInitRounds();
@@ -1409,13 +1408,13 @@ public class FlParserTokenManager implements FlParserConstants {
                 MatchLoop: do {
                     switch (jjstateSet[--i]) {
                         case 0:
-                            if (jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (jjCanMove_1(hiByte, i2, l2)) {
                                 if (kind > 15) {
                                     kind = 15;
                                 }
                                 jjCheckNAddStates(111, 114);
                             }
-                            if (jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (jjCanMove_1(hiByte, i2, l2)) {
                                 if (kind > 16) {
                                     kind = 16;
                                 }
@@ -1428,7 +1427,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             }
                             break;
                         case 9:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 15) {
@@ -1437,7 +1436,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             jjCheckNAddStates(111, 114);
                             break;
                         case 10:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 15) {
@@ -1446,7 +1445,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             jjCheckNAddStates(32, 36);
                             break;
                         case 22:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 15) {
@@ -1475,7 +1474,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             }
                             break;
                         case 88:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 16) {
@@ -1510,7 +1509,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             }
                             break;
                         case 171:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 12) {
@@ -1519,7 +1518,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             jjstateSet[jjnewStateCnt++] = 172;
                             break;
                         case 172:
-                            if (!jjCanMove_1(hiByte, i1, i2, l1, l2)) {
+                            if (!jjCanMove_1(hiByte, i2, l2)) {
                                 break;
                             }
                             if (kind > 12) {
@@ -1528,7 +1527,7 @@ public class FlParserTokenManager implements FlParserConstants {
                             jjstateSet[jjnewStateCnt++] = 173;
                             break;
                         case 173:
-                            if (jjCanMove_1(hiByte, i1, i2, l1, l2) && kind > 12) {
+                            if (jjCanMove_1(hiByte, i2, l2) && kind > 12) {
                                 kind = 12;
                             }
                             break;
@@ -1575,7 +1574,7 @@ public class FlParserTokenManager implements FlParserConstants {
         }
     }
 
-    private static final boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, long l2) {
+    private static final boolean jjCanMove_1(int hiByte, int i2, long l2) {
         switch (hiByte) {
             case 0:
                 return ((jjbitVec3[i2] & l2) != 0L);
@@ -1656,7 +1655,6 @@ public class FlParserTokenManager implements FlParserConstants {
     int jjmatchedKind;
 
     public Token getNextToken() {
-        Token matchedToken;
         int curPos = 0;
 
         EOFLoop: for (;;) {
@@ -1664,8 +1662,7 @@ public class FlParserTokenManager implements FlParserConstants {
                 curChar = input_stream.BeginToken();
             } catch (java.io.IOException e) {
                 jjmatchedKind = 0;
-                matchedToken = jjFillToken();
-                return matchedToken;
+                return jjFillToken();
             }
 
             try {
@@ -1684,8 +1681,7 @@ public class FlParserTokenManager implements FlParserConstants {
                     input_stream.backup(curPos - jjmatchedPos - 1);
                 }
                 if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
-                    matchedToken = jjFillToken();
-                    return matchedToken;
+                    return jjFillToken();
                 } else {
                     continue EOFLoop;
                 }

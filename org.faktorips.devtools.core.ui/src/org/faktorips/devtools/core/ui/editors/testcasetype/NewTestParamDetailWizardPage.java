@@ -48,7 +48,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
 
     public NewTestParamDetailWizardPage(IBlockedValidationWizard wizard, UIToolkit uiToolkit, int pageNumber) {
         super(PAGE_ID, Messages.NewTestParamDetailWizardPage_Title, null);
-        this.setDescription(Messages.NewTestParamDetailWizardPage_Description);
+        setDescription(Messages.NewTestParamDetailWizardPage_Description);
         this.wizard = wizard;
         this.uiToolkit = uiToolkit;
         this.pageNumber = pageNumber;
@@ -123,8 +123,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
      * Updates the page complete status.
      */
     private void updateSetPageComplete() {
-        boolean completeAllowed = false;
-        completeAllowed = validatePage();
+        boolean completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 

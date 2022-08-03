@@ -111,7 +111,7 @@ public class FixValueTypePage extends WizardPage {
         }
     }
 
-    private class ValueTypeErrorsContentProvider implements IStructuredContentProvider {
+    private static class ValueTypeErrorsContentProvider implements IStructuredContentProvider {
 
         @Override
         public Object[] getElements(Object inputElement) {

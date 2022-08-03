@@ -29,7 +29,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
  */
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
-    public static final String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
+    String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
 
     /**
      * This constant defines the multi value property.
@@ -44,7 +44,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @see #isMultiValueAttribute()
      * @see #setMultiValueAttribute(boolean)
      */
-    public static final String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
+    String PROPERTY_MULTI_VALUE_ATTRIBUTE = "multiValueAttribute"; //$NON-NLS-1$
 
     /**
      * This constant defines the multilingual property.
@@ -55,7 +55,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @see #isMultilingual()
      * @see #setMultilingual(boolean)
      */
-    public static final String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
+    String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
 
     /**
      * This constant defines the multilingualSupported property.
@@ -66,23 +66,23 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * 
      * @see #isMultilingualSupported()
      */
-    public static final String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+    String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but single/multiple
      * value configuration differs
      */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
+    String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeSingeMultiValueDiffers"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but multilingual
      * configuration differs
      */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
+    String MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeMultilingualDiffers"; //$NON-NLS-1$
 
-    public static final String MSGCODE_INVALID_VALUE_SET = IAttribute.MSGCODE_PREFIX + "InvalidValueSet"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VALUE_SET = IAttribute.MSGCODE_PREFIX + "InvalidValueSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute is hidden but at the same time has a
@@ -93,13 +93,13 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * be set by the user does not make sense for hidden attributes
      * </ol>
      */
-    public static final String MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN = IAttribute.MSGCODE_PREFIX
+    String MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN = IAttribute.MSGCODE_PREFIX
             + "DefaultNotInValueSetWhileHidden"; //$NON-NLS-1$
 
     /**
      * Returns the product component type the attribute belongs to.
      */
-    public IProductCmptType getProductCmptType();
+    IProductCmptType getProductCmptType();
 
     /**
      * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
@@ -112,12 +112,12 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * @throws IpsException if an error occurs.
      */
     @Override
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
+    List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a copy of the given value set and assigns it to this attribute.
      */
-    public void setValueSetCopy(IValueSet source);
+    void setValueSetCopy(IValueSet source);
 
     /**
      * Returns whether this attribute is a multi value attribute or not.

@@ -48,9 +48,9 @@ public class ObjectPathOrderComposite extends DataChangeableComposite {
 
     public ObjectPathOrderComposite(Composite parent) {
         super(parent, SWT.NONE);
-        this.toolkit = new UIToolkit(null);
+        toolkit = new UIToolkit(null);
 
-        this.setLayout(new GridLayout(1, true));
+        setLayout(new GridLayout(1, true));
 
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -191,7 +191,7 @@ public class ObjectPathOrderComposite extends DataChangeableComposite {
      * The order of IPS object path entries has been modified
      * 
      * @return true if current project's order of object path entries has been modified, false
-     *         otherwise
+     *             otherwise
      */
     public boolean isDataChanged() {
         return dataChanged;

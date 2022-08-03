@@ -38,7 +38,7 @@ public interface IIpsRefactoringFactory {
      * @param adaptRuntimeId Flag indicating whether the runtime id should be adapted if the
      *            {@link IIpsElement} to rename is an {@link IProductCmpt}
      */
-    public IIpsProcessorBasedRefactoring createRenameRefactoring(IIpsElement ipsElement,
+    IIpsProcessorBasedRefactoring createRenameRefactoring(IIpsElement ipsElement,
             String newName,
             String newPluralName,
             boolean adaptRuntimeId);
@@ -51,7 +51,7 @@ public interface IIpsRefactoringFactory {
      * 
      * @param ipsElement The {@link IIpsElement} to rename
      */
-    public IIpsProcessorBasedRefactoring createRenameRefactoring(IIpsElement ipsElement);
+    IIpsProcessorBasedRefactoring createRenameRefactoring(IIpsElement ipsElement);
 
     /**
      * Creates a fully configured Faktor-IPS "Move" refactoring capable of moving the given
@@ -61,7 +61,7 @@ public interface IIpsRefactoringFactory {
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsElement} to
      */
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement,
+    IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement,
             IIpsPackageFragment targetIpsPackageFragment);
 
     /**
@@ -70,7 +70,7 @@ public interface IIpsRefactoringFactory {
      * 
      * @param ipsElement The {@link IIpsElement} to move
      */
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement);
+    IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement);
 
     /**
      * Creates a fully configured composite Faktor-IPS refactoring that is capable of batch-moving
@@ -80,7 +80,7 @@ public interface IIpsRefactoringFactory {
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsElement}s to
      */
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement,
+    IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement,
             IIpsPackageFragment targetIpsPackageFragment);
 
     /**
@@ -89,7 +89,7 @@ public interface IIpsRefactoringFactory {
      * 
      * @param ipsElement The {@link IIpsElement}s to move
      */
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement);
+    IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement);
 
     /**
      * Creates a Faktor-IPS "Pull Up" refactoring capable of pulling up the given
@@ -100,7 +100,7 @@ public interface IIpsRefactoringFactory {
      * 
      * @param ipsObjectPart The {@link IIpsObjectPart} to pull up
      */
-    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart);
+    IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart);
 
     /**
      * Creates a fully configured Faktor-IPS "Pull Up" refactoring capable of pulling up the given
@@ -112,7 +112,7 @@ public interface IIpsRefactoringFactory {
      * @param ipsObjectPart The {@link IIpsObjectPart} to pull up
      * @param targetIpsObjectPartContainer The target {@link IIpsObjectPartContainer} to pull up to
      */
-    public IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart,
+    IIpsProcessorBasedRefactoring createPullUpRefactoring(IIpsObjectPart ipsObjectPart,
             IIpsObjectPartContainer targetIpsObjectPartContainer);
 
 }

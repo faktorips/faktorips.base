@@ -24,16 +24,16 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
  */
 public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledElement, IVersionControlledElement {
 
-    public static final String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
+    String PROPERTY_MODIFIER = "modifier"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
+    String PROPERTY_CATEGORY = "category"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CATEGORY_POSITION = "categoryPosition"; //$NON-NLS-1$
+    String PROPERTY_CATEGORY_POSITION = "categoryPosition"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IType} this part belongs to.
      */
-    public IType getType();
+    IType getType();
 
     /**
      * Returns whether this {@link ITypePart} belongs to the {@link IType} identified by the
@@ -42,18 +42,18 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
      * @param qualifiedNameType the {@link QualifiedNameType} identifying the {@link IType} in
      *            question
      */
-    public boolean isOfType(QualifiedNameType qualifiedNameType);
+    boolean isOfType(QualifiedNameType qualifiedNameType);
 
     /**
      * Returns the part's {@link Modifier}.
      */
-    public Modifier getModifier();
+    Modifier getModifier();
 
     /**
      * Sets the part's {@link Modifier}.
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void setModifier(Modifier modifier);
+    void setModifier(Modifier modifier);
 
 }

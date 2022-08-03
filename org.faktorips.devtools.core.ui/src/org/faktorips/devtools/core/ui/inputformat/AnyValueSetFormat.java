@@ -92,7 +92,7 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
     }
 
     private IValueSet getValueSet() {
-        return this.valueSetOwner.getValueSet();
+        return valueSetOwner.getValueSet();
     }
 
     @Override

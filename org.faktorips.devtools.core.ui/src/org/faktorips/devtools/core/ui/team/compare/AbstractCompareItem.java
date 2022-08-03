@@ -273,10 +273,7 @@ public abstract class AbstractCompareItem
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         AbstractCompareItem other = (AbstractCompareItem)obj;
@@ -291,9 +288,8 @@ public abstract class AbstractCompareItem
     private boolean isEqualIpsElementInStructure(IIpsElement element1, IIpsElement element2) {
         if (element1 == element2) {
             return true;
-        } else if (element1 == null || element2 == null) {
-            return false;
-        } else if (element1.getClass() != element2.getClass()) {
+        } else if ((element1 == null || element2 == null)
+                || (element1.getClass() != element2.getClass())) {
             return false;
         } else if (element1 instanceof IIpsObject) {
             IIpsObject object1 = (IIpsObject)element1;

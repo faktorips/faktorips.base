@@ -32,7 +32,7 @@ public enum TemplateValueUiStatus {
 
     private final String icon;
 
-    private TemplateValueUiStatus(String icon) {
+    TemplateValueUiStatus(String icon) {
         this.icon = icon;
     }
 

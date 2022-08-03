@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -229,8 +228,8 @@ public class ArchiveComposite extends DataChangeableComposite {
         IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
         if (selection.size() > 0) {
             dataChanged = true;
-            for (Iterator<?> it = selection.iterator(); it.hasNext();) {
-                IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry)it.next();
+            for (Object name : selection) {
+                IIpsArchiveEntry archiveEntry = (IIpsArchiveEntry)name;
 
                 ipsObjectPath.removeArchiveEntry(archiveEntry.getIpsArchive());
             }

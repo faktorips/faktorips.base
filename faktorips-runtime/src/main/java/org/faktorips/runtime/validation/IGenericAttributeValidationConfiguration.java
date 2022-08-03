@@ -25,13 +25,13 @@ public interface IGenericAttributeValidationConfiguration {
      * {@link IModelObject}.
      *
      * @implSpec Implementers should use this to prevent validation of fields that can not yet be
-     *           valid, for example because another field must first be set to derive their value
-     *           set.
+     *               valid, for example because another field must first be set to derive their
+     *               value set.
      * 
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute may be validated
      * @return whether validation for the given combination of {@link PolicyAttribute} and
-     *         {@link IModelObject} should run
+     *             {@link IModelObject} should run
      */
     boolean shouldValidate(PolicyAttribute policyAttribute, IModelObject modelObject);
 

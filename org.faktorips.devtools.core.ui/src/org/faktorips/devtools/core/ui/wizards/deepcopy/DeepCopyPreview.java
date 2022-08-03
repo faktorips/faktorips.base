@@ -205,8 +205,8 @@ public class DeepCopyPreview {
      * component structure refences to copy.
      * 
      * @return 0 if no elements are contained in toCopy, number of all segments, if only one product
-     *         component is contained in toCopy and the calculated value as described above for all
-     *         other cases.
+     *             component is contained in toCopy and the calculated value as described above for
+     *             all other cases.
      */
     int getSegmentsToIgnore(Set<IProductCmptStructureReference> toCopy) {
         if (toCopy.size() == 0) {

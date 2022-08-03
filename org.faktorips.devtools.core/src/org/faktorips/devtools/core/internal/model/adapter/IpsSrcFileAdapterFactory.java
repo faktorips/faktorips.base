@@ -36,8 +36,6 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
             if (IIpsObject.class.equals(adapterType)) {
                 return (T)adaptToIpsObject(ipsSrcFile);
             }
-
-            return null;
         }
         return null;
     }

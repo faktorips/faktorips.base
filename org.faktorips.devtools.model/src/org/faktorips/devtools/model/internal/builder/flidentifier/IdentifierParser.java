@@ -220,7 +220,7 @@ public class IdentifierParser {
 
         public IdentifierMatcher(String identifier) {
             this.identifier = identifier;
-            this.matcher = IDENTIFIER_SEPERATOR_PATTERN.matcher(identifier);
+            matcher = IDENTIFIER_SEPERATOR_PATTERN.matcher(identifier);
             find(0);
         }
 

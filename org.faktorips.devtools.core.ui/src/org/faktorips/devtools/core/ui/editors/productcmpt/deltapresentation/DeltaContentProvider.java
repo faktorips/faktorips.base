@@ -115,8 +115,8 @@ public class DeltaContentProvider implements ITreeContentProvider {
      * @param a first object to test for equality.
      * @param b second object to test for equality.
      * @return true if, and only if, a and b are instances of
-     *         {@code IPropertyValueContainerToTypeDelta} and they have the same entries (entries
-     *         whose string representation is equal).
+     *             {@code IPropertyValueContainerToTypeDelta} and they have the same entries
+     *             (entries whose string representation is equal).
      */
     private boolean areDifferenceCompositeEntriesEqual(Object a, IFixDifferencesComposite b) {
         if (a instanceof ProductCmptGenerationsDeltaViewItem) {

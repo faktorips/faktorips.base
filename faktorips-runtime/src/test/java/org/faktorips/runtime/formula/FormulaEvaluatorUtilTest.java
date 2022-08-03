@@ -49,7 +49,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     public interface IBranch extends IModelObject {
-        public Integer getValue();
+        Integer getValue();
     }
 
     @Before
@@ -421,7 +421,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperSum() {
-        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+        return new FunctionWithListAsArgumentHelper<Integer>() {
             @Override
             public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
                 return currentResult + nextElement;
@@ -432,12 +432,10 @@ public class FormulaEvaluatorUtilTest {
                 return 0;
             }
         };
-        return helper;
     }
 
     protected List<Integer> setUpIntList(Integer... values) {
-        List<Integer> intList = new ArrayList<>(Arrays.asList(values));
-        return intList;
+        return new ArrayList<>(Arrays.asList(values));
     }
 
     @Test
@@ -462,7 +460,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperMax() {
-        FunctionWithListAsArgumentHelper<Integer> helper = new FunctionWithListAsArgumentHelper<Integer>() {
+        return new FunctionWithListAsArgumentHelper<Integer>() {
             @Override
             public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
                 return Math.max(currentResult, nextElement);
@@ -473,6 +471,5 @@ public class FormulaEvaluatorUtilTest {
                 return 0;
             }
         };
-        return helper;
     }
 }

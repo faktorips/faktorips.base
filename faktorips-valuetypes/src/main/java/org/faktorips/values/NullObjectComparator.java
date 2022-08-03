@@ -51,7 +51,7 @@ public class NullObjectComparator<N extends NullObjectSupport> implements Compar
      * their natural order.
      * 
      * @return a comparator that considers {@link NullObject NullObjects} to be greater than
-     *         non-null.
+     *             non-null.
      */
     @SuppressWarnings("unchecked")
     public static <C extends NullObjectSupport & Comparable<C>> NullObjectComparator<C> nullsLast() {

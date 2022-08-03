@@ -61,7 +61,7 @@ public abstract class StdBuilderIdentifierNodeGenerator extends IdentifierNodeGe
      * 
      * @param contextCompilationResult the compilation result whose return type should be tested
      * @return <code>true</code> if the compilation result's datatype is a list datatype,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      */
     protected boolean isListDatatypeContext(CompilationResult<JavaCodeFragment> contextCompilationResult) {
         return contextCompilationResult.getDatatype() instanceof ListOfTypeDatatype;

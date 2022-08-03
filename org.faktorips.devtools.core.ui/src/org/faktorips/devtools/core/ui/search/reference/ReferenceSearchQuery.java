@@ -45,12 +45,12 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     public ReferenceSearchQuery(IIpsObject referenced) {
         this.referenced = referenced;
-        this.result = new ReferenceSearchResult(this);
+        result = new ReferenceSearchResult(this);
     }
 
     @Override
     public IStatus run(IProgressMonitor monitor) throws OperationCanceledException {
-        monitor.beginTask(this.getLabel(), 2);
+        monitor.beginTask(getLabel(), 2);
         result.removeAll();
         try {
             IIpsElement[] found = findReferences();
@@ -99,11 +99,11 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     @Override
     public String getLabel() {
-        return NLS.bind(Messages.ReferenceSearchQuery_labelPrefix, this.referenced.getName());
+        return NLS.bind(Messages.ReferenceSearchQuery_labelPrefix, referenced.getName());
     }
 
     public String getReferencedName() {
-        return this.referenced.getName();
+        return referenced.getName();
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class ReferenceSearchQuery implements ISearchQuery {
 
     @Override
     public ISearchResult getSearchResult() {
-        return this.result;
+        return result;
     }
 
 }

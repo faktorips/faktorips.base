@@ -75,7 +75,7 @@ public class IpsTestCase2Test {
         assertEquals("C", test.getExtensionAttributeValue(modelObj2, "testAttribute3"));
     }
 
-    private class MyModelObject implements IModelObject {
+    private static class MyModelObject implements IModelObject {
 
         @Override
         public MessageList validate(IValidationContext context) {

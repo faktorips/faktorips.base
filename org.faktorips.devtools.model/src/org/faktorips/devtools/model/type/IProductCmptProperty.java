@@ -42,32 +42,32 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * 
      * @see ProductCmptPropertyType
      */
-    public ProductCmptPropertyType getProductCmptPropertyType();
+    ProductCmptPropertyType getProductCmptPropertyType();
 
     /**
      * Returns the list of value types that are supported by this property value.
      * 
      * @return a list {@link PropertyValueType} which are supported by this
-     *         {@link IProductCmptProperty}
+     *             {@link IProductCmptProperty}
      */
-    public List<PropertyValueType> getPropertyValueTypes();
+    List<PropertyValueType> getPropertyValueTypes();
 
     /**
      * Returns the name of the property. That name is unique in the corresponding
      * {@link IProductCmpt}.
      */
-    public String getPropertyName();
+    String getPropertyName();
 
     /**
      * Returns this property's data type.
      */
-    public String getPropertyDatatype();
+    String getPropertyDatatype();
 
     /**
      * Returns whether this property's parent is a policy component type instead of a product
      * component type.
      */
-    public boolean isPolicyCmptTypeProperty();
+    boolean isPolicyCmptTypeProperty();
 
     /**
      * Returns whether this {@link IProductCmptProperty} corresponds to the indicated
@@ -75,7 +75,7 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * 
      * @param propertyValue the {@link IPropertyValue} to check for correspondence
      */
-    public boolean isPropertyFor(IPropertyValue propertyValue);
+    boolean isPropertyFor(IPropertyValue propertyValue);
 
     /**
      * Returns the name of the {@link IProductCmptCategory} this {@link IProductCmptProperty} is
@@ -96,7 +96,7 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * {@link IPolicyCmptType} until the {@link IProductCmptType} is saved.
      * </ul>
      */
-    public String getCategory();
+    String getCategory();
 
     /**
      * Sets the name of the {@link IProductCmptCategory} this {@link IProductCmptProperty} is
@@ -104,10 +104,10 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * 
      * @see #getCategory()
      */
-    public void setCategory(String category);
+    void setCategory(String category);
 
-    public int getCategoryPosition();
+    int getCategoryPosition();
 
-    public void setCategoryPosition(int categoryPosition);
+    void setCategoryPosition(int categoryPosition);
 
 }

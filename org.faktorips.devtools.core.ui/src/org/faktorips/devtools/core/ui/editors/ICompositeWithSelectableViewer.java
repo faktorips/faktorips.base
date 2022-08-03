@@ -26,6 +26,6 @@ public interface ICompositeWithSelectableViewer {
      * Returns the viewer that would provide its selection to the editors selection provider.
      * 
      */
-    public Viewer getViewer();
+    Viewer getViewer();
 
 }

@@ -51,7 +51,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
     public static final int INPUT = 1;
     public static final int EXPECTED_RESULT = 2;
 
-    private static final Object[] EMPTY_ARRAY = new Object[0];
+    private static final Object[] EMPTY_ARRAY = {};
 
     private int contentType = COMBINED;
     /** Contains the test case for which the content will be provided */
@@ -469,8 +469,7 @@ public class TestCaseContentProvider implements ITreeContentProvider {
         List<IIpsObjectPart> childTestPolicyCmpt = new ArrayList<>(links.length);
         for (ITestPolicyCmptLink link : links) {
             if (link.isComposition()) {
-                ITestPolicyCmpt target = null;
-                target = link.findTarget();
+                ITestPolicyCmpt target = link.findTarget();
                 if (target != null) {
                     if ((isInput() && target.isInput()) || (isExpectedResult() && target.isExpectedResult())) {
                         childTestPolicyCmpt.add(target);

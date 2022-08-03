@@ -34,6 +34,6 @@ public interface IFlIdentifierFilterExtension {
      * @param identifierKind the kind of Identifier ({@link IdentifierKind})
      * @return <code>true</code> if the part is allowed, <code>false</code> otherwise
      */
-    public boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind);
+    boolean isIdentifierAllowed(IIpsObjectPartContainer ipsObjectPartContainer, IdentifierKind identifierKind);
 
 }

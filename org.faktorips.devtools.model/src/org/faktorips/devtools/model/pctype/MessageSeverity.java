@@ -27,11 +27,11 @@ public enum MessageSeverity {
     /** The Java sourcecode fragment that identifies the message severity. */
     private JavaCodeFragment codeFragment;
 
-    private MessageSeverity(String id, JavaCodeFragment fragment) {
+    MessageSeverity(String id, JavaCodeFragment fragment) {
         ArgumentCheck.notNull(id);
         this.id = id;
         ArgumentCheck.notNull(fragment);
-        this.codeFragment = fragment;
+        codeFragment = fragment;
     }
 
     public static final MessageSeverity getMessageSeverity(String id) {

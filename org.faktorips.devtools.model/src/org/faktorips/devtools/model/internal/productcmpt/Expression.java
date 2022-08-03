@@ -191,8 +191,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         if (types.containsKey(datatypeName)) {
             return;
         }
-        ValueDatatype datatype = null;
-        datatype = ipsProject.findValueDatatype(datatypeName);
+        ValueDatatype datatype = ipsProject.findValueDatatype(datatypeName);
         if (datatype instanceof EnumDatatype) {
             types.put(datatypeName, (EnumDatatype)datatype);
         }
@@ -235,8 +234,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             list.add(new Message(MSGCODE_EXPRESSION_IS_EMPTY, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
-        Datatype signatureDatatype = null;
-        signatureDatatype = method.findDatatype(ipsProject);
+        Datatype signatureDatatype = method.findDatatype(ipsProject);
         validateDatatype(list, signatureDatatype, method);
         if (list.containsErrorMsg()) {
             return;
@@ -244,13 +242,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         JavaExprCompiler compiler = newExprCompiler(ipsProject);
         CompilationResult<JavaCodeFragment> result = compiler.compile(expressionToValidate);
         validateCompilationResult(list, result);
-        if (list.containsErrorMsg()) {
-            return;
-        }
-        if (signatureDatatype.equals(result.getDatatype())) {
-            return;
-        }
-        if (compiler.getConversionCodeGenerator().canConvert(result.getDatatype(), signatureDatatype)) {
+        if (list.containsErrorMsg() || signatureDatatype.equals(result.getDatatype())
+                || compiler.getConversionCodeGenerator().canConvert(result.getDatatype(), signatureDatatype)) {
             return;
         }
         String text = MessageFormat.format(Messages.Formula_msgWrongReturntype, signatureDatatype,

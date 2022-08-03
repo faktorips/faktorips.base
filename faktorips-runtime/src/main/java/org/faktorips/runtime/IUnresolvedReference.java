@@ -16,5 +16,5 @@ package org.faktorips.runtime;
  */
 public interface IUnresolvedReference {
 
-    public void resolve(IObjectReferenceStore store) throws Exception;
+    void resolve(IObjectReferenceStore store) throws Exception;
 }

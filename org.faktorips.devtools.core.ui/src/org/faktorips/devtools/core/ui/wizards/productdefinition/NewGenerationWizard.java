@@ -63,9 +63,7 @@ public class NewGenerationWizard extends Wizard {
         // Execute runnable
         try {
             getContainer().run(true, true, new NewGenerationRunnable(pmo, timedIpsObjects));
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
 

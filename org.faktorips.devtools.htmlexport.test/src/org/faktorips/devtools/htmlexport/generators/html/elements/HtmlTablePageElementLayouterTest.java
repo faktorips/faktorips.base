@@ -72,7 +72,6 @@ public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLay
     }
 
     protected String createCellText(int row, int col) {
-        String cellText = row + "-" + col;
-        return cellText;
+        return row + "-" + col;
     }
 }

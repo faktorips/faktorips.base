@@ -49,7 +49,7 @@ public class RadioButtonGroup<T> {
 
     /**
      * @deprecated deprecated since version 3.6, this field merely remains for proper function of
-     *             the deprecated method {@link #addRadiobutton(String)}
+     *                 the deprecated method {@link #addRadiobutton(String)}
      */
     @Deprecated
     private final List<CheckboxField> oldCheckboxFields = new ArrayList<>();
@@ -64,9 +64,9 @@ public class RadioButtonGroup<T> {
      * @param text the text that is displayed as title of the SWT {@link Group}
      * 
      * @deprecated deprecated since version 3.6 due to refactoring, use the new constructor
-     *             {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
-     *             instead. Note that the new constructor does not feature a 'style' parameter as it
-     *             was decided to generally use the SWT composite default style
+     *                 {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
+     *                 instead. Note that the new constructor does not feature a 'style' parameter
+     *                 as it was decided to generally use the SWT composite default style
      */
     @Deprecated
     public RadioButtonGroup(Composite parent, int style, String text, UIToolkit toolkit) {
@@ -141,11 +141,11 @@ public class RadioButtonGroup<T> {
 
     /**
      * @deprecated deprecated since version 3.6, use the constructor
-     *             {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
-     *             instead, which automatically creates a radio button for each possible option.
-     *             <strong>Do not use this method to add further radio buttons after creating a
-     *             {@link RadioButtonGroup} via the new constructor as this method merely remains to
-     *             support usage of the old constructor!</strong>
+     *                 {@link #RadioButtonGroup(Composite, String, int, LinkedHashMap, UIToolkit)}
+     *                 instead, which automatically creates a radio button for each possible option.
+     *                 <strong>Do not use this method to add further radio buttons after creating a
+     *                 {@link RadioButtonGroup} via the new constructor as this method merely
+     *                 remains to support usage of the old constructor!</strong>
      */
     @Deprecated
     public final Radiobutton addRadiobutton(String text) {

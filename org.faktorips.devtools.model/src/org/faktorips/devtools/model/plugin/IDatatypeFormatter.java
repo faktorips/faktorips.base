@@ -20,7 +20,7 @@ import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 
 public interface IDatatypeFormatter {
 
-    public static final String DEFAULT_NULL_REPRESENTATION = "<null>"; //$NON-NLS-1$
+    String DEFAULT_NULL_REPRESENTATION = "<null>"; //$NON-NLS-1$
 
     /**
      * Formats the given value according to the user preferences.
@@ -42,7 +42,7 @@ public interface IDatatypeFormatter {
             return formatValue((NamedDatatype)datatype, value);
         }
         if (datatype instanceof BooleanDatatype || datatype instanceof PrimitiveBooleanDatatype) {
-            if (Boolean.valueOf(value).booleanValue()) {
+            if (Boolean.parseBoolean(value)) {
                 return Messages.DatatypeFormatter_booleanTrue;
             }
             return Messages.DatatypeFormatter_booleanFalse;
@@ -60,10 +60,7 @@ public interface IDatatypeFormatter {
             return id;
         }
         NamedDataTypeDisplay dataTypeDisplay = getNamedDataTypeDisplay();
-        if (dataTypeDisplay.equals(NamedDataTypeDisplay.ID)) {
-            return id;
-        }
-        if (!datatype.isParsable(id)) {
+        if (dataTypeDisplay.equals(NamedDataTypeDisplay.ID) || !datatype.isParsable(id)) {
             return id;
         }
         String name = datatype.getValueName(id,

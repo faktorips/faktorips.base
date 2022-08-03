@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder.xtend;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public abstract class XtendTypeBuilder<T extends XType> extends XtendBuilder<T> {
 

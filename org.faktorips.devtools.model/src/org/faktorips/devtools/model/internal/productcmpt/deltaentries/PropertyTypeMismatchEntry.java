@@ -31,7 +31,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
     public PropertyTypeMismatchEntry(IPropertyValueContainer poIPropertyValueContainer, IProductCmptProperty property,
             IPropertyValue value) {
         super(value);
-        this.propertyValueContainer = poIPropertyValueContainer;
+        propertyValueContainer = poIPropertyValueContainer;
         this.property = property;
         this.value = value;
     }

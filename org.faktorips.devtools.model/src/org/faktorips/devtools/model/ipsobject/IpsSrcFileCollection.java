@@ -66,7 +66,7 @@ public class IpsSrcFileCollection {
     /**
      * 
      * @return <code>true</code> if the unqualified name of this src file is at least used by one
-     *         other {@link IIpsSrcFile} in this collection.
+     *             other {@link IIpsSrcFile} in this collection.
      * @throws IpsException If the given {@link IIpsSrcFile} is not part of this collection.
      */
     public boolean isDuplicateName(IIpsSrcFile srcFile) {
@@ -144,7 +144,7 @@ public class IpsSrcFileCollection {
         }
     }
 
-    private class CollectionItem {
+    private static class CollectionItem {
 
         private String definingMetaClass;
 

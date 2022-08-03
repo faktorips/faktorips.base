@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -238,7 +237,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param newValue The new value of the property.
      * 
      * @return A flag indicating whether the valueChanged event has been fired successfully (it does
-     *         not if the old value and new value are considered to be equal).
+     *             not if the old value and new value are considered to be equal).
      */
     protected final boolean valueChanged(Object oldValue, Object newValue) {
         boolean changed = !Objects.equals(oldValue, newValue);
@@ -257,7 +256,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @param newValue The new value of the property.
      * 
      * @return A flag indicating whether the valueChanged event has been fired successfully (it does
-     *         not if the old value and new value are considered to be equal).
+     *             not if the old value and new value are considered to be equal).
      */
     protected final boolean valueChanged(Object oldValue, Object newValue, String propertyName) {
         boolean changed = !Objects.equals(oldValue, newValue);
@@ -485,9 +484,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void deleteOldParts(Map<String, IIpsObjectPart> oldIdPartMap, Map<String, IIpsObjectPart> newIdPartMap) {
-        for (Iterator<Entry<String, IIpsObjectPart>> iterator = oldIdPartMap.entrySet().iterator(); iterator
-                .hasNext();) {
-            Entry<String, IIpsObjectPart> entry = iterator.next();
+        for (Entry<String, IIpsObjectPart> entry : oldIdPartMap.entrySet()) {
             if (!newIdPartMap.containsKey(entry.getKey())) {
                 ((IpsObjectPart)entry.getValue()).markAsDeleted();
             }
@@ -676,15 +673,12 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     // not type safe because newPartThis is not type safe
     public final <T extends IIpsObjectPart> T newPart(Class<T> partType) {
         if (partType == Label.class) {
-            T newLabel = (T)newLabel();
-            return newLabel;
+            return (T)newLabel();
 
         } else if (partType == Description.class) {
-            T newDescription = (T)newDescription();
-            return newDescription;
+            return (T)newDescription();
         }
-        T newPartThis = (T)newPartThis(partType);
-        return newPartThis;
+        return (T)newPartThis(partType);
     }
 
     /**
@@ -738,8 +732,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     private int getLanguageCount() {
         IIpsProjectProperties properties = getIpsProject().getReadOnlyProperties();
-        int languageCount = properties.getSupportedLanguages().size();
-        return languageCount;
+        return properties.getSupportedLanguages().size();
     }
 
     private void validateSinceVersionFormat(MessageList result) {
@@ -798,9 +791,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      */
     private MessageList getValidationMessages(IIpsProject ipsProject,
             ICustomValidation<? extends IIpsObjectPartContainer> validation) {
-        @SuppressWarnings("unchecked")
-        MessageList msgList = ((ICustomValidation<IIpsObjectPartContainer>)validation).validate(this, ipsProject);
-        return msgList;
+        return castCustomValidation(validation).validate(this, ipsProject);
+    }
+
+    @SuppressWarnings("unchecked")
+    private ICustomValidation<IIpsObjectPartContainer> castCustomValidation(
+            ICustomValidation<? extends IIpsObjectPartContainer> validation) {
+        return (ICustomValidation<IIpsObjectPartContainer>)validation;
     }
 
     /**
@@ -841,8 +838,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private ValidationResultCache getValidationCache() {
         IpsModel model = (IpsModel)getIpsModel();
-        ValidationResultCache cache = model.getValidationResultCache();
-        return cache;
+        return model.getValidationResultCache();
     }
 
     /**
@@ -862,7 +858,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * false is returned.
      * 
      * @return True only if the corresponding {@link IIpsSrcFile} is located in an existing IPS
-     *         Root, false otherwise.
+     *             Root, false otherwise.
      */
     private boolean isNotInIpsRoot() {
         IIpsElement container = this;
@@ -1188,13 +1184,13 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#setSinceVersionString(String)
      */
     public void setSinceVersionString(String version) {
-        String oldValue = this.sinceVersion;
+        String oldValue = sinceVersion;
         setSinceVersionStringInternal(version);
         valueChanged(oldValue, version, IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING);
     }
 
     protected void setSinceVersionStringInternal(String version) {
-        this.sinceVersion = version;
+        sinceVersion = version;
     }
 
     /**
@@ -1215,7 +1211,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * valid version according to the configured {@link IVersionProvider}.
      * 
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
-     *         return a valid version. Otherwise <code>false</code>.
+     *             return a valid version. Otherwise <code>false</code>.
      * 
      * @see IVersionControlledElement#isValidSinceVersion()
      */
@@ -1262,8 +1258,8 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     public void setDeprecated(boolean isDeprecated) {
-        boolean oldValue = this.deprecated;
-        this.deprecated = isDeprecated;
+        boolean oldValue = deprecated;
+        deprecated = isDeprecated;
         valueChanged(oldValue, isDeprecated);
         if (isDeprecated && deprecation == null) {
             newDeprecation();

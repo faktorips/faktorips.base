@@ -109,11 +109,10 @@ public class XProductCmptGenerationClassTest {
                 modelService) {
             @Override
             public Set<XMethod> getMethods() {
-                Set<XMethod> methods = new HashSet<>(
+                return new HashSet<>(
                         Arrays.asList(new XMethod(superOptionalMethod, modelContext, modelService),
                                 new XMethod(superMandatoryMethod, modelContext, modelService),
                                 new XMethod(optionalOverloadedMethod, modelContext, modelService)));
-                return methods;
             }
         };
 

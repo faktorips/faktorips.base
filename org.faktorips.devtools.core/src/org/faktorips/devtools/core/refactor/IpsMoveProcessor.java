@@ -63,7 +63,7 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
         RefactoringProcessor processor = this;
         Object elementToMove = getIpsElement();
         MoveArguments arguments = new MoveArguments(targetIpsPackageFragment, true);
-        String[] affectedNatures = new String[] { IIpsProject.NATURE_ID };
+        String[] affectedNatures = { IIpsProject.NATURE_ID };
         return ParticipantManager.loadMoveParticipants(status, processor, elementToMove, arguments, affectedNatures,
                 sharedParticipants);
     }

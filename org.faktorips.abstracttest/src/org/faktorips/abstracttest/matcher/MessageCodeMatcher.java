@@ -18,7 +18,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Checks whether a {@link MessageList} contains a message with a certain message code.
  * 
  * @deprecated since 21.12. Use {@link org.faktorips.testsupport.matchers.MessageListCodeMatcher}
- *             instead.
+ *                 instead.
  */
 @Deprecated
 public class MessageCodeMatcher extends TypeSafeMatcher<MessageList> {

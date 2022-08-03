@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
+import java.util.Objects;
+
 /**
  * A LayoutResource is referenced by a page, but not included in the page. <br>
  * If the documentation is layouted in html, then e.g. images and stylesheets are external
@@ -27,7 +29,7 @@ public class LayoutResource {
     public LayoutResource(String name, byte[] data) {
         super();
         this.name = name;
-        this.content = data;
+        content = data;
     }
 
     public String getName() {
@@ -40,10 +42,7 @@ public class LayoutResource {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(name);
     }
 
     @Override
@@ -51,20 +50,10 @@ public class LayoutResource {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         LayoutResource other = (LayoutResource)obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name);
     }
 }

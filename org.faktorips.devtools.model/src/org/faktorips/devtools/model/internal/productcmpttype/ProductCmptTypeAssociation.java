@@ -362,7 +362,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
          */
         List<IAssociation> allAssociations = getProductCmptType().findAllAssociations(ipsProject);
         for (IAssociation otherAssociation : allAssociations) {
-            if (this.equals(otherAssociation)) {
+            if (equals(otherAssociation)) {
                 continue;
             }
             IPolicyCmptTypeAssociation otherMatchingAssociation = ((IProductCmptTypeAssociation)otherAssociation)

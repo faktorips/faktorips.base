@@ -126,9 +126,8 @@ public class TestCaseHierarchyPath {
                 offset++;
             }
         }
-        pathWithOffset = policyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
-                + (pathWithOffset.length() > 0 ? "." + pathWithOffset : ""); //$NON-NLS-1$ //$NON-NLS-2$
-        return pathWithOffset;
+        return policyCmpt.getTestPolicyCmptTypeParameter() + OFFSET_SEPARATOR + offset
+                + (pathWithOffset.length() > 0 ? "." + pathWithOffset : "");
     }
 
     /**
@@ -154,7 +153,6 @@ public class TestCaseHierarchyPath {
         if (hierarchyPath.indexOf(SEPARATOR) >= 0) {
             next = hierarchyPath.substring(0, hierarchyPath.indexOf(SEPARATOR));
             hierarchyPath = hierarchyPath.substring(hierarchyPath.indexOf(SEPARATOR) + SEPARATOR.length());
-            return next;
         } else {
             next = hierarchyPath;
             hierarchyPath = ""; //$NON-NLS-1$
@@ -208,9 +206,8 @@ public class TestCaseHierarchyPath {
             path = testPcTypeLink.getTestPolicyCmptTypeParameter() + path;
             policyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
         }
-        path = policyCmpt.getTestPolicyCmptTypeParameter()
-                + (path.length() > 0 ? SEPARATOR + path : ""); //$NON-NLS-1$
-        return path;
+        return policyCmpt.getTestPolicyCmptTypeParameter()
+                + (path.length() > 0 ? SEPARATOR + path : "");
     }
 
     private String evalHierarchyPathForTestCase(ITestPolicyCmpt currTestPolicyCmpt, String hierarchyPath) {
@@ -225,8 +222,7 @@ public class TestCaseHierarchyPath {
             path = testPcTypeLink.getTestPolicyCmptTypeParameter() + path;
             policyCmpt = (ITestPolicyCmpt)testPcTypeLink.getParent();
         }
-        path = policyCmpt.getName() + (path.length() > 0 ? SEPARATOR + path : ""); //$NON-NLS-1$
-        return path;
+        return policyCmpt.getName() + (path.length() > 0 ? SEPARATOR + path : "");
     }
 
 }

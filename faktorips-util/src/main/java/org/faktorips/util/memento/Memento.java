@@ -19,6 +19,6 @@ public interface Memento {
     /**
      * Returns the object this is a memento of.
      */
-    public Object getOriginator();
+    Object getOriginator();
 
 }

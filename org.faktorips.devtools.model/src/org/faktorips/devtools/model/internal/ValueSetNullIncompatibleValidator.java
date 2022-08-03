@@ -38,7 +38,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
     private final IValueSet currentValueset;
 
     public ValueSetNullIncompatibleValidator(IValueSet presetValueset, IValueSet currentValueset) {
-        this.presentValueset = presetValueset;
+        presentValueset = presetValueset;
         this.currentValueset = currentValueset;
 
     }

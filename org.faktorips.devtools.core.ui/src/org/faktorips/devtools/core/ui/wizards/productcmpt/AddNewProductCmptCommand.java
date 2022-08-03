@@ -43,10 +43,8 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
             Object firstElement = structuredSelection.getFirstElement();
             if (firstElement instanceof AbstractAssociationViewItem) {
                 addNewLinkInEditor(event);
-                return null;
             } else if (firstElement instanceof IProductCmptStructureReference) {
                 addNewLinkOnReference(event);
-                return null;
             } else {
                 throw new RuntimeException();
             }

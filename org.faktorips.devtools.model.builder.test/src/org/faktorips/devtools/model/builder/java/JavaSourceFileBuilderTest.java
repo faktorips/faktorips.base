@@ -116,8 +116,7 @@ public class JavaSourceFileBuilderTest extends AbstractIpsPluginTest {
         APackageFragmentRoot artefactDestination = ipsProject.getIpsPackageFragmentRoots()[0]
                 .getArtefactDestination(derived);
         AFolder folder = (AFolder)artefactDestination.getResource();
-        AFile file = folder.getFile(name);
-        return file;
+        return folder.getFile(name);
     }
 
     @Test

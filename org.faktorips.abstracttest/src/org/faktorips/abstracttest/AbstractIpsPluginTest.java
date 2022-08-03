@@ -242,7 +242,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected void tearDownExtension() throws Exception {
-
+        // to be extended
     }
 
     protected void suppressLoggingDuringExecutionOfThisTestCase() {
@@ -463,6 +463,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
+                    // does nothing
                 }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
@@ -1034,8 +1035,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Note that this method does neither set the type nor creates any generations for the template.
      */
     protected ProductCmpt newProductTemplate(IIpsProject project, String qualifiedName) {
-        ProductCmpt template = (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
-        return template;
+        return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
     }
 
     /**
@@ -1214,29 +1214,13 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (!classFile.exists()) {
                     classFile.createNewFile();
                 }
-                FileOutputStream fos = null;
-                InputStream is = null;
-                try {
-                    is = adaptedClass.getClassLoader()
-                            .getResourceAsStream(adaptedClass.getName().replace('.', '/') + ".class");
-                    fos = new FileOutputStream(classFile);
+                try (InputStream is = adaptedClass.getClassLoader()
+                        .getResourceAsStream(adaptedClass.getName().replace('.', '/') + ".class");
+                        FileOutputStream fos = new FileOutputStream(classFile)) {
                     int value = is.read();
                     while (value != -1) {
                         fos.write(value);
                         value = is.read();
-                    }
-                } finally {
-                    try {
-                        if (fos != null) {
-                            fos.close();
-                        }
-                    } catch (IOException e) {
-                    }
-                    try {
-                        if (is != null) {
-                            is.close();
-                        }
-                    } catch (IOException e) {
                     }
                 }
             }
@@ -1564,7 +1548,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         @Override
         public void build(IIpsSrcFile ipsSrcFile) {
-
+            // do nothing
         }
 
         @Override
@@ -1574,7 +1558,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         @Override
         public void delete(IIpsSrcFile ipsSrcFile) {
-
+            // do nothing
         }
 
         @Override

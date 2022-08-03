@@ -148,10 +148,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     public boolean isGenerateMethodBody(boolean genInterface) {
-        if (genInterface) {
-            return false;
-        }
-        if (isAbstract()) {
+        if (genInterface || isAbstract()) {
             return false;
         }
         if (isFormulaSignature()) {
@@ -185,8 +182,7 @@ public class XMethod extends AbstractGeneratorModelNode {
             if (overloadedFormulaMethod == null) {
                 throw new IpsException("Cannot find overloaded formula for method " + getName());
             }
-            XMethod overloadedMethod = getModelNode(overloadedFormulaMethod, XMethod.class);
-            return overloadedMethod;
+            return getModelNode(overloadedFormulaMethod, XMethod.class);
         } else {
             throw new RuntimeException("The method " + getName() + " is no formula signature.");
         }

@@ -26,7 +26,7 @@ public interface EnumDatatype extends NamedDatatype {
      *            not include the NULL-Value. Note that the NULL-Value can be the Java {@code null}
      *            or a special case NULL-value ID.
      */
-    public String[] getAllValueIds(boolean includeNull);
+    String[] getAllValueIds(boolean includeNull);
 
     @Override
     default Object getValueByName(String name) {

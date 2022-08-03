@@ -28,6 +28,6 @@ public interface IFunctionResolverFactory<T extends CodeFragment> {
      * Creates a new FunctionResolver with respect to the provided local. It is in the
      * responsibility of the factory provider if the locale is considered.
      */
-    public FunctionResolver<T> newFunctionResolver(Locale locale);
+    FunctionResolver<T> newFunctionResolver(Locale locale);
 
 }

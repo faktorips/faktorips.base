@@ -24,31 +24,31 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "IPSOBJECT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IPSOBJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined as
      * configurable by product, but the product component type name is not set.
      */
-    public static final String MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD = MSGCODE_PREFIX
+    String MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD = MSGCODE_PREFIX
             + "sameIpsObjectInIpsObjectPathAhead"; //$NON-NLS-1$
 
     /**
      * Returns the object's type.
      */
-    public IpsObjectType getIpsObjectType();
+    IpsObjectType getIpsObjectType();
 
     /**
      * Returns the IPS source file this object is stored in.
      */
     @Override
-    public IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
     /**
      * Returns <code>true</code> if the object was created from a parsable file content,
      * <code>false</code> otherwise.
      */
-    public boolean isFromParsableFile();
+    boolean isFromParsableFile();
 
     /**
      * Returns the object's qualified name. The qualified name is the name of the IPS package
@@ -59,7 +59,7 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * The qualified name of an IPS object called 'MotorCoverage' in the package fragment
      * 'mycompany.motor' has the qualified name 'mycompany.motor.MotorCoverage'.
      */
-    public String getQualifiedName();
+    String getQualifiedName();
 
     /**
      * Returns the object's name without the leading package name (if any). For IpsObjects this
@@ -68,18 +68,18 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * @see #getQualifiedName()
      * @see IIpsElement#getName()
      */
-    public String getUnqualifiedName();
+    String getUnqualifiedName();
 
     /**
      * Returns the qualified name type for this IPS object which is the combination of this IPS
      * objects qualified name and its IPS object type.
      */
-    public QualifiedNameType getQualifiedNameType();
+    QualifiedNameType getQualifiedNameType();
 
     /**
      * Returns the IPS package fragment the object is contained in.
      */
-    public IIpsPackageFragment getIpsPackageFragment();
+    IIpsPackageFragment getIpsPackageFragment();
 
     /**
      * Returns the dependencies of this <code>IpsObject</code>. A <code>Dependency</code> contains
@@ -94,7 +94,7 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * deleted. However, if the deleted object is created again, we must rebuild this dependent
      * object so that the problem marker will be removed.
      */
-    public IDependency[] dependsOn();
+    IDependency[] dependsOn();
 
     /**
      * Returns the dependency details describing which parts and properties are causing the given
@@ -103,17 +103,17 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      * @param dependency The dependency to get the details for, must not be <code>null</code>.
      * 
      * @return The details to the given Dependency. If no details exist for this dependency, an
-     *         empty list is returned.
+     *             empty list is returned.
      * 
      * @throws NullPointerException If the given dependency is <code>null</code>.
      */
-    public List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws IpsException;
+    List<IDependencyDetail> getDependencyDetails(IDependency dependency) throws IpsException;
 
     /**
      * Deletes the {@link IIpsSrcFile} this object is stored in.
      */
     @Override
-    public void delete() throws IpsException;
+    void delete() throws IpsException;
 
     /**
      * Creates a new IpsSrcFile based on a this IIpsObject. The filename is constructed by appending
@@ -134,7 +134,7 @@ public interface IIpsObject extends IIpsObjectPartContainer, IDescribedElement {
      *             <li>The name is not a valid object name
      *             </ul>
      */
-    public IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
+    IIpsSrcFile createCopy(IIpsPackageFragment targetFragment,
             String name,
             boolean force,
             IProgressMonitor monitor);

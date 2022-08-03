@@ -28,7 +28,7 @@ public interface NumericDatatype extends ValueDatatype {
      * @throws NumberFormatException if at least one of minuend and subtrahend can not be converted
      *             into a number of this datatype.
      */
-    public String subtract(String minuend, String subtrahend);
+    String subtract(String minuend, String subtrahend);
 
     /**
      * Decides whether the given dividend can be divided by the divisor without remainder or not.
@@ -37,14 +37,14 @@ public interface NumericDatatype extends ValueDatatype {
      * @param dividend The value to be divided
      * @param divisor The value to be used to divide the dividend
      * @return <code>true</code> if dividend can be divided by the divisor without remainder,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      * 
      * @throws NullPointerException if at least one of dividend and divisor is <code>null</code>
      * @throws NumberFormatException if at least one of dividend and divisor can not be converted
      *             into a number of this datatype.
      */
-    public boolean divisibleWithoutRemainder(String dividend, String divisor);
+    boolean divisibleWithoutRemainder(String dividend, String divisor);
 
-    public boolean hasDecimalPlaces();
+    boolean hasDecimalPlaces();
 
 }

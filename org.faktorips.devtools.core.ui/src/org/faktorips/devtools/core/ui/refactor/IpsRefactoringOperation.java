@@ -156,9 +156,7 @@ public class IpsRefactoringOperation {
             dialog.run(true, refactoring.isCancelable(), monitor -> {
                 checkConditionsOperation.run(monitor);
             });
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         if (refactoring.isSourceFilesSavedRequired()) {

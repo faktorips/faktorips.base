@@ -177,7 +177,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
     private void createInvalidCsvFile() throws Exception {
         CSVWriter writer = new CSVWriter(new FileWriter(file));
 
-        String[] invalidLine = new String[] { "invalid is impossible", "INVALID", "INVALID", "INVALID", "INVALID",
+        String[] invalidLine = { "invalid is impossible", "INVALID", "INVALID", "INVALID", "INVALID",
                 "INVALID", "INVALID", "invalid is impossible" };
 
         writer.writeNext(new String[] { "This", "is", "the", "header." });

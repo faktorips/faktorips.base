@@ -106,7 +106,7 @@ public class TestPlainJavaIpsModelExtensions extends PlainJavaIpsModelExtensions
      */
     @Override
     public void setFeatureVersionManagers(IIpsFeatureVersionManager... managers) {
-        this.featureVersionManagers = managers;
+        featureVersionManagers = managers;
     }
 
     @Override
@@ -212,7 +212,7 @@ public class TestPlainJavaIpsModelExtensions extends PlainJavaIpsModelExtensions
 
     @Override
     public void setPreSaveProcessor(IpsObjectType ipsObjectType, Consumer<IIpsObject> preSaveProcessor) {
-        this.preSaveProcessors = new HashMap<>(1);
+        preSaveProcessors = new HashMap<>(1);
         preSaveProcessors.put(ipsObjectType, List.of(new IPreSaveProcessor() {
 
             @Override

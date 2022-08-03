@@ -71,7 +71,7 @@ enum TestCaseDeltaType implements INamedValue {
     private final String name;
     private final ImageDescriptor imageDescriptor;
 
-    private TestCaseDeltaType(String id, String name, String icon) {
+    TestCaseDeltaType(String id, String name, String icon) {
         ArgumentCheck.notNull(id);
         this.id = id;
         ArgumentCheck.notNull(name);

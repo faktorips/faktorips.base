@@ -111,11 +111,7 @@ public abstract class ControlPropertyBinding {
     protected Object readProperty() {
         try {
             return getProperty().getReadMethod().invoke(getObject());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

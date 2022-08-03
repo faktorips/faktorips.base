@@ -22,35 +22,35 @@ public interface ITableAccessFunction {
     /**
      * Returns the table structure this function gives access to.
      */
-    public ITableStructure getTableStructure();
+    ITableStructure getTableStructure();
 
     /**
      * Returns the name of the column accessed by this function.
      */
-    public String getAccessedColumnName();
+    String getAccessedColumnName();
 
     /**
      * Returns the column accessed by this function or <code>null</code> if the column can't be
      * found.
      */
-    public IColumn getAccessedColumn();
+    IColumn getAccessedColumn();
 
     /**
      * Returns the function's return type.
      */
-    public String getType();
+    String getType();
 
     /**
      * Returns the function's arguments' types.
      */
-    public List<String> getArgTypes();
+    List<String> getArgTypes();
 
     /**
      * Returns the description of this function
      * 
      */
-    public String getDescription();
+    String getDescription();
 
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
 }

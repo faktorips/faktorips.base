@@ -150,9 +150,8 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     }
 
     /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
+     * @deprecated use {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *                 instead.
      */
     @Deprecated
     @Override

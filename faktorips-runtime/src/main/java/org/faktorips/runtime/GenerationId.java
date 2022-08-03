@@ -25,9 +25,9 @@ public class GenerationId implements Comparable<GenerationId> {
     private int hashCode;
 
     public GenerationId(String name, DateTime validFrom) {
-        this.qName = name;
+        qName = name;
         this.validFrom = validFrom;
-        this.hashCode = qName.hashCode() * 17 + validFrom.hashCode();
+        hashCode = qName.hashCode() * 17 + validFrom.hashCode();
     }
 
     public String getQName() {
@@ -40,10 +40,7 @@ public class GenerationId implements Comparable<GenerationId> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof GenerationId)) {
-            return false;
-        }
-        if (obj.hashCode() != hashCode) {
+        if (!(obj instanceof GenerationId) || (obj.hashCode() != hashCode)) {
             return false;
         }
         GenerationId other = (GenerationId)obj;

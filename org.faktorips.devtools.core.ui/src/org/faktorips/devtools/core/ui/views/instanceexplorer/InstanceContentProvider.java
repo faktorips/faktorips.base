@@ -28,7 +28,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  */
 public class InstanceContentProvider extends DeferredStructuredContentProvider {
 
-    protected static final IIpsSrcFile[] EMPTY_ARRAY = new IIpsSrcFile[0];
+    protected static final IIpsSrcFile[] EMPTY_ARRAY = {};
 
     /*
      * indicates whether to search the subtypes for an instance or not

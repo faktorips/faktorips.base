@@ -13,7 +13,6 @@ package org.faktorips.runtime.test;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,8 +178,6 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
                 socket = new Socket("localhost", port); //$NON-NLS-1$
                 writer = new PrintWriter(socket.getOutputStream(), true);
                 return;
-            } catch (UnknownHostException e) {
-                lastException = e;
             } catch (IOException e) {
                 lastException = e;
             }

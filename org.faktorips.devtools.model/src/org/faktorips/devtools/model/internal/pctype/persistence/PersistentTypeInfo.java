@@ -362,20 +362,9 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         // but the discriminator details are not empty
         validateDefinesDiscriminatorColumn(msgList);
 
-        if (rootEntity == null) {
-            // there must always be a root entity, maybe an error
-            return;
-        }
-
-        if (!validateRootEntityNotDefined(msgList, rootEntity)) {
-            return;
-        }
-
-        if (!validateDefinesDiscriminatorColumnAndRootEntryNotNull(msgList, rootEntity)) {
-            return;
-        }
-
-        if (!validateDiscriminatorEmptinessOrConformity(msgList, rootEntity)) {
+        if ((rootEntity == null) || !validateRootEntityNotDefined(msgList, rootEntity)
+                || !validateDefinesDiscriminatorColumnAndRootEntryNotNull(msgList, rootEntity)
+                || !validateDiscriminatorEmptinessOrConformity(msgList, rootEntity)) {
             return;
         }
 
@@ -493,17 +482,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
     }
 
     private boolean isDiscrValueEmpty(IPolicyCmptType rootEntity) {
-        boolean discrValueMustBeEmpty = false;
-        if (getPolicyCmptType().isAbstract()) {
-            discrValueMustBeEmpty = true;
-        } else {
-            if (rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn()) {
-                discrValueMustBeEmpty = false;
-            } else {
-                discrValueMustBeEmpty = true;
-            }
-        }
-        return discrValueMustBeEmpty;
+        return getPolicyCmptType().isAbstract()
+                || !rootEntity.getPersistenceTypeInfo().isDefinesDiscriminatorColumn();
     }
 
     private boolean checkIsRootEntityNotDefined(IPolicyCmptType rootEntity) {
@@ -577,11 +557,11 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         element.setAttribute(PROPERTY_DISCRIMINATOR_VALUE, "" + discriminatorValue); //$NON-NLS-1$
         if (definesDiscriminatorColumn) {
             element.setAttribute(PROPERTY_DEFINES_DISCRIMINATOR_COLUMN, "" //$NON-NLS-1$
-                    + Boolean.valueOf(definesDiscriminatorColumn).toString());
+                    + Boolean.toString(definesDiscriminatorColumn));
         }
         if (useTableDefinedInSupertype) {
             element.setAttribute(PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE, "" //$NON-NLS-1$
-                    + Boolean.valueOf(useTableDefinedInSupertype).toString());
+                    + Boolean.toString(useTableDefinedInSupertype));
         }
         element.setAttribute(PROPERTY_PERSISTENT_TYPE, "" + persistentType); //$NON-NLS-1$
     }
@@ -613,7 +593,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
         if (StringUtils.isNotEmpty(attrPersistentType)) {
             persistentType = PersistentType.valueOf(attrPersistentType);
         } else {
-            if (Boolean.valueOf(element.getAttribute("enabled"))) { //$NON-NLS-1$
+            if (Boolean.parseBoolean(element.getAttribute("enabled"))) { //$NON-NLS-1$
                 persistentType = PersistentType.ENTITY;
             } else {
                 persistentType = PersistentType.NONE;
@@ -716,9 +696,8 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
             }
 
             String text = MessageFormat.format(Messages.PersistentTypeInfo_msgInvalidInheritanceStratedyCombination,
-                    new Object[] {
-                            currentType.getUnqualifiedName(), supertypeStrategy,
-                            persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy });
+                    currentType.getUnqualifiedName(), supertypeStrategy,
+                    persistentTypeInfo.getIpsObject().getUnqualifiedName(), inheritanceStrategy);
             msgList.add(new Message(MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID, text, Message.ERROR,
                     persistentTypeInfo, IPersistentTypeInfo.PROPERTY_INHERITANCE_STRATEGY));
             return false;
@@ -729,7 +708,7 @@ public class PersistentTypeInfo extends AtomicIpsObjectPart implements IPersiste
      * The root entity is the entity which can define the discriminator. A root entity has no
      * supertype and must be an JPA entity.
      */
-    private class RooEntityFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
+    private static class RooEntityFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private IPolicyCmptType rooEntity = null;
 

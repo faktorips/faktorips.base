@@ -15,9 +15,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public interface IForeignKey extends IKey {
 
-    public static final String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$
+    String PROPERTY_REF_TABLE_STRUCTURE = "referencedTableStructure"; //$NON-NLS-1$
 
-    public static final String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey"; //$NON-NLS-1$
+    String PROPERTY_REF_UNIQUE_KEY = "referencedUniqueKey"; //$NON-NLS-1$
 
     /**
      * The name of the foreign key is the name of the table it references followed by an opening
@@ -28,20 +28,20 @@ public interface IForeignKey extends IKey {
      * @see org.faktorips.devtools.model.IIpsElement#getName()
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Returns the name of the table structure this foreign key references. This method never
      * returns null.
      */
-    public String getReferencedTableStructure();
+    String getReferencedTableStructure();
 
     /**
      * Sets the table structure this key references.
      * 
      * @throws IllegalArgumentException if tableStructure is <code>null</code>.
      */
-    public void setReferencedTableStructure(String tableStructure);
+    void setReferencedTableStructure(String tableStructure);
 
     /**
      * Returns the table structure this foreign key references. Returns <code>null</code> if the
@@ -49,18 +49,18 @@ public interface IForeignKey extends IKey {
      * 
      * @throws IpsException if an error occurs while searching for the table structure.
      */
-    public ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws IpsException;
+    ITableStructure findReferencedTableStructure(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the name of the referenced unique key. This method never returns null.
      */
-    public String getReferencedUniqueKey();
+    String getReferencedUniqueKey();
 
     /**
      * Sets the unique key this foreign key references.
      * 
      * @throws IllegalArgumentException if tableStructure is <code>null</code>.
      */
-    public void setReferencedUniqueKey(String uniqueKey);
+    void setReferencedUniqueKey(String uniqueKey);
 
 }

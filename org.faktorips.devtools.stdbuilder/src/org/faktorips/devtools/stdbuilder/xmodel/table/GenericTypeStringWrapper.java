@@ -26,13 +26,13 @@ public class GenericTypeStringWrapper {
 
     public GenericTypeStringWrapper(String genericClass) {
         this.genericClass = genericClass;
-        this.genericParams = new ArrayList<>();
+        genericParams = new ArrayList<>();
     }
 
     public GenericTypeStringWrapper(String genericClass, String genericParam) {
         this.genericClass = genericClass;
-        this.genericParams = new ArrayList<>();
-        this.genericParams.add(new GenericTypeStringWrapper(genericParam));
+        genericParams = new ArrayList<>();
+        genericParams.add(new GenericTypeStringWrapper(genericParam));
     }
 
     public GenericTypeStringWrapper(String genericClass, List<GenericTypeStringWrapper> genericParams) {

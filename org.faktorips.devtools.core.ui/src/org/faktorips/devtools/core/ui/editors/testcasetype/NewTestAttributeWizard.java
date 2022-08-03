@@ -52,7 +52,7 @@ public class NewTestAttributeWizard extends Wizard {
         super.setWindowTitle(Messages.NewTestAttributeWizard_wizardTitle);
 
         this.testCaseType = testCaseType;
-        this.testPolicyCmptTypeParameter = parentTestPolicyCmptTypeParameter;
+        testPolicyCmptTypeParameter = parentTestPolicyCmptTypeParameter;
         this.showSubtypeAttributes = showSubtypeAttributes;
     }
 
@@ -155,10 +155,8 @@ public class NewTestAttributeWizard extends Wizard {
             } else {
                 return testAttributeDefinitionWizardPage;
             }
-        } else if (page instanceof TestAttributeSelectionWizardPage) {
-            secondPageWasdisplayed = true;
-            return null;
-        } else if (page instanceof TestAttributeDefinitionWizardPage) {
+        } else if ((page instanceof TestAttributeSelectionWizardPage)
+                || (page instanceof TestAttributeDefinitionWizardPage)) {
             secondPageWasdisplayed = true;
             return null;
         } else {
@@ -176,9 +174,8 @@ public class NewTestAttributeWizard extends Wizard {
 
     @Override
     public boolean canFinish() {
-        if (!isBasedOnPolicyCmptTypeAttributes() && !testAttributeDefinitionWizardPage.isValid()) {
-            return false;
-        } else if (isBasedOnPolicyCmptTypeAttributes() && !testAttributeSelectionWizardPage.isValid()) {
+        if ((!isBasedOnPolicyCmptTypeAttributes() && !testAttributeDefinitionWizardPage.isValid())
+                || (isBasedOnPolicyCmptTypeAttributes() && !testAttributeSelectionWizardPage.isValid())) {
             return false;
         }
         if (!secondPageWasdisplayed) {
@@ -197,6 +194,6 @@ public class NewTestAttributeWizard extends Wizard {
     }
 
     public void setShowSubtypeAttributes(boolean showSubtypes) {
-        this.showSubtypeAttributes = showSubtypes;
+        showSubtypeAttributes = showSubtypes;
     }
 }

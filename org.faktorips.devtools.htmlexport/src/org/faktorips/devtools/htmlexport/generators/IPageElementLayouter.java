@@ -22,6 +22,6 @@ public interface IPageElementLayouter<T extends IPageElement> {
     /**
      * layouts the {@link IPageElement}
      */
-    public void layout();
+    void layout();
 
 }

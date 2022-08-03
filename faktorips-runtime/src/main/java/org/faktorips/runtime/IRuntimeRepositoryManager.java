@@ -33,10 +33,10 @@ public interface IRuntimeRepositoryManager {
      * this method simply returns the existing one.
      * 
      * @deprecated since 3.9.0: The method name was a false translation from German. The correct
-     *             method is called {@link #getCurrentRuntimeRepository()}
+     *                 method is called {@link #getCurrentRuntimeRepository()}
      */
     @Deprecated
-    public IRuntimeRepository getActualRuntimeRepository();
+    IRuntimeRepository getActualRuntimeRepository();
 
     /**
      * Call a modification check on the product data provider. If there are any changes in the
@@ -48,7 +48,7 @@ public interface IRuntimeRepositoryManager {
      * referenced manager returns <code>null</code> as its current repository, this direct
      * referenced repository will be ignored.
      */
-    public IRuntimeRepository getCurrentRuntimeRepository();
+    IRuntimeRepository getCurrentRuntimeRepository();
 
     /**
      * Use this method to add a referenced {@link IRuntimeRepositoryManager}. The
@@ -57,7 +57,7 @@ public interface IRuntimeRepositoryManager {
      * 
      * @param manager The manager to connect with this manager
      */
-    public void addDirectlyReferencedManager(IRuntimeRepositoryManager manager);
+    void addDirectlyReferencedManager(IRuntimeRepositoryManager manager);
 
     /**
      * Get the list of direct references managers.
@@ -65,15 +65,15 @@ public interface IRuntimeRepositoryManager {
      * @return All directly referenced managers
      * 
      */
-    public List<IRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers();
+    List<IRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers();
 
     /**
      * Collect all referenced manager. This request all referenced managers from the direct
      * references managers recursively.
      * 
      * @return A list of all {@link IRuntimeRepositoryManager} that are referenced directly or
-     *         indirectly
+     *             indirectly
      */
-    public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers();
+    List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers();
 
 }

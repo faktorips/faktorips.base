@@ -30,32 +30,32 @@ public interface IIpsTestRunner {
      * 
      * @throws IpsException if an error occurs.
      */
-    public void terminate() throws IpsException;
+    void terminate() throws IpsException;
 
     /**
      * Adds the given IPS test run listener to the collection of listeners
      */
-    public void addIpsTestRunListener(IIpsTestRunListener newListener);
+    void addIpsTestRunListener(IIpsTestRunListener newListener);
 
     /**
      * Removes the given IPS test run listener from the collection of listeners
      */
-    public void removeIpsTestRunListener(IIpsTestRunListener listener);
+    void removeIpsTestRunListener(IIpsTestRunListener listener);
 
     /**
      * Returns all registered IPS test run listener.
      */
-    public List<IIpsTestRunListener> getIpsTestRunListener();
+    List<IIpsTestRunListener> getIpsTestRunListener();
 
     /**
      * Sets the java project the test which will be started by this runner belongs to.
      */
-    public void setIpsProject(IIpsProject ipsProject);
+    void setIpsProject(IIpsProject ipsProject);
 
     /**
      * Returns the IPS project.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Starts a new job for running tests.
@@ -65,7 +65,7 @@ public interface IIpsTestRunner {
      * 
      * @throws IpsException if an error occurred.
      */
-    public void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
+    void startTestRunnerJob(String classpathRepository, String testPackage) throws CoreException;
 
     /**
      * Starts a new job for running tests.
@@ -78,12 +78,12 @@ public interface IIpsTestRunner {
      * 
      * @throws IpsException if an error occurred.
      */
-    public void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch)
+    void startTestRunnerJob(String classpathRepository, String testPackage, String mode, ILaunch launch)
             throws CoreException;
 
     /**
      * Returns <code>true</code> if a new test can be started.
      */
-    public boolean isRunningTestRunner();
+    boolean isRunningTestRunner();
 
 }

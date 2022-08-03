@@ -118,12 +118,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
             return;
         }
         ITableContents tableContents = (ITableContents)getTargetForImport();
-        if (tableContents == null) {
-            setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
-                    importTargetControl.getText()));
-            return;
-        }
-        if (!tableContents.exists()) {
+        if ((tableContents == null) || !tableContents.exists()) {
             setErrorMessage(NLS.bind(Messages.SelectTableContentsPage_msgMissingContent,
                     importTargetControl.getText()));
             return;

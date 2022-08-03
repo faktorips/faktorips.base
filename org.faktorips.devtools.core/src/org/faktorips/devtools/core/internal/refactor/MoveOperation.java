@@ -89,9 +89,14 @@ public abstract class MoveOperation {
      * false is returned.
      */
     private static boolean isValidTargetType(Object target) {
-        return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
-                & !(target instanceof IIpsSrcFile) & !(target instanceof ILibraryIpsPackageFragment)
-                & !(target instanceof ILibraryIpsPackageFragmentRoot);
+        // CSOFF: BooleanExpressionComplexity
+        return !(target instanceof IIpsObject)
+                && !(target instanceof IIpsObjectPart)
+                && !(target instanceof IFile)
+                && !(target instanceof IIpsSrcFile)
+                && !(target instanceof ILibraryIpsPackageFragment)
+                && !(target instanceof ILibraryIpsPackageFragmentRoot);
+        // CSON: BooleanExpressionComplexity
     }
 
     /**

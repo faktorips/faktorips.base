@@ -61,8 +61,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         createRow(gen1, new String[] { "1", "2", "500", "999" });
         createRow(gen1, new String[] { "1", "30", "1", "999" });
 
-        MessageList messageList = null;
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
@@ -77,8 +76,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         createRow(gen1, new String[] { "4", "4", "1", "999" });
 
         // 405 in last ColumnRange
-        MessageList messageList = null;
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
@@ -286,8 +284,6 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.newColumn("a", "a");
         table.newColumn("2b", "b");
 
-        MessageList messageList = null;
-
         // valid contents
         IRow row1 = gen1.newRow();
         IRow row2 = gen1.newRow();
@@ -296,7 +292,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(0, "20");
         row2.setValue(1, "29");
 
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
 
         // invalid contents (to column - unique violation)
@@ -361,14 +357,12 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.newColumn("a", "a");
         table.newColumn("b", "b");
 
-        MessageList messageList = null;
-
         // valid contents
         for (int i = 1; i < 50; i++) {
             createRow(gen1, new String[] { "1", "10" });
         }
 
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
     }
@@ -441,9 +435,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(3, "2009-12-31");
         row2.setValue(4, "1.23");
 
-        MessageList messageList = null;
+        MessageList messageList = table.validate(project);
 
-        messageList = table.validate(project);
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
 
         // valid contents: invalid first range but second range valid
@@ -533,8 +526,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.setTableStructure(structure.getQualifiedName());
 
         // init table structure
-        IColumn column = null;
-        column = structure.newColumn();
+        IColumn column = structure.newColumn();
         column.setName("a");
         column.setDatatype("String");
         column = structure.newColumn();
@@ -636,8 +628,6 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         table.newColumn("c", "c");
         table.newColumn("d", "d");
 
-        MessageList messageList = null;
-
         // valid contents
         IRow row1 = gen1.newRow();
         IRow row2 = gen1.newRow();
@@ -650,7 +640,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         row2.setValue(2, "" + from2);
         row2.setValue(3, "" + to2);
 
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         assertEquals(testName, collision,
                 messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION) != null);
         tearDownPerformanceTest();
@@ -716,14 +706,10 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     public void _testPerformance() throws Exception {
         StringBuilder sb = new StringBuilder();
 
-        int noOfRunsBefore = 0;
-        int noOfTests = 0;
+        int noOfRunsBefore = 100;
+        int noOfTests = 20;
         boolean testWithUniqueKeyValidation = true;
 
-        noOfRunsBefore = 100;
-        noOfTests = 20;
-
-        testWithUniqueKeyValidation = true;
         sb.append("" + noOfRunsBefore + ", " + noOfTests + ", " + testWithUniqueKeyValidation + "\n");
         testPerformanceInternal(sb, noOfRunsBefore, noOfTests, 1000, testWithUniqueKeyValidation);
         testPerformanceInternal(sb, noOfRunsBefore, noOfTests, 2000, testWithUniqueKeyValidation);
@@ -911,8 +897,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         }
 
         sb.append(noOfRows + "\n");
-        sb.append(("" + (((double)sumOfInit / noOfTests) / 1000)).replaceAll("\\.", ",") + "\n");
-        sb.append(("" + (((double)sumOfValidation / noOfTests) / 1000)).replaceAll("\\.", ",") + "\n");
+        sb.append(("" + (((double)sumOfInit / noOfTests) / 1000)).replace('.', ',') + "\n");
+        sb.append(("" + (((double)sumOfValidation / noOfTests) / 1000)).replace('.', ',') + "\n");
 
         System.out.println(sb.toString());
     }
@@ -929,7 +915,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         project.getProject().delete(null);
     }
 
-    private class InitAndValidateTime {
+    private static class InitAndValidateTime {
         private long durrationInit;
         private long durrationValidate;
 
@@ -1008,8 +994,6 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         GregorianCalendar calendarTo = DateUtil.parseIsoDateStringToGregorianCalendar("1900-01-02");
         long start = System.currentTimeMillis();
         for (int i = 1; i < noOfTestRows + 1; i++) {
-            if (i % 1000 == 1) {
-            }
             int from = i * 10;
             createRow(gen1,
                     new String[] { "" + from, "" + (from + 9), DateUtil.gregorianCalendarToIsoDateString(calendarFrom),
@@ -1019,9 +1003,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         }
         resultTime.setDurrationInit(System.currentTimeMillis() - start);
 
-        MessageList messageList = null;
         start = System.currentTimeMillis();
-        messageList = table.validate(project);
+        MessageList messageList = table.validate(project);
         resultTime.setDurrationValidate(System.currentTimeMillis() - start);
 
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));

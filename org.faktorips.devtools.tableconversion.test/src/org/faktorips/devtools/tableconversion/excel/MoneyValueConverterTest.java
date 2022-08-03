@@ -44,7 +44,7 @@ public class MoneyValueConverterTest {
         ml.clear();
         value = converter.getIpsValue(Double.valueOf(Double.MAX_VALUE), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(Double.valueOf(Double.MAX_VALUE).toString(), value);
+        assertEquals(Double.toString(Double.MAX_VALUE), value);
     }
 
     @Test

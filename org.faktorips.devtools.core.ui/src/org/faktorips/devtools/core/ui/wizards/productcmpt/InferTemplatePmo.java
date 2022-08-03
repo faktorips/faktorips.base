@@ -40,7 +40,7 @@ public class InferTemplatePmo extends NewProductCmptPMO {
     }
 
     public void setProductCmptsToInferTemplateFrom(List<IProductCmpt> selectedProductCmpts) {
-        this.productCmptsToInferTemplate = selectedProductCmpts;
+        productCmptsToInferTemplate = selectedProductCmpts;
         IProductCmptType commonTypeOf = CommonTypeFinder.commonTypeOf(selectedProductCmpts);
         setSingleProductCmptType(commonTypeOf);
         setEffectiveDate(getEarliestValidFrom());

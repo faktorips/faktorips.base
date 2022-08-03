@@ -23,7 +23,7 @@ public class DatatypeContentProposal implements IContentProposal {
     private final Datatype datatype;
 
     public DatatypeContentProposal(Datatype dataType) {
-        this.datatype = dataType;
+        datatype = dataType;
     }
 
     public Datatype getDataype() {

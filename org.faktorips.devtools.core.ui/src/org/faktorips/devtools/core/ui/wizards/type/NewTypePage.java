@@ -122,7 +122,7 @@ public abstract class NewTypePage extends IpsObjectPage {
      * Returns the value of the abstract checkbox field.
      * 
      * @return A flag indicating whether the abstract checkbox field is checked (<code>true</code>)
-     *         or not ( <code>false</code>).
+     *             or not ( <code>false</code>).
      */
     public boolean isAbstract() {
         return (getAbstractField().getValue()).booleanValue();

@@ -22,15 +22,15 @@ public interface ILinkSectionViewItem {
     /**
      * Returns the text to be displayed for this item in the tree. To be used by label providers.
      */
-    public String getText();
+    String getText();
 
     /**
      * Returns the image to be displayed for this item in the tree. To be used by label providers.
      */
-    public Image getImage();
+    Image getImage();
 
     /**
      * Returns the the name of the corresponding product component type association.
      */
-    public String getAssociationName();
+    String getAssociationName();
 }

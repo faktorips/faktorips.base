@@ -28,9 +28,7 @@ public interface IIpsDecorators {
      * Returns the singleton instance.
      */
     static IIpsDecorators get() {
-        @SuppressWarnings("deprecation")
-        IpsDecorators ipsDecorators = IpsDecorators.get();
-        return ipsDecorators;
+        return IpsDecorators.get();
     }
 
     /**
@@ -103,6 +101,6 @@ public interface IIpsDecorators {
     /**
      * Returns all classes for which an {@link IIpsElementDecorator} can be returned.
      */
-    public Collection<Class<? extends IIpsElement>> getDecoratedClasses();
+    Collection<Class<? extends IIpsElement>> getDecoratedClasses();
 
 }

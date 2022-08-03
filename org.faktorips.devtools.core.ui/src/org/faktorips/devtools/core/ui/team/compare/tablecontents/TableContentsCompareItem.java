@@ -284,7 +284,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      * @param row The row a value should be retrieved from.
      * @param columnIndex The column index the value should be retrieved from inside the row.
      * @return The value at the given index in the given row or the NULL-representation string
-     *         (defined by the IpsPreferences) if the row returned <code>null</code> as a value.
+     *             (defined by the IpsPreferences) if the row returned <code>null</code> as a value.
      */
     private String getRowValueAt(IRow row, int columnIndex) {
         String value = row.getValue(columnIndex);

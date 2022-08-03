@@ -45,9 +45,7 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
         this.targetId = targetId;
         try {
             establishMethod = sourceObj.getClass().getMethod(establishMethodName, targetClass);
-        } catch (NoSuchMethodException ne) {
-            throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
-        } catch (SecurityException e) {
+        } catch (NoSuchMethodException | SecurityException e) {
             throwNewRuntimeException(sourceObj, establishMethodName, targetClass);
         }
     }

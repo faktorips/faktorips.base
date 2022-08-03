@@ -246,8 +246,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
                 break;
             }
         }
-        ITestPolicyCmptTypeParameter param = null;
-        param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
+        ITestPolicyCmptTypeParameter param = testPolicyCmpt.findTestPolicyCmptTypeParameter(ipsProject);
         if (param.getPolicyCmptType().equals(filteredPolicyCmptType)) {
             found = true;
         }

@@ -128,8 +128,7 @@ public class IpsSrcFileImmutable extends IpsSrcFileExternal {
 
     @Override
     public InputStream getContentFromEnclosingResource() {
-        ByteArrayInputStream content = new ByteArrayInputStream(xmlContent.getBytes());
-        return content;
+        return new ByteArrayInputStream(xmlContent.getBytes());
     }
 
     /**

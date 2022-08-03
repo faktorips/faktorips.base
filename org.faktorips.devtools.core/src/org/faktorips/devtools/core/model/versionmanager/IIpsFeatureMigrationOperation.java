@@ -33,26 +33,26 @@ public interface IIpsFeatureMigrationOperation {
     /**
      * Returns the IPS project the operation migrates.
      */
-    public abstract IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the description of all the steps done by this operation - to be displayed to the
      * user.
      */
-    public abstract String getDescription();
+    String getDescription();
 
     /**
      * Returns <code>true</code> if no changes will be done by this operation, <code>false</code>
      * otherwise.
      */
-    public abstract boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns a list of messages describing any problems occurred during migration. If this list is
      * empty, migration was either not executed or executed successfully. If this list contains a
      * message with severity error, it was not.
      */
-    public abstract MessageList getMessageList();
+    MessageList getMessageList();
 
     /**
      * Performs the steps that are to be treated as a single logical workspace change.
@@ -72,7 +72,7 @@ public interface IIpsFeatureMigrationOperation {
      *                <code>InterruptedException</code> by the <code>run</code> method.
      */
     // CSOFF: ThrowsCount
-    abstract void execute(IProgressMonitor monitor)
+    void execute(IProgressMonitor monitor)
             throws IpsException, InvocationTargetException,
             InterruptedException;
     // CSON: ThrowsCount
@@ -93,14 +93,14 @@ public interface IIpsFeatureMigrationOperation {
      *                <code>IProgressMonitor.isCanceled()</code>, it should exit by throwing
      *                <code>InterruptedException</code>
      */
-    public abstract void run(IProgressMonitor monitor) throws InvocationTargetException,
+    void run(IProgressMonitor monitor) throws InvocationTargetException,
             InterruptedException;
 
     /**
      * Returns the {@link IpsMigrationOption configuration options} for all included migration
      * operations or an empty collection if no operation requires configuration.
      */
-    public default Collection<IpsMigrationOption<?>> getOptions() {
+    default Collection<IpsMigrationOption<?>> getOptions() {
         return Collections.emptyList();
     }
 

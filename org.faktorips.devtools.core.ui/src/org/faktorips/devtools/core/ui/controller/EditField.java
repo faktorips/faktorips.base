@@ -32,67 +32,67 @@ public interface EditField<T> {
      * Message code to indicate an edit field's underlying control does not contain information that
      * is parsable to the value of the expected datatype.
      */
-    public static final String INVALID_VALUE = "EditFieldContainsInvalidValue"; //$NON-NLS-1$
+    String INVALID_VALUE = "EditFieldContainsInvalidValue"; //$NON-NLS-1$
 
     /**
      * Returns the control this is a helper for.
      */
-    public Control getControl();
+    Control getControl();
 
     /**
      * Returns the value shown in the control.
      */
-    public T getValue();
+    T getValue();
 
     /**
      * Sets the value shown in the control.
      */
-    public void setValue(T newValue);
+    void setValue(T newValue);
 
     /**
      * Sets the value shown in the control.
      */
-    public void setValue(T newValue, boolean triggerValueChanged);
+    void setValue(T newValue, boolean triggerValueChanged);
 
     /**
      * Returns the controls content as string or text value.
      */
-    public abstract String getText();
+    String getText();
 
     /**
      * Sets the controls content as string or text value.
      */
-    public abstract void setText(String newText);
+    void setText(String newText);
 
     /**
      * Inserts the text in the control.
      */
-    public abstract void insertText(String text);
+    void insertText(String text);
 
     /**
      * Selects all the text in the receiver.
      */
-    public abstract void selectAll();
+    void selectAll();
 
     /**
      * Returns true if the control's content can be returned as an instance of the class, this is an
      * edit contrl for.
      */
-    public boolean isTextContentParsable();
+    boolean isTextContentParsable();
 
     /**
      * Sets the messages for the control.
      */
-    public void setMessages(MessageList list);
+    void setMessages(MessageList list);
 
     /**
      * Adds the value change listener.
      */
-    public boolean addChangeListener(ValueChangeListener listener);
+    boolean addChangeListener(ValueChangeListener listener);
 
     /**
      * Removes the value change listener.
      */
-    public boolean removeChangeListener(ValueChangeListener listener);
+    boolean removeChangeListener(ValueChangeListener listener);
 
 }

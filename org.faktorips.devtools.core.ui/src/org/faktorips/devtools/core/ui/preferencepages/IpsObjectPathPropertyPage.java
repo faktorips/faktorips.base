@@ -93,7 +93,7 @@ public class IpsObjectPathPropertyPage extends IpsProjectPropertyPage {
                 if (objectPathsContainer.hasChangesInDialog()) {
                     String title = Messages.IpsObjectPathPropertyPage_changes_in_dialog_title;
                     String message = Messages.IpsObjectPathPropertyPage_apply_discard_applyLater_message;
-                    String[] buttonLabels = new String[] { Messages.IpsObjectPathPropertyPage_apply_button,
+                    String[] buttonLabels = { Messages.IpsObjectPathPropertyPage_apply_button,
                             Messages.IpsObjectPathPropertyPage_discard_button,
                             Messages.IpsObjectPathPropertyPage_apply_later_button };
 

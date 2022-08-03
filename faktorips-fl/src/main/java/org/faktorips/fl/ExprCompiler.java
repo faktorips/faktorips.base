@@ -239,7 +239,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             if (manager.getNextToken().kind == 0) {
                 return true;
             }
-            return false;
         }
         return false;
     }
@@ -487,9 +486,8 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             }
             // convert primitive to wrapper object
             T converted = convertPrimitiveToWrapper(resultType, result.getCodeFragment());
-            AbstractCompilationResult<T> finalResult = newCompilationResultImpl(converted,
+            return newCompilationResultImpl(converted,
                     ((ValueDatatype)resultType).getWrapperType());
-            return finalResult;
             // CSOFF: IllegalCatch
         } catch (RuntimeException pe) {
             // CSON: IllegalCatch
@@ -517,7 +515,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         for (int[] expectedTokenSequence : e.expectedTokenSequences) {
             expected += e.tokenImage[expectedTokenSequence[0]] + " "; //$NON-NLS-1$
         }
-        Object[] replacements = new Object[] { e.currentToken.next.toString(),
+        Object[] replacements = { e.currentToken.next.toString(),
                 Integer.valueOf(e.currentToken.next.beginLine), Integer.valueOf(e.currentToken.next.beginColumn),
                 expected };
         return newCompilationResultImpl(Message.newError(SYNTAX_ERROR,
@@ -527,25 +525,31 @@ public abstract class ExprCompiler<T extends CodeFragment> {
     BinaryOperation<T>[] getBinaryOperations(String operator) {
         List<BinaryOperation<T>> operatorOperations = binaryOperations.get(operator);
         if (operatorOperations == null) {
-            @SuppressWarnings("unchecked")
-            BinaryOperation<T>[] binaryOperationsArray = new BinaryOperation[0];
-            return binaryOperationsArray;
+            return newBinaryOperation();
         }
         @SuppressWarnings("unchecked")
         BinaryOperation<T>[] binaryOperationsArray = new BinaryOperation[operatorOperations.size()];
         return operatorOperations.toArray(binaryOperationsArray);
     }
 
+    @SuppressWarnings("unchecked")
+    private BinaryOperation<T>[] newBinaryOperation() {
+        return new BinaryOperation[0];
+    }
+
     UnaryOperation<T>[] getUnaryOperations(String operator) {
         List<UnaryOperation<T>> operatorOperations = unaryOperations.get(operator);
         if (operatorOperations == null) {
-            @SuppressWarnings("unchecked")
-            UnaryOperation<T>[] unaryOperationsArray = new UnaryOperation[0];
-            return unaryOperationsArray;
+            return newUnaryOperation();
         }
         @SuppressWarnings("unchecked")
         UnaryOperation<T>[] unaryOperationsArray = new UnaryOperation[operatorOperations.size()];
         return operatorOperations.toArray(unaryOperationsArray);
+    }
+
+    @SuppressWarnings("unchecked")
+    private UnaryOperation<T>[] newUnaryOperation() {
+        return new UnaryOperation[0];
     }
 
     /**
@@ -682,8 +686,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
             // exact match?
             if (operation2.getLhsDatatype().equals(lhsResult.getDatatype())
                     && operation2.getRhsDatatype().equals(rhsResult.getDatatype())) {
-                CompilationResult<T> compilationResult = operation2.generate(lhsResult, rhsResult);
-                return compilationResult;
+                return operation2.generate(lhsResult, rhsResult);
             }
             // match with implicit casting
             if (isConversionPossibleAndOperationIsNull(lhsResult, rhsResult, operation, operation2)) {
@@ -713,10 +716,9 @@ public abstract class ExprCompiler<T extends CodeFragment> {
                 convertedRhsResult = newCompilationResultImpl(convertedRhs, operation.getRhsDatatype());
                 convertedRhsResult.addMessages(rhsResult.getMessages());
             }
-            CompilationResult<T> result = operation.generate(convertedLhsResult, convertedRhsResult);
-            return result;
+            return operation.generate(convertedLhsResult, convertedRhsResult);
         }
-        Object[] replacements = new Object[] { operator,
+        Object[] replacements = { operator,
                 lhsResult.getDatatype().getName() + ", " + rhsResult.getDatatype().getName() }; //$NON-NLS-1$
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_OPERATOR, getLocale(),
                 replacements);

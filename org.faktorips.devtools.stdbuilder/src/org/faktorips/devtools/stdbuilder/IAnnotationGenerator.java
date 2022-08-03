@@ -23,11 +23,11 @@ public interface IAnnotationGenerator {
     /**
      * Creates the annotations for the given ipsElement.
      */
-    public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode);
+    JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode);
 
     /**
      * Returns <code>true</code> if annotations should be generated for the given IpsElement by this
      * generator. Returns <code>false</code> if no annotation should be added by this generator.
      */
-    public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode ipsElement);
+    boolean isGenerateAnnotationFor(AbstractGeneratorModelNode ipsElement);
 }

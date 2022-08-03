@@ -33,7 +33,7 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * 
      * @throws IpsException if an error occurs while checking.
      */
-    public boolean containsDifferenceToModel(IIpsProject ipsProject) throws IpsException;
+    boolean containsDifferenceToModel(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Fixes all differences between this element and its corresponding model element. In most cases
@@ -47,7 +47,7 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * 
      * @throws IpsException if an error occurs while fixing.
      */
-    public void fixAllDifferencesToModel(IIpsProject ipsProject) throws IpsException;
+    void fixAllDifferencesToModel(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the IPS source file this object is stored in. Duplicated here for cleaner
@@ -56,7 +56,7 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * @see org.faktorips.devtools.model.ipsobject.IIpsObject#getIpsSrcFile()
      */
     @Override
-    public IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
     /**
      * Returns the delta between this element and it's model type.
@@ -66,6 +66,6 @@ public interface IFixDifferencesToModelSupport extends IIpsObject {
      * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
+    IFixDifferencesComposite computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
 
 }

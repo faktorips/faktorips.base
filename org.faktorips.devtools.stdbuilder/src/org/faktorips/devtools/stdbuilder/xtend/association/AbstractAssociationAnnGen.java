@@ -80,7 +80,7 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
 
     /**
      * @return an annotation that annotates the name of the derived Union if the modelNode is a
-     *         subset of a derived union. Else null.
+     *             subset of a derived union. Else null.
      * @see IpsSubsetOfDerivedUnion
      */
     protected JavaCodeFragment createAnnSubsetOfDerivedUnion(XAssociation association) {
@@ -95,7 +95,7 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
 
     /**
      * @return an annotation that annotates the matching policy/product association. Null if the
-     *         association has no matching association.
+     *             association has no matching association.
      * @see IpsMatchingAssociation
      */
     protected JavaCodeFragment createAnnMatchingAssociation(XAssociation association) {

@@ -1023,6 +1023,7 @@ public class DefaultPolicyAttributeTest {
 
         @Override
         public void initialize() {
+            // nothing to do
         }
 
         @Override

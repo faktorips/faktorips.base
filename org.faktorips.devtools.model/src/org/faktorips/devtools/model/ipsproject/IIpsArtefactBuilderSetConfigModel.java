@@ -41,12 +41,12 @@ public interface IIpsArtefactBuilderSetConfigModel {
     /**
      * The XML tag name for instances of this type.
      */
-    public static final String XML_ELEMENT = "IpsArtefactBuilderSetConfig"; //$NON-NLS-1$
+    String XML_ELEMENT = "IpsArtefactBuilderSetConfig"; //$NON-NLS-1$
 
     /**
      * Returns the names of all properties provided by this configuration.
      */
-    public String[] getPropertyNames();
+    String[] getPropertyNames();
 
     /**
      * Returns the description of the property if specified.
@@ -54,14 +54,14 @@ public interface IIpsArtefactBuilderSetConfigModel {
      * @param propertyName the name for which the description is requested. Cannot be
      *            <code>null</code>
      * @return the description of the specified property or <code>null</code> if no description is
-     *         available
+     *             available
      */
-    public String getPropertyDescription(String propertyName);
+    String getPropertyDescription(String propertyName);
 
     /**
      * Returns the value of the property of the provided property name.
      */
-    public String getPropertyValue(String propertyName);
+    String getPropertyValue(String propertyName);
 
     /**
      * Sets the value of the property specified by the property name
@@ -70,19 +70,19 @@ public interface IIpsArtefactBuilderSetConfigModel {
      * @param value the value of the property. Cannot be <code>null</code>
      * @param description optional description of the property. Can be null
      */
-    public void setPropertyValue(String propertyName, String value, String description);
+    void setPropertyValue(String propertyName, String value, String description);
 
     /**
      * @param doc The document to create the element with.
      * @return The element containing all configuration data which can be parsed back to a new
-     *         configuration using initFromXml().
+     *             configuration using initFromXml().
      */
-    public Element toXml(Document doc);
+    Element toXml(Document doc);
 
     /**
      * @param config The configuration to be parsed.
      */
-    public void initFromXml(Element config);
+    void initFromXml(Element config);
 
     /**
      * Create a IIpsArtefactBuilderSetConfig that is provided to the IIpsArtefactBuilderSets init
@@ -91,12 +91,12 @@ public interface IIpsArtefactBuilderSetConfigModel {
      * @throws IllegalStateException if there are inconsistencies between the provided builder set
      *             info and this object
      */
-    public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo);
+    IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo);
 
     /**
      * Validates this configuration against the provided {@link IIpsArtefactBuilderSetInfo} object
      * and returns a validation message object if the validation fails otherwise <code>null</code>.
      */
-    public MessageList validate(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo);
+    MessageList validate(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo);
 
 }

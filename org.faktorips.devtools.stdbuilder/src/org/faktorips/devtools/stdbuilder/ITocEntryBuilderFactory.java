@@ -26,5 +26,5 @@ public interface ITocEntryBuilderFactory {
      * @param tocFileBuilder the TOC file builder a TOC entry builder is created for.
      * @return a new {@link ITocEntryBuilder} instance
      */
-    public ITocEntryBuilder createTocEntryBuilder(TocFileBuilder tocFileBuilder);
+    ITocEntryBuilder createTocEntryBuilder(TocFileBuilder tocFileBuilder);
 }

@@ -59,16 +59,19 @@ public class ModelService {
                 $ -> new LinkedHashSet<>());
         for (AbstractGeneratorModelNode generatorModelNode : nodes) {
             if (nodeClass.equals(generatorModelNode.getClass())) {
-                @SuppressWarnings("unchecked")
-                // valid cast because checked before
-                T castedGeneratorModelNode = (T)generatorModelNode;
-                return castedGeneratorModelNode;
+                return castGeneratorModelNode(generatorModelNode);
             }
         }
 
         T newModelNode = newModelNode(ipsObjectPartContainer, nodeClass, modelContext);
         nodes.add(newModelNode);
         return newModelNode;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends AbstractGeneratorModelNode> T castGeneratorModelNode(
+            AbstractGeneratorModelNode generatorModelNode) {
+        return (T)generatorModelNode;
     }
 
     private <T> T newModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
@@ -82,10 +85,7 @@ public class ModelService {
                     if (parameterTypes[0].isAssignableFrom(ipsObjectPartContainer.getClass())
                             && parameterTypes[1].isAssignableFrom(GeneratorModelContext.class)
                             && parameterTypes[2].isAssignableFrom(ModelService.class)) {
-                        @SuppressWarnings("unchecked")
-                        // safe cast, have a look at java doc of getConstructors()
-                        T newInstance = (T)constructor.newInstance(ipsObjectPartContainer, modelContext, this);
-                        return newInstance;
+                        return castModelNode(ipsObjectPartContainer, modelContext, constructor);
                     }
                 }
             }
@@ -95,13 +95,17 @@ public class ModelService {
                             + " and class "
                             + nodeClass
                             + ".\nNeed Constructor with following arguments: IIpsObjectPartContainer, GeneratorModelContext, ModelService ");
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T castModelNode(IIpsObjectPartContainer ipsObjectPartContainer,
+            GeneratorModelContext modelContext,
+            Constructor<?> constructor)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException {
+        return (T)constructor.newInstance(ipsObjectPartContainer, modelContext, this);
     }
 
     public Set<AbstractGeneratorModelNode> getAllModelNodes(IIpsObjectPartContainer ipsObjectPartContainer) {

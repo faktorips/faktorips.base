@@ -32,17 +32,17 @@ public interface IIpsPackageFragment extends IIpsElement {
      * Constant that represents the name of the default package to make it explicit that the default
      * package name is an empty string.
      */
-    static final String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
+    String NAME_OF_THE_DEFAULT_PACKAGE = ""; //$NON-NLS-1$
 
     /**
      * The char used as separator for sub packages.
      */
-    static final char SEPARATOR = '.';
+    char SEPARATOR = '.';
 
     /**
      * The name of the sort order file.
      */
-    static final String SORT_ORDER_FILE_NAME = ".sortorder"; //$NON-NLS-1$
+    String SORT_ORDER_FILE_NAME = ".sortorder"; //$NON-NLS-1$
 
     /**
      * Returns all IPS source files in the package. Returns an empty array if the package is empty.
@@ -194,7 +194,7 @@ public interface IIpsPackageFragment extends IIpsElement {
      * 
      * @param subPackageFragmentName The last segment of the name of the sub package fragment
      * @return The {@link IIpsPackageFragment} that is located under this package and have the
-     *         specified name segment appended.
+     *             specified name segment appended.
      */
     IIpsPackageFragment getSubPackage(String subPackageFragmentName);
 

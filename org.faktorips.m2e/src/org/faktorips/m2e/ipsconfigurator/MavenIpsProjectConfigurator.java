@@ -276,7 +276,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Updates an existing POM file.
      * 
      * @implNote Only using the setter for the model within the Maven project is not enough since it
-     *           does not update the POM file itself.
+     *               does not update the POM file itself.
      * 
      * @param mavenModel The model to be written to the POM file
      * @throws IpsException If updating the POM file failed

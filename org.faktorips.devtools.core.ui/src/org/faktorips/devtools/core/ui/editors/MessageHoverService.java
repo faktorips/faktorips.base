@@ -70,8 +70,8 @@ public abstract class MessageHoverService {
      * @param point The position on the screen the bounds for the representation of the user-data is
      *            requested.
      * @return The bounds for the representation of the user-data (first column if columns are
-     *         supported by the control) or <code>null</code> if no user-data is found at the given
-     *         position.
+     *             supported by the control) or <code>null</code> if no user-data is found at the
+     *             given position.
      */
     protected abstract Rectangle getBoundsAt(Point point);
 
@@ -199,7 +199,7 @@ public abstract class MessageHoverService {
         }
 
         private void createHover(final Shell shell) {
-            this.parentShell = shell;
+            parentShell = shell;
             final Display display = shell.getDisplay();
             fHoverShell = new Shell(shell, SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_FOCUS);
             fHoverShell.setForeground(display.getSystemColor(SWT.COLOR_INFO_FOREGROUND));

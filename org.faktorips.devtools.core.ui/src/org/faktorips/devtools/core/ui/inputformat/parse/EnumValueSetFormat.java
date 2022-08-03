@@ -70,15 +70,13 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         String[] split = stringToBeparsed.split(Pattern.quote(EnumValueSet.ENUM_VALUESET_SEPARATOR));
         List<String> parsedValues = parseValues(split);
         if (!isEqualContent(parsedValues)) {
-            EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
-            return enumValueSet;
+            return createNewEnumValueSet(parsedValues);
         }
         return getValueSet();
     }
 
     private EnumValueSet createNewEnumValueSet(List<String> values) {
-        EnumValueSet valueSet = new EnumValueSet(getValueSetOwner(), values, getNextPartId());
-        return valueSet;
+        return new EnumValueSet(getValueSetOwner(), values, getNextPartId());
     }
 
     private boolean isEqualContent(List<String> parsedValues) {

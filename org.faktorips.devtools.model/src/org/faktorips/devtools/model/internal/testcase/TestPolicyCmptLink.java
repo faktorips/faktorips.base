@@ -115,8 +115,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     @Override
     public ITestPolicyCmpt newTargetTestPolicyCmptChild() {
-        ITestPolicyCmpt param = newTargetTestPolicyCmptChildInternal(getNextPartId());
-        return param;
+        return newTargetTestPolicyCmptChildInternal(getNextPartId());
     }
 
     /**

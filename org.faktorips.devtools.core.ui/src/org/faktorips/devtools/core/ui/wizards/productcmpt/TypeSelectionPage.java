@@ -120,8 +120,7 @@ public class TypeSelectionPage extends WizardPage {
 
         @Override
         protected MessageList validatePage() {
-            MessageList messageList = getPmo().getValidator().validateTypeSelection();
-            return messageList;
+            return getPmo().getValidator().validateTypeSelection();
         }
 
     }

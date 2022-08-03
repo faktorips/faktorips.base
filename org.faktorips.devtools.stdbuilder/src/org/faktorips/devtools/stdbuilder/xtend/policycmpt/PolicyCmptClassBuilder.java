@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 
 import java.util.Set;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptTmpl;
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
 

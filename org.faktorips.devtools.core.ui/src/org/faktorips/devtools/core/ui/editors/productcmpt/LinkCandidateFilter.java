@@ -138,16 +138,8 @@ public class LinkCandidateFilter {
     }
 
     public boolean filter(IIpsSrcFile srcFile) {
-        if (!canAnyLinkBeAdded) {
-            return false;
-        }
-        if (!srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
-            return false;
-        }
-        if (isOutsideReferencedProjects(srcFile)) {
-            return false;
-        }
-        if (isWrongType(srcFile)) {
+        if (!canAnyLinkBeAdded || !srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)
+                || isOutsideReferencedProjects(srcFile) || isWrongType(srcFile)) {
             return false;
         }
         if (isAlreadyLinked(srcFile)) {

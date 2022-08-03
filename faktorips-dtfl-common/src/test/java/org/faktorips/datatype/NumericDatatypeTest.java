@@ -28,7 +28,7 @@ import org.junit.Test;
  */
 public class NumericDatatypeTest {
 
-    private class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> {
+    private static class TestDatatypeWithDecinalPlaces<T extends NumericDatatype> {
 
         private T datatype;
 

@@ -35,10 +35,10 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
     public static final String VARNAME_RUNTIME_JAVA5_BIN = "FAKTORIPS_RUNTIME_JAVA5"; //$NON-NLS-1$
     public static final String VARNAME_RUNTIME_JAVA5_SRC = "FAKTORIPS_RUNTIME_JAVA5_SRC"; //$NON-NLS-1$
 
-    public static final String[] IPS_VARIABLES_JAVA5_BIN = new String[] { VARNAME_VALUETYPES_JAVA5_BIN,
+    public static final String[] IPS_VARIABLES_JAVA5_BIN = { VARNAME_VALUETYPES_JAVA5_BIN,
             VARNAME_RUNTIME_JAVA5_BIN };
 
-    public static final String[] IPS_VARIABLES_JAVA5_SRC = new String[] { VARNAME_VALUETYPES_JAVA5_SRC,
+    public static final String[] IPS_VARIABLES_JAVA5_SRC = { VARNAME_VALUETYPES_JAVA5_SRC,
             VARNAME_RUNTIME_JAVA5_SRC };
 
     private final HashMap<String, Mapping> varMapping = new HashMap<>();

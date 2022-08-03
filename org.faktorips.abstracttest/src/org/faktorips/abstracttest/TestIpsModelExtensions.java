@@ -38,14 +38,14 @@ public interface TestIpsModelExtensions extends IIpsModelExtensions, AutoCloseab
         }
     }
 
-    public static TestIpsModelExtensions using(IIpsModelPreferences modelPreferences) {
+    static TestIpsModelExtensions using(IIpsModelPreferences modelPreferences) {
         TestIpsModelExtensions ipsModelExtensions = get();
         ipsModelExtensions.setModelPreferences(modelPreferences);
         return ipsModelExtensions;
     }
 
     @Override
-    public void close();
+    void close();
 
     /**
      * Sets the deep-copy-operation-fix-ups. This method overwrites all fix-ups registered via

@@ -16,7 +16,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
@@ -88,8 +87,7 @@ public abstract class AbstractDateTimeControl extends TextButtonControl {
 
     @Override
     protected Control createSecondControl(UIToolkit toolkit) {
-        Button toggleButton = toolkit.createToggleButton(this, ""); //$NON-NLS-1$
-        return toggleButton;
+        return toolkit.createToggleButton(this, "");
     }
 
     protected void closeCalendarShell(Shell calendarShell) {

@@ -43,7 +43,7 @@ public class IpsTestRunnerDelegate extends LaunchConfigurationDelegate {
 
     static {
         TRACE_IPS_TEST_RUNNER = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")); //$NON-NLS-1$
     }
 
     @Override

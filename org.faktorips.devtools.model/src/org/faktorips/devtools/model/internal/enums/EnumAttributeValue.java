@@ -198,7 +198,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
     @Override
     public IValue<?> getValue() {
-        return this.value;
+        return value;
     }
 
     @Override
@@ -375,7 +375,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
          * Validates if {@link #canValidate()} returns <code>true</code>. Does nothing otherwise.
          * 
          * @return the message list containing the validation messages. Contains no messages if no
-         *         problems were detected.
+         *             problems were detected.
          */
         public MessageList validateIfPossible() {
             MessageList messageList = new MessageList();
@@ -387,9 +387,9 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
 
         /**
          * @return <code>true</code> if this validator has been given sufficient information to be
-         *         able to validate and if at the same time the meta-model is error free enough.
-         *         Returns <code>false</code> if the meta-model has inconsistencies that prevent
-         *         this validation or not all required information has been given.
+         *             able to validate and if at the same time the meta-model is error free enough.
+         *             Returns <code>false</code> if the meta-model has inconsistencies that prevent
+         *             this validation or not all required information has been given.
          */
         public boolean canValidate() {
             return isValidateNecessary() && isIdentifierValue() && isIDValueParsable() && isBoundaryValueParsable();

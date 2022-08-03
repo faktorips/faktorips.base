@@ -34,9 +34,8 @@ public class MonthDayISOStringFormat extends AbstractInputFormat<String> {
     }
 
     public static MonthDayISOStringFormat newInstance() {
-        MonthDayISOStringFormat instance = new MonthDayISOStringFormat(StringUtils.EMPTY, IpsPlugin.getDefault()
+        return new MonthDayISOStringFormat(StringUtils.EMPTY, IpsPlugin.getDefault()
                 .getIpsPreferences().getDatatypeFormattingLocale());
-        return instance;
     }
 
     @Override
@@ -44,9 +43,7 @@ public class MonthDayISOStringFormat extends AbstractInputFormat<String> {
         try {
             Date date = localFormat.parse(stringToBeParsed);
             return isoMonthDayFormat.format(date);
-        } catch (IllegalArgumentException e) {
-            return stringToBeParsed;
-        } catch (ParseException e) {
+        } catch (IllegalArgumentException | ParseException e) {
             return stringToBeParsed;
         }
     }

@@ -39,7 +39,7 @@ public class ProductCmptLinkHistogramsTest {
 
     private final Cardinality c010 = new Cardinality(0, 1, 0);
     private final Cardinality c111 = new Cardinality(1, 1, 1);
-    private final IProductCmptLink[] NO_LINKS = new IProductCmptLink[0];
+    private final IProductCmptLink[] NO_LINKS = {};
 
     @Test
     public void testCreateFor_NoLinks() {

@@ -29,7 +29,7 @@ public interface IIpsElementDecorator {
      * {@link ImageDescriptor#getMissingImageDescriptor()} and uses the
      * {@link IIpsElement#getName()} as a label.
      */
-    public static final IIpsElementDecorator MISSING_ICON_PROVIDER = $ -> ImageDescriptor.getMissingImageDescriptor();
+    IIpsElementDecorator MISSING_ICON_PROVIDER = $ -> ImageDescriptor.getMissingImageDescriptor();
 
     /**
      * Returns the {@link ImageDescriptor} for the given {@link IIpsElement}.
@@ -48,7 +48,7 @@ public interface IIpsElementDecorator {
      * Returns the label for the given {@link IIpsElement}.
      *
      * @implSpec This should be a (localized) name for the element, optionally with some added
-     *           identifying information like a datatype.
+     *               identifying information like a datatype.
      */
     default String getLabel(IIpsElement ipsElement) {
         return ipsElement == null ? IpsStringUtils.EMPTY : ipsElement.getName();

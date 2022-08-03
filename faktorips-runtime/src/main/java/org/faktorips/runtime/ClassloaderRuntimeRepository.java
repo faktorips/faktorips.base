@@ -123,13 +123,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc,
             ICacheFactory cacheFactory) {
         super(basePackage, cacheFactory, cl);
-        if (cl == null) {
-            throw new NullPointerException();
-        }
-        if (basePackage == null) {
-            throw new NullPointerException();
-        }
-        if (pathToToc == null) {
+        if ((cl == null) || (basePackage == null) || (pathToToc == null)) {
             throw new NullPointerException();
         }
         if ("".equals(basePackage)) {
@@ -153,10 +147,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      */
     private ClassloaderRuntimeRepository(String tocResource, ClassLoader cl, ICacheFactory cacheFactory) {
         super(tocResource, cacheFactory, cl);
-        if (tocResource == null) {
-            throw new NullPointerException();
-        }
-        if (cl == null) {
+        if ((tocResource == null) || (cl == null)) {
             throw new NullPointerException();
         }
         tocResourcePath = tocResource;

@@ -107,8 +107,7 @@ public class ProductVariantRuntimeHelper {
 
     public ProductComponent getOriginalProdCmpt(IRuntimeRepository runtimeRepository, Element element) {
         String originalRuntimeID = element.getAttribute(ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT);
-        ProductComponent originalCmpt = (ProductComponent)runtimeRepository.getProductComponent(originalRuntimeID);
-        return originalCmpt;
+        return (ProductComponent)runtimeRepository.getProductComponent(originalRuntimeID);
     }
 
     public boolean isProductVariantXML(Element productVariantElement) {

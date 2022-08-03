@@ -85,7 +85,7 @@ public class QualifierNodeGeneratorTest {
         when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(association.getTarget()).thenReturn("Deckung");
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
+        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
         when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
         when(sourceFile.getIpsObjectName()).thenReturn(qualifier);
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);

@@ -123,10 +123,8 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
 
     private boolean isRelatedFile(IResource resource) {
         IFile file = (IFile)resource;
-        if (getFileExtensionsOfInterest().contains(file.getFileExtension())) {
-            return true;
-        }
-        if (IpsBundleManifest.MANIFEST_NAME.equals(file.getProjectRelativePath().toString())) {
+        if (getFileExtensionsOfInterest().contains(file.getFileExtension())
+                || IpsBundleManifest.MANIFEST_NAME.equals(file.getProjectRelativePath().toString())) {
             return true;
         }
         return false;

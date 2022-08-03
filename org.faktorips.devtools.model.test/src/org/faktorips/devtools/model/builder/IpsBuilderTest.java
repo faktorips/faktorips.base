@@ -723,7 +723,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             builderSetProjectC.setIpsProject(projectC);
             builderSetProjectC.setAggregateRootBuilder(false);
 
-            IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = {
                     new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
                             new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
                                     builderSetProjectC }) };
@@ -851,7 +851,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
             builderSetProjectC.setIpsProject(projectC);
             builderSetProjectC.setAggregateRootBuilder(false);
 
-            IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+            IIpsArtefactBuilderSetInfo[] builderSetInfos = {
                     new TestArtefactBuilderSetInfo(TestIpsArtefactBuilderSet.ID,
                             new IIpsArtefactBuilderSet[] { builderSetProjectA, builderSetProjectB,
                                     builderSetProjectC }) };
@@ -930,7 +930,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(project);
         builderSet.setAggregateRootBuilder(isAggregateRootBuilderSet);
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = {
                 new TestArtefactBuilderSetInfo(builderSet) };
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
         return builder;
@@ -980,7 +980,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         project.setProperties(props);
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(project);
-        IIpsArtefactBuilderSetInfo[] builderSetInfos = new IIpsArtefactBuilderSetInfo[] {
+        IIpsArtefactBuilderSetInfo[] builderSetInfos = {
                 new TestArtefactBuilderSetInfo(builderSet) };
         ((IpsModel)project.getIpsModel()).setIpsArtefactBuilderSetInfos(builderSetInfos);
     }

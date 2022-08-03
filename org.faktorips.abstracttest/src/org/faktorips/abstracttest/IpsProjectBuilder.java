@@ -65,7 +65,7 @@ public class IpsProjectBuilder {
         this.ipsPluginTest = ipsPluginTest;
 
         // Default name
-        this.name = UUID.randomUUID().toString();
+        name = UUID.randomUUID().toString();
     }
 
     public IpsProjectBuilder name(String name) {

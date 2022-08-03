@@ -42,7 +42,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public abstract class DeferredStructuredContentProvider implements IStructuredContentProvider {
 
-    private static final Object[] EMPTY_ARRAY = new Object[0];
+    private static final Object[] EMPTY_ARRAY = {};
 
     /** the elements collected by the job */
     private volatile Object[] elements;

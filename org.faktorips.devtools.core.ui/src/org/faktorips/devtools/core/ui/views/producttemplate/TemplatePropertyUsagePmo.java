@@ -122,9 +122,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         if (count == 0) {
             return BigDecimal.ZERO;
         } else {
-            BigDecimal inheritedPercent = new BigDecimal(inheritedCount).multiply(new BigDecimal(100))
+            return new BigDecimal(inheritedCount).multiply(new BigDecimal(100))
                     .divide(new BigDecimal(count), 1, RoundingMode.HALF_UP);
-            return inheritedPercent;
         }
     }
 

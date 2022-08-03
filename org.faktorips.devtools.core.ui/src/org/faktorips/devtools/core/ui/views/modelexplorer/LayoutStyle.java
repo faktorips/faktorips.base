@@ -50,7 +50,7 @@ public enum LayoutStyle {
     // for historical reason: 0 is hierarchical, and flat is 1.
     private int id;
 
-    private LayoutStyle(int id) {
+    LayoutStyle(int id) {
         this.id = id;
     }
 

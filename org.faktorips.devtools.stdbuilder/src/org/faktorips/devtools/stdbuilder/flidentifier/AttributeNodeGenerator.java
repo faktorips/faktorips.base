@@ -117,8 +117,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
     private Datatype getBasicDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {
         ListOfTypeDatatype contextListofTypeDatatype = (ListOfTypeDatatype)contextCompilationResult.getDatatype();
-        Datatype conextDatatype = contextListofTypeDatatype.getBasicDatatype();
-        return conextDatatype;
+        return contextListofTypeDatatype.getBasicDatatype();
     }
 
     private JavaCodeFragment createCodeFragment(final String parameterAttributGetterName,
@@ -130,11 +129,10 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     protected String getAttributeGetterName(final AttributeNode node, Datatype contextDatatype) {
-        String parameterAttributGetterName = node.isDefaultValueAccess()
+        return node.isDefaultValueAccess()
                 ? getParameterAttributDefaultValueGetterName(node
                         .getAttribute())
                 : getParameterAttributGetterName(node, contextDatatype);
-        return parameterAttributGetterName;
     }
 
     private String getParameterAttributGetterName(final AttributeNode node, Datatype contextDatatype) {

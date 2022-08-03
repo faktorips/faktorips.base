@@ -162,10 +162,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (!(datatype instanceof NumericDatatype)) {
-            return false;
-        }
-        if (!isValid(ipsProject)) {
+        if (!(datatype instanceof NumericDatatype) || !isValid(ipsProject)) {
             return false;
         }
         return checkValueInRange(value, datatype);
@@ -222,10 +219,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
         ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
-        if (!Objects.equals(datatype, subDatatype)) {
-            return false;
-        }
-        if (!checkValidRanges(subset, contextProject)) {
+        if (!Objects.equals(datatype, subDatatype) || !checkValidRanges(subset, contextProject)) {
             return false;
         }
 
@@ -237,10 +231,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
-        if (!isValid(contextProject)) {
-            return false;
-        }
-        if (!(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
+        if (!isValid(contextProject) || !(subset.isRange() || subset.isEnum()) || !subset.isValid(contextProject)) {
             return false;
         }
         return true;
@@ -262,10 +253,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (subRange.isEmpty()) {
             return true;
         }
-        if (isEmpty()) {
-            return false;
-        }
-        if (!isContainsNull() && subRange.isContainsNull()) {
+        if (isEmpty() || (!isContainsNull() && subRange.isContainsNull())) {
             return false;
         }
         if (isAbstract()) {
@@ -324,11 +312,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (isNullValue(datatype, step)) {
             // every valid sub-step is allowed
             return true;
-        } else if (isNullValue(datatype, subStep)) {
+        } else if (isNullValue(datatype, subStep) || !datatype.divisibleWithoutRemainder(subStep, step)) {
             // null is no valid sub-step because this step is not null
-            return false;
-        } else if (!datatype.divisibleWithoutRemainder(subStep, step)) {
-            // sub-step must be divisor of step
             return false;
         } else {
             return isSubBoundsMatchingStep(other, datatype);
@@ -374,7 +359,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     public int compareTo(IValueSet o) {
         if (o.isRange()) {
             IRangeValueSet otherRangeValueSet = (IRangeValueSet)o;
-            boolean thisContainsOther = this.containsValueSet(o);
+            boolean thisContainsOther = containsValueSet(o);
             boolean otherContainsThis = o.containsValueSet(this);
             if (thisContainsOther && otherContainsThis) {
                 return 0;
@@ -516,7 +501,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean old = this.isContainsNull();
+        boolean old = isContainsNull();
         this.containsNull = containsNull;
         valueChanged(old, containsNull, PROPERTY_CONTAINS_NULL);
     }

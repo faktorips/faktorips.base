@@ -63,7 +63,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     protected Ordering<TemplateUsageViewItem> getOrdering(ImmutableList<TemplateUsageViewItem> elements) {
         final Ordering<TemplateUsageViewItem> secOrder = Ordering.explicit(elements);
 
-        Ordering<TemplateUsageViewItem> order = Ordering.from((o1, o2) -> {
+        return Ordering.from((o1, o2) -> {
             if (o1.isSameValueAsTemplateValue()) {
                 return -1;
             } else if (o2.isSameValueAsTemplateValue()) {
@@ -76,7 +76,6 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 return secOrder.compare(o1, o2);
             }
         });
-        return order;
     }
 
     @Override

@@ -949,7 +949,7 @@ public class IpsBuildMojo extends AbstractMojo {
                             "<localRepository>" + localRepository + "<\\/localRepository>");
                 } else {
                     userSettings = userSettings.replaceAll("<settings>", "<settings>"
-                            + System.getProperty("line.separator")
+                            + System.lineSeparator()
                             + "<localRepository>" + localRepository + "<\\/localRepository>");
                 }
 

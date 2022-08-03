@@ -31,11 +31,11 @@ public class DefaultObjectReferenceStoreTest {
     }
 
     interface IMyInterface {
-
+        // an interface
     }
 
     class MyImplementation implements IMyInterface {
-
+        // an implementation
     }
 
 }

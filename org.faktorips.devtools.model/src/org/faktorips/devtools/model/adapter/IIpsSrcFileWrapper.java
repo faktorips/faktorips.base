@@ -27,6 +27,6 @@ public interface IIpsSrcFileWrapper extends IAdaptable {
      * 
      * @return the wrapped {@link IIpsSrcFile}
      */
-    public IIpsSrcFile getWrappedIpsSrcFile();
+    IIpsSrcFile getWrappedIpsSrcFile();
 
 }

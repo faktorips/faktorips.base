@@ -120,9 +120,8 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     protected void addStructureData() {
         super.addStructureData();
 
-        IPolicyCmptType to = null;
-        to = getDocumentedIpsObject().getIpsProject().findPolicyCmptType(getDocumentedIpsObject().getPolicyCmptType());
-
+        IPolicyCmptType to = getDocumentedIpsObject().getIpsProject()
+                .findPolicyCmptType(getDocumentedIpsObject().getPolicyCmptType());
         if (to == null) {
             addPageElements(TextPageElement
                     .createParagraph(

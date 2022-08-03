@@ -53,10 +53,8 @@ public class ContentPageUtil {
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
             return new ProductCmptTypeContentPageElement((IProductCmptType)ipsSrcFile, context);
         }
-        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {
-            return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, context);
-        }
-        if (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_TEMPLATE) {
+        if ((ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT)
+                || (ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_TEMPLATE)) {
             return new ProductCmptContentPageElement((IProductCmpt)ipsSrcFile, context);
         }
         if (ipsSrcFile.getIpsObjectType() == IpsObjectType.ENUM_TYPE) {

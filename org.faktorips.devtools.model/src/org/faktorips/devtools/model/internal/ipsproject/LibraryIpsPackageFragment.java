@@ -165,8 +165,7 @@ public class LibraryIpsPackageFragment extends AbstractIpsPackageFragment implem
         if (archive == null) {
             return Collections.emptySet();
         }
-        Set<QualifiedNameType> set = archive.getQNameTypes(getName());
-        return set;
+        return archive.getQNameTypes(getName());
     }
 
     @Override

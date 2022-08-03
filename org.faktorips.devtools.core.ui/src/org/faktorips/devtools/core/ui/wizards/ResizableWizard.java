@@ -45,7 +45,7 @@ public abstract class ResizableWizard extends Wizard {
 
     protected ResizableWizard(String dialogId, IDialogSettings settings, int defaultWidth, int defaultHeight) {
         this.defaultWidth = defaultWidth;
-        this.defaultHight = defaultHeight;
+        defaultHight = defaultHeight;
         this.dialogId = dialogId;
         setDialogSettings(settings);
     }

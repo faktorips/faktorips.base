@@ -17,6 +17,6 @@ public interface IMatcher<T> {
      * Returns true, if the given element fits the matching.
      * 
      */
-    public boolean isMatching(T element);
+    boolean isMatching(T element);
 
 }

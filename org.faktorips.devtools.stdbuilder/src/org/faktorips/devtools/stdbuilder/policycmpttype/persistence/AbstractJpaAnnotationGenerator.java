@@ -32,8 +32,7 @@ public abstract class AbstractJpaAnnotationGenerator extends AbstractAnnotationG
 
     protected IPersistenceProvider getPersistenceProvider(IIpsProject ipsProject) {
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
-        IPersistenceProvider persistenceProviderImpl = ipsArtefactBuilderSet.getPersistenceProvider();
-        return persistenceProviderImpl;
+        return ipsArtefactBuilderSet.getPersistenceProvider();
     }
 
     protected abstract boolean isGenerateAnnotationForInternal(IIpsElement ipsElement);

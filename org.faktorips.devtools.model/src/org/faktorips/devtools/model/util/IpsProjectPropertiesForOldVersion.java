@@ -72,7 +72,7 @@ public class IpsProjectPropertiesForOldVersion {
         });
     }
 
-    private class PropertiesHolder<T> {
+    private static class PropertiesHolder<T> {
         private final BiConsumer<IpsProjectProperties, T> setter;
         private final T newValue;
         private boolean found;

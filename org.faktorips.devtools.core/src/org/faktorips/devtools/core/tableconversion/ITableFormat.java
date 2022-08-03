@@ -28,7 +28,7 @@ public interface ITableFormat {
     /**
      * Returns the human readable name of this external table format.
      */
-    public String getName();
+    String getName();
 
     /**
      * Set the (human readable) name of this external table format. This name might be used to
@@ -36,7 +36,7 @@ public interface ITableFormat {
      * 
      * @param name The name to use.
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Set the default extension to use if a proposal for the name of the file to export ist
@@ -45,18 +45,18 @@ public interface ITableFormat {
      * 
      * @param extension The new default-extension.
      */
-    public void setDefaultExtension(String extension);
+    void setDefaultExtension(String extension);
 
     /**
      * Returns the default extension used for the proposal of a filename as export-target.
      */
-    public String getDefaultExtension();
+    String getDefaultExtension();
 
     /**
      * Returns the default extension prepended with an asterisk used for filtering files with the
      * given default extension.
      */
-    public String getDefaultExtensionWildcard();
+    String getDefaultExtensionWildcard();
 
     /**
      * Adds a converter to transform external values to internal values (and vice versa). This
@@ -65,7 +65,7 @@ public interface ITableFormat {
      * 
      * @param converter The additional converter.
      */
-    public void addValueConverter(IValueConverter converter);
+    void addValueConverter(IValueConverter converter);
 
     /**
      * Returns a string representing the given external value which can be parsed by the given data
@@ -77,7 +77,7 @@ public interface ITableFormat {
      *            the user. If this list does not contains an error-message before you call this
      *            method and do contain an error-message after the call, the conversion failed.
      */
-    public String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList);
+    String getIpsValue(Object externalValue, Datatype datatype, MessageList messageList);
 
     /**
      * Returns the external representation for the given string respecting the given data type.
@@ -88,7 +88,7 @@ public interface ITableFormat {
      *            the user. If this list does not contains an error-message before you call this
      *            method and do contain an error-message after the call, the conversion failed.
      */
-    public Object getExternalValue(String ipsValue, Datatype datatype, MessageList messageList);
+    Object getExternalValue(String ipsValue, Datatype datatype, MessageList messageList);
 
     /**
      * Returns <code>true</code> if the export operation was successful, <code>false</code>
@@ -106,7 +106,7 @@ public interface ITableFormat {
      *            messages of severity ERROR are contained in this list, the export is considered
      *            successful.
      */
-    public boolean executeTableExport(ITableContents contents,
+    boolean executeTableExport(ITableContents contents,
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
@@ -133,7 +133,7 @@ public interface ITableFormat {
      *             it using an <code>CSVTableFormat</code> instead of <code>ExcelTableformat</code>.
      * 
      */
-    public void executeTableImport(ITableStructure structure,
+    void executeTableImport(ITableStructure structure,
             IPath filename,
             ITableRows targetGeneration,
             String nullRepresentationString,
@@ -170,7 +170,7 @@ public interface ITableFormat {
      * @see IEnumType
      * @see IEnumContent
      */
-    public void executeEnumImport(IEnumValueContainer valueContainer,
+    void executeEnumImport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
@@ -200,7 +200,7 @@ public interface ITableFormat {
      * @see IEnumType
      * @see IEnumContent
      */
-    public boolean executeEnumExport(IEnumValueContainer valueContainer,
+    boolean executeEnumExport(IEnumValueContainer valueContainer,
             IPath filename,
             String nullRepresentationString,
             boolean exportColumnHeaderRow,
@@ -213,7 +213,7 @@ public interface ITableFormat {
      * @param source The identification of the resource to check (for example, a qualified
      *            filename).
      */
-    public boolean isValidImportSource(String source);
+    boolean isValidImportSource(String source);
 
     /**
      * Retrieves a table format specific property using the given property name. Returns the
@@ -223,7 +223,7 @@ public interface ITableFormat {
      * 
      * @throws NullPointerException if the given <code>propertyName</code> is <code>null</code>.
      */
-    public String getProperty(String propertyName);
+    String getProperty(String propertyName);
 
     /**
      * Changes a property or defines a new property for this table format.
@@ -231,7 +231,7 @@ public interface ITableFormat {
      * @param propertyName The name of the property to be set/changed.
      * @param propertyValue The value to set for the given <code>propertyName</code>.
      */
-    public void setProperty(String propertyName, String propertyValue);
+    void setProperty(String propertyName, String propertyValue);
 
     /**
      * Computes a preview for the table to be imported.
@@ -245,10 +245,10 @@ public interface ITableFormat {
      * @param nullRepresentationString The string to use to replace <code>null</code>.
      * 
      * @return A <code>List</code> containing a <code>String[]</code> for each row, or
-     *         <code>Collections.EMPTY_LIST</code> if the preview could not be computed or the file
-     *         contains no entries.
+     *             <code>Collections.EMPTY_LIST</code> if the preview could not be computed or the
+     *             file contains no entries.
      */
-    public List<String[]> getImportTablePreview(ITableStructure structure,
+    List<String[]> getImportTablePreview(ITableStructure structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,
@@ -267,7 +267,7 @@ public interface ITableFormat {
      *            column header row.
      * @param nullRepresentationString The string to use to replace <code>null</code>.
      */
-    public List<String[]> getImportEnumPreview(IEnumType structure,
+    List<String[]> getImportEnumPreview(IEnumType structure,
             IPath filename,
             int maxNumberOfRows,
             boolean ignoreColumnHeaderRow,

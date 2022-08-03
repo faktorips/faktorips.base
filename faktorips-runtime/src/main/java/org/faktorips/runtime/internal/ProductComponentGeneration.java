@@ -51,8 +51,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
-        this.formulaHandler = new FormulaHandler(this, getRepository());
-        this.validationRules = new ValidationRules(this);
+        formulaHandler = new FormulaHandler(this, getRepository());
+        validationRules = new ValidationRules(this);
     }
 
     @Override
@@ -215,8 +215,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject
 
     protected NodeList getEnumNodeList(Element configElement) {
         Element enumElement = getEnumElement(configElement);
-        NodeList nl = enumElement.getElementsByTagName(ValueToXmlHelper.XML_TAG_VALUE);
-        return nl;
+        return enumElement.getElementsByTagName(ValueToXmlHelper.XML_TAG_VALUE);
     }
 
     private Element getEnumElement(Element configElement) {

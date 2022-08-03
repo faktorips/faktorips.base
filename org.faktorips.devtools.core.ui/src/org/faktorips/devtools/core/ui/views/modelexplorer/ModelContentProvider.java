@@ -55,7 +55,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ModelContentProvider implements ITreeContentProvider {
 
-    protected static final Object[] EMPTY_ARRAY = new Object[0];
+    protected static final Object[] EMPTY_ARRAY = {};
 
     private LayoutStyle layoutStyle;
 
@@ -92,10 +92,7 @@ public class ModelContentProvider implements ITreeContentProvider {
     // CSOFF: CyclomaticComplexity
     protected Object[] getUnfilteredChildren(Object parentElement) {
         if (parentElement instanceof IIpsElement) {
-            if (parentElement instanceof IPolicyCmptTypeAttribute) {
-                return EMPTY_ARRAY;
-            }
-            if (parentElement instanceof IEnumAttribute) {
+            if ((parentElement instanceof IPolicyCmptTypeAttribute) || (parentElement instanceof IEnumAttribute)) {
                 return EMPTY_ARRAY;
             }
 
@@ -118,7 +115,6 @@ public class ModelContentProvider implements ITreeContentProvider {
                 }
             } catch (IpsException e) {
                 IpsPlugin.log(e);
-                return EMPTY_ARRAY;
             }
         } else if (parentElement instanceof AResource) {
             return getUnfilteredChildren(((AResource)parentElement).unwrap());
@@ -140,7 +136,6 @@ public class ModelContentProvider implements ITreeContentProvider {
                 return ipsObjectPathContainerChildrenProvider.getChildren((IIpsObjectPathContainer)parentElement);
             } catch (IpsException e) {
                 IpsPlugin.log(e);
-                return EMPTY_ARRAY;
             }
         }
 
@@ -181,10 +176,7 @@ public class ModelContentProvider implements ITreeContentProvider {
 
             IProject project = folder.getProject();
             IResource[] children = folder.members();
-            if (project == null) {
-                return EMPTY_ARRAY;
-            }
-            if (!project.hasNature(JavaCore.NATURE_ID)) {
+            if ((project == null) || !project.hasNature(JavaCore.NATURE_ID)) {
                 return EMPTY_ARRAY;
             }
             IJavaProject javaProject = JavaCore.create(project);
@@ -202,10 +194,6 @@ public class ModelContentProvider implements ITreeContentProvider {
             }
 
             return childResources.toArray(new IResource[childResources.size()]);
-
-        } catch (JavaModelException e) {
-            IpsPlugin.log(e);
-            return EMPTY_ARRAY;
 
         } catch (CoreException e) {
             IpsPlugin.log(e);
@@ -250,10 +238,7 @@ public class ModelContentProvider implements ITreeContentProvider {
      * project's classpath entries. False otherwise.
      */
     public boolean isJavaResource(IJavaProject jProject, IResource resource) {
-        if (isJavaOutput(jProject, resource)) {
-            return true;
-        }
-        if (jProject.isOnClasspath(resource)) {
+        if (isJavaOutput(jProject, resource) || jProject.isOnClasspath(resource)) {
             return true;
         }
         return false;
@@ -390,20 +375,21 @@ public class ModelContentProvider implements ITreeContentProvider {
         List<Object> filtered = new ArrayList<>();
 
         for (Object element : elements) {
-            if (element instanceof AAbstraction) {
-                element = ((AAbstraction)element).unwrap();
+            Object actualElement = element;
+            if (actualElement instanceof AAbstraction) {
+                actualElement = ((AAbstraction)actualElement).unwrap();
             }
 
-            if (element instanceof IIpsElement) {
-                if (configuration.isAllowedIpsElement((IIpsElement)element)) {
-                    filtered.add(element);
+            if (actualElement instanceof IIpsElement) {
+                if (configuration.isAllowedIpsElement((IIpsElement)actualElement)) {
+                    filtered.add(actualElement);
                 }
-            } else if (element instanceof IResource) {
-                IResource resource = (IResource)element;
+            } else if (actualElement instanceof IResource) {
+                IResource resource = (IResource)actualElement;
 
                 // filter out hidden files and folders, except the ".ipsproject"-file and
                 // ".sortorder"-file
-                if (resource instanceof IFile | resource instanceof IFolder) {
+                if (resource instanceof IFile || resource instanceof IFolder) {
                     if (resource.getName().indexOf(".") == 0) { //$NON-NLS-1$
                         IIpsProject project = IIpsModel.get()
                                 .getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
@@ -422,10 +408,9 @@ public class ModelContentProvider implements ITreeContentProvider {
                 if (configuration.isAllowedResource(resource)) {
                     filtered.add(resource);
                 }
-            } else if (element instanceof IIpsObjectPathContainer) {
-                filtered.add(element);
-            } else if (element instanceof ReferencedIpsProjectViewItem) {
-                filtered.add(element);
+            } else if ((actualElement instanceof IIpsObjectPathContainer)
+                    || (actualElement instanceof ReferencedIpsProjectViewItem)) {
+                filtered.add(actualElement);
             }
         }
 

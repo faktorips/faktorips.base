@@ -31,7 +31,7 @@ public interface JType extends JAbstractType {
      * <code>"ArrayList&lt;String&gt;"</code>.
      *
      * @return the superclass name, or <code>null</code> if this type represents an interface or if
-     *         no superclass has been assigned to this class
+     *             no superclass has been assigned to this class
      */
     String getSuperclass();
 
@@ -103,7 +103,7 @@ public interface JType extends JAbstractType {
      * </p>
      *
      * @return the formal type parameters of this type, in the order declared in the source, or an
-     *         empty array if no type parameters are declared
+     *             empty array if no type parameters are declared
      */
     String[] getTypeParameters();
 

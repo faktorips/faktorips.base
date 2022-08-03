@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
+import java.util.Objects;
+
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
@@ -41,7 +43,7 @@ public class ProductCmptKind implements IProductCmptKind {
      * @param name the name of the {@link IProductCmpt}
      * @param ipsProject the {@link IIpsProject} of the {@link IProductCmpt}
      * @return the {@link IProductCmptKind} derived from the name or <code>null</code> if the name
-     *         could not be parsed.
+     *             could not be parsed.
      */
     public static IProductCmptKind createProductCmptKind(String name, IIpsProject ipsProject) {
         IProductCmptNamingStrategy stratgey = ipsProject.getProductCmptNamingStrategy();
@@ -66,11 +68,7 @@ public class ProductCmptKind implements IProductCmptKind {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((runtimeId == null) ? 0 : runtimeId.hashCode());
-        return result;
+        return Objects.hash(name, runtimeId);
     }
 
     @Override
@@ -78,28 +76,12 @@ public class ProductCmptKind implements IProductCmptKind {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         ProductCmptKind other = (ProductCmptKind)obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (runtimeId == null) {
-            if (other.runtimeId != null) {
-                return false;
-            }
-        } else if (!runtimeId.equals(other.runtimeId)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name)
+                && Objects.equals(runtimeId, other.runtimeId);
     }
 
     @Override

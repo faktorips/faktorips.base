@@ -204,11 +204,11 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         tableColumnName = element.getAttribute(PROPERTY_TABLE_COLUMN_NAME);
-        tableColumnSize = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SIZE));
-        tableColumnScale = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SCALE));
-        tableColumnPrecision = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_PRECISION));
+        tableColumnSize = Integer.parseInt(element.getAttribute(PROPERTY_TABLE_COLUMN_SIZE));
+        tableColumnScale = Integer.parseInt(element.getAttribute(PROPERTY_TABLE_COLUMN_SCALE));
+        tableColumnPrecision = Integer.parseInt(element.getAttribute(PROPERTY_TABLE_COLUMN_PRECISION));
         tableColumnUnique = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_TABLE_COLUMN_UNIQE);
-        tableColumnNullable = Boolean.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_NULLABLE));
+        tableColumnNullable = Boolean.parseBoolean(element.getAttribute(PROPERTY_TABLE_COLUMN_NULLABLE));
         temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
         sqlColumnDefinition = element.getAttribute(PROPERTY_SQL_COLUMN_DEFINITION);
         converterQualifiedClassName = element.getAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
@@ -343,19 +343,19 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
         if (tableColumnSize < minTableColumnSize || tableColumnSize > maxTableColumnSize) {
             String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnSizeExceedsTheLimit,
-                    new Object[] { minTableColumnSize, maxTableColumnSize });
+                    minTableColumnSize, maxTableColumnSize);
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE));
         }
         if (tableColumnPrecision < minTableColumnPrecision || tableColumnPrecision > maxTableColumnPrecision) {
             String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnPrecisionExceedsTheLimit,
-                    new Object[] { minTableColumnPrecision, maxTableColumnPrecision });
+                    minTableColumnPrecision, maxTableColumnPrecision);
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION));
         }
         if (tableColumnScale < minTableColumnScale || tableColumnScale > maxTableColumnScale) {
             String text = MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnScaleExceedsTheLimit,
-                    new Object[] { minTableColumnScale, maxTableColumnScale });
+                    minTableColumnScale, maxTableColumnScale);
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS, text, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE));
         }

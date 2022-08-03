@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.Iterator;
-
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -50,8 +48,7 @@ public class CreateMissingEnumContentsAction extends IpsAction {
 
         IIpsElement preselectedIpsElement = null;
         IStructuredSelection sel = selection;
-        for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
-            Object selected = iter.next();
+        for (Object selected : sel) {
             if (selected instanceof IJavaProject) {
                 preselectedIpsElement = IIpsModel.get()
                         .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));

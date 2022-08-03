@@ -82,7 +82,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
      * Returns a defensive copy of the map of expressions/formulas held by this evaluator.
      * 
      * @return a map containing the expressions (with their names as keys) held by this formula
-     *         evaluator
+     *             evaluator
      */
     @Override
     public Map<String, String> getNameToExpressionMap() {

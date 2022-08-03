@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public abstract class DefaultJavaGeneratorForIpsPart extends JavaGeneratorForIpsPart {
 
-    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+    protected static final String[] EMPTY_STRING_ARRAY = {};
 
     public DefaultJavaGeneratorForIpsPart(IIpsObjectPartContainer part, LocalizedStringsSet localizedStringsSet) {
         super(part, localizedStringsSet);

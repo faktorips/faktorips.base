@@ -30,11 +30,11 @@ import org.w3c.dom.Element;
  * <p>
  * 
  * @serial This class is serialized using by writing/reading the product component runtime ID and
- *         the effective date of the current generation. To deserialize the product product
- *         component we also serialize the {@link IRuntimeRepositoryLookup} that is provided by the
- *         {@link IRuntimeRepository} of the current product component. The serialization would
- *         throw an {@link IllegalStateException} if the runtime repository of the current product
- *         component has no {@link IRuntimeRepositoryLookup} configured.
+ *             the effective date of the current generation. To deserialize the product product
+ *             component we also serialize the {@link IRuntimeRepositoryLookup} that is provided by
+ *             the {@link IRuntimeRepository} of the current product component. The serialization
+ *             would throw an {@link IllegalStateException} if the runtime repository of the current
+ *             product component has no {@link IRuntimeRepositoryLookup} configured.
  * 
  */
 public class ProductConfiguration implements Serializable {
@@ -66,7 +66,7 @@ public class ProductConfiguration implements Serializable {
      */
     public void setProductComponent(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
-        this.productCmptGeneration = null;
+        productCmptGeneration = null;
     }
 
     /**
@@ -130,8 +130,8 @@ public class ProductConfiguration implements Serializable {
      * Copies the product component and product component generation from the other object.
      */
     public void copy(ProductConfiguration otherObject) {
-        this.productCmpt = otherObject.productCmpt;
-        this.productCmptGeneration = otherObject.productCmptGeneration;
+        productCmpt = otherObject.productCmpt;
+        productCmptGeneration = otherObject.productCmptGeneration;
     }
 
     /**
@@ -156,8 +156,8 @@ public class ProductConfiguration implements Serializable {
      *             the product component's runtime repository.
      * 
      * @serialData First the runtime ID of the product component followed by the effective date of
-     *             the current generation. At least the {@link IRuntimeRepositoryLookup} that is
-     *             retrieved by the {@link IRuntimeRepository} of the product component.
+     *                 the current generation. At least the {@link IRuntimeRepositoryLookup} that is
+     *                 retrieved by the {@link IRuntimeRepository} of the product component.
      * 
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
@@ -204,8 +204,8 @@ public class ProductConfiguration implements Serializable {
      * Reads a serialized instance of {@link ProductConfiguration}.
      * 
      * @serialData First the runtime ID of the product component followed by the effective date of
-     *             the current generation. At least the {@link IRuntimeRepositoryLookup} that is
-     *             retrieved by the {@link IRuntimeRepository} of the product component.
+     *                 the current generation. At least the {@link IRuntimeRepositoryLookup} that is
+     *                 retrieved by the {@link IRuntimeRepository} of the product component.
      * 
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {

@@ -40,47 +40,47 @@ import org.faktorips.values.Decimal;
  */
 public interface IIpsProjectProperties {
 
-    public static final String ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION = "changesInTimeNamingConvention"; //$NON-NLS-1$
+    String ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION = "changesInTimeNamingConvention"; //$NON-NLS-1$
 
-    public static final String TAG_NAME = "IpsProject"; //$NON-NLS-1$
+    String TAG_NAME = "IpsProject"; //$NON-NLS-1$
 
-    public static final String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
+    String PROPERTY_BUILDER_SET_ID = "builderSetId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
+    String PROPERTY_CONTAINER_RELATIONS_MUST_BE_IMPLEMENTED = "containerRelationIsImplementedRuleEnabled"; // $NON-NLS-1$ //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the IPS artifact builder set id is unknown.
      */
-    public static final String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a used predefined data type is unknown.
      */
-    public static final String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_PREDEFINED_DATATYPE = MSGCODE_PREFIX + "UnknownPredefinedDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the minimum required version number for a specific
      * feature is missing.
      */
-    public static final String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
+    String MSGCODE_MISSING_MIN_FEATURE_ID = MSGCODE_PREFIX + "MissingMinFeatureId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component naming strategy can't be
      * found.
      */
-    public static final String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
+    String MSGCODE_INVALID_PRODUCT_CMPT_NAMING_STRATEGY = MSGCODE_PREFIX
             + "InvalidProductCmptNamingStrategy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the language identifier used as locale for a
      * supported language is not a valid ISO 639 language code.
      */
-    public static final String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
+    String MSGCODE_SUPPORTED_LANGUAGE_UNKNOWN_LOCALE = MSGCODE_PREFIX
             + "SupportedLanguageUnknownLocale"; //$NON-NLS-1$
 
     /**
@@ -88,148 +88,148 @@ public interface IIpsProjectProperties {
      * {@link #getFeatureConfiguration(String) feature configuration} is not known, as it is not
      * contained in the list of {@link #getRequiredIpsFeatureIds() required feature IDs}.
      */
-    public static final String MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE = MSGCODE_PREFIX
+    String MSGCODE_FEATURE_CONFIGURATION_UNKNOWN_FEATURE = MSGCODE_PREFIX
             + "FeatureConfigurationUnknownFeature"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that more than one supported language is marked as
      * default language.
      */
-    public static final String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
+    String MSGCODE_MORE_THAN_ONE_DEFAULT_LANGUAGE = MSGCODE_PREFIX + "MoreThanOneDefaultLanguage"; //$NON-NLS-1$
 
-    public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
+    String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
 
-    public static final String MSGCODE_INVALID_VERSION_SETTING = MSGCODE_PREFIX + "invalidVersionSetting"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VERSION_SETTING = MSGCODE_PREFIX + "invalidVersionSetting"; //$NON-NLS-1$
 
-    public static final String MSGCODE_INVALID_MARKER_ENUMS = MSGCODE_PREFIX + "invalidMarkerEnums"; //$NON-NLS-1$
+    String MSGCODE_INVALID_MARKER_ENUMS = MSGCODE_PREFIX + "invalidMarkerEnums"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VERSION = "version"; //$NON-NLS-1$
+    String PROPERTY_VERSION = "version"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VERSION_PROVIDER_ID = "versionProviderId"; //$NON-NLS-1$
+    String PROPERTY_VERSION_PROVIDER_ID = "versionProviderId"; //$NON-NLS-1$
 
     /**
      * Returns the time stamp of the last persistent modification of this object.
      */
-    public long getLastPersistentModificationTimestamp();
+    long getLastPersistentModificationTimestamp();
 
     /**
      * Sets the time stamp of the last persistent modification of this object.
      */
-    public void setLastPersistentModificationTimestamp(long timestamp);
+    void setLastPersistentModificationTimestamp(long timestamp);
 
     /**
      * Validates the project properties.
      */
-    public MessageList validate(IIpsProject ipsProject) throws IpsException;
+    MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns id of the builder set used to generate sourcecode from the model / product
      * definition.
      */
-    public String getBuilderSetId();
+    String getBuilderSetId();
 
     /**
      * Sets the id of the builder set used to generate sourcecode from the model / product
      * definition.
      */
-    public void setBuilderSetId(String id);
+    void setBuilderSetId(String id);
 
     /**
      * Returns the IpsProject specific configuration of the IIpsArtefactBuilderSet.
      */
-    public IIpsArtefactBuilderSetConfigModel getBuilderSetConfig();
+    IIpsArtefactBuilderSetConfigModel getBuilderSetConfig();
 
     /**
      * Sets the IpsProjects specific configuration of the IIpsArtefactBuilderSet.
      */
-    public void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config);
+    void setBuilderSetConfig(IIpsArtefactBuilderSetConfigModel config);
 
     /**
      * Returns the object path to lookup objects.
      */
-    public IIpsObjectPath getIpsObjectPath();
+    IIpsObjectPath getIpsObjectPath();
 
     /**
      * Sets the object path.
      */
-    public void setIpsObjectPath(IIpsObjectPath path);
+    void setIpsObjectPath(IIpsObjectPath path);
 
     /**
      * Returns <code>true</code> if this is a project containing a (part of a) model, otherwise
      * <code>false</code>. The model is made up of police component types, product component types
      * and so on.
      */
-    public boolean isModelProject();
+    boolean isModelProject();
 
     /**
      * Sets if this is project containing model elements or not.
      */
-    public void setModelProject(boolean modelProject);
+    void setModelProject(boolean modelProject);
 
     /**
      * Returns <code>true</code> if this is a project containing product definition data, otherwise
      * <code>false</code>. Product definition projects are shown in the product definition
      * perspective.
      */
-    public boolean isProductDefinitionProject();
+    boolean isProductDefinitionProject();
 
     /**
      * Sets if this project contains product definition data.
      */
-    public void setProductDefinitionProject(boolean productDefinitionProject);
+    void setProductDefinitionProject(boolean productDefinitionProject);
 
     /**
      * Returns <code>true</code> if this is a project that supports persistence, otherwise
      * <code>false</code>. Persistent projects can store and retrieve policy component types to/from
      * a relational database.
      */
-    public boolean isPersistenceSupportEnabled();
+    boolean isPersistenceSupportEnabled();
 
     /**
      * Sets if this project supports persistence.
      */
-    public void setPersistenceSupport(boolean persistentProject);
+    void setPersistenceSupport(boolean persistentProject);
 
     /**
      * Returns the strategy how product component names are composed.
      */
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy();
+    IProductCmptNamingStrategy getProductCmptNamingStrategy();
 
     /**
      * Sets the strategy how product component names are composed.
      */
-    public void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy);
+    void setProductCmptNamingStrategy(IProductCmptNamingStrategy newStrategy);
 
     /**
      * Returns the strategy used to name database tables used for persisting policy component types.
      * Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableNamingStrategy getTableNamingStrategy();
+    ITableNamingStrategy getTableNamingStrategy();
 
     /**
      * Sets the strategy how database table names are composed. Does nothing if persistence support
      * is not enabled.
      */
-    public void setTableNamingStrategy(ITableNamingStrategy newStrategy);
+    void setTableNamingStrategy(ITableNamingStrategy newStrategy);
 
     /**
      * Returns the strategy used to name database columns used for persisting policy component
      * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableColumnNamingStrategy getTableColumnNamingStrategy();
+    ITableColumnNamingStrategy getTableColumnNamingStrategy();
 
     /**
      * Sets the strategy how database table column names are composed. Does nothing if persistence
      * support is not enabled.
      */
-    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
+    void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
 
     /**
      * Sets the naming convention for changes over time (by id) used in the generated sourcecode.
      * 
      * @see IChangesOverTimeNamingConvention
      */
-    public void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode);
+    void setChangesOverTimeNamingConventionIdForGeneratedCode(String changesInTimeConventionIdForGeneratedCode);
 
     /**
      * Returns the id of the naming convention for changes over time used in the generated
@@ -237,13 +237,13 @@ public interface IIpsProjectProperties {
      * 
      * @see IChangesOverTimeNamingConvention
      */
-    public String getChangesOverTimeNamingConventionIdForGeneratedCode();
+    String getChangesOverTimeNamingConventionIdForGeneratedCode();
 
     /**
      * Returns predefined data types (by id) used by this project. Predefined data types are those
      * that are defined by the extension <code>datatypeDefinition</code>.
      */
-    public String[] getPredefinedDatatypesUsed();
+    String[] getPredefinedDatatypesUsed();
 
     /**
      * Sets the predefined data types (by id) used by this project. Predefined data types are those
@@ -251,7 +251,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException if data types is <code>null</code>.
      */
-    public void setPredefinedDatatypesUsed(String[] datatypes);
+    void setPredefinedDatatypesUsed(String[] datatypes);
 
     /**
      * Sets the predefined data types used by this project. Predefined data types are those that are
@@ -261,27 +261,27 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException if data types is <code>null</code>.
      */
-    public void setPredefinedDatatypesUsed(ValueDatatype[] datatypes);
+    void setPredefinedDatatypesUsed(ValueDatatype[] datatypes);
 
     /**
      * Returns the value data types that are defined in this project.
      */
-    public IDynamicValueDatatype[] getDefinedValueDatatypes();
+    IDynamicValueDatatype[] getDefinedValueDatatypes();
 
     /**
      * Returns all (value and other) data types that are defined in this project.
      */
-    public List<Datatype> getDefinedDatatypes();
+    List<Datatype> getDefinedDatatypes();
 
     /**
      * Sets the value data types that are defined in this project.
      */
-    public void setDefinedDatatypes(IDynamicValueDatatype[] datatypes);
+    void setDefinedDatatypes(IDynamicValueDatatype[] datatypes);
 
     /**
      * Sets the data types that are defined in this project.
      */
-    public void setDefinedDatatypes(Datatype[] datatypes);
+    void setDefinedDatatypes(Datatype[] datatypes);
 
     /**
      * Adds the defined value data type. If the project properties contain another data type with
@@ -289,7 +289,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException if data type is <code>null</code>.
      */
-    public void addDefinedDatatype(IDynamicValueDatatype datatype);
+    void addDefinedDatatype(IDynamicValueDatatype datatype);
 
     /**
      * Adds the defined data type. If the project properties contain another data type with the same
@@ -297,19 +297,19 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException if data type is <code>null</code>.
      */
-    public void addDefinedDatatype(Datatype datatype);
+    void addDefinedDatatype(Datatype datatype);
 
     /**
      * Returns the prefix to be used for new runtime-IDs for product components.
      */
-    public String getRuntimeIdPrefix();
+    String getRuntimeIdPrefix();
 
     /**
      * Sets the new prefix to be used for new runtime-IDs for product components.
      * 
      * @throws NullPointerException if the given prefix is <code>null</code>.
      */
-    public void setRuntimeIdPrefix(String runtimeIdPrefix);
+    void setRuntimeIdPrefix(String runtimeIdPrefix);
 
     /**
      * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>. See the
@@ -317,12 +317,12 @@ public interface IIpsProjectProperties {
      * 
      * @see org.faktorips.devtools.model.type.IType#MSGCODE_MUST_SPECIFY_DERIVED_UNION
      */
-    public boolean isDerivedUnionIsImplementedRuleEnabled();
+    boolean isDerivedUnionIsImplementedRuleEnabled();
 
     /**
      * @see #isDerivedUnionIsImplementedRuleEnabled()
      */
-    public void setDerivedUnionIsImplementedRuleEnabled(boolean enabled);
+    void setDerivedUnionIsImplementedRuleEnabled(boolean enabled);
 
     /**
      * Returns <code>true</code> if the rule is enabled, otherwise <code>false</code>. See the
@@ -330,24 +330,24 @@ public interface IIpsProjectProperties {
      * 
      * @see org.faktorips.devtools.model.productcmpt.IProductCmptGeneration#MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE
      */
-    public boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled();
+    boolean isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled();
 
     /**
      * Check if the option to allow rules without references is enabled or not
      * 
      * @return true if the option is enabled
      */
-    public boolean isRulesWithoutReferencesAllowedEnabled();
+    boolean isRulesWithoutReferencesAllowedEnabled();
 
     /**
      * @see #isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled()
      */
-    public void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
+    void setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(boolean enabled);
 
     /**
      * @see #isRulesWithoutReferencesAllowedEnabled()
      */
-    public void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
+    void setRulesWithoutReferencesAllowedEnabled(boolean enabled);
 
     /**
      * Check if the inverse associations have to be type safe or not. Due to Issue FIPS-85 we need
@@ -373,14 +373,14 @@ public interface IIpsProjectProperties {
     /**
      * @return The IDs of all required features.
      */
-    public String[] getRequiredIpsFeatureIds();
+    String[] getRequiredIpsFeatureIds();
 
     /**
      * @param featureId The id of the feature the minimum version has to be returned
      * @return The version number for the given feature id or <code>null</code>, if no entry is
-     *         found for the given feature id.
+     *             found for the given feature id.
      */
-    public String getMinRequiredVersionNumber(String featureId);
+    String getMinRequiredVersionNumber(String featureId);
 
     /**
      * Sets the minimum version for the given feature id. If the feature id was not used before, a
@@ -389,12 +389,12 @@ public interface IIpsProjectProperties {
      * @param featureId The id of the required feature.
      * @param version The minimum version number for this feature.
      */
-    public void setMinRequiredVersionNumber(String featureId, String version);
+    void setMinRequiredVersionNumber(String featureId, String version);
 
     /**
      * Adds the given resource path to the list of excluded resources in the product definition.
      */
-    public void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath);
+    void addResourcesPathExcludedFromTheProductDefiniton(String resourcesPath);
 
     /**
      * Returns <code>true</code> if the given resource will be excluded from the product
@@ -402,21 +402,21 @@ public interface IIpsProjectProperties {
      * If the given resource is relevant for the product definition the method returns
      * <code>false</code>.
      */
-    public boolean isResourceExcludedFromProductDefinition(String location);
+    boolean isResourceExcludedFromProductDefinition(String location);
 
     /**
      * Returns the resourcesPathExcludedFromTheProductDefiniton
      * 
      * @return A {@link Set} of {@link String} that contains the list of excluded paths for the
-     *         product definition
+     *             product definition
      */
-    public Set<String> getResourcesPathExcludedFromTheProductDefiniton();
+    Set<String> getResourcesPathExcludedFromTheProductDefiniton();
 
     /**
      * Setting the resourcesPathExcludedFromTheProductDefiniton.
      * 
      */
-    public void setResourcesPathExcludedFromTheProductDefiniton(
+    void setResourcesPathExcludedFromTheProductDefiniton(
             Set<String> resourcesPathExcludedFromTheProductDefiniton);
 
     /**
@@ -425,12 +425,12 @@ public interface IIpsProjectProperties {
      * 
      * @see #isPersistenceSupportEnabled()
      */
-    public IPersistenceOptions getPersistenceOptions();
+    IPersistenceOptions getPersistenceOptions();
 
     /**
      * Returns an unmodifiable view on the set of languages supported by this IPS project.
      */
-    public Set<ISupportedLanguage> getSupportedLanguages();
+    Set<ISupportedLanguage> getSupportedLanguages();
 
     /**
      * Returns the {@link ISupportedLanguage} with the given {@link Locale} or null if the locale is
@@ -440,7 +440,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public ISupportedLanguage getSupportedLanguage(Locale locale);
+    ISupportedLanguage getSupportedLanguage(Locale locale);
 
     /**
      * Returns whether the language corresponding to the given {@link Locale} is supported by this
@@ -450,13 +450,13 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public boolean isSupportedLanguage(Locale locale);
+    boolean isSupportedLanguage(Locale locale);
 
     /**
      * Returns the {@link ISupportedLanguage} that is currently set as default language or the first
      * language if no supported language is explicitly set as default.
      */
-    public ISupportedLanguage getDefaultLanguage();
+    ISupportedLanguage getDefaultLanguage();
 
     /**
      * Sets the given {@link ISupportedLanguage} to be the default language.
@@ -465,7 +465,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void setDefaultLanguage(ISupportedLanguage language);
+    void setDefaultLanguage(ISupportedLanguage language);
 
     /**
      * Sets the {@link ISupportedLanguage} with the given {@link Locale} to be the default language.
@@ -476,7 +476,7 @@ public interface IIpsProjectProperties {
      * @throws NullPointerException If the parameter is null
      * @throws IllegalArgumentException If there is no supported language with the given locale
      */
-    public void setDefaultLanguage(Locale locale);
+    void setDefaultLanguage(Locale locale);
 
     /**
      * Adds the language identified by the given {@link Locale} to the supported languages of this
@@ -488,7 +488,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void addSupportedLanguage(Locale locale);
+    void addSupportedLanguage(Locale locale);
 
     /**
      * Removes the given {@link ISupportedLanguage} from the list of supported languages causing it
@@ -500,7 +500,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void removeSupportedLanguage(ISupportedLanguage supportedLanguage);
+    void removeSupportedLanguage(ISupportedLanguage supportedLanguage);
 
     /**
      * Removes the {@link ISupportedLanguage} with the given {@link Locale} from the list of
@@ -512,7 +512,7 @@ public interface IIpsProjectProperties {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void removeSupportedLanguage(Locale locale);
+    void removeSupportedLanguage(Locale locale);
 
     /**
      * Return the version that was set in this project properties.
@@ -525,7 +525,7 @@ public interface IIpsProjectProperties {
      * 
      * @return the version string of this project
      */
-    public String getVersion();
+    String getVersion();
 
     /**
      * Setting a new version that should be stored in this project properties.
@@ -540,7 +540,7 @@ public interface IIpsProjectProperties {
      * 
      * @param version The new version of this project
      */
-    public void setVersion(String version);
+    void setVersion(String version);
 
     /**
      * Provides the id of the version provider that is configured in these project properties. If no
@@ -548,10 +548,10 @@ public interface IIpsProjectProperties {
      * {@code DefaultVersionProvider} should be used.
      * 
      * @return The configured {@link IVersionProvider} that should be used to handle the project's
-     *         version. Could be <code>null</code> if no explicit version provider is set and the
-     *         {@code DefaultVersionProvider} should be used.
+     *             version. Could be <code>null</code> if no explicit version provider is set and
+     *             the {@code DefaultVersionProvider} should be used.
      */
-    public String getVersionProviderId();
+    String getVersionProviderId();
 
     /**
      * Set the id of the version provider that should be used by the corresponding project to handle
@@ -559,21 +559,21 @@ public interface IIpsProjectProperties {
      * 
      * @param versionProviderId The id of an extended {@link IVersionProvider}.
      */
-    public void setVersionProviderId(String versionProviderId);
+    void setVersionProviderId(String versionProviderId);
 
     /**
      * Getting the id of the release extension associated with this project
      * 
      * @return The id of the release extension for this project
      */
-    public String getReleaseExtensionId();
+    String getReleaseExtensionId();
 
     /**
      * Setting the id of the release extension associated with this project
      * 
      * @param releaseExtensionId The new id of the release extension for this project
      */
-    public void setReleaseExtensionId(String releaseExtensionId);
+    void setReleaseExtensionId(String releaseExtensionId);
 
     /**
      * Setting the default currency for this project
@@ -595,7 +595,7 @@ public interface IIpsProjectProperties {
      * 
      * @param factory the {@link IFunctionResolverFactory} in question
      * @return whether the given {@link IFunctionResolverFactory} is active for the
-     *         {@link IIpsProject}
+     *             {@link IIpsProject}
      */
     boolean isActive(IFunctionResolverFactory<?> factory);
 
@@ -645,7 +645,7 @@ public interface IIpsProjectProperties {
      * IProductCmptTypes} is enabled or disabled.
      * 
      * @return <code>false</code> if the default is disabled, <code>true</code> if the default is
-     *         enabled or not configured in the .ipsproject file
+     *             enabled or not configured in the .ipsproject file
      * @see IProductCmptType#setChangingOverTime(boolean)
      */
     boolean isChangingOverTimeDefaultEnabled();

@@ -143,10 +143,7 @@ public class ProductReleaserBuilderWizard extends Wizard {
             selectionPage.setPageComplete(false);
             IpsPlugin.log(e);
             return false;
-        } catch (InterruptedException e) {
-            observableProgressMessages.error(e.getMessage());
-            return false;
-        } catch (JavaModelException e) {
+        } catch (InterruptedException | JavaModelException e) {
             observableProgressMessages.error(e.getMessage());
             return false;
         } finally {

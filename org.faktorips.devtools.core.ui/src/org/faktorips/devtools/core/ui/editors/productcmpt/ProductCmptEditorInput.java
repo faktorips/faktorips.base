@@ -35,7 +35,7 @@ public class ProductCmptEditorInput extends FileEditorInput {
      * Could be used to open a product cmpt and initially showing the given generation.
      *
      * @deprecated deprecated since 3.22, use {@link IpsUIPlugin#openEditor(IProductCmptGeneration)}
-     *             instead
+     *                 instead
      */
     @Deprecated
     public static IFileEditorInput createWithGeneration(IProductCmptGeneration productCmptGeneration) {

@@ -35,7 +35,7 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        this.ipsProject = newIpsProject("test");
+        ipsProject = newIpsProject("test");
         IIpsProjectProperties props = ipsProject.getProperties();
         String[] datatypes = getColumnDatatypes();
         props.setPredefinedDatatypesUsed(datatypes);
@@ -53,7 +53,7 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
         format.addValueConverter(new MoneyValueConverter());
         format.addValueConverter(new StringValueConverter());
 
-        this.filename = "enum" + format.getDefaultExtension();
+        filename = "enum" + format.getDefaultExtension();
     }
 
     @Override

@@ -25,42 +25,42 @@ public interface ITestCaseType extends IIpsMetaClass {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTCASETYPE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTCASETYPE-"; //$NON-NLS-1$
 
     /**
      * Creates a new test input value parameter.
      */
-    public ITestValueParameter newInputTestValueParameter();
+    ITestValueParameter newInputTestValueParameter();
 
     /**
      * Creates a new test input policy component type parameter.
      */
-    public ITestPolicyCmptTypeParameter newInputTestPolicyCmptTypeParameter();
+    ITestPolicyCmptTypeParameter newInputTestPolicyCmptTypeParameter();
 
     /**
      * Creates a new test expected result value parameter.
      */
-    public ITestValueParameter newExpectedResultValueParameter();
+    ITestValueParameter newExpectedResultValueParameter();
 
     /**
      * Creates a new test expected result policy component type parameter.
      */
-    public ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter();
+    ITestPolicyCmptTypeParameter newExpectedResultPolicyCmptTypeParameter();
 
     /**
      * Creates a new test expected result rule parameter.
      */
-    public ITestRuleParameter newExpectedResultRuleParameter();
+    ITestRuleParameter newExpectedResultRuleParameter();
 
     /**
      * Creates a new test combined value parameter.
      */
-    public ITestValueParameter newCombinedValueParameter();
+    ITestValueParameter newCombinedValueParameter();
 
     /**
      * Creates a new test combined policy component type parameter.
      */
-    public ITestPolicyCmptTypeParameter newCombinedPolicyCmptTypeParameter();
+    ITestPolicyCmptTypeParameter newCombinedPolicyCmptTypeParameter();
 
     /**
      * Search and return the test parameter by the given name.
@@ -70,50 +70,50 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs.
      */
-    public ITestParameter getTestParameterByName(String testParameterName) throws IpsException;
+    ITestParameter getTestParameterByName(String testParameterName) throws IpsException;
 
     /**
      * Returns all test parameters.
      * <p>
      * Returns an empty list if the test case type contains no test parameters.
      */
-    public ITestParameter[] getTestParameters();
+    ITestParameter[] getTestParameters();
 
     /**
      * Returns all input parameters or an empty array if the test case type hasn't got any input
      * parameters.
      */
-    public ITestParameter[] getInputTestParameters();
+    ITestParameter[] getInputTestParameters();
 
     /**
      * Returns all test value parameters or an empty array if the test case type hasn't got any test
      * value parameters.
      */
-    public ITestValueParameter[] getTestValueParameters();
+    ITestValueParameter[] getTestValueParameters();
 
     /**
      * Returns all test rule parameters or an empty array if the test case type hasn't got any test
      * rule parameters.
      */
-    public ITestRuleParameter[] getTestRuleParameters();
+    ITestRuleParameter[] getTestRuleParameters();
 
     /**
      * Returns all root test policy component type parameters or an empty array if the test case
      * type hasn't got any test policy component type parameters.
      */
-    public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters();
+    ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParameters();
 
     /**
      * Returns all input test value parameters or an empty array if the test case type hasn't got
      * any input test value parameters.
      */
-    public ITestValueParameter[] getInputTestValueParameters();
+    ITestValueParameter[] getInputTestValueParameters();
 
     /**
      * Returns all input test policy component type parameters or an empty array if the test case
      * type hasn't got any input test policy component type parameters.
      */
-    public ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters();
+    ITestPolicyCmptTypeParameter[] getInputTestPolicyCmptTypeParameters();
 
     /**
      * Returns the input test value parameter or <code>null</code> if not found. Returns the first
@@ -121,7 +121,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs.
      */
-    public ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws IpsException;
+    ITestValueParameter getInputTestValueParameter(String inputTestValueParameter) throws IpsException;
 
     /**
      * Returns the input test policy component type parameter or <code>null</code> if not found.
@@ -129,26 +129,26 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs.
      */
-    public ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
+    ITestPolicyCmptTypeParameter getInputTestPolicyCmptTypeParameter(String inputTestPolicyCmptTypeParameter)
             throws IpsException;
 
     /**
      * Returns all expected result parameters or an empty array if the test case type hasn't got any
      * result parameters.
      */
-    public ITestParameter[] getExpectedResultTestParameters();
+    ITestParameter[] getExpectedResultTestParameters();
 
     /**
      * Returns all expected result test value parameters or an empty array if the test case type
      * hasn't got any expected result test value parameters.
      */
-    public ITestValueParameter[] getExpectedResultTestValueParameters();
+    ITestValueParameter[] getExpectedResultTestValueParameters();
 
     /**
      * Returns all expected result test policy component type parameters or an empty array if the
      * test case type hasn't got any expected result test policy component type parameters.
      */
-    public ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters();
+    ITestPolicyCmptTypeParameter[] getExpectedResultTestPolicyCmptTypeParameters();
 
     /**
      * Returns the expected result test value parameter or <code>null</code> if not found. Returns
@@ -156,7 +156,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs.
      */
-    public ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
+    ITestValueParameter getExpectedResultTestValueParameter(String expResultTestValueParameter)
             throws IpsException;
 
     /**
@@ -165,14 +165,14 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs.
      */
-    public ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(
+    ITestPolicyCmptTypeParameter getExpectedResultTestPolicyCmptTypeParameter(
             String expResultTestPolicyCmptTypeParameter)
             throws IpsException;
 
     /**
      * Evaluates and returns an unique name (inside this test case) for the test attribute.
      */
-    public String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name);
+    String generateUniqueNameForTestAttribute(ITestAttribute testAttribute, String name);
 
     /**
      * Moves the test parameter identified by the indexes up or down by one position. If one of the
@@ -187,7 +187,7 @@ public interface ITestCaseType extends IIpsMetaClass {
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a test parameter.
      */
-    public int[] moveTestParameters(int[] indexes, boolean up);
+    int[] moveTestParameters(int[] indexes, boolean up);
 
     /**
      * Returns all validation rules from the test policy components which are related by the test
@@ -195,13 +195,13 @@ public interface ITestCaseType extends IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws IpsException;
+    IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches and returns the validation rule with the given name which is inside the test case
      * type. The rule will be searched in all policy component types which are related by test test
      * policy component type parameters.
      */
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws IpsException;
+    IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws IpsException;
 
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.cache.CacheBuilder;
@@ -68,11 +69,7 @@ public abstract class AbstractDateHelperFactory<T extends ValueDatatype> impleme
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((datatype == null) ? 0 : datatype.hashCode());
-            result = prime * result + ((variant == null) ? 0 : variant.hashCode());
-            return result;
+            return Objects.hash(datatype, variant);
         }
 
         @Override
@@ -80,29 +77,13 @@ public abstract class AbstractDateHelperFactory<T extends ValueDatatype> impleme
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             @SuppressWarnings("unchecked")
             CacheKey<T> other = (CacheKey<T>)obj;
-            if (datatype == null) {
-                if (other.datatype != null) {
-                    return false;
-                }
-            } else if (!datatype.equals(other.datatype)) {
-                return false;
-            }
-            if (variant == null) {
-                if (other.variant != null) {
-                    return false;
-                }
-            } else if (!variant.equals(other.variant)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(datatype, other.datatype)
+                    && Objects.equals(variant, other.variant);
         }
 
     }

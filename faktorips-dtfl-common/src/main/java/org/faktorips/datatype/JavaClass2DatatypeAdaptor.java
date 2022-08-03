@@ -32,7 +32,7 @@ public class JavaClass2DatatypeAdaptor extends AbstractDatatype {
     public JavaClass2DatatypeAdaptor(String name, String javaClassName) {
         ArgumentCheck.notNull(name);
         ArgumentCheck.notNull(javaClassName);
-        this.qualifiedName = name;
+        qualifiedName = name;
         this.javaClassName = javaClassName;
     }
 

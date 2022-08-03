@@ -159,7 +159,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * 
      * @param duplicateObjectProperties The array of duplicated properties
      * @return <code>true</code> if the duplication could be ignored, <code>false</code> to not
-     *         ignore.
+     *             ignore.
      */
     protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
         if (!isOnePropertyInThisType(currentType, duplicateObjectProperties)) {
@@ -192,7 +192,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * The other associations are checked in supertype.
      * 
      * @return <code>true</code> to ignore the the duplicated properties, <code>false</code> to not
-     *         ignore (move on)
+     *             ignore (move on)
      */
     private boolean ignoreConstrainingAssociation(ObjectProperty[] duplicateObjectProperties) {
         return ((IAssociation)duplicateObjectProperties[0].getObject()).isConstrain();
@@ -204,7 +204,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * validations we have a second iteration
      * 
      * @return <code>true</code> if these objectProperties may be ignored (depending on further
-     *         testing), false if we cannot ignore
+     *             testing), false if we cannot ignore
      */
     private boolean checkAssociationAndType(ObjectProperty[] objectProperties) {
         IType typeToValidate = null;
@@ -275,10 +275,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                     IPolicyCmptTypeAssociation nextAssociation = (IPolicyCmptTypeAssociation)objectProperties[i]
                             .getObject();
                     IPolicyCmptType nextTarget = nextAssociation.findTargetPolicyCmptType(getIpsProject());
-                    if (nextTarget == null) {
-                        return false;
-                    }
-                    if (!target.isSubtypeOrSameType(nextTarget, getIpsProject())) {
+                    if ((nextTarget == null) || !target.isSubtypeOrSameType(nextTarget, getIpsProject())) {
                         return false;
                     }
                 }

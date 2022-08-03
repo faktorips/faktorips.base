@@ -59,7 +59,7 @@ public class TemplateValueSettings {
      * @param value the property value to validate
      * @param ipsProject the IPS project to use for validating
      * @return a message list containing all appropriate validation messages regarding the template
-     *         status of the given property value.
+     *             status of the given property value.
      */
     public MessageList validate(IPropertyValue value, IIpsProject ipsProject) {
         MessageList messageList = new MessageList();
@@ -77,7 +77,7 @@ public class TemplateValueSettings {
      * @param link the product component link to validate
      * @param ipsProject the IPS project to use for validating
      * @return a message list containing all appropriate validation messages regarding the template
-     *         status of the given property value.
+     *             status of the given property value.
      */
     public MessageList validate(IProductCmptLink link, IIpsProject ipsProject) {
         MessageList messageList = new MessageList();

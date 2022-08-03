@@ -49,9 +49,7 @@ public class ListUtil {
     public static final <T> List<T> newList(T firstValue, T... moreValues) {
         List<T> newList = new ArrayList<>();
         newList.add(firstValue);
-        for (T value : moreValues) {
-            newList.add(value);
-        }
+        Collections.addAll(newList, moreValues);
         return newList;
     }
 
@@ -72,9 +70,12 @@ public class ListUtil {
                 throw new ClassCastException(member + " not instance of " + newType);
             }
         }
-        @SuppressWarnings("unchecked")
-        List<? extends R> convertList = (List<? extends R>)list;
-        return convertList;
+        return castConvertedList(list);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <R extends T, T> List<? extends R> castConvertedList(List<? extends T> list) {
+        return (List<? extends R>)list;
     }
 
     /**

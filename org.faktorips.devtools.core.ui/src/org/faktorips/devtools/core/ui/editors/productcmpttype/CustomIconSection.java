@@ -313,7 +313,7 @@ public class CustomIconSection extends IpsSection {
      * Note: this class was copied from org.eclipse.pde.internal.ui.util and extended by the
      * IpsUIPlugin-ID.
      */
-    private class FileValidator implements ISelectionStatusValidator {
+    private static class FileValidator implements ISelectionStatusValidator {
 
         @Override
         public IStatus validate(Object[] selection) {

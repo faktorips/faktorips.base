@@ -26,6 +26,6 @@ public interface InternationalString extends Serializable {
      * @param locale the locale of the text you want to get
      * @return return the text for the specified locale or <code>null</code> if no such text exists
      */
-    public String get(Locale locale);
+    String get(Locale locale);
 
 }

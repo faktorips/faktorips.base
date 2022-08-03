@@ -136,8 +136,7 @@ public class TwoColumnRangeStructure<K extends Comparable<? super K>, V extends 
     private TwoColumnRange<K> createTwoColumnKey(Object key) {
         @SuppressWarnings("unchecked")
         K kKey = (K)key;
-        TwoColumnRange<K> twoColumnKey = new TwoColumnRange<>(kKey, kKey);
-        return twoColumnKey;
+        return new TwoColumnRange<>(kKey, kKey);
     }
 
     /**

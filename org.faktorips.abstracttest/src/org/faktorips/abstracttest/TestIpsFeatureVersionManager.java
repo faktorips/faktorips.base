@@ -40,7 +40,7 @@ public class TestIpsFeatureVersionManager implements IIpsFeatureVersionManager {
     }
 
     public void setCompareToCurrentVersion(int newReturnValue) {
-        this.compareToCurrentVersion = newReturnValue;
+        compareToCurrentVersion = newReturnValue;
     }
 
     @Override

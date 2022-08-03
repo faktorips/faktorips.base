@@ -55,11 +55,10 @@ public interface AContainer extends AResource, Iterable<AResource> {
      */
     AFolder getFolder(Path path);
 
+    @SuppressWarnings("unchecked")
     @Override
-    public default Iterator<AResource> iterator() {
-        @SuppressWarnings("unchecked")
-        Iterator<AResource> iterator = (Iterator<AResource>)getMembers().iterator();
-        return iterator;
+    default Iterator<AResource> iterator() {
+        return (Iterator<AResource>)getMembers().iterator();
     }
 
 }

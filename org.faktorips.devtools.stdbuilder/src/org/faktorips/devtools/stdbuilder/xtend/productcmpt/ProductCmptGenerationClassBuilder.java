@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.productcmpt;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -22,7 +23,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerati
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenTmpl;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProductCmptGenerationClass> {
 

@@ -25,13 +25,13 @@ public interface ICompositePageElement extends IPageElement {
      * lets the {@link ILayouter} visit the subElements
      * 
      */
-    public void visitSubElements(ILayouter layouter);
+    void visitSubElements(ILayouter layouter);
 
-    public abstract DocumentationContext getContext();
+    DocumentationContext getContext();
 
     /**
      * adds one or more {@link IPageElement}s and returns this
      * 
      */
-    public ICompositePageElement addPageElements(IPageElement... pageElements);
+    ICompositePageElement addPageElements(IPageElement... pageElements);
 }

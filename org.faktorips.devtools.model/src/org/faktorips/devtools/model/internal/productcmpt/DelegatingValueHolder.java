@@ -179,7 +179,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
      *            parent of the delegate.
      * @param delegate the value holder to delegate to
      * @return a new {@code DelegatingValueHolder} with the given parent that delegates read-access
-     *         to the given value holder
+     *             to the given value holder
      */
     public static <U> DelegatingValueHolder<U> of(IAttributeValue parent, IValueHolder<U> delegate) {
         Preconditions.checkArgument(delegate instanceof AbstractValueHolder,

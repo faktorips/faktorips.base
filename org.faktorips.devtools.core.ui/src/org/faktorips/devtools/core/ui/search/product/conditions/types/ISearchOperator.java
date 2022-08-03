@@ -25,6 +25,6 @@ public interface ISearchOperator {
     /**
      * returns true, if the given {@link IProductPartsContainer} is a hit
      */
-    public boolean check(IProductPartsContainer productPartsContainer);
+    boolean check(IProductPartsContainer productPartsContainer);
 
 }

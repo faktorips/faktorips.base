@@ -21,20 +21,20 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
  */
 public interface IdentifierNodeGeneratorFactory<T extends CodeFragment> {
 
-    public IdentifierNodeGenerator<T> getGeneratorForParameterNode();
+    IdentifierNodeGenerator<T> getGeneratorForParameterNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForAssociationNode();
+    IdentifierNodeGenerator<T> getGeneratorForAssociationNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForAttributeNode();
+    IdentifierNodeGenerator<T> getGeneratorForAttributeNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForEnumClassNode();
+    IdentifierNodeGenerator<T> getGeneratorForEnumClassNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForEnumValueNode();
+    IdentifierNodeGenerator<T> getGeneratorForEnumValueNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForIndexBasedAssociationNode();
+    IdentifierNodeGenerator<T> getGeneratorForIndexBasedAssociationNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForQualifiedAssociationNode();
+    IdentifierNodeGenerator<T> getGeneratorForQualifiedAssociationNode();
 
-    public IdentifierNodeGenerator<T> getGeneratorForInvalidNode();
+    IdentifierNodeGenerator<T> getGeneratorForInvalidNode();
 
 }

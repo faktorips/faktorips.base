@@ -35,8 +35,7 @@ public class IpsSearchSelectionScope extends AbstractIpsSearchScope {
 
     @Override
     protected List<?> getSelectedObjects() {
-        List<?> list = ((IStructuredSelection)selection).toList();
-        return list;
+        return ((IStructuredSelection)selection).toList();
     }
 
 }

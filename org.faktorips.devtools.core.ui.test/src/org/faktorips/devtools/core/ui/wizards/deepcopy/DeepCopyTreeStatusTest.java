@@ -311,12 +311,11 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         initDeepCopyTreeStatusWithStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.isRoot()) {
+            if (reference.isRoot()
+                    || !(reference instanceof IProductCmptTypeAssociationReference)) {
                 assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
-            } else if (reference instanceof IProductCmptTypeAssociationReference) {
-                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
             } else {
-                assertEquals(CopyOrLink.COPY, deepCopyTreeStatus.getCopyOrLink(reference));
+                assertEquals(CopyOrLink.UNDEFINED, deepCopyTreeStatus.getCopyOrLink(reference));
             }
         }
     }

@@ -430,7 +430,7 @@ public class ModelObjectDeltaTest {
 
         @Override
         public void initialize() {
-
+            // don't do anything
         }
 
     }

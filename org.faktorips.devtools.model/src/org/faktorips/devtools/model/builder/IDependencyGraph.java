@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IDependencyGraph {
 
-    public abstract IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the qualified names of the IPS objects that depend on the object identified by the
@@ -40,7 +40,7 @@ public interface IDependencyGraph {
      *            should be returned. Identifier for IpsObjects are QualifiedNameType instances for
      *            data types qualified name strings.
      */
-    public abstract IDependency[] getDependants(QualifiedNameType id);
+    IDependency[] getDependants(QualifiedNameType id);
 
     /**
      * Updates the graph with the new dependency information for the given object. For an updated
@@ -57,8 +57,8 @@ public interface IDependencyGraph {
      * 
      * @param qName The fully qualified name type of the IPS object.
      */
-    public abstract void update(QualifiedNameType qName);
+    void update(QualifiedNameType qName);
 
-    public void reInit();
+    void reInit();
 
 }

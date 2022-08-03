@@ -377,16 +377,13 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * method are ignored if the activate attribute is set to <code>false</code>.
      */
     protected void refresh() {
-        if (updatingPageStructure) {
-            return;
-        }
 
         /*
          * ipsSrcFile can be null if the editor is opened on an ips source file that is not in an
          * ips package.
          */
 
-        if (ipsSrcFile == null || !ipsSrcFile.exists()) {
+        if (updatingPageStructure || ipsSrcFile == null || !ipsSrcFile.exists()) {
             return;
         }
 
@@ -675,13 +672,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             return;
         }
 
-        if (getContainer() == null) {
-            // do nothing, we will be called again later. This avoids that the user
-            // is shown the differences-dialog twice if openening the editor...
-            return;
-        }
-
-        if (!(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
+        if ((getContainer() == null) || !(getIpsObject() instanceof IFixDifferencesToModelSupport)) {
             return;
         }
 

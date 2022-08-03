@@ -60,7 +60,7 @@ public class PropertyValueCollection {
      * @param property the product component property a {@link IPropertyValue} is requested for
      * @param type the expected type of the property value, needs to be the interface type!
      * @return the {@link IPropertyValue} for the indicated property. Returns <code>null</code> if
-     *         the given property is <code>null</code> or if no property could be found.
+     *             the given property is <code>null</code> or if no property could be found.
      */
     public <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type) {
         if (property == null) {
@@ -87,7 +87,7 @@ public class PropertyValueCollection {
      * @param propertyName the name of the requested property value
      * @param type the type of {@link IPropertyValue} that is requested
      * @return the {@link IPropertyValue} for the indicated type and name. Returns <code>null</code>
-     *         if no property could be found.
+     *             if no property could be found.
      */
     public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
         List<T> list = classToInstancesMap.get(type);
@@ -108,8 +108,8 @@ public class PropertyValueCollection {
      * 
      * @param propertyName the name of the requested {@link IPropertyValue}
      * @return a list of {@link IPropertyValue} with the given name. Returns an empty list if the
-     *         given Property name is <code>null</code> or if no property with the indicated name
-     *         could be found.
+     *             given Property name is <code>null</code> or if no property with the indicated
+     *             name could be found.
      */
     public <T extends IPropertyValue> List<T> getPropertyValues(String propertyName) {
         List<IPropertyValue> allValues = getAllPropertyValues();
@@ -158,7 +158,7 @@ public class PropertyValueCollection {
      * @param property the {@link IProductCmptProperty} the values are created for
      * @param partId the new part's id
      * @return the newly created property values or an empty list if the given property is
-     *         <code>null</code>.
+     *             <code>null</code>.
      */
     public List<IPropertyValue> newPropertyValues(IPropertyValueContainer container,
             IProductCmptProperty property,
@@ -178,13 +178,12 @@ public class PropertyValueCollection {
      * @param partId the new part's id
      * 
      * @return the newly created part or <code>null</code> if the given XML tag corresponds to no
-     *         {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
+     *             {@link IPropertyValue} or {@link ProductCmptPropertyType} respectively.
      */
     public IIpsObjectPart newPropertyValue(String xmlTagName, String partId) {
         PropertyValueType propertyType = PropertyValueType.getTypeForXmlTag(xmlTagName);
         if (propertyType != null) {
-            IPropertyValue newPropertyValue = newPropertyValue(partId, propertyType.getInterfaceClass());
-            return newPropertyValue;
+            return newPropertyValue(partId, propertyType.getInterfaceClass());
         } else if (LegacyConfigElement.XML_TAG.equals(xmlTagName)) {
             return new LegacyConfigElement(this);
         }
@@ -218,7 +217,7 @@ public class PropertyValueCollection {
      * @param partId the new part's id
      * @param clazz the class parameter is used to get a type safe return value.
      * @return the newly created {@link IPropertyValue} or <code>null</code> if the given property
-     *         is <code>null</code>.
+     *             is <code>null</code>.
      */
     public <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, String partId, Class<T> clazz) {
         T propertyValue = PropertyValueType.createPropertyValue(getPropertyValueContainer(), property, partId, clazz);
@@ -247,7 +246,7 @@ public class PropertyValueCollection {
      * 
      * @param value the value to be removed
      * @return <code>true</code> if the given value was removed from this holder, <code>false</code>
-     *         otherwise.
+     *             otherwise.
      */
     public boolean removePropertyValue(IPropertyValue value) {
         return classToInstancesMap.remove(value.getPropertyValueType().getInterfaceClass(), value);

@@ -27,11 +27,11 @@ public interface IIpsCompositeMoveRefactoring extends IIpsCompositeRefactoring {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment);
+    void setTargetIpsPackageFragment(IIpsPackageFragment targetIpsPackageFragment);
 
     /**
      * Returns the target {@link IIpsPackageFragment}.
      */
-    public IIpsPackageFragment getTargetIpsPackageFragment();
+    IIpsPackageFragment getTargetIpsPackageFragment();
 
 }

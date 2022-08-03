@@ -300,8 +300,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public void setPosition(Position side) {
-        Position oldValue = this.position;
-        this.position = side;
+        Position oldValue = position;
+        position = side;
 
         getProductCmptTypeImpl().sortCategoriesAccordingToPosition();
 
@@ -581,7 +581,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         ProductCmptPropertyComparator(IProductCmptType productCmptType) {
             this.productCmptType = productCmptType;
-            categories = productCmptType.getCategories().stream().map(t -> t.getName()).collect(Collectors.toList());
+            categories = productCmptType.getCategories().stream().map(IProductCmptCategory::getName)
+                    .collect(Collectors.toList());
         }
 
         @Override
@@ -613,12 +614,8 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             }
 
             // Consider elements equal if the product component types cannot be found
-            if (productCmptType1 == null || productCmptType2 == null) {
-                return 0;
-            }
-
             // Consider elements equal if both properties belong to the same product component type
-            if (productCmptType1.equals(productCmptType2)) {
+            if (productCmptType1 == null || productCmptType2 == null || productCmptType1.equals(productCmptType2)) {
                 return 0;
             }
 

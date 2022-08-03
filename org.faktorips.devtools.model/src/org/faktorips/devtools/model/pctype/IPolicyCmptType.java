@@ -29,44 +29,44 @@ public interface IPolicyCmptType extends IType {
     /**
      * The name of the "configurableByProductComponentType" property.
      */
-    public static final String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
+    String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the "generateValidatorClass" property.
      */
-    public static final String PROPERTY_GENERATE_VALIDATOR_CLASS = "generateValidatorClass"; //$NON-NLS-1$
+    String PROPERTY_GENERATE_VALIDATOR_CLASS = "generateValidatorClass"; //$NON-NLS-1$
     /**
      * The name of the product component type property.
      */
-    public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
+    String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the abstract property.
      */
-    public static final String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
+    String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined as
      * configurable by product, but the product component type name is not set.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
+    String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined as
      * configurable by product, but the product component type name is not set.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND = MSGCODE_PREFIX + "ProductCmptTypeNotFound"; //$NON-NLS-1$
+    String MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND = MSGCODE_PREFIX + "ProductCmptTypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined configurable
      * by product and the product type name is the same as this type's name.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = MSGCODE_PREFIX
+    String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = MSGCODE_PREFIX
             + "ProductCmptTypeNameMissmatch"; //$NON-NLS-1$
 
     /**
@@ -74,58 +74,58 @@ public interface IPolicyCmptType extends IType {
      * type as configuring it, but the referenced product component type configures another policy
      * component type or none at all.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX
+    String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX
             + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product relevant flag is set but the super type
      * is not product relevant.
      */
-    public static final String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = MSGCODE_PREFIX
+    String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = MSGCODE_PREFIX
             + "SupertypeNotProductRelevantIfTheTypeIsProductRelevant"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this class needs to be configurable if the super
      * type is configurable.
      */
-    public static final String MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE = MSGCODE_PREFIX
+    String MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE = MSGCODE_PREFIX
             + "SupertypeProductRelevantForcesThisTypeIsProductRelevant"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that not all classes in the hierarchy have the same
      * setting for creating a separate validator class.
      */
-    public static final String MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_DIFFERENT_GENERATE_VALIDATOR_CLASS_SETTING_IN_HIERARCHY = MSGCODE_PREFIX
             + "DifferentGenerateValidatorClassSettingInHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if this class has a corresponding product component type, otherwise
      * <code>false</code>.
      */
-    public boolean isConfigurableByProductCmptType();
+    boolean isConfigurableByProductCmptType();
 
     /**
      * Sets if this policy component type has a corresponding product component type or not.
      */
-    public void setConfigurableByProductCmptType(boolean newValue);
+    void setConfigurableByProductCmptType(boolean newValue);
 
     /**
      * Returns whether this policy component type is configured to delegate validation to a separate
      * validation class.
      */
-    public boolean isGenerateValidatorClass();
+    boolean isGenerateValidatorClass();
 
     /**
      * Configure this policy component type to generate a separate validation class and delegate
      * validation to that class.
      */
-    public void setGenerateValidatorClass(boolean newValue);
+    void setGenerateValidatorClass(boolean newValue);
 
     /**
      * Returns the qualified name of the product component type. Returns an empty string if this
      * policy component type has no corresponding product component type.
      */
-    public String getProductCmptType();
+    String getProductCmptType();
 
     /**
      * Returns the product component type this type refers to. Returns <code>null</code> if either
@@ -135,19 +135,19 @@ public interface IPolicyCmptType extends IType {
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
+    IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the product component type that configures this type.
      */
-    public void setProductCmptType(String qualifiedName);
+    void setProductCmptType(String qualifiedName);
 
     /**
      * Returns the qualified name of the type's super type. Returns an empty string if this type has
      * no super type.
      */
     @Override
-    public String getSupertype();
+    String getSupertype();
 
     /**
      * Returns <code>true</code> if this type has a super type, otherwise <code>false</code>. This
@@ -155,7 +155,7 @@ public interface IPolicyCmptType extends IType {
      * does not exist.
      */
     @Override
-    public boolean hasSupertype();
+    boolean hasSupertype();
 
     /**
      * Sets the type's super type.
@@ -163,19 +163,19 @@ public interface IPolicyCmptType extends IType {
      * @throws IllegalArgumentException if newSupertype is null.
      */
     @Override
-    public void setSupertype(String newSupertype);
+    void setSupertype(String newSupertype);
 
     /**
      * Sets the type's abstract property.
      */
     @Override
-    public void setAbstract(boolean newValue);
+    void setAbstract(boolean newValue);
 
     /**
      * Returns <code>true</code> if an extension compilation unit is generated whether it is
      * necessary because of the presence of none abstract methods or validation rules or not.
      */
-    public boolean isForceExtensionCompilationUnitGeneration();
+    boolean isForceExtensionCompilationUnitGeneration();
 
     /**
      * Sets if an extension compilation unit should be generated in any case.
@@ -183,7 +183,7 @@ public interface IPolicyCmptType extends IType {
      * The developer using FaktorIps can set this property, if he wants to override methods for
      * relation and attribute handling that are normally not overridden.
      */
-    public void setForceExtensionCompilationUnitGeneration(boolean flag);
+    void setForceExtensionCompilationUnitGeneration(boolean flag);
 
     /**
      * Returns <code>true</code> if an extension Java compilation unit should exists for policy
@@ -199,12 +199,12 @@ public interface IPolicyCmptType extends IType {
      * 
      * Returns <code>false</code> otherwise.
      */
-    public boolean isExtensionCompilationUnitGenerated();
+    boolean isExtensionCompilationUnitGenerated();
 
     /**
      * Returns the type's attributes.
      */
-    public List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes();
+    List<IPolicyCmptTypeAttribute> getPolicyCmptTypeAttributes();
 
     /**
      * Returns a list containing the {@link IProductCmptProperty IProductCmptPropertys} belonging to
@@ -216,7 +216,7 @@ public interface IPolicyCmptType extends IType {
      * @throws IllegalArgumentException If the indicated property type identified properties that do
      *             not belong to policy component types
      */
-    public List<IProductCmptProperty> getProductCmptProperties(ProductCmptPropertyType propertyType);
+    List<IProductCmptProperty> getProductCmptProperties(ProductCmptPropertyType propertyType);
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -224,7 +224,7 @@ public interface IPolicyCmptType extends IType {
      * the first attribute with the name is returned. Returns <code>null</code> if no attribute with
      * the given name exists.
      */
-    public IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name);
+    IPolicyCmptTypeAttribute getPolicyCmptTypeAttribute(String name);
 
     /**
      * Searches this type and it's super types for an attribute with the given name. If more than
@@ -232,25 +232,25 @@ public interface IPolicyCmptType extends IType {
      * <code>null</code> if no attribute with the given name is found.
      * 
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject);
+    IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
      */
-    public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute();
+    IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute();
 
     /**
      * Creates and returns a new {@link IPolicyCmptTypeAttribute} with the given name.
      * 
      * @param name The name of the attribute to create
      */
-    public IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(String name);
+    IPolicyCmptTypeAttribute newPolicyCmptTypeAttribute(String name);
 
     /**
      * Returns the number of attributes.
      */
     @Override
-    public int getNumOfAttributes();
+    int getNumOfAttributes();
 
     /**
      * Moves the attributes identified by the indexes up or down by one position. If one of the
@@ -266,12 +266,12 @@ public interface IPolicyCmptType extends IType {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify an attribute.
      */
     @Override
-    public int[] moveAttributes(int[] indexes, boolean up);
+    int[] moveAttributes(int[] indexes, boolean up);
 
     /**
      * Returns the type's validation rules.
      */
-    public List<IValidationRule> getValidationRules();
+    List<IValidationRule> getValidationRules();
 
     /**
      * Returns this type's validation rule with the given name or <code>null</code> if no rule
@@ -279,31 +279,31 @@ public interface IPolicyCmptType extends IType {
      * <p>
      * Use {@link #findAllValidationRules(IIpsProject)} to search the super-type hierarchy.
      */
-    public IValidationRule getValidationRule(String ruleName);
+    IValidationRule getValidationRule(String ruleName);
 
     /**
      * Returns all {@link IValidationRule IValidationRules} defined by this type and its
      * super-types.
      * 
      */
-    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject);
+    List<IValidationRule> findAllValidationRules(IIpsProject ipsProject);
 
     /**
      * Returns the {@link IValidationRule} with the given name, or <code>null</code> if no such rule
      * is defined by this type and its super-types.
      * 
      */
-    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject);
+    IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject);
 
     /**
      * Creates a new validation rule and returns it.
      */
-    public IValidationRule newRule();
+    IValidationRule newRule();
 
     /**
      * Returns the number of rules.
      */
-    public int getNumOfRules();
+    int getNumOfRules();
 
     /**
      * Moves the rules identified by the indexes up or down by one position. If one of the indexes
@@ -318,7 +318,7 @@ public interface IPolicyCmptType extends IType {
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a rule.
      */
-    public int[] moveRules(int[] indexes, boolean up);
+    int[] moveRules(int[] indexes, boolean up);
 
     /**
      * Returns <code>true</code> if this class represents the root of a complex aggregate, otherwise
@@ -331,28 +331,28 @@ public interface IPolicyCmptType extends IType {
      * 
      * @throws IpsException if an error occurs while searching the super type hierarchy.
      */
-    public boolean isAggregateRoot() throws IpsException;
+    boolean isAggregateRoot() throws IpsException;
 
     /**
      * Returns <code>true</code> if this not an aggregate root, otherwise <code>false</code>.
      */
-    public boolean isDependantType() throws IpsException;
+    boolean isDependantType() throws IpsException;
 
     /**
      * Returns the type's relations.
      */
-    public List<IPolicyCmptTypeAssociation> getPolicyCmptTypeAssociations();
+    List<IPolicyCmptTypeAssociation> getPolicyCmptTypeAssociations();
 
     /**
      * Creates a new association and returns it.
      */
-    public IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation();
+    IPolicyCmptTypeAssociation newPolicyCmptTypeAssociation();
 
     /**
      * Returns the number of relations.
      */
     @Override
-    public int getNumOfAssociations();
+    int getNumOfAssociations();
 
     /**
      * Moves the relations identified by the indexes up or down by one position. If one of the
@@ -368,13 +368,13 @@ public interface IPolicyCmptType extends IType {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a relation.
      */
     @Override
-    public int[] moveAssociations(int[] indexes, boolean up);
+    int[] moveAssociations(int[] indexes, boolean up);
 
     /**
      * Creates a new sub type hierarchy for the type and returns it.
      */
     @Override
-    public ITypeHierarchy getSubtypeHierarchy() throws IpsException;
+    ITypeHierarchy getSubtypeHierarchy() throws IpsException;
 
     /**
      * Initializes the persistence metadata (like table, column and discriminator information) with
@@ -383,18 +383,18 @@ public interface IPolicyCmptType extends IType {
      * @throws IpsException if the corresponding IPS Project does not have persistence support
      *             enabled.
      */
-    public void initPersistentTypeInfo() throws IpsException;
+    void initPersistentTypeInfo() throws IpsException;
 
     /**
      * Returns the information about how to persist this policy component type into a relational
      * database table.
      * 
      * @return <code>null</code> if the persistence information is not available, e.g. when the
-     *         corresponding IPS project this type belongs to does not support persistence.
+     *             corresponding IPS project this type belongs to does not support persistence.
      * 
      * @see org.faktorips.devtools.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
-    public IPersistentTypeInfo getPersistenceTypeInfo();
+    IPersistentTypeInfo getPersistenceTypeInfo();
 
     /**
      * Returns true if the policy component type should be persistent. Returns <code>false</code> if
@@ -403,6 +403,6 @@ public interface IPolicyCmptType extends IType {
      * @see #getPersistenceTypeInfo()
      * @see IPersistentTypeInfo#isEnabled()
      */
-    public boolean isPersistentEnabled();
+    boolean isPersistentEnabled();
 
 }

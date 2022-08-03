@@ -113,8 +113,7 @@ public class JavaClassNaming {
         if (index == name.length()) {
             throw new RuntimeException("The qualified class name is not a valid java class name"); //$NON-NLS-1$
         }
-        Path javaFile = Path.of(name.replace('.', '/') + JAVA_EXTENSION);
-        return javaFile;
+        return Path.of(name.replace('.', '/') + JAVA_EXTENSION);
     }
 
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * This is the generator model node for a derived union association. It is very important to
@@ -93,7 +93,7 @@ public class XDerivedUnionAssociation extends XAssociation {
      * 
      * @param xType The type in which context you generate the code
      * @return True if there is already an implementation in any super class (super call is needed),
-     *         false otherwise
+     *             false otherwise
      */
     public boolean isImplementedInSuperclass(XType xType) {
         if (isDefinedIn(xType)) {

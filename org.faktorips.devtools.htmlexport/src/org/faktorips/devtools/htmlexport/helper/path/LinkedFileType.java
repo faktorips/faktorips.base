@@ -29,7 +29,7 @@ public enum LinkedFileType {
     private String suffix;
     private TargetType target;
 
-    private LinkedFileType(String prefix, String suffix, TargetType target) {
+    LinkedFileType(String prefix, String suffix, TargetType target) {
         this.prefix = prefix;
         this.suffix = suffix;
         this.target = target;

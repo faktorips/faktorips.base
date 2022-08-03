@@ -19,6 +19,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Set;
 
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -97,11 +98,11 @@ public class DeepCopyOperation implements ICoreRunnable {
     }
 
     public void setSourceIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) {
-        this.sourceIpsPackageFragment = ipsPackageFragment;
+        sourceIpsPackageFragment = ipsPackageFragment;
     }
 
     public void setTargetIpsPackageFragment(IIpsPackageFragment ipsPackageFragment) {
-        this.targetIpsPackageFragment = ipsPackageFragment;
+        targetIpsPackageFragment = ipsPackageFragment;
     }
 
     /**
@@ -501,10 +502,8 @@ public class DeepCopyOperation implements ICoreRunnable {
      * source is appended, after the given number of segments to ignore is cut off.
      */
     private IIpsPackageFragment createTargetPackage(IIpsSrcFile file, IProgressMonitor monitor) {
-        IIpsPackageFragment result;
         String path = file.getIpsPackageFragment().getRelativePath().toString().replace('/', '.');
-        result = ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);
-        return result;
+        return ipsPackageFragmentRoot.createPackageFragment(path, false, monitor);
     }
 
     public IIpsSrcFile getCopiedRoot() {
@@ -540,8 +539,7 @@ public class DeepCopyOperation implements ICoreRunnable {
             result = prime * result
                     + ((productCmptTypeAssociation == null) ? 0 : productCmptTypeAssociation.hashCode());
             result = prime * result + ((sourceProductCmpt == null) ? 0 : sourceProductCmpt.hashCode());
-            result = prime * result + ((targetProductCmpt == null) ? 0 : targetProductCmpt.hashCode());
-            return result;
+            return prime * result + ((targetProductCmpt == null) ? 0 : targetProductCmpt.hashCode());
         }
 
         @Override
@@ -549,38 +547,16 @@ public class DeepCopyOperation implements ICoreRunnable {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             LinkData other = (LinkData)obj;
             if (!getOuterType().equals(other.getOuterType())) {
                 return false;
             }
-            if (productCmptTypeAssociation == null) {
-                if (other.productCmptTypeAssociation != null) {
-                    return false;
-                }
-            } else if (!productCmptTypeAssociation.equals(other.productCmptTypeAssociation)) {
-                return false;
-            }
-            if (sourceProductCmpt == null) {
-                if (other.sourceProductCmpt != null) {
-                    return false;
-                }
-            } else if (!sourceProductCmpt.equals(other.sourceProductCmpt)) {
-                return false;
-            }
-            if (targetProductCmpt == null) {
-                if (other.targetProductCmpt != null) {
-                    return false;
-                }
-            } else if (!targetProductCmpt.equals(other.targetProductCmpt)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(productCmptTypeAssociation, other.productCmptTypeAssociation)
+                    && Objects.equals(sourceProductCmpt, other.sourceProductCmpt)
+                    && Objects.equals(targetProductCmpt, other.targetProductCmpt);
         }
 
         private DeepCopyOperation getOuterType() {
@@ -620,10 +596,7 @@ public class DeepCopyOperation implements ICoreRunnable {
             if ((this == other)) {
                 return true;
             }
-            if ((other == null)) {
-                return false;
-            }
-            if (!(other instanceof TblContentUsageData)) {
+            if ((other == null) || !(other instanceof TblContentUsageData)) {
                 return false;
             }
             TblContentUsageData castOther = (TblContentUsageData)other;
@@ -635,8 +608,7 @@ public class DeepCopyOperation implements ICoreRunnable {
         public int hashCode() {
             int result = 17;
             result = 37 * result + productCmpt.hashCode();
-            result = 37 * result + tableUsageName.hashCode();
-            return result;
+            return 37 * result + tableUsageName.hashCode();
         }
 
     }

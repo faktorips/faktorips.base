@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsarchiveexport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -107,7 +106,6 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void createControl(Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setLayout(new GridLayout(1, true));
@@ -123,8 +121,8 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
         treeViewer.expandAll();
         treeViewer.addCheckStateListener(this);
         List<Object> selectedObjects = new ArrayList<>();
-        for (Iterator<Object> iter = selection.iterator(); iter.hasNext();) {
-            Object objectInTree = findCorrespondingObjectInTree(iter.next());
+        for (Object object : selection) {
+            Object objectInTree = findCorrespondingObjectInTree(object);
             if (objectInTree != null) {
                 selectedObjects.add(objectInTree);
             }
@@ -377,7 +375,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
     }
 
     private final class ContentProvider extends StandardJavaElementContentProvider {
-        private Object[] emptyArray = new Object[0];
+        private Object[] emptyArray = {};
 
         @Override
         public boolean hasChildren(Object element) {

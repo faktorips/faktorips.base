@@ -71,8 +71,6 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidate() {
-        MessageList ml = null;
-
         IPersistentAssociationInfo persistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo inversePersistenceAssociatonInfo = targetPcAssociation
                 .getPersistenceAssociatonInfo();
@@ -88,7 +86,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         persistenceAssociatonInfo.setTargetColumnName("");
         persistenceAssociatonInfo.setSourceColumnName("");
 
-        ml = persistenceAssociatonInfo.validate(ipsProject);
+        MessageList ml = persistenceAssociatonInfo.validate(ipsProject);
         assertThat(ml, hasMessageCode(IPersistentAssociationInfo.MSGCODE_OWNER_OF_ASSOCIATION_MISMATCH));
 
         persistenceAssociatonInfo.setOwnerOfManyToManyAssociation(true);
@@ -129,13 +127,11 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateTargetSideNotTransient() {
-        MessageList ml = null;
-
         setupMasterToDetailComposition();
         IPersistentAssociationInfo sourcePersistenceAssociatonInfo = pcAssociation.getPersistenceAssociatonInfo();
         IPersistentAssociationInfo targetPersistenceAssociatonInfo = targetPcAssociation.getPersistenceAssociatonInfo();
 
-        ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
+        MessageList ml = sourcePersistenceAssociatonInfo.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IPersistentAssociationInfo.MSGCODE_TRANSIENT_MISMATCH));
         assertEquals(0, ml.size());
 
@@ -552,8 +548,6 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateLazyFetchForSingleValuedAssociationsAllowed() {
-        MessageList msgList = null;
-
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.getPersistenceOptions().setAllowLazyFetchForSingleValuedAssociations(false);
         ipsProject.setProperties(properties);
@@ -567,7 +561,7 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
         // eager always allowed
         persistenceAssociatonInfo.setFetchType(FetchType.EAGER);
-        msgList = persistenceAssociatonInfo.validate(ipsProject);
+        MessageList msgList = persistenceAssociatonInfo.validate(ipsProject);
         assertNull(msgList
                 .getMessageByCode(
                         IPersistentAssociationInfo.MSGCODE_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS_NOT_ALLOWED));
@@ -766,8 +760,6 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateDerivedUnionJoinColumnNotNecessary() {
-        // join column is only necessary for none derived union associations
-        MessageList ml = null;
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "super");
         superPcType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         superPcType.setAbstract(true);
@@ -779,10 +771,8 @@ public class PersistentAssociationInfoTest extends PersistenceIpsTest {
         derivedUnionAss.setTargetRoleSingular("derivedUnion");
         derivedUnionAss.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        // unidirectional derived union
-        ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
-        // assertThat(ml,
-        // lacksMessageCode(IPersistentAssociationInfo.MSGCODE_JOIN_COLUMN_NAME_EMPTY));
+        // join column is only necessary for none derived union associations
+        MessageList ml = derivedUnionAss.getPersistenceAssociatonInfo().validate(ipsProject);
 
         IPolicyCmptTypeAssociation invDerivedUnion = superPcType.newPolicyCmptTypeAssociation();
         invDerivedUnion.setTarget(policyCmptType.getQualifiedName());

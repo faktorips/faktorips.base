@@ -23,28 +23,28 @@ import org.faktorips.devtools.model.type.IAttribute;
  */
 public interface ITestAttributeValue extends IIpsObjectPart {
 
-    public static final String PROPERTY_ATTRIBUTE = "testAttribute"; //$NON-NLS-1$
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    String PROPERTY_ATTRIBUTE = "testAttribute"; //$NON-NLS-1$
+    String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTATTRIBUTEVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding test attribute not exists.
      */
-    public static final String MSGCODE_TESTATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "TestAttributeNotFound"; //$NON-NLS-1$
+    String MSGCODE_TESTATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "TestAttributeNotFound"; //$NON-NLS-1$
 
     /**
      * Returns the attribute.
      */
-    public String getTestAttribute();
+    String getTestAttribute();
 
     /**
      * Sets the given attribute.
      */
-    public void setTestAttribute(String attribute);
+    void setTestAttribute(String attribute);
 
     /**
      * Returns the test attribute or <code>null</code> if the test attribute does not exist.
@@ -53,7 +53,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @throws IpsException if an error occurs while searching for the test attribute.
      */
-    public ITestAttribute findTestAttribute(IIpsProject ipsProject) throws IpsException;
+    ITestAttribute findTestAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Search and returns the corresponding attribute.<br>
@@ -62,17 +62,17 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * product relevant then the corresponding product component type will be used to start the
      * searching the supertype hierarchy.
      */
-    public IAttribute findAttribute(IIpsProject ipsProject) throws IpsException;
+    IAttribute findAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns value of the attribute.
      */
-    public String getValue();
+    String getValue();
 
     /**
      * Sets the value of the attribute.
      */
-    public void setValue(String newValue);
+    void setValue(String newValue);
 
     /**
      * Sets the default value of the test attribute value. If the test attribute defines an input
@@ -81,7 +81,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @throws IpsException if the test value parameter wasn't found
      */
-    public void setDefaultValue() throws IpsException;
+    void setDefaultValue() throws IpsException;
 
     /**
      * Returns <code>true</code> if the test attribute value is an input attribute, otherwise
@@ -89,7 +89,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which object path is used to search the attribute.
      */
-    public boolean isInputAttribute(IIpsProject ipsProject);
+    boolean isInputAttribute(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if the test attribute value is an expected result attribute,
@@ -97,7 +97,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which object path is used to search the attribute.
      */
-    public boolean isExpectedResultAttribute(IIpsProject ipsProject);
+    boolean isExpectedResultAttribute(IIpsProject ipsProject);
 
     /**
      * Updates the default for the test attribute value. The default will be retrieved from the
@@ -107,6 +107,6 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @throws IpsException in case of an error.
      */
-    public void updateDefaultTestAttributeValue() throws IpsException;
+    void updateDefaultTestAttributeValue() throws IpsException;
 
 }

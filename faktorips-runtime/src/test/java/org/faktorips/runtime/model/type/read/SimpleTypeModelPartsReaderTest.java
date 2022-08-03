@@ -32,7 +32,7 @@ import org.faktorips.runtime.util.MessagesHelper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SimpleTypeModelPartsReaderTest {
@@ -142,40 +142,44 @@ public class SimpleTypeModelPartsReaderTest {
 
     @ParentAnnotation(kids = { "Tick", "Trick" })
     private static class Parent {
-
+        // parent
     }
 
     @ParentAnnotation(kids = { "Tick", "Trick" })
-    private static interface ParentInterface {
+    private interface ParentInterface {
         @ChildAnnotation("Tick")
-        public void foo();
+        void foo();
 
         @ChildAnnotation("Trick")
-        public void bar();
+        void bar();
     }
 
     @ParentAnnotation(kids = { "Tick", "Trick" })
-    private static interface SubInterface extends ParentInterface {
+    private interface SubInterface extends ParentInterface {
+        // child
     }
 
     @ParentAnnotation(kids = { "Tick", "Trick", "Track" })
     private static class Parent2 {
-
+        // another parent
     }
 
     private static class PartHolder1 {
         @ChildAnnotation("Tick")
         public void foo() {
+            // nothing to do
         }
     }
 
     private static class PartHolder2 {
         @ChildAnnotation("Tick")
         public void foo() {
+            // nothing to do
         }
 
         @ChildAnnotation("Trick")
         public void bar() {
+            // nothing to do
         }
     }
 
@@ -183,6 +187,7 @@ public class SimpleTypeModelPartsReaderTest {
 
         @ChildAnnotation("Track")
         public void baz() {
+            // nothing to do
         }
     }
 

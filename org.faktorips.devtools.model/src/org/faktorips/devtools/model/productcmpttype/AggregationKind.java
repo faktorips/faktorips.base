@@ -28,7 +28,7 @@ public enum AggregationKind {
     private final String id;
     private final String name;
 
-    private AggregationKind(String id, String name) {
+    AggregationKind(String id, String name) {
         ArgumentCheck.notNull(id);
         ArgumentCheck.notNull(name);
         this.id = id;

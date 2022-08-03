@@ -25,7 +25,7 @@ public abstract class NumberValueConverterTest {
 
     /**
      * @return The datatype to pass into <code>ITableFormat.getIpsValue()</code> and
-     *         <code>ITableFormat.getExternalValue()</code> when doing conversions.
+     *             <code>ITableFormat.getExternalValue()</code> when doing conversions.
      */
     public abstract ValueDatatype getDatatypeUsedForConversion();
 
@@ -34,7 +34,7 @@ public abstract class NumberValueConverterTest {
      *            decimal separator character (e.g. 3,456), otherwise a dot is used (3.456).
      * 
      * @return Test data in an external representation to be converted into the internal IPS
-     *         representation using <code>IValueConverter.getIpsValue()</code>.
+     *             representation using <code>IValueConverter.getIpsValue()</code>.
      */
     public abstract String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator);
 

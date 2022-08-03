@@ -312,10 +312,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
         refresh();
     }
 
+    @SuppressWarnings("unchecked")
     protected List<IIpsElement> getSelectedElements() {
-        @SuppressWarnings("unchecked")
-        List<IIpsElement> selectedElements = ((IStructuredSelection)tableViewer.getSelection()).toList();
-        return selectedElements;
+        return ((IStructuredSelection)tableViewer.getSelection()).toList();
     }
 
     @Override
@@ -395,10 +394,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
                     && areSameCategory((IIpsElement)target, selectedElements);
         }
 
+        @SuppressWarnings("unchecked")
         protected List<IIpsElement> getSelectedElements() {
-            @SuppressWarnings("unchecked")
-            List<IIpsElement> selectedElements = ((IStructuredSelection)getViewer().getSelection()).toList();
-            return selectedElements;
+            return ((IStructuredSelection)getViewer().getSelection()).toList();
         }
 
         private boolean areSameCategory(IIpsElement target, List<IIpsElement> selectedElements) {

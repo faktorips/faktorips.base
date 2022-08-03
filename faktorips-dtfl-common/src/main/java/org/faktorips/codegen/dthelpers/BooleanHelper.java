@@ -46,8 +46,8 @@ public class BooleanHelper extends AbstractDatatypeHelper {
         if (IpsStringUtils.isEmpty(value)) {
             return nullExpression();
         }
-        Boolean booleanValue = Boolean.valueOf(value);
-        if (booleanValue.booleanValue()) {
+        boolean booleanValue = Boolean.parseBoolean(value);
+        if (booleanValue) {
             return new JavaCodeFragment("Boolean.TRUE"); //$NON-NLS-1$
         } else {
             return new JavaCodeFragment("Boolean.FALSE"); //$NON-NLS-1$

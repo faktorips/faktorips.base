@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -239,10 +240,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((values == null) ? 0 : values.hashCode());
-        return result;
+        return Objects.hash(values);
     }
 
     @Override
@@ -250,21 +248,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         MultiValueHolder other = (MultiValueHolder)obj;
-        if (values == null) {
-            if (other.values != null) {
-                return false;
-            }
-        } else if (!values.equals(other.values)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(values, other.values);
     }
 
     /**

@@ -13,6 +13,7 @@ package org.faktorips.codegen;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.faktorips.util.StringUtil;
@@ -38,7 +39,7 @@ public class JavaCodeFragment extends CodeFragment {
 
     public JavaCodeFragment(boolean indent) {
         super(indent);
-        this.importDecl = new ImportDeclaration();
+        importDecl = new ImportDeclaration();
     }
 
     /**
@@ -211,10 +212,10 @@ public class JavaCodeFragment extends CodeFragment {
      * Appends the unqualified class name of an public inner class to the source code and updates
      * the import declaration (if necessary).
      * 
-     * @throws NullPointerException if clazz is null.
+     * @throws NullPointerException if qualifiedClassName is null.
      */
     public JavaCodeFragment appendInnerClassName(String qualifiedClassName) {
-        appendClassName(qualifiedClassName.replaceAll("\\$", "\\.")); //$NON-NLS-1$ //$NON-NLS-2$
+        appendClassName(qualifiedClassName.replace('$', '.'));
         return this;
     }
 
@@ -333,8 +334,7 @@ public class JavaCodeFragment extends CodeFragment {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((importDecl == null) ? 0 : importDecl.hashCode());
-        return result;
+        return prime * result + ((importDecl == null) ? 0 : importDecl.hashCode());
     }
 
     /**
@@ -346,24 +346,14 @@ public class JavaCodeFragment extends CodeFragment {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         JavaCodeFragment other = (JavaCodeFragment)obj;
         if (!super.equals(obj)) {
             return false;
         }
-        if (importDecl == null) {
-            if (other.importDecl != null) {
-                return false;
-            }
-        } else if (!importDecl.equals(other.importDecl)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(importDecl, other.importDecl);
     }
 
     /**

@@ -61,7 +61,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
 
     public NewRootParamWizardPage(NewRootParameterWizard wizard) {
         super(PAGE_ID, Messages.NewRootParamWizardPage_Title_TestPolicyCmptParam, null);
-        this.setDescription(Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam);
+        setDescription(Messages.NewRootParamWizardPage_Description_TestPolicyCmptParam);
         this.wizard = wizard;
     }
 
@@ -205,8 +205,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      * Updates the page complete status.
      */
     private void updateSetPageComplete() {
-        boolean completeAllowed = false;
-        completeAllowed = validatePage();
+        boolean completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 

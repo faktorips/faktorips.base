@@ -232,8 +232,7 @@ public class ProductCmptPage extends WizardPage {
 
         @Override
         protected MessageList validatePage() {
-            MessageList messageList = getPmo().getValidator().validateProductCmptPage();
-            return messageList;
+            return getPmo().getValidator().validateProductCmptPage();
         }
 
     }

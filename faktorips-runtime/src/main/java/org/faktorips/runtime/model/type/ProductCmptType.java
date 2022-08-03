@@ -101,7 +101,7 @@ public class ProductCmptType extends Type {
      * Returns whether this product component type is a configuration for a policy component type.
      * 
      * @return <code>true</code> if this type configures a policy component type, <code>false</code>
-     *         if not
+     *             if not
      */
     public boolean isConfigurationForPolicyCmptType() {
         return getAnnotatedDeclaration().is(IpsConfigures.class);
@@ -313,7 +313,7 @@ public class ProductCmptType extends Type {
 
         public TableUsageFinder(String name) {
             super();
-            this.tableUsageName = name;
+            tableUsageName = name;
         }
 
         @Override

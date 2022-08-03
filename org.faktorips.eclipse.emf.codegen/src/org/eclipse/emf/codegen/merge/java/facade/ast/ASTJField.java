@@ -112,9 +112,9 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
     public ASTJField(VariableDeclarationFragment variableDeclarationFragment, ASTFacadeHelper facadeHelper,
             ASTRewrite rewriter) {
         super((FieldDeclaration)variableDeclarationFragment.getParent());
-        this.originalFieldDeclaration = (FieldDeclaration)variableDeclarationFragment.getParent();
+        originalFieldDeclaration = (FieldDeclaration)variableDeclarationFragment.getParent();
         this.variableDeclarationFragment = variableDeclarationFragment;
-        this.wrappedVariableDeclarationFragment = variableDeclarationFragment;
+        wrappedVariableDeclarationFragment = variableDeclarationFragment;
         setFacadeHelper(facadeHelper);
         this.rewriter = rewriter;
         if (rewriter != null && getFacadeHelper() != null) {

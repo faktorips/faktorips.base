@@ -19,19 +19,19 @@ import java.util.List;
  */
 public interface IObjectReferenceStore {
 
-    public void putObject(Object id, Object entityObject);
+    void putObject(Object id, Object entityObject);
 
-    public void addUnresolvedReference(IUnresolvedReference reference);
+    void addUnresolvedReference(IUnresolvedReference reference);
 
-    public Object getObject(Class<?> clazz, Object id);
+    Object getObject(Class<?> clazz, Object id);
 
     /**
      * Returns a list containing all objects registered.
      */
-    public Collection<List<Object>> getAllObjects();
+    Collection<List<Object>> getAllObjects();
 
-    public Collection<IUnresolvedReference> getAllUnresolvedReferences();
+    Collection<IUnresolvedReference> getAllUnresolvedReferences();
 
-    public void resolveReferences() throws Exception;
+    void resolveReferences() throws Exception;
 
 }

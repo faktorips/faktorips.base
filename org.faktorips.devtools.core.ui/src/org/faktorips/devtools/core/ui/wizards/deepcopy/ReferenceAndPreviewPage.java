@@ -167,9 +167,7 @@ public class ReferenceAndPreviewPage extends WizardPage {
                     theMonitor.worked(1);
                     theMonitor.worked(1);
                 });
-            } catch (InvocationTargetException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            } catch (InterruptedException e) {
+            } catch (InvocationTargetException | InterruptedException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

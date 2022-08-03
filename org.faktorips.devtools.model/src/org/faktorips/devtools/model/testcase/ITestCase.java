@@ -25,35 +25,35 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
 public interface ITestCase extends IIpsMetaObject {
 
     /** Property names */
-    public static final String PROPERTY_TEST_CASE_TYPE = "testCaseType"; //$NON-NLS-1$
+    String PROPERTY_TEST_CASE_TYPE = "testCaseType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTCASE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTCASE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding test case type not exists.
      */
-    public static final String MSGCODE_TEST_CASE_TYPE_NOT_FOUND = MSGCODE_PREFIX + "TestCaseTypeNotFound"; //$NON-NLS-1$
+    String MSGCODE_TEST_CASE_TYPE_NOT_FOUND = MSGCODE_PREFIX + "TestCaseTypeNotFound"; //$NON-NLS-1$
 
     /**
      * Returns the test case type name.
      */
-    public String getTestCaseType();
+    String getTestCaseType();
 
     @Override
-    public ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
+    ITestCaseTestCaseTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Fixes all differences that are described in the delta.
      */
-    public void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws IpsException;
+    void fixDifferences(ITestCaseTestCaseTypeDelta delta) throws IpsException;
 
     /**
      * Sets the test case type the test case belongs to.
      */
-    public void setTestCaseType(String testCaseType);
+    void setTestCaseType(String testCaseType);
 
     /**
      * Search and return the test case type object in the model.
@@ -65,105 +65,105 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @throws IpsException if an error occurs while searching for the test case type.
      */
-    public ITestCaseType findTestCaseType(IIpsProject ipsProject) throws IpsException;
+    ITestCaseType findTestCaseType(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns all test objects or an empty array if the test case hasn't got any test objects.
      */
-    public ITestObject[] getTestObjects();
+    ITestObject[] getTestObjects();
 
     /**
      * Returns all policy component objects or an empty array if the test case hasn't got any policy
      * component objects.
      */
-    public ITestPolicyCmpt[] getTestPolicyCmpts();
+    ITestPolicyCmpt[] getTestPolicyCmpts();
 
     /**
      * Returns all test value objects or an empty array if the test case hasn't got any test value
      * objects.
      */
-    public ITestValue[] getTestValues();
+    ITestValue[] getTestValues();
 
     /**
      * Returns all test rule objects which are related to the given test rule parameter or an empty
      * array if the test case hasn't got such test rule objects.
      */
-    public ITestRule[] getTestRule(String testRuleParameter);
+    ITestRule[] getTestRule(String testRuleParameter);
 
     /**
      * Returns all test rule objects or an empty array if the test case hasn't got any test rule
      * objects.
      */
-    public ITestRule[] getTestRuleObjects();
+    ITestRule[] getTestRuleObjects();
 
     /**
      * Returns all input test objects or an empty array if the test case hasn't got any test input
      * objects.
      */
-    public ITestObject[] getInputTestObjects();
+    ITestObject[] getInputTestObjects();
 
     /**
      * Returns all input test value objects or an empty array if the test case hasn't got any test
      * input value objects.
      */
-    public ITestValue[] getInputTestValues();
+    ITestValue[] getInputTestValues();
 
     /**
      * Returns all input policy component objects or an empty array if the test case hasn't got any
      * input policy component objects.
      */
-    public ITestPolicyCmpt[] getInputTestPolicyCmpts();
+    ITestPolicyCmpt[] getInputTestPolicyCmpts();
 
     /**
      * Returns all expected result test objects or an empty array if the test case hasn't got any
      * test expected result objects.
      */
-    public ITestObject[] getExpectedResultTestObjects();
+    ITestObject[] getExpectedResultTestObjects();
 
     /**
      * Returns all expected result test value objects or an empty array if the test case hasn't got
      * any expected result test value objects.
      */
-    public ITestValue[] getExpectedResultTestValues();
+    ITestValue[] getExpectedResultTestValues();
 
     /**
      * Returns all expected result test rule objects or an empty array if the test case hasn't got
      * any expected result test rule objects.
      */
-    public ITestRule[] getExpectedResultTestRules();
+    ITestRule[] getExpectedResultTestRules();
 
     /**
      * Returns all expected result test policy component objects or an empty array if the test case
      * hasn't got any expected result test policy component objects.
      */
-    public ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts();
+    ITestPolicyCmpt[] getExpectedResultTestPolicyCmpts();
 
     /**
      * Returns all test policy components of this test case.<br>
      * Returns an empty array if the test case has no test policy components.
      */
-    public ITestPolicyCmpt[] getAllTestPolicyCmpt() throws IpsException;
+    ITestPolicyCmpt[] getAllTestPolicyCmpt() throws IpsException;
 
     /**
      * Returns all test objects of this test case.<br>
      * Returns an empty array if the test case has no test objects components.
      */
-    public ITestObject[] getAllTestObjects() throws IpsException;
+    ITestObject[] getAllTestObjects() throws IpsException;
 
     /**
      * Creates a new test value object.
      */
-    public ITestValue newTestValue();
+    ITestValue newTestValue();
 
     /**
      * Creates a new test rule object.
      */
-    public ITestRule newTestRule();
+    ITestRule newTestRule();
 
     /**
      * Creates a new test policy component object.
      */
-    public ITestPolicyCmpt newTestPolicyCmpt();
+    ITestPolicyCmpt newTestPolicyCmpt();
 
     /**
      * Returns the test policy component or <code>null</code> if not found.
@@ -172,27 +172,27 @@ public interface ITestCase extends IIpsMetaObject {
      *            including links and parent type names.
      * 
      */
-    public ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath);
+    ITestPolicyCmpt findTestPolicyCmpt(String testPolicyCmptPath);
 
     /**
      * Evaluates and returns an unique name (inside this test case) for the given test policy
      * component.
      */
-    public String generateUniqueNameForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name);
+    String generateUniqueNameForTestPolicyCmpt(ITestPolicyCmpt newTestPolicyCmpt, String name);
 
     /**
      * Removes the given object from the list of input or expected result objects.
      * 
      * @throws IpsException if an error occurs while removing the object.
      */
-    public void removeTestObject(ITestObject testObject) throws IpsException;
+    void removeTestObject(ITestObject testObject) throws IpsException;
 
     /**
      * Sorts the test objects concerning the test case type.
      * 
      * @throws IpsException if an error occurs while sorting the objects.
      */
-    public void sortTestObjects() throws IpsException;
+    void sortTestObjects() throws IpsException;
 
     /**
      * Returns all validation rules from the test policy components which are related by the test
@@ -206,7 +206,7 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @throws IpsException if an error occurs
      */
-    public IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws IpsException;
+    IValidationRule[] getTestRuleCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Searches and returns the validation rule with the given name which is inside the test case.
@@ -215,13 +215,13 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @see #getTestRuleCandidates(IIpsProject)
      */
-    public IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws IpsException;
+    IValidationRule findValidationRule(String validationRuleName, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the qualified names of all referenced product components. Returns an empty array if
      * no product components are referenced.
      */
-    public String[] getReferencedProductCmpts() throws IpsException;
+    String[] getReferencedProductCmpts() throws IpsException;
 
     /**
      * Clears the test values of the given test parameter type (input, expected or combined). The
@@ -229,6 +229,6 @@ public interface ITestCase extends IIpsMetaObject {
      * 
      * @throws IpsException if an error occurs
      */
-    public void clearTestValues(TestParameterType testParameterType) throws IpsException;
+    void clearTestValues(TestParameterType testParameterType) throws IpsException;
 
 }

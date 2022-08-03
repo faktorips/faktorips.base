@@ -35,9 +35,10 @@ public enum RangeType {
      * <p>
      * 
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
-     *             behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
-     *             {@link RangeStructure#get(Object)} methods. A value that was added by calling
-     *             <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
+     *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     *                 {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     *                 <code>put(10, value)</code> can not be retrieved by calling
+     *                 <code>get(10)</code>.
      */
     @Deprecated
     LOWER_BOUND {
@@ -83,9 +84,10 @@ public enum RangeType {
      * <p>
      * 
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
-     *             behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
-     *             {@link RangeStructure#get(Object)} methods. A value that was added by calling
-     *             <code>put(10, value)</code> can not be retrieved by calling <code>get(10)</code>.
+     *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
+     *                 {@link RangeStructure#get(Object)} methods. A value that was added by calling
+     *                 <code>put(10, value)</code> can not be retrieved by calling
+     *                 <code>get(10)</code>.
      */
     @Deprecated
     UPPER_BOUND {
@@ -132,7 +134,7 @@ public enum RangeType {
      * processed.
      * 
      * @return the matching value in the given {@link TreeMap} or <code>null</code> if no matching
-     *         value could be found.
+     *             value could be found.
      * 
      */
     // @see #findValue(TreeMap&lt;K,V&gt;,K) findValue(TreeMap&lt;K,V&gt;,K) for null-safe
@@ -146,7 +148,7 @@ public enum RangeType {
      * processed.
      * 
      * @return the matching value in the given {@link TreeMap} or an {@link Optional#empty() empty
-     *         Optional} if no matching value could be found.
+     *             Optional} if no matching value could be found.
      */
     public abstract <K extends Comparable<? super K>, V> Optional<V> findValue(TreeMap<K, V> tree, K key);
 

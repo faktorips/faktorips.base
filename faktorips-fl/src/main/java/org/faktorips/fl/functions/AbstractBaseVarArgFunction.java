@@ -30,7 +30,7 @@ public abstract class AbstractBaseVarArgFunction<T extends CodeFragment> extends
      * Creates a new {@link AbstractBaseVarArgFunction}.
      * 
      * @see AbstractBaseFlFunction the super class constructor parameter descripton for more
-     *      details.
+     *          details.
      */
     public AbstractBaseVarArgFunction(String name, String description, FunctionSignatures signature) {
         super(name, description, signature);
@@ -40,7 +40,7 @@ public abstract class AbstractBaseVarArgFunction<T extends CodeFragment> extends
      * Creates a new {@link AbstractBaseVarArgFunction}.
      * 
      * @see AbstractBaseFlFunction the super class constructor parameter descripton for more
-     *      details.
+     *          details.
      */
     public AbstractBaseVarArgFunction(String name, String description, Datatype type, Datatype argType) {
         super(name, description, type, argType);

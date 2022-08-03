@@ -38,12 +38,12 @@ public final class BeanUtil {
      * 
      * @throws RuntimeException If an error occurs while introspecting.
      */
-    public static final PropertyDescriptor getPropertyDescriptor(Class<?> clazz, String propertyName) {
+    public static PropertyDescriptor getPropertyDescriptor(Class<?> clazz, String propertyName) {
         return PROPERTY_DESCRIPTORS.computeIfAbsent(new ClassAndProperty(clazz, propertyName),
                 cap -> getPropertyDescriptorInternal(cap.clazz, cap.propertyName));
     }
 
-    private static final PropertyDescriptor getPropertyDescriptorInternal(Class<?> clazz, String propertyName) {
+    private static PropertyDescriptor getPropertyDescriptorInternal(Class<?> clazz, String propertyName) {
         try {
             BeanInfo info = Introspector.getBeanInfo(clazz);
             PropertyDescriptor[] props = info.getPropertyDescriptors();

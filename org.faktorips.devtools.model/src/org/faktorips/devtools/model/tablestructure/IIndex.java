@@ -21,32 +21,32 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
  */
 public interface IIndex extends IKey, IVersionControlledElement {
 
-    public static final String PROPERTY_UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
+    String PROPERTY_UNIQUE_KEY = "uniqueKey"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public static final String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem"; //$NON-NLS-1$
+    String MSGCODE_ENUM_TABLE_ID_KEY = "EnumTableIdKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public static final String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem"; //$NON-NLS-1$
+    String MSGCODE_ENUM_TABLE_NAME_KEY = "EnumTableNameKeyOnlyOneItem"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public static final String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
+    String MSGCODE_ENUM_TABLE_NAME_KEY_DATATYPE = "EnumTableNameKeyMustBeString"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public static final String MSGCODE_TOO_LESS_ITEMS = "TooLessItems"; //$NON-NLS-1$
+    String MSGCODE_TOO_LESS_ITEMS = "TooLessItems"; //$NON-NLS-1$
 
     /**
      * Identifies a validation rule.
      */
-    public static final String MSGCODE_KEY_ITEM_MISMATCH = "KeyItemMismatch"; //$NON-NLS-1$
+    String MSGCODE_KEY_ITEM_MISMATCH = "KeyItemMismatch"; //$NON-NLS-1$
 
     /**
      * The name of the index is the concatenation of it's items separated by a comma and a space
@@ -55,34 +55,34 @@ public interface IIndex extends IKey, IVersionControlledElement {
      * @see org.faktorips.devtools.model.IIpsElement#getName()
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Returns true if the key contains any ranges.
      */
-    public boolean containsRanges();
+    boolean containsRanges();
 
     /**
      * Returns <code>true</code> if the key contains ranges with two columns.
      * 
      * @see ColumnRangeType#TWO_COLUMN_RANGE
      */
-    public boolean containsTwoColumnRanges();
+    boolean containsTwoColumnRanges();
 
     /**
      * Returns <code>true</code> if the key contains any columns.
      */
-    public boolean containsColumns();
+    boolean containsColumns();
 
     /**
      * Returns <code>true</code> if the key contains only ranges.
      */
-    public boolean containsRangesOnly();
+    boolean containsRangesOnly();
 
     /**
      * Returns a list with datatypes the key is based on.
      */
-    public List<String> getDatatypes();
+    List<String> getDatatypes();
 
     /**
      * Returns <code>true</code> if this index is marked as unique key, false if it is no unique key
@@ -90,7 +90,7 @@ public interface IIndex extends IKey, IVersionControlledElement {
      * 
      * @return <code>true</code> if this index is a unique key, <code>false</code> if not.
      */
-    public boolean isUniqueKey();
+    boolean isUniqueKey();
 
     /**
      * Setting the property unique key. Set this property to <code>true</code> if this index should
@@ -98,6 +98,6 @@ public interface IIndex extends IKey, IVersionControlledElement {
      * 
      * @param unique <code>true</code> to set this index to be a unique key.
      */
-    public void setUniqueKey(boolean unique);
+    void setUniqueKey(boolean unique);
 
 }

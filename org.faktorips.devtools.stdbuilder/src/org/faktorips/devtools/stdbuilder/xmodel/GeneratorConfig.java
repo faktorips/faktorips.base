@@ -155,7 +155,7 @@ public class GeneratorConfig {
      * 
      * @param ipsProject The project in which the property is configured
      * @return <code>true</code> if the project is configured to generate published interfaces,
-     *         <code>false</code> if not.
+     *             <code>false</code> if not.
      */
     public boolean isGeneratePublishedInterfaces(IIpsProject ipsProject) {
         if (this.ipsProject.equals(ipsProject)) {

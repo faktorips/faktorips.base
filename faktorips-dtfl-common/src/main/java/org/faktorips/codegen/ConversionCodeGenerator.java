@@ -188,8 +188,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
             if (nullCheck(from, to)) {
                 return null;
             }
-            SingleConversionCg<T> singleConversionCg = getMapValueOfFromDatatype(from).get(to);
-            return singleConversionCg;
+            return getMapValueOfFromDatatype(from).get(to);
         }
 
         /**

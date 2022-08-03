@@ -26,35 +26,35 @@ public interface IParameterContainer extends IIpsObjectPart {
      * Returns the method's parameters. Returns an empty array if the method doesn't have any
      * parameter.
      */
-    public IParameter[] getParameters();
+    IParameter[] getParameters();
 
     /**
      * Returns the method's parameter names. Returns an empty array if the method doesn't have any
      * parameter.
      */
-    public String[] getParameterNames();
+    String[] getParameterNames();
 
     /**
      * Returns the method's parameter {@link Datatype datatypes}. Returns an empty array if the
      * method doesn't have any parameter.
      * 
      */
-    public List<Datatype> getParameterDatatypes();
+    List<Datatype> getParameterDatatypes();
 
     /**
      * Returns the number of parameters.
      */
-    public int getNumOfParameters();
+    int getNumOfParameters();
 
     /**
      * Creates a new parameter.
      */
-    public IParameter newParameter();
+    IParameter newParameter();
 
     /**
      * Creates a new parameter.
      */
-    public IParameter newParameter(String datatype, String name);
+    IParameter newParameter(String datatype, String name);
 
     /**
      * Moves the parameters identified by the given indices up or down by one position. If one of
@@ -69,6 +69,6 @@ public interface IParameterContainer extends IIpsObjectPart {
      * @throws NullPointerException If <code>indices</code> is <code>null</code>.
      * @throws IndexOutOfBoundsException If one of the indices does not identify a parameter.
      */
-    public int[] moveParameters(int[] indices, boolean up);
+    int[] moveParameters(int[] indices, boolean up);
 
 }

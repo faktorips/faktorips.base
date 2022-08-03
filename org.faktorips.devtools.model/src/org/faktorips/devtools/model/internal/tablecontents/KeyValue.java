@@ -37,8 +37,7 @@ public class KeyValue extends AbstractKeyValue {
      * Creates a new key value object of an a given unique key for a given row.
      */
     public static KeyValue createKeyValue(ITableStructure structure, IIndex uniqueKey, Row row) {
-        KeyValue keyValue = new KeyValue(structure, uniqueKey, row);
-        return keyValue;
+        return new KeyValue(structure, uniqueKey, row);
     }
 
     /**

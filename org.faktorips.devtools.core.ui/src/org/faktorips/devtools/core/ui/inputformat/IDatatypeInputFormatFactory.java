@@ -29,6 +29,6 @@ public interface IDatatypeInputFormatFactory {
      * @param ipsProject the project provided to the input format for example to get the default
      *            currency in money values
      */
-    public IInputFormat<String> newInputFormat(ValueDatatype datatype, IIpsProject ipsProject);
+    IInputFormat<String> newInputFormat(ValueDatatype datatype, IIpsProject ipsProject);
 
 }

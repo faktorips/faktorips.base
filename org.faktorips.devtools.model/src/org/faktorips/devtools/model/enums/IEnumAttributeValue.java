@@ -33,43 +33,43 @@ import org.faktorips.runtime.model.enumtype.EnumAttribute;
 public interface IEnumAttributeValue extends IIpsObjectPart {
 
     /** The XML tag for this IPS object part. */
-    public static final String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
+    String XML_TAG = "EnumAttributeValue"; //$NON-NLS-1$
 
     /** Name of the <code>value</code> property. */
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMATTRIBUTEVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value of this <code>IEnumAttributeValue</code>
      * does not correspond to the data type defined in the <code>IEnumAttribute</code> being
      * referenced.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX
             + "EnumAttributeValueNotParsable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumAttributeValue</code> is referring a
      * unique identifier <code>IEnumAttribute</code> but its value is empty.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_VALUE_EMPTY = MSGCODE_PREFIX
             + "EnumAttributeValueUniqueIdentifierValueEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that that this <code>IEnumAttributeValue</code> is
      * referring a unique identifier <code>IEnumAttribute</code> but its value is not unique.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_VALUE_UNIQUE_IDENTIFIER_NOT_UNIQUE = MSGCODE_PREFIX
             + "EnumAttributeValueIdentifierNotUnique"; //$NON-NLS-1$
 
-    public static final String MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_ID_DISALLOWED_BY_IDENTIFIER_BOUNDARY = MSGCODE_PREFIX
             + "IdDisallowedByEnumTypesIdentifierBoundary"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute defines the wrong Value type
      */
-    public static final String MSGCODE_INVALID_VALUE_TYPE = MSGCODE_PREFIX + "InvalidValueType"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VALUE_TYPE = MSGCODE_PREFIX + "InvalidValueType"; //$NON-NLS-1$
 
     /**
      * Searches and returns the <code>IEnumAttribute</code> this <code>IEnumAttributeValue</code>
@@ -86,30 +86,30 @@ public interface IEnumAttributeValue extends IIpsObjectPart {
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public IEnumAttribute findEnumAttribute(IIpsProject ipsProject);
+    IEnumAttribute findEnumAttribute(IIpsProject ipsProject);
 
     /**
      * Returns whether this <code>IEnumAttributeValue</code> is the value for the
      * <code>IEnumLiteralNameAttribute</code>.
      */
-    public boolean isEnumLiteralNameAttributeValue();
+    boolean isEnumLiteralNameAttributeValue();
 
     /** Returns the value as <code>String</code>. Can also be <code>null</code>. */
-    public IValue<?> getValue();
+    IValue<?> getValue();
 
     /**
      * Sets the actual value.
      * 
      * @param value The new value. May also be <code>null</code>.
      */
-    public void setValue(IValue<?> value);
+    void setValue(IValue<?> value);
 
     /**
      * Returns the <code>IEnumValue</code> this <code>IEnumAttributeValue</code> belongs to.
      * <p>
      * This is a shortcut for: <code>(IEnumValue)this.getParent();</code>
      */
-    public IEnumValue getEnumValue();
+    IEnumValue getEnumValue();
 
     /**
      * Returning a string representation of the value.

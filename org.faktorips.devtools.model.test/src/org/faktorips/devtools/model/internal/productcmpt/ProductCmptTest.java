@@ -639,11 +639,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         // Create the corresponding property values
         IPropertyValue productValue1 = productCmpt.newPropertyValue(productAttribute1, IAttributeValue.class);
-        IPropertyValue productValue2 = productCmpt.newPropertyValue(productAttribute2, IAttributeValue.class);
+        productCmpt.newPropertyValue(productAttribute2, IAttributeValue.class);
         IPropertyValue productValue3 = productCmpt.newPropertyValue(productAttribute3, IAttributeValue.class);
-        IPropertyValue gen1Value1 = generation1.newAttributeValue(genAttribute1);
+        generation1.newAttributeValue(genAttribute1);
         IPropertyValue gen1Value2 = generation1.newAttributeValue(genAttribute2);
-        IPropertyValue gen2Value1 = generation2.newAttributeValue(genAttribute1);
+        generation2.newAttributeValue(genAttribute1);
         IPropertyValue gen2Value2 = generation2.newAttributeValue(genAttribute2);
 
         // Check for generation 1

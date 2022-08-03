@@ -176,7 +176,7 @@ public final class LabelEditComposite extends Composite {
 
     }
 
-    private class TableLabelProvider implements ITableLabelProvider {
+    private static class TableLabelProvider implements ITableLabelProvider {
 
         @Override
         public Image getColumnImage(Object element, int columnIndex) {

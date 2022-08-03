@@ -22,7 +22,7 @@ public class IpsWorkspacePreferences {
     private final IPreferencesService preferencesService;
 
     public IpsWorkspacePreferences() {
-        this.preferencesService = Platform.getPreferencesService();
+        preferencesService = Platform.getPreferencesService();
     }
 
     IpsWorkspacePreferences(IPreferencesService preferencesService) {

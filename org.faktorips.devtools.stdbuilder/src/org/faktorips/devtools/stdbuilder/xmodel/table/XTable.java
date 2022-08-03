@@ -125,7 +125,7 @@ public class XTable extends XTableStructure {
      * 
      * @param xIndex that is needed to check for suffix name
      * @return suffix name of given index if this index has the save structure to any other indices
-     *         in the table, else there is no suffix name for this index
+     *             in the table, else there is no suffix name for this index
      */
     public String buildMethodNameSuffix(XIndex xIndex) {
         Set<IIndex> keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
@@ -151,7 +151,7 @@ public class XTable extends XTableStructure {
     /**
      * 
      * @return a set of indices those have the same structure (same length and same structure of
-     *         their key items)
+     *             their key items)
      */
     private Set<IIndex> getIndicesForKeysWithSameDatatypeSequence() {
         List<IIndex> keys = getIndices();
@@ -176,7 +176,7 @@ public class XTable extends XTableStructure {
      * @param first index
      * @param second index
      * @return true if two given indices have the same structure (same length and same structure of
-     *         key items) else false
+     *             key items) else false
      */
     private boolean compareByDatatypeOnly(IIndex first, IIndex second) {
 
@@ -190,11 +190,7 @@ public class XTable extends XTableStructure {
         for (int i = 0; i < firstkeyItems.length; i++) {
             Datatype firstDatatype = getDatatypeForKeyName(firstkeyItems[i]);
             Datatype secondDatatype = getDatatypeForKeyName(secondkeyItems[i]);
-            if (firstDatatype == null || secondDatatype == null) {
-                // compare failed beacause of missing datatypes
-                return false;
-            }
-            if (!firstDatatype.equals(secondDatatype)) {
+            if (firstDatatype == null || secondDatatype == null || !firstDatatype.equals(secondDatatype)) {
                 return false;
             }
         }

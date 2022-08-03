@@ -38,10 +38,7 @@ public abstract class TypeHierarchyVisitor {
     }
 
     private void visitTypeInternal(Type type) {
-        if (type == null) {
-            return;
-        }
-        if (!visitType(type)) {
+        if ((type == null) || !visitType(type)) {
             return;
         }
         visitedTypes.add(type);
@@ -58,7 +55,7 @@ public abstract class TypeHierarchyVisitor {
      * 
      * @param type The type to visit.
      * @return <code>true</code> if the visitor should continue to visit the supertypes,
-     *         <code>false</code> if not.
+     *             <code>false</code> if not.
      */
     public abstract boolean visitType(Type type);
 }

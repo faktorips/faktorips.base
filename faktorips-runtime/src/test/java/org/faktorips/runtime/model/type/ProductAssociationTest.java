@@ -898,6 +898,7 @@ public class ProductAssociationTest {
 
     @IpsProductCmptType(name = "MySubTarget")
     private class SubTarget extends Target {
+        // another target
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")

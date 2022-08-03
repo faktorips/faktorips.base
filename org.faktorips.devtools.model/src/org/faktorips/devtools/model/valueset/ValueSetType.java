@@ -91,7 +91,7 @@ public enum ValueSetType {
 
     private final String xmlTag;
 
-    private ValueSetType(String id, String name, String xmlTag) {
+    ValueSetType(String id, String name, String xmlTag) {
         this.id = id;
         this.name = name;
         this.xmlTag = xmlTag;

@@ -52,7 +52,7 @@ public abstract class Attribute extends TypePart {
      * product relevant.
      * 
      * @return <code>true</code> if this attribute is configured by the product, <code>false</code>
-     *         if not
+     *             if not
      */
     public abstract boolean isProductRelevant();
 

@@ -250,7 +250,7 @@ public class PolicyCmptType extends Type {
      * 
      * @param name the name of the {@link ValidationRule}
      * @return {@link ValidationRule} with the given <code>name</code> declared in this type or one
-     *         of its super types
+     *             of its super types
      * @throws IllegalArgumentException if no {@link ValidationRule} with the given
      *             <code>name</code> exists
      */
@@ -263,7 +263,7 @@ public class PolicyCmptType extends Type {
      * defined in the super types.
      * 
      * @return the list of all {@link ValidationRule ValidationRules} declared in this type and in
-     *         its super types
+     *             its super types
      */
     public List<ValidationRule> getValidationRules() {
         RuleCollector ruleCollector = new RuleCollector();
@@ -278,7 +278,7 @@ public class PolicyCmptType extends Type {
      * 
      * @param name the name of the {@link ValidationRule}
      * @return <code>true</code> if the {@link ValidationRule} is declared in this type,
-     *         <code>false</code> if not
+     *             <code>false</code> if not
      */
     public boolean isValidationRuleDeclared(String name) {
         return validationRules.containsKey(IpsStringUtils.toLowerFirstChar(name));

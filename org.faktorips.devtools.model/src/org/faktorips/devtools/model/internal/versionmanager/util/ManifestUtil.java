@@ -39,7 +39,7 @@ public class ManifestUtil {
         ArgumentCheck.notNull(file);
         ArgumentCheck.notNull(manifestFactory);
         this.file = file;
-        this.manifest = manifestFactory.loadManifest(file);
+        manifest = manifestFactory.loadManifest(file);
     }
 
     /**

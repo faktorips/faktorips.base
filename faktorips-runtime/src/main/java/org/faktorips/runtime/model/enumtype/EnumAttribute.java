@@ -40,9 +40,9 @@ public class EnumAttribute extends ModelElement {
     public EnumAttribute(EnumType enumType, String name, Method getter) {
         super(name, getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
         this.enumType = enumType;
-        this.datatype = getter.getReturnType();
+        datatype = getter.getReturnType();
         this.getter = getter;
-        this.annotation = getter.getAnnotation(IpsEnumAttribute.class);
+        annotation = getter.getAnnotation(IpsEnumAttribute.class);
     }
 
     /**
@@ -79,7 +79,7 @@ public class EnumAttribute extends ModelElement {
      * Locale} is used.
      * 
      * @see EnumAttribute#getValue(Object, Locale) for getting a multilingual value for a specific
-     *      locale
+     *          locale
      */
     public Object getValue(Object enumInstance) {
         return getValue(enumInstance, Locale.getDefault());
@@ -106,11 +106,7 @@ public class EnumAttribute extends ModelElement {
             } else {
                 return getter.invoke(enumInstance);
             }
-        } catch (IllegalAccessException e) {
-            throw cantGetValueException(e, locale);
-        } catch (IllegalArgumentException e) {
-            throw cantGetValueException(e, locale);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw cantGetValueException(e, locale);
         }
     }

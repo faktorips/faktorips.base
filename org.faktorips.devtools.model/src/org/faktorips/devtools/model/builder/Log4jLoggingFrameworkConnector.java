@@ -102,17 +102,17 @@ public class Log4jLoggingFrameworkConnector implements IIpsLoggingFrameworkConne
         return "Logger.getLogger(" + scopeExp + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private static interface Builder {
+    private interface Builder {
 
-        public String buildInfo(String message);
+        String buildInfo(String message);
 
-        public String buildTrace(String message);
+        String buildTrace(String message);
 
-        public String buildDebug(String message);
+        String buildDebug(String message);
 
-        public String buildWarning(String message);
+        String buildWarning(String message);
 
-        public String buildError(String message);
+        String buildError(String message);
 
     }
 

@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import java.util.Iterator;
-
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -80,7 +78,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
 
     public TableStructureUsageEditDialog(ITableStructureUsage tblStructureUsage, Shell parentShell) {
         super(tblStructureUsage, parentShell, Messages.TblsStructureUsageEditDialog_title, true);
-        this.tableStructureUsage = tblStructureUsage;
+        tableStructureUsage = tblStructureUsage;
         extFactory = new ExtensionPropertyControlFactory(tblStructureUsage);
     }
 
@@ -266,8 +264,8 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
         ISelection selection = viewer.getSelection();
         if (selection != null && selection instanceof IStructuredSelection) {
             IStructuredSelection structSelection = (IStructuredSelection)selection;
-            for (Iterator<?> iter = structSelection.iterator(); iter.hasNext();) {
-                String element = (String)iter.next();
+            for (Object name : structSelection) {
+                String element = (String)name;
                 tableStructureUsage.removeTableStructure(element);
             }
             refresh();

@@ -28,7 +28,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
     /**
      * Returns of how many refactorings this composite refactoring consists of.
      */
-    public int getNumberOfRefactorings();
+    int getNumberOfRefactorings();
 
     /**
      * {@inheritDoc}
@@ -37,7 +37,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * require it.
      */
     @Override
-    public boolean isSourceFilesSavedRequired();
+    boolean isSourceFilesSavedRequired();
 
     /**
      * {@inheritDoc}
@@ -46,7 +46,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * result of checking the initial conditions of each contained refactoring.
      */
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws IpsException,
+    RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws IpsException,
             OperationCanceledException;
 
     /**
@@ -63,7 +63,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * This implementation always returns an empty {@link RefactoringStatus}.
      */
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws IpsException, OperationCanceledException;
+    RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws IpsException, OperationCanceledException;
 
     /**
      * {@inheritDoc}
@@ -77,7 +77,7 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * Always returns a {@link NullChange}.
      */
     @Override
-    public Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException;
+    Change createChange(IProgressMonitor pm) throws IpsException, OperationCanceledException;
 
     /**
      * {@inheritDoc}
@@ -87,6 +87,6 @@ public interface IIpsCompositeRefactoring extends IIpsRefactoring {
      * refactorings will not be started.
      */
     @Override
-    public boolean isCancelable();
+    boolean isCancelable();
 
 }

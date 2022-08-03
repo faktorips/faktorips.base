@@ -91,10 +91,10 @@ public class BuilderSetContainer {
         ArgumentCheck.notNull(ipsProject);
 
         this.ipsProject = ipsProject;
-        this.ipsProjectProperties = ipsProject.getProperties();
-        this.builderSetId = ipsProjectProperties.getBuilderSetId();
-        this.builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
-        this.builderSetModels = new HashMap<>();
+        ipsProjectProperties = ipsProject.getProperties();
+        builderSetId = ipsProjectProperties.getBuilderSetId();
+        builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
+        builderSetModels = new HashMap<>();
         initializeTimeStamps();
     }
 
@@ -237,9 +237,9 @@ public class BuilderSetContainer {
         ArgumentCheck.notNull(ipsProject);
 
         this.ipsProject = ipsProject;
-        this.builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
-        this.ipsProjectProperties = ipsProject.getProperties();
-        this.builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
+        builderSetId = ipsProject.getIpsArtefactBuilderSet().getId();
+        ipsProjectProperties = ipsProject.getProperties();
+        builderSetConfigModel = ipsProjectProperties.getBuilderSetConfig();
 
         updateBuilderSet();
     }
@@ -299,7 +299,7 @@ public class BuilderSetContainer {
 
     /**
      * @return true True if the .ipsproject file was modified outside of eclipse since this dialog
-     *         was opened.
+     *             was opened.
      */
     public boolean hasChangesInIpsprojectFile() {
         AFile file = ipsProject.getProject().getFile(".ipsproject"); //$NON-NLS-1$

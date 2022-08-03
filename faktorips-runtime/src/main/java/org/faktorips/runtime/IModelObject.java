@@ -41,7 +41,7 @@ public interface IModelObject {
      * 
      * @throws NullPointerException if context is <code>null</code>.
      */
-    public MessageList validate(IValidationContext context);
+    MessageList validate(IValidationContext context);
 
     /**
      * Returns a description for this model object in the specified locale. The description can be
@@ -50,9 +50,9 @@ public interface IModelObject {
      * @param locale the locale/language in which the description should be given
      * 
      * @return the description for the given locale/language or the result of the {@code toString}
-     *         method if no custom implementation is provided
+     *             method if no custom implementation is provided
      */
-    public default String getDescription(Locale locale) {
+    default String getDescription(Locale locale) {
         return toString();
     }
 }

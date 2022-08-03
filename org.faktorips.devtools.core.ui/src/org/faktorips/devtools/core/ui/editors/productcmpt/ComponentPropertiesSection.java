@@ -387,7 +387,7 @@ public class ComponentPropertiesSection extends IpsSection {
         /**
          * Finds an IpsObject to open.
          */
-        public IIpsObject findIpsObject();
+        IIpsObject findIpsObject();
 
     }
 

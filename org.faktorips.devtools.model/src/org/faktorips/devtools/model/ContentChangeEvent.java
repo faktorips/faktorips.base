@@ -93,7 +93,7 @@ public class ContentChangeEvent {
         ArgumentCheck.notNull(part);
         this.part = part;
         ipsSrcFile = part.getIpsSrcFile();
-        this.type = TYPE_PROPERTY_CHANGED;
+        type = TYPE_PROPERTY_CHANGED;
         this.propertyChangeEvents = new LinkedHashSet<>(Arrays.asList(propertyChangeEvents));
         movedParts = null;
     }
@@ -101,7 +101,7 @@ public class ContentChangeEvent {
     private ContentChangeEvent(IIpsSrcFile srcFile, IIpsObjectPartContainer part, int type,
             Set<PropertyChangeEvent> propertyChangeEvents) {
         this.part = part;
-        this.ipsSrcFile = srcFile;
+        ipsSrcFile = srcFile;
         this.type = type;
         this.propertyChangeEvents = propertyChangeEvents;
         movedParts = null;
@@ -208,13 +208,7 @@ public class ContentChangeEvent {
         if (partContainer == null) {
             return false;
         }
-        if (partContainer == part) {
-            return true;
-        }
-        if (isAffectedIpsSrcFile(partContainer)) {
-            return true;
-        }
-        if (isChildOf(part, partContainer)) {
+        if ((partContainer == part) || isAffectedIpsSrcFile(partContainer) || isChildOf(part, partContainer)) {
             return true;
         }
         if (movedParts == null) {
@@ -238,13 +232,13 @@ public class ContentChangeEvent {
             return false;
         }
         IIpsElement parent = potentialChild.getParent();
-        if (parent == null) {
-            return false;
-        } else if (potentialParent.equals(parent)) {
-            return true;
-        } else {
-            if (parent instanceof IIpsObjectPart) {
-                return isChildOf((IIpsObjectPart)parent, potentialParent);
+        if (parent != null) {
+            if (potentialParent.equals(parent)) {
+                return true;
+            } else {
+                if (parent instanceof IIpsObjectPart) {
+                    return isChildOf((IIpsObjectPart)parent, potentialParent);
+                }
             }
         }
         return false;

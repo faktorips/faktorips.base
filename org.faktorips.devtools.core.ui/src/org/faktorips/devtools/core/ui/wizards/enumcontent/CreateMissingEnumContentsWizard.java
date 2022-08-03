@@ -113,9 +113,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             IIpsPackageFragmentRoot targetRoot = selectEnumContentsPage.getTargetIpsProject()
                     .getIpsPackageFragmentRoot(selectEnumContentsPage.getTargetSourceFolderName());
             wizardDialog.run(true, true, new CreateIpsSrcFilesRunnable(checkedElements, targetRoot));
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             throw new RuntimeException(e);
         }
         return true;
@@ -475,7 +473,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
      * This <code>IRunnableWithProgress</code> will be executed when the user clicks the 'Finish' -
      * button. All selected missing <code>IEnumContent</code>s will be created by the operation.
      */
-    private class CreateIpsSrcFilesRunnable implements IRunnableWithProgress {
+    private static class CreateIpsSrcFilesRunnable implements IRunnableWithProgress {
 
         /**
          * The elements that user selected in the tree viewer widget of the

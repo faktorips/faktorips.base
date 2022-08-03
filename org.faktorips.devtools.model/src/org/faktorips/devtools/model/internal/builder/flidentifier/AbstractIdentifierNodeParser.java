@@ -68,12 +68,11 @@ public abstract class AbstractIdentifierNodeParser {
     public IdentifierNode parse(TextRegion textRegion) {
         this.textRegion = textRegion;
         if (getPreviousNode() == null) {
-            this.setContextType(getExpression().findProductCmptType(getIpsProject()));
+            setContextType(getExpression().findProductCmptType(getIpsProject()));
         } else {
-            this.setContextType(getPreviousNode().getDatatype());
+            setContextType(getPreviousNode().getDatatype());
         }
-        IdentifierNode identifierNode = parse();
-        return identifierNode;
+        return parse();
     }
 
     /**
@@ -90,7 +89,7 @@ public abstract class AbstractIdentifierNodeParser {
      * parsed but there is any error. The parsing will stop.
      * 
      * @return The {@link IdentifierNode} that matches to the current identifier part or null if
-     *         this parser cannot parse the identifier.
+     *             this parser cannot parse the identifier.
      */
     protected abstract IdentifierNode parse();
 
@@ -114,7 +113,7 @@ public abstract class AbstractIdentifierNodeParser {
      * you also override {@link #isAllowedType()} accordingly.
      * 
      * @return The datatype of the context returned by the previous node or the type of the
-     *         expression signature.
+     *             expression signature.
      */
     public Datatype getContextType() {
         return contextType;
@@ -191,7 +190,7 @@ public abstract class AbstractIdentifierNodeParser {
      *            proposals.
      * 
      * @return A list of {@link IdentifierNode nodes} that are possible given the current parser
-     *         state and the current input (prefix).
+     *             state and the current input (prefix).
      */
     public abstract List<IdentifierProposal> getProposals(String prefix);
 

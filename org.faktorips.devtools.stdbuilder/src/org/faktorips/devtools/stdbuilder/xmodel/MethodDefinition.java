@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -109,11 +110,7 @@ public class MethodDefinition implements IGeneratedJavaElement {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + Arrays.hashCode(parameters);
-        return result;
+        return Objects.hash(name, Arrays.hashCode(parameters));
     }
 
     @Override
@@ -121,24 +118,12 @@ public class MethodDefinition implements IGeneratedJavaElement {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         MethodDefinition other = (MethodDefinition)obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (!Arrays.equals(parameters, other.parameters)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name)
+                && Arrays.equals(parameters, other.parameters);
     }
 
     @Override

@@ -117,7 +117,7 @@ public class BindingContext {
     private final Set<String> ignoredMessageCodes = new HashSet<>(2);
 
     public BindingContext() {
-        this.listener = new Listener();
+        listener = new Listener();
     }
 
     /**

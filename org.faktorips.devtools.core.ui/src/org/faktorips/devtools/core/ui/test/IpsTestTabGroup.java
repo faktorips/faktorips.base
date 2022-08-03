@@ -25,8 +25,7 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 public class IpsTestTabGroup extends AbstractLaunchConfigurationTabGroup {
     @Override
     public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-        ILaunchConfigurationTab[] tabs = null;
-        tabs = new ILaunchConfigurationTab[] { new TestSelectionTab(), new JavaArgumentsTab(), new EnvironmentTab(),
+        ILaunchConfigurationTab[] tabs = { new TestSelectionTab(), new JavaArgumentsTab(), new EnvironmentTab(),
                 new CommonTab() };
         setTabs(tabs);
     }

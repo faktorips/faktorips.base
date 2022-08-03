@@ -26,7 +26,7 @@ public enum ValueSetSearchOperatorType implements ISearchOperatorType {
     private final String label;
     private final boolean negation;
 
-    private ValueSetSearchOperatorType(String label, boolean negation) {
+    ValueSetSearchOperatorType(String label, boolean negation) {
         this.label = label;
         this.negation = negation;
     }

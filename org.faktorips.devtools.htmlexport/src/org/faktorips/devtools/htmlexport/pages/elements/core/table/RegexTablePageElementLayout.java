@@ -51,11 +51,7 @@ public class RegexTablePageElementLayout extends DefaultTablePageElementLayout {
     }
 
     private boolean cellMatches(TableCellPageElement cellPageElement) {
-        if (cellPageElement.size() != 1) {
-            return false;
-        }
-
-        if (!(cellPageElement.getSubElement(0) instanceof TextPageElement)) {
+        if ((cellPageElement.size() != 1) || !(cellPageElement.getSubElement(0) instanceof TextPageElement)) {
             return false;
         }
 

@@ -60,15 +60,15 @@ public class AbstractTocBasedRuntimeRepositoryTest {
     }
 
     private static final class EnumA {
-
+        // an enum
     }
 
     private static final class EnumB {
-
+        // another enum
     }
 
     private static final class EnumC {
-
+        // yet another enum
     }
 
     private enum RealEnum {

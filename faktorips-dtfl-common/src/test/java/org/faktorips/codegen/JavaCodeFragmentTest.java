@@ -139,7 +139,8 @@ public class JavaCodeFragmentTest {
         fragment.appendInnerClassName(Entry.class);
         assertEquals("Entry", fragment.getSourcecode()); //$NON-NLS-1$
         assertEquals(1, fragment.getImportDeclaration().getNoOfImports());
-        assertTrue(fragment.getImportDeclaration().isCovered(Entry.class.getName().replaceAll("\\$", "\\."))); //$NON-NLS-1$ //$NON-NLS-2$
+        assertTrue(fragment.getImportDeclaration().isCovered(Entry.class.getName().replace('$', '.'))); // $NON-NLS-1$
+                                                                                                        // //$NON-NLS-2$
     }
 
     @Test

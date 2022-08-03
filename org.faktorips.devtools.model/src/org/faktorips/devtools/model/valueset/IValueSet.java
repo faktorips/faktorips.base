@@ -31,41 +31,41 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
-    public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+    String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "VALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the value could not be parsed.
      */
-    public static final String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
+    String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueNotParsable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set.
      */
-    public static final String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type this value set is based on does not
      * support {@code null}-values, but this value set is marked to contain a {@code null} -value.
      */
-    public static final String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
+    String MSGCODE_NULL_NOT_SUPPORTED = MSGCODE_PREFIX + "NullNotSupported"; //$NON-NLS-1$
 
     /**
      * Return the value set owner which is also the parent of this object.
      */
-    public IValueSetOwner getValueSetOwner();
+    IValueSetOwner getValueSetOwner();
 
     /**
      * Returns the type of the value set.
      */
-    public ValueSetType getValueSetType();
+    ValueSetType getValueSetType();
 
     /**
      * Returns {@code true} if the value set contains the indicated value, otherwise {@code false}.
@@ -75,7 +75,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * 
      * @throws IpsException If an error occurs while checking.
      */
-    public boolean containsValue(String value, IIpsProject ipsProject) throws IpsException;
+    boolean containsValue(String value, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns {@code true} if this value set contains the other value set and both value sets are
@@ -86,13 +86,13 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * 
      * @throws NullPointerException If {@code subset} is {@code null}.
      */
-    public boolean containsValueSet(IValueSet subset);
+    boolean containsValueSet(IValueSet subset);
 
     /**
      * Creates a copy of this value set (type and values, parent and id are set to the given
      * values).
      */
-    public IValueSet copy(IValueSetOwner newParent, String id);
+    IValueSet copy(IValueSetOwner newParent, String id);
 
     /**
      * Copies all values including the abstract-flag - if applicable - (but not the parent or the
@@ -100,14 +100,14 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * type, only the abstract flag is copied. If this value set is an unrestricted value set, this
      * method does nothing.
      */
-    public void setValuesOf(IValueSet source);
+    void setValuesOf(IValueSet source);
 
     /**
      * Returns the unqualified, human-readable representation of this value set. If the data type
      * provided by the parent supports named values, the names provided from the data type are used
      * to build the value representations.
      */
-    public String toShortString();
+    String toShortString();
 
     /**
      * Returns a string representation that always represents this value set in the same way
@@ -116,12 +116,12 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * 
      * @return a canonical string representation of this value set
      */
-    public String getCanonicalString();
+    String getCanonicalString();
 
     /**
      * Returns {@code true} if this value set contains the null-value, {@code false} if not.
      */
-    public boolean isContainsNull();
+    boolean isContainsNull();
 
     /**
      * Adds or removes the null-value from the indicated {@link IValueSet}.
@@ -129,7 +129,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * @param containsNull {@code true} to add the null-value to this {@link IValueSet} or
      *            {@code false} to remove it.
      */
-    public void setContainsNull(boolean containsNull);
+    void setContainsNull(boolean containsNull);
 
     /**
      * Marks this value set as abstract. An abstract value set does not define concrete values,
@@ -137,25 +137,25 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * value set if also not abstract, as it defines all values of the underlying data type as
      * member of the set.
      */
-    public void setAbstract(boolean isAbstract);
+    void setAbstract(boolean isAbstract);
 
     /**
      * Returns {@code true} if this value set is abstract, {@code false} otherwise.
      */
-    public boolean isAbstract();
+    boolean isAbstract();
 
     /**
      * Returns {@code true} if this value set is abstract and not unrestricted, {@code false}
      * otherwise.
      */
-    public boolean isAbstractAndNotUnrestricted();
+    boolean isAbstractAndNotUnrestricted();
 
     /**
      * Returns {@code true} if this value set is of the same type as the given other value set.
      * Returns {@code false} otherwise. Returns {@code false} if the other value set is
      * {@code null}.
      */
-    public boolean isSameTypeOfValueSet(IValueSet other);
+    boolean isSameTypeOfValueSet(IValueSet other);
 
     /**
      * Returns {@code true} if the value set is unrestricted. It contains all values defined by an
@@ -166,7 +166,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * {@link IUnrestrictedValueSet} it does not mean that it is really an unrestricted value set
      * e.g. in case of {@link IDelegatingValueSet}
      */
-    public boolean isUnrestricted();
+    boolean isUnrestricted();
 
     /**
      * Returns {@code true} if the value set is a range, otherwise {@code false}.
@@ -176,7 +176,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * {@link IRangeValueSet} it does not mean that it is really a range e.g. in case of
      * {@link IDelegatingValueSet}
      */
-    public boolean isRange();
+    boolean isRange();
 
     /**
      * Returns {@code true} if the value set is an enumeration, otherwise {@code false}.
@@ -186,7 +186,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * {@link IEnumValueSet} it does not mean that it is really an enum e.g. in case of
      * {@link IDelegatingValueSet}
      */
-    public boolean isEnum();
+    boolean isEnum();
 
     /**
      * Returns {@code true} if the value set is derived, otherwise {@code false}.
@@ -198,7 +198,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * 
      * @since 20.6
      */
-    public default boolean isDerived() {
+    default boolean isDerived() {
         return getValueSetType().isDerived();
     }
 
@@ -207,7 +207,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * 
      * @since 20.6
      */
-    public default boolean isStringLength() {
+    default boolean isStringLength() {
         return getValueSetType().isStringLength();
     }
 
@@ -216,7 +216,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * enumeration value sets can be used as supersets for other enumeration value sets. Returns
      * {@code false} otherwise.
      */
-    public boolean canBeUsedAsSupersetForAnotherEnumValueSet();
+    boolean canBeUsedAsSupersetForAnotherEnumValueSet();
 
     /**
      * Returns {@code true} if this value set is a more detailed specification of the given value
@@ -240,7 +240,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * true.</li>
      * </ul>
      */
-    public boolean isDetailedSpecificationOf(IValueSet valueSet);
+    boolean isDetailedSpecificationOf(IValueSet valueSet);
 
     /**
      * Returns the datatype used by this value set-
@@ -248,7 +248,7 @@ public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
      * @param ipsProject the Faktor-IPS project to search for the datatype
      * @return the datatype that is used by this value set
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
+    ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
     /**
      * Returns {@code true} if this value set contains no values, {@code false} otherwise.

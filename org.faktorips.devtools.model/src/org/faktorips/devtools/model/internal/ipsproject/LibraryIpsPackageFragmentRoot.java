@@ -120,18 +120,13 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     void findIpsSourceFiles(IpsObjectType type, String packageFragment, List<IIpsSrcFile> result) {
-        if (type == null) {
-            return;
-        }
-        if (storage == null) {
+        if ((type == null) || (storage == null)) {
             return;
         }
         Set<QualifiedNameType> qntSet = storage.getQNameTypes();
         for (QualifiedNameType qnt : qntSet) {
-            if (!type.equals(qnt.getIpsObjectType())) {
-                continue;
-            }
-            if (packageFragment != null && !qnt.getPackageName().equals(packageFragment)) {
+            if (!type.equals(qnt.getIpsObjectType())
+                    || (packageFragment != null && !qnt.getPackageName().equals(packageFragment))) {
                 continue;
             }
             IIpsPackageFragment pack = getIpsPackageFragment(qnt.getPackageName());
@@ -161,10 +156,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
+        return Objects.hash(name);
     }
 
     /**
@@ -181,10 +173,7 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         LibraryIpsPackageFragmentRoot other = (LibraryIpsPackageFragmentRoot)obj;

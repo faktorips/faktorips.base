@@ -49,7 +49,7 @@ public class TableRowPageElement extends WrapperPageElement {
      * {@link TableCellPageElement}s for this.
      * 
      * @see org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement
-     *      #visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
+     *          #visitSubElements(org.faktorips.devtools.htmlexport.generators.ILayouter)
      * 
      * 
      */

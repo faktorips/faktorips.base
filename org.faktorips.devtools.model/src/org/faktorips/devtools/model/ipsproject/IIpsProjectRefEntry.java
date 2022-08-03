@@ -20,6 +20,6 @@ public interface IIpsProjectRefEntry extends IIpsObjectPathEntry {
     /**
      * Returns the IPS project being referenced by this entry.
      */
-    public IIpsProject getReferencedIpsProject();
+    IIpsProject getReferencedIpsProject();
 
 }

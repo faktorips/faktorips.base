@@ -17,6 +17,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.faktorips.runtime.caching.Memoizer;
 
@@ -169,10 +170,7 @@ public class AnnotatedDeclaration {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((annotatedClasses == null) ? 0 : annotatedClasses.hashCode());
-        return result;
+        return Objects.hash(annotatedClasses);
     }
 
     @Override
@@ -180,21 +178,11 @@ public class AnnotatedDeclaration {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         AnnotatedDeclaration other = (AnnotatedDeclaration)obj;
-        if (annotatedClasses == null) {
-            if (other.annotatedClasses != null) {
-                return false;
-            }
-        } else if (!annotatedClasses.equals(other.annotatedClasses)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(annotatedClasses, other.annotatedClasses);
     }
 
     static Class<?> getPublishedInterface(Class<?> modelObjectClass) {

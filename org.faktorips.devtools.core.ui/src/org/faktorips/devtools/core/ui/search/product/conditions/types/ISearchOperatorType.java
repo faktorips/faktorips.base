@@ -22,12 +22,12 @@ public interface ISearchOperatorType {
     /**
      * returns a String for Labels
      */
-    public String getLabel();
+    String getLabel();
 
     /**
      * returns an {@link ISearchOperator} for the given {@link IOperandProvider}
      */
-    public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
+    ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument);
 
@@ -37,5 +37,5 @@ public interface ISearchOperatorType {
      * 
      * @see Enum#name()
      */
-    public String name();
+    String name();
 }

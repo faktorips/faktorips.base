@@ -74,7 +74,7 @@ public abstract class ValidatablePMO extends PresentationModelObject implements 
 
         public ObjectPropertyMappingDefinition(ValidatablePMO validatablePmo, ObjectProperty objectProperty) {
             this.validatablePmo = validatablePmo;
-            this.fromProperty = objectProperty;
+            fromProperty = objectProperty;
         }
 
         public void to(ObjectProperty toProperty) {

@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.test;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -194,8 +193,7 @@ public class TestSelectionComposite extends Composite {
     }
 
     private void deleteElement() {
-        for (Iterator<?> iter = getSelectedObjects().iterator(); iter.hasNext();) {
-            Object selectedObj = iter.next();
+        for (Object selectedObj : getSelectedObjects()) {
             viewer.remove(selectedObj);
             content.remove(selectedObj);
         }

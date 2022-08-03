@@ -27,17 +27,17 @@ public interface IIpsSearchPartPresentationModel {
     /**
      * stores the actual values into the dialog settings
      */
-    public void store(IDialogSettings settings);
+    void store(IDialogSettings settings);
 
     /**
      * reads the dialog setting and uses the values for the actual search
      */
-    public void read(IDialogSettings settings);
+    void read(IDialogSettings settings);
 
     /**
      * returns, if this part of a search is valid and so the search is executable
      * 
      */
-    public boolean isValid();
+    boolean isValid();
 
 }

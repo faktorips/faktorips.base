@@ -54,12 +54,11 @@ public class AbstractDateHelperFactoryTest {
             ValueDatatype datatype,
             AbstractDateHelperFactory<ValueDatatype> dateHelperFactory) {
         when(builderSet.getLocalDateHelperVariant()).thenReturn(variant);
-        DatatypeHelper datatypeHelper = dateHelperFactory.createDatatypeHelper(datatype, builderSet);
-        return datatypeHelper;
+        return dateHelperFactory.createDatatypeHelper(datatype, builderSet);
     }
 
     protected AbstractDateHelperFactory<ValueDatatype> getDatatypeHelperFactory() {
-        AbstractDateHelperFactory<ValueDatatype> dateHelperFactory = new AbstractDateHelperFactory<>(
+        return new AbstractDateHelperFactory<>(
                 ValueDatatype.class) {
 
             @Override
@@ -68,7 +67,6 @@ public class AbstractDateHelperFactoryTest {
             }
 
         };
-        return dateHelperFactory;
     }
 
 }

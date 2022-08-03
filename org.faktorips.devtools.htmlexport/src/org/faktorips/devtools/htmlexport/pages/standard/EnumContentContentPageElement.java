@@ -43,7 +43,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
      */
     protected EnumContentContentPageElement(IEnumContent object, DocumentationContext context) {
         super(object, context);
-        this.enumType = object.getIpsProject().findEnumType(object.getEnumType());
+        enumType = object.getIpsProject().findEnumType(object.getEnumType());
     }
 
     @Override

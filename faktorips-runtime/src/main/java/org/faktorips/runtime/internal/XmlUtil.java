@@ -28,7 +28,7 @@ import org.w3c.dom.Text;
 public enum XmlUtil {
     /* no instances */;
 
-    private XmlUtil() {
+    XmlUtil() {
         // Utility class not to be instantiated.
     }
 

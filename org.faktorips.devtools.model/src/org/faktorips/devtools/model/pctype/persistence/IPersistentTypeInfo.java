@@ -30,106 +30,106 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
 
     /** The XML tag for this IPS object part. */
-    public static final String XML_TAG = "Persistence"; //$NON-NLS-1$
+    String XML_TAG = "Persistence"; //$NON-NLS-1$
 
     /**
      * The name of the (primary) table name property.
      */
-    public static final String PROPERTY_TABLE_NAME = "tableName"; //$NON-NLS-1$
+    String PROPERTY_TABLE_NAME = "tableName"; //$NON-NLS-1$
 
     /**
      * The name of the inheritance strategy property.
      */
-    public static final String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy"; //$NON-NLS-1$
+    String PROPERTY_INHERITANCE_STRATEGY = "inheritanceStrategy"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator column name property.
      */
-    public static final String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName"; //$NON-NLS-1$
+    String PROPERTY_DISCRIMINATOR_COLUMN_NAME = "discriminatorColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator column length property.
      */
-    public static final String PROPERTY_DISCRIMINATOR_COLUMN_LENGTH = "discriminatorColumnLength"; //$NON-NLS-1$
+    String PROPERTY_DISCRIMINATOR_COLUMN_LENGTH = "discriminatorColumnLength"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator value property.
      */
-    public static final String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue"; //$NON-NLS-1$
+    String PROPERTY_DISCRIMINATOR_VALUE = "discriminatorValue"; //$NON-NLS-1$
 
     /**
      * The name of the discriminator data type property.
      */
-    public static final String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype"; //$NON-NLS-1$
+    String PROPERTY_DISCRIMINATOR_DATATYPE = "discriminatorDatatype"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the joined subclass inheritance strategy is not
      * used.
      */
-    public static final String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
+    String PROPERTY_INHERITANCE_NOT_JOINEDSUBCLASS = "notJoinedSubclass"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates the persistent type: Entity, MappedSuperclass or no
      * persistent enabled. See enumeration this#PersistentType.
      */
-    public static final String PROPERTY_PERSISTENT_TYPE = "persistentType"; //$NON-NLS-1$
+    String PROPERTY_PERSISTENT_TYPE = "persistentType"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the discriminator column name and data type is
      * defined in this type.
      */
-    public static final String PROPERTY_DEFINES_DISCRIMINATOR_COLUMN = "definesDiscriminatorColumn"; //$NON-NLS-1$
+    String PROPERTY_DEFINES_DISCRIMINATOR_COLUMN = "definesDiscriminatorColumn"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the table defined in the super type will be used.
      */
-    public static final String PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE = "useTableDefinedInSupertype"; //$NON-NLS-1$
+    String PROPERTY_USE_TABLE_DEFINED_IN_SUPERTYPE = "useTableDefinedInSupertype"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "PERSISTENCETYPE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "PERSISTENCETYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this persistence info type has an invalid table name
      * set.
      */
-    public static final String MSGCODE_PERSISTENCE_TABLE_NAME_INVALID = MSGCODE_PREFIX
+    String MSGCODE_PERSISTENCE_TABLE_NAME_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeTableNameInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this persistence info type has an invalid
      * discriminator set.
      */
-    public static final String MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID = MSGCODE_PREFIX
+    String MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeDiscriminatorInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this persistence info type has an invalid
      * inheritance strategy set.
      */
-    public static final String MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID = MSGCODE_PREFIX
+    String MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID = MSGCODE_PREFIX
             + "PersistenceTypeInheritanceStrategyInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the discriminator definition is missing on the base
      * entity.
      */
-    public static final String MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING = MSGCODE_PREFIX
+    String MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING = MSGCODE_PREFIX
             + "definitionOfDiscriminatorMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the discriminator definition is not allowed here.
      * Only on the root entity.
      */
-    public static final String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
+    String MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED = MSGCODE_PREFIX
             + "definitionOfDiscriminatorNotAllowed"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the table definition defined in the super type is
      * not allowed / possible.
      */
-    public static final String MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED = MSGCODE_PREFIX
+    String MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED = MSGCODE_PREFIX
             + "msgcodeUseTableDefinedInSupertypeNotAllowed"; //$NON-NLS-1$
 
     /**
@@ -138,38 +138,38 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * in the same type this attribute info belongs to or in a super type if SINGLE_TABLE
      * inheritance is used.
      */
-    public static final String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
+    String MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME = MSGCODE_PREFIX
             + "PersistenceAttrColumnNameDuplicate"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of single table inheritance strategy the
      * sub-entities must use the table name of the root entity.
      */
-    public static final String MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY = MSGCODE_PREFIX + "MustUseTableFromRootEntity"; //$NON-NLS-1$
+    String MSGCODE_MUST_USE_TABLE_FROM_ROOT_ENTITY = MSGCODE_PREFIX + "MustUseTableFromRootEntity"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this persistent type info belongs to.
      */
-    public IPolicyCmptType getPolicyCmptType();
+    IPolicyCmptType getPolicyCmptType();
 
     /**
      * Returns the persistence type: entity, mapped superclass, or none if the persistent is
      * disabled.
      */
-    public PersistentType getPersistentType();
+    PersistentType getPersistentType();
 
     /**
      * Returns <code>true</code> if the persistent is enabled. In this case the persistent type is
      * equal to entity or mapped superclass. If the persistent type is none then return
      * <code>false</code>.
      */
-    public boolean isEnabled();
+    boolean isEnabled();
 
     /**
      * Sets the persistent type to enable/disable the persistent or annotate the appropriate policy
      * component type as mapped superclass.
      */
-    public void setPersistentType(PersistentType persistentType);
+    void setPersistentType(PersistentType persistentType);
 
     /**
      * Returns <code>true</code> if this persistent type defines the discriminator column. Not that
@@ -178,14 +178,14 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * type. The column name and data type of the discriminator can't be different or overwritten in
      * one of the subclasses.
      */
-    public boolean isDefinesDiscriminatorColumn();
+    boolean isDefinesDiscriminatorColumn();
 
     /**
      * Set to <code>true</code> if this type defines the discriminator column name and data type.
      * Note that the discriminator column name and data type can only be specified in the base
      * entity.
      */
-    public void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn);
+    void setDefinesDiscriminatorColumn(boolean definesDiscriminatorColumn);
 
     /**
      * Return <code>true</code> if the table defined in the super type will be used. Or
@@ -194,25 +194,25 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * type then this super types table definition will be used and so on, thus the table definition
      * can be defined in one of the super types in the inheritance hierarchy.
      */
-    public boolean isUseTableDefinedInSupertype();
+    boolean isUseTableDefinedInSupertype();
 
     /**
      * Set to <code>true</code> if the table definition of the super type will be used.
      */
-    public void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype);
+    void setUseTableDefinedInSupertype(boolean useTableDefinedInSupertype);
 
     /**
      * Search the root entity of this persistent type.
      * 
      * @see #isDefinesDiscriminatorColumn
      */
-    public IPolicyCmptType findRootEntity() throws IpsException;
+    IPolicyCmptType findRootEntity() throws IpsException;
 
     /**
      * Returns the name of database table. Returns an empty string if the table name has not been
      * set yet.
      */
-    public String getTableName();
+    String getTableName();
 
     /**
      * Sets the database table name to use for the {@link IPolicyCmptType} this object is part of.
@@ -231,26 +231,26 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * @see InheritanceStrategy
      * @see ITableNamingStrategy
      */
-    public void setTableName(String newTableName);
+    void setTableName(String newTableName);
 
     /**
      * Returns the inheritance strategy to use for the {@link IPolicyCmptType} this object is part
      * of.
      */
-    public InheritanceStrategy getInheritanceStrategy();
+    InheritanceStrategy getInheritanceStrategy();
 
     /**
      * Sets the inheritance strategy to use for the {@link IPolicyCmptType} this object is part of.
      * 
      * @param newStrategy The inheritance strategy to use, must not be <code>null</code>.
      */
-    public void setInheritanceStrategy(InheritanceStrategy newStrategy);
+    void setInheritanceStrategy(InheritanceStrategy newStrategy);
 
     /**
      * Returns the discriminator column name. Returns an empty string if the discriminator column
      * name has not been set yet.
      */
-    public String getDiscriminatorColumnName();
+    String getDiscriminatorColumnName();
 
     /**
      * Sets the discriminator column name. This only makes sense if the SINGLE_TABLE inheritance
@@ -261,14 +261,14 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * 
      * @see InheritanceStrategy
      */
-    public void setDiscriminatorColumnName(String newDiscriminatorColumnName);
+    void setDiscriminatorColumnName(String newDiscriminatorColumnName);
 
     /**
      * Returns the length of the discriminator column. Returns {@code null} if the database default
      * should be used.
      */
     @CheckForNull
-    public Integer getDiscriminatorColumnLength();
+    Integer getDiscriminatorColumnLength();
 
     /**
      * Sets the length for the discriminator column. This only makes sense if the SINGLE_TABLE
@@ -279,7 +279,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * 
      * @see InheritanceStrategy
      */
-    public void setDiscriminatorColumnLength(@CheckForNull Integer newDiscriminatorColumnLength);
+    void setDiscriminatorColumnLength(@CheckForNull Integer newDiscriminatorColumnLength);
 
     /**
      * Returns the discriminator value. When using the SINGLE_TABLE inheritance strategy the
@@ -288,7 +288,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * 
      * @see InheritanceStrategy
      */
-    public String getDiscriminatorValue();
+    String getDiscriminatorValue();
 
     /**
      * Sets the discriminator value of the {@link IPolicyCmptType} this object is part of. This only
@@ -298,7 +298,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * @param newDiscriminatorValue The value of the discriminator which has to match the currently
      *            set discriminator data type. Must not be <code>null</code>.
      */
-    public void setDiscriminatorValue(String newDiscriminatorValue);
+    void setDiscriminatorValue(String newDiscriminatorValue);
 
     /**
      * Returns the discriminator data type. Discriminator data types / values / columns are used
@@ -307,7 +307,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * @see DiscriminatorDatatype
      * @see InheritanceStrategy
      */
-    public DiscriminatorDatatype getDiscriminatorDatatype();
+    DiscriminatorDatatype getDiscriminatorDatatype();
 
     /**
      * Sets the discriminator data type. Discriminator data types / values / columns are used only
@@ -318,7 +318,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * @see DiscriminatorDatatype
      * @see InheritanceStrategy
      */
-    public void setDiscriminatorDatatype(DiscriminatorDatatype newDiscriminatorDatatype);
+    void setDiscriminatorDatatype(DiscriminatorDatatype newDiscriminatorDatatype);
 
     /**
      * An inheritance strategy for mapping a class hierarchy to database tables as defined in the
@@ -355,7 +355,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
 
         /**
          * @return <code>true</code> if the given value can be parsed into an instance of this
-         *         {@link DiscriminatorDatatype}, <code>false</code> otherwise.
+         *             {@link DiscriminatorDatatype}, <code>false</code> otherwise.
          */
         public boolean isParsableToDiscriminatorDatatype(String value) {
             switch (this) {
@@ -377,7 +377,7 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
      * disabled. The type mapped superclass specifies a special behavior that all subclasses of this
      * type inherits the attributes (and also the column definitions) of their supertype.
      */
-    public static enum PersistentType {
+    public enum PersistentType {
         NONE,
         ENTITY,
         MAPPED_SUPERCLASS

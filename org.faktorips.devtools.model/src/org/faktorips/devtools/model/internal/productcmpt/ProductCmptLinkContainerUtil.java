@@ -43,7 +43,7 @@ public class ProductCmptLinkContainerUtil {
      *            necessarily the project this component is an element of.
      * 
      * @return <code>true</code> if a new relation with the given values will be valid,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      * 
      * @throws IpsException if a problem occur during the search of the type hierarchy.
      */
@@ -52,21 +52,17 @@ public class ProductCmptLinkContainerUtil {
             IProductCmptTypeAssociation association,
             IIpsProject ipsProject) {
 
-        if (association == null || target == null || !linkContainer.getProductCmpt().getIpsSrcFile().isMutable()) {
-            return false;
-        }
-        if (linkContainer.getLinksAsList(association.getName()).size() >= association.getMaxCardinality()) {
-            return false;
-        }
-        if (!linkContainer.isContainerFor(association)) {
+        if (association == null
+                || target == null
+                || !linkContainer.getProductCmpt().getIpsSrcFile().isMutable()
+                || (linkContainer.getLinksAsList(association.getName()).size() >= association.getMaxCardinality())) {
             return false;
         }
 
         // it is not valid to create more than one relation with the same type and target.
-        if (isLinkExisting(linkContainer, association, target, ipsProject)) {
-            return false;
-        }
-        if (!isTypeCorrect(target, association, ipsProject)) {
+        if (!linkContainer.isContainerFor(association)
+                || isLinkExisting(linkContainer, association, target, ipsProject)
+                || !isTypeCorrect(target, association, ipsProject)) {
             return false;
         }
 

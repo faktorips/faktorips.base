@@ -25,52 +25,52 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
  */
 public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
 
-    public static final String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
+    String PROPERTY_ATTRIBUTE = "attribute"; //$NON-NLS-1$
 
-    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    public static final String PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE = "policyCmptType"; //$NON-NLS-1$
+    String PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE = "policyCmptType"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEST_ATTRIBUTE_TYPE = "testAttributeType"; //$NON-NLS-1$
+    String PROPERTY_TEST_ATTRIBUTE_TYPE = "testAttributeType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTATTRIBUTE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute which is related by the test attribute
      * not exists.
      */
-    public static final String MSGCODE_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "AttributeNotFound"; //$NON-NLS-1$
+    String MSGCODE_ATTRIBUTE_NOT_FOUND = MSGCODE_PREFIX + "AttributeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is an unsupported type.
      */
-    public static final String MSGCODE_WRONG_TYPE = MSGCODE_PREFIX + "WrongType"; //$NON-NLS-1$
+    String MSGCODE_WRONG_TYPE = MSGCODE_PREFIX + "WrongType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the type doesn't matches the parent type.<br>
      * E.g. the parent defines the input type and the attribute has the expected result type.
      */
-    public static final String MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE = MSGCODE_PREFIX + "TypeDoesNotMatchParentType"; //$NON-NLS-1$
+    String MSGCODE_TYPE_DOES_NOT_MATCH_PARENT_TYPE = MSGCODE_PREFIX + "TypeDoesNotMatchParentType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute name is duplicate.
      */
-    public static final String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "DuplicateTestAttributeName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that derived (computed on the fly) attributes are not
      * supported.
      */
-    public static final String MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX
+    String MSGCODE_DERIVED_ON_THE_FLY_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX
             + "DerivedAttributesOnTheFlyNotSupported"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that abstract attributes are not supported.
      */
-    public static final String MSGCODE_ABSTRACT_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX
+    String MSGCODE_ABSTRACT_ATTRIBUTES_NOT_SUPPORTED = MSGCODE_PREFIX
             + "AbstractAttributesNotSupported"; //$NON-NLS-1$
 
     /**
@@ -78,46 +78,46 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * given.<br>
      * E.g. The attribute "a" could be added as input and expected result but not as input twice.
      */
-    public static final String MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE = MSGCODE_PREFIX + "DuplicateAttributeAndType"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_ATTRIBUTE_AND_TYPE = MSGCODE_PREFIX + "DuplicateAttributeAndType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute name must not be empty.
      */
-    public static final String MSGCODE_ATTRIBUTE_NAME_IS_EMPTY = MSGCODE_PREFIX + "AttributeNameIsEmpty"; //$NON-NLS-1$
+    String MSGCODE_ATTRIBUTE_NAME_IS_EMPTY = MSGCODE_PREFIX + "AttributeNameIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type not exist.
      */
-    public static final String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
+    String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute and the data type are given. This is
      * an validation error, because the data type will be searched using the attribute, thus when
      * the attribute is given then the data type should be empty and vice versa.
      */
-    public static final String MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN = MSGCODE_PREFIX + "DatatypeAndAttributeAreGiven"; //$NON-NLS-1$
+    String MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN = MSGCODE_PREFIX + "DatatypeAndAttributeAreGiven"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the test attribute is not a valid Java
      * field identifier.
      */
-    public static final String MSGCODE_INVALID_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidTestAttributeName"; //$NON-NLS-1$
+    String MSGCODE_INVALID_TEST_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidTestAttributeName"; //$NON-NLS-1$
 
     /**
      * Sets the attribute's name.
      */
-    public void setName(String newName);
+    void setName(String newName);
 
     /**
      * Returns the attribute's name. {@inheritDoc}
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Returns the attribute.
      */
-    public String getAttribute();
+    String getAttribute();
 
     /**
      * Sets the given attribute.
@@ -127,7 +127,7 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * {@link #setAttribute(IPolicyCmptTypeAttribute)} instead, because here the policy component
      * type will be stored if necessary.
      */
-    public void setAttribute(String attribute);
+    void setAttribute(String attribute);
 
     /**
      * Sets the given attribute. Furthermore if the given attribute belongs to a different type the
@@ -138,25 +138,25 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * parameter are the same then the policy component type property of this attribute will be left
      * empty.
      */
-    public void setAttribute(IPolicyCmptTypeAttribute attribute);
+    void setAttribute(IPolicyCmptTypeAttribute attribute);
 
     /**
      * Returns the test attribute's data type. Note that only value data types are allowed as
      * attribute data type.
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Sets the test attribute's data type. Note that only value data types are allowed as attribute
      * data type.
      */
-    public void setDatatype(String newDatatype);
+    void setDatatype(String newDatatype);
 
     /**
      * Returns the policy component type the attribute belongs to.
      * 
      */
-    public String getCorrespondingPolicyCmptType();
+    String getCorrespondingPolicyCmptType();
 
     /**
      * Returns the policy component type which is stored beside the attribute.<br>
@@ -169,24 +169,24 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * @see #setAttribute(IPolicyCmptTypeAttribute)
      * @see #getCorrespondingPolicyCmptType()
      */
-    public String getPolicyCmptType();
+    String getPolicyCmptType();
 
     /**
      * Sets the policy component type the attribute belongs to.
      */
-    public void setPolicyCmptType(String policyCmptType);
+    void setPolicyCmptType(String policyCmptType);
 
     /**
      * Returns the test policy component type parameter this test attribute belongs to.
      */
-    public ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter();
+    ITestPolicyCmptTypeParameter getTestPolicyCmptTypeParameter();
 
     /**
      * Returns the model attribute or <code>null</code> if the attribute does not exist.
      * 
      * @param ipsProject The IPS project which object path is used to search.
      */
-    public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject);
+    IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject);
 
     /**
      * Returns the test attribute's value data type.
@@ -196,24 +196,24 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * 
      * @see #getDatatype() #getAttribute()
      */
-    public ValueDatatype findDatatype(IIpsProject project);
+    ValueDatatype findDatatype(IIpsProject project);
 
     /**
      * Returns <code>true</code> if the test attribute is an input attribute, otherwise
      * <code>false</code>.
      */
-    public boolean isInputAttribute();
+    boolean isInputAttribute();
 
     /**
      * Returns the parameter type of the test attribute.
      */
-    public TestParameterType getTestAttributeType();
+    TestParameterType getTestAttributeType();
 
     /**
      * Returns <code>true</code> if the test attribute is an expected result attribute, otherwise
      * <code>false</code>.
      */
-    public boolean isExpextedResultAttribute();
+    boolean isExpextedResultAttribute();
 
     /**
      * Sets the type of the test attribute. The following types could be set.
@@ -222,7 +222,7 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * <li>EXPECTED_RESULT: The test attribute specifies test attribute expected result objects.
      * </ul>
      */
-    public void setTestAttributeType(TestParameterType type);
+    void setTestAttributeType(TestParameterType type);
 
     /**
      * Returns <code>true</code> if the attribute is relevant for the given product component.
@@ -235,13 +235,13 @@ public interface ITestAttribute extends IIpsObjectPart, IDescribedElement {
      * 
      * @throws IpsException If an error occurs.
      */
-    public boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
+    boolean isAttributeRelevantByProductCmpt(IProductCmpt productCmpt, IIpsProject ipsProject)
             throws IpsException;
 
     /**
      * Returns <code>true</code> if the test attribute based on a model attribute (policy component
      * type attribute). This kind of attributes are also known as test extension attributes.
      */
-    public boolean isBasedOnModelAttribute();
+    boolean isBasedOnModelAttribute();
 
 }

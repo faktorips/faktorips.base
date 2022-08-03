@@ -178,7 +178,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      *            <code>null</code> - no details have to be collected in this case.
      * 
      * @return An array of found dependencies. If no dependencies are found, this method has to
-     *         return an empty array.
+     *             return an empty array.
      * 
      */
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {

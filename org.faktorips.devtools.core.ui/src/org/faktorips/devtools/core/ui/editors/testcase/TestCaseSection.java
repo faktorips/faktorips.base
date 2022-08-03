@@ -16,7 +16,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -596,9 +595,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
              * selected, show all elements inside the hierarchy of the root test policy cmpt
              */
             List<ITestObject> objectsToDisplay = new ArrayList<>();
-            for (Iterator<?> iterator = selection.iterator(); iterator.hasNext();) {
-                Object domainObject = iterator.next();
-
+            for (Object domainObject : selection) {
                 if (domainObject instanceof ITestValue) {
                     objectsToDisplay.add((ITestValue)domainObject);
                 } else if (domainObject instanceof TestCaseTypeRule) {
@@ -768,8 +765,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             // if an association was clicked set the focus to the entry in the tree
             if (selected instanceof ITestPolicyCmptLink) {
                 // an association link was clicked
-                ITestPolicyCmpt target = null;
-                target = ((ITestPolicyCmptLink)selected).findTarget();
+                ITestPolicyCmpt target = ((ITestPolicyCmptLink)selected).findTarget();
                 if (target != null) {
                     selectInTreeByObject(target, true);
                 }
@@ -1106,10 +1102,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     }
 
     private void runAndStoreExpectedResultClicked() {
-        if (!isDataChangeable()) {
-            return;
-        }
-        if (containsErrors()) {
+        if (!isDataChangeable() || containsErrors()) {
             return;
         }
         boolean overwriteExpectedResult = MessageDialog.openQuestion(getShell(),
@@ -2197,7 +2190,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * State class contains the enable state of all actions (for buttons and context menu)
      */
-    private class TreeActionEnableState {
+    private static class TreeActionEnableState {
         private boolean productCmptChangeEnable = false;
         private boolean productCmptRemoveEnable = false;
         private boolean removeEnable = false;
@@ -2297,7 +2290,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * Label provider for the test case type association select dialog.
      */
-    private class TestCaseTypeAssociationLabelProvider implements ILabelProvider {
+    private static class TestCaseTypeAssociationLabelProvider implements ILabelProvider {
 
         @Override
         public Image getImage(Object element) {
@@ -2309,8 +2302,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
          */
         private Image getImageFromAssociationType(TestCaseTypeAssociation dummyAssociation) {
             try {
-                ITestPolicyCmptTypeParameter typeParam = null;
-                typeParam = dummyAssociation.getTestPolicyCmptTypeParam();
+                ITestPolicyCmptTypeParameter typeParam = dummyAssociation.getTestPolicyCmptTypeParam();
                 IPolicyCmptTypeAssociation association = typeParam.findAssociation(typeParam.getIpsProject());
                 if (association == null) {
                     return null;
@@ -2351,7 +2343,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
     /**
      * Class to represent one ips test runner failure
      */
-    private class FailureDetails {
+    private static class FailureDetails {
 
         private String[] failureDetails;
 
@@ -2666,8 +2658,6 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 // add a new child based on the selected association
 
                 if (association.isAssoziation()) {
-                    // association will be added
-                    String targetName = ""; //$NON-NLS-1$
                     ITestPolicyCmpt selectedTarget = selectAssoziationByTreeDialog(association.getTarget());
                     if (selectedTarget == null) {
                         // cancel in dialog
@@ -2675,7 +2665,8 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                     }
 
                     TestCaseHierarchyPath path = new TestCaseHierarchyPath(selectedTarget);
-                    targetName = path.getHierarchyPath();
+                    // association will be added
+                    String targetName = path.getHierarchyPath();
 
                     ITestPolicyCmptLink newAssociation = null;
                     // add a new child based on the selected association and selected target
@@ -2762,9 +2753,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ICoreRunnable runnable = monitor -> {
                 if (getSelection() instanceof IStructuredSelection) {
                     Object nextItemToSelect = null;
-                    for (Iterator<?> iterator = ((IStructuredSelection)getSelection()).iterator(); iterator
-                            .hasNext();) {
-                        Object currElement = iterator.next();
+                    for (Object currElement : ((IStructuredSelection)getSelection())) {
                         TreeItem nextTreeItem = getNextSelectionInTreeAfterDelete(currElement);
                         if (nextTreeItem != null) {
                             nextItemToSelect = nextTreeItem.getData();

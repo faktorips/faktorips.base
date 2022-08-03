@@ -31,12 +31,12 @@ public interface ITocEntryBuilder {
      * @param ipsObject the {@link IIpsObject} to create TOC entries for.
      * @return a list of {@link TocEntryObject}s.
      */
-    public List<TocEntryObject> createTocEntries(IIpsObject ipsObject);
+    List<TocEntryObject> createTocEntries(IIpsObject ipsObject);
 
     /**
      * Returns the {@link IpsObjectType} this builder can create TOC entries for.
      * 
      * @return the {@link IpsObjectType} this builder is responsible for.
      */
-    public IpsObjectType getIpsObjectType();
+    IpsObjectType getIpsObjectType();
 }

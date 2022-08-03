@@ -66,7 +66,7 @@ public class ComboFieldEditor extends FieldEditor {
 
     @Override
     protected void adjustForNumColumns(int numColumns) {
-        GridData gd = (GridData)this.combo.getLayoutData();
+        GridData gd = (GridData)combo.getLayoutData();
         gd.horizontalSpan = numColumns - 1;
         /*
          * We only grab excess space if we have to If another field editor has more columns then we

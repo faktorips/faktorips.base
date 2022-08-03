@@ -58,7 +58,7 @@ public abstract class AbstractSearch {
     }
 
     protected void setStopSearch() {
-        this.searchState = SearchState.STOP_SEARCH;
+        searchState = SearchState.STOP_SEARCH;
     }
 
     public enum SearchState {
@@ -66,7 +66,7 @@ public abstract class AbstractSearch {
         CONTINUE_SEARCH;
 
         public boolean isStopSearch() {
-            return this.equals(STOP_SEARCH);
+            return equals(STOP_SEARCH);
         }
     }
 }

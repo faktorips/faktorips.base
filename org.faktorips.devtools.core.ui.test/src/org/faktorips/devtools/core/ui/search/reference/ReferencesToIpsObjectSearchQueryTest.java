@@ -164,7 +164,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
 
     @Test
     public void testFindReferences() {
-        IIpsProject[] projects = new IIpsProject[] { proj, proj2, proj3 };
+        IIpsProject[] projects = { proj, proj2, proj3 };
         when(proj.findReferencingProjectLeavesOrSelf()).thenReturn(projects);
 
         ReferencesToIpsObjectSearchQuery querySpy = spy(new ReferencesToIpsObjectSearchQuery(object1));

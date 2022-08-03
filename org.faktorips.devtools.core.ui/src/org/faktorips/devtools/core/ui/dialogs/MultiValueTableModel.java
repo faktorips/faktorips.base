@@ -51,7 +51,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      * objects}.
      * 
      * @return a newly created list of {@link SingleValueViewItem single value view items},
-     *         encapsulating the {@link SingleValueHolder single value holder objects}.
+     *             encapsulating the {@link SingleValueHolder single value holder objects}.
      */
     @Override
     public List<SingleValueViewItem> getElements() {
@@ -119,7 +119,7 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
      * Adds a new value to this multi value attribute.
      * 
      * @return the newly created value wrapped in a {@link SingleValueViewItem single value view
-     *         item}.
+     *             item}.
      */
     @Override
     public SingleValueViewItem addElement() {

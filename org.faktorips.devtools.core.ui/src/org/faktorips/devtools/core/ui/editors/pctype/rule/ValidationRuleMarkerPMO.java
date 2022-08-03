@@ -36,7 +36,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     private MarkerEnumUtil markerUtil;
 
     public ValidationRuleMarkerPMO(IValidationRule validationRule, MarkerEnumUtil markerUtil) {
-        this.rule = validationRule;
+        rule = validationRule;
         this.markerUtil = markerUtil;
     }
 
@@ -47,7 +47,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
      * @param validationRule the rule to be used for retrieving/writing the active markers.
      */
     public void setRule(IValidationRule validationRule) {
-        this.rule = validationRule;
+        rule = validationRule;
         initItems();
     }
 
@@ -125,9 +125,9 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
             super();
             this.pmo = pmo;
             this.id = id;
-            this.checked = initialCheckedState;
+            checked = initialCheckedState;
             this.illegalEntry = illegalEntry;
-            this.label = initLabel();
+            label = initLabel();
         }
 
         public static MarkerViewItem validItem(ValidationRuleMarkerPMO pmo, String id, boolean checked) {

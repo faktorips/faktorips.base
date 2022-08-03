@@ -44,7 +44,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param types the {@link AssociationType}s which should be considered for the root element
      *            computation
      * @return a {@link List} of {@link IType} with the root elements, or an empty list if there are
-     *         no elements.
+     *             no elements.
      */
     protected static List<IType> getProjectRootElementsFromComponentList(List<IType> components,
             IIpsProject sourceProject,
@@ -116,7 +116,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param types the {@link AssociationType}s which should be considered for the computation of
      *            element associations
      * @return {@code true} if the indicated tree contains an element of the provided project,
-     *         otherwise {@code false}
+     *             otherwise {@code false}
      */
     private static boolean isContainingSourceProjectElement(IType element,
             IIpsProject sourceProject,
@@ -139,13 +139,10 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         descendants.addAll(element.findSubtypes(false, false, sourceProject));
 
         for (IType descendingType : descendants) {
-            if (descendingType.getIpsProject().equals(sourceProject)) {
+            if (descendingType.getIpsProject().equals(sourceProject)
+                    || isContainingSourceProjectElement(descendingType, sourceProject, new ArrayList<>(callHierarchy),
+                            types)) {
                 return true;
-            } else {
-                if (isContainingSourceProjectElement(descendingType, sourceProject,
-                        new ArrayList<>(callHierarchy), types)) {
-                    return true;
-                }
             }
         }
 
@@ -223,7 +220,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param components a {@link List} of {@link IType} which define the scope of associations that
      *            will be checked
      * @return {@code true}, if any association is directed towards the provided target, otherwise
-     *         {@code false}
+     *             {@code false}
      */
     protected static boolean isAssociationTarget(IType target, List<IType> components, AssociationType... types) {
         return !getAssociatingTypes(target, components, types).isEmpty();
@@ -271,7 +268,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param types an array of {@link IpsObjectType} which should be retrieved
      * 
      * @return a {@link List} of {@link IType ITypes}, or an empty {@link List} if no {@link IType
-     *         ITypes} exist.
+     *             ITypes} exist.
      */
     protected static List<IType> getProjectITypes(IIpsProject ipsProject, IpsObjectType... types) {
         List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(types);
@@ -296,10 +293,10 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * and the other way round
      */
     public final void toggleShowTypeState() {
-        if (this.showState == ShowTypeState.SHOW_POLICIES) {
-            this.showState = ShowTypeState.SHOW_PRODUCTS;
+        if (showState == ShowTypeState.SHOW_POLICIES) {
+            showState = ShowTypeState.SHOW_PRODUCTS;
         } else {
-            this.showState = ShowTypeState.SHOW_POLICIES;
+            showState = ShowTypeState.SHOW_POLICIES;
         }
     }
 
@@ -314,20 +311,20 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
         this.showState = showState;
     }
 
-    static enum ToChildAssociationType {
+    enum ToChildAssociationType {
         SELF,
         ASSOCIATION,
         SUPERTYPE
     }
 
-    static enum ShowTypeState {
+    enum ShowTypeState {
         SHOW_POLICIES(1),
         SHOW_PRODUCTS(2);
 
         private final int state;
 
-        private ShowTypeState(int value) {
-            this.state = value;
+        ShowTypeState(int value) {
+            state = value;
         }
 
         public int getState() {
@@ -437,7 +434,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
      * @param components a list of {@link IType}
      * @param project the project for which the {@link IType}s should be retrieved
      * @return a {@link List} of {@link IType}, or an empty list if no provided elements are
-     *         contained in this project
+     *             contained in this project
      */
     protected static List<IType> getProjectSpecificITypes(List<IType> components, IIpsProject project) {
         List<IType> projectComponents = new ArrayList<>();

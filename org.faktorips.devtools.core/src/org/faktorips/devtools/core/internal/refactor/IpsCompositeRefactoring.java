@@ -56,7 +56,7 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
         checkElements(elements);
         this.elements = new HashSet<>(elements.size());
         this.elements.addAll(elements);
-        this.skippedElements = new HashSet<>(elements.size());
+        skippedElements = new HashSet<>(elements.size());
     }
 
     // TODO AW 22-04-2011: Only IPS elements from the same IPS project allowed?

@@ -24,7 +24,8 @@ public class ValidationRule extends TypePart {
     private final IpsConfiguredValidationRule validationConfigurationRule;
 
     public ValidationRule(Type type, IpsValidationRule validationRuleAnnotation,
-            IpsConfiguredValidationRule validationConfigurationRule, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
+            IpsConfiguredValidationRule validationConfigurationRule, IpsExtensionProperties extensionProperties,
+            Optional<Deprecation> deprecation) {
         super(validationRuleAnnotation.name(), type, extensionProperties, deprecation);
         this.validationRuleAnnotation = validationRuleAnnotation;
         this.validationConfigurationRule = validationConfigurationRule;
@@ -34,7 +35,7 @@ public class ValidationRule extends TypePart {
      * Returns whether this validation rule is changing over time.
      * 
      * @return <code>true</code> if this validation rule is changing over time, otherwise
-     *         <code>false</code>
+     *             <code>false</code>
      */
     public boolean isChangingOverTime() {
         if (validationConfigurationRule != null) {
@@ -47,7 +48,7 @@ public class ValidationRule extends TypePart {
      * Returns whether this validation rule is activated by default.
      * 
      * @return <code>true</code> if this validation rule is activated by default,otherwise
-     *         <code>false</code>
+     *             <code>false</code>
      */
     public boolean isActivatedByDefault() {
         if (validationConfigurationRule != null) {
@@ -60,7 +61,7 @@ public class ValidationRule extends TypePart {
      * Returns whether this validation rule can be configured by a product component.
      * 
      * @return <code>true</code> if this validation rule can be configured by a product component,
-     *         otherwise <code>false</code>
+     *             otherwise <code>false</code>
      */
     public boolean isProductRelevant() {
         if (validationConfigurationRule != null) {

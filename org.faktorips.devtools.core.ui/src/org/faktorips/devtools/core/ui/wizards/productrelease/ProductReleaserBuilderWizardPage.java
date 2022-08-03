@@ -151,7 +151,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             updatePageComplete();
         });
 
-        IIpsProject[] projects = new IIpsProject[0];
+        IIpsProject[] projects = {};
         try {
             projects = IIpsModel.get().getIpsProductDefinitionProjects();
             ArrayList<IIpsProject> sortedProjectList = new ArrayList<>(Arrays.asList(projects));
@@ -304,7 +304,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
 
         String versionMustChange = configuration.getAttribute(EXTENSION_ATTRIBUTE_VERSION_MUST_CHANGE);
         if (versionMustChange != null) {
-            return Boolean.valueOf(versionMustChange);
+            return Boolean.parseBoolean(versionMustChange);
         } else {
             return true;
         }

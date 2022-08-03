@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.dependency;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Objects;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -54,11 +55,7 @@ public class DependencyDetail implements IDependencyDetail {
     public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) {
         try {
             updateProperty(targetIpsPackageFragment, newName);
-        } catch (IllegalAccessException e) {
-            throw new IpsException(new IpsStatus(e));
-        } catch (IllegalArgumentException e) {
-            throw new IpsException(new IpsStatus(e));
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new IpsException(new IpsStatus(e));
         }
     }
@@ -76,11 +73,7 @@ public class DependencyDetail implements IDependencyDetail {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((part == null) ? 0 : part.hashCode());
-        result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
-        return result;
+        return Objects.hash(part, propertyName);
     }
 
     @Override
@@ -88,28 +81,12 @@ public class DependencyDetail implements IDependencyDetail {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof DependencyDetail)) {
+        if ((obj == null) || !(obj instanceof DependencyDetail)) {
             return false;
         }
         DependencyDetail other = (DependencyDetail)obj;
-        if (part == null) {
-            if (other.part != null) {
-                return false;
-            }
-        } else if (!part.equals(other.part)) {
-            return false;
-        }
-        if (propertyName == null) {
-            if (other.propertyName != null) {
-                return false;
-            }
-        } else if (!propertyName.equals(other.propertyName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(part, other.part)
+                && Objects.equals(propertyName, other.propertyName);
     }
 
 }

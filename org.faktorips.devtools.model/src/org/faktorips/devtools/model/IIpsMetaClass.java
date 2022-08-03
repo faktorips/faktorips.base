@@ -39,8 +39,8 @@ public interface IIpsMetaClass extends IIpsObject {
      *            objects from meta class sub types
      * 
      * @return An array of <code>IIpsSrcFile</code>s containing all meta objects that are instances
-     *         of this meta class
+     *             of this meta class
      */
-    public Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws IpsException;
+    Collection<IIpsSrcFile> searchMetaObjectSrcFiles(boolean includeSubtypes) throws IpsException;
 
 }

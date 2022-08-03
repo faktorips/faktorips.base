@@ -62,8 +62,8 @@ public class UniqueKeyValidator {
     public static final boolean TRACE_VALIDATION_CACHE;
 
     static {
-        TRACE_VALIDATION_CACHE = Boolean.valueOf(
-                Platform.getDebugOption("org.faktorips.devtools.model/trace/tablecontentvalidation")).booleanValue(); //$NON-NLS-1$
+        TRACE_VALIDATION_CACHE = Boolean
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/tablecontentvalidation")); //$NON-NLS-1$
     }
 
     /** cache to validate simple column unique keys */

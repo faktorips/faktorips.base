@@ -288,15 +288,15 @@ public enum FunctionSignatures {
     private final Datatype[] argTypes;
     private final boolean hasVarArgs;
 
-    private FunctionSignatures(Datatype type, Datatype argType) {
+    FunctionSignatures(Datatype type, Datatype argType) {
         this.type = type;
-        this.hasVarArgs = true;
-        this.argTypes = new Datatype[] { argType };
+        hasVarArgs = true;
+        argTypes = new Datatype[] { argType };
     }
 
-    private FunctionSignatures(Datatype type, Datatype[] argTypes) {
+    FunctionSignatures(Datatype type, Datatype[] argTypes) {
         this.type = type;
-        this.hasVarArgs = false;
+        hasVarArgs = false;
         this.argTypes = argTypes;
     }
 

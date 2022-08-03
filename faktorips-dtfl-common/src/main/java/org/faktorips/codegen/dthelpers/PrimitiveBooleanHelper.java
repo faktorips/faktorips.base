@@ -47,8 +47,8 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
 
     @Override
     public JavaCodeFragment newInstance(String value) {
-        Boolean booleanValue = Boolean.valueOf(value);
-        if (booleanValue.booleanValue()) {
+        boolean booleanValue = Boolean.parseBoolean(value);
+        if (booleanValue) {
             return new JavaCodeFragment("true"); //$NON-NLS-1$
         } else {
             return new JavaCodeFragment("false"); //$NON-NLS-1$

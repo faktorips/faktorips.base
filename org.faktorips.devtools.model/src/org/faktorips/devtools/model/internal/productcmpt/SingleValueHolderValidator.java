@@ -43,7 +43,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
         this.valueHolder = valueHolder;
         this.parent = parent;
         this.ipsProject = ipsProject;
-        this.invalidObjectProperties = new ObjectProperty[] {
+        invalidObjectProperties = new ObjectProperty[] {
                 new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
                 new ObjectProperty(valueHolder, IValueHolder.PROPERTY_VALUE) };
     }

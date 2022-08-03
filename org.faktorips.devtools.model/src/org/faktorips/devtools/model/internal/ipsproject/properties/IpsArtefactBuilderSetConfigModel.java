@@ -163,7 +163,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
     @Override
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
         Map<String, Object> parsedValueMap = new LinkedHashMap<>();
-        for (String name : this.properties.keySet()) {
+        for (String name : properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {
                 /*
@@ -172,7 +172,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
                  */
                 continue;
             }
-            String valueAsString = this.properties.get(name);
+            String valueAsString = properties.get(name);
             if (IpsStringUtils.isNotBlank(valueAsString)) {
                 Object value = propertyDef.parseValue(valueAsString);
                 parsedValueMap.put(name, value);

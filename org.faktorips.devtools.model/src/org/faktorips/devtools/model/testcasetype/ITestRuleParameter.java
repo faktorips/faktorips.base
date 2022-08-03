@@ -20,12 +20,12 @@ public interface ITestRuleParameter extends ITestParameter {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTRULEPARAMETER-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTRULEPARAMETER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the validation rule must have the expected result
      * type.
      */
-    public static final String MSGCODE_NOT_EXPECTED_RESULT = MSGCODE_PREFIX + "NotExpectedResult"; //$NON-NLS-1$
+    String MSGCODE_NOT_EXPECTED_RESULT = MSGCODE_PREFIX + "NotExpectedResult"; //$NON-NLS-1$
 
 }

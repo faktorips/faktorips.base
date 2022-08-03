@@ -16,7 +16,7 @@ public enum TargetType {
     OVERALL;
 
     public String getId() {
-        if (this.equals(OVERALL)) {
+        if (equals(OVERALL)) {
             return "_top"; //$NON-NLS-1$
         }
         return name().toLowerCase();

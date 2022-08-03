@@ -72,7 +72,7 @@ public class IpsHierarchyViewTest extends AbstractIpsPluginTest {
         assertEquals(pcType, testMock.element);
     }
 
-    private class IpsHierarchyViewMock extends IpsHierarchyView {
+    private static class IpsHierarchyViewMock extends IpsHierarchyView {
         private IIpsObject element;
 
         @Override

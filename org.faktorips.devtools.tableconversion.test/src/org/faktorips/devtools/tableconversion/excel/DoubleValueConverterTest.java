@@ -43,7 +43,7 @@ public class DoubleValueConverterTest {
 
         value = converter.getIpsValue(Integer.valueOf(0), ml);
         assertFalse(ml.isEmpty());
-        assertEquals(Integer.valueOf(0).toString(), value);
+        assertEquals(Integer.toString(0), value);
     }
 
     @Test

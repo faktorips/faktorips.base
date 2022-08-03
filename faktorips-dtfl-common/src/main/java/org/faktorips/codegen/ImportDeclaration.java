@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.util.StringUtil;
@@ -170,6 +171,7 @@ public class ImportDeclaration {
             // this is a primitive type
             return true;
         }
+        // CSON: BooleanExpressionComplexity
         if (isPackageImport(importSpec)) {
             if (JAVA_LANG_ASTERIX.equals(importSpec)) {
                 return true;
@@ -232,11 +234,7 @@ public class ImportDeclaration {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((classes == null) ? 0 : classes.hashCode());
-        result = prime * result + ((packages == null) ? 0 : packages.hashCode());
-        return result;
+        return Objects.hash(classes, packages);
     }
 
     @Override
@@ -248,21 +246,8 @@ public class ImportDeclaration {
             return false;
         }
         ImportDeclaration other = (ImportDeclaration)obj;
-        if (classes == null) {
-            if (other.classes != null) {
-                return false;
-            }
-        } else if (!classes.equals(other.classes)) {
-            return false;
-        }
-        if (packages == null) {
-            if (other.packages != null) {
-                return false;
-            }
-        } else if (!packages.equals(other.packages)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(classes, other.classes)
+                && Objects.equals(packages, other.packages);
     }
 
     /**

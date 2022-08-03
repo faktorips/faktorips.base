@@ -58,7 +58,7 @@ public class GitStatusPorcelainTask extends AbstractIpsTask {
 
         private final String name;
 
-        private Verbosity(String name) {
+        Verbosity(String name) {
             this.name = name;
         }
 

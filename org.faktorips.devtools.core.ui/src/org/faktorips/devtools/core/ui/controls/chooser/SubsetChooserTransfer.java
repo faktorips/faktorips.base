@@ -45,7 +45,7 @@ public class SubsetChooserTransfer extends SimpleObjectTransfer {
     }
 
     public AbstractSubsetChooserModel getModel() {
-        return this.model;
+        return model;
     }
 
     public TableViewer getViewer() {

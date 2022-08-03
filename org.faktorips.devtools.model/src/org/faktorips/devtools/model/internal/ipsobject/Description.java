@@ -108,7 +108,8 @@ public class Description extends AtomicIpsObjectPart implements IDescription {
         if (!(localeSupported)) {
             String msgText = MessageFormat.format(Messages.Description_msgLocaleNotSupportedByProject,
                     locale.getLanguage());
-            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, msgText, Message.WARNING,
+            Message msg = new Message(IDescription.MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT, msgText,
+                    Message.WARNING,
                     this, IDescription.PROPERTY_LOCALE);
             list.add(msg);
         }

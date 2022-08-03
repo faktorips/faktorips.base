@@ -84,11 +84,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
         if (!classMatcher.isMatching(element)) {
             return false;
         }
-        if (stringMatcher.isMatching(element.getName())) {
-            return true;
-        }
-
-        if (isMatchingLabel(element, stringMatcher)) {
+        if (stringMatcher.isMatching(element.getName()) || isMatchingLabel(element, stringMatcher)) {
             return true;
         }
 
@@ -110,10 +106,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
                 continue;
             }
 
-            if (stringMatcher.isMatching(label.getValue())) {
-                return true;
-            }
-            if (stringMatcher.isMatching(label.getPluralValue())) {
+            if (stringMatcher.isMatching(label.getValue()) || stringMatcher.isMatching(label.getPluralValue())) {
                 return true;
             }
         }
@@ -189,9 +182,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
 
         args.add(getSearchModel().getSearchScope().getScopeDescription());
 
-        String resultLabel = Messages.bind(message, args.toArray());
-
-        return resultLabel;
+        return Messages.bind(message, args.toArray());
     }
 
     @Override

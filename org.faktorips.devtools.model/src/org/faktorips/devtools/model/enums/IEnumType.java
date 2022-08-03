@@ -51,66 +51,66 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionControlledElement {
 
     /** The XML tag for this IPS object. */
-    public static final String XML_TAG = "EnumType"; //$NON-NLS-1$
+    String XML_TAG = "EnumType"; //$NON-NLS-1$
 
     /** Name of the <code>superEnumType</code> property. */
-    public static final String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
+    String PROPERTY_SUPERTYPE = "superEnumType"; //$NON-NLS-1$
 
     /** Name of the <code>abstract</code> property. */
-    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /** Name of the <code>extensible</code> property. */
-    public static final String PROPERTY_EXTENSIBLE = "extensible"; //$NON-NLS-1$
+    String PROPERTY_EXTENSIBLE = "extensible"; //$NON-NLS-1$
 
     /** Name of the <code>identifierBoundary</code> property. */
-    public static final String PROPERTY_IDENTIFIER_BOUNDARY = "identifierBoundary"; //$NON-NLS-1$
+    String PROPERTY_IDENTIFIER_BOUNDARY = "identifierBoundary"; //$NON-NLS-1$
 
     /** Name of the <code>enumContentPackageFragment</code> property. */
-    public static final String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
+    String PROPERTY_ENUM_CONTENT_NAME = "enumContentName"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMTYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the super type of this <code>IEnumType</code> does
      * not exist.
      */
-    public static final String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_SUPERTYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumTypeSupertypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the super type of this <code>IEnumType</code> is not
      * abstract.
      */
-    public static final String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_SUPERTYPE_IS_NOT_ABSTRACT = MSGCODE_PREFIX
             + "EnumTypeSupertypeIsNotAbstract"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that not all attributes defined in the the super type
      * hierarchy have been inherited.
      */
-    public static final String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_NOT_INHERITED_ATTRIBUTES_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumTypeNotInheritedAttributesInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumType</code> has no
      * <code>IEnumLiteralNameAttribute</code>.
      */
-    public static final String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_NO_LITERAL_NAME_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoLiteralNameAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumType</code> has multiple
      * <code>IEnumLiteralNameAttribute</code>s.
      */
-    public static final String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_MULTIPLE_LITERAL_NAME_ATTRIBUTES = MSGCODE_PREFIX
             + "EnumTypeMultipleLiteralNameAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists a cycle in the hierarchy of this
      * enumeration type.
      */
-    public static final String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy"; //$NON-NLS-1$
+    String MSGCODE_CYCLE_IN_TYPE_HIERARCHY = MSGCODE_PREFIX + "CycleInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists an inconsistency in the hierarchy of
@@ -118,14 +118,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * that is missing its super type or that the super type is not abstract which is an additional
      * constraint for enumeration types.
      */
-    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
+    String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistentTypeHierachy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumType</code> does not contain any
      * <code>IEnumAttribute</code> being marked to be used as (default) identifier while not being
      * abstract.
      */
-    public static final String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_NO_USED_AS_ID_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsIdInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
@@ -133,7 +133,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <code>IEnumAttribute</code> being marked to be used as name in the Faktor-IPS UI while not
      * being abstract.
      */
-    public static final String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_NO_USED_AS_NAME_IN_FAKTOR_IPS_UI_ATTRIBUTE = MSGCODE_PREFIX
             + "EnumTypeNoUsedAsNameInFaktorIpsUiAttribute"; //$NON-NLS-1$
 
     /**
@@ -141,29 +141,29 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <code>IEnumContent</code> is empty while this <code>IEnumType</code> delegates it's
      * enumeration values.
      */
-    public static final String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_ENUM_CONTENT_NAME_EMPTY = MSGCODE_PREFIX
             + "EnumTypeEnumContentNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the <code>IEnumType</code> stores
      * <code>IEnumValue</code>s even tough it is abstract.
      */
-    public static final String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
+    String MSGCODE_ENUM_TYPE_ENUM_VALUES_OBSOLETE = MSGCODE_PREFIX + "EnumTypeEnumValuesObsolete"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified <code>IEnumContent</code> is already
      * used by another <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED = MSGCODE_PREFIX
+    String MSGCODE_ENUM_TYPE_ENUM_CONTENT_ALREADY_USED = MSGCODE_PREFIX
             + "EnumTypeEnumContentAlreadyUsed"; //$NON-NLS-1$
 
     /** Returns the qualified name a referencing <code>IEnumContent</code> needs to have. */
-    public String getEnumContentName();
+    String getEnumContentName();
 
     /**
      * @return The IEnumContent referencing this EnumType.
      */
-    public IEnumContent findEnumContent(IIpsProject ipsProject) throws IpsException;
+    IEnumContent findEnumContent(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the qualified name a referencing <code>IEnumContent</code> must have.
@@ -172,7 +172,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public void setEnumContentName(String name);
+    void setEnumContentName(String name);
 
     /**
      * Returns the qualified name of the super enumeration type of this <code>IEnumType</code>.
@@ -180,7 +180,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * An empty <code>String</code> will be returned if this <code>IEnumType</code> does not have a
      * super enumeration type.
      */
-    public String getSuperEnumType();
+    String getSuperEnumType();
 
     /**
      * Sets the super enumeration type for this <code>IEnumType</code>.
@@ -190,7 +190,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>superEnumTypeQualifiedName</code> is <code>null</code>.
      */
-    public void setSuperEnumType(String superEnumTypeQualifiedName);
+    void setSuperEnumType(String superEnumTypeQualifiedName);
 
     /**
      * Returns <code>true</code> if this <code>IEnumType</code> is a sub enumeration type of the
@@ -202,7 +202,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
+    boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this <code>IEnumType</code> is a sub enumeration type of the
@@ -215,7 +215,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            necessarily the project this type is part of.
      * 
      */
-    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
+    boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
 
     /**
      * Searches and returns the super enumeration type of this <code>IEnumType</code> if any is
@@ -229,14 +229,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public IEnumType findSuperEnumType(IIpsProject ipsProject);
+    IEnumType findSuperEnumType(IIpsProject ipsProject);
 
     /**
      * Searches and returns all enumeration types that subclass this enumeration type.
      * 
      * @throws IpsException If an error occurs while searching for sub classing enumeration types.
      */
-    public Set<IEnumType> searchSubclassingEnumTypes() throws IpsException;
+    Set<IEnumType> searchSubclassingEnumTypes() throws IpsException;
 
     /**
      * Sets the abstract property for this <code>IEnumType</code>.
@@ -244,12 +244,12 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param isAbstract Flag indicating whether this <code>IEnumType</code> shall be abstract (
      *            <code>true</code>) or not (<code>false</code>).
      */
-    public void setAbstract(boolean isAbstract);
+    void setAbstract(boolean isAbstract);
 
     /**
      * Returns <code>true</code> if this {@link IEnumType} does contains at least one value.
      */
-    public boolean containsValues();
+    boolean containsValues();
 
     /**
      * Returns <code>true</code> if this <code>IEnumType</code> is extensible.
@@ -257,14 +257,14 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * An <code>IEnumType</code> is extensible if its values can be defined in the
      * <code>IEnumType</code> itself AND in a separated content.
      */
-    public boolean isExtensible();
+    boolean isExtensible();
 
     /**
      * Sets whether this <code>IEnumType</code> will be extensible.
      * 
      * @param extensible Flag indicating the extensibility of this <code>IEnumType</code>.
      */
-    public void setExtensible(boolean extensible);
+    void setExtensible(boolean extensible);
 
     /**
      * Returns the boundary for the values of the identifier attribute, or an empty string or
@@ -277,7 +277,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * than or equal to the boundary. Therefore the identifier-attribute's data-type has to
      * implement {@link Comparable}.
      */
-    public String getIdentifierBoundary();
+    String getIdentifierBoundary();
 
     /**
      * Sets the identifier attribute boundary for this {@link IEnumType}.
@@ -287,7 +287,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @see #getIdentifierBoundary()
      */
-    public void setIdentifierBoundary(String identifierBoundary);
+    void setIdentifierBoundary(String identifierBoundary);
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s that belong to this
@@ -301,7 +301,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param includeLiteralName When set to <code>true</code> the
      *            <code>IEnumLiteralNameAttribute</code>s will be contained in the returned list.
      */
-    public List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName);
+    List<IEnumAttribute> getEnumAttributes(boolean includeLiteralName);
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s that belong to this
@@ -318,7 +318,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param includeLiteralName When set to <code>true</code> the
      *            <code>IEnumLiteralNameAttribute</code>s will be contained in the returned list.
      */
-    public List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName);
+    List<IEnumAttribute> getEnumAttributesIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s that belong to this
@@ -342,7 +342,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> findAllEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject);
+    List<IEnumAttribute> findAllEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject);
 
     /**
      * Looks up the enumeration attribute for which the <code>identifier</code> property is
@@ -350,7 +350,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
      */
-    public IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject);
+    IEnumAttribute findIdentiferAttribute(IIpsProject ipsProject);
 
     /**
      * Looks up the enumeration attribute for which the <code>isUsedAsNameInFaktorIpsUi</code> is
@@ -358,7 +358,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @param ipsProject The IPS project used for look up in the super type hierarchy if necessary.
      */
-    public IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject);
+    IEnumAttribute findUsedAsNameInFaktorIpsUiAttribute(IIpsProject ipsProject);
 
     /**
      * Returns the index of the given <code>IEnumAttribute</code> or -1 if the given
@@ -374,13 +374,13 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public int getIndexOfEnumAttribute(IEnumAttribute enumAttribute, boolean considerLiteralName);
+    int getIndexOfEnumAttribute(IEnumAttribute enumAttribute, boolean considerLiteralName);
 
     /**
      * Returns the index of the first <code>IEnumLiteralNameAttribute</code> or -1 if no
      * <code>IEnumLiteralNameAttribute</code> exists in this <code>IEnumType</code>.
      */
-    public int getIndexOfEnumLiteralNameAttribute();
+    int getIndexOfEnumLiteralNameAttribute();
 
     /**
      * Returns the <code>IEnumAttribute</code> with the given name or <code>null</code> if there is
@@ -395,7 +395,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public IEnumAttribute getEnumAttribute(String name);
+    IEnumAttribute getEnumAttribute(String name);
 
     /**
      * Returns the <code>IEnumAttribute</code> with the given name or <code>null</code> if there is
@@ -411,7 +411,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name);
+    IEnumAttribute getEnumAttributeIncludeSupertypeCopies(String name);
 
     /**
      * Returns the <code>IEnumAttribute</code> with the given name or <code>null</code> if there is
@@ -430,7 +430,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws NullPointerException If <code>ipsProject</code> or <code>name</code> is
      *             <code>null</code>.
      */
-    public IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name);
+    IEnumAttribute findEnumAttributeIncludeSupertypeOriginals(IIpsProject ipsProject, String name);
 
     /**
      * Creates a new <code>IEnumAttribute</code> and returns a reference to it.
@@ -443,7 +443,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws IpsException If an error occurs while creating the new <code>IEnumAttribute</code>.
      */
-    public IEnumAttribute newEnumAttribute() throws IpsException;
+    IEnumAttribute newEnumAttribute() throws IpsException;
 
     /**
      * Creates a new <code>IEnumLiteralNameAttribute</code> and returns a reference to it. The
@@ -457,7 +457,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws IpsException If an error occurs while creating the new
      *             <code>IEnumLiteralNameAttribute</code>.
      */
-    public IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws IpsException;
+    IEnumLiteralNameAttribute newEnumLiteralNameAttribute() throws IpsException;
 
     /**
      * Returns how many <code>IEnumAttribute</code>s are currently part of this
@@ -470,7 +470,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param includeLiteralName When set to <code>true</code> the
      *            <code>IEnumLiteralNameAttribute</code>s will be counted, too.
      */
-    public int getEnumAttributesCount(boolean includeLiteralName);
+    int getEnumAttributesCount(boolean includeLiteralName);
 
     /**
      * Returns how many <code>IEnumAttribute</code>s are currently part of this
@@ -483,7 +483,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param includeLiteralName When set to <code>true</code> the
      *            <code>IEnumLiteralNameAttribute</code>s will be counted, too.
      */
-    public int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName);
+    int getEnumAttributesCountIncludeSupertypeCopies(boolean includeLiteralName);
 
     /**
      * Moves the given <code>IEnumAttribute</code> one position up or down and returns its new
@@ -506,10 +506,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws NoSuchElementException If the given <code>IEnumAttribute</code> is not a part of this
      *             <code>IEnumType</code>.
      */
-    public int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws IpsException;
+    int moveEnumAttribute(IEnumAttribute enumAttribute, boolean up) throws IpsException;
 
     /** Returns whether this <code>IEnumType</code> has a super enumeration type. */
-    public boolean hasSuperEnumType();
+    boolean hasSuperEnumType();
 
     /**
      * Returns <code>true</code> if values are ONLY definable in this {@link IEnumType} and not in a
@@ -518,7 +518,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <p>
      * This is the case when this <code>IEnumType</code> is not abstract and is not extensible.
      */
-    public boolean isInextensibleEnum();
+    boolean isInextensibleEnum();
 
     /**
      * Returns whether this <code>IEnumType</code> has a super enumeration type that really exists.
@@ -526,10 +526,10 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param ipsProject The <code>IIpsProject</code> that provides the object path that is used to
      *            search for the super enumeration type.
      */
-    public boolean hasExistingSuperEnumType(IIpsProject ipsProject);
+    boolean hasExistingSuperEnumType(IIpsProject ipsProject);
 
     /** Returns if this <code>IEnumType</code> is abstract. */
-    public boolean isAbstract();
+    boolean isAbstract();
 
     /**
      * Searches all <code>IEnumType</code>s in the super type hierarchy this <code>IEnumType</code>
@@ -548,7 +548,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject);
+    List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject);
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s from the super type hierarchy that
@@ -562,7 +562,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *             inherited <code>IEnumAttribute</code>s.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws IpsException;
+    List<IEnumAttribute> findInheritEnumAttributeCandidates(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns a list containing all <code>IEnumAttribute</code>s that are unique. Attributes
@@ -578,7 +578,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws IpsException If an error occurs while searching the super type hierarchy.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
+    List<IEnumAttribute> findUniqueEnumAttributes(boolean includeLiteralName, IIpsProject ipsProject)
             throws IpsException;
 
     /**
@@ -595,7 +595,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @throws IllegalArgumentException If any of the given <code>IEnumAttribute</code>s is not part
      *             of the supertype hierarchy of this <code>IEnumType</code>.
      */
-    public List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws IpsException;
+    List<IEnumAttribute> inheritEnumAttributes(List<IEnumAttribute> superEnumAttributes) throws IpsException;
 
     /**
      * Returns whether an <code>IEnumAttribute</code> with the given name exists in this
@@ -608,7 +608,7 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param attributeName The name of the <code>IEnumAttribute</code> to check for existence in
      *            this <code>IEnumType</code>.
      */
-    public boolean containsEnumAttribute(String attributeName);
+    boolean containsEnumAttribute(String attributeName);
 
     /**
      * Returns whether an <code>IEnumAttribute</code> with the given name exists in this
@@ -621,23 +621,23 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param attributeName The name of the <code>IEnumAttribute</code> to check for existence in
      *            this <code>IEnumType</code>.
      */
-    public boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName);
+    boolean containsEnumAttributeIncludeSupertypeCopies(String attributeName);
 
     /**
      * Returns the first <code>IEnumLiteralNameAttribute</code> of this <code>IEnumType</code> or
      * <code>null</code> if none exists.
      */
-    public IEnumLiteralNameAttribute getEnumLiteralNameAttribute();
+    IEnumLiteralNameAttribute getEnumLiteralNameAttribute();
 
     /**
      * Returns whether this <code>IEnumType</code> currently has at least one
      * <code>IEnumLiteralNameAttribute</code> (<code>true</code>) or not (<code>false</code>).
      */
-    public boolean hasEnumLiteralNameAttribute();
+    boolean hasEnumLiteralNameAttribute();
 
     /**
      * Returns <code>true</code> if this <code>IEnumType</code> currently has an
      * <code>IEnumLiteralNameAttribute</code>.
      */
-    public boolean containsEnumLiteralNameAttribute();
+    boolean containsEnumLiteralNameAttribute();
 }

@@ -112,7 +112,7 @@ public class ResourceDeltaVisitorTest extends AbstractIpsPluginTest {
         }
     }
 
-    private final class TestIpsSrcFilesChangeListener implements IIpsSrcFilesChangeListener {
+    private static final class TestIpsSrcFilesChangeListener implements IIpsSrcFilesChangeListener {
 
         private List<IIpsSrcFile> changedFiles = new ArrayList<>();
 

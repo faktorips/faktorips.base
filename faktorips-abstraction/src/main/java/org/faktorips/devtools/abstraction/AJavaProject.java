@@ -96,7 +96,7 @@ public interface AJavaProject extends AJavaElement {
     /**
      * Returns the Java project matching the given project.
      */
-    public static AJavaProject from(AProject project) {
+    static AJavaProject from(AProject project) {
         return Wrappers.wrap(project).as(AJavaProject.class);
     }
 

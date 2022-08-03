@@ -21,5 +21,5 @@ public interface IHiddenWizardPage {
     /**
      * Returns <code>true</code> if the given page is visible
      */
-    public boolean isPageVisible();
+    boolean isPageVisible();
 }

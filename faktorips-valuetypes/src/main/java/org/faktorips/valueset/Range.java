@@ -24,19 +24,19 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
     /**
      * Returns the range's lower bound, <code>null</code> means that the range is unbounded.
      */
-    public T getLowerBound();
+    T getLowerBound();
 
     /**
      * Returns the range's upper bound, <code>null</code> means that the range is unbounded.
      */
-    public T getUpperBound();
+    T getUpperBound();
 
     /**
      * Returns <code>true</code> if the indicated value is contained in the range, otherwise
      * <code>false</code>. Returns <code>false</code> if the value is null.
      */
     @Override
-    public boolean contains(T value);
+    boolean contains(T value);
 
     /**
      * {@inheritDoc}
@@ -45,7 +45,7 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * Faktor-IPS 20.6 it can also be marked explicitly as empty while having no bounds or step.
      */
     @Override
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * The unit that defines the discrete values that are allowed to be within this range. The
@@ -54,6 +54,6 @@ public interface Range<T extends Comparable<? super T>> extends ValueSet<T> {
      * the upper or the lower bound while one of these needs to be different from null. The returned
      * value can be null indicating that this is a continuous range.
      */
-    public T getStep();
+    T getStep();
 
 }

@@ -134,9 +134,8 @@ public class NonIPSMoveOperation implements IRunnableWithProgress {
         String[] result = new String[sources.length];
 
         for (int i = 0; i < sources.length; i++) {
-            if (sources[i] instanceof IFile) {
-                result[i] = targetFullPath;
-            } else if (sources[i] instanceof File) {
+            if ((sources[i] instanceof IFile)
+                    || (sources[i] instanceof File)) {
                 result[i] = targetFullPath;
             }
         }

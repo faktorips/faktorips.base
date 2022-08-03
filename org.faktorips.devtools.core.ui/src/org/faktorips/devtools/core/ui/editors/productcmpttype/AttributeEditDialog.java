@@ -413,7 +413,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
          * datatype is correct. Otherwise returns <code>false</code>.
          */
         public boolean isEnabledDefaultAndValuesetPage() {
-            ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
+            ValueDatatype newDatatype = getIpsObjectPartContainer().findDatatype(
                     getIpsObjectPartContainer().getIpsProject());
             return newDatatype != null;
         }
@@ -424,7 +424,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
          * returns <code>false</code>.
          */
         public boolean isEnabledDefaultAndValuesetControls() {
-            return isEnabledDefaultAndValuesetPage() && !this.getIpsObjectPartContainer().isMultilingual();
+            return isEnabledDefaultAndValuesetPage() && !getIpsObjectPartContainer().isMultilingual();
         }
     }
 

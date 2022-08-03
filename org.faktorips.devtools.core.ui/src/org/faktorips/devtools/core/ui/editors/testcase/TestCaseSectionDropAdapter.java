@@ -172,10 +172,7 @@ class DropToMoveHelper {
     }
 
     private boolean isValidToMove(Object target, ITestPolicyCmpt source) {
-        if (source == null) {
-            return false;
-        }
-        if (!(target instanceof ITestPolicyCmpt)) {
+        if ((source == null) || !(target instanceof ITestPolicyCmpt)) {
             return false;
         }
         return source.getParentTestPolicyCmpt().equals(((ITestPolicyCmpt)target).getParentTestPolicyCmpt());

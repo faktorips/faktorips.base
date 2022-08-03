@@ -21,30 +21,30 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public interface IIpsElement extends IAdaptable {
 
     /** The name of the <code>name</code> property. */
-    public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+    String PROPERTY_NAME = "name"; //$NON-NLS-1$
 
     /**
      * Returns the element's unqualified name.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the model this <code>IIpsElement</code> belongs to.
      */
-    public IIpsModel getIpsModel();
+    IIpsModel getIpsModel();
 
     /**
      * Returns the <code>IIpsProject</code> this element belongs to or <code>null</code> if this is
      * the model.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns <code>true</code> if this element exists. This is the case if every ancestor up to
      * the <code>IIpsProject</code> does exist and, if this element has a corresponding resource,
      * that resource exists as well.
      */
-    public boolean exists();
+    boolean exists();
 
     /**
      * Returns the resource corresponding to this element, e.g. an <code>IIpsPackageFragment</code>
@@ -54,7 +54,7 @@ public interface IIpsElement extends IAdaptable {
      * 
      * @see #getEnclosingResource()
      */
-    public AResource getCorrespondingResource();
+    AResource getCorrespondingResource();
 
     /**
      * Returns the resource this <code>IIpsElement</code> is stored in. In contrast to
@@ -64,28 +64,28 @@ public interface IIpsElement extends IAdaptable {
      * 
      * @see #getCorrespondingResource()
      */
-    public AResource getEnclosingResource();
+    AResource getEnclosingResource();
 
     /**
      * Returns the parent <code>IIpsElement</code> or <code>null</code> if this element has no
      * parent. This is the case for the <code>IIpsModel</code> only.
      */
-    public IIpsElement getParent();
+    IIpsElement getParent();
 
     /**
      * Returns the element's immediate children or an empty array, if this element hasn't got any
      * children.
      */
-    public IIpsElement[] getChildren() throws IpsException;
+    IIpsElement[] getChildren() throws IpsException;
 
     /** Returns <code>true</code> if this element has any children, otherwise <code>false</code>. */
-    public boolean hasChildren() throws IpsException;
+    boolean hasChildren() throws IpsException;
 
     /**
      * Returns <code>true</code> if this element is contained in an archive, <code>false</code>
      * otherwise.
      */
-    public boolean isContainedInArchive();
+    boolean isContainedInArchive();
 
     /**
      * Deletes this element. After calling this method neither this element nor any child is cached
@@ -98,6 +98,6 @@ public interface IIpsElement extends IAdaptable {
      * @throws IpsException If an error occurs during deletion
      * @throws UnsupportedOperationException If the element cannot be deleted
      */
-    public void delete() throws IpsException;
+    void delete() throws IpsException;
 
 }

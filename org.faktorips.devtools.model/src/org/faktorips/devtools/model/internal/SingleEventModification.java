@@ -37,7 +37,7 @@ public abstract class SingleEventModification<T> {
      * method.
      * 
      * @return true if the modifications have been successful and an event needs to be fired
-     *         afterwards
+     *             afterwards
      * 
      * @throws IpsException exceptions within this method
      */

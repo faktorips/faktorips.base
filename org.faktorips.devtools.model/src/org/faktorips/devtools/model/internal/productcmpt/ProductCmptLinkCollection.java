@@ -111,7 +111,7 @@ public class ProductCmptLinkCollection {
      * 
      * @param link the link to be added
      * @return <code>true</code> if the link could be added to this collection, <code>false</code>
-     *         otherwise.
+     *             otherwise.
      * @throws NullPointerException if the given link is <code>null</code>.
      * @throws IllegalArgumentException if the given link does not belong to any association, IOW
      *             {@link IProductCmptLink#getAssociation()} returns <code>null</code>.
@@ -212,8 +212,8 @@ public class ProductCmptLinkCollection {
      *            place it below the target
      * 
      * @return The method returns <code>true</code> if the link could be moved and returns
-     *         <code>false</code> if either the link or the target are <code>null</code> or if one
-     *         of the links is not a part of this container.
+     *             <code>false</code> if either the link or the target are <code>null</code> or if
+     *             one of the links is not a part of this container.
      * 
      */
     public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above) {
@@ -221,10 +221,7 @@ public class ProductCmptLinkCollection {
         if (toMove == target) {
             return true;
         }
-        if (toMove == null || target == null) {
-            return false;
-        }
-        if (!links.contains(target)) {
+        if (toMove == null || target == null || !links.contains(target)) {
             return false;
         }
         boolean removed = links.remove(toMove);
@@ -247,7 +244,7 @@ public class ProductCmptLinkCollection {
      * 
      * @param link the link to be removed
      * @return <code>true</code> if the link was removed from this collection, <code>false</code>
-     *         otherwise.
+     *             otherwise.
      */
     public boolean remove(IProductCmptLink link) {
         if (link == null) {

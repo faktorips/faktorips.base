@@ -53,7 +53,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * elements and creates new parts referencing their parent model.
      * 
      * @return a map of all child elements referenced by their name in the order defined in the
-     *         annotated class.
+     *             annotated class.
      */
     public LinkedHashMap<String, E> createParts(Class<?> annotatedClass, ModelElement parentModel) {
         return createParts(annotatedClass, annotatedClass, parentModel);
@@ -65,7 +65,7 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * referencing their parent model.
      * 
      * @return a map of all child elements referenced by their name in the order defined in the
-     *         {@code classWithChildNameList}.
+     *             {@code classWithChildNameList}.
      */
     public LinkedHashMap<String, E> createParts(Class<?> classWithChildNameList,
             Class<?> classWithGetterMethods,
@@ -109,13 +109,13 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * Gets the list of names from the parent class annotated with the {@link Annotation} {@code A}
      */
     @FunctionalInterface
-    public static interface NamesAccessor<A extends Annotation> {
+    public interface NamesAccessor<A extends Annotation> {
 
         /**
          * Gets the list of names from the parent class annotated with the {@link Annotation}
          * {@code A}
          */
-        public String[] getNames(A annotation);
+        String[] getNames(A annotation);
     }
 
     /**
@@ -123,13 +123,13 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * {@code C}
      */
     @FunctionalInterface
-    public static interface NameAccessor<C extends Annotation> {
+    public interface NameAccessor<C extends Annotation> {
 
         /**
          * Gets the name of the child element from a method annotated with the {@link Annotation}
          * {@code C}
          */
-        public String getName(C annotation);
+        String getName(C annotation);
     }
 
     /**
@@ -137,11 +137,11 @@ public class SimpleTypePartsReader<E extends ModelElement, P extends Annotation,
      * getter method.
      */
     @FunctionalInterface
-    public static interface ModelElementCreator<T extends ModelElement> {
+    public interface ModelElementCreator<T extends ModelElement> {
         /**
          * Creates a new {@link ModelElement} under the given parent element with the given name and
          * getter method.
          */
-        public T create(ModelElement parentElement, String name, Method getterMethod);
+        T create(ModelElement parentElement, String name, Method getterMethod);
     }
 }

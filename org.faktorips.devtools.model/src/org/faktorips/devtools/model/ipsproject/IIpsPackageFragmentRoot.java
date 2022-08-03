@@ -36,18 +36,18 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * Returns <code>true</code> if this package fragment root represents a source folder containing
      * modifiable source files, otherwise <code>false</code>.
      */
-    public boolean isBasedOnSourceFolder();
+    boolean isBasedOnSourceFolder();
 
     /**
      * Returns <code>true</code> if this package fragment root is based on an IPS archive.
      */
-    public boolean isBasedOnIpsArchive();
+    boolean isBasedOnIpsArchive();
 
     /**
      * Returns the entry in the IPS object path that results in this package fragment root. E.g. an
      * entry defining a source folder leads to an IPS package fragment root.
      */
-    public IIpsObjectPathEntry getIpsObjectPathEntry();
+    IIpsObjectPathEntry getIpsObjectPathEntry();
 
     /**
      * Returns the artifact destination for the artifacts generated on behalf of the IPS objects
@@ -57,13 +57,13 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *            destination for mergeable resources is to return. If set to true the destination
      *            for the derived artifacts will be returned.
      */
-    public APackageFragmentRoot getArtefactDestination(boolean derived) throws IpsException;
+    APackageFragmentRoot getArtefactDestination(boolean derived) throws IpsException;
 
     /**
      * Returns the package fragments contained in this root folder. Returns an empty array if this
      * root folder does not contain any fragments.
      */
-    public IIpsPackageFragment[] getIpsPackageFragments() throws IpsException;
+    IIpsPackageFragment[] getIpsPackageFragments() throws IpsException;
 
     /**
      * Returns the package fragment with the indicated name or <code>null</code> if the given name
@@ -74,7 +74,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * 
      * @see IIpsProject#getNamingConventions()
      */
-    public IIpsPackageFragment getIpsPackageFragment(String name);
+    IIpsPackageFragment getIpsPackageFragment(String name);
 
     /**
      * Returns all <code>IResource</code> objects that do not correspond to
@@ -83,12 +83,12 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * 
      * @throws IpsException if the members of the corresponding resource cannot be accessed.
      */
-    public AResource[] getNonIpsResources() throws IpsException;
+    AResource[] getNonIpsResources() throws IpsException;
 
     /**
      * Returns the default-package.
      */
-    public IIpsPackageFragment getDefaultIpsPackageFragment();
+    IIpsPackageFragment getDefaultIpsPackageFragment();
 
     /**
      * Creates the IPS package fragment with the indicated name. Note that if the name contains one
@@ -108,24 +108,24 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      *             <li>The name is not a valid package name</li>
      *             </ul>
      */
-    public IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
+    IIpsPackageFragment createPackageFragment(String name, boolean force, IProgressMonitor monitor)
             throws IpsException;
 
     /**
      * Returns the IPS object with the indicated type and qualified name.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws IpsException;
+    IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws IpsException;
 
     /**
      * Returns the IPS source file with the indicated qualified name type.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws IpsException;
+    IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws IpsException;
 
     /**
      * If this root is based on a storage, the method returns the storage, otherwise
      * <code>null</code> is returned.
      */
-    public IIpsStorage getIpsStorage();
+    IIpsStorage getIpsStorage();
 
     /**
      * Deletes this package fragment root by deleting all child package fragments.
@@ -133,7 +133,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * @throws UnsupportedOperationException If the package fragment root is stored in an archive
      */
     @Override
-    public void delete() throws IpsException;
+    void delete() throws IpsException;
 
     /**
      * Finding and returning all {@link IIpsSrcFile IIpsSrcFiles} of the specified
@@ -141,7 +141,7 @@ public interface IIpsPackageFragmentRoot extends IIpsElement {
      * 
      * @param type The type of {@link IIpsSrcFile IIpsSrcFiles} you want to find
      * @return A List of all {@link IIpsSrcFile IIpsSrcFiles} found in this
-     *         {@link IIpsPackageFragmentRoot}
+     *             {@link IIpsPackageFragmentRoot}
      * @throws IpsException In case of a core exception finding the resources
      */
     List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType type) throws IpsException;

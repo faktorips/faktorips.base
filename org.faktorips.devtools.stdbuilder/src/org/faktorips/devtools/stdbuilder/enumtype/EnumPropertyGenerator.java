@@ -121,7 +121,6 @@ public class EnumPropertyGenerator {
     public InputStream getStream() {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messagesProperties.store(outputStream);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        return inputStream;
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }

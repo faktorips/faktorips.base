@@ -16,5 +16,5 @@ package org.faktorips.devtools.core.ui.controller.fields;
 @FunctionalInterface
 public interface ValueChangeListener {
 
-    public void valueChanged(FieldValueChangedEvent e);
+    void valueChanged(FieldValueChangedEvent e);
 }

@@ -48,9 +48,8 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
     private OpenIpsObjectSelectionDialog getSelectDialog(ITableContentUsage setToUsage, Shell shell) {
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(setToUsage.getIpsProject(),
                 IpsObjectType.TABLE_CONTENTS, new TableContentsViewerFilter(setToUsage));
-        OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(shell,
+        return new OpenIpsObjectSelectionDialog(shell,
                 Messages.AddLinkAction_selectDialogTitle, context);
-        return dialog;
     }
 
     @Override

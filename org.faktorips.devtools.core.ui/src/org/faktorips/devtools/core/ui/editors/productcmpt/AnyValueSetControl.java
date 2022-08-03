@@ -79,7 +79,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     public AnyValueSetControl(Composite parent, UIToolkit toolkit, IConfiguredValueSet configuredValueSet,
             Shell shell) {
         super(parent, toolkit, "...", true, 15); //$NON-NLS-1$
-        this.configValueSet = configuredValueSet;
+        configValueSet = configuredValueSet;
         this.shell = shell;
         getTextControl().setEditable(true);
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configuredValueSet));
@@ -126,13 +126,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         IPolicyCmptTypeAttribute attribute = configValueSet.findPcTypeAttribute(getIpsProject());
         ValueDatatype datatype = getValueDatatype(attribute);
 
-        if (attribute == null) {
-            return null;
-        }
-        if (!attribute.getValueSet().isEnum()) {
-            return null;
-        }
-        if (!configValueSet.getValueSet().isEnum()) {
+        if ((attribute == null) || !attribute.getValueSet().isEnum() || !configValueSet.getValueSet().isEnum()) {
             return null;
         }
         if (attribute.getValueSet().canBeUsedAsSupersetForAnotherEnumValueSet() || datatype.isEnum()) {

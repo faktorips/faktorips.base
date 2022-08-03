@@ -23,7 +23,7 @@ public interface INotificationSupport {
     /**
      * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
      */
-    public void addPropertyChangeListener(PropertyChangeListener listener);
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
      * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(PropertyChangeListener)
@@ -31,33 +31,33 @@ public interface INotificationSupport {
      * @param propagateEventsFromChildren if set to {@code true}, this object's change listeners
      *            will also be notified when one of this object's children fires a change event.
      */
-    public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren);
+    void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren);
 
     /**
      * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(PropertyChangeListener)
      */
-    public void removePropertyChangeListener(PropertyChangeListener listener);
+    void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
      * @see java.beans.PropertyChangeSupport#addPropertyChangeListener(String,
-     *      PropertyChangeListener)
+     *          PropertyChangeListener)
      */
-    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+    void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
     /**
      * @see java.beans.PropertyChangeSupport#removePropertyChangeListener(String,
-     *      PropertyChangeListener)
+     *          PropertyChangeListener)
      */
-    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
+    void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
 
     /**
      * @see java.beans.PropertyChangeSupport#hasListeners(String)
      */
-    public boolean hasListeners(String propertyName);
+    boolean hasListeners(String propertyName);
 
     /**
      * @see java.beans.PropertyChangeSupport#firePropertyChange(PropertyChangeEvent)
      */
-    public void notifyChangeListeners(PropertyChangeEvent event);
+    void notifyChangeListeners(PropertyChangeEvent event);
 
 }

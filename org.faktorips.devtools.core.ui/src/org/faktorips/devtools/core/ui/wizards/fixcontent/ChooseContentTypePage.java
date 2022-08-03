@@ -79,14 +79,14 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
 
         contentType = contentStrategy.findContentType(contentStrategy.getIpsProject());
 
-        this.setErrorMessage(null);
+        setErrorMessage(null);
         boolean pageComplete = true;
         if (text.length() == 0) {
-            this.setErrorMessage(NLS.bind(Messages.FixContentWizard_chosenContentTypeEmpty, contentTypeString));
+            setErrorMessage(NLS.bind(Messages.FixContentWizard_chosenContentTypeEmpty, contentTypeString));
             pageComplete = false;
         } else {
             if (contentType == null) {
-                this.setErrorMessage(
+                setErrorMessage(
                         NLS.bind(Messages.FixContentWizard_chosenContentTypeDoesNotExist, contentTypeString));
                 pageComplete = false;
             } else if (contentType instanceof IEnumType) {
@@ -94,7 +94,7 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
             }
         }
 
-        this.setPageComplete(pageComplete);
+        setPageComplete(pageComplete);
         if (pageComplete) {
             assignContentAttributesPage.refreshControl();
         }
@@ -103,11 +103,11 @@ public class ChooseContentTypePage<T extends IIpsObject, E extends ILabeledEleme
     private boolean enumTypeModified(IEnumType newEnumType, boolean pageComplete) {
         boolean pageIsComplete = pageComplete;
         if (newEnumType.isAbstract()) {
-            this.setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract);
+            setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeAbstract);
             pageIsComplete = false;
         }
         if (newEnumType.isInextensibleEnum()) {
-            this.setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel);
+            setErrorMessage(Messages.FixEnumContentWizard_chosenEnumTypeValuesArePartOfModel);
             pageIsComplete = false;
         }
         return pageIsComplete;

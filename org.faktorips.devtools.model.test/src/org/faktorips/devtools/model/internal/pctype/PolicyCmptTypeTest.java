@@ -1242,7 +1242,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));
     }
 
-    private class AggregateRootBuilderSet extends EmptyBuilderSet {
+    private static class AggregateRootBuilderSet extends EmptyBuilderSet {
 
         public static final String ID = "AggregateRootBuilderSet";
 

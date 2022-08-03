@@ -22,53 +22,53 @@ public interface ITableRows extends IIpsObjectPart {
     /**
      * The name of the XML tag used if this object is saved to XML.
      */
-    public static final String TAG_NAME = "Rows"; //$NON-NLS-1$
+    String TAG_NAME = "Rows"; //$NON-NLS-1$
 
     /**
      * The property of the {@link ITableRows#TAG_NAME} element that defines the
      * {@link TableContentFormat}.
      */
-    public static final String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
+    String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
 
-    public static final String FORMAT_CSV = TableContentFormat.CSV.getId();
+    String FORMAT_CSV = TableContentFormat.CSV.getId();
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
 
     /**
      * Returns the rows that make up the table.
      */
-    public IRow[] getRows();
+    IRow[] getRows();
 
     /**
      * Returns the row of the table at the given index (the first element has the index 0). Returns
      * null if the given index is out of bounds (less than zero or greater or equal than the number
      * of rows).
      */
-    public IRow getRow(int rowIndex);
+    IRow getRow(int rowIndex);
 
     /**
      * Returns the number of rows in the table.
      */
-    public int getNumOfRows();
+    int getNumOfRows();
 
     /**
      * Creates a new row.
      */
-    public IRow newRow();
+    IRow newRow();
 
     /**
      * Creates a new row after the given row index.<br>
      * If the index is greater than the number of rows the row will be added at the end.
      */
-    public IRow insertRowAfter(int rowIndex);
+    IRow insertRowAfter(int rowIndex);
 
     /**
      * removes all rows
      */
-    public void clear();
+    void clear();
 
     /**
      * This method is used to create a new row with read content. The tableStructure is provided for

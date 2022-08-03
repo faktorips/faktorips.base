@@ -22,29 +22,29 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IParameter extends IIpsObjectPart {
 
-    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**
      * Returns the parent container this parameter is part of.
      * 
      * @return The container this parameter is part of.
      */
-    public IParameterContainer getParameterContainer();
+    IParameterContainer getParameterContainer();
 
     /**
      * Sets the name of the parameter.
      */
-    public void setName(String newName);
+    void setName(String newName);
 
     /**
      * Sets the parameter's value data type.
      */
-    public void setDatatype(String type);
+    void setDatatype(String type);
 
     /**
      * Returns the parameter's data type.
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Returns the parameter's data type or <code>null</code> if the data type can't be found.
@@ -53,6 +53,6 @@ public interface IParameter extends IIpsObjectPart {
      * 
      * @throws IpsException If an exception occurs while searching for the data type.
      */
-    public Datatype findDatatype(IIpsProject ipsProject) throws IpsException;
+    Datatype findDatatype(IIpsProject ipsProject) throws IpsException;
 
 }

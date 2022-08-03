@@ -34,5 +34,5 @@ public interface IWorkbenchAdapterProvider {
      * 
      * @return A map mapping {@link IIpsElement}s to {@link IpsElementWorkbenchAdapter}s
      */
-    public Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> getAdapterMap();
+    Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> getAdapterMap();
 }

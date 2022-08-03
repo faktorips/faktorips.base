@@ -44,8 +44,7 @@ public class EmptyAssociationFilter extends ViewerFilter {
 
     private List<IProductCmptLink> getLinks(AbstractAssociationViewItem associationViewItem) {
         IProductCmptLinkContainer linkContainer = associationViewItem.getLinkContainer();
-        List<IProductCmptLink> links = linkContainer.getLinksAsList(associationViewItem.getAssociationName());
-        return links;
+        return linkContainer.getLinksAsList(associationViewItem.getAssociationName());
     }
 
     private boolean canSelect(Object element) {

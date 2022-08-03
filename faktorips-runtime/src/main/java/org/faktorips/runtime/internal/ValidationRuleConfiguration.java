@@ -36,7 +36,7 @@ public class ValidationRuleConfiguration {
      * @param active a flag indicating whether this rule is configured as active or not.
      */
     public ValidationRuleConfiguration(String name, boolean active) {
-        this.ruleName = name;
+        ruleName = name;
         this.active = active;
     }
 
@@ -61,7 +61,7 @@ public class ValidationRuleConfiguration {
      * Flag indicating whether the validation rule is configured as active.
      * 
      * @return <code>true</code> if the validation rule is configured as active, <code>false</code>
-     *         otherwise.
+     *             otherwise.
      */
     public boolean isActive() {
         return active;

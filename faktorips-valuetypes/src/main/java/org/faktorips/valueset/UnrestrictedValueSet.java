@@ -10,6 +10,7 @@
 
 package org.faktorips.valueset;
 
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.values.NullObject;
@@ -94,10 +95,7 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (containsNull ? 1231 : 1237);
-        return result;
+        return Objects.hash(containsNull);
     }
 
     @Override

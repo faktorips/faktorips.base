@@ -33,21 +33,21 @@ import org.faktorips.devtools.model.value.IValue;
 public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
 
     /** The XML tag for this IPS object part. */
-    public static final String XML_TAG = "EnumValue"; //$NON-NLS-1$
+    String XML_TAG = "EnumValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there are not as many
      * <code>IEnumAttributeValue</code>s as <code>IEnumAttribute</code>s in the
      * <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_ENUM_VALUE_NUMBER_ATTRIBUTE_VALUES_DOES_NOT_CORRESPOND_TO_NUMBER_ATTRIBUTES = MSGCODE_PREFIX
             + "EnumValueNumberAttributeValuesDoesNotCorrespondToNumberAttributes"; //$NON-NLS-1$
 
     /** Returns a list containing all <code>IEnumAttributeValue</code>s. */
-    public List<IEnumAttributeValue> getEnumAttributeValues();
+    List<IEnumAttributeValue> getEnumAttributeValues();
 
     /**
      * Creates a new <code>IEnumAttributeValue</code> and returns it.
@@ -55,19 +55,19 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @throws IpsException If the <code>IEnumType</code> this <code>IEnumValue</code> is based upon
      *             cannot be found.
      */
-    public IEnumAttributeValue newEnumAttributeValue() throws IpsException;
+    IEnumAttributeValue newEnumAttributeValue() throws IpsException;
 
     /**
      * Creates a new <code>IEnumLiteralNameAttributeValue</code> and returns it.
      */
-    public IEnumLiteralNameAttributeValue newEnumLiteralNameAttributeValue();
+    IEnumLiteralNameAttributeValue newEnumLiteralNameAttributeValue();
 
     /**
      * Returns the <code>IEnumValueContainer</code> this <code>IEnumValue</code> is being stored in.
      * <p>
      * This is a shortcut for: <code>(IEnumValueContainer)this.getParent();</code>
      */
-    public IEnumValueContainer getEnumValueContainer();
+    IEnumValueContainer getEnumValueContainer();
 
     /**
      * Searches and returns the <code>IEnumAttributeValue</code> that refers to the given
@@ -85,13 +85,13 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @param enumAttribute The <code>IEnumAttribute</code> to obtain the
      *            <code>IEnumAttributeValue</code> for.
      */
-    public IEnumAttributeValue getEnumAttributeValue(IEnumAttribute enumAttribute);
+    IEnumAttributeValue getEnumAttributeValue(IEnumAttribute enumAttribute);
 
     /**
      * Returns how many <code>IEnumAttributeValue</code>s this <code>IEnumValue</code> is currently
      * containing.
      */
-    public int getEnumAttributeValuesCount();
+    int getEnumAttributeValuesCount();
 
     /**
      * Moves the given <code>IEnumAttributeValue</code> up or down by 1 and returns its new index.
@@ -107,12 +107,12 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @throws NoSuchElementException If the given <code>IEnumAttributeValue</code> is not a part of
      *             this <code>IEnumValue</code>.
      */
-    public int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up);
+    int moveEnumAttributeValue(IEnumAttributeValue enumAttributeValue, boolean up);
 
     /**
      * Swaps the position of two EnumAttributeValues
      */
-    public void swapEnumAttributeValue(int firstColumnIndex, int secondColumnIndex);
+    void swapEnumAttributeValue(int firstColumnIndex, int secondColumnIndex);
 
     /**
      * Sets the value of the <code>IEnumAttributeValue</code> that refers to the given
@@ -131,7 +131,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      *             <code>IEnumAttribute</code>.
      * @throws NullPointerException If <code>enumAttribute</code> is <code>null</code>.
      */
-    public void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws IpsException;
+    void setEnumAttributeValue(IEnumAttribute enumAttribute, IValue<?> value) throws IpsException;
 
     /**
      * Sets the value of the <code>IEnumAttributeValue</code> that refers to the
@@ -151,7 +151,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * @throws NoSuchElementException If there is no <code>IEnumAttribute</code> with the given name
      *             in the parent <code>IEnumType</code>.
      */
-    public void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws IpsException;
+    void setEnumAttributeValue(String enumAttributeName, IValue<?> value) throws IpsException;
 
     /**
      * Sets the value of the <code>IEnumAttributeValue</code> identified by the given index.
@@ -168,7 +168,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public void setEnumAttributeValue(int enumAttributeValueIndex, IValue<?> value);
+    void setEnumAttributeValue(int enumAttributeValueIndex, IValue<?> value);
 
     /**
      * Returns a list containing all <code>IEnumAttributeValue</code>s that refer to the given
@@ -187,7 +187,7 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      *             <code>IEnumType</code>.
      * @throws NullPointerException If any parameter is <code>null</code>.
      */
-    public List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
+    List<IEnumAttributeValue> findUniqueEnumAttributeValues(List<IEnumAttribute> uniqueEnumAttributes,
             IIpsProject ipsProject) throws IpsException;
 
     /**
@@ -199,13 +199,13 @@ public interface IEnumValue extends IIpsObjectPart, IDescribedElement {
      * 
      * @throws NullPointerException If <code>enumAttributeValue</code> is <code>null</code>.
      */
-    public int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue);
+    int getIndexOfEnumAttributeValue(IEnumAttributeValue enumAttributeValue);
 
     /**
      * Returns the <code>IEnumAttributeValue</code> referencing the
      * <code>IEnumLiteralNameAttribute</code> or <code>null</code> if there exists none or this
      * <code>IEnumValue</code> is part of an <code>IEnumContent</code>.
      */
-    public IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue();
+    IEnumLiteralNameAttributeValue getEnumLiteralNameAttributeValue();
 
 }

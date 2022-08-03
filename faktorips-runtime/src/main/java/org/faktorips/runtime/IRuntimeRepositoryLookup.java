@@ -32,8 +32,8 @@ public interface IRuntimeRepositoryLookup extends Serializable {
      * and generation of a serialized {@link ProductConfiguration} after deserialization.
      * 
      * @return A {@link IRuntimeRepository} used to load product components and product component
-     *         generations.
+     *             generations.
      */
-    public IRuntimeRepository getRuntimeRepository();
+    IRuntimeRepository getRuntimeRepository();
 
 }

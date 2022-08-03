@@ -69,9 +69,7 @@ public class ConfiguredDefaultEditComposite extends AbstractConfigElementEditCom
     }
 
     private ValueDatatype findDatatypeForDefaultValueEditField() {
-        ValueDatatype datatype = null;
-        datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
-        return datatype;
+        return getProperty().findDatatype(getPropertyValue().getIpsProject());
     }
 
     private void addOverlaysToEditFields(List<EditField<?>> editFields) {

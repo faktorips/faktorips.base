@@ -141,18 +141,15 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForMergableJavaFiles(IIpsSrcFolderEntry entry) {
-        IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
+        return new IpsObjectPathEntryAttribute(
                 IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES,
                 entry.getSpecificOutputFolderForMergableJavaFiles());
-
-        return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newOutputFolderForDerivedJavaFiles(IIpsSrcFolderEntry entry) {
-        IIpsObjectPathEntryAttribute attribute = new IpsObjectPathEntryAttribute(
+        return new IpsObjectPathEntryAttribute(
                 IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES,
                 entry.getSpecificOutputFolderForDerivedJavaFiles());
-        return attribute;
     }
 
     private IIpsObjectPathEntryAttribute newBasePackageNameForDerivedJavaFiles(IIpsSrcFolderEntry entry) {

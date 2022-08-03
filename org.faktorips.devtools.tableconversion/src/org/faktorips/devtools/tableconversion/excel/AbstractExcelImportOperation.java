@@ -146,15 +146,11 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
 
     private Workbook newWorkbook() throws IOException {
         File importFile = new File(sourceFile);
-        FileInputStream fis = null;
-        fis = new FileInputStream(importFile);
-        try {
+        try (FileInputStream fis = new FileInputStream(importFile)) {
             workbook = WorkbookFactory.create(fis);
             checkForOpenOfficeFormat(workbook);
         } catch (InvalidFormatException e) {
             IpsPlugin.logAndShowErrorDialog(e);
-        } finally {
-            fis.close();
         }
         return workbook;
     }

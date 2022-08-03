@@ -22,26 +22,26 @@ public interface BaseDatatypeHelper<T extends CodeFragment> {
     /**
      * Returns the data type this is a helper for.
      */
-    public Datatype getDatatype();
+    Datatype getDatatype();
 
     /**
      * Sets the data type this is a helper for. Introduced to enable setter based dependency
      * injection, needed for example for Eclipse's extension point mechanism.
      */
-    public void setDatatype(Datatype datatype);
+    void setDatatype(Datatype datatype);
 
     /**
      * Returns a CodeFragment with source code that is either the String "null" or the source code
      * to get an instance of the appropriate null object.
      */
-    public T nullExpression();
+    T nullExpression();
 
     /**
      * Returns a CodeFragment with source code that creates an instance of the data type with the
      * given value. If the value is null the fragment's source code is either the String "null" or
      * the source code to get an instance of the appropriate null object.
      */
-    public T newInstance(String value);
+    T newInstance(String value);
 
     /**
      * Returns a CodeFragment with source code that creates an instance of the data type with the
@@ -53,7 +53,7 @@ public interface BaseDatatypeHelper<T extends CodeFragment> {
      *            String like <code>"FOO"</code>, a variable like <code>foo</code> or a method call
      *            like <code>getÍd()</code>.
      */
-    public T newInstanceFromExpression(String expression);
+    T newInstanceFromExpression(String expression);
 
     /**
      * Returns a CodeFragment with source code that creates an instance of the data type with the
@@ -68,7 +68,7 @@ public interface BaseDatatypeHelper<T extends CodeFragment> {
      *            can yield <code>null</code> or the empty string. Can be used to generate simpler
      *            code, if the null check is not necessary.
      */
-    public T newInstanceFromExpression(String expression, boolean checkForNull);
+    T newInstanceFromExpression(String expression, boolean checkForNull);
 
     /**
      * Returns a {@link CodeFragment} containing the code for converting the value (of the given
@@ -85,5 +85,5 @@ public interface BaseDatatypeHelper<T extends CodeFragment> {
      *            string
      * @return a {@link CodeFragment} containing the toString() code.
      */
-    public T getToStringExpression(String fieldName);
+    T getToStringExpression(String fieldName);
 }

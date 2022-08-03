@@ -45,8 +45,8 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
 
     public ValidationRuleConfig(IPropertyValueContainer parent, String id, String ruleName) {
         super(parent, id);
-        this.validationRuleName = ruleName;
-        this.templateValueSettings = new TemplateValueSettings(this);
+        validationRuleName = ruleName;
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -100,15 +100,14 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
         IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)getParent();
         IPolicyCmptType pcType = propertyValueContainer.findPolicyCmptType(ipsProject);
         if (pcType != null) {
-            IValidationRule rule = pcType.findValidationRule(validationRuleName, ipsProject);
-            return rule;
+            return pcType.findValidationRule(validationRuleName, ipsProject);
         }
         return null;
     }
 
     /**
      * @return the name of this {@link IValidationRuleConfig}. That name is also the name of the
-     *         configured {@link IValidationRule}.
+     *             configured {@link IValidationRule}.
      */
     @Override
     public String getName() {
@@ -175,7 +174,7 @@ public class ValidationRuleConfig extends AbstractSimplePropertyValue implements
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy current active state from template (if present)
-            this.isActive = isActive();
+            isActive = isActive();
         }
         TemplateValueStatus oldStatus = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);

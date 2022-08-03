@@ -375,7 +375,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (valueA == null && valueB == null) {
             return true;
         }
-        if (valueA == null && valueB != null || valueA != null && valueB == null) {
+        if ((valueA == null) == (valueB != null)) {
             return false;
         }
         return getValue(valueA).equals(getValue(valueB));

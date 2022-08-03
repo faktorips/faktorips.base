@@ -39,7 +39,7 @@ public interface Validatable {
      * 
      * @since 3.0.0
      */
-    public boolean isValid(IIpsProject ipsProject) throws IpsException;
+    boolean isValid(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the resulting severity of the validation. The returned severity is equal to the
@@ -59,7 +59,7 @@ public interface Validatable {
      * 
      * @since 3.0.0
      */
-    public Severity getValidationResultSeverity(IIpsProject ipsProject) throws IpsException;
+    Severity getValidationResultSeverity(IIpsProject ipsProject) throws IpsException;
 
     /**
      * <p>
@@ -74,13 +74,13 @@ public interface Validatable {
      *            used within the implementation of this method.
      * 
      * @return A ValidationMessageList containing a list of messages describing errors, warnings and
-     *         information. If no messages are created, an empty list is returned.
+     *             information. If no messages are created, an empty list is returned.
      * 
      * @throws IpsException If an exception occurs while validating the object.
      * 
      * @see org.faktorips.devtools.model.IIpsModel#clearValidationCache()
      */
-    public MessageList validate(IIpsProject ipsProject) throws IpsException;
+    MessageList validate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the project this validatable object belongs to. This project is used to validate the
@@ -88,6 +88,6 @@ public interface Validatable {
      * 
      * @return The project this object belongs to.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
 }

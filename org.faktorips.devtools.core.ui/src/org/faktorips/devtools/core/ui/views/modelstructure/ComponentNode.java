@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.views.modelstructure;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import org.faktorips.devtools.core.ui.IpsSrcFileViewItem;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -52,7 +53,7 @@ class ComponentNode extends IpsSrcFileViewItem {
         if (getParent() == null) {
             return false;
         }
-        return getParent().isRepetitionInternal(this.getValue());
+        return getParent().isRepetitionInternal(getValue());
     }
 
     private boolean isRepetitionInternal(IType value) {
@@ -92,7 +93,7 @@ class ComponentNode extends IpsSrcFileViewItem {
      * Returns the {@link IIpsProject} for which this node has been created.
      */
     IIpsProject getSourceIpsProject() {
-        return this.sourceProject;
+        return sourceProject;
     }
 
     /**
@@ -121,17 +122,12 @@ class ComponentNode extends IpsSrcFileViewItem {
     }
 
     public boolean isTargetOfInheritedAssociation() {
-        return this.hasInheritedAssociation;
+        return hasInheritedAssociation;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((parent == null) ? 0 : parent.hashCode());
-        result = prime * result + ((sourceProject == null) ? 0 : sourceProject.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hash(parent, sourceProject, value);
     }
 
     @Override
@@ -139,34 +135,12 @@ class ComponentNode extends IpsSrcFileViewItem {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         ComponentNode other = (ComponentNode)obj;
-        if (parent == null) {
-            if (other.parent != null) {
-                return false;
-            }
-        } else if (!parent.equals(other.parent)) {
-            return false;
-        }
-        if (sourceProject == null) {
-            if (other.sourceProject != null) {
-                return false;
-            }
-        } else if (!sourceProject.equals(other.sourceProject)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(parent, other.parent)
+                && Objects.equals(sourceProject, other.sourceProject)
+                && Objects.equals(value, other.value);
     }
 }

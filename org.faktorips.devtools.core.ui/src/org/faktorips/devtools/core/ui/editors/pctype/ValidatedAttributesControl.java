@@ -46,7 +46,7 @@ public class ValidatedAttributesControl extends EditTableControl {
 
     private static final String ATTRIBUTENAME_COLUMN_PROPERTY = "attributeName"; //$NON-NLS-1$
 
-    private static String[] columnProperties = new String[] { MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
+    private static String[] columnProperties = { MESSAGE_COLUMN_PROPERTY, ATTRIBUTENAME_COLUMN_PROPERTY };
 
     private IValidationRule rule;
 

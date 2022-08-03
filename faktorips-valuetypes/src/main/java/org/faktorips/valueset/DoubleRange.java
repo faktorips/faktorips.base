@@ -36,7 +36,7 @@ public class DoubleRange extends DefaultRange<Double> {
 
     /**
      * @deprecated since 22.6. Use {@link DoubleRange#valueOf(Double, Double, Double, boolean)}
-     *             instead.
+     *                 instead.
      */
     @Deprecated
     public DoubleRange(Double lowerBound, Double upperBound, Double step, boolean containsNull) {

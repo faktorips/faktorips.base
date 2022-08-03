@@ -26,12 +26,12 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
     /**
      * Returns the <code>IProductCmpt</code> this reference refers to.
      */
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     /**
      * Return the link this reference refers to. May be null.
      */
-    public IProductCmptLink getLink();
+    IProductCmptLink getLink();
 
     /**
      * 
@@ -43,24 +43,24 @@ public interface IProductCmptReference extends IProductCmptStructureReference {
      * 
      * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
      * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
-     *         <code>null</code> if none was found.
+     *             <code>null</code> if none was found.
      */
-    public IProductCmptReference findProductCmptReference(String prodCmptQualifiedName);
+    IProductCmptReference findProductCmptReference(String prodCmptQualifiedName);
 
     /**
      * Checks whether this product component reference has outgoing associations as children
      * 
      * @return true if there are any associations defined in the corresponding type
      */
-    public boolean hasAssociationChildren();
+    boolean hasAssociationChildren();
 
     /**
      * Returns the minimum validTo Date from the {@link IProductCmptGeneration} and it's child
      * References
      */
-    public GregorianCalendar getValidTo();
+    GregorianCalendar getValidTo();
 
     @Override
-    public IProductCmptTypeAssociationReference getParent();
+    IProductCmptTypeAssociationReference getParent();
 
 }

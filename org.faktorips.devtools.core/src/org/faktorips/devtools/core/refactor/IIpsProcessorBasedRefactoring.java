@@ -26,13 +26,13 @@ public interface IIpsProcessorBasedRefactoring extends IIpsRefactoring {
      * Returns the {@link IpsRefactoringProcessor} that is associated with this processor-based
      * refactoring.
      */
-    public IpsRefactoringProcessor getIpsRefactoringProcessor();
+    IpsRefactoringProcessor getIpsRefactoringProcessor();
 
     /**
      * Allows to treat the IPS processor-based refactoring as LTK processor-based refactoring.
      */
     @Override
-    public ProcessorBasedRefactoring toLtkRefactoring();
+    ProcessorBasedRefactoring toLtkRefactoring();
 
     /**
      * {@inheritDoc}
@@ -41,6 +41,6 @@ public interface IIpsProcessorBasedRefactoring extends IIpsRefactoring {
      * future.
      */
     @Override
-    public boolean isCancelable();
+    boolean isCancelable();
 
 }

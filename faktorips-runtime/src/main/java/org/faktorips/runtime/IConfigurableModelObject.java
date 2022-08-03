@@ -22,26 +22,26 @@ public interface IConfigurableModelObject extends IModelObject {
     /**
      * The name of the property 'productComponent'.
      */
-    public static final String PROPERTY_PRODUCT_COMPONENT = "productComponent";
+    String PROPERTY_PRODUCT_COMPONENT = "productComponent";
 
     /**
      * Returns the product component this policy component is based on.
      */
-    public IProductComponent getProductComponent();
+    IProductComponent getProductComponent();
 
     /**
      * Sets the current product component.
      */
-    public void setProductComponent(IProductComponent productComponent);
+    void setProductComponent(IProductComponent productComponent);
 
     /**
      * Returns the date since when this model object is effective.
      */
-    public Calendar getEffectiveFromAsCalendar();
+    Calendar getEffectiveFromAsCalendar();
 
     /**
      * Initializes the model object with the defaults from it's product component generation.
      */
-    public void initialize();
+    void initialize();
 
 }

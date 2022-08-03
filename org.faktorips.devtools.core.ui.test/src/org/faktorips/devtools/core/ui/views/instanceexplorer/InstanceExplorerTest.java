@@ -76,7 +76,7 @@ public class InstanceExplorerTest extends AbstractIpsPluginTest {
 
     }
 
-    private class InstanceExplorerMock extends InstanceExplorer {
+    private static class InstanceExplorerMock extends InstanceExplorer {
         private IIpsObject element;
 
         @Override

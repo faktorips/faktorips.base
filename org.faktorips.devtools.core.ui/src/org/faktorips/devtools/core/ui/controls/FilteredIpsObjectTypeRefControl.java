@@ -66,7 +66,7 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
         List<IIpsSrcFile> allowedIpsSrcFiles = ipsProject.findAllIpsSrcFiles(applicableObjectTypes);
         if (excludeAbstractTypes) {
             for (IIpsSrcFile type : allowedIpsSrcFiles) {
-                if (Boolean.valueOf(type.getPropertyValue(IType.PROPERTY_ABSTRACT)).booleanValue()) {
+                if (Boolean.parseBoolean(type.getPropertyValue(IType.PROPERTY_ABSTRACT))) {
                     allowedIpsSrcFiles.remove(type);
                 }
             }

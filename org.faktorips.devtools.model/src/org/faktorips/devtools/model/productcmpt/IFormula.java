@@ -26,7 +26,7 @@ public interface IFormula extends IPropertyValue, IExpression {
      * signature is not found.
      */
     @Override
-    public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject);
+    IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject);
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
@@ -35,6 +35,6 @@ public interface IFormula extends IPropertyValue, IExpression {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public IFormula findTemplateProperty(IIpsProject ipsProject);
+    IFormula findTemplateProperty(IIpsProject ipsProject);
 
 }

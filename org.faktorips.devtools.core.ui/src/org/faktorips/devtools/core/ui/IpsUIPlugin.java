@@ -299,7 +299,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * @return the list of global property filters, added through the extension point
-     *         "productCmptPropertyFilter".
+     *             "productCmptPropertyFilter".
      */
     public List<IProductCmptPropertyFilter> getPropertyVisibilityFilters() {
         return propertyVisibilityFilters;
@@ -354,7 +354,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * @param ipsProject The IIps Project used to retrieve a default configuration
      * 
      * @return The input format for formatting any values in the ui depending on the datatype and
-     *         the current locale.
+     *             the current locale.
      */
     public IInputFormat<String> getInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
         if (datatypeInputFormat == null) {
@@ -457,13 +457,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * mutable state and the state of the workbench
      */
     public static boolean isEditable(IIpsSrcFile ipsSrcFile) {
-        if (ipsSrcFile == null) {
-            return false;
-        }
-        if (!ipsSrcFile.isMutable()) {
-            return false;
-        }
-        if (!IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit()) {
+        if ((ipsSrcFile == null) || !ipsSrcFile.isMutable()
+                || !IpsPlugin.getDefault().getIpsPreferences().isWorkingModeEdit()) {
             return false;
         }
         return true;
@@ -555,7 +550,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @param tableFormat ITableFormat to test whether it has custom properties.
      * @return A Factory class which can be used to create the controls for configuring the custom
-     *         properties, or <code>null</code> if the table format has no custom properties.
+     *             properties, or <code>null</code> if the table format has no custom properties.
      * 
      * @throws IpsException if the factory class could not be created.
      */
@@ -563,8 +558,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
         ArgumentCheck.notNull(tableFormat);
 
-        Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = null;
-        tableFormatToPropertiesCompositeMap = new HashMap<>();
+        Map<ITableFormat, TableFormatConfigurationCompositeFactory> tableFormatToPropertiesCompositeMap = new HashMap<>();
         // TODO FIPS-7318: refactor to a pattern similar to IIpsModelExtensions
         ExtensionPoints extensionPoints = new ExtensionPoints(registry, IpsPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension("externalTableFormat"); //$NON-NLS-1$
@@ -680,9 +674,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         BusyIndicator.showWhile(Display.getDefault(), runnable);
         try {
             return runnable.get();
-        } catch (InterruptedException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return null;
@@ -821,9 +813,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        IExtensionPropertyEditFieldFactory factory = extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId,
+        return extensionPropertyEditFieldFactoryMap.computeIfAbsent(propertyId,
                 $ -> new DefaultExtensionPropertyEditFieldFactory());
-        return factory;
     }
 
     /**
@@ -859,8 +850,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 }
             }
         }
-        IExtensionPropertySectionFactory factory = extensionPropertySectionFactoriesMap.get(propertyId);
-        return factory;
+        return extensionPropertySectionFactoriesMap.get(propertyId);
     }
 
     /**
@@ -1011,7 +1001,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * 
      * @param ipsElement The {@link IIpsElement} you want to get the default label for
      * @return the default label of the {@link IIpsElement} returned by the
-     *         {@link IWorkbenchAdapter}
+     *             {@link IWorkbenchAdapter}
      */
     public static final String getLabel(IIpsElement ipsElement) {
         IWorkbenchAdapter adapter = ipsElement.getAdapter(IWorkbenchAdapter.class);
@@ -1030,7 +1020,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * canceled the command.
      * 
      * @return true if the command succeeded, false if the operation was canceled by the user or an
-     *         error occurred while saving
+     *             error occurred while saving
      */
     public boolean saveEditors(List<IIpsSrcFile> ipsSrcFiles) {
         // Collect dirty parts and abort if there are none
@@ -1067,7 +1057,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * canceled the command.
      * 
      * @return true if the command succeeded, false if the operation was canceled by the user or an
-     *         error occurred while saving
+     *             error occurred while saving
      */
     public boolean saveAllEditors() {
         // Collect dirty parts and abort if there are none
@@ -1208,9 +1198,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         IProgressService ps = PlatformUI.getWorkbench().getProgressService();
         try {
             ps.busyCursorWhile(monitor -> IIpsModel.get().runAndQueueChangeEvents(action, monitor));
-        } catch (InvocationTargetException e) {
-            logAndShowErrorDialog(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             logAndShowErrorDialog(e);
         }
     }
@@ -1282,7 +1270,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
      * element. If none is configured, the {@link DefaultDeepCopySmartModeBehavior} will be used.
      * 
      * @return the {@link IDeepCopySmartModeBehavior} to be used by the {@link DeepCopyWizard} in
-     *         {@link IpsPreferences#isCopyWizardModeSmartmode() Smart Mode}.
+     *             {@link IpsPreferences#isCopyWizardModeSmartmode() Smart Mode}.
      */
     public IDeepCopySmartModeBehavior getDeepCopySmartModeBehavior() {
         if (deepCopySmartModeBehavior == null) {
@@ -1421,7 +1409,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
          * adapter or decorator, this method returns the missing image
          * 
          * @return the image descriptor or null if there is no image or no registered adapter or
-         *         decorator
+         *             decorator
          */
         @Override
         public ImageDescriptor getImageDescriptor(IAdaptable adaptable) {

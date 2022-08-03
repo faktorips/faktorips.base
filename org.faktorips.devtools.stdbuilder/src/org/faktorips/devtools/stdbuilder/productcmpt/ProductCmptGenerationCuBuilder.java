@@ -75,10 +75,10 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
                 .getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(AbstractProductCuBuilder.CONSTRUCTOR_JAVADOC, genName);
         String className = getUnqualifiedClassName();
-        String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
+        String[] argNames = { "productCmpt" }; //$NON-NLS-1$
         String qualifiedClassName = productCmptCuBuilder
                 .getImplementationClass(getPropertyValueContainer().getProductCmpt());
-        String[] argClassNames = new String[] { qualifiedClassName };
+        String[] argClassNames = { qualifiedClassName };
         JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
     }

@@ -12,27 +12,27 @@ package org.faktorips.devtools.model.tablestructure;
 
 public interface IColumnRange extends IKeyItem {
 
-    public static final String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
-    public static final String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
-    public static final String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
-    public static final String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
+    String PROPERTY_RANGE_TYPE = "columnRangeType"; //$NON-NLS-1$
+    String PROPERTY_FROM_COLUMN = "fromColumn"; //$NON-NLS-1$
+    String PROPERTY_TO_COLUMN = "toColumn"; //$NON-NLS-1$
+    String PROPERTY_PARAMETER_NAME = "parameterName"; //$NON-NLS-1$
 
     /**
      * Prefix for all messages of this class.
      */
-    public static final String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "COLUMN_RANGE-"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that if the column range type is two column then the
      * from and the to column must have the same data type
      */
-    public static final String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX
+    String MSGCODE_TWO_COLUMN_RANGE_FROM_TO_COLUMN_WITH_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "TwoColumnRangeFromToColumnWithDifferentDatatype"; //$NON-NLS-1$
 
     /**
      * Returns the table structure this range belongs to.
      */
-    public ITableStructure getTableStructure();
+    ITableStructure getTableStructure();
 
     /**
      * Returns the range's name. The name is made up of the first column name, followed by a dash
@@ -41,33 +41,33 @@ public interface IColumnRange extends IKeyItem {
      * Example: <code>ageFrom-ageTo</code>
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Returns the name of the column that defines the beginning of the range or <code>null</code>
      * if no such column is defined yet.
      */
-    public String getFromColumn();
+    String getFromColumn();
 
     /**
      * Sets the name of the column that defines the beginning of the range.
      * 
      * @throws IllegalArgumentException if columnName is <code>null</code>
      */
-    public void setFromColumn(String columnName);
+    void setFromColumn(String columnName);
 
     /**
      * Returns the name of the column that defines the end of the range or <code>null</code> if no
      * such column is defined yet.
      */
-    public String getToColumn();
+    String getToColumn();
 
     /**
      * Sets the name of the column that defines the end of the range.
      * 
      * @throws IllegalArgumentException if columnName is <code>null</code>
      */
-    public void setToColumn(String columnName);
+    void setToColumn(String columnName);
 
     /**
      * Sets the type of this column range. Dependent on the range type both or only one column is to
@@ -76,23 +76,23 @@ public interface IColumnRange extends IKeyItem {
      * the "to" field needs to be specified.
      * 
      */
-    public void setColumnRangeType(ColumnRangeType rangeType);
+    void setColumnRangeType(ColumnRangeType rangeType);
 
     /**
      * Returns the range type of this column range.
      */
-    public ColumnRangeType getColumnRangeType();
+    ColumnRangeType getColumnRangeType();
 
     /**
      * Returns the data type identifier of the columns of this range.
      */
     @Override
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * The name is supposed to be used in generated code for a variable or parameter that specifies
      * a value assigned to this range.
      */
-    public String getParameterName();
+    String getParameterName();
 
 }

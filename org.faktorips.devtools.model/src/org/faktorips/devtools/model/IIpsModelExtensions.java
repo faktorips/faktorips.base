@@ -115,7 +115,7 @@ public interface IIpsModelExtensions {
      *            operations
      * 
      * @return A map containing all registered migration operations. The key of the map is the
-     *         target version of the operation
+     *             target version of the operation
      */
     Map<AVersion, IIpsProjectMigrationOperationFactory> getRegisteredMigrationOperations(String contributorName);
 

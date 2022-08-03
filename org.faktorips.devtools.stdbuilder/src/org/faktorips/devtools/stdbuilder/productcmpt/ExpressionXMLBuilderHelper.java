@@ -55,8 +55,8 @@ public class ExpressionXMLBuilderHelper {
      */
     public ExpressionXMLBuilderHelper(StandardBuilderSet builderSet) {
         super();
-        this.standardBuilderSet = builderSet;
-        this.ipsProject = builderSet.getIpsProject();
+        standardBuilderSet = builderSet;
+        ipsProject = builderSet.getIpsProject();
     }
 
     private IIpsProject getIpsProject() {
@@ -112,9 +112,8 @@ public class ExpressionXMLBuilderHelper {
         builder.openBracket();
         builder.append("return ").append(formulaFragment).append(';');
         builder.closeBracket().appendln();
-        String sourceCode = builder.getFragment().getImportDeclaration().toString() + '\n'
+        return builder.getFragment().getImportDeclaration().toString() + '\n'
                 + builder.getFragment().getSourcecode();
-        return sourceCode;
     }
 
     private Map<String, IExpression> getFormulas(List<? extends IExpression> formulas) {

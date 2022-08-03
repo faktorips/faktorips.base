@@ -37,7 +37,7 @@ public interface IPropertyVisibleController {
      * @param refresh if <code>true</code> a full refresh needs to be performed that means the
      *            refresh callback installed by {@link #setRefreshCallback(Runnable)} is executed
      */
-    public void updateUI(boolean refresh);
+    void updateUI(boolean refresh);
 
     /**
      * Registers the indicated {@link IProductCmptProperty product component property} to this
@@ -61,7 +61,7 @@ public interface IPropertyVisibleController {
      * @param property the {@link IProductCmptProperty} to register to this controller
      * @param controls the controls to associated with the {@link IProductCmptProperty}
      */
-    public boolean addPropertyControlMapping(Control containerControl,
+    boolean addPropertyControlMapping(Control containerControl,
             IProductCmptProperty property,
             Control... controls);
 
@@ -73,7 +73,7 @@ public interface IPropertyVisibleController {
      * 
      * @param containerControl the control for which to remove all mappings
      */
-    public boolean removePropertyControlMapping(Control containerControl);
+    boolean removePropertyControlMapping(Control containerControl);
 
     /**
      * Adds the indicated {@link IProductCmptPropertyFilter} to this controller.
@@ -85,7 +85,7 @@ public interface IPropertyVisibleController {
      * 
      * @param filter the {@link IProductCmptPropertyFilter} to add to this controller
      */
-    public boolean addFilter(IProductCmptPropertyFilter filter);
+    boolean addFilter(IProductCmptPropertyFilter filter);
 
     /**
      * Removes the indicated {@link IProductCmptPropertyFilter} from this controller.
@@ -96,7 +96,7 @@ public interface IPropertyVisibleController {
      * 
      * @param filter the {@link IProductCmptPropertyFilter} to remove from this controller
      */
-    public boolean removeFilter(IProductCmptPropertyFilter filter);
+    boolean removeFilter(IProductCmptPropertyFilter filter);
 
     /**
      * Checks, whether controls belonging to the given {@link IProductCmptProperty} must be filtered
@@ -106,12 +106,12 @@ public interface IPropertyVisibleController {
      * given property. Return {@code false} otherwise.
      * 
      */
-    public boolean isFiltered(IProductCmptProperty property);
+    boolean isFiltered(IProductCmptProperty property);
 
     /**
      * Adds the list of filters to this controller. Useful when adding multiple filters at once.
      */
-    public void addFilters(List<IProductCmptPropertyFilter> filters);
+    void addFilters(List<IProductCmptPropertyFilter> filters);
 
     /**
      * Installs a callback function that is executed after the filter has changed to inform the
@@ -119,5 +119,5 @@ public interface IPropertyVisibleController {
      * 
      * @param callback The callback that is executed when refresh is required.
      */
-    public void setRefreshCallback(Runnable callback);
+    void setRefreshCallback(Runnable callback);
 }

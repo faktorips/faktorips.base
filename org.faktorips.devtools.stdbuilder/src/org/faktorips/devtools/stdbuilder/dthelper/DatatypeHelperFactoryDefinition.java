@@ -33,9 +33,9 @@ public class DatatypeHelperFactoryDefinition {
             String text = String.format(ILLEGAL_DEFINITION, extension.getUniqueIdentifier(), configElement.getName());
             throw new IllegalStateException(text);
         }
-        this.datatype = ExtensionPoints.createExecutableExtension(extension, configElement, DATATYPE_CLASS,
+        datatype = ExtensionPoints.createExecutableExtension(extension, configElement, DATATYPE_CLASS,
                 Datatype.class);
-        this.factory = ExtensionPoints.createExecutableExtension(extension, configElement, FACTORY_CLASS,
+        factory = ExtensionPoints.createExecutableExtension(extension, configElement, FACTORY_CLASS,
                 DatatypeHelperFactory.class);
     }
 

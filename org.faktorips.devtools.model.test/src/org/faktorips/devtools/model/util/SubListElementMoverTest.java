@@ -24,7 +24,7 @@ public class SubListElementMoverTest {
     public void testMove_StandardMoveUp() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         List<Integer> subList = Arrays.asList(1, 2, 3);
-        int[] indices = new int[] { 2, 1 };
+        int[] indices = { 2, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 0 }, mover.move(indices, true));
@@ -37,7 +37,7 @@ public class SubListElementMoverTest {
     public void testMove_StandardMoveDown() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         List<Integer> subList = Arrays.asList(1, 2, 3);
-        int[] indices = new int[] { 0, 1 };
+        int[] indices = { 0, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
@@ -50,7 +50,7 @@ public class SubListElementMoverTest {
     public void testMove_DoNotMoveIfEmptyIndexArrayGiven() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         List<Integer> subList = Arrays.asList(1, 2, 3);
-        int[] indices = new int[0];
+        int[] indices = {};
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[0], mover.move(indices, true));
@@ -63,7 +63,7 @@ public class SubListElementMoverTest {
     public void testMove_DoNotMoveUpIfFirstSubListElementIsPartOfOperation() {
         List<Integer> list = Arrays.asList(1, 2, 3, 4);
         List<Integer> subList = Arrays.asList(2, 3, 4);
-        int[] indices = new int[] { 0, 1 };
+        int[] indices = { 0, 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 0, 1 }, mover.move(indices, true));
@@ -77,7 +77,7 @@ public class SubListElementMoverTest {
     public void testMove_DoNotMoveDownIfLastSubListElementIsPartOfOperation() {
         List<Integer> list = Arrays.asList(1, 2, 3, 4);
         List<Integer> subList = Arrays.asList(1, 2, 3);
-        int[] indices = new int[] { 1, 2 };
+        int[] indices = { 1, 2 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1, 2 }, mover.move(indices, false));
@@ -100,7 +100,7 @@ public class SubListElementMoverTest {
     public void testMove_MoveUpElementInDistributedSubList() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         List<Integer> subList = Arrays.asList(1, 3);
-        int[] indices = new int[] { 1 };
+        int[] indices = { 1 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 0 }, mover.move(indices, true));
@@ -122,7 +122,7 @@ public class SubListElementMoverTest {
     public void testMove_MoveDownElementInDistributedSubList() {
         List<Integer> list = Arrays.asList(1, 2, 3);
         List<Integer> subList = Arrays.asList(1, 3);
-        int[] indices = new int[] { 0 };
+        int[] indices = { 0 };
 
         SubListElementMover<Integer> mover = new SubListElementMover<>(list, subList);
         assertArrayEquals(new int[] { 1 }, mover.move(indices, false));

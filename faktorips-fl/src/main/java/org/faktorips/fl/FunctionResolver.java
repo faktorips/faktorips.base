@@ -29,6 +29,6 @@ public interface FunctionResolver<T extends CodeFragment> {
     /**
      * Returns the functions that are supported by this resolver.
      */
-    public FlFunction<T>[] getFunctions();
+    FlFunction<T>[] getFunctions();
 
 }

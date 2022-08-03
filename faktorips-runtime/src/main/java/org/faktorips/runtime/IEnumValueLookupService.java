@@ -35,7 +35,7 @@ public interface IEnumValueLookupService<T> {
     /**
      * Returns the enumeration class, e.g. org.foo.PaymentMode.
      */
-    public Class<T> getEnumTypeClass();
+    Class<T> getEnumTypeClass();
 
     /**
      * Returns the enumeration values. So the return type is a list, it is expected that every value
@@ -44,13 +44,13 @@ public interface IEnumValueLookupService<T> {
      * this is the responsibility of the lookup service as it depends on the kind of data if caching
      * is ok, or when the data needs to be refreshed.
      */
-    public List<T> getEnumValues();
+    List<T> getEnumValues();
 
     /**
      * Returns the value identified by the given id or <code>null</code> if no value exists with
      * that id.
      */
-    public T getEnumValue(Object id);
+    T getEnumValue(Object id);
 
     /**
      * Returns an XmlAdapter that should be used for marshaling/unmarshaling data with JAXB for the
@@ -92,6 +92,6 @@ public interface IEnumValueLookupService<T> {
      * @see javax.xml.bind.Marshaller#setAdapter(XmlAdapter)
      * @see javax.xml.bind.Unmarshaller#setAdapter(XmlAdapter)
      */
-    public XmlAdapter<?, T> getXmlAdapter();
+    XmlAdapter<?, T> getXmlAdapter();
 
 }

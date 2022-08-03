@@ -57,7 +57,7 @@ public final class MoveRenamePackageHelper {
     private IIpsPackageFragment originalPackageFragment;
 
     public MoveRenamePackageHelper(IIpsPackageFragment ipsPackageFragment) {
-        this.originalPackageFragment = ipsPackageFragment;
+        originalPackageFragment = ipsPackageFragment;
     }
 
     /**
@@ -452,11 +452,11 @@ public final class MoveRenamePackageHelper {
         }
 
         public String getPath() {
-            return this.path;
+            return path;
         }
 
         public String getFileName() {
-            return this.filename;
+            return filename;
         }
 
         @Override

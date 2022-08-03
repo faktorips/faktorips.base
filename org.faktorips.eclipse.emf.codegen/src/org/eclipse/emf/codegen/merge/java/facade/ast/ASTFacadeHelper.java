@@ -122,8 +122,6 @@ public class ASTFacadeHelper extends FacadeHelper {
                 return getTypeErasure((QualifiedType)type);
             } else if (type.isSimpleType()) {
                 return getTypeErasure((SimpleType)type);
-            } else if (type.isWildcardType()) {
-                return "";
             }
         }
         return "";
@@ -388,7 +386,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @return new node
      * 
      * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#cloneNode(java.lang.Object,
-     *      org.eclipse.emf.codegen.merge.java.facade.JNode)
+     *          org.eclipse.emf.codegen.merge.java.facade.JNode)
      */
     @Override
     public ASTJNode<?> cloneNode(Object context, JNode node) {

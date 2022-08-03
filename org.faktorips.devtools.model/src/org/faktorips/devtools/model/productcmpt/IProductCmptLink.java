@@ -31,57 +31,57 @@ import org.faktorips.util.ArgumentCheck;
  */
 public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
-    public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
-    public static final String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
-    public static final String PROPERTY_CARDINALITY = "cardinality"; //$NON-NLS-1$
-    public static final String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
-    public static final String PROPERTY_DEFAULT_CARDINALITY = "defaultCardinality"; //$NON-NLS-1$
-    public static final String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
+    String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
+    String PROPERTY_CARDINALITY = "cardinality"; //$NON-NLS-1$
+    String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_CARDINALITY = "defaultCardinality"; //$NON-NLS-1$
+    String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
 
     /**
      * The name of the XML-tag used if this object is saved to XML.
      */
-    public static final String TAG_NAME = "Link"; //$NON-NLS-1$
+    String TAG_NAME = "Link"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "PRODUCTCMPT_RELATION-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the association in the model can't be found.
      */
-    public static final String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
+    String MSGCODE_UNKNWON_ASSOCIATION = MSGCODE_PREFIX + "UnknownAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the target product component does not exist.
      */
-    public static final String MSGCODE_UNKNWON_TARGET = MSGCODE_PREFIX + "UnknownTarget"; //$NON-NLS-1$
+    String MSGCODE_UNKNWON_TARGET = MSGCODE_PREFIX + "UnknownTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is missing.
      */
-    public static final String MSGCODE_MISSING_MAX_CARDINALITY = MSGCODE_PREFIX + "MissingMaxCardinality"; //$NON-NLS-1$
+    String MSGCODE_MISSING_MAX_CARDINALITY = MSGCODE_PREFIX + "MissingMaxCardinality"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality exceeds the maximum
      * cardinality defined in the model.
      */
-    public static final String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX
+    String MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX = MSGCODE_PREFIX
             + "MaxCardinalityExceedsModelMax"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate minimum cardinality falls below the minimum cardinality
      * defined in the model.
      */
-    public static final String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
+    String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
             + "MinCardinalityFallsBelowModelMin"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than the minimum
      * cardinality.
      */
-    public static final String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
+    String MSGCODE_INVALID_TARGET = MSGCODE_PREFIX + "InvalidTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate a mismatch with the specification in the product
@@ -91,12 +91,12 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * 
      * @since 3.8
      */
-    public static final String MSGCODE_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX + "ChangingOverTimeMismatch"; //$NON-NLS-1$
+    String MSGCODE_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX + "ChangingOverTimeMismatch"; //$NON-NLS-1$
 
     /**
      * Returns the product component this configuration element belongs to.
      */
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     /**
      * Returns the {@link IProductCmptLinkContainer link container} this link is a part of.
@@ -104,17 +104,17 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @since 3.8
      * @see IProductCmptLinkContainer
      */
-    public IProductCmptLinkContainer getProductCmptLinkContainer();
+    IProductCmptLinkContainer getProductCmptLinkContainer();
 
     /**
      * Returns the name of the product component type association this link is an instance of.
      */
-    public String getAssociation();
+    String getAssociation();
 
     /**
      * Setting the association this link is an instance of
      */
-    public void setAssociation(String association);
+    void setAssociation(String association);
 
     /**
      * Finds the product component type association this link is an instance of. Note that the
@@ -129,17 +129,17 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @throws IpsException if an exception occurs while searching the relation.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws IpsException;
+    IProductCmptTypeAssociation findAssociation(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the target product component.
      */
-    public String getTarget();
+    String getTarget();
 
     /**
      * Sets the target product component.
      */
-    public void setTarget(String newTarget);
+    void setTarget(String newTarget);
 
     /**
      * Returns the product component which is the target of this association or <code>null</code>,
@@ -151,49 +151,49 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmpt findTarget(IIpsProject ipsProject) throws IpsException;
+    IProductCmpt findTarget(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the cardinality of target instances in this link
      */
-    public Cardinality getCardinality();
+    Cardinality getCardinality();
 
     /**
      * Set the cardinality of target instances in this link
      */
-    public void setCardinality(Cardinality cardinality);
+    void setCardinality(Cardinality cardinality);
 
     /**
      * Returns the minimum number of target instances required by this link.
      */
-    public int getMinCardinality();
+    int getMinCardinality();
 
     /**
      * Sets the minimum number of target instances required by this link.
      */
-    public void setMinCardinality(int newValue);
+    void setMinCardinality(int newValue);
 
     /**
      * returns the default number of target instances in this link.
      */
-    public int getDefaultCardinality();
+    int getDefaultCardinality();
 
     /**
      * Sets the default number of target instances in this link.
      */
-    public void setDefaultCardinality(int newValue);
+    void setDefaultCardinality(int newValue);
 
     /**
      * Returns the maximum number of target instances allowed in this relation. If the number is not
      * limited {@link Cardinality#CARDINALITY_MANY} is returned.
      */
-    public int getMaxCardinality();
+    int getMaxCardinality();
 
     /**
      * Sets the maximum number of target instances allowed in this relation. An unlimited number is
      * represented by {@link Cardinality#CARDINALITY_MANY}.
      */
-    public void setMaxCardinality(int newValue);
+    void setMaxCardinality(int newValue);
 
     /**
      * Returns true if the association this link is an instance of does constrains a policy
@@ -201,13 +201,13 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * 
      * @see IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)
      */
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
+    boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Returns whether this relation is mandatory. A Relation is mandatory if both minimum and
      * maximum-cardinality are equal to 1.
      */
-    public boolean isMandatory();
+    boolean isMandatory();
 
     /**
      * Returns whether this Relation is optional. A Relation is optional if the minimum cardinality
@@ -215,13 +215,13 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * 
      * @return <code>true</code> if this Relation is optional, else <code>false</code>.
      */
-    public boolean isOptional();
+    boolean isOptional();
 
     /**
      * Returns <code>true</code> if this is a to-many association. This is the case if the max
      * cardinality is greater than 1.
      */
-    public boolean is1ToMany();
+    boolean is1ToMany();
 
     /**
      * Checks if this link is a link of the given association. This includes the search for derived
@@ -230,7 +230,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * @param association The association that should be checked
      * @param ipsProject The project used to find the associations
      * @return true if this link is a link instance of the given association including search for
-     *         derived unions.
+     *             derived unions.
      * 
      * @throws IpsException Throws a core exception if there occurs exception during finding other
      *             objects
@@ -245,7 +245,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     boolean isConfiguringPolicyAssociation();
 
     @Override
-    public IProductCmptLink findTemplateProperty(IIpsProject ipsProject);
+    IProductCmptLink findTemplateProperty(IIpsProject ipsProject);
 
     /** A class that can be used to identify links by means of their association and target. */
     class LinkIdentifier implements ITemplatedValueIdentifier {
@@ -276,8 +276,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
             final int prime = 31;
             int result = 1;
             result = prime * result + association.hashCode();
-            result = prime * result + target.hashCode();
-            return result;
+            return prime * result + target.hashCode();
         }
 
         @Override
@@ -285,20 +284,12 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             LinkIdentifier other = (LinkIdentifier)obj;
-            if (!association.equals(other.association)) {
-                return false;
-            }
-            if (!target.equals(other.target)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(association, other.association)
+                    && Objects.equals(target, other.target);
         }
 
         @Override

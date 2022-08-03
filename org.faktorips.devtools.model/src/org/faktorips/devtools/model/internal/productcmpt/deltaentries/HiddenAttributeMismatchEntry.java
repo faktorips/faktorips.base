@@ -73,8 +73,7 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     private IValueHolder<?> createValueHolderFor(IValue<?> defaultValue) {
         AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
-        IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(getAttributeValue(), defaultValue);
-        return valueHolder;
+        return attributeValueType.newHolderInstance(getAttributeValue(), defaultValue);
     }
 
     public boolean isMismatch() {

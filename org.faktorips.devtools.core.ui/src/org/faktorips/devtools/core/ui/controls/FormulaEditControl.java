@@ -45,7 +45,7 @@ public class FormulaEditControl extends StyledTextButtonControl implements IData
         this.formula = formula;
         this.shell = shell;
         this.parentSection = parentSection;
-        this.uiToolkit = toolkit;
+        uiToolkit = toolkit;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class FormulaEditControl extends StyledTextButtonControl implements IData
          * set changeable for the text control, the button control will be always enabled, because
          * formula tests could be executes if changeable or not changeable
          */
-        this.dataChangeable = changeable;
+        dataChangeable = changeable;
         uiToolkit.setDataChangeable(getTextControl(), changeable);
     }
 

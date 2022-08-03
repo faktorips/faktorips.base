@@ -42,7 +42,7 @@ enum ModelExplorerCategory {
 
     private final int order;
 
-    private ModelExplorerCategory(int order) {
+    ModelExplorerCategory(int order) {
         this.order = order;
     }
 

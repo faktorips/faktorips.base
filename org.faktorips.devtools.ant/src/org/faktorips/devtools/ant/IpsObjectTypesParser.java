@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
@@ -134,10 +135,7 @@ class IpsObjectTypesParser {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((key == null) ? 0 : key.hashCode());
-            return result;
+            return Objects.hash(key);
         }
 
         @Override
@@ -145,21 +143,11 @@ class IpsObjectTypesParser {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (!(obj instanceof Parameter)) {
+            if ((obj == null) || !(obj instanceof Parameter)) {
                 return false;
             }
             Parameter other = (Parameter)obj;
-            if (key == null) {
-                if (other.key != null) {
-                    return false;
-                }
-            } else if (!key.equals(other.key)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(key, other.key);
         }
 
         @Override

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import java.util.Objects;
+
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.IIpsModel;
@@ -59,10 +61,7 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((association == null) ? 0 : association.hashCode());
-        return result;
+        return Objects.hash(association);
     }
 
     @Override
@@ -70,21 +69,11 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         AssociationViewItem other = (AssociationViewItem)obj;
-        if (association == null) {
-            if (other.association != null) {
-                return false;
-            }
-        } else if (!association.equals(other.association)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(association, other.association);
     }
 
 }

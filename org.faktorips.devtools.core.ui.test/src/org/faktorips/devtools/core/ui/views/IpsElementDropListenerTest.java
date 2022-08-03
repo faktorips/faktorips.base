@@ -121,7 +121,7 @@ public class IpsElementDropListenerTest extends AbstractIpsPluginTest {
         return FileTransfer.getInstance().getSupportedTypes()[0];
     }
 
-    private class TestListener extends IpsElementDropListener {
+    private static class TestListener extends IpsElementDropListener {
 
         private FileTransfer transfer;
 

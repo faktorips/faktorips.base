@@ -53,7 +53,7 @@ public class Formula extends Expression implements IFormula {
 
     public Formula(IPropertyValueContainer parent, String id, String formulaSignature) {
         super(parent, id, formulaSignature);
-        this.templateValueSettings = new TemplateValueSettings(this);
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override

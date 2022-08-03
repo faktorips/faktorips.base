@@ -15,8 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyMap;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,6 +36,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -52,13 +53,19 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
     private ProductComponent pc;
 
+    private AutoCloseable mocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
     }
 
-    @SuppressWarnings("unchecked")
+    @After
+    public void tearDown() throws Exception {
+        mocks.close();
+    }
+
     // the verify for the parameterized map cannot be type safe
     @Test
     public void testCallInitMethodsOnInitFromXML() {

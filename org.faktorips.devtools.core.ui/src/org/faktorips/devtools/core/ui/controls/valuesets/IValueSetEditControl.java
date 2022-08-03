@@ -26,7 +26,7 @@ public interface IValueSetEditControl {
     /**
      * Returns the type of value set this control can edit.
      */
-    public ValueSetType getValueSetType();
+    ValueSetType getValueSetType();
 
     /**
      * Sets the new value set being edited in the control.
@@ -36,12 +36,12 @@ public interface IValueSetEditControl {
      * 
      * @throws NullPointerException if newSet is <code>null</code>.
      */
-    public void setValueSet(IValueSet newSet, ValueDatatype valueDatatype);
+    void setValueSet(IValueSet newSet, ValueDatatype valueDatatype);
 
     /**
      * Returns the value set being edited in the control.
      */
-    public IValueSet getValueSet();
+    IValueSet getValueSet();
 
     /**
      * Returns <code>true</code> if this control can be used to edit the given value set using the
@@ -51,13 +51,13 @@ public interface IValueSetEditControl {
      * @param valueSet The value set to test.
      * @param valueDatatype The datatype the values in the set are instances of.
      */
-    public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype);
+    boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype);
 
     /**
      * Returns the composite this edit control uses to edit the value set. e.g. the
      * {@link RangeEditControl} returns itself but other implementations do not combine UI and model
      * in a single class.
      */
-    public Composite getComposite();
+    Composite getComposite();
 
 }

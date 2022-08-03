@@ -161,7 +161,7 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
         searchBar = new SearchBar(formBody, toolkit);
 
-        this.table = createTable(formBody);
+        table = createTable(formBody);
         initTableViewer(table);
 
         tableViewer.setInput(getTableContents());

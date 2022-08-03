@@ -150,7 +150,8 @@ public class CustomValidationsMapTest {
             @Override
             public void describeTo(Description description) {
                 description.appendText("matching this order: ["
-                        + Arrays.stream(values).map(x -> x.toString()).collect(Collectors.joining(", ")) + "]");
+                        + Arrays.stream(values).map(ICustomValidation::toString).collect(Collectors.joining(", "))
+                        + "]");
             }
 
             @Override

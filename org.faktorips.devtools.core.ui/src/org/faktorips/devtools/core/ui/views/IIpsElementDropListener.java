@@ -30,18 +30,18 @@ public interface IIpsElementDropListener extends DropTargetListener {
      * It might be the case that calling this method causes the implementation to first create the
      * {@link IIpsElement} items (for example during a drag from another product system).
      */
-    public List<IIpsElement> getDraggedElements(TransferData transferData);
+    List<IIpsElement> getDraggedElements(TransferData transferData);
 
     /**
      * Returns all the supported {@link Transfer} types.
      */
-    public Transfer[] getSupportedTransfers();
+    Transfer[] getSupportedTransfers();
 
     /**
      * @return The bitwise OR'ing of allowed operations; this may be a combination of any of
-     *         {@link DND#DROP_NONE}, {@link DND#DROP_COPY}, {@link DND#DROP_MOVE},
-     *         {@link DND#DROP_LINK}
+     *             {@link DND#DROP_NONE}, {@link DND#DROP_COPY}, {@link DND#DROP_MOVE},
+     *             {@link DND#DROP_LINK}
      */
-    public int getSupportedOperations();
+    int getSupportedOperations();
 
 }

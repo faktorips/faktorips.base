@@ -129,7 +129,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * if the found one doesn't have a successor.
      * 
      * @see #findNextGenerationEntry(Calendar) findNextGenerationEntry(Calendar) for null-safe
-     *      processing
+     *          processing
      */
     public GenerationTocEntry getNextGenerationEntry(Calendar validFrom) {
         return findNextGenerationEntry(validFrom).orElse(null);
@@ -154,7 +154,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
      * provided date or if the found one doesn't have a predecessor.
      * 
      * @see #findPreviousGenerationEntry(Calendar) findPreviousGenerationEntry(Calendar) for
-     *      null-safe processing
+     *          null-safe processing
      */
     public GenerationTocEntry getPreviousGenerationEntry(Calendar validFrom) {
         return findPreviousGenerationEntry(validFrom).orElse(null);
@@ -278,8 +278,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
         result = prime * result + ((generationImplClassName == null) ? 0 : generationImplClassName.hashCode());
         result = prime * result + ((kindId == null) ? 0 : kindId.hashCode());
         result = prime * result + ((validTo == null) ? 0 : validTo.hashCode());
-        result = prime * result + ((versionId == null) ? 0 : versionId.hashCode());
-        return result;
+        return prime * result + ((versionId == null) ? 0 : versionId.hashCode());
     }
 
     @Override
@@ -287,29 +286,16 @@ public class ProductCmptTocEntry extends TocEntryObject {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof ProductCmptTocEntry)) {
+        if (!super.equals(obj) || !(obj instanceof ProductCmptTocEntry)) {
             return false;
         }
         ProductCmptTocEntry other = (ProductCmptTocEntry)obj;
-        if (!Objects.equals(generationEntries, other.generationEntries)) {
-            return false;
-        }
-        if (!Objects.equals(generationImplClassName, other.generationImplClassName)) {
-            return false;
-        }
-        if (!Objects.equals(kindId, other.kindId)) {
-            return false;
-        }
-        if (!Objects.equals(validTo, other.validTo)) {
-            return false;
-        }
-        if (!Objects.equals(versionId, other.versionId)) {
-            return false;
-        }
-        return super.equals(obj);
+        return Objects.equals(generationEntries, other.generationEntries)
+                && Objects.equals(generationImplClassName, other.generationImplClassName)
+                && Objects.equals(kindId, other.kindId)
+                && Objects.equals(validTo, other.validTo)
+                && Objects.equals(versionId, other.versionId)
+                && super.equals(obj);
     }
 
 }

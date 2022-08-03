@@ -121,15 +121,13 @@ public abstract class AbstractCopyPasteHandler extends AbstractHandler {
     public static String getResourceLinkInArchive(IIpsObject ipsObject) {
         IIpsPackageFragmentRoot root = ipsObject.getIpsPackageFragment().getRoot();
         String srcFileName = ipsObject.getIpsSrcFile().getName();
-        String content = root.getIpsProject().getName() + "#" + root.getName() + "#" + ipsObject.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
-                + "#" + StringUtil.getFileExtension(srcFileName); //$NON-NLS-1$
-        return content;
+        return root.getIpsProject().getName() + "#" + root.getName() + "#" + ipsObject.getQualifiedName() //$NON-NLS-1$ //$NON-NLS-2$
+                + "#" + StringUtil.getFileExtension(srcFileName);
     }
 
     public static String getResourceLinkInArchive(IIpsPackageFragment fragment) {
         IIpsPackageFragmentRoot root = fragment.getRoot();
-        String content = root.getIpsProject().getName() + "#" + root.getName() + "#" + fragment.getName(); //$NON-NLS-1$ //$NON-NLS-2$
-        return content;
+        return root.getIpsProject().getName() + "#" + root.getName() + "#" + fragment.getName();
     }
 
 }

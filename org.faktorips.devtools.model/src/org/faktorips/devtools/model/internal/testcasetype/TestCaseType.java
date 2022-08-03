@@ -406,11 +406,8 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
                 addParameter = false;
                 continue;
             }
-            if (parameterClass != null && !parameter.getClass().equals(parameterClass)) {
-                addParameter = false;
-                continue;
-            }
-            if (name != null && !name.equals(parameter.getName())) {
+            if ((parameterClass != null && !parameter.getClass().equals(parameterClass))
+                    || (name != null && !name.equals(parameter.getName()))) {
                 addParameter = false;
                 continue;
             }

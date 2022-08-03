@@ -198,11 +198,14 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     public <T extends IIpsArtefactBuilder> T getBuilderById(IBuilderKindId kindId, Class<T> builderClass) {
         IIpsArtefactBuilder builderById = getBuilderById(kindId);
         if (builderClass.isAssignableFrom(builderById.getClass())) {
-            @SuppressWarnings("unchecked")
-            T castedBuilder = (T)builderById;
-            return castedBuilder;
+            return castBuilder(builderById);
         }
         throw new RuntimeException("There is no builder for kind ID: " + kindId + " of the type: " + builderClass); //$NON-NLS-1$//$NON-NLS-2$
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T extends IIpsArtefactBuilder> T castBuilder(IIpsArtefactBuilder builderById) {
+        return (T)builderById;
     }
 
     @Override

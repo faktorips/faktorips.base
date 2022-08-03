@@ -14,10 +14,10 @@ import org.w3c.dom.Element;
 
 public interface IIpsSrcFileMemento {
 
-    public abstract IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
-    public abstract Element getState();
+    Element getState();
 
-    public abstract boolean isDirty();
+    boolean isDirty();
 
 }

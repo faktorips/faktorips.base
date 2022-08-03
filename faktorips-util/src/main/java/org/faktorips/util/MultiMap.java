@@ -56,18 +56,15 @@ public class MultiMap<K, V> implements Serializable {
     }
 
     public static <K, V> MultiMap<K, V> createWithSetsAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<>(new HashSetFactory<V>());
-        return multiMap;
+        return new MultiMap<>(new HashSetFactory<V>());
     }
 
     public static <K, V> MultiMap<K, V> createWithListsAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<>(new ArrayListFactory<V>());
-        return multiMap;
+        return new MultiMap<>(new ArrayListFactory<V>());
     }
 
     public static <K, V> MultiMap<K, V> createWithLinkedSetAsValues() {
-        MultiMap<K, V> multiMap = new MultiMap<>(new LinkedHashSetFactory<V>());
-        return multiMap;
+        return new MultiMap<>(new LinkedHashSetFactory<V>());
     }
 
     /**
@@ -157,7 +154,7 @@ public class MultiMap<K, V> implements Serializable {
      * 
      * @param key to which the Collection is mapped
      * @return The collection that was stored in the list. Returns an empty collection if there was
-     *         no such key.
+     *             no such key.
      */
     public Collection<V> remove(Object key) {
         Collection<V> removedCollection = internalMap.remove(key);
@@ -224,12 +221,12 @@ public class MultiMap<K, V> implements Serializable {
     /**
      * Factory for creating collection instances to be used as values in a {@link MultiMap}.
      */
-    public static interface CollectionFactory<V> extends Serializable {
+    public interface CollectionFactory<V> extends Serializable {
 
         /**
          * Creates collections that are used as values in a {@link MultiMap}
          */
-        public Collection<V> createCollection();
+        Collection<V> createCollection();
 
     }
 

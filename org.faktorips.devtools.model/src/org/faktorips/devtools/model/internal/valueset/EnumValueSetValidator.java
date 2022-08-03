@@ -130,11 +130,7 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
      * Returns whether the given value represents the special null value for the given datatype.
      */
     private boolean isSpecialNull(String value, ValueDatatype datatype) {
-        if (datatype.isPrimitive()) {
-            return false;
-        }
-
-        if (value == null) {
+        if (datatype.isPrimitive() || (value == null)) {
             return false;
         }
 

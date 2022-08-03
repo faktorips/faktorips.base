@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -115,11 +114,10 @@ public class TypedSelection<T> {
 
     /**
      * @return <code>true</code> if all elements in the structured selection match the expected
-     *         type, <code>false</code> else.
+     *             type, <code>false</code> else.
      */
     private boolean initElements(final Class<T> type, IStructuredSelection structuredSelection) {
-        for (Iterator<?> iterator = structuredSelection.iterator(); iterator.hasNext();) {
-            Object element = iterator.next();
+        for (Object element : structuredSelection) {
             if (type.isInstance(element)) {
                 elements.add(type.cast(element));
             } else if (element instanceof IAdaptable) {
@@ -310,8 +308,8 @@ public class TypedSelection<T> {
      * @param <T> type of the selection
      * @param selection the selection
      * @return an {@link Optional} holding the selected element of the given type or
-     *         {@code Optional.absent()} if the selection contains elements of the wrong type or is
-     *         empty
+     *             {@code Optional.absent()} if the selection contains elements of the wrong type or
+     *             is empty
      */
     public static <T> Optional<T> singleElement(final Class<T> type, final ISelection selection) {
         TypedSelection<T> validator = create(type, selection);

@@ -28,7 +28,7 @@ public interface IAttributeValueHolderFactory<T> {
      * @param parent The attribute value used as parent object
      * @return the newly created value holder.
      */
-    public IValueHolder<T> createValueHolder(IAttributeValue parent);
+    IValueHolder<T> createValueHolder(IAttributeValue parent);
 
     /**
      * Creating a new value holder with the specified parent and set the specified default value.
@@ -42,6 +42,6 @@ public interface IAttributeValueHolderFactory<T> {
      * 
      * @return the newly created value holder.
      */
-    public IValueHolder<T> createValueHolder(IAttributeValue parent, IValue<?> defaultValue);
+    IValueHolder<T> createValueHolder(IAttributeValue parent, IValue<?> defaultValue);
 
 }

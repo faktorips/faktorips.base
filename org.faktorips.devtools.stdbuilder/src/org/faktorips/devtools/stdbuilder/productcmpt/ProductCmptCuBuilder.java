@@ -64,8 +64,8 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
         //
         String className = getUnqualifiedClassName();
-        String[] argNames = new String[] { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
-        String[] argClassNames = new String[] { "IRuntimeRepository", "String", "String", "String" };
+        String[] argNames = { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
+        String[] argClassNames = { "IRuntimeRepository", "String", "String", "String" };
         JavaCodeFragment body = new JavaCodeFragment("super(repository, id, kindId, versionId);"); //$NON-NLS-1$
         codeBuilder.addImport(IRuntimeRepository.class);
         codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);

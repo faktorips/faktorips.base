@@ -109,7 +109,7 @@ public enum DependencyType {
 
     private String name;
 
-    private DependencyType(String name) {
+    DependencyType(String name) {
         this.name = name;
     }
 
@@ -132,7 +132,7 @@ public enum DependencyType {
      * @param ipsProject The project is used in some special cases where the transitive types
      *            depends on the project's configuration.
      * @return The dependency types that should be considered while searching for transitive
-     *         dependencies
+     *             dependencies
      */
     public abstract EnumSet<DependencyType> getTransitiveTypes(IIpsProject ipsProject);
 
@@ -144,7 +144,7 @@ public enum DependencyType {
      * @param ipsProject The current {@link IIpsProject} for special cases where transitive types
      *            depends on the project's configuration.
      * @return The enum set with the dependency types that should be considered in next transitive
-     *         search step
+     *             search step
      */
     public EnumSet<DependencyType> getNextTransitiveTypes(EnumSet<DependencyType> currentTransitiveTypes,
             IIpsProject ipsProject) {

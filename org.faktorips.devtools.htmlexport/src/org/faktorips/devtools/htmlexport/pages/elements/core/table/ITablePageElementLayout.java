@@ -30,7 +30,7 @@ public interface ITablePageElementLayout {
      * </p>
      * 
      */
-    public void layoutRow(int row, TableRowPageElement rowPageElement);
+    void layoutRow(int row, TableRowPageElement rowPageElement);
 
     /**
      * layouts the given {@link TableCellPageElement}
@@ -43,5 +43,5 @@ public interface ITablePageElementLayout {
      * </p>
      * 
      */
-    public void layoutCell(int row, int column, TableCellPageElement cellPageElement);
+    void layoutCell(int row, int column, TableCellPageElement cellPageElement);
 }

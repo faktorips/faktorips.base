@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
  * Default implementation of {@link IProductCmptPropertyReference}.
  *
  * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
- *             instead.
+ *                 instead.
  */
 @Deprecated(forRemoval = true, since = "22.6")
 public class ProductCmptPropertyReference extends AtomicIpsObjectPart implements IProductCmptPropertyReference {

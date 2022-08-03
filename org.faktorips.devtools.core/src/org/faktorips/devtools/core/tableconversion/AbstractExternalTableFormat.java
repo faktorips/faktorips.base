@@ -173,7 +173,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
     /**
      * Implementation of IValueConverter to be used if no other converter was found.
      */
-    private class DefaultValueConverter extends AbstractValueConverter {
+    private static class DefaultValueConverter extends AbstractValueConverter {
 
         @Override
         public Datatype getSupportedDatatype() {

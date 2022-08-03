@@ -407,7 +407,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * method to set up a defined state before the generation starts.
      * 
      * @see org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder#beforeBuild(org.faktorips.devtools.model.ipsobject.IIpsSrcFile,
-     *      org.eclipse.core.runtime.MultiStatus)
+     *          org.eclipse.core.runtime.MultiStatus)
      */
     @Override
     public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) {
@@ -706,10 +706,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     @Override
     public void build(IIpsSrcFile ipsSrcFile) {
-        if (!isBuilderFor(ipsSrcFile)) {
-            return;
-        }
-        if (!getBuilderSet().isGeneratePublishedInterfaces() && generatesInterface()) {
+        if (!isBuilderFor(ipsSrcFile) || (!getBuilderSet().isGeneratePublishedInterfaces() && generatesInterface())) {
             return;
         }
         AFile javaFile = getJavaFile(ipsSrcFile);
@@ -844,9 +841,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
         try {
             edit.apply(doc);
-        } catch (MalformedTreeException e) {
-            throw new RuntimeException(e);
-        } catch (BadLocationException e) {
+        } catch (MalformedTreeException | BadLocationException e) {
             throw new RuntimeException(e);
         }
         return doc.get();

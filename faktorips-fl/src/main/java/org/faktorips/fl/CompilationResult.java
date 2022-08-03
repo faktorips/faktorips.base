@@ -28,27 +28,27 @@ public interface CompilationResult<T extends CodeFragment> {
     /**
      * Returns the generated source code.
      */
-    public T getCodeFragment();
+    T getCodeFragment();
 
     /**
      * Returns the compiled expression's {@link Datatype}.
      */
-    public Datatype getDatatype();
+    Datatype getDatatype();
 
     /**
      * Returns the messages generated during compilation.
      */
-    public MessageList getMessages();
+    MessageList getMessages();
 
     /**
      * Returns {@code true} if the compilation was successful, otherwise {@code false}.
      */
-    public boolean successfull();
+    boolean successfull();
 
     /**
      * Returns {@code true} if the compilation has failed, otherwise {@code false}. If the method
      * returns {@code true}, there is a least one error {@link Message} in the {@link MessageList
      * message list}.
      */
-    public boolean failed();
+    boolean failed();
 }

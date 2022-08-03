@@ -22,6 +22,6 @@ public interface IDependantObject {
      * Returns the parent this object belongs to. Returns <code>null</code> if this object is
      * (currently) not a part of another.
      */
-    public IModelObject getParentModelObject();
+    IModelObject getParentModelObject();
 
 }

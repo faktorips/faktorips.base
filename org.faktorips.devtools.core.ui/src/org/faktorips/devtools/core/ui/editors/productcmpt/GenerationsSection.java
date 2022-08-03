@@ -117,9 +117,8 @@ public class GenerationsSection extends SimpleIpsPartsSection {
          */
         @Override
         protected IIpsObjectPart newIpsPart() {
-            IIpsObjectGeneration newGeneration = page.getProductCmpt().newGeneration(
+            return page.getProductCmpt().newGeneration(
                     IpsUIPlugin.getDefault().getDefaultValidityDate());
-            return newGeneration;
         }
 
         /**

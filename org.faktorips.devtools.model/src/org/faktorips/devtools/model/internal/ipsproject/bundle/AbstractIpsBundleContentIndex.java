@@ -96,7 +96,7 @@ public abstract class AbstractIpsBundleContentIndex {
      * 
      * @param packageName The name of the package where all the qualified names should be located
      * @return A set of the qualified names located in the given package, independent of the model
-     *         folder
+     *             folder
      * @see #getQualifiedNameTypes()
      */
     public Set<QualifiedNameType> getQualifiedNameTypes(String packageName) {

@@ -84,7 +84,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      * @param texts the texts of the error messages in the new {@code MessageList}. May be
      *            {@code null} or empty
      * @return a new {@code MessageList} that contains error messages with the given texts or an
-     *         empty {@code MessageList}
+     *             empty {@code MessageList}
      */
     public static final MessageList ofErrors(String... texts) {
         if (texts == null) {
@@ -278,12 +278,8 @@ public class MessageList implements Serializable, Iterable<Message> {
     public Message getMessageWithHighestSeverity() {
         Message result = null;
         for (Message message : getMessages()) {
-            if (result == null) {
+            if ((result == null) || (result.getSeverity().compareTo(message.getSeverity()) < 0)) {
                 result = message;
-            } else {
-                if (result.getSeverity().compareTo(message.getSeverity()) < 0) {
-                    result = message;
-                }
             }
         }
         return result;
@@ -588,8 +584,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getMessages() == null) ? 0 : getMessages().hashCode());
-        return result;
+        return prime * result + ((getMessages() == null) ? 0 : getMessages().hashCode());
     }
 
     @Override

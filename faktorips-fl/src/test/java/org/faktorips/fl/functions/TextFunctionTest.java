@@ -44,8 +44,8 @@ public class TextFunctionTest extends FunctionAbstractTest {
 
     @Test
     public void testCompile_DatatypeHelper() throws Exception {
-        execAndTestSuccessfull("TEXT(3)", new String("3"), Datatype.STRING);
-        execAndTestSuccessfull("TEXT(\"test\")", new String("test"), Datatype.STRING);
-        execAndTestSuccessfull("TEXT(true)", new String("true"), Datatype.STRING);
+        execAndTestSuccessfull("TEXT(3)", "3", Datatype.STRING);
+        execAndTestSuccessfull("TEXT(\"test\")", "test", Datatype.STRING);
+        execAndTestSuccessfull("TEXT(true)", "true", Datatype.STRING);
     }
 }

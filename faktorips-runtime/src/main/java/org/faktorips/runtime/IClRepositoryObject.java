@@ -32,6 +32,6 @@ public interface IClRepositoryObject {
      * 
      * @throws NullPointerException if element is <code>null</code>.
      */
-    public void initFromXml(Element element);
+    void initFromXml(Element element);
 
 }

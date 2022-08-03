@@ -91,15 +91,11 @@ public class QNameUtil {
      * @param qName The fully qualified package name.
      */
     public static final String[] getSegments(String qName) {
-        String[] segments;
-
         if ((qName == null) || (qName.length() == 0)) {
             return new String[0];
         }
 
-        segments = StringUtils.split(qName, "."); //$NON-NLS-1$
-
-        return segments;
+        return StringUtils.split(qName, ".");
     }
 
     /**

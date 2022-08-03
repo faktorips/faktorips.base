@@ -161,10 +161,10 @@ public abstract class Type extends ModelElement {
      * @param annotationClass the class of the annotation the method must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
-     *         annotated properties. <code>null</code> if no such method can be found.
+     *             annotated properties. <code>null</code> if no such method can be found.
      * 
      * @see #findDeclaredMethod(Class, AnnotatedElementMatcher) findDeclaredMethod for null-safe
-     *      processing
+     *          processing
      */
     public <T extends Annotation> Method searchDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
@@ -179,7 +179,7 @@ public abstract class Type extends ModelElement {
      * @param annotationClass the class of the annotation the method must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
-     *         annotated properties. {@link Optional#empty()} if no such method can be found.
+     *             annotated properties. {@link Optional#empty()} if no such method can be found.
      */
     public <T extends Annotation> Optional<Method> findDeclaredMethod(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
@@ -201,7 +201,7 @@ public abstract class Type extends ModelElement {
      * @param annotationClass the class of the annotation the field must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first field that is both annotated with the given annotation and has the correct
-     *         annotated properties. {@link Optional#empty()} if no such field can be found.
+     *             annotated properties. {@link Optional#empty()} if no such field can be found.
      */
     public <T extends Annotation> Optional<Field> findDeclaredField(Class<T> annotationClass,
             AnnotatedElementMatcher<T> matcher) {
@@ -250,7 +250,7 @@ public abstract class Type extends ModelElement {
      * 
      * @param name the name of the association
      * @return <code>true</code> if the association is declared in this type, <code>false</code> if
-     *         not
+     *             not
      * 
      * @see #isAssociationPresent(String)
      */
@@ -262,7 +262,7 @@ public abstract class Type extends ModelElement {
      * 
      * @param name the name of the association
      * @return <code>true</code> if the association is declared in this type or in any supertype,
-     *         <code>false</code> if not
+     *             <code>false</code> if not
      * 
      * @see #isAssociationDeclared(String)
      */
@@ -286,7 +286,7 @@ public abstract class Type extends ModelElement {
      * 
      * @param name the name of the attribute
      * @return <code>true</code> if the attribute is declared in this type, <code>false</code> if
-     *         not
+     *             not
      */
     public abstract boolean isAttributeDeclared(String name);
 
@@ -296,7 +296,7 @@ public abstract class Type extends ModelElement {
      * 
      * @param name the name of the attribute
      * @return <code>true</code> if the attribute is declared in this type or in any supertype,
-     *         <code>false</code> if not
+     *             <code>false</code> if not
      */
     public boolean isAttributePresent(String name) {
         AttributeFinder finder = new AttributeFinder(name);
@@ -355,12 +355,12 @@ public abstract class Type extends ModelElement {
      * @param <T> is the type of annotation that is expected.
      */
     @FunctionalInterface
-    public static interface AnnotatedElementMatcher<T extends Annotation> {
+    public interface AnnotatedElementMatcher<T extends Annotation> {
         /**
          * 
          * @param annotation the annotation found.
          * @return <code>true</code> if the annotation matches the condition, <code>false</code>
-         *         else.
+         *             else.
          */
         boolean matches(T annotation);
     }

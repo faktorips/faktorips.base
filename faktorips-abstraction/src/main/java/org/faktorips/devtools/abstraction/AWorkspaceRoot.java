@@ -38,7 +38,7 @@ public interface AWorkspaceRoot extends AContainer {
      * @param location a file location; should reference a resource in one of the projects of this
      *            workspace
      * @return the resource corresponding to the file, or {@code null} if no such file exists in
-     *         this workspace
+     *             this workspace
      */
     @CheckForNull
     AFile getFileForLocation(Path location);

@@ -24,24 +24,24 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IValueSetOwner extends IIpsObjectPart {
 
-    public static final String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
+    String PROPERTY_VALUE_SET = "valueSet"; //$NON-NLS-1$
 
     /**
      * Returns the set of allowed values.
      */
-    public IValueSet getValueSet();
+    IValueSet getValueSet();
 
     /**
      * Returns the list of allowed value set types.
      * 
      * @throws IpsException If an error occurs.
      */
-    public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
+    List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the type of the value set.
      */
-    public void setValueSetType(ValueSetType type);
+    void setValueSetType(ValueSetType type);
 
     /**
      * Changes the type of the value set to the new type. The old value set is removed and a new
@@ -49,12 +49,12 @@ public interface IValueSetOwner extends IIpsObjectPart {
      * 
      * @param newType The new value set type.
      */
-    public IValueSet changeValueSetType(ValueSetType newType);
+    IValueSet changeValueSetType(ValueSetType newType);
 
     /**
      * Returns <code>true</code> if it is possible to update the value set owned by this owner.
      */
-    public boolean isValueSetUpdateable();
+    boolean isValueSetUpdateable();
 
     /**
      * Returns the value data type all values in the value set must be "instances" of.
@@ -62,6 +62,6 @@ public interface IValueSetOwner extends IIpsObjectPart {
      * @param ipsProject The project which IPS object path is used to search the data type. This is
      *            not necessarily the project this value set owner is part of.
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
+    ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
 }

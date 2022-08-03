@@ -81,9 +81,8 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     private List<String> convertedValues() {
-        List<String> converted = Lists.transform(oldValues,
+        return Lists.transform(oldValues,
                 input -> converter.convert(input, getPropertyValue().getIpsProject()));
-        return converted;
     }
 
     /**

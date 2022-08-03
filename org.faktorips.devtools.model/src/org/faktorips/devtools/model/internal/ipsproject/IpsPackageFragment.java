@@ -74,16 +74,16 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
-        this.path = new Path(name.replace(SEPARATOR, IPath.SEPARATOR));
+        path = new Path(name.replace(SEPARATOR, IPath.SEPARATOR));
     }
 
     @Override
     public AResource getCorrespondingResource() {
-        if (this.correspondingResourceFolder == null) {
+        if (correspondingResourceFolder == null) {
             AFolder folder = (AFolder)getParent().getCorrespondingResource();
-            this.correspondingResourceFolder = folder.getFolder(toJavaPath(path));
+            correspondingResourceFolder = folder.getFolder(toJavaPath(path));
         }
-        return this.correspondingResourceFolder;
+        return correspondingResourceFolder;
     }
 
     @Override
@@ -567,7 +567,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
              * 
              * @param line One single line (String) of the sort order.
              * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty
-             *         or a comment
+             *             or a comment
              */
             private static boolean isNeitherBlankNorComment(String line) {
                 return !IpsStringUtils.isBlank(line) && !line.startsWith("#"); //$NON-NLS-1$

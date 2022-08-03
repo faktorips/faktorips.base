@@ -128,14 +128,12 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     @Test
     public void testValidateSizeScalePrecision() {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
-        MessageList ml = null;
-
         setPersistenceOptionSizeScalePrecision(10, 20, 30);
         pAttInfo.setTableColumnSize(2);
         pAttInfo.setTableColumnScale(2);
         pAttInfo.setTableColumnPrecision(2);
 
-        ml = pAttInfo.validate(ipsProject);
+        MessageList ml = pAttInfo.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS));
 
         pAttInfo.setTableColumnSize(11);

@@ -110,11 +110,7 @@ public class InternationalStringXmlReaderWriterTest {
             builder = factory.newDocumentBuilder();
             Document document = builder.parse(new ByteArrayInputStream(xmlSnippet.getBytes()));
             return document.getDocumentElement();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             throw new RuntimeException(e);
         }
     }

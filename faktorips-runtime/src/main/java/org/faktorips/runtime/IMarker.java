@@ -27,7 +27,7 @@ public interface IMarker {
      * InvalidObjectProperties}.
      * 
      * @return <code>true</code> if the marked message indicates that required information is
-     *         missing, otherwise <code>false</code>
+     *             missing, otherwise <code>false</code>
      */
     boolean isRequiredInformationMissing();
 
@@ -38,7 +38,7 @@ public interface IMarker {
      * InvalidObjectProperties}.
      * 
      * @return <code>true</code> if the marked message indicates that some technical constraints are
-     *         violated, otherwise <code>false</code>
+     *             violated, otherwise <code>false</code>
      */
     boolean isTechnicalConstraintViolated();
 

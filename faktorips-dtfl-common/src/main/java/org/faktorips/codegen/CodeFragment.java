@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.codegen;
 
+import java.util.Objects;
 import java.util.StringTokenizer;
 
 import org.faktorips.runtime.util.StringBuilderJoiner;
@@ -18,7 +19,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
  * Represents a language independent source code fragment. A source code fragment consists of the
  * source code text and possibly additional parts like import statements. The default implementation
  * is the {@link JavaCodeFragment}.
- * 
+ *
  * @see JavaCodeFragmentBuilder
  */
 public class CodeFragment {
@@ -83,7 +84,7 @@ public class CodeFragment {
 
     /**
      * Decreases the indentation level used for appending sourcecode.
-     * 
+     *
      * @throws RuntimeException if the level is 0.
      */
     public void decIndentationLevel() {
@@ -194,34 +195,29 @@ public class CodeFragment {
      * Appends the given fragment to his fragment and indents it properly.
      */
     public CodeFragment append(CodeFragment fragment) {
-        if (!indent) {
-            sourcecode.append(fragment.sourcecode);
-        } else {
-            if (indent) {
-                String fragmentSourcecode = fragment.getSourcecode();
-                StringTokenizer tokenizer = new StringTokenizer(fragmentSourcecode, System.lineSeparator());
-                while (tokenizer.hasMoreTokens()) {
-                    String token = tokenizer.nextToken();
-                    if (tokenizer.hasMoreTokens()) {
-                        appendln(token);
-                    } else {
-                        append(token);
-                    }
-                }
-                if (fragmentSourcecode.endsWith(System.lineSeparator())) {
-                    appendln(""); //$NON-NLS-1$
+        if (indent) {
+            String fragmentSourcecode = fragment.getSourcecode();
+            StringTokenizer tokenizer = new StringTokenizer(fragmentSourcecode, System.lineSeparator());
+            while (tokenizer.hasMoreTokens()) {
+                String token = tokenizer.nextToken();
+                if (tokenizer.hasMoreTokens()) {
+                    appendln(token);
+                } else {
+                    append(token);
                 }
             }
+            if (fragmentSourcecode.endsWith(System.lineSeparator())) {
+                appendln(""); //$NON-NLS-1$
+            }
+        } else {
+            sourcecode.append(fragment.sourcecode);
         }
         return this;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((sourcecode == null) ? 0 : sourcecode.hashCode());
-        return result;
+        return Objects.hash(sourcecode);
     }
 
     /**
@@ -233,21 +229,11 @@ public class CodeFragment {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         CodeFragment other = (CodeFragment)obj;
-        if (sourcecode == null) {
-            if (other.sourcecode != null) {
-                return false;
-            }
-        } else if (!sourcecode.toString().equals(other.sourcecode.toString())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(sourcecode.toString(), other.sourcecode.toString());
     }
 
     /**
@@ -274,7 +260,7 @@ public class CodeFragment {
 
     /**
      * Returns the CodeFragment as String.
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override

@@ -28,7 +28,7 @@ import org.faktorips.runtime.MessageList;
  */
 public interface IValueConverter {
 
-    public Datatype getSupportedDatatype();
+    Datatype getSupportedDatatype();
 
     /**
      * Returns the value of the given object as string-representation. If the given value can not be
@@ -43,7 +43,7 @@ public interface IValueConverter {
      *            the user. If this list does not contains an error-message before you call this
      *            method and do contain an error-message after the call, the conversion failed.
      */
-    public String getIpsValue(Object externalDataValue, MessageList messageList);
+    String getIpsValue(Object externalDataValue, MessageList messageList);
 
     /**
      * Returns an instance of the class this is an converter for representing the given string or
@@ -55,7 +55,7 @@ public interface IValueConverter {
      *            the user. If this list does not contains an error-message before you call this
      *            method and do contain an error-message after the call, the conversion failed.
      */
-    public Object getExternalDataValue(String ipsValue, MessageList messageList);
+    Object getExternalDataValue(String ipsValue, MessageList messageList);
 
     /**
      * Sets the table format this converter belongs to. A converter can be assigned to a table
@@ -67,11 +67,11 @@ public interface IValueConverter {
      * @throws RuntimeException if the format has already been set and the new format is a different
      *             one.
      */
-    public void setTableFormat(ITableFormat format);
+    void setTableFormat(ITableFormat format);
 
     /**
      * Returns the table format this converter belongs to.
      */
-    public ITableFormat getTableFormat();
+    ITableFormat getTableFormat();
 
 }

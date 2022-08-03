@@ -40,7 +40,7 @@
     <stringAttribute key="product" value="org.eclipse.equinox.p2.director.app.product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
@@ -60,18 +60,21 @@
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
+        <setEntry value="org.apache.commons.codec*1.13.0.v20200108-0001@default:default"/>
         <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
+        <setEntry value="org.apache.commons.lang*2.6.0.v201404270220@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
-        <setEntry value="org.apache.commons.lang@default:default"/>
         <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
+        <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.log4j@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
-        <setEntry value="org.apache.sshd.core@default:default"/>
+        <setEntry value="org.apache.sshd.osgi@default:default"/>
         <setEntry value="org.apache.sshd.sftp@default:default"/>
         <setEntry value="org.apache.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -117,6 +120,8 @@
         <setEntry value="org.eclipse.e4.ui.css.swt.theme@default:default"/>
         <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.di@default:default"/>
+        <setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
+        <setEntry value="org.eclipse.e4.ui.ide@default:default"/>
         <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
         <setEntry value="org.eclipse.e4.ui.services@default:default"/>
         <setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
@@ -187,6 +192,7 @@
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
         <setEntry value="org.eclipse.jface.text@default:default"/>
         <setEntry value="org.eclipse.jface@default:default"/>
+        <setEntry value="org.eclipse.jgit.http.apache@default:default"/>
         <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
         <setEntry value="org.eclipse.jgit@default:default"/>
         <setEntry value="org.eclipse.jsch.core@default:default"/>

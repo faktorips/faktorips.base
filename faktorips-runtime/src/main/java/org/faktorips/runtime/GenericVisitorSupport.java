@@ -19,8 +19,8 @@ import org.faktorips.runtime.model.type.PolicyAssociation;
  * implementing {@link IVisitorSupport}.
  *
  * @implNote This implementation uses generic access via the {@link IpsModel}, so generating your
- *           classes with visitor support will be more efficient if you have access to the project's
- *           generator settings.
+ *               classes with visitor support will be more efficient if you have access to the
+ *               project's generator settings.
  * @since 21.6
  */
 public class GenericVisitorSupport implements IVisitorSupport {

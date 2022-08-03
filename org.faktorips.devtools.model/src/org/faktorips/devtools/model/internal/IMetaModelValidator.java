@@ -22,19 +22,19 @@ public interface IMetaModelValidator {
      * Returns an empty {@link MessageList} if no errors could be found or if no validation can be
      * performed ( {@link #canValidate()} returns <code>false</code> in that case).
      */
-    public MessageList validateIfPossible();
+    MessageList validateIfPossible();
 
     /**
      * Returns <code>true</code> if this validator has sufficient information to perform its
      * validation task. <code>false</code> if it cannot perform a validation. No messages will be
      * created in the latter case.
      */
-    public boolean canValidate();
+    boolean canValidate();
 
     /**
      * Convenience method to perform the validation (if possible) and append all created messages to
      * the given {@link MessageList}.
      */
-    public void validateAndAppendMessages(MessageList messageList);
+    void validateAndAppendMessages(MessageList messageList);
 
 }

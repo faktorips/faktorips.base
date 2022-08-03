@@ -23,22 +23,22 @@ public interface ITimedIpsObject extends IIpsObject {
     /**
      * Name of the property for the valid-to date for this product component
      */
-    public static final String PROPERTY_VALID_TO = "validTo"; //$NON-NLS-1$
+    String PROPERTY_VALID_TO = "validTo"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TIMEDIPSOBJECT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TIMEDIPSOBJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the valid-to date for this object is invalid
      */
-    public static final String MSGCODE_INVALID_VALID_TO = MSGCODE_PREFIX + "InvalidValidToDate"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VALID_TO = MSGCODE_PREFIX + "InvalidValidToDate"; //$NON-NLS-1$
 
     /**
      * Returns true if this object's data changes at the indicated point in time, otherwise false.
      */
-    public boolean changesOn(GregorianCalendar date);
+    boolean changesOn(GregorianCalendar date);
 
     /**
      * Get all generations like they are stored in this container. The generations have no concrete
@@ -47,7 +47,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @return array with all registered generations
      */
-    public List<IIpsObjectGeneration> getGenerations();
+    List<IIpsObjectGeneration> getGenerations();
 
     /**
      * Returns the object's generations. Each generation contains the object's data for a certain
@@ -57,20 +57,20 @@ public interface ITimedIpsObject extends IIpsObject {
      * Generations with valid-from date <code>null</code> are sorted in first place (infinite valid
      * from).
      */
-    public IIpsObjectGeneration[] getGenerationsOrderedByValidDate();
+    IIpsObjectGeneration[] getGenerationsOrderedByValidDate();
 
     /**
      * Returns the index at the specified index.
      * 
      * @throws IndexOutOfBoundsException if the index is out of bounds.
      */
-    public IIpsObjectGeneration getGeneration(int index);
+    IIpsObjectGeneration getGeneration(int index);
 
     /**
      * @return Returns the first generation of this timed IPS object or <code>null</code>, if no
-     *         generation exists.
+     *             generation exists.
      */
-    public IIpsObjectGeneration getFirstGeneration();
+    IIpsObjectGeneration getFirstGeneration();
 
     /**
      * Returns the generation effective on the given date. That is the generation which's effective
@@ -80,7 +80,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @since 3.7
      */
-    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
+    IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     /**
      * Returns the generation which is the best-matching generation for the given date.
@@ -96,7 +96,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @param date the date for which to retrieve the best matching generation
      */
-    public IIpsObjectGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
+    IIpsObjectGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
 
     /**
      * Returns the generation identified by the given effective date, that is the generation which
@@ -110,17 +110,17 @@ public interface ITimedIpsObject extends IIpsObject {
      * passed as argument and the second generation if 01-01-2005 is passed in. For all other dates
      * the methods would return <code>null</code>
      */
-    public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date);
+    IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date);
 
     /**
      * Returns the latest generation of this object or {@code null}, if no generation exists.
      */
-    public IIpsObjectGeneration getLatestGeneration();
+    IIpsObjectGeneration getLatestGeneration();
 
     /**
      * Creates a new, empty generation.
      */
-    public IIpsObjectGeneration newGeneration();
+    IIpsObjectGeneration newGeneration();
 
     /**
      * Creates a new generation that is valid from the specified validFrom date. If the timed IPS
@@ -129,12 +129,12 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @throws NullPointerException if validFrom is <code>null</code>.
      */
-    public IIpsObjectGeneration newGeneration(GregorianCalendar validFrom);
+    IIpsObjectGeneration newGeneration(GregorianCalendar validFrom);
 
     /**
      * Returns the number of generation.
      */
-    public int getNumOfGenerations();
+    int getNumOfGenerations();
 
     /**
      * Returns the date from which this {@link ITimedIpsObject} is valid. This needs to be the same
@@ -142,7 +142,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @return The valid from of this product component.
      */
-    public GregorianCalendar getValidFrom();
+    GregorianCalendar getValidFrom();
 
     /**
      * Set the date from which this product component is valid. This method automatically adjusts
@@ -150,20 +150,20 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @param validFrom The new valid from date for this {@link ITimedIpsObject}
      */
-    public void setValidFrom(GregorianCalendar validFrom);
+    void setValidFrom(GregorianCalendar validFrom);
 
     /**
      * Returns the date when this product component expires.
      * 
      * @return The date this IpsObject is valid on or <code>null</code> if this IpsObject is valid
-     *         forever.
+     *             forever.
      */
-    public GregorianCalendar getValidTo();
+    GregorianCalendar getValidTo();
 
     /**
      * Set the date this IpsObject is valid to.
      */
-    public void setValidTo(GregorianCalendar validTo);
+    void setValidTo(GregorianCalendar validTo);
 
     /**
      * Reassigns the generations of this timed IPS object in such a way that all generations present
@@ -192,7 +192,7 @@ public interface ITimedIpsObject extends IIpsObject {
      * 
      * @param newDate new valid from date of this object
      */
-    public void reassignGenerations(GregorianCalendar newDate);
+    void reassignGenerations(GregorianCalendar newDate);
 
     /**
      * Retains only one generation in this object. If a generation exists at the given old date,
@@ -221,11 +221,11 @@ public interface ITimedIpsObject extends IIpsObject {
      * @param oldDate effective date of the generation to retain.
      * @param newDate new effective date of the only generation in this object.
      */
-    public void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate);
+    void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate);
 
     /**
      * Returns <code>true</code> if this {@link ITimedIpsObject} allows changing over time. If not,
      * <code>false</code> is returned.
      */
-    public boolean allowGenerations();
+    boolean allowGenerations();
 }

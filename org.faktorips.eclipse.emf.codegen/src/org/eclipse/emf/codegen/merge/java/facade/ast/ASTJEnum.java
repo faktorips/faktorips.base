@@ -82,7 +82,7 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     @Override
     public void setSuperInterfaces(String[] superInterfaces) {
         this.superInterfaces = superInterfaces;
-        this.addedSuperInterfaces = null;
+        addedSuperInterfaces = null;
         setListNodeProperty(getASTNode(), superInterfaces, EnumDeclaration.SUPER_INTERFACE_TYPES_PROPERTY,
                 ASTNode.SIMPLE_TYPE);
     }

@@ -85,15 +85,18 @@ public class DatatypeInputFormatRegistry {
              * Cast required in Eclipse 4 but not in Eclipse 3.x
              */
             Class<?> datatypeClass = bundle.loadClass(classAttribute);
-            @SuppressWarnings("unchecked")
-            Class<? extends ValueDatatype> castedResult = (Class<? extends ValueDatatype>)datatypeClass;
-            return castedResult;
+            return castValueDatatype(datatypeClass);
         } catch (ClassNotFoundException e) {
             throw new IpsException(new IpsStatus(
                     "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
                             + extension.getUniqueIdentifier(),
                     e));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends ValueDatatype> castValueDatatype(Class<?> datatypeClass) {
+        return (Class<? extends ValueDatatype>)datatypeClass;
     }
 
     /**
@@ -135,10 +138,8 @@ public class DatatypeInputFormatRegistry {
      * factory for the most specific datatype possible.
      */
     private IDatatypeInputFormatFactory getNearestSupertypeFactory(ValueDatatype datatype) {
-        IDatatypeInputFormatFactory inputformatFactory;
         Class<? extends ValueDatatype> datatypeClass = datatype.getClass();
-        inputformatFactory = getNearestSupertypeFactoryByClass(datatypeClass);
-        return inputformatFactory;
+        return getNearestSupertypeFactoryByClass(datatypeClass);
     }
 
     private IDatatypeInputFormatFactory getNearestSupertypeFactoryByClass(

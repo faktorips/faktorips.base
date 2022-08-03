@@ -26,7 +26,7 @@ public class AddDecimalDecimal extends AbstractBinaryJavaOperation {
      * Overridden method.
      * 
      * @see org.faktorips.fl.BinaryOperation#generate(org.faktorips.fl.CompilationResult,
-     *      org.faktorips.fl.CompilationResult)
+     *          org.faktorips.fl.CompilationResult)
      */
     @Override
     public CompilationResultImpl generate(CompilationResultImpl lhs, CompilationResultImpl rhs) {

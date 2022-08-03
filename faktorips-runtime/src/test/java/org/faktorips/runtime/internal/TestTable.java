@@ -76,6 +76,7 @@ public class TestTable extends Table<TestTableRow> {
      */
     @Override
     protected final void initKeyMaps() {
+        // nothing to do
     }
 
     /**

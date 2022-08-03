@@ -14,8 +14,9 @@ package org.faktorips.datatype;
  * A datatype that represents a Java class representing a value, for example java.lang.String.
  * 
  * @deprecated since 3.17 the datatype does not need to know its java class name. All concerns of
- *             the generated code are part of the corresponding datatype helper. You could simply
- *             use the supertype {@link ValueClassNameDatatype} to have the same functionality.
+ *                 the generated code are part of the corresponding datatype helper. You could
+ *                 simply use the supertype {@link ValueClassNameDatatype} to have the same
+ *                 functionality.
  * 
  */
 @Deprecated

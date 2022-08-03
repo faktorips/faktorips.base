@@ -61,10 +61,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     @Override
     public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
-        if (root == null) {
-            return null;
-        }
-        if (!root.isBasedOnSourceFolder()) {
+        if ((root == null) || !root.isBasedOnSourceFolder()) {
             return null;
         }
         IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)root.getIpsObjectPathEntry();

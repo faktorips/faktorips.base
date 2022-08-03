@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Objects;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -140,7 +141,7 @@ public class IpsProjectData {
     }
 
     public void setVersionProvider(IVersionProvider<?> versionProvider) {
-        this.versionFormat = versionProvider;
+        versionFormat = versionProvider;
     }
 
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
@@ -183,11 +184,7 @@ public class IpsProjectData {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((path == null) ? 0 : path.hashCode());
-            result = prime * result + ((type == null) ? 0 : type.hashCode());
-            return result;
+            return Objects.hash(path, type);
         }
 
         @Override
@@ -195,28 +192,12 @@ public class IpsProjectData {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             ContainerTypeAndPath other = (ContainerTypeAndPath)obj;
-            if (path == null) {
-                if (other.path != null) {
-                    return false;
-                }
-            } else if (!path.equals(other.path)) {
-                return false;
-            }
-            if (type == null) {
-                if (other.type != null) {
-                    return false;
-                }
-            } else if (!type.equals(other.type)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(path, other.path)
+                    && Objects.equals(type, other.type);
         }
 
         @Override

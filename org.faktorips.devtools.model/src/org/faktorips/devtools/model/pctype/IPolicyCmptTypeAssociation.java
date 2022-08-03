@@ -37,45 +37,45 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * The list of applicable types. For policy component types, aggregations are not supported.
      */
-    public static final AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
+    AssociationType[] APPLICABLE_ASSOCIATION_TYPES = {
             AssociationType.COMPOSITION_MASTER_TO_DETAIL, AssociationType.COMPOSITION_DETAIL_TO_MASTER,
             AssociationType.ASSOCIATION };
 
-    public static final String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
+    String PROPERTY_INVERSE_ASSOCIATION = "inverseAssociation"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
+    String PROPERTY_SHARED_ASSOCIATION = "sharedAssociation"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "derivedUnionApplicable"; //$NON-NLS-1$
+    String PROPERTY_SUBSETTING_DERIVED_UNION_APPLICABLE = "derivedUnionApplicable"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
+    String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
+    String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
+    String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "PolicyCmptTypeRelation-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a reverse composition's max cardinality is not 1.
      */
-    public static final String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX
+    String MSGCODE_MAX_CARDINALITY_MUST_BE_1_FOR_REVERSE_COMPOSITION = MSGCODE_PREFIX
             + "MaxCardinalityMustBe1ForReverseCombosition"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate the inverse relation definition is inconsistent with the
      * container relation.
      */
-    public static final String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_ASSOCIATION_INCONSTENT_WITH_DERIVED_UNION = MSGCODE_PREFIX
             + "InverseAssociationInconsistentWithDerivedUnion"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an association and it's inverse association must be
      * marked as container relations (or not).
      */
-    public static final String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_ASSOCIATIONS_MUST_BOTH_BE_MARKED_AS_CONTAINER = MSGCODE_PREFIX
             + "ReverseRelationOfContainerRelationMustBeContainerRelationToo"; //$NON-NLS-1$
 
     /**
@@ -84,96 +84,96 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * relation. This applies to associations only, as detail-to-master composition don't specify a
      * reverse relation.
      */
-    public static final String MSGCODE_INVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "InverseRelationMismatch"; //$NON-NLS-1$
+    String MSGCODE_INVERSE_RELATION_MISMATCH = MSGCODE_PREFIX + "InverseRelationMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation does not specify this relation
      * as its reverse one.
      */
-    public static final String MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_RELATION_DOES_NOT_EXIST_IN_TARGET = MSGCODE_PREFIX
             + "ReverseRelationNotInTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the reverse relation of an association must be an
      * association.
      */
-    public static final String MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_ASSOCIATION_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseAssociationTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the inverse master to detail composition must be a
      * detail to master composition.
      */
-    public static final String MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_MASTER_TO_DETAIL_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseMasterToDetailTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the inverse detail to mater composition must be a
      * master to detail composition.
      */
-    public static final String MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_DETAIL_TO_MASTER_TYPE_MISSMATCH = MSGCODE_PREFIX
             + "InverseDetailToMasterTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of detail to master associations the inverse
      * is always given.
      */
-    public static final String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
+    String MSGCODE_INVERSE_ASSOCIATION_MUST_BE_SET_IF_TYPE_IS_DETAIL_TO_MASTER = MSGCODE_PREFIX
             + "InverseAssociationMustBeSetIfTypeIsDetailToMaster"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that in case of detail to master associations the inverse
      * is always given.
      */
-    public static final String MSGCODE_SHARED_ASSOCIATION_INVALID = MSGCODE_PREFIX + "invalidSharedAssociation"; //$NON-NLS-1$
+    String MSGCODE_SHARED_ASSOCIATION_INVALID = MSGCODE_PREFIX + "invalidSharedAssociation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that if the inverse of a derived union exists then the
      * inverse of all subsetted derived union must be specified
      */
-    public static final String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
+    String MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS = MSGCODE_PREFIX
             + "SubsettedDerivedUnionInverseMustBeExistsIfInverseDerivedUnionExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association was not found
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE = MSGCODE_PREFIX
+    String MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE = MSGCODE_PREFIX
             + "MatchingAssociationInvalidSource"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association was not found
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
+    String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the specified matching association is invalid
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
+    String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationIsInvalid"; //$NON-NLS-1$
 
-    public static final String MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH = MSGCODE_PREFIX + "ConstrainQualifierNotMatch"; //$NON-NLS-1$
+    String MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH = MSGCODE_PREFIX + "ConstrainQualifierNotMatch"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this relation belongs to.
      */
-    public IPolicyCmptType getPolicyCmptType();
+    IPolicyCmptType getPolicyCmptType();
 
     /**
      * Returns <code>true</code> if this relation is either a master-to-detail or detail-to-master
      * composition, otherwise <code>false</code>.
      */
-    public boolean isComposition();
+    boolean isComposition();
 
     /**
      * Returns <code>true</code> if this is a composition from the master type to the detail type,
      * otherwise <code>false</code>.
      */
-    public boolean isCompositionMasterToDetail();
+    boolean isCompositionMasterToDetail();
 
     /**
      * Returns <code>true</code> if this is a composition from the detail type to the master type,
      * otherwise <code>false</code>.
      */
-    public boolean isCompositionDetailToMaster();
+    boolean isCompositionDetailToMaster();
 
     /**
      * Returns <code>true</code> if this association can be marked as derived union or can be a
@@ -182,13 +182,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @since 3.8
      */
-    public boolean isDerivedUnionApplicable();
+    boolean isDerivedUnionApplicable();
 
     /**
      * Returns the qualified name of the target policy component class.
      */
     @Override
-    public String getTarget();
+    String getTarget();
 
     /**
      * Returns the target policy component type or <code>null</code> if either this relation hasn't
@@ -196,19 +196,19 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
-    public IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject);
+    IPolicyCmptType findTargetPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the target policy component class.
      */
     @Override
-    public void setTarget(String newTarget);
+    void setTarget(String newTarget);
 
     /**
      * Returns the role of the target in this relation.
      */
     @Override
-    public String getTargetRoleSingular();
+    String getTargetRoleSingular();
 
     /**
      * Sets the role of the target in this relation. The role is specified in singular form, e.g.
@@ -216,25 +216,25 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * where you can't derive the plural from the singular form.
      */
     @Override
-    public void setTargetRoleSingular(String newRole);
+    void setTargetRoleSingular(String newRole);
 
     /**
      * Returns a default role name (singular form) for the target based on the target's name.
      */
     @Override
-    public String getDefaultTargetRoleSingular();
+    String getDefaultTargetRoleSingular();
 
     /**
      * Returns the role of the target in this relation. The role is specified in plural form.
      */
     @Override
-    public String getTargetRolePlural();
+    String getTargetRolePlural();
 
     /**
      * Sets the new role in plural form of the target in this relation.
      */
     @Override
-    public void setTargetRolePlural(String newRole);
+    void setTargetRolePlural(String newRole);
 
     /**
      * Returns if the target role plural is required (or not) based on the relation's max
@@ -242,13 +242,13 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * relations.
      */
     @Override
-    public boolean isTargetRolePluralRequired();
+    boolean isTargetRolePluralRequired();
 
     /**
      * Returns a default role name (plural form) for the target based on the target's name.
      */
     @Override
-    public String getDefaultTargetRolePlural();
+    String getDefaultTargetRolePlural();
 
     /**
      * Returns <code>true</code> if this allowed links for this association are constrained by the
@@ -258,23 +258,23 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
-    public boolean isConstrainedByProductStructure(IIpsProject ipsProject);
+    boolean isConstrainedByProductStructure(IIpsProject ipsProject);
 
     /**
      * Returns the name of the reverse relation.
      */
-    public String getInverseAssociation();
+    String getInverseAssociation();
 
     /**
      * Returns <code>true</code> if this relation has a reverse relation otherwise
      * <code>false</code>.
      */
-    public boolean hasInverseAssociation();
+    boolean hasInverseAssociation();
 
     /**
      * Sets the name of the inverse relation.
      */
-    public void setInverseAssociation(String relation);
+    void setInverseAssociation(String relation);
 
     /**
      * Searches the inverse association and returns it, if it exists. Returns <code>null</code> if
@@ -284,12 +284,12 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @throws IpsException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws IpsException;
+    IPolicyCmptTypeAssociation findInverseAssociation(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets whether this association is qualified or not.
      */
-    public void setQualified(boolean newValue);
+    void setQualified(boolean newValue);
 
     /**
      * Returns <code>true</code> if it is possible to mark this association as being qualified,
@@ -306,7 +306,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @see #setQualified(boolean)
      */
-    public boolean isQualificationPossible(IIpsProject ipsProject) throws IpsException;
+    boolean isQualificationPossible(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this association is the inverse of a derived union association,
@@ -314,7 +314,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @throws IpsException if an error occurs while searching for the derived union association.
      */
-    public boolean isInverseOfDerivedUnion() throws IpsException;
+    boolean isInverseOfDerivedUnion() throws IpsException;
 
     /**
      * Returns the (fully qualified) name of the product component type that can qualify this
@@ -330,7 +330,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @throws IpsException if an error occurs while searching for the target.
      */
-    public String findQualifierCandidate(IIpsProject ipsProject) throws IpsException;
+    String findQualifierCandidate(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the product component type that qualifies this association. Returns <code>null</code>
@@ -340,7 +340,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @throws IpsException if an error occurs while searching for the target.
      */
-    public IProductCmptType findQualifier(IIpsProject ipsProject) throws IpsException;
+    IProductCmptType findQualifier(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Creates a new inverse association. Returns the newly created association.
@@ -348,18 +348,18 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * CoreException if an error occurs while creating the association, e.g. if the target of this
      * association wasn't found.
      */
-    public IPolicyCmptTypeAssociation newInverseAssociation() throws IpsException;
+    IPolicyCmptTypeAssociation newInverseAssociation() throws IpsException;
 
     /**
      * Returns the object containing information about how to persist this policy component type
      * association into a relational database table.
      * 
      * @return <code>null</code> if the persistence information is not available, e.g. when the
-     *         corresponding IPS project this type belongs to does not support persistence.
+     *             corresponding IPS project this type belongs to does not support persistence.
      * 
      * @see org.faktorips.devtools.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
-    public IPersistentAssociationInfo getPersistenceAssociatonInfo();
+    IPersistentAssociationInfo getPersistenceAssociatonInfo();
 
     /**
      * Setting this association as shared association. Only valid for detail-to-master association
@@ -384,8 +384,8 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Also read the discussion of FIPS-85.
      * 
      * @return Returns the true if this is an detail-to-master composition that is marked as shared
-     *         association and and the optional constraint
-     *         {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
+     *             association and and the optional constraint
+     *             {@link IIpsProjectProperties#isSharedDetailToMasterAssociations()} is enabled.
      */
     boolean isSharedAssociation();
 
@@ -416,7 +416,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      */
-    public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject);
+    IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Finding the default matching product component association. The dafault is used when no
@@ -447,7 +447,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * should be found automatically this method returns {@link StringUtils#EMPTY}.
      * 
      * @return The qualified name of the source {@link IProductCmptType} that's association should
-     *         constrains this one
+     *             constrains this one
      */
     String getMatchingAssociationSource();
 

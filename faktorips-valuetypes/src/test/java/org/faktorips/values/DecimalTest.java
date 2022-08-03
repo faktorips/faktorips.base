@@ -432,7 +432,7 @@ public class DecimalTest {
 
     @Test
     public void testSum() throws Exception {
-        Decimal[] values = new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) };
+        Decimal[] values = { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) };
         assertEquals(Decimal.valueOf(42, 0), Decimal.sum(values));
         assertTrue(Decimal.sum((Decimal[])null).isNull());
         assertEquals(Decimal.valueOf(0, 0), Decimal.sum(new Decimal[0]));

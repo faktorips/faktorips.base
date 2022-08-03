@@ -49,13 +49,8 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
 
     @Override
     public void setPropertyValue() {
-        if (getField().getControl().isDisposed()) {
-            return;
-        }
-        if (!getField().isTextContentParsable()) {
-            return;
-        }
-        if (Objects.equals(getPropertyValue(), getField().getValue())) {
+        if (getField().getControl().isDisposed() || !getField().isTextContentParsable()
+                || Objects.equals(getPropertyValue(), getField().getValue())) {
             // value hasn't changed
             return;
         }

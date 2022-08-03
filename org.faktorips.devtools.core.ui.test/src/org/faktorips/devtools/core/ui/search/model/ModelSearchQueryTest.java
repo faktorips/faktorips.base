@@ -163,7 +163,7 @@ public class ModelSearchQueryTest {
         IAttribute notMatchingAttribute = mock(IAttribute.class);
         when(notMatchingAttribute.getName()).thenReturn("NoMatchingAttribute");
 
-        IIpsElement[] attributes = new IIpsElement[] { notMatchingAttribute, matchingAttribute };
+        IIpsElement[] attributes = { notMatchingAttribute, matchingAttribute };
 
         when(type1.getChildren()).thenReturn(attributes);
 
@@ -230,7 +230,7 @@ public class ModelSearchQueryTest {
         IMethod notMatchingMethod = mock(IMethod.class);
         when(notMatchingMethod.getName()).thenReturn("NoMatchingMethod");
 
-        IIpsElement[] methods = new IIpsElement[] { notMatchingMethod, matchingMethod };
+        IIpsElement[] methods = { notMatchingMethod, matchingMethod };
 
         when(type1.getChildren()).thenReturn(methods);
 
@@ -297,7 +297,7 @@ public class ModelSearchQueryTest {
         IAssociation notMatchingAssociation = mock(IAssociation.class);
         when(notMatchingAssociation.getName()).thenReturn("NoMatchingAssociation");
 
-        IIpsElement[] associations = new IIpsElement[] { notMatchingAssociation, matchingAssociation };
+        IIpsElement[] associations = { notMatchingAssociation, matchingAssociation };
 
         when(type1.getChildren()).thenReturn(associations);
 
@@ -364,7 +364,7 @@ public class ModelSearchQueryTest {
         ITableStructureUsage notMatchingTableStructureUsage = mock(ITableStructureUsage.class);
         when(notMatchingTableStructureUsage.getName()).thenReturn("NoMatchingTableStructureUsage");
 
-        IIpsElement[] tableStructureUsages = new IIpsElement[] { notMatchingTableStructureUsage,
+        IIpsElement[] tableStructureUsages = { notMatchingTableStructureUsage,
                 matchingTableStructureUsage };
 
         when(type1.getChildren()).thenReturn(tableStructureUsages);
@@ -431,7 +431,7 @@ public class ModelSearchQueryTest {
         IValidationRule notMatchingRule = mock(IValidationRule.class);
         when(notMatchingRule.getName()).thenReturn("NoMatchingRule");
 
-        IIpsElement[] rules = new IIpsElement[] { notMatchingRule, matchingRule };
+        IIpsElement[] rules = { notMatchingRule, matchingRule };
 
         when(type1.getChildren()).thenReturn(rules);
 
@@ -501,7 +501,7 @@ public class ModelSearchQueryTest {
         labels.add(label);
         when(matchingAttribute.getLabels()).thenReturn(labels);
 
-        IIpsElement[] attributes = new IIpsElement[] { matchingAttribute };
+        IIpsElement[] attributes = { matchingAttribute };
 
         when(type1.getChildren()).thenReturn(attributes);
 

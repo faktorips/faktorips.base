@@ -24,7 +24,7 @@ public interface IChangingOverTimeProperty extends ITypePart {
      * Returns <code>true</code> if every {@link IProductCmptGeneration} may specify a different
      * value for this property, <code>false</code> if the value is the same for all generations.
      */
-    public boolean isChangingOverTime();
+    boolean isChangingOverTime();
 
     /**
      * Returns the {@link IProductCmptType} this {@link IChangingOverTimeProperty property} belongs
@@ -32,6 +32,6 @@ public interface IChangingOverTimeProperty extends ITypePart {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
+    IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
 
 }

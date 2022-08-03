@@ -142,10 +142,8 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             }
             return false;
         }
-        if (isAddedOrRemoved(delta)) {
-            registerForRefresh(getParent(resource));
-            return false;
-        } else if (isSortOrderFile(resource)) {
+        if (isAddedOrRemoved(delta)
+                || isSortOrderFile(resource)) {
             registerForRefresh(getParent(resource));
             return false;
         } else {
@@ -214,10 +212,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     private void registerForRefresh(Object resourceOrIpsElement) {
-        if (resourceOrIpsElement == null) {
-            return;
-        }
-        if (!objectsToRefresh.add(resourceOrIpsElement)) {
+        if ((resourceOrIpsElement == null) || !objectsToRefresh.add(resourceOrIpsElement)) {
             return;
         }
         objectsToUpdate.remove(resourceOrIpsElement);
@@ -225,10 +220,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     private void registerForUpdate(Object resourceOrIpsElement) {
-        if (resourceOrIpsElement == null) {
-            return;
-        }
-        if (!objectsToUpdate.add(resourceOrIpsElement)) {
+        if ((resourceOrIpsElement == null) || !objectsToUpdate.add(resourceOrIpsElement)) {
             return;
         }
         registerForUpdate(getParent(resourceOrIpsElement));
@@ -242,8 +234,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     }
 
     private IIpsElement getIpsElement(IResource resource) {
-        IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
-        return element;
+        return IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
     }
 
     private Object getParent(Object resourceOrIpsElement) {

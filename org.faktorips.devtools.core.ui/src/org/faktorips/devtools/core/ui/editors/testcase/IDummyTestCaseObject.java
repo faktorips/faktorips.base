@@ -22,5 +22,5 @@ public interface IDummyTestCaseObject extends Validatable {
     /**
      * Returns the test association type parameter.
      */
-    public ITestParameter getTestParameter();
+    ITestParameter getTestParameter();
 }

@@ -19,10 +19,10 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public interface IStringLengthValueSet extends IValueSet {
 
-    public static final String MSGCODE_PREFIX = "STRINGLENGTH-"; //$NON-NLS-1$
-    public static final String MSGCODE_NEGATIVE_VALUE = MSGCODE_PREFIX + "negativeValue"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "STRINGLENGTH-"; //$NON-NLS-1$
+    String MSGCODE_NEGATIVE_VALUE = MSGCODE_PREFIX + "negativeValue"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MAXIMUMLENGTH = "maximumLength"; //$NON-NLS-1$
+    String PROPERTY_MAXIMUMLENGTH = "maximumLength"; //$NON-NLS-1$
 
     String getMaximumLength();
 

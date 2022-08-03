@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal.tableindex;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * An immutable data object representing a range by defining its upper and lower bound. It is used
@@ -103,7 +104,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * 
      * @param other The other range whose lower bound is compared to this one
      * @return a negative integer, zero or a positive integer as the lower bound of this range is
-     *         less than, equal to or greater than the lower bound of the other range.
+     *             less than, equal to or greater than the lower bound of the other range.
      * 
      */
     @Override
@@ -130,7 +131,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      * 
      * @param otherKey The other range whose upper bound is compared to this one
      * @return a negative integer, zero or a positive integer as the upper bound of this range is
-     *         less than, equal to or greater than the upper bound of the other range.
+     *             less than, equal to or greater than the upper bound of the other range.
      * 
      */
     public int compareToUpperBound(TwoColumnRange<K> otherKey) {
@@ -164,10 +165,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         TwoColumnRange<?> other = (TwoColumnRange<?>)obj;
@@ -178,8 +176,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + lowerBound.hashCode();
-        return result;
+        return prime * result + lowerBound.hashCode();
     }
 
     /**
@@ -297,11 +294,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((boundaryValue == null) ? 0 : boundaryValue.hashCode());
-            result = prime * result + ((direction == null) ? 0 : direction.hashCode());
-            return result;
+            return Objects.hash(boundaryValue, direction);
         }
 
         @Override
@@ -309,24 +302,12 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             Bound<?> other = (Bound<?>)obj;
-            if (boundaryValue == null) {
-                if (other.boundaryValue != null) {
-                    return false;
-                }
-            } else if (!boundaryValue.equals(other.boundaryValue)) {
-                return false;
-            }
-            if (direction != other.direction) {
-                return false;
-            }
-            return true;
+            return Objects.equals(boundaryValue, other.boundaryValue)
+                    && (direction == other.direction);
         }
 
     }
@@ -334,7 +315,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
     /**
      * The direction to which the interval-brace is opened.
      */
-    private static enum IntervalDirection {
+    private enum IntervalDirection {
 
         /**
          * Indicates that the interval bound is opened to the left side. For example: "]1..2]" both
@@ -350,7 +331,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
 
         private final String toStringRepresentation;
 
-        private IntervalDirection(String toStringRepresentation) {
+        IntervalDirection(String toStringRepresentation) {
             this.toStringRepresentation = toStringRepresentation;
         }
 

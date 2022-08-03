@@ -287,7 +287,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
 
     /**
      * @return <code>false</code> if no inverse association should be created or no existing
-     *         association exists otherwise <code>true</code>.
+     *             association exists otherwise <code>true</code>.
      */
     @Override
     public boolean isPageVisible() {

@@ -50,7 +50,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public class TestRunPane {
 
-    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+    private static final String[] EMPTY_STRING_ARRAY = {};
 
     private Table fTable;
 
@@ -140,8 +140,7 @@ public class TestRunPane {
                 }
             }
             if (ipsObject != null) {
-                String repositoryPackage = null;
-                repositoryPackage = IpsTestAction.getRepPckNameFromPckFrgmtRoot(ipsObject.getIpsPackageFragment()
+                String repositoryPackage = IpsTestAction.getRepPckNameFromPckFrgmtRoot(ipsObject.getIpsPackageFragment()
                         .getRoot());
                 IpsPlugin.getDefault().getIpsTestRunner()
                         .startTestRunnerJob(repositoryPackage, selectedTestQualifiedName, mode, null);
@@ -517,7 +516,7 @@ public class TestRunPane {
     /*
      * Inner class to store a test case.
      */
-    private class TestTableEntry {
+    private static class TestTableEntry {
         public static final int ERROR = -1;
         public static final int FAILURE = 0;
         public static final int UNKNOWN = 2;

@@ -43,12 +43,12 @@ public class TypeChooserPageElement extends AbstractPageElement {
 
     public TypeChooserPageElement(DocumentationContext context) {
         super(context);
-        this.types = Arrays.asList(context.getDocumentedIpsObjectTypes());
+        types = Arrays.asList(context.getDocumentedIpsObjectTypes());
     }
 
     public TypeChooserPageElement(DocumentationContext context, Set<IpsObjectType> relatedObjectTypes) {
         super(context);
-        this.types = relatedObjectTypes;
+        types = relatedObjectTypes;
     }
 
     @Override

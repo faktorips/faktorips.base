@@ -84,11 +84,10 @@ final class RequiresTransitiveMatcher extends TypeSafeMatcher<IJavaProject> {
     }
 
     private static ModuleDeclaration getModuleDeclaration(IJavaProject javaProject) throws JavaModelException {
-        ModuleDeclaration moduleDeclaration = SharedASTProviderCore
+        return SharedASTProviderCore
                 .getAST(javaProject.getModuleDescription().getCompilationUnit(), SharedASTProviderCore.WAIT_YES,
                         null)
                 .getModule();
-        return moduleDeclaration;
     }
 
     private static Optional<RequiresDirective> findRequiresDirective(IJavaProject javaProject,
@@ -97,11 +96,10 @@ final class RequiresTransitiveMatcher extends TypeSafeMatcher<IJavaProject> {
         ModuleDeclaration moduleDeclaration = getModuleDeclaration(javaProject);
         @SuppressWarnings("unchecked")
         List<ModuleDirective> moduleStatements = moduleDeclaration.moduleStatements();
-        Optional<RequiresDirective> requiresDirective = moduleStatements.stream()
+        return moduleStatements.stream()
                 .filter(RequiresDirective.class::isInstance)
                 .map(RequiresDirective.class::cast)
                 .filter(r -> r.getName().getFullyQualifiedName().equals(requiredModuleName))
                 .findFirst();
-        return requiresDirective;
     }
 }

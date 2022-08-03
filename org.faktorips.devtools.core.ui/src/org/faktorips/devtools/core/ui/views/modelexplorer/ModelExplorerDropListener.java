@@ -150,9 +150,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
             // Run the operation with fork = true to ensure UI responsiveness.
             dialog.run(true, false, new ModifyOperation(moveOp));
-        } catch (InvocationTargetException e) {
-            IpsPlugin.log(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             IpsPlugin.log(e);
         }
     }

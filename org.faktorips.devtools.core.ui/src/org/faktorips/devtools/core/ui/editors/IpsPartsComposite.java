@@ -154,7 +154,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         addOptionToList(optionList, jumpToSourceCodeSupported, Option.JUMP_TO_SOURCE_CODE_SUPPORTED);
         addNoneIfEmptyList(optionList);
 
-        this.options = EnumSet.copyOf(optionList);
+        options = EnumSet.copyOf(optionList);
 
         this.ipsObject = ipsObject;
         this.site = site;

@@ -92,8 +92,7 @@ public class ObjectProperty implements Serializable {
     private int createHashCode() {
         int hash = Objects.hashCode(object) + index;
         hash = property == null ? hash : 31 * hash + property.hashCode();
-        hash = qualifier == null ? hash : 31 * hash + qualifier.hashCode();
-        return hash;
+        return qualifier == null ? hash : 31 * hash + qualifier.hashCode();
     }
 
     /**
@@ -118,7 +117,7 @@ public class ObjectProperty implements Serializable {
      * index is referenced.
      * 
      * @return The index of the referenced object in the array/list that is referenced by
-     *         {@link #getObject()}. Returns -1 if there is no index available.
+     *             {@link #getObject()}. Returns -1 if there is no index available.
      * 
      * @see #hasIndex()
      */
@@ -131,7 +130,7 @@ public class ObjectProperty implements Serializable {
      * {@link ObjectProperty}.
      * 
      * @return an {@link IPropertyQualifier} containing additional information or <code>null</code>
-     *         if no qualifier exists.
+     *             if no qualifier exists.
      */
     public IPropertyQualifier getQualifier() {
         return qualifier;
@@ -142,7 +141,7 @@ public class ObjectProperty implements Serializable {
      * array or list.
      * 
      * @return <code>true</code> if this {@link ObjectProperty} references an index, false if there
-     *         is no index available.
+     *             is no index available.
      */
     public boolean hasIndex() {
         return index >= 0;

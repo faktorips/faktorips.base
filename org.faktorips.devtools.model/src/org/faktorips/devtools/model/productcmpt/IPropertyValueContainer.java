@@ -33,7 +33,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * the indicated property. If you want to search only by name, use
      * {@link #getPropertyValue(String, Class)}.
      */
-    public <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type);
+    <T extends IPropertyValue> T getPropertyValue(IProductCmptProperty property, Class<T> type);
 
     /**
      * Returns the property values for the given property or an empty list if no value is defined
@@ -47,13 +47,13 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * the indicated property. If you want to search only by name, use
      * {@link #getPropertyValues(String)}.
      */
-    public List<IPropertyValue> getPropertyValues(IProductCmptProperty property);
+    List<IPropertyValue> getPropertyValues(IProductCmptProperty property);
 
     /**
      * Returns whether this {@link IPropertyValueContainer} contains an {@link IPropertyValue} for
      * the indicated {@link IProductCmptProperty}.
      */
-    public boolean hasPropertyValue(IProductCmptProperty property, PropertyValueType type);
+    boolean hasPropertyValue(IProductCmptProperty property, PropertyValueType type);
 
     /**
      * Returns the property values for the given property name or an empty list if no value is
@@ -63,7 +63,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * <p>
      * Returns an empty list if propertyName is <code>null</code>.
      */
-    public List<IPropertyValue> getPropertyValues(String propertyName);
+    List<IPropertyValue> getPropertyValues(String propertyName);
 
     /**
      * Returns the property value for the given property name and type or {@code null} if no value
@@ -73,19 +73,19 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * <p>
      * Returns {@code null} if propertyName is {@code null}.
      */
-    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type);
+    <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type);
 
     /**
      * Returns all property values for the given type. Returns an empty array if type is
      * <code>null</code> or no property values were found for the given type.
      */
-    public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
+    <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type);
 
     /**
      * Returns all property values in this container or an empty list, if no property values are
      * defined.
      */
-    public List<IPropertyValue> getAllPropertyValues();
+    List<IPropertyValue> getAllPropertyValues();
 
     /**
      * Creates a new property value for the given property and {@link PropertyValueType}.
@@ -97,14 +97,14 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * 
      * @throws NullPointerException if property is <code>null</code>.
      */
-    public <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, Class<T> type);
+    <T extends IPropertyValue> T newPropertyValue(IProductCmptProperty property, Class<T> type);
 
     /**
      * Creates new property values for the given property.
      * 
      * @throws NullPointerException if property is <code>null</code>.
      */
-    public List<IPropertyValue> newPropertyValues(IProductCmptProperty property);
+    List<IPropertyValue> newPropertyValues(IProductCmptProperty property);
 
     /**
      * Returns true if this container is responsible for the given property. For example a
@@ -118,16 +118,16 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * 
      * @return true if the property could resist in this container, false otherwise.
      */
-    public boolean isContainerFor(IProductCmptProperty property);
+    boolean isContainerFor(IProductCmptProperty property);
 
     @Override
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     @Override
-    public String getProductCmptType();
+    String getProductCmptType();
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
+    IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Finds the {@link IPolicyCmptType} this this property value container configures or returns
@@ -136,11 +136,11 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      * 
      * @param ipsProject The {@link IIpsProject} used as base project to search
      * @return the {@link IPolicyCmptType} or null if no one was found or this container does not
-     *         configure a {@link IPolicyCmptType}
+     *             configure a {@link IPolicyCmptType}
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
+    IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     @Override
-    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
+    IPropertyValueContainer findTemplate(IIpsProject ipsProject);
 
 }

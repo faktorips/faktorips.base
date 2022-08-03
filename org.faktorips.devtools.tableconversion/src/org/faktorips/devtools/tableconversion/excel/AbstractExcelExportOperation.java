@@ -64,7 +64,7 @@ abstract class AbstractExcelExportOperation extends AbstractTableExportOperation
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.exportColumnHeaderRow = exportColumnHeaderRow;
-        this.messageList = list;
+        messageList = list;
     }
 
     protected Workbook getWorkbook() {

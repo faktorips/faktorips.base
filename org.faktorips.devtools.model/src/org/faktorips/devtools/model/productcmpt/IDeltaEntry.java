@@ -24,17 +24,17 @@ public interface IDeltaEntry {
     /**
      * Returns the entry's type.
      */
-    public DeltaType getDeltaType();
+    DeltaType getDeltaType();
 
     /**
      * Returns the class of the part that will be added, deleted or modified by the delta fix.
      */
-    public Class<? extends IIpsObjectPart> getPartType();
+    Class<? extends IIpsObjectPart> getPartType();
 
     /**
      * Returns a detailed description, especially for mismatches.
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Fixes the difference between the type and the product component.
@@ -42,6 +42,6 @@ public interface IDeltaEntry {
      * For example if the type contains a new attribute but the product component generation. has
      * not matching attribute value, this method creates the attribute value.
      */
-    public void fix();
+    void fix();
 
 }

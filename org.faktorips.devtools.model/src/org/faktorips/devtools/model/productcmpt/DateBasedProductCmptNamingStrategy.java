@@ -58,7 +58,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     public DateBasedProductCmptNamingStrategy(String separator, String dateFormatPattern, boolean allowPostfix) {
         super(separator);
         setDateFormatPattern(dateFormatPattern);
-        this.postfixAllowed = allowPostfix;
+        postfixAllowed = allowPostfix;
     }
 
     @Override
@@ -155,7 +155,7 @@ public class DateBasedProductCmptNamingStrategy extends AbstractProductCmptNamin
     @Override
     public void initSubclassFromXml(Element el) {
         setDateFormatPattern(el.getAttribute("dateFormatPattern")); //$NON-NLS-1$
-        postfixAllowed = Boolean.valueOf(el.getAttribute("postfixAllowed")).booleanValue(); //$NON-NLS-1$
+        postfixAllowed = Boolean.parseBoolean(el.getAttribute("postfixAllowed")); //$NON-NLS-1$
     }
 
     @Override

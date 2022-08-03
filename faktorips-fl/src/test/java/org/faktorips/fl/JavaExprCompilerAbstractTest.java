@@ -136,10 +136,9 @@ public abstract class JavaExprCompilerAbstractTest {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     protected BinaryOperation<JavaCodeFragment>[] toArray(BinaryOperation<JavaCodeFragment> binaryOperation) {
-        @SuppressWarnings("unchecked")
-        BinaryOperation<JavaCodeFragment>[] binaryOperations = new BinaryOperation[] { binaryOperation };
-        return binaryOperations;
+        return new BinaryOperation[] { binaryOperation };
     }
 
     public JavaExprCompiler getCompiler() {

@@ -22,43 +22,43 @@ import org.faktorips.runtime.internal.ValueToXmlHelper;
  */
 public interface ITableContentUsage extends IPropertyValue {
 
-    public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
+    String TAG_NAME = ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
 
-    public static final String PROPERTY_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
+    String PROPERTY_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TABLE_CONTENT = "tableContentName"; //$NON-NLS-1$
+    String PROPERTY_TABLE_CONTENT = "tableContentName"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TABLECONTENT-USAGE"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TABLECONTENT-USAGE"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given structure usage is not known.
      */
-    public static final String MSGCODE_UNKNOWN_STRUCTURE_USAGE = MSGCODE_PREFIX + "UnknownStructureUsage"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_STRUCTURE_USAGE = MSGCODE_PREFIX + "UnknownStructureUsage"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given table content was not found.
      */
-    public static final String MSGCODE_UNKNOWN_TABLE_CONTENT = MSGCODE_PREFIX + "UnknownTableContent"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_TABLE_CONTENT = MSGCODE_PREFIX + "UnknownTableContent"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given table content does not match the needs of
      * the structure
      */
-    public static final String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
+    String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component type was not found.
      */
-    public static final String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
+    String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IProductCmpt} this {@link ITableContentUsage} belongs to if not changing
      * over time is set.
      */
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     /**
      * Set the role name of the table structure usage implemented by this content usage.
@@ -66,24 +66,24 @@ public interface ITableContentUsage extends IPropertyValue {
      * @param structureUsageRolename The role name of the table structure usage referred to by this
      *            content usage.
      */
-    public void setStructureUsage(String structureUsageRolename);
+    void setStructureUsage(String structureUsageRolename);
 
     /**
      * Returns the role name of the table structure usage implemented by this content usage.
      */
-    public String getStructureUsage();
+    String getStructureUsage();
 
     /**
      * Set the name of the table content used by this table content usage.
      * 
      * @param tableContentName The fully qualified name of the used table content.
      */
-    public void setTableContentName(String tableContentName);
+    void setTableContentName(String tableContentName);
 
     /**
      * @return The fully qualified name of the used table content.
      */
-    public String getTableContentName();
+    String getTableContentName();
 
     /**
      * Returns the table contents which is related or <code>null</code> if the table contents can't
@@ -91,7 +91,7 @@ public interface ITableContentUsage extends IPropertyValue {
      * 
      * @throws IpsException if an error occurs while searching for the table contents.
      */
-    public ITableContents findTableContents(IIpsProject ipsProject) throws IpsException;
+    ITableContents findTableContents(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the related table structure usage or <code>null</code> if the table contents can't be
@@ -103,7 +103,7 @@ public interface ITableContentUsage extends IPropertyValue {
      * @throws IpsException if an error occurs while searching for the table structure usage.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws IpsException;
+    ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
@@ -112,6 +112,6 @@ public interface ITableContentUsage extends IPropertyValue {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public ITableContentUsage findTemplateProperty(IIpsProject ipsProject);
+    ITableContentUsage findTemplateProperty(IIpsProject ipsProject);
 
 }

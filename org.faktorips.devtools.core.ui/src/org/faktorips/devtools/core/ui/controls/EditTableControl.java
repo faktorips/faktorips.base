@@ -276,11 +276,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
 
     private Object[] getSelectedElements() {
         ISelection selection = tableViewer.getSelection();
-        if (selection == null) {
-            return new Object[0];
-        }
-
-        if (!(selection instanceof IStructuredSelection)) {
+        if ((selection == null) || !(selection instanceof IStructuredSelection)) {
             return new Object[0];
         }
 
@@ -482,7 +478,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         }
     }
 
-    private final class CellEditorListener implements ICellEditorListener {
+    private static final class CellEditorListener implements ICellEditorListener {
         private final int editorColumn;
         private final UnfocusableTextCellEditor contentAssistEditor;
 

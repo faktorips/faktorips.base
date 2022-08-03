@@ -30,69 +30,69 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#BOOLEAN Datatype.BOOLEAN}.
      */
-    public static final DatatypeHelper BOOLEAN = new BooleanHelper(Datatype.BOOLEAN);
+    DatatypeHelper BOOLEAN = new BooleanHelper(Datatype.BOOLEAN);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#DECIMAL Datatype.DECIMAL}.
      */
-    public static final DatatypeHelper DECIMAL = new DecimalHelper(Datatype.DECIMAL);
+    DatatypeHelper DECIMAL = new DecimalHelper(Datatype.DECIMAL);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#DECIMAL Datatype.BIG_DECIMAL}.
      */
-    public static final DatatypeHelper BIG_DECIMAL = new BigDecimalHelper(Datatype.BIG_DECIMAL);
+    DatatypeHelper BIG_DECIMAL = new BigDecimalHelper(Datatype.BIG_DECIMAL);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#INTEGER Datatype.INTEGER}.
      */
-    public static final DatatypeHelper INTEGER = new IntegerHelper(Datatype.INTEGER);
+    DatatypeHelper INTEGER = new IntegerHelper(Datatype.INTEGER);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#LONG Datatype.LONG}.
      */
-    public static final DatatypeHelper LONG = new LongHelper(Datatype.LONG);
+    DatatypeHelper LONG = new LongHelper(Datatype.LONG);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#MONEY Datatype.MONEY}.
      */
-    public static final DatatypeHelper MONEY = new MoneyHelper(Datatype.MONEY);
+    DatatypeHelper MONEY = new MoneyHelper(Datatype.MONEY);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_BOOLEAN
      * Datatype.PRIMITIVE_BOOLEAN}.
      */
-    public static final PrimitiveDatatypeHelper PRIMITIVE_BOOLEAN = new PrimitiveBooleanHelper(
+    PrimitiveDatatypeHelper PRIMITIVE_BOOLEAN = new PrimitiveBooleanHelper(
             Datatype.PRIMITIVE_BOOLEAN);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_INT Datatype.PRIMITIVE_INTEGER}.
      */
-    public static final PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(Datatype.PRIMITIVE_INT);
+    PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(Datatype.PRIMITIVE_INT);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#STRING Datatype.STRING}.
      */
-    public static final DatatypeHelper STRING = new StringHelper(Datatype.STRING);
+    DatatypeHelper STRING = new StringHelper(Datatype.STRING);
 
     /**
      * Returns the datatype this is a helper for.
      */
     @Override
-    public Datatype getDatatype();
+    Datatype getDatatype();
 
     /**
      * Sets the datatype this is a helper for. Introduced to enable setter based dependency
      * injection, needed for example for Eclipse's extension point mechanism.
      */
     @Override
-    public void setDatatype(Datatype datatype);
+    void setDatatype(Datatype datatype);
 
     /**
      * Returns a JavaCodeFragment with sourcecode that is either the String "null" or the sourcecode
      * to get an instance of the apropriate null object.
      */
     @Override
-    public JavaCodeFragment nullExpression();
+    JavaCodeFragment nullExpression();
 
     /**
      * Returns a JavaCodeFragment with sourcecode that creates an instance of the datatype's Java
@@ -100,7 +100,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * String "null" or the sourcecode to get an instance of the apropriate null object.
      */
     @Override
-    public JavaCodeFragment newInstance(String value);
+    JavaCodeFragment newInstance(String value);
 
     /**
      * Returns a JavaCodeFragment with sourcecode that creates an instance of the datatype's Java
@@ -113,7 +113,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            like <code>getÍd()</code>.
      */
     @Override
-    public JavaCodeFragment newInstanceFromExpression(String expression);
+    JavaCodeFragment newInstanceFromExpression(String expression);
 
     /**
      * Returns a JavaCodeFragment with sourcecode that creates an instance of the datatype's Java
@@ -129,7 +129,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            code, if the null check is not necessary.
      */
     @Override
-    public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull);
+    JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull);
 
     /**
      * If this is a helper for a mutable data type (like GregorianCalendar for example) this method
@@ -139,18 +139,18 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * @param expression An expression (as Java sourcecode)
      * @return s. above
      */
-    public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression);
+    JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression);
 
     /**
      * Returns the qualified Java class name the datatype represents.
      */
-    public String getJavaClassName();
+    String getJavaClassName();
 
     /**
      * Returns the qualified Java class name of the range class of the datatype this is a helper
      * for.
      */
-    public String getRangeJavaClassName(boolean useTypesafeCollections);
+    String getRangeJavaClassName(boolean useTypesafeCollections);
 
     /**
      * Returns a <code>JavaCodeFragment</code> containing the source code to create a new instance
@@ -164,9 +164,9 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            Can be <code>null</code> to indicate that this is a continuous range.
      * @param containsNullExp the containsNull expression
      * @return the code fragment to create a new range instance. Can be null to indicate that a
-     *         range is not supported.
+     *             range is not supported.
      */
-    public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
+    JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
             JavaCodeFragment containsNullExp,
@@ -183,7 +183,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall
      *            be used
      */
-    public JavaCodeFragment newEnumValueSetInstance(String[] values,
+    JavaCodeFragment newEnumValueSetInstance(String[] values,
             boolean containsNull,
             boolean useTypesafeCollections);
 
@@ -200,7 +200,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * @param useTypesafeCollections indicates if Java 5 typesafe collections and valuetypes shall
      *            be used
      */
-    public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression,
+    JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment collectionExpression,
             JavaCodeFragment containsNullExpression,
             boolean useTypesafeCollections);
 
@@ -220,5 +220,5 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * @return a {@link JavaCodeFragment} containing the toString() code.
      */
     @Override
-    public JavaCodeFragment getToStringExpression(String fieldName);
+    JavaCodeFragment getToStringExpression(String fieldName);
 }

@@ -39,48 +39,48 @@ import org.faktorips.runtime.model.type.ProductCmptType;
  */
 public interface IProductCmptType extends IType, IIpsMetaClass {
 
-    public static final String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
+    String PROPERTY_POLICY_CMPT_TYPE = "policyCmptType"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
+    String PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE = "configurationForPolicyCmptType"; //$NON-NLS-1$
 
-    public static final String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
+    String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
+    String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections
+    List<String> SUPPORTED_ICON_EXTENSIONS = Collections
             .unmodifiableList(Arrays.asList("gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "ProductCmptType-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ProductCmptType-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the references policy component type does not exist.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
+    String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced policy component type is not marked
      * as configurable.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX
+    String MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE = MSGCODE_PREFIX
             + "PolicyCmptTypeNotMarkedAsConfigurable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced policy component type does specify
      * this product component type or one if it's supertypes as configuration type.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX
+    String MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE = MSGCODE_PREFIX
             + "PolicyCmptTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced policy component type is invalid and
      * therefore code generation for this type will fail.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_NOT_VALID = MSGCODE_PREFIX + "PolicyCmptTypeNotValid"; //$NON-NLS-1$
+    String MSGCODE_POLICY_CMPT_TYPE_NOT_VALID = MSGCODE_PREFIX + "PolicyCmptTypeNotValid"; //$NON-NLS-1$
 
     /**
      * Validation code to indicate that a type has a different value for the
@@ -90,57 +90,57 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * even if it the same. If the supertype doesn't configure a policy component type, also this
      * one doesn't.
      */
-    public static final String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX
+    String MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE = MSGCODE_PREFIX
             + "MustHaveSameValueForPolicyCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exists a mismatch between the product
      * component type and the policy component type hierarchy.
      */
-    public static final String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
+    String MSGCODE_HIERARCHY_MISMATCH = MSGCODE_PREFIX + "HierarchyMismatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
      */
-    public static final String MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY = MSGCODE_PREFIX
             + "DuplicateFormulaNameInHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that at least two formula signatures have the same name.
      */
-    public static final String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX
+    String MSGCODE_PRODUCTCMPTTYPE_ABSTRACT_WHEN_POLICYCMPTTYPE_ABSTRACT = MSGCODE_PREFIX
             + "ProductCmptTypeAbstractWhenPolicyCmptTypeAbstract"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a formula name is only allowed once in a type
      * neglecting the inheritance hierarchy.
      */
-    public static final String MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE = MSGCODE_PREFIX
             + "DuplicateFormulasNotAllowedInSameType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the overloaded product component type formula method
      * cannot be overridden.
      */
-    public static final String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX
+    String MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN = MSGCODE_PREFIX
             + "OverloadedFormulaCannotBeOverridden"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that the custom icon cannot be resolved.
      */
-    public static final String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
+    String MSGCODE_ICON_PATH_INVALID = MSGCODE_PREFIX + "IconPathInvalid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding policy component type is inherited
      * from a super type, but the product component type is not.
      */
-    public static final String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
+    String MSGCODE_MUST_HAVE_SUPERTYPE = MSGCODE_PREFIX + "MustHaveSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no default {@link IProductCmptCategory} for formula
      * signature definitions exists, even though a formula signature definition exists in the
      * {@link IProductCmptType}.
      */
-    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+    String MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "NoDefaultCategoryForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
@@ -148,7 +148,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * configurable validation rules exists, even though a configurable {@link IValidationRule}
      * exists in the {@link IProductCmptType}.
      */
-    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+    String MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "NoDefaultCategoryForValidationRules"; //$NON-NLS-1$
 
     /**
@@ -156,7 +156,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * structure usages exists, even though an {@link ITableStructureUsage} exists in the
      * {@link IProductCmptType}.
      */
-    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+    String MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "NoDefaultCategoryForTableStructureUsages"; //$NON-NLS-1$
 
     /**
@@ -164,7 +164,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * relevant policy component type attributes exists, even though a product relevant
      * {@link IPolicyCmptTypeAttribute} exists in the {@link IProductCmptType}.
      */
-    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
@@ -172,28 +172,28 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * component type attributes exists, even though an {@link IProductCmptTypeAttribute} exists in
      * the {@link IProductCmptType}.
      */
-    public static final String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "NoDefaultCategoryForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this type is marked as layer supertype but the
      * supertype of this type ist no layer supertype.
      */
-    public static final String MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE = MSGCODE_PREFIX
+    String MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE = MSGCODE_PREFIX
             + "SupertypeNotMarkedAsLayerSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that setting for changeOverTime of this type differs from
      * the supertype.
      */
-    public static final String MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE = MSGCODE_PREFIX
+    String MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE = MSGCODE_PREFIX
             + "SettingChangingOverTimeDiffersFromSupertype"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if this type does not refer to a policy component type.
      */
-    public String getPolicyCmptType();
+    String getPolicyCmptType();
 
     /**
      * Returns <code>true</code> if this product component type configures a policy component type.
@@ -201,12 +201,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * {@link #findPolicyCmptType(IIpsProject)}. Note that if this method returns <code>true</code>
      * it does not mean that the policy component type actually exists.
      */
-    public boolean isConfigurationForPolicyCmptType();
+    boolean isConfigurationForPolicyCmptType();
 
     /**
      * Sets if this product component type configures a policy component type or not.
      */
-    public void setConfigurationForPolicyCmptType(boolean newValue);
+    void setConfigurationForPolicyCmptType(boolean newValue);
 
     /**
      * Marks this type as layer supertype or not. A layer supertype is an abstract base class
@@ -235,7 +235,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @see #setChangingOverTime(boolean)
      */
-    public boolean isChangingOverTime();
+    boolean isChangingOverTime();
 
     /**
      * Configures the changing over time flag of this product component type.
@@ -250,12 +250,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param changesOverTime <code>false</code> to specify this type's changing over time flag as
      *            disabled
      */
-    public void setChangingOverTime(boolean changesOverTime);
+    void setChangingOverTime(boolean changesOverTime);
 
     /**
      * Sets the policy component type this type refers to.
      */
-    public void setPolicyCmptType(String newType);
+    void setPolicyCmptType(String newType);
 
     /**
      * Returns the policy component type this product component type refers to. Returns
@@ -266,7 +266,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      *            necessarily the project this type is part of.
      * 
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
+    IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be
@@ -276,7 +276,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject);
+    IProductCmptType findSuperProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns all non-derived associations from this type and its super types.
@@ -286,12 +286,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @since 3.8
      */
-    public List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipcProject);
+    List<IProductCmptTypeAssociation> findAllNotDerivedAssociations(IIpsProject ipcProject);
 
     /**
      * Returns the type's attributes.
      */
-    public List<IProductCmptTypeAttribute> getProductCmptTypeAttributes();
+    List<IProductCmptTypeAttribute> getProductCmptTypeAttributes();
 
     /**
      * Returns the attribute with the given name defined in <strong>this</strong> type (This method
@@ -299,7 +299,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * first attribute with the name is returned. Returns <code>null</code> if no attribute with the
      * given name exists.
      */
-    public IProductCmptTypeAttribute getProductCmptTypeAttribute(String name);
+    IProductCmptTypeAttribute getProductCmptTypeAttribute(String name);
 
     /**
      * Searches an attribute with the given name in the type and it's supertype hierarchy and
@@ -311,33 +311,33 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws NullPointerException if project is <code>null</code>.
      */
-    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject);
+    IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
      */
-    public IProductCmptTypeAttribute newProductCmptTypeAttribute();
+    IProductCmptTypeAttribute newProductCmptTypeAttribute();
 
     /**
      * Creates a new attribute with the given name and returns it.
      */
-    public IProductCmptTypeAttribute newProductCmptTypeAttribute(String name);
+    IProductCmptTypeAttribute newProductCmptTypeAttribute(String name);
 
     /**
      * Creates a new association and returns it.
      */
-    public IProductCmptTypeAssociation newProductCmptTypeAssociation();
+    IProductCmptTypeAssociation newProductCmptTypeAssociation();
 
     /**
      * Returns the number of table structure usages.
      */
-    public int getNumOfTableStructureUsages();
+    int getNumOfTableStructureUsages();
 
     /**
      * Returns the table structure usages defined for this type or an empty array is no usage is
      * defined.
      */
-    public List<ITableStructureUsage> getTableStructureUsages();
+    List<ITableStructureUsage> getTableStructureUsages();
 
     /**
      * Returns the table structure usage with the given role name. If more than one table structure
@@ -345,7 +345,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * returned. Returns <code>null</code> if no table structure usage with the given role name
      * exists.
      */
-    public ITableStructureUsage getTableStructureUsage(String roleName);
+    ITableStructureUsage getTableStructureUsage(String roleName);
 
     /**
      * Looks for the table structure usage with the specified roleName starting from this policy
@@ -358,12 +358,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
      */
-    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project);
+    ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project);
 
     /**
      * Creates a new table usage and returns it.
      */
-    public ITableStructureUsage newTableStructureUsage();
+    ITableStructureUsage newTableStructureUsage();
 
     /**
      * Moves the table structure usages identified by the indexes up or down by one position. If one
@@ -380,12 +380,12 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a table structure
      *             usage.
      */
-    public int[] moveTableStructureUsage(int[] indexes, boolean up);
+    int[] moveTableStructureUsage(int[] indexes, boolean up);
 
     /**
      * Returns a new product component type method. Typesafe version of <code>newMethod</code>.
      */
-    public IProductCmptTypeMethod newProductCmptTypeMethod();
+    IProductCmptTypeMethod newProductCmptTypeMethod();
 
     /**
      * Returns a new product component type method that has the role of a formula signature. The
@@ -396,35 +396,35 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @see IProductCmptTypeMethod#getDefaultMethodName()
      */
-    public IProductCmptTypeMethod newFormulaSignature(String formulaName);
+    IProductCmptTypeMethod newFormulaSignature(String formulaName);
 
     /**
      * Returns the type's methods. Typesafe version of <code>getMethods()</code>.
      */
-    public List<IProductCmptTypeMethod> getProductCmptTypeMethods();
+    List<IProductCmptTypeMethod> getProductCmptTypeMethods();
 
     /**
      * Returns the type's associations. Typesafe version of <code>getAssociations()</code>.
      */
-    public List<IProductCmptTypeAssociation> getProductCmptTypeAssociations();
+    List<IProductCmptTypeAssociation> getProductCmptTypeAssociations();
 
     /**
      * Returns the methods of this type which are no formula signatures.
      */
-    public List<IProductCmptTypeMethod> getNonFormulaProductCmptTypeMethods();
+    List<IProductCmptTypeMethod> getNonFormulaProductCmptTypeMethods();
 
     /**
      * Returns the method signature with the indicates formula name. Returns <code>null</code> if no
      * such method is found in <strong>this</strong> type. The type hierarchy is not searched.
      * Returns <code>null</code> if formulaName is <code>null</code>.
      */
-    public IProductCmptTypeMethod getFormulaSignature(String formulaName);
+    IProductCmptTypeMethod getFormulaSignature(String formulaName);
 
     /**
      * Returns all method signatures of this product component type neglecting the type hierarchy.
      * Returns an empty array if no formula signature is defined for this type.
      */
-    public List<IProductCmptTypeMethod> getFormulaSignatures();
+    List<IProductCmptTypeMethod> getFormulaSignatures();
 
     /**
      * Searches the method signature with the indicated formula name in the type's supertype
@@ -435,13 +435,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws NullPointerException if IPS project is <code>null</code>.
      */
-    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject);
+    IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject);
 
     /**
      * Returns the formula signatures of formulas in the supertype hierarchy that are overloaded by
      * formulas of this type.
      */
-    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject);
+    List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties including all product component properties
@@ -449,7 +449,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * ipsProject)
      * 
      */
-    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject);
+    List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties.
@@ -457,7 +457,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      */
-    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy,
+    List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy,
             IIpsProject ipsProject);
 
     /**
@@ -470,7 +470,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @see #findProductCmptProperties(IIpsProject)
      * @see #findProductCmptProperties(boolean, IIpsProject)
      */
-    public List<IProductCmptProperty> findProductCmptProperties(ProductCmptPropertyType propertyType,
+    List<IProductCmptProperty> findProductCmptProperties(ProductCmptPropertyType propertyType,
             boolean searchSupertypeHierarchy,
             IIpsProject ipsProject);
 
@@ -478,7 +478,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the product definition property with the given name and type. If no such property is
      * found in the type itself, the supertype hierarchy is searched.
      */
-    public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
+    IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
             String propName,
             IIpsProject ipsProject);
 
@@ -486,36 +486,36 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * Returns the product definition property with the given name. If no such property is found in
      * the type itself, the supertype hierarchy is searched.
      */
-    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject);
+    IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of
      * this type, <code>false</code> otherwise.
      */
-    public boolean isUseCustomInstanceIcon();
+    boolean isUseCustomInstanceIcon();
 
     /**
      * Returns the string-presentation of the path of an Icon file used for enabled instances of
      * this type. This method may return a valid path even though no custom Icon is configured.
      */
-    public String getInstancesIcon();
+    String getInstancesIcon();
 
     /**
      * Configures this {@link ProductCmptType} to use the icon at the given path as icon for enabled
      * instances.
      */
-    public void setInstancesIcon(String path);
+    void setInstancesIcon(String path);
 
     /**
      * @see #searchMetaObjectSrcFiles(boolean)
      */
-    public Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws IpsException;
+    Collection<IIpsSrcFile> searchProductComponents(boolean includeSubtypes) throws IpsException;
 
     /**
      * Creates and returns a new {@link IProductCmptCategory} belonging to this
      * {@link IProductCmptType}.
      */
-    public IProductCmptCategory newCategory();
+    IProductCmptCategory newCategory();
 
     /**
      * Creates and returns a new {@link IProductCmptCategory} with the provided name, belonging to
@@ -523,7 +523,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name the name of the category to create
      */
-    public IProductCmptCategory newCategory(String name);
+    IProductCmptCategory newCategory(String name);
 
     /**
      * Creates and returns a new {@link IProductCmptCategory} with the provided name and
@@ -532,7 +532,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param name the name of the {@link IProductCmptCategory} to create
      * @param position the {@link Position} of the {@link IProductCmptCategory} to create
      */
-    public IProductCmptCategory newCategory(String name, Position position);
+    IProductCmptCategory newCategory(String name, Position position);
 
     /**
      * Returns an unmodifiable view on the list of categories belonging to this
@@ -540,7 +540,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * <p>
      * This method does <strong>not</strong> consider categories defined in the supertype hierarchy.
      */
-    public List<IProductCmptCategory> getCategories();
+    List<IProductCmptCategory> getCategories();
 
     /**
      * Returns a list (defensive copy) containing the categories with the indicated {@link Position}
@@ -548,7 +548,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param position the {@link Position} to retrieve the categories for
      */
-    public List<IProductCmptCategory> getCategories(Position position);
+    List<IProductCmptCategory> getCategories(Position position);
 
     /**
      * Returns a list containing the categories belonging to this type.
@@ -558,7 +558,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs while searching the supertype hierarchy
      */
-    public List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws IpsException;
+    List<IProductCmptCategory> findCategories(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -568,7 +568,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param name the name identifying the {@link IProductCmptCategory} to be retrieved
      */
-    public IProductCmptCategory getCategory(String name);
+    IProductCmptCategory getCategory(String name);
 
     /**
      * Returns the first {@link IProductCmptCategory} of the provided {@link Position}.
@@ -581,7 +581,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param position the {@link Position} to retrieve the first {@link IProductCmptCategory} for
      */
-    public IProductCmptCategory getFirstCategory(Position position);
+    IProductCmptCategory getFirstCategory(Position position);
 
     /**
      * Returns the last {@link IProductCmptCategory} of the provided {@link Position}.
@@ -594,19 +594,19 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param position the {@link Position} to retrieve the last {@link IProductCmptCategory} for
      */
-    public IProductCmptCategory getLastCategory(Position position);
+    IProductCmptCategory getLastCategory(Position position);
 
     /**
      * Returns whether the indicated {@link IProductCmptCategory} is the first
      * {@link IProductCmptCategory} of it's {@link Position}.
      */
-    public boolean isFirstCategory(IProductCmptCategory category);
+    boolean isFirstCategory(IProductCmptCategory category);
 
     /**
      * Returns whether the indicated {@link IProductCmptCategory} is the last
      * {@link IProductCmptCategory} of it's {@link Position}.
      */
-    public boolean isLastCategory(IProductCmptCategory category);
+    boolean isLastCategory(IProductCmptCategory category);
 
     /**
      * Returns whether this {@link IProductCmptType} defines the indicated
@@ -614,7 +614,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @return true if {@code this.equals(category.getParent())} returns true, false otherwise
      */
-    public boolean isDefining(IProductCmptCategory category);
+    boolean isDefining(IProductCmptCategory category);
 
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
@@ -624,7 +624,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @see #findHasCategory(String, IIpsProject)
      */
-    public boolean hasCategory(String name);
+    boolean hasCategory(String name);
 
     /**
      * Returns whether an {@link IProductCmptCategory} with the given name exists in this
@@ -637,7 +637,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @see #hasCategory(String)
      */
-    public boolean findHasCategory(String name, IIpsProject ipsProject) throws IpsException;
+    boolean findHasCategory(String name, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the {@link IProductCmptCategory} identified by the given name or null if no such
@@ -649,7 +649,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws IpsException;
+    IProductCmptCategory findCategory(String name, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for formula signature
@@ -659,7 +659,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
+    IProductCmptCategory findDefaultCategoryForFormulaSignatureDefinitions(IIpsProject ipsProject)
             throws IpsException;
 
     /**
@@ -670,7 +670,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws IpsException;
+    IProductCmptCategory findDefaultCategoryForValidationRules(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for table structure usages
@@ -680,7 +680,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws IpsException;
+    IProductCmptCategory findDefaultCategoryForTableStructureUsages(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first {@link IProductCmptCategory} marked as default for product relevant policy
@@ -690,7 +690,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
+    IProductCmptCategory findDefaultCategoryForPolicyCmptTypeAttributes(IIpsProject ipsProject)
             throws IpsException;
 
     /**
@@ -701,7 +701,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
+    IProductCmptCategory findDefaultCategoryForProductCmptTypeAttributes(IIpsProject ipsProject)
             throws IpsException;
 
     /**
@@ -721,12 +721,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param up flag indicating whether to move up or down
      * 
      * @return true if a move has been performed or false if the first or last
-     *         {@link IProductCmptCategory} of it's {@link Position} is moved up respectively down
+     *             {@link IProductCmptCategory} of it's {@link Position} is moved up respectively
+     *             down
      * 
      * @throws IllegalArgumentException if one of the categories to be moved is not defined in this
      *             {@link IProductCmptType}
      */
-    public boolean moveCategories(List<IProductCmptCategory> categories, boolean up);
+    boolean moveCategories(List<IProductCmptCategory> categories, boolean up);
 
     /**
      * Assigns the provided {@link IProductCmptProperty} to the indicated category.
@@ -740,6 +741,6 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param category the name of the {@link IProductCmptCategory} to assign the
      *            {@link IProductCmptProperty} to
      */
-    public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category);
+    void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category);
 
 }

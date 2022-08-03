@@ -119,10 +119,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     @Override
     public boolean canEdit(IValueSet valueSet, ValueDatatype valueDatatype) {
-        if (valueSet == null) {
-            return false;
-        }
-        if (valueDatatype == null) {
+        if ((valueSet == null) || (valueDatatype == null)) {
             return false;
         }
         return valueSet.isEnum() && !valueDatatype.isEnum();
@@ -240,9 +237,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             if (columnIndex == 0) {
                 return ""; //$NON-NLS-1$
             }
-            String value = IpsUIPlugin.getDefault().getDatatypeFormatter()
+            return IpsUIPlugin.getDefault().getDatatypeFormatter()
                     .formatValue(valueDatatype, element.toString());
-            return value;
         }
     }
 
@@ -306,8 +302,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         }
 
         String getValueName() {
-            String name = valueSet.getValue(index);
-            return name;
+            return valueSet.getValue(index);
         }
 
         void setValueName(String newName) {

@@ -116,7 +116,7 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case Decimal.NULL.
      * 
      * @deprecated since 21.6. {@link DecimalNull#multiply(Money, RoundingMode)} should be used
-     *             instead.
+     *                 instead.
      */
     @Override
     @Deprecated
@@ -160,7 +160,7 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case DECIMAL.NULL.
      * 
      * @deprecated since 21.6. {@link DecimalNull#divide(Decimal, int, RoundingMode)} should be used
-     *             instead.
+     *                 instead.
      */
     @Override
     @Deprecated
@@ -180,7 +180,7 @@ public class DecimalNull extends Decimal implements NullObject {
      * Returns the special case DECIMAL.NULL.
      * 
      * @deprecated since 21.6. {@link DecimalNull#divide(int, int, RoundingMode)} should be used
-     *             instead.
+     *                 instead.
      */
     @Override
     @Deprecated

@@ -33,7 +33,7 @@ public class EditTableTraversalStrategyTest {
      * Force new String instance as items B1 and B2 should be equal but not same. The search in the
      * models list should be based on identity not equality.
      */
-    private static final SingleValueViewItem B2 = new SingleValueViewItem(new SingleValueHolder(null, new String("B")),
+    private static final SingleValueViewItem B2 = new SingleValueViewItem(new SingleValueHolder(null, "B"),
             1);
     private EditTableTraversalStrategy<SingleValueViewItem> strat;
     private List<SingleValueViewItem> list;

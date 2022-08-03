@@ -41,7 +41,7 @@ public interface IDescribedElement extends IIpsElement {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public IDescription getDescription(Locale locale);
+    IDescription getDescription(Locale locale);
 
     /**
      * Returns the text of the {@link IDescription} that has the given {@link Locale}.
@@ -52,7 +52,7 @@ public interface IDescribedElement extends IIpsElement {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public String getDescriptionText(Locale locale);
+    String getDescriptionText(Locale locale);
 
     /**
      * Returns the list of descriptions this element currently has attached.
@@ -60,12 +60,12 @@ public interface IDescribedElement extends IIpsElement {
      * Note that only a defensive copy is returned. The descriptions are ordered according to the
      * order of the supported languages as they occur in the {@code .ipsproject} file.
      */
-    public List<IDescription> getDescriptions();
+    List<IDescription> getDescriptions();
 
     /**
      * Creates a new {@link IDescription} for this element.
      */
-    public IDescription newDescription();
+    IDescription newDescription();
 
     /**
      * Sets the text of the {@link IDescription} that has the given {@link Locale}.
@@ -76,6 +76,6 @@ public interface IDescribedElement extends IIpsElement {
      * @throws NullPointerException If the parameter locale is null
      * @throws IllegalArgumentException If there is no description with the given locale
      */
-    public void setDescriptionText(Locale locale, String text);
+    void setDescriptionText(Locale locale, String text);
 
 }

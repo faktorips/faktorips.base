@@ -35,8 +35,7 @@ public class AbstractSubsetChooserModelTest {
     protected List<ListChooserValue> letModelCalculatePredefinedValues(List<ListChooserValue> allValues,
             List<ListChooserValue> resultingValues) {
         AbstractSubsetChooserModel model = setUpModel(allValues, resultingValues);
-        List<ListChooserValue> preDefinedValues = model.getPreDefinedValues();
-        return preDefinedValues;
+        return model.getPreDefinedValues();
     }
 
     @Test

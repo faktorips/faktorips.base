@@ -21,7 +21,7 @@ public interface IInputFormat<T> {
     /**
      * Calls the initFormat with the input locale configured in the preferences.
      */
-    public void initFormat();
+    void initFormat();
 
     /**
      * Sets the null string representation used by this {@link IInputFormat}. That string will be
@@ -30,7 +30,7 @@ public interface IInputFormat<T> {
      * 
      * @param nullString the null string representation that should be used
      */
-    public void setNullString(String nullString);
+    void setNullString(String nullString);
 
     /**
      * Returns the null string representation that is currently used by this input format.
@@ -41,7 +41,7 @@ public interface IInputFormat<T> {
      * 
      * @return The string that will be handled as <code>null</code> value
      */
-    public String getNullString();
+    String getNullString();
 
     /**
      * Parses a string to a value object. Supports the FIPS null-Presentation mechanism.
@@ -52,7 +52,7 @@ public interface IInputFormat<T> {
      *            matches the null-presentation value.
      * @return the value object that was parsed from the users input
      */
-    public T parse(String stringToBeParsed, boolean supportNull);
+    T parse(String stringToBeParsed, boolean supportNull);
 
     /**
      * Returns a formatted string for the given value object. Supports the FIPS null-Presentation
@@ -63,7 +63,7 @@ public interface IInputFormat<T> {
      *            the given object value is <code>null</code>.
      * @return the formatted string representing the given value
      */
-    public String format(T objectValue, boolean supportNull);
+    String format(T objectValue, boolean supportNull);
 
     /**
      * Parses a string to a value object. Semantically equivalent to parse(String stringToBeparsed,
@@ -73,7 +73,7 @@ public interface IInputFormat<T> {
      *            data type this format adheres to.
      * @return the value object that was parsed from the users input
      */
-    public T parse(String stringToBeParsed);
+    T parse(String stringToBeParsed);
 
     /**
      * 
@@ -83,6 +83,6 @@ public interface IInputFormat<T> {
      * @param objectValue the value to be formatted for display
      * @return the formatted string representing the given value
      */
-    public String format(T objectValue);
+    String format(T objectValue);
 
 }

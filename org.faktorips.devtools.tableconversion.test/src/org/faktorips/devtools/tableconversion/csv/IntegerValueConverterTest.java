@@ -33,8 +33,7 @@ public class IntegerValueConverterTest extends NumberValueConverterTest {
 
     @Override
     public String[] getExternalDataToConvert(boolean useCommaAsDecimalSeparator) {
-        String[] validExternalDoubles = { String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MIN_VALUE), "0" };
-        return validExternalDoubles;
+        return new String[] { String.valueOf(Integer.MAX_VALUE), String.valueOf(Integer.MIN_VALUE), "0" };
     }
 
     @Test

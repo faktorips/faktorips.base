@@ -77,10 +77,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private boolean isValidPreviousNode() {
-        if (getPreviousNode() instanceof AssociationNode) {
-            return true;
-        }
-        if (getPreviousNode() instanceof QualifierNode && isIndex()) {
+        if ((getPreviousNode() instanceof AssociationNode)
+                || (getPreviousNode() instanceof QualifierNode && isIndex())) {
             return true;
         }
         return false;

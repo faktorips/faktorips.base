@@ -22,7 +22,7 @@ public interface IProductCmptNamingStrategyFactory {
     /**
      * Returns the ID of the type of naming strategy. This method never returns <code>null</code>.
      */
-    public String getExtensionId();
+    String getExtensionId();
 
     /**
      * Creates a new naming strategy. This method never returns <code>null</code>.

@@ -102,10 +102,7 @@ public class OpenActionGroup extends ActionGroup {
             return;
         }
         Object element = selection.getFirstElement();
-        if (!(element instanceof IContainer)) {
-            return;
-        }
-        if (element instanceof IProject && !(((IProject)element).isOpen())) {
+        if (!(element instanceof IContainer) || (element instanceof IProject && !(((IProject)element).isOpen()))) {
             return;
         }
 

@@ -209,8 +209,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         if (StringUtils.isEmpty(productCmpt)) {
             return null;
         }
-        IProductCmpt pc = ipsProject.findProductCmpt(productCmpt);
-        return pc;
+        return ipsProject.findProductCmpt(productCmpt);
     }
 
     @Override

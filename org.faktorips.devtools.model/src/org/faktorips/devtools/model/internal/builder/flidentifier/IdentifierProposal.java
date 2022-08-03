@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
+import java.util.Objects;
+
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.util.ArgumentCheck;
 
@@ -49,8 +51,8 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
      * text would be inserted when the proposal is selected.
      * 
      * @return The text that represents this identifier node. In other words this is the text that
-     *         would lead to to exactly this identifier node if it is parsed by the
-     *         {@link IdentifierParser}.
+     *             would lead to to exactly this identifier node if it is parsed by the
+     *             {@link IdentifierParser}.
      */
     public String getText() {
         return text;
@@ -93,23 +95,16 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     @Override
     public int compareTo(IdentifierProposal o) {
-        if (this.getNodeType().equals(o.getNodeType())) {
-            return this.getText().compareTo(o.getText());
+        if (getNodeType().equals(o.getNodeType())) {
+            return getText().compareTo(o.getText());
         } else {
-            return this.getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
+            return getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
         }
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((label == null) ? 0 : label.hashCode());
-        result = prime * result + ((nodeType == null) ? 0 : nodeType.hashCode());
-        result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
-        result = prime * result + ((text == null) ? 0 : text.hashCode());
-        return result;
+        return Objects.hash(description, label, nodeType, prefix, text);
     }
 
     @Override

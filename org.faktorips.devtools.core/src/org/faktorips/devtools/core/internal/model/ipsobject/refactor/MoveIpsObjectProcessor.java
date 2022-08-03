@@ -45,8 +45,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor implements II
 
     @Override
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
-        Set<IIpsSrcFile> result = new HashSet<>(renameMoveHelper.getAffectedIpsSrcFiles());
-        return result;
+        return new HashSet<>(renameMoveHelper.getAffectedIpsSrcFiles());
     }
 
     @Override

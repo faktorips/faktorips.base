@@ -25,7 +25,7 @@ public enum LikeSearchOperatorType implements ISearchOperatorType {
     private final String label;
     private final boolean negation;
 
-    private LikeSearchOperatorType(String label, boolean negation) {
+    LikeSearchOperatorType(String label, boolean negation) {
         this.label = label;
         this.negation = negation;
     }

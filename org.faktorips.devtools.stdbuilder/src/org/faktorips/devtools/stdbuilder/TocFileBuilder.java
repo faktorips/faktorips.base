@@ -10,6 +10,14 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_CONTENT;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.ENUM_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.POLICY_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT_TYPE;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TABLE_CONTENTS;
+import static org.faktorips.devtools.model.ipsobject.IpsObjectType.TEST_CASE;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,9 +93,9 @@ import org.xml.sax.SAXException;
  */
 public class TocFileBuilder extends AbstractArtefactBuilder {
 
-    private static final Set<IpsObjectType> SUPPORTED_TYPES = ImmutableSet.of(IpsObjectType.PRODUCT_CMPT,
-            IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE, IpsObjectType.ENUM_CONTENT, IpsObjectType.ENUM_TYPE,
-            IpsObjectType.POLICY_CMPT_TYPE, IpsObjectType.PRODUCT_CMPT_TYPE);
+    private static final Set<IpsObjectType> SUPPORTED_TYPES = ImmutableSet.of(PRODUCT_CMPT,
+            TABLE_CONTENTS, TEST_CASE, ENUM_CONTENT, ENUM_TYPE,
+            POLICY_CMPT_TYPE, PRODUCT_CMPT_TYPE);
 
     // a map that contains the table of contents objects (value) for each table of contents file.
     private Map<AFile, TableOfContent> tocFileMap = new HashMap<>();
@@ -258,13 +266,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 try {
                     DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
                     doc = builder.parse(is);
-                } catch (IOException ioe) {
-                    // can happen if the file is deleted in the filesystem, but the workspace has
-                    // not been synchronized
-                    // nothing seriuos, we just write the file again
-                    doc = null;
-                    tocFile.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_AND_DIRECT_MEMBERS, null);
-                } catch (SAXException e) {
+                } catch (IOException | SAXException e) {
                     // can happen if the file is deleted in the filesystem, but the workspace has
                     // not been synchronized
                     // nothing seriuos, we just write the file again
@@ -285,35 +287,11 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) {
         IIpsObject object = null;
         try {
-            List<TocEntryObject> entries = new ArrayList<>();
             object = ipsSrcFile.getIpsObject();
             if (!object.isValid(getIpsProject())) {
                 return;
             }
-            IpsObjectType type = object.getIpsObjectType();
-            if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
-                entries.add(createTocEntry((IProductCmpt)object));
-            } else if (type.equals(IpsObjectType.TABLE_CONTENTS)) {
-                entries.add(createTocEntry((ITableContents)object));
-            } else if (type.equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
-                entries.add(createTocEntry((IProductCmptType)object));
-            } else if (type.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
-                entries.add(createTocEntry((IPolicyCmptType)object));
-            } else if (type.equals(IpsObjectType.TEST_CASE)) {
-                entries.add(createTocEntry((ITestCase)object));
-            } else if (type.equals(IpsObjectType.ENUM_CONTENT)) {
-                entries.add(createTocEntry((IEnumContent)object));
-            } else if (type.equals(IpsObjectType.ENUM_TYPE)) {
-                entries.add(createTocEntry((IEnumType)object));
-                entries.add(createEmptyEnumContentTocEntry((IEnumType)object));
-            } else if (ipsObjectTypeToTocEntryBuilderMap.containsKey(type)) {
-                List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(type);
-                for (ITocEntryBuilder builder : builderList) {
-                    entries.addAll(builder.createTocEntries(object));
-                }
-            } else {
-                throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
-            }
+            List<TocEntryObject> entries = buildTocEntries(object);
             if (!entries.isEmpty()) {
                 for (TocEntryObject entry : entries) {
                     getToc(ipsSrcFile).addOrReplaceTocEntry(entry);
@@ -327,6 +305,35 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                     + (object == null ? IpsStringUtils.EMPTY : object.getQualifiedName()), e);
             throw new IpsException(status);
         }
+    }
+
+    private List<TocEntryObject> buildTocEntries(IIpsObject object) {
+        List<TocEntryObject> entries = new ArrayList<>();
+        IpsObjectType type = object.getIpsObjectType();
+        if (PRODUCT_CMPT.equals(type)) {
+            entries.add(createTocEntry((IProductCmpt)object));
+        } else if (TABLE_CONTENTS.equals(type)) {
+            entries.add(createTocEntry((ITableContents)object));
+        } else if (PRODUCT_CMPT_TYPE.equals(type)) {
+            entries.add(createTocEntry((IProductCmptType)object));
+        } else if (POLICY_CMPT_TYPE.equals(type)) {
+            entries.add(createTocEntry((IPolicyCmptType)object));
+        } else if (TEST_CASE.equals(type)) {
+            entries.add(createTocEntry((ITestCase)object));
+        } else if (ENUM_CONTENT.equals(type)) {
+            entries.add(createTocEntry((IEnumContent)object));
+        } else if (ENUM_TYPE.equals(type)) {
+            entries.add(createTocEntry((IEnumType)object));
+            entries.add(createEmptyEnumContentTocEntry((IEnumType)object));
+        } else if (ipsObjectTypeToTocEntryBuilderMap.containsKey(type)) {
+            List<ITocEntryBuilder> builderList = ipsObjectTypeToTocEntryBuilderMap.get(type);
+            for (ITocEntryBuilder builder : builderList) {
+                entries.addAll(builder.createTocEntries(object));
+            }
+        } else {
+            throw new RuntimeException("Unknown ips object type " + object.getIpsObjectType()); //$NON-NLS-1$
+        }
+        return entries;
     }
 
     public ProductCmptTocEntry createTocEntry(IProductCmpt productCmpt) {
@@ -378,7 +385,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                     .getImplementationClass((IProductCmptGeneration)generation);
             genEntries.add(
                     new GenerationTocEntry(entry, validFrom, generationClassName,
-                            xmlContentRelativeFile.toString().replaceAll("\\\\", "/")));
+                            xmlContentRelativeFile.toString().replace('\\', '/')));
         }
         entry.setGenerationEntries(genEntries);
     }
@@ -393,10 +400,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         Path xmlRelativeFile = tableContentBuilder.getXmlContentRelativeFile(tableContents.getIpsSrcFile());
         String tableStructureName = getBuilderSet().getTableBuilder()
                 .getQualifiedClassName(tableStructure.getIpsSrcFile());
-        TocEntryObject entry = new TableContentTocEntry(tableContents.getQualifiedName(),
+        return new TableContentTocEntry(tableContents.getQualifiedName(),
                 tableContents.getQualifiedName(), PathUtil.toPortableString(xmlRelativeFile),
                 tableStructureName);
-        return entry;
     }
 
     /**
@@ -413,7 +419,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
          */
         String packageRootName = testCase.getIpsPackageFragment().getRoot().getName();
         String objectId = packageRootName + "." + testCase.getQualifiedName(); //$NON-NLS-1$
-        objectId = objectId.replace('.', '/') + "." + IpsObjectType.TEST_CASE.getFileExtension(); //$NON-NLS-1$
+        objectId = objectId.replace('.', '/') + "." + TEST_CASE.getFileExtension(); //$NON-NLS-1$
 
         String xmlResourceName = PathUtil
                 .toPortableString(getBuilderSet().getBuilderById(BuilderKindIds.TEST_CASE, TestCaseBuilder.class)
@@ -421,9 +427,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String testCaseTypeName = getBuilderSet()
                 .getBuilderById(BuilderKindIds.TEST_CASE_TYPE, TestCaseTypeClassBuilder.class)
                 .getQualifiedClassName(type);
-        TocEntryObject entry = new TestCaseTocEntry(objectId, testCase.getQualifiedName(), xmlResourceName,
+        return new TestCaseTocEntry(objectId, testCase.getQualifiedName(), xmlResourceName,
                 testCaseTypeName);
-        return entry;
     }
 
     /** Creates a toc entry for the given enum content. */
@@ -439,15 +444,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
          */
         String packageRootName = enumContent.getIpsPackageFragment().getRoot().getName();
         String objectId = packageRootName + "." + enumContent.getQualifiedName(); //$NON-NLS-1$
-        objectId = objectId.replace('.', '/') + "." + IpsObjectType.ENUM_CONTENT.getFileExtension(); //$NON-NLS-1$
+        objectId = objectId.replace('.', '/') + "." + ENUM_CONTENT.getFileExtension(); //$NON-NLS-1$
 
         Path xmlResourceName = getBuilderSet().getBuilderById(BuilderKindIds.ENUM_CONTENT, EnumContentBuilder.class)
                 .getXmlContentRelativeFile(enumContent.getIpsSrcFile());
 
         String enumTypeName = getBuilderSet().getEnumTypeBuilder().getQualifiedClassName(enumType);
-        TocEntryObject entry = new EnumContentTocEntry(objectId, enumContent.getQualifiedName(),
+        return new EnumContentTocEntry(objectId, enumContent.getQualifiedName(),
                 PathUtil.toPortableString(xmlResourceName), enumTypeName);
-        return entry;
     }
 
     public TocEntryObject createEmptyEnumContentTocEntry(IEnumType enumType) {
@@ -457,22 +461,18 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String packageRootName = enumType.getIpsPackageFragment().getRoot().getName();
         String objectId = packageRootName + "." + enumType.getQualifiedName(); //$NON-NLS-1$
         String enumTypeName = getBuilderSet().getEnumTypeBuilder().getQualifiedClassName(enumType);
-        TocEntryObject entry = new EnumContentTocEntry(objectId, enumType.getQualifiedName() + ".Type", "",
+        return new EnumContentTocEntry(objectId, enumType.getQualifiedName() + ".Type", "",
                 enumTypeName);
-        return entry;
     }
 
     public TocEntryObject createTocEntry(IEnumType enumType) {
-        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport()) {
+        if (!GeneratorConfig.forIpsObject(enumType).isGenerateJaxbSupport() || enumType.isInextensibleEnum()
+                || enumType.isAbstract()) {
             return null;
         }
-        if (enumType.isInextensibleEnum() || enumType.isAbstract()) {
-            return null;
-        }
-        TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
+        return new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
                 getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER, EnumXmlAdapterBuilder.class)
                         .getQualifiedClassName(enumType));
-        return entry;
     }
 
     /**

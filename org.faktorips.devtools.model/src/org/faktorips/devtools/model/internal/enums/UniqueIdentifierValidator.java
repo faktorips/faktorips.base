@@ -78,7 +78,7 @@ class UniqueIdentifierValidator {
     }
 
     private void getEnumType() {
-        this.enumType = container.findEnumType(container.getIpsProject());
+        enumType = container.findEnumType(container.getIpsProject());
     }
 
     public List<String> getUniqueIdentifierViolations(IEnumAttributeValue enumAttributeValue) {
@@ -130,8 +130,7 @@ class UniqueIdentifierValidator {
 
     private Set<LocalizedString> getLocalizedIdentifiers(IEnumAttributeValue enumAttributeValue) {
         ValueUtil otherValueUtil = ValueUtil.createUtil(enumAttributeValue.getValue());
-        Set<LocalizedString> result = otherValueUtil.getLocalizedIdentifiers();
-        return result;
+        return otherValueUtil.getLocalizedIdentifiers();
     }
 
     private static class AttributeValues {

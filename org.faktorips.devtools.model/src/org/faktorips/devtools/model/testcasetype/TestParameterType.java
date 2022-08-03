@@ -67,11 +67,7 @@ public enum TestParameterType {
      * @throws NullPointerException if one of the given Types are null.
      */
     public static boolean isTypeMatching(TestParameterType type1, TestParameterType type2) {
-        if (type1.equals(type2)) {
-            return true;
-        }
-
-        if (type1.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT))) {
+        if (type1.equals(type2) || (type1.equals(COMBINED) && (type2.equals(INPUT) || type2.equals(EXPECTED_RESULT)))) {
             return true;
         }
 
@@ -91,11 +87,8 @@ public enum TestParameterType {
      * @throws NullPointerException if one of the given types are null.
      */
     public static boolean isChildTypeMatching(TestParameterType typeChild, TestParameterType typeParent) {
-        if (typeChild == typeParent) {
-            return true;
-        }
-
-        if (typeParent == COMBINED && (typeChild == INPUT || typeChild == EXPECTED_RESULT)) {
+        if ((typeChild == typeParent)
+                || (typeParent == COMBINED && (typeChild == INPUT || typeChild == EXPECTED_RESULT))) {
             return true;
         }
 

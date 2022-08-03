@@ -53,8 +53,8 @@ public class PackageNameEditDialog extends StatusDialog {
             IIpsObjectPathEntryAttribute attribute) {
         super(parent);
 
-        this.setTitle(Messages.PackageNameEditDialog_dialog_title);
-        this.setHelpAvailable(false);
+        setTitle(Messages.PackageNameEditDialog_dialog_title);
+        setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
 

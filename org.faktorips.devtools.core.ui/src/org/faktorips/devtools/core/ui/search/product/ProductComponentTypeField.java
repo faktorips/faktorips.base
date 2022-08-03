@@ -42,7 +42,7 @@ public class ProductComponentTypeField extends AbstractTextField<IProductCmptTyp
 
     public ProductComponentTypeField(UIToolkit toolkit, Composite parent) {
         super(toolkit.createText(parent));
-        this.button = toolkit.createButton(parent, Messages.ProductSearchPage_labelChooseProductComponentType);
+        button = toolkit.createButton(parent, Messages.ProductSearchPage_labelChooseProductComponentType);
         button.addSelectionListener(new ProductCmptTypeSelectionListener());
     }
 

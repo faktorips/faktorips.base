@@ -318,10 +318,11 @@ public enum ValueToXmlHelper {
         Optional<Element> valueSetEl = XmlUtil.findFirstElement(el, tagName);
         Optional<Element> enumEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_ALL_VALUES))
                 .filter(e -> e.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL));
-        return enumEl.map(e -> {
+        Optional<UnrestrictedValueSet<T>> valueSet = enumEl.map($ -> {
             boolean containsNull = isAttributeTrue(enumEl.get(), XML_ATTRIBUTE_CONTAINS_NULL);
-            return new UnrestrictedValueSet<T>(containsNull);
-        }).orElse(new UnrestrictedValueSet<T>(true));
+            return new UnrestrictedValueSet<>(containsNull);
+        });
+        return valueSet.orElse(new UnrestrictedValueSet<>(true));
     }
 
     /**
@@ -329,6 +330,6 @@ public enum ValueToXmlHelper {
      * {@code "true"}.
      */
     public static boolean isAttributeTrue(Element element, String attribute) {
-        return Boolean.valueOf(element.getAttribute(attribute)).booleanValue();
+        return Boolean.parseBoolean(element.getAttribute(attribute));
     }
 }

@@ -21,12 +21,12 @@ public interface DatatypeHelperRegistry {
      * Returns the helper for the indicated datatype. Returns null if no helper is registered for
      * the datatype.
      */
-    public DatatypeHelper getHelper(Datatype datatype);
+    DatatypeHelper getHelper(Datatype datatype);
 
     /**
      * Registers the datatype helper.
      * 
      * @throws IllegalArgumentException if helper is null.
      */
-    public void register(DatatypeHelper helper);
+    void register(DatatypeHelper helper);
 }

@@ -36,11 +36,9 @@ public class StringLengthValueSetValidator extends AbstractValueSetValidator<Str
             return messages;
         }
 
-        if (!ValidationUtils.checkParsable(Datatype.INTEGER, maxLengthValue, getValueSet(),
+        if (ValidationUtils.checkParsable(Datatype.INTEGER, maxLengthValue, getValueSet(),
                 StringLengthValueSet.PROPERTY_MAXIMUMLENGTH,
                 messages)) {
-            return messages;
-        } else {
             Integer maxLength = maxLengthValue == null ? null : Integer.parseInt(maxLengthValue);
             if (maxLength != null && maxLength < 0) {
                 messages.newError(StringLengthValueSet.MSGCODE_NEGATIVE_VALUE,

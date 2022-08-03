@@ -162,9 +162,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (productCmptType == null) {
             return null;
         }
-        IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)productCmptType
+        return (IProductCmptTypeAssociation)productCmptType
                 .findAssociation(matchingAssociationName, ipsProject);
-        return association;
     }
 
     @Override
@@ -436,11 +435,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             IIpsProject ipsProject) {
 
         IPolicyCmptTypeAssociation inverseAss = findInverseAssociation(ipsProject);
-        if (inverseAss == null) {
-            // not found => error will be reported in validateInverseRelation
-            return;
-        }
-        if (isComposition() || inverseAss.isComposition()) {
+        if ((inverseAss == null) || isComposition() || inverseAss.isComposition()) {
             return;
         }
         IPolicyCmptTypeAssociation inverseRelationOfContainerRel = derivedUnion.findInverseAssociation(ipsProject);
@@ -458,11 +453,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     private void validateInverseRelation(MessageList list, IIpsProject ipsProject) {
-        if (!validateInverseCompositionDetailToMaster(list)) {
-            return;
-        }
-
-        if (!validateEmptyInverseAssociation(list, ipsProject)) {
+        if (!validateInverseCompositionDetailToMaster(list) || !validateEmptyInverseAssociation(list, ipsProject)) {
             return;
         }
 
@@ -580,7 +571,6 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                     list.add(Message.newError(MSGCODE_SHARED_ASSOCIATION_INVALID,
                             Messages.PolicyCmptTypeAssociation_sharedAssociation_invalidAssociationHost, this,
                             PROPERTY_SHARED_ASSOCIATION));
-                    return false;
                 }
                 // FIPS-85: shared associations does not have a inverse association so we do not
                 // have to validate further
@@ -658,7 +648,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                     Message.ERROR, this, PROPERTY_MATCHING_ASSOCIATION_NAME, PROPERTY_MATCHING_ASSOCIATION_SOURCE));
         } else {
             if (matchingAssociation != null
-                    && !this.equals(matchingAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject))) {
+                    && !equals(matchingAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject))) {
                 list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID,
                         MessageFormat.format(Messages.PolicyCmptTypeAssociation_error_MatchingAssociationInvalid,
                                 getMatchingAssociationName(), getMatchingAssociationSource()),
@@ -681,10 +671,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     boolean findCorrectMatchingPolicyCmptTypeRecoursive(IPolicyCmptType parentPolicyCmptType,
             IIpsProject ipsProject,
             Set<IPolicyCmptType> visited) {
-        if (parentPolicyCmptType == null) {
-            return false;
-        }
-        if (!visited.add(parentPolicyCmptType)) {
+        if ((parentPolicyCmptType == null) || !visited.add(parentPolicyCmptType)) {
             return false;
         }
         // breath first search

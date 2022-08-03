@@ -25,7 +25,7 @@ public enum ReferenceSearchOperatorType implements ISearchOperatorType {
     private final String label;
     private final boolean negation;
 
-    private ReferenceSearchOperatorType(String label, boolean negation) {
+    ReferenceSearchOperatorType(String label, boolean negation) {
         this.label = label;
         this.negation = negation;
     }

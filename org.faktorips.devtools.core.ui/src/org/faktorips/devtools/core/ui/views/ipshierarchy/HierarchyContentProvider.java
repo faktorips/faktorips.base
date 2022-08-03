@@ -71,7 +71,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof ITypeHierarchy) {
-            this.hierarchy = (ITypeHierarchy)newInput;
+            hierarchy = (ITypeHierarchy)newInput;
         } else {
             hierarchy = null;
         }

@@ -48,7 +48,7 @@ public class TableFormatPropertiesPage extends WizardPage implements ValueChange
 
     @Override
     public void createControl(Composite parent) {
-        this.pageControl = toolkit.createGridComposite(parent, 1, false, false);
+        pageControl = toolkit.createGridComposite(parent, 1, false, false);
         setControl(pageControl);
 
         Group configurationGroup = toolkit
@@ -84,7 +84,7 @@ public class TableFormatPropertiesPage extends WizardPage implements ValueChange
     }
 
     private void updatePageComplete() {
-        setPageComplete((getErrorMessage() != null) ? false : true);
+        setPageComplete((getErrorMessage() == null));
     }
 
 }

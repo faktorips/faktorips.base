@@ -38,7 +38,9 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
 
             String datePattern = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
             return DateFormatUtils.format(date, datePattern);
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
+            // CSON: IllegalCatch
             messageList.add(new Message(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue,
                     getSupportedDatatype().getQualifiedName(), GregorianCalendar.class.getName())));
             return ipsValue;

@@ -30,7 +30,7 @@ import org.faktorips.devtools.model.type.IType;
  * 
  * @since 3.6
  * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
- *             instead.
+ *                 instead.
  * 
  * @see IProductCmptProperty
  * @see IProductCmptCategory
@@ -39,27 +39,27 @@ import org.faktorips.devtools.model.type.IType;
 @Deprecated(forRemoval = true, since = "22.6")
 public interface IProductCmptPropertyReference extends IIpsObjectPart {
 
-    public static final String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
+    String PROPERTY_REFERENCED_PART_ID = "referencedPartId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_REFERENCED_IPS_OBJECT_TYPE = "referencedIpsObjectType"; //$NON-NLS-1$
+    String PROPERTY_REFERENCED_IPS_OBJECT_TYPE = "referencedIpsObjectType"; //$NON-NLS-1$
 
     /**
      * Sets the referenced {@link IProductCmptProperty}.
      */
-    public void setReferencedProperty(IProductCmptProperty property);
+    void setReferencedProperty(IProductCmptProperty property);
 
     /**
      * Returns whether the given {@link IProductCmptProperty} is identified by this
      * {@link IProductCmptPropertyReference}.
      */
-    public boolean isReferencedProperty(IProductCmptProperty property);
+    boolean isReferencedProperty(IProductCmptProperty property);
 
     /**
      * Returns the referenced {@link IProductCmptProperty} or null if it cannot be found.
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws IpsException;
+    IProductCmptProperty findProductCmptProperty(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the part id of the referenced {@link IProductCmptProperty}.
@@ -67,14 +67,14 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * Note that we reference the part id instead of the part's name due to the independence of the
      * part id with respect to the 'Rename' refactoring.
      */
-    public String getReferencedPartId();
+    String getReferencedPartId();
 
     /**
      * Sets the part id of the referenced {@link IProductCmptProperty}.
      * 
      * @see #getReferencedPartId()
      */
-    public void setReferencedPartId(String partId);
+    void setReferencedPartId(String partId);
 
     /**
      * Returns the {@link IpsObjectType} of the {@link IType} that is the origin of the referenced
@@ -84,7 +84,7 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * this information is essential to be able to correctly determine the referenced
      * {@link IProductCmptProperty}.
      */
-    public IpsObjectType getReferencedIpsObjectType();
+    IpsObjectType getReferencedIpsObjectType();
 
     /**
      * Sets the {@link IpsObjectType} of the {@link IType} that is the origin of the referenced
@@ -92,6 +92,6 @@ public interface IProductCmptPropertyReference extends IIpsObjectPart {
      * 
      * @see #getReferencedIpsObjectType()
      */
-    public void setReferencedIpsObjectType(IpsObjectType ipsObjectType);
+    void setReferencedIpsObjectType(IpsObjectType ipsObjectType);
 
 }

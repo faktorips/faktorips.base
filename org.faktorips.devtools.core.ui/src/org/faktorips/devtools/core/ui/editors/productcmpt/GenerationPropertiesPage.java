@@ -180,9 +180,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private Composite createColumnComposite(SashForm parent) {
-        Composite columnComposite = createGridComposite(toolkit, parent, 1, true,
+        return createGridComposite(toolkit, parent, 1, true,
                 GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
-        return columnComposite;
     }
 
     private void createSections(Composite left, Composite right) {
@@ -193,9 +192,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private void createCategorySections(Composite left, Composite right) {
         // Find product component type
-        IProductCmptType productCmptType = null;
-        productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
-
+        IProductCmptType productCmptType = getActiveGeneration()
+                .findProductCmptType(getActiveGeneration().getIpsProject());
         // Create a fallback section if the product component type cannot be found
         if (productCmptType == null) {
             createFallbackSection(left);
@@ -252,10 +250,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private List<IPropertyValue> getPropertyValues(IProductCmptCategory category) {
-        List<IPropertyValue> propertyValues;
-        propertyValues = getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
+        return getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
                 getIpsObject().getIpsProject());
-        return propertyValues;
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {
@@ -384,8 +380,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         if (!showsNotLatestGeneration()) {
             return null;
         }
-        IMessage message = new NotLatestGenerationMessage();
-        return message;
+        return new NotLatestGenerationMessage();
     }
 
     private boolean isNewestGeneration() {
@@ -477,7 +472,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         return IpsUIPlugin.getImageHandling().createImageDescriptor(name);
     }
 
-    private final class NotLatestGenerationMessage implements IMessage {
+    private static final class NotLatestGenerationMessage implements IMessage {
         @Override
         public int getMessageType() {
             return WARNING;

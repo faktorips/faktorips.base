@@ -17,25 +17,25 @@ import org.faktorips.runtime.model.type.ValidationRule;
 
 public interface IValidationRuleConfig extends IPropertyValue {
 
-    public static final String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
+    String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
 
-    public static final String TAG_NAME_ACTIVE = "active"; //$NON-NLS-1$
-    public static final String TAG_NAME_RULE_NAME = "ruleName"; //$NON-NLS-1$
+    String TAG_NAME_ACTIVE = "active"; //$NON-NLS-1$
+    String TAG_NAME_RULE_NAME = "ruleName"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ACTIVE = "active"; //$NON-NLS-1$
+    String PROPERTY_ACTIVE = "active"; //$NON-NLS-1$
 
     /**
      * Returns whether the configured {@link IValidationRule} is active.
      * 
      * @return <code>true</code> if the rule is active, <code>false</code> otherwise.
      */
-    public boolean isActive();
+    boolean isActive();
 
     /**
      * Defines whether the {@link IValidationRule} configured by this {@link IValidationRuleConfig}
      * is active.
      */
-    public void setActive(boolean active);
+    void setActive(boolean active);
 
     /**
      * Returns the {@link IValidationRule} which is configured by this {@link IValidationRuleConfig}
@@ -45,17 +45,17 @@ public interface IValidationRuleConfig extends IPropertyValue {
      * 
      * @throws IpsException if an error occurs while searching.
      */
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
+    IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the new name of the referenced {@link ValidationRule}
      */
-    public void setValidationRuleName(String validationRuleName);
+    void setValidationRuleName(String validationRuleName);
 
     /**
      * Returns the name of the referenced {@link ValidationRule}
      */
-    public String getValidationRuleName();
+    String getValidationRuleName();
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
@@ -64,5 +64,5 @@ public interface IValidationRuleConfig extends IPropertyValue {
      * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
     @Override
-    public IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject);
+    IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject);
 }

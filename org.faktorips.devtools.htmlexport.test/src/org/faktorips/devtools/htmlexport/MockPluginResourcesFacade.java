@@ -23,7 +23,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 
 public class MockPluginResourcesFacade implements IPluginResourceFacade {
 
-    private static final IpsObjectType[] ALL_IPS_OBJECT_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,
+    private static final IpsObjectType[] ALL_IPS_OBJECT_TYPES = { IpsObjectType.ENUM_CONTENT,
             IpsObjectType.ENUM_TYPE, IpsObjectType.POLICY_CMPT_TYPE,
             IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.TABLE_STRUCTURE, IpsObjectType.PRODUCT_CMPT,
             IpsObjectType.TABLE_CONTENTS, IpsObjectType.TEST_CASE_TYPE, IpsObjectType.TEST_CASE,

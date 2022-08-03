@@ -45,7 +45,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
      * 
      * @param computable the {@link IComputable} to load new items
      * @see #of(Class, Function) the static {@link #of(Class, Function)} factory method to avoid
-     *      creating the {@link IComputable} and instead using a {@link Function}.
+     *          creating the {@link IComputable} and instead using a {@link Function}.
      */
     public Memoizer(IComputable<K, V> computable) {
         this.computable = computable;

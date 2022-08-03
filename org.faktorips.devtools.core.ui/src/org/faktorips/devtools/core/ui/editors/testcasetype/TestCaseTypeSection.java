@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -38,6 +37,7 @@ import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -394,11 +394,43 @@ public class TestCaseTypeSection extends IpsSection {
     /**
      * State class contains the enable state of all actions (for buttons and context menu)
      */
-    private class TreeActionEnableState {
-        boolean addEnable = false;
-        boolean removeEnable = false;
-        boolean upEnable = false;
-        boolean downEnable = false;
+    private static class TreeActionEnableState {
+        private boolean addEnable = false;
+        private boolean removeEnable = false;
+        private boolean upEnable = false;
+        private boolean downEnable = false;
+
+        public boolean isAddEnable() {
+            return addEnable;
+        }
+
+        public void setAddEnable(boolean addEnable) {
+            this.addEnable = addEnable;
+        }
+
+        public boolean isRemoveEnable() {
+            return removeEnable;
+        }
+
+        public void setRemoveEnable(boolean removeEnable) {
+            this.removeEnable = removeEnable;
+        }
+
+        public boolean isUpEnable() {
+            return upEnable;
+        }
+
+        public void setUpEnable(boolean upEnable) {
+            this.upEnable = upEnable;
+        }
+
+        public boolean isDownEnable() {
+            return downEnable;
+        }
+
+        public void setDownEnable(boolean downEnable) {
+            this.downEnable = downEnable;
+        }
     }
 
     /**
@@ -430,9 +462,11 @@ public class TestCaseTypeSection extends IpsSection {
                         }
                         clickedEvent(e);
                     }
+                    // CSOFF: IllegalCatch
                 } catch (Exception ex) {
                     IpsPlugin.logAndShowErrorDialog(ex);
                 }
+                // CSON: IllegalCatch
             }
 
             /**
@@ -551,9 +585,9 @@ public class TestCaseTypeSection extends IpsSection {
         public void mouseDown(MouseEvent e) {
             currSelectedDetailObject = object;
             if (section == null) {
-                Section section = objectCache.getSection(object);
-                if (section != null) {
-                    selectSection(section);
+                Section sectionFromCache = objectCache.getSection(object);
+                if (sectionFromCache != null) {
+                    selectSection(sectionFromCache);
                 }
             } else {
                 selectSection(section);
@@ -781,10 +815,11 @@ public class TestCaseTypeSection extends IpsSection {
                         redrawDetailArea(testPolicyCmptTypeParameter, object);
                     });
                 }
-
-            } catch (Exception e1) {
-                throw new RuntimeException(e1);
+                // CSOFF: IllegalCatch
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
             }
+            // CSON: IllegalCatch
         }
 
         @Override
@@ -793,10 +828,29 @@ public class TestCaseTypeSection extends IpsSection {
         }
     }
 
+    private abstract static class ErrorLoggingAction extends IpsAction {
+        public ErrorLoggingAction(ISelectionProvider selectionProvider) {
+            super(selectionProvider);
+        }
+
+        @Override
+        public void run(IStructuredSelection selection) {
+            try {
+                runWith(selection);
+                // CSOFF: IllegalCatch
+            } catch (Exception e) {
+                IpsPlugin.logAndShowErrorDialog(e);
+            }
+            // CSON: IllegalCatch
+        }
+
+        protected abstract void runWith(IStructuredSelection selection);
+    }
+
     /**
      * Action to add an element
      */
-    private class AddAction extends IpsAction {
+    private class AddAction extends ErrorLoggingAction {
 
         public AddAction() {
             super(treeViewer);
@@ -806,23 +860,19 @@ public class TestCaseTypeSection extends IpsSection {
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.addEnable;
+            return actionEnableState.isAddEnable();
         }
 
         @Override
-        public void run(IStructuredSelection selection) {
-            try {
-                addParameterClicked();
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
+        public void runWith(IStructuredSelection selection) {
+            addParameterClicked();
         }
     }
 
     /**
      * Action to remove an element
      */
-    private class RemoveAction extends IpsAction {
+    private class RemoveAction extends ErrorLoggingAction {
 
         public RemoveAction() {
             super(treeViewer);
@@ -832,23 +882,19 @@ public class TestCaseTypeSection extends IpsSection {
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.removeEnable;
+            return actionEnableState.isRemoveEnable();
         }
 
         @Override
-        public void run(IStructuredSelection selection) {
-            try {
-                removeClicked();
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
+        public void runWith(IStructuredSelection selection) {
+            removeClicked();
         }
     }
 
     /**
      * Action to move up an element
      */
-    private class MoveUpAction extends IpsAction {
+    private class MoveUpAction extends ErrorLoggingAction {
 
         public MoveUpAction() {
             super(treeViewer);
@@ -858,23 +904,19 @@ public class TestCaseTypeSection extends IpsSection {
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.upEnable;
+            return actionEnableState.isUpEnable();
         }
 
         @Override
-        public void run(IStructuredSelection selection) {
-            try {
-                moveUpClicked(selection);
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
+        public void runWith(IStructuredSelection selection) {
+            moveUpClicked(selection);
         }
     }
 
     /**
      * Action to move down an element
      */
-    private class MoveDownAction extends IpsAction {
+    private class MoveDownAction extends ErrorLoggingAction {
 
         public MoveDownAction() {
             super(treeViewer);
@@ -884,16 +926,12 @@ public class TestCaseTypeSection extends IpsSection {
         @Override
         protected boolean computeEnabledProperty(IStructuredSelection selection) {
             TreeActionEnableState actionEnableState = evaluateTreeActionEnableState(selection.getFirstElement());
-            return actionEnableState.downEnable;
+            return actionEnableState.isDownEnable();
         }
 
         @Override
-        public void run(IStructuredSelection selection) {
-            try {
-                moveDownClicked(selection);
-            } catch (Exception e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
+        public void runWith(IStructuredSelection selection) {
+            moveDownClicked(selection);
         }
     }
 
@@ -942,7 +980,7 @@ public class TestCaseTypeSection extends IpsSection {
     }
 
     /**
-     * Post the given runnable to the async executable list of the display
+     * Post the given runnable to the asynchronous executable list of the display
      */
     private void postAsyncRunnable(Runnable r) {
         if (!isDisposed()) {
@@ -1095,8 +1133,7 @@ public class TestCaseTypeSection extends IpsSection {
         ITestParameter firstTestParam = testParam;
         Section firstSection = null;
         if (showAll) {
-            ITestParameter[] testParms = null;
-            testParms = testCaseType.getTestParameters();
+            ITestParameter[] testParms = testCaseType.getTestParameters();
             if (testParms != null && testParms.length > 0) {
                 createDetailsForAllTestParams(testParms);
                 firstTestParam = testParms[0];
@@ -1156,8 +1193,95 @@ public class TestCaseTypeSection extends IpsSection {
             return section;
         }
 
+        showErrors(testParam, section, msgList);
+
+        // create separator line
+        toolkit.getFormToolkit().createCompositeSeparator(section);
+        storeSection(section, testParam);
+
+        BindingContext bindingContext = new BindingContext();
+
+        // create common edit fields
+        Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
+        section.setClient(editFieldsComposite);
+
+        createTestParamDetails(editFieldsComposite, testParam, bindingContext);
+
+        // create details depending on the test parameter
+        if (testParam instanceof ITestPolicyCmptTypeParameter) {
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
+
+            createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, bindingContext);
+
+            // Spacer between test policy cmpt type param and test attribute
+            toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
+
+            createDetailComposite(testParam, structureLayout, details, testPolicyCmptTypeParam);
+        } else if (testParam instanceof ITestValueParameter) {
+            createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, bindingContext);
+        } else if (testParam instanceof ITestRuleParameter) {
+            createTestRuleParamDetails(editFieldsComposite, testParam);
+        }
+
+        bindingContext.updateUI();
+
+        return section;
+    }
+
+    private void createDetailComposite(ITestParameter testParam,
+            GridLayout structureLayout,
+            Composite details,
+            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
+        Composite composite = toolkit.getFormToolkit().createComposite(details);
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        if (!isAssociation(testPolicyCmptTypeParam)) {
+            GridLayout tableBtnLayout = new GridLayout(2, false);
+            tableBtnLayout.horizontalSpacing = 0;
+            tableBtnLayout.marginWidth = 0;
+            tableBtnLayout.marginHeight = 3;
+            composite.setLayout(structureLayout);
+
+            // create the attribute table
+            final TableViewer attributeTableViewer = createTestAttributeTable(composite);
+            objectCache.putAttributeTable(testParam, attributeTableViewer);
+
+            // stores the index of the test attributes for faster move up/down
+            ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
+            for (int i = 0; i < testAttributes.length; i++) {
+                objectCache.putAttributeIdx(testAttributes[i], i);
+            }
+            // set the test attribute table input and pack the columns of the table
+            attributeTableViewer.setInput(testAttributes);
+            repackAttributeTable(attributeTableViewer);
+
+            SectionButtons currSectionButtons = new SectionButtons();
+            currSectionButtons.createButtons(composite, (ITestPolicyCmptTypeParameter)testParam,
+                    attributeTableViewer);
+            objectCache.putSectionButtons(testParam, currSectionButtons);
+
+            // create detail area of selected attributes
+            AttributeDetails attributeDetails = new AttributeDetails();
+            attributeDetails.createAttributeDetailArea(composite);
+            objectCache.putAttributeDetails(testParam, attributeDetails);
+        } else {
+            composite.setLayout(new GridLayout(1, true));
+
+            FormText text = toolkit.getFormToolkit().createFormText(composite, false);
+            GridData gridData = new GridData(GridData.FILL_BOTH);
+            gridData.heightHint = 60;
+            gridData.widthHint = 100;
+            text.setLayoutData(gridData);
+            text.setText(NLS.bind(
+                    Messages.TestCaseTypeSection_FormText_InfoAssociation_1
+                            + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
+                            + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
+                    testPolicyCmptTypeParam.getAssociation()), true, false);
+        }
+    }
+
+    private void showErrors(ITestParameter testParam, Section section, MessageList msgList) {
         // create error indicator in the description bar
-        // show errors for property policy cmpt type and property association,
+        // show errors for property policy component type and property association,
         // because there are no edit fields which shows these errors
         String errorMessageText = ""; //$NON-NLS-1$
         MessageList msgListPolicyCmptType = msgList.getMessagesFor(testParam,
@@ -1194,82 +1318,6 @@ public class TestCaseTypeSection extends IpsSection {
             section.setDescriptionControl(formText);
             addSectionSelectionListeners(null, formText, testParam);
         }
-
-        // create separator line
-        toolkit.getFormToolkit().createCompositeSeparator(section);
-        storeSection(section, testParam);
-
-        BindingContext bindingContext = new BindingContext();
-
-        // create common edit fields
-        Composite editFieldsComposite = toolkit.createLabelEditColumnComposite(section);
-        section.setClient(editFieldsComposite);
-
-        createTestParamDetails(editFieldsComposite, testParam, bindingContext);
-
-        // create details depending on the test parameter
-        if (testParam instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
-
-            createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, bindingContext);
-
-            // Spacer between test policy cmpt type param and test attribute
-            toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
-
-            Composite composite = toolkit.getFormToolkit().createComposite(details);
-            composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-            if (!isAssociation(testPolicyCmptTypeParam)) {
-                GridLayout tableBtnLayout = new GridLayout(2, false);
-                tableBtnLayout.horizontalSpacing = 0;
-                tableBtnLayout.marginWidth = 0;
-                tableBtnLayout.marginHeight = 3;
-                composite.setLayout(structureLayout);
-
-                // create the attribute table
-                final TableViewer attributeTableViewer = createTestAttributeTable(composite);
-                objectCache.putAttributeTable(testParam, attributeTableViewer);
-
-                // stores the index of the test attributes for faster move up/down
-                ITestAttribute[] testAttributes = testPolicyCmptTypeParam.getTestAttributes();
-                for (int i = 0; i < testAttributes.length; i++) {
-                    objectCache.putAttributeIdx(testAttributes[i], i);
-                }
-                // set the test attribute table input and pack the columns of the table
-                attributeTableViewer.setInput(testAttributes);
-                repackAttributeTable(attributeTableViewer);
-
-                SectionButtons currSectionButtons = new SectionButtons();
-                currSectionButtons.createButtons(composite, (ITestPolicyCmptTypeParameter)testParam,
-                        attributeTableViewer);
-                objectCache.putSectionButtons(testParam, currSectionButtons);
-
-                // create detail area of selected attributes
-                AttributeDetails attributeDetails = new AttributeDetails();
-                attributeDetails.createAttributeDetailArea(composite);
-                objectCache.putAttributeDetails(testParam, attributeDetails);
-            } else {
-                composite.setLayout(new GridLayout(1, true));
-
-                FormText text = toolkit.getFormToolkit().createFormText(composite, false);
-                GridData gridData = new GridData(GridData.FILL_BOTH);
-                gridData.heightHint = 60;
-                gridData.widthHint = 100;
-                text.setLayoutData(gridData);
-                text.setText(NLS.bind(
-                        Messages.TestCaseTypeSection_FormText_InfoAssociation_1
-                                + Messages.TestCaseTypeSection_FormText_InfoAssociation_2
-                                + Messages.TestCaseTypeSection_FormText_InfoAssociation_3,
-                        testPolicyCmptTypeParam.getAssociation()), true, false);
-            }
-        } else if (testParam instanceof ITestValueParameter) {
-            createTestValueParamDetails(editFieldsComposite, (ITestValueParameter)testParam, bindingContext);
-        } else if (testParam instanceof ITestRuleParameter) {
-            createTestRuleParamDetails(editFieldsComposite, testParam);
-        }
-
-        bindingContext.updateUI();
-
-        return section;
     }
 
     @Override
@@ -1299,9 +1347,8 @@ public class TestCaseTypeSection extends IpsSection {
         table.setLayoutData(new GridData(GridData.FILL_BOTH));
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        TableColumn column = null;
+        TableColumn column = new TableColumn(table, SWT.LEFT);
 
-        column = new TableColumn(table, SWT.LEFT);
         column.setText(Messages.TestCaseTypeSection_AttributeTable_ColumnTitleAttributeName);
 
         column = new TableColumn(table, SWT.LEFT);
@@ -1749,70 +1796,34 @@ public class TestCaseTypeSection extends IpsSection {
         editFieldName.getControl().setFocus();
     }
 
+    private static SelectionListener onSelection(Runnable r) {
+        return new SelectionListener() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                try {
+                    r.run();
+                    // CSOFF: IllegalCatch
+                } catch (Exception ex) {
+                    IpsPlugin.logAndShowErrorDialog(ex);
+                }
+                // CSON: IllegalCatch
+            }
+
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+                // Nothing to do
+            }
+        };
+    }
+
     /**
      * Adds the button listener for the tree area.
      */
     private void hookButtonListeners() {
-        removeButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    removeClicked();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-        addParameterButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    addParameterClicked();
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-        moveUpButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveUpClicked(getSelectedObjectInTree());
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-        moveDownButton.addSelectionListener(new SelectionListener() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                try {
-                    moveDownClicked(getSelectedObjectInTree());
-                } catch (Exception ex) {
-                    IpsPlugin.logAndShowErrorDialog(ex);
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
-                // Nothing to do
-            }
-        });
+        removeButton.addSelectionListener(onSelection(this::removeClicked));
+        addParameterButton.addSelectionListener(onSelection(this::addParameterClicked));
+        moveUpButton.addSelectionListener(onSelection(() -> moveUpClicked(getSelectedObjectInTree())));
+        moveDownButton.addSelectionListener(onSelection(() -> moveDownClicked(getSelectedObjectInTree())));
     }
 
     /**
@@ -1967,8 +1978,7 @@ public class TestCaseTypeSection extends IpsSection {
             ISelection selection = attributeTable.getSelection();
             if (selection instanceof IStructuredSelection) {
                 IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-                for (Iterator<?> iter = structuredSelection.iterator(); iter.hasNext();) {
-                    Object element = iter.next();
+                for (Object element : structuredSelection) {
                     if (element instanceof ITestAttribute) {
                         testAttributesSelected.add((ITestAttribute)element);
                     }
@@ -2088,10 +2098,10 @@ public class TestCaseTypeSection extends IpsSection {
             return;
         }
         TreeActionEnableState treeActionEnableState = evaluateTreeActionEnableState(object);
-        removeButton.setEnabled(treeActionEnableState.removeEnable);
-        addParameterButton.setEnabled(treeActionEnableState.addEnable);
-        moveUpButton.setEnabled(treeActionEnableState.upEnable);
-        moveDownButton.setEnabled(treeActionEnableState.downEnable);
+        removeButton.setEnabled(treeActionEnableState.isRemoveEnable());
+        addParameterButton.setEnabled(treeActionEnableState.isAddEnable());
+        moveUpButton.setEnabled(treeActionEnableState.isUpEnable());
+        moveDownButton.setEnabled(treeActionEnableState.isDownEnable());
     }
 
     private TreeActionEnableState evaluateTreeActionEnableState(Object object) {
@@ -2106,25 +2116,25 @@ public class TestCaseTypeSection extends IpsSection {
         }
 
         if (obj instanceof ITestPolicyCmptTypeParameter) {
-            treeActionEnableState.removeEnable = true;
-            treeActionEnableState.addEnable = true;
-            treeActionEnableState.upEnable = true;
-            treeActionEnableState.downEnable = true;
+            treeActionEnableState.setRemoveEnable(true);
+            treeActionEnableState.setAddEnable(true);
+            treeActionEnableState.setUpEnable(true);
+            treeActionEnableState.setDownEnable(true);
         } else if (obj instanceof ITestParameter) {
-            treeActionEnableState.removeEnable = true;
-            treeActionEnableState.addEnable = false;
-            treeActionEnableState.upEnable = true;
-            treeActionEnableState.downEnable = true;
+            treeActionEnableState.setRemoveEnable(true);
+            treeActionEnableState.setAddEnable(false);
+            treeActionEnableState.setUpEnable(true);
+            treeActionEnableState.setDownEnable(true);
         } else if (obj instanceof TestCaseTypeTreeRootElement) {
-            treeActionEnableState.removeEnable = false;
-            treeActionEnableState.addEnable = true;
-            treeActionEnableState.upEnable = false;
-            treeActionEnableState.downEnable = false;
+            treeActionEnableState.setRemoveEnable(false);
+            treeActionEnableState.setAddEnable(true);
+            treeActionEnableState.setUpEnable(false);
+            treeActionEnableState.setDownEnable(false);
         } else {
-            treeActionEnableState.removeEnable = false;
-            treeActionEnableState.addEnable = false;
-            treeActionEnableState.upEnable = false;
-            treeActionEnableState.downEnable = false;
+            treeActionEnableState.setRemoveEnable(false);
+            treeActionEnableState.setAddEnable(false);
+            treeActionEnableState.setUpEnable(false);
+            treeActionEnableState.setDownEnable(false);
         }
         return treeActionEnableState;
     }

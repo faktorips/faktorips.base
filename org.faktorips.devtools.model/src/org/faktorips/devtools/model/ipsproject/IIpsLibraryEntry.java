@@ -29,7 +29,7 @@ public interface IIpsLibraryEntry extends IIpsObjectPathEntry {
      * 
      * @throws IOException In case of an exception while IO operations when initializing the library
      */
-    public void initStorage(Path path) throws IOException;
+    void initStorage(Path path) throws IOException;
 
-    public Path getPath();
+    Path getPath();
 }

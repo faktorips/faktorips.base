@@ -25,7 +25,7 @@ public class TestContentsChangeListener implements ContentsChangeListener {
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        this.lastEvent = event;
+        lastEvent = event;
         count++;
 
     }

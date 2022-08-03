@@ -317,8 +317,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateKeyValuesFromTo() throws Exception {
-        MessageList msgList = null;
-
         IColumn column1 = structure.newColumn();
         column1.setDatatype(Datatype.STRING.getQualifiedName());
         column1.setName("first");
@@ -342,7 +340,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.newColumn("2", "second");
         table.newColumn("3", "third");
 
-        msgList = table.validate(project);
+        MessageList msgList = table.validate(project);
         assertNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
 
         IRow newRow = tableGen.newRow();

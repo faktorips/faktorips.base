@@ -131,9 +131,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
         @Override
         protected EditDialog createEditDialog(IIpsObjectPart part, Shell shell) {
-            AttributeEditDialog attributeEditDialog = new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
-
-            return attributeEditDialog;
+            return new AttributeEditDialog((IPolicyCmptTypeAttribute)part, shell);
         }
 
         @Override
@@ -223,8 +221,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             @Override
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
-                ValueDatatype valueDatatype = null;
-                valueDatatype = attribute.findDatatype(attribute.getIpsProject());
+                ValueDatatype valueDatatype = attribute.findDatatype(attribute.getIpsProject());
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String property = COLUMN_PROPERTIES.get(columnIndex).property;
@@ -263,12 +260,9 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                     } else {
                         return StringUtils.EMPTY;
                     }
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE.equals(property)) {
-                    if (PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
-                        return String.valueOf(attributeInfo.getTableColumnScale());
-                    } else {
-                        return StringUtils.EMPTY;
-                    }
+                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE.equals(property)
+                        && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
+                    return String.valueOf(attributeInfo.getTableColumnScale());
                 } else {
                     return StringUtils.EMPTY;
                 }

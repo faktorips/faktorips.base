@@ -12,6 +12,6 @@ package org.faktorips.runtime.productdataprovider;
 
 public interface IProductDataProviderFactory {
 
-    public IProductDataProvider newInstance();
+    IProductDataProvider newInstance();
 
 }

@@ -35,7 +35,7 @@ import org.faktorips.runtime.model.annotation.IpsProductCmptType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ProductAttributeTest {
@@ -322,13 +322,13 @@ public class ProductAttributeTest {
     }
 
     @IpsEnumType(name = "AbstractEnumType", attributeNames = { "" })
-    private static interface AbstractEnumType {
-
+    private interface AbstractEnumType {
+        // abstract
     }
 
     @IpsEnumType(name = "ConcreteEnumType", attributeNames = { "" })
     private static class ConcreteEnumType implements AbstractEnumType {
-
+        // concrete
     }
 
 }

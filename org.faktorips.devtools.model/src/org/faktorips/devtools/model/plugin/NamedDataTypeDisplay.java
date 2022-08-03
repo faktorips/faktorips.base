@@ -32,7 +32,7 @@ public enum NamedDataTypeDisplay {
 
     private final String text;
 
-    private NamedDataTypeDisplay(String id, String text) {
+    NamedDataTypeDisplay(String id, String text) {
         this.id = id;
         this.text = text;
     }

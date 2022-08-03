@@ -147,8 +147,7 @@ public class AggregateRootFinder {
     }
 
     private List<IProductCmpt> getIndexedRootCmpts() {
-        List<IProductCmpt> rootCmpts = new ArrayList<>(potentialRootCmpts.values());
-        return rootCmpts;
+        return new ArrayList<>(potentialRootCmpts.values());
     }
 
     private IIpsProject getIpsProject() {

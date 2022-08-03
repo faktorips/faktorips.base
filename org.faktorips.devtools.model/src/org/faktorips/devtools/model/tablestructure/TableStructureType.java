@@ -30,7 +30,7 @@ public enum TableStructureType {
     private final String id;
     private final String name;
 
-    private TableStructureType(String id, String name) {
+    TableStructureType(String id, String name) {
         this.id = id;
         this.name = name;
     }

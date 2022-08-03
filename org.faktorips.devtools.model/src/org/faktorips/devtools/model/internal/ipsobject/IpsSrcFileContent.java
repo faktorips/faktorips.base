@@ -97,11 +97,7 @@ public class IpsSrcFileContent {
             modified = newModified;
             parsable = true;
             initializedFinished();
-        } catch (IOException e) {
-            IoUtil.close(is);
-            parsable = false;
-            ipsObject.markAsFromUnparsableFile();
-        } catch (SAXException e) {
+        } catch (IOException | SAXException e) {
             IoUtil.close(is);
             parsable = false;
             ipsObject.markAsFromUnparsableFile();

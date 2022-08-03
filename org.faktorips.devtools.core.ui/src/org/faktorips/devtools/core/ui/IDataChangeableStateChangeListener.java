@@ -23,5 +23,5 @@ public interface IDataChangeableStateChangeListener {
     /**
      * Called when the given object's data changeable state has changed.
      */
-    public void dataChangeableStateHasChanged(IDataChangeableReadAccess object);
+    void dataChangeableStateHasChanged(IDataChangeableReadAccess object);
 }

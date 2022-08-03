@@ -48,17 +48,13 @@ public class TableUsage extends TypePart {
      *            configuration is not changing over time.
      * 
      * @return The table instance hold by the product component and is identified by this table
-     *         usage
+     *             usage
      */
     public ITable<?> getTable(IProductComponent productComponent, Calendar effectiveDate) {
         try {
             return (ITable<?>)getter
                     .invoke(getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime()));
-        } catch (IllegalAccessException e) {
-            throw getterError(productComponent, e);
-        } catch (InvocationTargetException e) {
-            throw getterError(productComponent, e);
-        } catch (SecurityException e) {
+        } catch (IllegalAccessException | InvocationTargetException | SecurityException e) {
             throw getterError(productComponent, e);
         }
     }

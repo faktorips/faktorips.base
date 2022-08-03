@@ -117,8 +117,7 @@ public class ModelLabelProvider implements ILabelProvider {
             if (descriptor == null) {
                 return null;
             }
-            Image image = (Image)resourceManager.get(descriptor);
-            return image;
+            return (Image)resourceManager.get(descriptor);
         }
 
         return null;

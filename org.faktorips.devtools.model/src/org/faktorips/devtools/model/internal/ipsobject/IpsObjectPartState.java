@@ -73,9 +73,7 @@ public class IpsObjectPartState {
     public IpsObjectPartState(String part) {
         try {
             state = XmlUtil.parseDocument(new ByteArrayInputStream(part.getBytes()));
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -103,9 +101,7 @@ public class IpsObjectPartState {
     public IpsObjectPartState(String part, ClassLoader cl) {
         try {
             state = XmlUtil.parseDocument(new ByteArrayInputStream(part.getBytes()));
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             throw new RuntimeException(e);
         }
 

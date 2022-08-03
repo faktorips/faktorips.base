@@ -654,7 +654,7 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         }
     }
 
-    private static enum MandatoryMarker implements IMarker {
+    private enum MandatoryMarker implements IMarker {
 
         INSTANCE;
 

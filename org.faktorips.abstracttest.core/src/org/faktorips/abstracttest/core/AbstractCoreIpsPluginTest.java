@@ -140,7 +140,6 @@ public abstract class AbstractCoreIpsPluginTest extends AbstractIpsPluginTest {
         PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsRefactoring.toLtkRefactoring(),
                 CheckConditionsOperation.ALL_CONDITIONS);
         Abstractions.getWorkspace().run(operation, new NullProgressMonitor());
-        RefactoringStatus conditionStatus = operation.getConditionStatus();
-        return conditionStatus;
+        return operation.getConditionStatus();
     }
 }

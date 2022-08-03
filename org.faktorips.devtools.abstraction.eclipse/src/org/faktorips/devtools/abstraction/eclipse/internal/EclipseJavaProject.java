@@ -141,10 +141,8 @@ public class EclipseJavaProject extends EclipseJavaElement implements AJavaProje
             }
             IClasspathEntry[] entries = javaProject().getResolvedClasspath(true);
             for (IClasspathEntry entry : entries) {
-                if (Objects.equals(entry.getOutputLocation(), relativePath)) {
-                    return true;
-                }
-                if (Objects.equals(entry.getPath(), relativePath)) {
+                if (Objects.equals(entry.getOutputLocation(), relativePath)
+                        || Objects.equals(entry.getPath(), relativePath)) {
                     return true;
                 }
             }

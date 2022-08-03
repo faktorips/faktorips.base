@@ -174,7 +174,7 @@ public class AssociationDerivedUnionGroup extends Composite {
             super(association);
             this.association = association;
             subset = association.isSubsetOfADerivedUnion();
-            AssociationDerivedUnionGroup.this.addDisposeListener($ -> dispose());
+            addDisposeListener($ -> dispose());
             initDerivedUnionCandidates();
         }
 
@@ -261,10 +261,8 @@ public class AssociationDerivedUnionGroup extends Composite {
                     return false;
                 }
             }
-            if (association.isDerived() || isSubset()) {
-                return false;
-            }
-            if (AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType())) {
+            if (association.isDerived() || isSubset()
+                    || AssociationType.COMPOSITION_DETAIL_TO_MASTER.equals(association.getAssociationType())) {
                 return false;
             }
             return true;

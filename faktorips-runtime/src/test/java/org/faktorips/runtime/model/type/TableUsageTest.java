@@ -39,7 +39,7 @@ import org.faktorips.runtime.model.table.TableStructureKind;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TableUsageTest {
@@ -229,6 +229,7 @@ public class TableUsageTest {
     }
 
     private static class FooTableRow {
+        // an empty row
     }
 
     @IpsTableStructure(name = "BarTable", type = TableStructureKind.MULTIPLE_CONTENTS, columns = {})
@@ -252,6 +253,7 @@ public class TableUsageTest {
     }
 
     private static class BarTableRow {
+        // another empty row
     }
 
     @IpsProductCmptType(name = "MyProduct")

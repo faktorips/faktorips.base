@@ -44,9 +44,7 @@ public class ClassLoaderDataSource {
         try {
             inputStream = url.openStream();
             return documentBuilder.parse(inputStream);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot parse xml resource '" + resourcePath + "'", e);
-        } catch (SAXException e) {
+        } catch (IOException | SAXException e) {
             throw new RuntimeException("Cannot parse xml resource '" + resourcePath + "'", e);
         } finally {
             if (inputStream != null) {

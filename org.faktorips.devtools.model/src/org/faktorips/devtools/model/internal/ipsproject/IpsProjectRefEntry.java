@@ -145,12 +145,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         Pattern p = createNWDIProjectNamePattern(hasInstanceNumber);
         Matcher mCurr = p.matcher(currProjectName);
 
-        if (!mCurr.find()) {
-            // exit and don't fix project name, because current project doesn't match nwds project
-            // name pattern
-            return refProjectName;
-        }
-        if (!((hasInstanceNumber && mCurr.groupCount() == 3) || !hasInstanceNumber && mCurr.groupCount() == 2)) {
+        // CSOFF: BooleanExpressionComplexity
+        if (!mCurr.find()
+                || !((hasInstanceNumber && mCurr.groupCount() == 3) || !hasInstanceNumber && mCurr.groupCount() == 2)) {
+            // CSON: BooleanExpressionComplexity
             // exit and don't fix project name, because current project doesn't match nwds project
             // name pattern
             return refProjectName;

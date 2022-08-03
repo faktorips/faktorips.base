@@ -12,23 +12,23 @@ package org.faktorips.devtools.model.ipsobject;
 
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
 
-    public static final String PROPERTY_ID = "id"; //$NON-NLS-1$
+    String PROPERTY_ID = "id"; //$NON-NLS-1$
 
     /**
      * The part's id that uniquely identifies it in it's parent.
      */
-    public String getId();
+    String getId();
 
     /**
      * Deletes the part by removing it from it's container and firing a part-removed event.
      */
     @Override
-    public void delete();
+    void delete();
 
     /**
      * Returns whether the part was deleted (<code>true</code>) or not.
      */
-    public boolean isDeleted();
+    boolean isDeleted();
 
     /**
      * {@inheritDoc}
@@ -36,6 +36,6 @@ public interface IIpsObjectPart extends IIpsObjectPartContainer {
      * Ensures that the ID of this part is maintained.
      */
     @Override
-    public void copyFrom(IIpsObjectPartContainer source);
+    void copyFrom(IIpsObjectPartContainer source);
 
 }

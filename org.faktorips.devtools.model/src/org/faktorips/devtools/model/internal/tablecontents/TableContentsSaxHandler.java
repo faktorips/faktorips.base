@@ -108,9 +108,9 @@ public class TableContentsSaxHandler extends DefaultHandler {
         if (isTableContents(qName)) {
             tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
             try {
-                this.tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
+                tableStructure = tableContents.findTableStructure(tableContents.getIpsProject());
             } catch (IpsException e) {
-                this.tableStructure = null;
+                tableStructure = null;
             }
             tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));
         } else if (COLUMNREFERENCE_TAG.equals(qName)) {
@@ -128,10 +128,10 @@ public class TableContentsSaxHandler extends DefaultHandler {
             insideRowNode = true;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
-            nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue(); //$NON-NLS-1$
+            nullValue = Boolean.parseBoolean(attributes.getValue("isNull")); //$NON-NLS-1$
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = true;
-            nullValue = Boolean.valueOf(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL)).booleanValue();
+            nullValue = Boolean.parseBoolean(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL));
             extensionPropertyId = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
 

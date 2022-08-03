@@ -2130,9 +2130,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsSrcFile testCase = folderC.createIpsFile(IpsObjectType.TEST_CASE, "TestCase1", true, null);
         IIpsSrcFile productCmpt = folderC.createIpsFile(IpsObjectType.PRODUCT_CMPT, "ProductCmpt1", true, null);
 
-        IIpsSrcFile[] result = null;
+        IIpsSrcFile[] result = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
 
-        result = ipsProject.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         assertEquals(3, result.length);
         assertTrue(containsIpsSrcFile(result, policyCmptType));
 
@@ -2310,9 +2309,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     private Message getExpectedMsgForExtensibleMarkerEnums(EnumType enumType) {
         String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
                 enumType.getQualifiedName());
-        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+        return new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
                 ipsProject.getIpsProjectPropertiesFile());
-        return expectedMsg;
     }
 
     @Test
@@ -2331,9 +2329,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     private Message getExpectedMsgForAbstractMarkerEnums(EnumType enumType) {
         String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
                 enumType.getQualifiedName());
-        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+        return new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
                 ipsProject.getIpsProjectPropertiesFile());
-        return expectedMsg;
     }
 
     @Test

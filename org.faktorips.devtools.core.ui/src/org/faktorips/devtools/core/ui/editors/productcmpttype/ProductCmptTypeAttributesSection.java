@@ -51,7 +51,7 @@ public class ProductCmptTypeAttributesSection extends AttributesSection {
         super.performRefresh();
     }
 
-    private class ProductCmptTypeAttributesComposite extends AttributesComposite {
+    private static class ProductCmptTypeAttributesComposite extends AttributesComposite {
 
         public ProductCmptTypeAttributesComposite(IProductCmptType productCmptType, Composite parent,
                 IWorkbenchPartSite site, UIToolkit toolkit) {

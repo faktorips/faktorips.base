@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.modelstructure;
 
+import java.util.Objects;
+
 import org.faktorips.devtools.core.ui.views.modelstructure.AbstractModelStructureContentProvider.ToChildAssociationType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.util.ArgumentCheck;
@@ -43,11 +45,7 @@ class PathElement {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((associationType == null) ? 0 : associationType.hashCode());
-        result = prime * result + ((component == null) ? 0 : component.hashCode());
-        return result;
+        return Objects.hash(associationType, component);
     }
 
     @Override
@@ -55,24 +53,14 @@ class PathElement {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         PathElement other = (PathElement)obj;
         if (associationType != other.associationType) {
             return false;
         }
-        if (component == null) {
-            if (other.component != null) {
-                return false;
-            }
-        } else if (!component.equals(other.component)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(component, other.component);
     }
 
 }

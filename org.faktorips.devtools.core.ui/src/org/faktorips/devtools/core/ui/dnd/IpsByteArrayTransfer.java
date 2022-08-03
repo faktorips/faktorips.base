@@ -123,13 +123,14 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      * is inappropriate for the subclass.
      * 
      * @return {@code false} if any of the following conditions applies ({@code true} otherwise):
-     *         <ol>
-     *         <li>the object is {@code null}
-     *         <li>the object is not an array
-     *         <li>the <em>transfer class </em> is not assignable from an object within the array
-     *         <li>{@link #validateObject(Object)} returns {@code false} for any object within the
-     *         array
-     *         </ol>
+     *             <ol>
+     *             <li>the object is {@code null}
+     *             <li>the object is not an array
+     *             <li>the <em>transfer class </em> is not assignable from an object within the
+     *             array
+     *             <li>{@link #validateObject(Object)} returns {@code false} for any object within
+     *             the array
+     *             </ol>
      * 
      * @see Class#isAssignableFrom(Class)
      */
@@ -232,7 +233,7 @@ public abstract class IpsByteArrayTransfer<T> extends ByteArrayTransfer {
      * data remains in the byte stream.
      * 
      * @return the array of transfered objects or {@code null} if
-     *         {@link #isSupportedType(TransferData)} returns {@code false}
+     *             {@link #isSupportedType(TransferData)} returns {@code false}
      */
     @Override
     protected final Object nativeToJava(TransferData transferData) {

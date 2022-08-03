@@ -35,7 +35,7 @@ public interface IFixDifferencesComposite extends IAdaptable {
      * @return true if this element and every child element is empty
      */
 
-    public abstract boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Fixes the difference between the type and the product component. This method should fix the
@@ -45,16 +45,16 @@ public interface IFixDifferencesComposite extends IAdaptable {
      * For example if the type contains a new attribute but the product component generation. has
      * not matching attribute value, this method creates the attribute value.
      */
-    public abstract void fixAllDifferencesToModel();
+    void fixAllDifferencesToModel();
 
     /**
      * An {@link IFixDifferencesComposite} would have children that also contains fixes. This method
      * getting the containing fix differences elements
      * 
      * @return a list of {@link IFixDifferencesComposite IFixDifferencesComposites} that are
-     *         children of this element
+     *             children of this element
      */
-    public List<IFixDifferencesComposite> getChildren();
+    List<IFixDifferencesComposite> getChildren();
 
     /**
      * Getting the {@link IIpsElement} that corresponds to this {@link IFixDifferencesComposite}.
@@ -62,6 +62,6 @@ public interface IFixDifferencesComposite extends IAdaptable {
      * 
      * @return The {@link IIpsElement} that corresponds to this {@link IFixDifferencesComposite}
      */
-    public IIpsElement getCorrespondingIpsElement();
+    IIpsElement getCorrespondingIpsElement();
 
 }

@@ -68,10 +68,13 @@ public abstract class AbstractAssociationDescriptor<P extends Association> exten
                     .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
                             + "\" as one of it's @IpsAssociations but no matching @IpsAssociation could be found."));
 
-            @SuppressWarnings("unchecked")
-            P overwritingAssociationFor = (P)association.createOverwritingAssociationFor(type);
-            return overwritingAssociationFor;
+            return castOverwritingAssociation(type, association);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private P castOverwritingAssociation(Type type, Association association) {
+        return (P)association.createOverwritingAssociationFor(type);
     }
 
     protected abstract P createValid(Type type);

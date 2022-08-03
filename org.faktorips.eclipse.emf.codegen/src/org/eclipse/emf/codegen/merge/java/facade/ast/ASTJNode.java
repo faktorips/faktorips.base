@@ -213,7 +213,7 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
 
     /**
      * @return the parent of this ASTJNode, or <code>null</code> if this node has been created or
-     *         removed
+     *             removed
      */
     @Override
     public ASTJNode<?> getParent() {

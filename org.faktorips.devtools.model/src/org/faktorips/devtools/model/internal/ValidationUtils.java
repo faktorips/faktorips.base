@@ -259,7 +259,7 @@ public class ValidationUtils {
 
         if (datatype == null) {
             String text = MessageFormat.format(Messages.ValidationUtils_VALUE_VALUEDATATYPE_NOT_FOUND,
-                    new Object[] { propertyName, value, datatypeName });
+                    propertyName, value, datatypeName);
             Message msg = new Message(
                     IValidationMsgCodesForInvalidValues.MSGCODE_CANT_CHECK_VALUE_BECAUSE_VALUEDATATYPE_CANT_BE_FOUND,
                     text, Message.ERROR, part, propertyName);

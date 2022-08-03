@@ -19,7 +19,7 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
  */
 public abstract class AbstractPrefixContentProposalProvider implements IContentProposalProvider {
 
-    protected static final IContentProposal[] EMPTY_PROPOSALS = new IContentProposal[0];
+    protected static final IContentProposal[] EMPTY_PROPOSALS = {};
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {

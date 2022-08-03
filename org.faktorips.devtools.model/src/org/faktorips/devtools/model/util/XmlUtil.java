@@ -278,9 +278,7 @@ public class XmlUtil {
         }
         xml = noIndentationAroundCDATA(xml);
         xml = noIndentationToXmlDataContent(xml);
-        xml = removeOrEscapeUnwantedCharacters(xml, escapeBlanks);
-
-        return xml;
+        return removeOrEscapeUnwantedCharacters(xml, escapeBlanks);
     }
 
     /**
@@ -726,7 +724,7 @@ public class XmlUtil {
             throw new NullPointerException();
         }
         String isNull = parent.getAttribute("isNull"); //$NON-NLS-1$
-        if (Boolean.valueOf(isNull).booleanValue()) {
+        if (Boolean.parseBoolean(isNull)) {
             return null;
         } else {
             Text textNode = getTextNode(parent);
@@ -748,10 +746,9 @@ public class XmlUtil {
 
     public static final String getSchemaLocation(String schemaName) {
         AVersion version = Abstractions.getVersion();
-        String schemaLocation = String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
+        return String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
                 version.majorMinor().toString(),
                 schemaName);
-        return schemaLocation;
     }
 
     /**

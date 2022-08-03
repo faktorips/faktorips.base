@@ -27,53 +27,53 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
      * <code>null</code>.
      */
     @Override
-    public IRuntimeRepository getRepository();
+    IRuntimeRepository getRepository();
 
     /**
      * Returns the product component's id that uniquely identifies it in the repository it belongs
      * to.
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the id of the product component kind that this product component belongs to.
      */
-    public String getKindId();
+    String getKindId();
 
     /**
      * Returns the version id that identifies this product component in its kind.
      */
-    public String getVersionId();
+    String getVersionId();
 
     /**
      * A variant is a product component that is based on another product component (hence varied
      * base). It uses the varied base as a template and "changes" specific values.
      * 
      * @return <code>true</code> if this is a variant of another {@link IProductComponent},
-     *         <code>false</code> for regular product components.
+     *             <code>false</code> for regular product components.
      * 
      * @see #getVariedBase()
      */
-    public boolean isVariant();
+    boolean isVariant();
 
     /**
      * Allows distinguishing variants not only by their product component type but also their varied
      * base. {@link #isVariant()} allows determining whether a product component is a variant.
      * 
      * @return the {@link IProductComponent} this {@link IProductComponent} is based on. Returns
-     *         {@code null} if it is a regular product component or the {@link IProductComponent
-     *         variedBase} can not be found in the {@link IRuntimeRepository}.
+     *             {@code null} if it is a regular product component or the {@link IProductComponent
+     *             variedBase} can not be found in the {@link IRuntimeRepository}.
      * 
      * @see #isVariant()
      * @see IRuntimeRepository#getProductComponent(String)
      */
-    public IProductComponent getVariedBase();
+    IProductComponent getVariedBase();
 
     /**
      * Returns the date when this product component expires. Returning <code>null</code> means no
      * end of the validity period.
      */
-    public DateTime getValidTo();
+    DateTime getValidTo();
 
     /**
      * Returns the generation that is effective on the given date or <code>null</code> if no
@@ -83,7 +83,7 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
      *             generations.
      * @throws NullPointerException if effective date is <code>null</code>.
      */
-    public IProductComponentGeneration getGenerationBase(Calendar effectiveDate);
+    IProductComponentGeneration getGenerationBase(Calendar effectiveDate);
 
     /**
      * Returns the latest product component generation of the provided product component or
@@ -92,7 +92,7 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
      * @throws UnsupportedOperationException if this product component has no product component
      *             generations.
      */
-    public IProductComponentGeneration getLatestProductComponentGeneration();
+    IProductComponentGeneration getLatestProductComponentGeneration();
 
     /**
      * Returns <code>true</code> if this product component has {@link IProductComponentGeneration
@@ -100,7 +100,7 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
      * 
      * @since 3.15
      */
-    public boolean isChangingOverTime();
+    boolean isChangingOverTime();
 
     /**
      * Returns the description for this product component in the specified locale. If there is no
@@ -109,8 +109,8 @@ public interface IProductComponent extends IRuntimeObject, IProductObject {
      * string.
      * 
      * @return the description for the given locale/language or an empty string if no description
-     *         exists for the given locale
+     *             exists for the given locale
      */
-    public String getDescription(Locale locale);
+    String getDescription(Locale locale);
 
 }

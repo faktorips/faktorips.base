@@ -67,7 +67,6 @@ public class BundleVersionProvider implements IVersionProvider<OsgiVersion> {
                 return getVersion(value);
             } catch (IllegalArgumentException e) {
                 IpsLog.log(e);
-                return OsgiVersion.EMPTY_VERSION;
             }
         }
         return OsgiVersion.EMPTY_VERSION;

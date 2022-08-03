@@ -52,7 +52,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
     public EnumSubsetEditDialog(IEnumValueSetProvider provider, ValueDatatype datatype, Shell parentShell,
             boolean viewOnly) {
         super(provider.getTargetConfiguredValueSet(), parentShell, Messages.PolicyAttributeEditDialog_editLabel, true);
-        this.enumValueSetProvider = provider;
+        enumValueSetProvider = provider;
         valueDatatype = datatype;
         this.viewOnly = viewOnly;
         enableDialogSizePersistence(SETTINGS_KEY_PREFIX, datatype.getQualifiedName(), new Point(INITIAL_WIDTH,

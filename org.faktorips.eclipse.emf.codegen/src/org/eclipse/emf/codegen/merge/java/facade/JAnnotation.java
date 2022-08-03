@@ -18,7 +18,7 @@ package org.eclipse.emf.codegen.merge.java.facade;
  * Annotation as defined by JLS3 9.7.
  * 
  * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/interfaces.html">JLS3 Section
- *      9.7</a>
+ *          9.7</a>
  * @since 2.3.0
  */
 public interface JAnnotation extends JNode {

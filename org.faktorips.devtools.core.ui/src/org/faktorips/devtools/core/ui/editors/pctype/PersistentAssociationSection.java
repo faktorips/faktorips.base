@@ -243,7 +243,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
                     return jpaAssociationInfo.getFetchType().toString();
                 } else if (IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL.equals(property)) {
-                    return Boolean.valueOf(jpaAssociationInfo.isOrphanRemoval()).toString();
+                    return Boolean.toString(jpaAssociationInfo.isOrphanRemoval());
                 } else if (IPersistentAssociationInfo.PROPERTY_INDEX_NAME.equals(property)) {
                     return jpaAssociationInfo.getIndexName();
                 } else if (joinTableReq) {
@@ -260,7 +260,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
                     return jpaAssociationInfo.getJoinColumnName();
                 } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {
-                    return Boolean.valueOf(jpaAssociationInfo.isJoinColumnNullable()).toString();
+                    return Boolean.toString(jpaAssociationInfo.isJoinColumnNullable());
                 } else {
                     return StringUtils.EMPTY;
                 }

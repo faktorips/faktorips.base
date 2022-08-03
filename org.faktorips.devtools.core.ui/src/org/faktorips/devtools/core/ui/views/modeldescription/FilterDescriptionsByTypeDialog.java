@@ -168,7 +168,7 @@ public class FilterDescriptionsByTypeDialog extends CheckedTreeSelectionDialog {
 
     @Override
     public int open() {
-        this.setInitialElementSelections(getSavedParts());
+        setInitialElementSelections(getSavedParts());
         return super.open();
     }
 
@@ -176,7 +176,7 @@ public class FilterDescriptionsByTypeDialog extends CheckedTreeSelectionDialog {
     protected void okPressed() {
         setSelections(POSSIBLE_SELECTIONS, false);
         super.okPressed();
-        setSelections(this.getSelectedParts(), true);
+        setSelections(getSelectedParts(), true);
     }
 
     private void setSelections(List<Class<? extends ITypePart>> selections, boolean status) {

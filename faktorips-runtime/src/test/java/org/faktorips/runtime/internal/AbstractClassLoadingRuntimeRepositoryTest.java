@@ -102,7 +102,8 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     @Test
     public void shouldLoadNormalGenerationNormally() {
         GenerationTocEntry genEntry = mock(GenerationTocEntry.class);
-        ProductCmptTocEntry parentEntry = mock(ProductCmptTocEntry.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
+        ProductCmptTocEntry parentEntry = mock(ProductCmptTocEntry.class,
+                withSettings().defaultAnswer(RETURNS_SMART_NULLS));
         Element element = mock(Element.class);
         Element prodCmptElement = mock(Element.class);
         ProductComponentGeneration gen = mock(ProductComponentGeneration.class);

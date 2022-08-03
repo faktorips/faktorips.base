@@ -33,7 +33,7 @@ public class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
             IIpsArtefactBuilderSetConfigModel ipsArtefactBuilderSetConfigModel) {
 
         this.ipsProject = ipsProject;
-        this.model = ipsArtefactBuilderSetConfigModel;
+        model = ipsArtefactBuilderSetConfigModel;
     }
 
     @Override

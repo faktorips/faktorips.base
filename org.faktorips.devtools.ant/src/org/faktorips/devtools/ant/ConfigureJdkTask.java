@@ -51,7 +51,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * @param dir path to the JDK as String
      */
     public void setDir(String dir) {
-        this.jdkDir = dir;
+        jdkDir = dir;
     }
 
     /**
@@ -60,7 +60,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      * @return Path as String
      */
     public String getDir() {
-        return this.jdkDir;
+        return jdkDir;
     }
 
     /**
@@ -89,21 +89,21 @@ public class ConfigureJdkTask extends AbstractIpsTask {
      */
     private File checkDir() {
 
-        if (this.getDir() == null || "".equals(this.getDir())) {
+        if (getDir() == null || "".equals(getDir())) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
 
-        File dir = new File(this.getDir());
+        File dir = new File(getDir());
         if (!dir.exists()) {
-            throw new BuildException("Directory " + this.getDir() + " doesn't exist.");
+            throw new BuildException("Directory " + getDir() + " doesn't exist.");
         }
 
         if (!dir.isDirectory()) {
-            throw new BuildException("Provided 'dir' " + this.getDir() + " is not a Directory.");
+            throw new BuildException("Provided 'dir' " + getDir() + " is not a Directory.");
         }
 
         if (!dir.canRead()) {
-            throw new BuildException("Provided 'dir' " + this.getDir() + " is not readable.");
+            throw new BuildException("Provided 'dir' " + getDir() + " is not readable.");
         }
         return dir;
     }
@@ -117,9 +117,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
 
         searchJDK(rootDir, locations, types, exstingLocations, new NullProgressMonitor());
 
-        if (locations.isEmpty()) {
-            throw new BuildException("Directory " + this.getDir() + " doesn't contain a JVM.");
-        } else {
+        if (!locations.isEmpty()) {
             Iterator<IVMInstallType> iter2 = types.iterator();
             for (File location : locations) {
                 IVMInstallType type = iter2.next();
@@ -136,7 +134,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
                 return vm;
             }
         }
-        throw new BuildException("Directory " + this.getDir() + " doesn't contain a JVM.");
+        throw new BuildException("Directory " + getDir() + " doesn't contain a JVM.");
     }
 
     /**

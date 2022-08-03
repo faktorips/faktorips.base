@@ -208,9 +208,8 @@ public abstract class ValueDatatypeControlFactory {
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
      * for.
      * 
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
+     * @deprecated use {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *                 instead.
      */
     @Deprecated
     public IpsCellEditor createCellEditor(UIToolkit toolkit,
@@ -255,8 +254,7 @@ public abstract class ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         EditField<String> editField = createEditFieldForTable(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
-        return tableCellEditor;
+        return new EditFieldCellEditor(editField);
     }
 
     /**

@@ -72,9 +72,8 @@ public class ProductCmptCompareItemCreator extends AbstractCompareItemCreator {
 
                 IIpsElement[] children = productCmpt.getChildren();
                 for (IIpsElement element : children) {
-                    if (element instanceof IIpsObjectGeneration) {
-                        continue;
-                    } else if (element instanceof IDescription) {
+                    if ((element instanceof IIpsObjectGeneration)
+                            || (element instanceof IDescription)) {
                         continue;
                     }
                     new ProductCmptCompareItem(productCmptItem, element);

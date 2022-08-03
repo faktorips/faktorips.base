@@ -38,27 +38,27 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * The list of applicable types. For product component types only aggregations and associations
      * are supported.
      */
-    public static final AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
+    AssociationType[] APPLICABLE_ASSOCIATION_TYPES = {
             AssociationType.AGGREGATION, AssociationType.ASSOCIATION };
 
-    public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
+    String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
+    String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public static final String PROPERTY_RELEVANT = "relevant"; //$NON-NLS-1$
+    String PROPERTY_RELEVANT = "relevant"; //$NON-NLS-1$
 
     /**
      * Message code for validation messages when the matching association was not found
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = IAssociation.MSGCODE_PREFIX
+    String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = IAssociation.MSGCODE_PREFIX
             + "MatchingAssociationNotFound"; //$NON-NLS-1$
 
     /**
      * Message code for validation messages when the matching association is invalid
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = IAssociation.MSGCODE_PREFIX
+    String MSGCODE_MATCHING_ASSOCIATION_INVALID = IAssociation.MSGCODE_PREFIX
             + "MatchingAssociationInvalid"; //$NON-NLS-1$
 
     /**
@@ -66,7 +66,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * properties. i.e. a subset is defined as changing over time, but the derived union is defined
      * as static.
      */
-    public static final String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = IAssociation.MSGCODE_PREFIX
+    String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = IAssociation.MSGCODE_PREFIX
             + "DerivedUnionChangingOverTimeMismatch"; //$NON-NLS-1$
 
     /**
@@ -74,20 +74,20 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * name. Although these associations could be two different ones we would generate duplicated
      * methods.
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = IAssociation.MSGCODE_PREFIX
+    String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = IAssociation.MSGCODE_PREFIX
             + "MatchingAssociationDuplicateName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the property change over time mismatch with the
      * constrained association
      */
-    public static final String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = IAssociation.MSGCODE_PREFIX
+    String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = IAssociation.MSGCODE_PREFIX
             + "ConstrainedChangeOverTimeMismatch"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
-    public IProductCmptType getProductCmptType();
+    IProductCmptType getProductCmptType();
 
     /**
      * Returns the target product component type or <code>null</code> if either this relation hasn't
@@ -96,7 +96,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public IProductCmptType findTargetProductCmptType(IIpsProject project);
+    IProductCmptType findTargetProductCmptType(IIpsProject project);
 
     /**
      * Returns <code>true</code> if this association constrains a policy component type association,
@@ -107,7 +107,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
+    boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Returns the corresponding policy component type association or <code>null</code> if no such
@@ -120,7 +120,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      *            necessarily the project this type is part of.
      * 
      */
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject);
+    IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Returns the corresponding policy component type association that is set per default or
@@ -130,7 +130,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      */
-    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject);
+    IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Finding all {@link IPolicyCmptTypeAssociation IPolicyCmptTypeAssociations} that could be
@@ -143,7 +143,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * 
      * @param ipsProject The {@link IIpsProject} used as search base project
      * @return the list of all {@link IPolicyCmptTypeAssociation} that could potentially be
-     *         configured by this {@link IProductCmptTypeAssociation}
+     *             configured by this {@link IProductCmptTypeAssociation}
      * 
      * @throws IpsException In case of a core exception while loading the objects and resources
      */

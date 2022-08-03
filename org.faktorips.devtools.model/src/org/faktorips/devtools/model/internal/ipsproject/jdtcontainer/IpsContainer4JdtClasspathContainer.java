@@ -68,7 +68,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
     }
 
     void setContainerResolver(JdtClasspathResolver containerResolver) {
-        this.jdtClasspathResolver = containerResolver;
+        jdtClasspathResolver = containerResolver;
     }
 
     void setEntryCreator(JdtClasspathEntryCreator entryCreator) {
@@ -134,7 +134,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
      * Returns the JDT classpath container identified by the given IPS container entry.
      * 
      * @return The identified JDT classpath container or <code>null</code> of the entry does not
-     *         identify one.
+     *             identify one.
      * 
      * @throws JavaModelException if an error occurs while accessing the classpath container.
      * @throws NullPointerException if containerEntry is <code>null</code>.

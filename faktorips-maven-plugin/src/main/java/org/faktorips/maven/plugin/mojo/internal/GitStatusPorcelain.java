@@ -22,7 +22,7 @@ public class GitStatusPorcelain {
 
         private final String name;
 
-        private Verbosity(String name) {
+        Verbosity(String name) {
             this.name = name;
         }
 
@@ -53,7 +53,7 @@ public class GitStatusPorcelain {
     public void setVerbosity(String value) {
         for (Verbosity enumValue : Verbosity.values()) {
             if (enumValue.matches(value)) {
-                this.verbosity = enumValue;
+                verbosity = enumValue;
                 return;
             }
         }

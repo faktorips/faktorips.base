@@ -88,7 +88,7 @@ public enum IpsMenuId {
 
     private final String id;
 
-    private IpsMenuId(String id) {
+    IpsMenuId(String id) {
         this.id = id;
     }
 

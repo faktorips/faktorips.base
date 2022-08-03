@@ -90,7 +90,7 @@ public class DependencyResolver {
      * @param removedIpsSrcFiles Source files that are removed
      * 
      * @return A {@link MultiMap} containing all found dependencies. The key is the project where
-     *         the dependency comes from.
+     *             the dependency comes from.
      */
     public MultiMap<IIpsProject, IDependency> collectDependenciesForIncrementalBuild(
             List<IIpsSrcFile> addedOrChangedIpsSrcFiles,
@@ -165,8 +165,7 @@ public class DependencyResolver {
     private IIpsProject getEnumTypeProject(IEnumContent enumContent) {
         IEnumType enumType = enumContent.findEnumType(ipsProject);
         if (enumType != null) {
-            IIpsProject project = enumType.getIpsProject();
-            return project;
+            return enumType.getIpsProject();
         }
         return null;
     }

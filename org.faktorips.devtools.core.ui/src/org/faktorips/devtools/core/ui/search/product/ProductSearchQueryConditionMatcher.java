@@ -32,7 +32,7 @@ class ProductSearchQueryConditionMatcher {
 
     public ProductSearchQueryConditionMatcher(ProductSearchPresentationModel searchModel) {
         this.searchModel = searchModel;
-        this.searchOperators = createSearchOperators();
+        searchOperators = createSearchOperators();
     }
 
     protected ProductSearchQueryConditionMatcher(ProductSearchPresentationModel searchModel,
@@ -60,10 +60,8 @@ class ProductSearchQueryConditionMatcher {
                 conditionModel.getSearchedElement());
         ISearchOperatorType operatorType = conditionModel.getOperatorType();
 
-        ISearchOperator searchOperator = operatorType.createSearchOperator(operandProvider,
+        return operatorType.createSearchOperator(operandProvider,
                 conditionModel.getValueDatatype(), conditionModel.getArgument());
-
-        return searchOperator;
     }
 
     protected Set<IProductPartsContainer> getResults(Set<IIpsSrcFile> matchingSrcFiles) {

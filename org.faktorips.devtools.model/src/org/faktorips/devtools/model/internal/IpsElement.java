@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.IIpsElement;
@@ -18,7 +20,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
-    private static final IIpsElement[] NO_CHILDREN = new IIpsElement[0];
+    private static final IIpsElement[] NO_CHILDREN = {};
 
     // FIXME make private
     // CSOFF: VisibilityModifierCheck
@@ -105,8 +107,7 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
-        return result;
+        return prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
     }
 
     @Override
@@ -114,28 +115,12 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         IpsElement other = (IpsElement)obj;
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(name, other.name)
+                && Objects.equals(getParent(), other.getParent());
     }
 
     @Override

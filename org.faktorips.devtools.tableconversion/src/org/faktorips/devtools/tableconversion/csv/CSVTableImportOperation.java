@@ -59,7 +59,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
 
         this.structure = structure;
-        this.tableRows = targetGeneration;
+        tableRows = targetGeneration;
 
         initDatatypes();
     }

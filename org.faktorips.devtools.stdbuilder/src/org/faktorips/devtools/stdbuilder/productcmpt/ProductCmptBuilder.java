@@ -120,10 +120,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) {
-        if (!isContainingAvailableFormula(container)) {
-            return false;
-        }
-        if (container.findProductCmptType(container.getIpsProject()) == null) {
+        if (!isContainingAvailableFormula(container)
+                || (container.findProductCmptType(container.getIpsProject()) == null)) {
             return false;
         }
         return true;

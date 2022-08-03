@@ -108,13 +108,13 @@ public enum MethodNames {
 
     /**
      * @see org.faktorips.runtime.IRuntimeRepository#getExistingProductComponentGeneration(String,
-     *      java.util.Calendar)
+     *          java.util.Calendar)
      */
     public static final String GET_EXISTING_PRODUCT_COMPONENT_GENERATION = "getExistingProductComponentGeneration";
 
     /**
      * @see AbstractModelObject#initPropertiesFromXml(java.util.Map,
-     *      org.faktorips.runtime.IRuntimeRepository)
+     *          org.faktorips.runtime.IRuntimeRepository)
      */
     public static final String INIT_PROPERTIES_FROM_XML = "initPropertiesFromXml";
 
@@ -140,7 +140,7 @@ public enum MethodNames {
 
     /**
      * @see org.faktorips.runtime.IDeltaSupport#computeDelta(org.faktorips.runtime.IModelObject,
-     *      org.faktorips.runtime.IDeltaComputationOptions)
+     *          org.faktorips.runtime.IDeltaComputationOptions)
      */
     public static final String COMPUTE_DELTA = "computeDelta";
 
@@ -151,17 +151,17 @@ public enum MethodNames {
 
     /**
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, Object,
-     *      Object, org.faktorips.runtime.IDeltaComputationOptions)
+     *          Object, org.faktorips.runtime.IDeltaComputationOptions)
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, int, int,
-     *      org.faktorips.runtime.IDeltaComputationOptions)
+     *          org.faktorips.runtime.IDeltaComputationOptions)
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, boolean,
-     *      boolean, org.faktorips.runtime.IDeltaComputationOptions)
+     *          boolean, org.faktorips.runtime.IDeltaComputationOptions)
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, double,
-     *      double, org.faktorips.runtime.IDeltaComputationOptions)
+     *          double, org.faktorips.runtime.IDeltaComputationOptions)
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, float,
-     *      float, org.faktorips.runtime.IDeltaComputationOptions)
+     *          float, org.faktorips.runtime.IDeltaComputationOptions)
      * @see org.faktorips.runtime.internal.ModelObjectDelta#checkPropertyChange(String, char, char,
-     *      org.faktorips.runtime.IDeltaComputationOptions)
+     *          org.faktorips.runtime.IDeltaComputationOptions)
      */
     public static final String MODELOBJECTDELTA_CHECK_PROPERTY_CHANGE = "checkPropertyChange";
 
@@ -172,13 +172,13 @@ public enum MethodNames {
 
     /**
      * @see ModelObjectDelta#newEmptyDelta(org.faktorips.runtime.IModelObject,
-     *      org.faktorips.runtime.IModelObject)
+     *          org.faktorips.runtime.IModelObject)
      */
     public static final String MODELOBJECTDELTA_NEW_EMPTY_DELTA = "newEmptyDelta";
 
     /**
      * @see ModelObjectDelta#newDelta(org.faktorips.runtime.IModelObject,
-     *      org.faktorips.runtime.IModelObject, org.faktorips.runtime.IDeltaComputationOptions)
+     *          org.faktorips.runtime.IModelObject, org.faktorips.runtime.IDeltaComputationOptions)
      */
     public static final String MODELOBJECTDELTA_NEW_DELTA = "newDelta";
 

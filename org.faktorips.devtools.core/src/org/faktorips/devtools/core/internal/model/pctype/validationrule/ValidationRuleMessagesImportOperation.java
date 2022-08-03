@@ -107,7 +107,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
     @Override
     public void run(IProgressMonitor progressMonitor) {
         if (progressMonitor != null) {
-            this.setMonitor(progressMonitor);
+            setMonitor(progressMonitor);
         }
         resultStatus = loadContent();
         if (resultStatus.getSeverity() != IStatus.ERROR) {
@@ -135,7 +135,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
     }
 
     void setKeyValueMap(Map<String, String> keyValueMap) {
-        this.contentMap = keyValueMap;
+        contentMap = keyValueMap;
     }
 
     protected IStatus importContentMap() {

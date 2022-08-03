@@ -127,13 +127,12 @@ public class IpsModelExtensionsViaEclipsePluginsTest {
                 MY_BASED_ON_FEATURE_MANAGER);
         attributes.put(FeatureVersionManagerExtensions.ATTRIBUTE_REQUIRED_FOR_ALL_PROJECTS, Boolean.toString(true));
         String value = "";
-        IConfigurationElement[] children = new IConfigurationElement[0];
+        IConfigurationElement[] children = {};
         Map<String, Object> executabled = new HashMap<>();
         executabled.put("class", ipsFeatureVersionManager);
-        TestConfigurationElement testConfigurationElement = new TestConfigurationElement(
+        return new TestConfigurationElement(
                 FeatureVersionManagerExtensions.EXTENSION_POINT_ID_FEATURE_VERSION_MANAGER, attributes, value, children,
                 executabled);
-        return testConfigurationElement;
     }
 
 }

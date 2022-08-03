@@ -63,9 +63,9 @@ public class ImportHandler {
     public ImportHandler(String ownPackage, Set<String> superTypeNames) {
         this.ownPackage = ownPackage;
         this.superTypeNames = superTypeNames;
-        this.classNameToImportStatementMap = new LinkedHashMap<>();
-        this.implicitlyImportedClassNamesMap = new LinkedHashMap<>();
-        this.qualifiedPropertyNameToStaticImportStatementMap = new LinkedHashMap<>();
+        classNameToImportStatementMap = new LinkedHashMap<>();
+        implicitlyImportedClassNamesMap = new LinkedHashMap<>();
+        qualifiedPropertyNameToStaticImportStatementMap = new LinkedHashMap<>();
     }
 
     /**
@@ -92,8 +92,8 @@ public class ImportHandler {
      * 
      * @param importStatement the import statement to be imported
      * @return the unqualified class name normally. Returns the qualified class name if there is a
-     *         class name conflict (two classes with same unqualified name are used in the same
-     *         class).
+     *             class name conflict (two classes with same unqualified name are used in the same
+     *             class).
      * @see #requiresQualifiedClassName(ImportStatement)
      */
     public String addImportAndReturnClassName(String importStatement) {
@@ -144,7 +144,7 @@ public class ImportHandler {
      * @param element The element in the class you want to import, may be '*'
      * 
      * @return the import statement created and stored in this handler or {@link Optional#empty()}
-     *         if it's not necessary to import
+     *             if it's not necessary to import
      */
     public Optional<StaticImportStatement> addStatic(String qualifiedName, String element) {
         String className = qualifiedName.trim();
@@ -300,7 +300,7 @@ public class ImportHandler {
         public TypeWithGenericsDeclaration(ImportStatement importStatement,
                 List<TypeDeclaration> genericTypeDeclarations) {
             super(importStatement);
-            this.genericDeclarations = genericTypeDeclarations;
+            genericDeclarations = genericTypeDeclarations;
         }
 
         @Override

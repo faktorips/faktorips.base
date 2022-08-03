@@ -29,21 +29,21 @@ public interface IPersistableTypeConverter {
     /**
      * Returns the annotation to use on attributes of the given data type.
      */
-    public Annotation getAnnotationForDatatype(Datatype datatype);
+    Annotation getAnnotationForDatatype(Datatype datatype);
 
     /**
      * Returns an annotation suitable to persist a temporal type as a time stamp.
      */
-    public Annotation getAnnotationForTimestampDatatype();
+    Annotation getAnnotationForTimestampDatatype();
 
     /**
      * Returns an annotation suitable to persist a temporal type using both the date and time part.
      */
-    public Annotation getAnnotationForDateAndTimeDatatype();
+    Annotation getAnnotationForDateAndTimeDatatype();
 
     /**
      * Returns an annotation suitable to persist a temporal type using only the date part.
      */
-    public Annotation getAnnotationForDateOnlyDatatype();
+    Annotation getAnnotationForDateOnlyDatatype();
 
 }

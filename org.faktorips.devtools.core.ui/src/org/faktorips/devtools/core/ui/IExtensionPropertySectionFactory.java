@@ -51,7 +51,7 @@ public interface IExtensionPropertySectionFactory {
      * {@link IIpsObjectPartContainer}.
      * 
      * @return whether this factory wants to create a section for the given
-     *         {@link IIpsObjectPartContainer}.
+     *             {@link IIpsObjectPartContainer}.
      */
     boolean createsSectionFor(IIpsObjectPartContainer ipsObjectPart);
 

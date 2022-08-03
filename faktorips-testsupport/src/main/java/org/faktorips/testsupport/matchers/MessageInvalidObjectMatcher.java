@@ -27,7 +27,7 @@ public class MessageInvalidObjectMatcher extends MessageMatcher {
 
     public MessageInvalidObjectMatcher(Object invalidObject) {
         this.invalidObject = invalidObject;
-        this.propertyName = Optional.empty();
+        propertyName = Optional.empty();
     }
 
     public MessageInvalidObjectMatcher(Object invalidObject, String propertyName) {

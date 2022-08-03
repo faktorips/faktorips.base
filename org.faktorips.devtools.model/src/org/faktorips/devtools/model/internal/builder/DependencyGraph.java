@@ -45,8 +45,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
 
     static {
         TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/dependencygraphmanagement")) //$NON-NLS-1$
-                .booleanValue();
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/dependencygraphmanagement"));
     }
 
     private final MultiMap<Object, IDependency> dependantsForMap = MultiMap.createWithSetsAsValues();
@@ -190,7 +189,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
      * simply write the name of the project.
      * 
      * @serialData The maps are serialized by default serialization. The {@link #ipsProject} is
-     *             serialized by writing its name.
+     *                 serialized by writing its name.
      */
     private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
@@ -202,8 +201,8 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
      * is set by reading its name and resolving the project from the {@link IIpsModel}.
      * 
      * @serialData The maps are read by default deserialization. The {@link #ipsProject} is read by
-     *             reading the name of the project and resolving the project via the
-     *             {@link IIpsModel}.
+     *                 reading the name of the project and resolving the project via the
+     *                 {@link IIpsModel}.
      */
     private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
         s.defaultReadObject();

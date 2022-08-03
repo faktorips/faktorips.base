@@ -15,5 +15,5 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 
 public interface ILinkStrategy {
-    public LinkPageElement createLink(DocumentationContext context, IPageElement... containedPageElements);
+    LinkPageElement createLink(DocumentationContext context, IPageElement... containedPageElements);
 }

@@ -99,8 +99,8 @@ public class IpsBuilder {
     private final ABuilder builder;
 
     static {
-        TRACE_BUILDER_TRACE = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder")) //$NON-NLS-1$
-                .booleanValue();
+        TRACE_BUILDER_TRACE = Boolean
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder"));
     }
 
     /**
@@ -176,6 +176,7 @@ public class IpsBuilder {
             getIpsProject().reinitializeIpsArtefactBuilderSet();
         } catch (CoreException e) {
             throw new IpsException(e);
+            // CSOFF: IllegalCatch
         } catch (Throwable t) {
             /*
              * Need to catch Throwable. If the incremental project builder throws an error, Eclipse
@@ -183,15 +184,16 @@ public class IpsBuilder {
              */
             throw new IpsException(new IpsStatus(t));
         }
+        // CSON: IllegalCatch
         return builder.getProject().getReferencedProjects();
     }
 
     private void printBuildExceptionMessages(MultiStatus buildStatus) {
         IStatus[] builds = buildStatus.getChildren();
-        for (int i = 0; i < builds.length; i++) {
-            IStatus[] buildResults = builds[i].getChildren();
-            for (int j = 0; j < buildResults.length; j++) {
-                Throwable exception = buildResults[j].getException();
+        for (IStatus build : builds) {
+            IStatus[] buildResults = build.getChildren();
+            for (IStatus buildResult : buildResults) {
+                Throwable exception = buildResult.getException();
                 if (exception != null) {
                     System.out.println("ERROR: " + exception.getMessage()); //$NON-NLS-1$
                 }
@@ -317,11 +319,9 @@ public class IpsBuilder {
             return true;
         }
         IIpsProject ipsProject = getIpsProject();
-        if (delta
-                .findMember(toEclipsePath(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())) != null) {
-            return true;
-        }
-        if (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null) {
+        if ((delta
+                .findMember(toEclipsePath(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())) != null)
+                || (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null)) {
             return true;
         }
         IIpsArchiveEntry[] entries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getArchiveEntries();
@@ -350,10 +350,12 @@ public class IpsBuilder {
         }
         try {
             builderSet.beforeBuildProcess(buildKind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             buildStatus.add(
                     new IpsStatus("Error during beforeBuildProcess() of the builder set: " + builderSet.getId(), e)); //$NON-NLS-1$
         }
+        // CSON: IllegalCatch
     }
 
     private void afterBuildForBuilderSet(IIpsArtefactBuilderSet builderSet,
@@ -369,10 +371,12 @@ public class IpsBuilder {
         }
         try {
             builderSet.afterBuildProcess(buildKind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             buildStatus.add(new IpsStatus("Error during afterBuildProcess() of the builder set: " + builderSet.getId(), //$NON-NLS-1$
                     e));
         }
+        // CSON: IllegalCatch
     }
 
     private void applyBuildCommand(IIpsArtefactBuilderSet currentBuilderSet,
@@ -392,9 +396,11 @@ public class IpsBuilder {
         for (IIpsArtefactBuilder artefactBuilder : artefactBuilders) {
             try {
                 command.build(artefactBuilder, buildStatus);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 addIpsStatus(artefactBuilder, command, buildStatus, e);
             }
+            // CSON: IllegalCatch
         }
         if (monitor.isCanceled()) {
             throw new OperationCanceledException();
@@ -477,9 +483,11 @@ public class IpsBuilder {
                     monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
                     buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
                     monitor.worked(1);
+                    // CSOFF: IllegalCatch
                 } catch (Exception e) {
                     buildStatus.add(new IpsStatus(e));
                 }
+                // CSON: IllegalCatch
             }
         } catch (IpsException e) {
             buildStatus.add(new IpsStatus(e));
@@ -578,97 +586,131 @@ public class IpsBuilder {
             int numberOfBuildCandidates = dependenciesForProjectsMap.count() + visitor.removedIpsSrcFiles.size()
                     + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
-            for (IIpsSrcFile iIpsSrcFile : visitor.removedIpsSrcFiles) {
-                if (monitor.isCanceled()) {
-                    break;
-                }
-                IpsSrcFile ipsSrcFile = (IpsSrcFile)iIpsSrcFile;
-                monitor.subTask(Messages.IpsBuilder_deleting + ipsSrcFile.getName());
-                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile),
-                        monitor);
-                updateDependencyGraph(ipsSrcFile);
-                monitor.worked(1);
-            }
+            buildRemovedIpsSrcFiles(ipsArtefactBuilderSet, buildStatus, monitor, visitor);
 
-            for (IIpsSrcFile iIpsSrcFile : visitor.changedAndAddedIpsSrcFiles) {
-                if (monitor.isCanceled()) {
-                    break;
-                }
-                IpsSrcFile ipsSrcFile = (IpsSrcFile)iIpsSrcFile;
-                monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
-                buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
-                updateDependencyGraph(ipsSrcFile);
-                monitor.worked(1);
-            }
+            buildChangedAndAddedIpsSrcFiles(ipsArtefactBuilderSet, buildStatus, monitor, visitor);
 
-            for (IIpsProject ipsProject : dependenciesForProjectsMap.keySet()) {
-                if (monitor.isCanceled()) {
-                    break;
-                }
-                if (!ipsProject.equals(getIpsProject())) {
-                    if (!checkIpsProjectBeforeBuild(ipsProject)) {
-                        continue;
-                    }
-                }
-                Collection<IDependency> dependencySet = dependenciesForProjectsMap.get(ipsProject);
-
-                /*
-                 * Dependent IPS object can be located in a different project which can have a
-                 * different artefact builder set therefore the builder set needs to be determined
-                 * for each project at this point.
-                 */
-                ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(ipsProject);
-                Set<QualifiedNameType> alreadyBuild = new HashSet<>(dependencySet.size());
-                MultiStatus currentBuildStatus = createInitialMultiStatus();
-                try {
-                    if (!ipsProject.equals(getIpsProject())) {
-                        beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
-                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
-                                new BeforeBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
-                    }
-                    for (IDependency dependency : dependencySet) {
-                        if (monitor.isCanceled()) {
-                            break;
-                        }
-                        QualifiedNameType buildCandidateId = dependency.getSource();
-                        if (alreadyBuild.contains(buildCandidateId)) {
-                            continue;
-                        }
-                        alreadyBuild.add(buildCandidateId);
-                        IIpsObject ipsObject = ipsProject.findIpsObject(buildCandidateId);
-                        if (ipsObject == null) {
-                            continue;
-                        }
-                        monitor.subTask(Messages.IpsBuilder_building + dependency);
-                        buildIpsSrcFile(ipsArtefactBuilderSet, ipsProject, ipsObject.getIpsSrcFile(),
-                                currentBuildStatus, monitor);
-                        updateDependencyGraph(ipsObject.getIpsSrcFile());
-                        monitor.worked(1);
-                    }
-                } catch (Exception e) {
-                    currentBuildStatus.add(new IpsStatus(IStatus.ERROR, MessageFormat.format(
-                            Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
-                } finally {
-                    if (!ipsProject.equals(getIpsProject())) {
-                        applyBuildCommand(ipsArtefactBuilderSet, currentBuildStatus,
-                                new AfterBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
-                        afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
-                        if (currentBuildStatus.getSeverity() != IStatus.OK) {
-                            ipsProject.reinitializeIpsArtefactBuilderSet();
-                        }
-                    }
-                }
-                if (!currentBuildStatus.isOK()) {
-                    buildStatus.add(currentBuildStatus);
-                }
-            }
+            buildDependeningProjects(buildStatus, monitor, dependenciesForProjectsMap);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             buildStatus.add(new IpsStatus(e));
+            // CSON: IllegalCatch
         } finally {
             monitor.done();
             if (TRACE_BUILDER_TRACE) {
                 System.out.println("Incremental build finished."); //$NON-NLS-1$
             }
+        }
+    }
+
+    private void buildDependeningProjects(MultiStatus buildStatus,
+            IProgressMonitor monitor,
+            MultiMap<IIpsProject, IDependency> dependenciesForProjectsMap) {
+        for (IIpsProject ipsProject : dependenciesForProjectsMap.keySet()) {
+            if (monitor.isCanceled()) {
+                break;
+            }
+            if (!ipsProject.equals(getIpsProject())) {
+                if (!checkIpsProjectBeforeBuild(ipsProject)) {
+                    continue;
+                }
+            }
+            Collection<IDependency> dependencySet = dependenciesForProjectsMap.get(ipsProject);
+
+            /*
+             * Dependent IPS object can be located in a different project which can have a different
+             * artefact builder set therefore the builder set needs to be determined for each
+             * project at this point.
+             */
+            IIpsArtefactBuilderSet projectIpsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(ipsProject);
+            Set<QualifiedNameType> alreadyBuild = new HashSet<>(dependencySet.size());
+            MultiStatus currentBuildStatus = createInitialMultiStatus();
+            try {
+                if (!ipsProject.equals(getIpsProject())) {
+                    beforeBuildForBuilderSet(projectIpsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
+                    applyBuildCommand(projectIpsArtefactBuilderSet, currentBuildStatus,
+                            new BeforeBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
+                }
+                buildDependencies(monitor, ipsProject, dependencySet, projectIpsArtefactBuilderSet, alreadyBuild,
+                        currentBuildStatus);
+                // CSOFF: IllegalCatch
+            } catch (Exception e) {
+                currentBuildStatus.add(new IpsStatus(IStatus.ERROR, MessageFormat.format(
+                        Messages.IpsBuilder_msgExceptionWhileBuildingDependentProjects, ipsProject.getName()), e));
+                // CSON: IllegalCatch
+            } finally {
+                if (!ipsProject.equals(getIpsProject())) {
+                    applyBuildCommand(projectIpsArtefactBuilderSet, currentBuildStatus,
+                            new AfterBuildProcessCommand(ABuildKind.INCREMENTAL, ipsProject), monitor);
+                    afterBuildForBuilderSet(projectIpsArtefactBuilderSet, buildStatus, ABuildKind.INCREMENTAL);
+                    if (currentBuildStatus.getSeverity() != IStatus.OK) {
+                        ipsProject.reinitializeIpsArtefactBuilderSet();
+                    }
+                }
+            }
+            if (!currentBuildStatus.isOK()) {
+                buildStatus.add(currentBuildStatus);
+            }
+        }
+    }
+
+    private void buildDependencies(IProgressMonitor monitor,
+            IIpsProject ipsProject,
+            Collection<IDependency> dependencySet,
+            IIpsArtefactBuilderSet projectIpsArtefactBuilderSet,
+            Set<QualifiedNameType> alreadyBuild,
+            MultiStatus currentBuildStatus) {
+        for (IDependency dependency : dependencySet) {
+            if (monitor.isCanceled()) {
+                break;
+            }
+            QualifiedNameType buildCandidateId = dependency.getSource();
+            if (alreadyBuild.contains(buildCandidateId)) {
+                continue;
+            }
+            alreadyBuild.add(buildCandidateId);
+            IIpsObject ipsObject = ipsProject.findIpsObject(buildCandidateId);
+            if (ipsObject == null) {
+                continue;
+            }
+            monitor.subTask(Messages.IpsBuilder_building + dependency);
+            buildIpsSrcFile(projectIpsArtefactBuilderSet, ipsProject, ipsObject.getIpsSrcFile(),
+                    currentBuildStatus, monitor);
+            updateDependencyGraph(ipsObject.getIpsSrcFile());
+            monitor.worked(1);
+        }
+    }
+
+    private void buildChangedAndAddedIpsSrcFiles(IIpsArtefactBuilderSet ipsArtefactBuilderSet,
+            MultiStatus buildStatus,
+            IProgressMonitor monitor,
+            IncBuildVisitor visitor) {
+        for (IIpsSrcFile iIpsSrcFile : visitor.changedAndAddedIpsSrcFiles) {
+            if (monitor.isCanceled()) {
+                break;
+            }
+            IpsSrcFile ipsSrcFile = (IpsSrcFile)iIpsSrcFile;
+            monitor.subTask(Messages.IpsBuilder_building + ipsSrcFile.getName());
+            buildIpsSrcFile(ipsArtefactBuilderSet, getIpsProject(), ipsSrcFile, buildStatus, monitor);
+            updateDependencyGraph(ipsSrcFile);
+            monitor.worked(1);
+        }
+    }
+
+    private void buildRemovedIpsSrcFiles(IIpsArtefactBuilderSet ipsArtefactBuilderSet,
+            MultiStatus buildStatus,
+            IProgressMonitor monitor,
+            IncBuildVisitor visitor) {
+        for (IIpsSrcFile iIpsSrcFile : visitor.removedIpsSrcFiles) {
+            if (monitor.isCanceled()) {
+                break;
+            }
+            IpsSrcFile ipsSrcFile = (IpsSrcFile)iIpsSrcFile;
+            monitor.subTask(Messages.IpsBuilder_deleting + ipsSrcFile.getName());
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new DeleteArtefactBuildCommand(ipsSrcFile),
+                    monitor);
+            updateDependencyGraph(ipsSrcFile);
+            monitor.worked(1);
         }
     }
 
@@ -684,9 +726,11 @@ public class IpsBuilder {
 
             MessageList list = object.validate(object.getIpsProject());
             createMarkersFromMessageList(resource, list, IpsBuilder.PROBLEM_MARKER);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             buildStatus.add(new IpsStatus("An exception occurred during marker updating for " + object, e)); //$NON-NLS-1$
         }
+        // CSON: IllegalCatch
     }
 
     void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
@@ -800,6 +844,7 @@ public class IpsBuilder {
             sourceFolderEntries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getSourceFolderEntries();
         }
 
+        // CSOFF: CyclomaticComplexity
         @Override
         public boolean visit(AResourceDelta delta) {
             AResource resource = delta.getResource();
@@ -836,6 +881,7 @@ public class IpsBuilder {
             }
             return true;
         }
+        // CSON: CyclomaticComplexity
 
         /**
          * Checks if the provided resource is the java output folder resource or the IpsProject
@@ -856,10 +902,10 @@ public class IpsBuilder {
      * The applyBuildCommand method of this class uses this interface.
      */
     private interface BuildCommand {
-        public void build(IIpsArtefactBuilder builder, MultiStatus status) throws IpsException;
+        void build(IIpsArtefactBuilder builder, MultiStatus status) throws IpsException;
     }
 
-    private class BeforeBuildProcessCommand implements BuildCommand {
+    private static class BeforeBuildProcessCommand implements BuildCommand {
 
         private ABuildKind buildKind;
         private IIpsProject ipsProject;
@@ -892,7 +938,7 @@ public class IpsBuilder {
 
     }
 
-    private class AfterBuildProcessCommand implements BuildCommand {
+    private static class AfterBuildProcessCommand implements BuildCommand {
 
         private ABuildKind buildKind;
         private IIpsProject ipsProject;

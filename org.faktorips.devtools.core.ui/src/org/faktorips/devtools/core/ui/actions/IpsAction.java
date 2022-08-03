@@ -39,8 +39,6 @@ public abstract class IpsAction extends Action {
     /** The source of objects to modify by this action. */
     protected ISelectionProvider selectionProvider;
 
-    private ISelection selection = null;
-
     private IDataChangeableReadAccess ctrl;
 
     private ISelectionChangedListener adjustEnableStateListener;
@@ -64,14 +62,14 @@ public abstract class IpsAction extends Action {
             if (sel instanceof IStructuredSelection) {
                 run(new StructuredSelection(mapIpsSrcFilesToIpsObjects((IStructuredSelection)sel)));
             } else {
-                throw new RuntimeException(Messages.IpsAction_msgUnsupportedSelection + selection.getClass().getName());
+                throw new RuntimeException(Messages.IpsAction_msgUnsupportedSelection + sel.getClass().getName());
             }
         }
     }
 
     /**
-     * Returns a list of selected objects, map all selected ips source files to the corresponding
-     * ips object.
+     * Returns a list of selected objects, map all selected IPS source files to the corresponding
+     * IPS object.
      */
     private List<Object> mapIpsSrcFilesToIpsObjects(IStructuredSelection selection) {
         List<Object> selectedIpsObjects = new ArrayList<>((selection).size());

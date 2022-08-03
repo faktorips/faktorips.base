@@ -61,7 +61,7 @@ public class AbstractShowInSupportingViewPartTest {
         IStructuredSelection selection = mock(IStructuredSelection.class);
         Object object = new Object();
         IAdaptable adaptable = mock(IAdaptable.class);
-        IAdaptable[] adaptables = new IAdaptable[] { adaptable };
+        IAdaptable[] adaptables = { adaptable };
         when(selection.getFirstElement()).thenReturn(object, adaptable, adaptables);
 
         ShowInContext context = new ShowInContext(null, selection);

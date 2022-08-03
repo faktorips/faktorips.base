@@ -31,7 +31,7 @@ package org.eclipse.emf.codegen.merge.java.facade;
  * </blockquote>
  * 
  * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/classes.html">JLS3 Section
- *      8.9</a>
+ *          8.9</a>
  * @since 2.3.0
  */
 public interface JEnum extends JAbstractType {

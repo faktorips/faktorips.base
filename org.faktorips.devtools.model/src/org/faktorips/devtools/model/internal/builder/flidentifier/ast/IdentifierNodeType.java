@@ -115,7 +115,7 @@ public enum IdentifierNodeType {
      *            before other functions that may not be provided by the {@link IdentifierParser}.
      * 
      */
-    private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
+    IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
         this.nodeClass = nodeClass;
         this.proposalSortOrder = proposalSortOrder;
     }

@@ -227,7 +227,6 @@ public class HTML2TextReader extends SubstitutionTextReader {
 
         if ("/head".equals(html) && fHeaderDetected && fIgnore) { //$NON-NLS-1$
             fIgnore = false;
-            return EMPTY_STRING;
         }
 
         return EMPTY_STRING;

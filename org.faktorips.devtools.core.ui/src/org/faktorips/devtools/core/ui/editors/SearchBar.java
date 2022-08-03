@@ -61,7 +61,7 @@ public class SearchBar {
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         toolkit.createLabel(searchPanel, Messages.SearchSelectionBar_searchBarTitle);
-        this.searchField = toolkit.createText(searchPanel, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH | SWT.NULL);
+        searchField = toolkit.createText(searchPanel, SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH | SWT.NULL);
         searchField.setMessage(Messages.SearchBar_searchFieldHint);
         searchPmo = new SearchPmo();
         bindingContext = new BindingContext();

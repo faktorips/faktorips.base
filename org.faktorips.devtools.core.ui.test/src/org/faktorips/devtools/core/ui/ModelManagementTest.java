@@ -75,7 +75,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         String encoding = type.getIpsProject().getXmlFileCharset();
         AFile file = type.getIpsSrcFile().getCorrespondingFile();
         String content = StringUtil.readFromInputStream(file.getContents(), encoding);
-        content = content.replaceAll("Blabla", "NewBlabla");
+        content = content.replace("Blabla", "NewBlabla");
         File ioFile = file.getLocation().toFile();
         FileWriter writer = new FileWriter(ioFile);
         writer.write(content);

@@ -21,18 +21,18 @@ import org.faktorips.devtools.abstraction.AResourceDelta;
  */
 public interface IIpsArchiveEntry extends IIpsLibraryEntry {
 
-    public static final String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
+    String FILE_EXTENSION = "ipsar"; //$NON-NLS-1$
 
     /**
      * Returns the IPS archive this entry refers to.
      */
-    public IIpsArchive getIpsArchive();
+    IIpsArchive getIpsArchive();
 
     /**
      * Returns the archive location. Note that the underlying file might not exist and the file
      * might exists outside the workspace.
      */
-    public Path getArchiveLocation();
+    Path getArchiveLocation();
 
     /**
      * Returns true if a representation of this entry is part of the provided delta or one of its
@@ -41,6 +41,6 @@ public interface IIpsArchiveEntry extends IIpsLibraryEntry {
      * Note: For changes of files outside the workspace which are referenced from the project in any
      * kind no IResourceDelta will be created.
      */
-    public boolean isAffectedBy(AResourceDelta delta);
+    boolean isAffectedBy(AResourceDelta delta);
 
 }

@@ -169,11 +169,11 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     @Override
     public AResource getCorrespondingResource() {
-        if (this.correspondingResourceFolder == null) {
+        if (correspondingResourceFolder == null) {
             AProject project = (AProject)getParent().getCorrespondingResource();
-            this.correspondingResourceFolder = project.getFolder(getName());
+            correspondingResourceFolder = project.getFolder(getName());
         }
-        return this.correspondingResourceFolder;
+        return correspondingResourceFolder;
     }
 
     @Override

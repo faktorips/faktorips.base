@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.anySetOf;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -57,7 +57,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AbstractRuntimeRepositoryMockTest {
@@ -124,8 +124,8 @@ public class AbstractRuntimeRepositoryMockTest {
         Set<String> modelTypeImplementationClasses = repositoryA.getAllModelTypeImplementationClasses();
 
         assertNotNull(modelTypeImplementationClasses);
-        verify(repositoryA).getAllModelTypeImplementationClasses(anySetOf(String.class));
-        verify(repositoryB).getAllModelTypeImplementationClasses(anySetOf(String.class));
+        verify(repositoryA).getAllModelTypeImplementationClasses(anySet());
+        verify(repositoryB).getAllModelTypeImplementationClasses(anySet());
     }
 
     private void initRepositoryReferences(AbstractRuntimeRepository referencingRepository,
@@ -146,7 +146,7 @@ public class AbstractRuntimeRepositoryMockTest {
     private void mockRepository(AbstractRuntimeRepository repository) {
         doReturn(null).when(repository).getEnumValueLookupService(ExtensibleEnum.class);
         doReturn(null).when(repository).getEnumValuesInternal(ExtensibleEnum.class);
-        doNothing().when(repository).getAllModelTypeImplementationClasses(anySetOf(String.class));
+        doNothing().when(repository).getAllModelTypeImplementationClasses(anySet());
     }
 
     @Test
@@ -186,7 +186,7 @@ public class AbstractRuntimeRepositoryMockTest {
         assertNotNull(jaxbContext);
     }
 
-    private final class TestAbstractRuntimeRepository extends AbstractRuntimeRepository {
+    private static final class TestAbstractRuntimeRepository extends AbstractRuntimeRepository {
         private final Class<? extends IModelObject> modelObjectClass;
 
         private TestAbstractRuntimeRepository(Class<? extends IModelObject> modelObjectClass) {
@@ -222,7 +222,7 @@ public class AbstractRuntimeRepositoryMockTest {
         @Override
         public void getProductComponentGenerations(IProductComponent productCmpt,
                 List<IProductComponentGeneration> result) {
-
+            // don't care
         }
 
         @Override
@@ -257,7 +257,7 @@ public class AbstractRuntimeRepositoryMockTest {
         protected void getIpsTestCasesStartingWith(String qNamePrefix,
                 List<IpsTest2> result,
                 IRuntimeRepository runtimeRepository) {
-
+            // don't care
         }
 
         @Override
@@ -277,22 +277,22 @@ public class AbstractRuntimeRepositoryMockTest {
 
         @Override
         protected void getAllTables(List<ITable<?>> result) {
-
+            // don't care
         }
 
         @Override
         protected void getAllProductComponents(List<IProductComponent> result) {
-
+            // don't care
         }
 
         @Override
         protected void getAllProductComponents(String kindId, List<IProductComponent> result) {
-
+            // don't care
         }
 
         @Override
         protected void getAllProductComponentIds(List<String> result) {
-
+            // don't care
         }
 
         @Override
@@ -302,7 +302,7 @@ public class AbstractRuntimeRepositoryMockTest {
 
         @Override
         protected void getAllIpsTestCases(List<IpsTest2> result, IRuntimeRepository runtimeRepository) {
-
+            // don't care
         }
 
         @Override
@@ -312,16 +312,16 @@ public class AbstractRuntimeRepositoryMockTest {
 
         @Override
         protected void getAllEnumClasses(LinkedHashSet<Class<?>> result) {
-
+            // don't care
         }
     }
 
     public static class FooSuppe2 extends FooSuppe {
-
+        // another class
     }
 
     public static class FooSuppe extends Foo {
-
+        // another class
     }
 
     @XmlRootElement(name = "Foo")

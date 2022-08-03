@@ -624,22 +624,12 @@ public class Message implements Serializable {
             return false;
         }
         Message other = (Message)o;
-        if (!Objects.equals(code, other.code)) {
+        if (!Objects.equals(code, other.code) || !Objects.equals(text, other.text) || (severity != other.severity)
+                || !Objects.equals(invalidOp, other.invalidOp)) {
             return false;
         }
-        if (!Objects.equals(text, other.text)) {
-            return false;
-        }
-        if (severity != other.severity) {
-            return false;
-        }
-        if (!Objects.equals(invalidOp, other.invalidOp)) {
-            return false;
-        }
-        if (!Objects.equals(replacementParameters, other.replacementParameters)) {
-            return false;
-        }
-        if (!Objects.equals(markers, other.markers)) {
+        if (!Objects.equals(replacementParameters, other.replacementParameters)
+                || !Objects.equals(markers, other.markers)) {
             return false;
         }
         return true;
@@ -701,10 +691,10 @@ public class Message implements Serializable {
          */
         public Builder(Message message) {
             this(message.text, message.severity);
-            this.code = message.code;
-            this.invalidObjectProperties.addAll(message.getInvalidObjectProperties());
-            this.replacementParams.addAll(message.getReplacementParameters());
-            this.markers.addAll(message.getMarkers());
+            code = message.code;
+            invalidObjectProperties.addAll(message.getInvalidObjectProperties());
+            replacementParams.addAll(message.getReplacementParameters());
+            markers.addAll(message.getMarkers());
         }
 
         /**
@@ -823,7 +813,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder replacements(String name, Object value) {
-            this.replacementParams.add(new MsgReplacementParameter(name, value));
+            replacementParams.add(new MsgReplacementParameter(name, value));
             return this;
         }
 

@@ -27,5 +27,5 @@ public interface IDocumentorScript {
      * should only called by the {@link HtmlExportOperation}
      * 
      */
-    public void execute(DocumentationContext context, IProgressMonitor monitor) throws IpsException;
+    void execute(DocumentationContext context, IProgressMonitor monitor) throws IpsException;
 }

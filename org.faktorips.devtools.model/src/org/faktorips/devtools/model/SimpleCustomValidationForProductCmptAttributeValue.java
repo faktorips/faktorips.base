@@ -72,11 +72,8 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
 
     @Override
     public MessageList validate(IAttributeValue attribute, IIpsProject ipsProject) {
-        if (!attributeName.equals(attribute.getAttribute())) {
-            return null;
-        }
-        if (productCmptTypeName != null
-                && !productCmptTypeName.equals(attribute.getPropertyValueContainer().getProductCmptType())) {
+        if (!attributeName.equals(attribute.getAttribute()) || (productCmptTypeName != null
+                && !productCmptTypeName.equals(attribute.getPropertyValueContainer().getProductCmptType()))) {
             return null;
         }
         try {
@@ -106,7 +103,7 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
      * @param value the value of the attribute
      * @param ipsProject the project containing the attribute's product component
      * @return a {@link ValidationResult} containing a message text and code as well as an error
-     *         level or {@code null} if the validation finds no problems.
+     *             level or {@code null} if the validation finds no problems.
      * @throws IpsException if an error occurs while validating the attribute
      */
     public abstract ValidationResult validate(String value, IIpsProject ipsProject) throws IpsException;
@@ -133,7 +130,7 @@ public abstract class SimpleCustomValidationForProductCmptAttributeValue
         private String msgCode;
 
         ValidationResult(Severity warning, String text, String msgCode) {
-            this.severity = warning;
+            severity = warning;
             this.text = text;
             this.msgCode = msgCode;
         }

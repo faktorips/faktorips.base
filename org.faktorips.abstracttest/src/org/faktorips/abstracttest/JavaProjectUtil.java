@@ -138,9 +138,8 @@ public class JavaProjectUtil {
                 packageFragmentRootsAsList.remove(packageFragmentRoot);
             }
         }
-        packageFragmentRoots = packageFragmentRootsAsList
+        return packageFragmentRootsAsList
                 .toArray(new IPackageFragmentRoot[packageFragmentRootsAsList.size()]);
-        return packageFragmentRoots;
     }
 
     private static void createModuleInfoJava(IJavaProject javaProject,

@@ -46,7 +46,7 @@ public abstract class FacadeHelper {
 
     /**
      * @return whether this facade helper can be used on a merge operation. Typically subclasses
-     *         would return <code>false</code> depending on some environment requirement.
+     *             would return <code>false</code> depending on some environment requirement.
      * @since 2.4
      */
     public boolean canMerge() {

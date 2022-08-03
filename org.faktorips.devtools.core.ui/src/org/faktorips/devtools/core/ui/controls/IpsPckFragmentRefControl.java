@@ -32,7 +32,7 @@ public class IpsPckFragmentRefControl extends TextButtonControl {
     }
 
     public void setIpsPckFragmentRoot(IIpsPackageFragmentRoot root) {
-        this.ipsPckFragmentRoot = root;
+        ipsPckFragmentRoot = root;
         setButtonEnabled(root != null && root.exists());
     }
 

@@ -50,10 +50,7 @@ public abstract class AbstractValue<T> implements IValue<T> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!getClass().equals(obj.getClass())) {
+        if ((obj == null) || !getClass().equals(obj.getClass())) {
             return false;
         }
         AbstractValue<?> value = (AbstractValue<?>)obj;

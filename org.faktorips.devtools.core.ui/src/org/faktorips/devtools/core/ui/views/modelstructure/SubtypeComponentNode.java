@@ -21,7 +21,7 @@ public class SubtypeComponentNode extends ComponentNode {
 
     public SubtypeComponentNode(IType value, ComponentNode parent, IIpsProject sourceProject) {
         super(value, sourceProject);
-        this.setParent(parent);
+        setParent(parent);
     }
 
     /**

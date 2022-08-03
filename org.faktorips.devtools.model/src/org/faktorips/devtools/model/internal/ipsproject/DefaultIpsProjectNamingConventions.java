@@ -46,7 +46,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
      * Linux and Windows because both could be used together (e.g. client and server installation),
      * thus we use restrictions for Windows and Linux
      */
-    public static final char[] INVALID_RESOURCE_CHARACTERS = new char[] { '\\', '/', ':', '*', '?', '"', '<', '>', '|',
+    public static final char[] INVALID_RESOURCE_CHARACTERS = { '\\', '/', ':', '*', '?', '"', '<', '>', '|',
             '/', '\0' };
 
     /**
@@ -136,19 +136,15 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         if (IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.PRODUCT_TEMPLATE.equals(type)) {
             MessageList ml = validateNameForProductCmpt(name, qualifiedCheck);
             result.add(ml);
-            return result;
         } else if (IpsObjectType.TABLE_CONTENTS.equals(type)) {
             MessageList ml = validateNameForTableContents(name, qualifiedCheck);
             result.add(ml);
-            return result;
         } else if (IpsObjectType.TEST_CASE_TYPE.equals(type)) {
             MessageList ml = validateNameForTestCaseType(name, qualifiedCheck);
             result.add(ml);
-            return result;
         } else if (IpsObjectType.TEST_CASE.equals(type)) {
             MessageList ml = validateNameForTestCase(name, qualifiedCheck);
             result.add(ml);
-            return result;
         }
         return result;
     }
@@ -174,7 +170,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         if (matches) {
             ml.add(new Message(INVALID_NAME,
                     MessageFormat.format(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
-                            FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), //$NON-NLS-1$ //$NON-NLS-2$
+                            FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replace("\\", "")), //$NON-NLS-1$ //$NON-NLS-2$
                     Message.ERROR));
         }
         return ml;

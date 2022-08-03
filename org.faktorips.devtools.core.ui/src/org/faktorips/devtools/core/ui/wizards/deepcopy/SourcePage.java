@@ -778,9 +778,7 @@ public class SourcePage extends WizardPage {
                 tree.refresh();
                 subMonitor.worked(1);
             });
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } finally {
             isRefreshing = false;

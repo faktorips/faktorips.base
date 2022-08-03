@@ -284,7 +284,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private void addChangingOverTimeDecoration(EditField<?> editField, int pixelsToLeftUponControlFocus) {
         final ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP,
-                this.getParent());
+                getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));

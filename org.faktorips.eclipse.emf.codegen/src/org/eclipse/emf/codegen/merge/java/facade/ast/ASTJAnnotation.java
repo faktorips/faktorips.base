@@ -61,7 +61,7 @@ public class ASTJAnnotation extends ASTJNode<Annotation> implements JAnnotation 
      * @param rewrittenAnnotation the annotation to use in set methods
      */
     protected void setRewrittenASTNode(Annotation rewrittenAnnotation) {
-        this.rewrittenASTNode = rewrittenAnnotation;
+        rewrittenASTNode = rewrittenAnnotation;
     }
 
     /**

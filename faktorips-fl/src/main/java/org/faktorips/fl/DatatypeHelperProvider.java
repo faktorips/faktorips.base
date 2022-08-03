@@ -25,6 +25,6 @@ public interface DatatypeHelperProvider<T extends CodeFragment> {
      * Returns the code generation helper for the given datatype or <code>null</code> if either
      * datatype is <code>null</code> or the provide can't provide a helper.
      */
-    public BaseDatatypeHelper<T> getDatatypeHelper(Datatype datatype);
+    BaseDatatypeHelper<T> getDatatypeHelper(Datatype datatype);
 
 }

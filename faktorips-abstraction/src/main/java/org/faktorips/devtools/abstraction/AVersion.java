@@ -37,11 +37,11 @@ public class AVersion implements Comparable<AVersion> {
     private AVersion(long[] numericParts, String qualifier) {
         this.numericParts = numericParts;
         this.qualifier = qualifier;
-        this.versionString = toString(numericParts, qualifier);
+        versionString = toString(numericParts, qualifier);
     }
 
     private static final String toString(long[] numericParts, String qualifier) {
-        Stream<String> parts = Arrays.stream(numericParts).mapToObj(l -> Long.toString(l));
+        Stream<String> parts = Arrays.stream(numericParts).mapToObj(Long::toString);
         if (IpsStringUtils.isNotBlank(qualifier)) {
             parts = Stream.concat(parts, Stream.of(qualifier));
         }
@@ -111,8 +111,7 @@ public class AVersion implements Comparable<AVersion> {
         final int prime = 31;
         int result = 1;
         result = prime * result + Arrays.hashCode(numericParts);
-        result = prime * result + qualifier.hashCode();
-        return result;
+        return prime * result + qualifier.hashCode();
     }
 
     @Override
@@ -120,10 +119,7 @@ public class AVersion implements Comparable<AVersion> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         AVersion other = (AVersion)obj;

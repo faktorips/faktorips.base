@@ -101,7 +101,7 @@ public class GroovyFormulaEvaluatorTest {
 
     }
 
-    private class MyCmptGeneration extends ProductComponentGeneration {
+    private static class MyCmptGeneration extends ProductComponentGeneration {
 
         private int var1;
         private int var2;
@@ -112,7 +112,7 @@ public class GroovyFormulaEvaluatorTest {
 
     }
 
-    private class MyCmpt extends ProductComponent {
+    private static class MyCmpt extends ProductComponent {
 
         private int var1;
         private int var2;

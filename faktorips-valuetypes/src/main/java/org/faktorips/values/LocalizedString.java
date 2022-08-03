@@ -12,6 +12,7 @@ package org.faktorips.values;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A localized string represents a string in a specified language. This object is immutable. Two
@@ -47,11 +48,7 @@ public class LocalizedString implements Serializable {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hash(locale, value);
     }
 
     @Override
@@ -59,28 +56,12 @@ public class LocalizedString implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         LocalizedString other = (LocalizedString)obj;
-        if (locale == null) {
-            if (other.locale != null) {
-                return false;
-            }
-        } else if (!locale.equals(other.locale)) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(locale, other.locale)
+                && Objects.equals(value, other.value);
     }
 
 }

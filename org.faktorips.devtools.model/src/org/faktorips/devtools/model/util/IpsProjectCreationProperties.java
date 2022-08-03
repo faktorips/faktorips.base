@@ -178,10 +178,10 @@ public class IpsProjectCreationProperties {
      * Checks whether all required properties for creating a Faktor-IPS project are set.
      * 
      * @implNote This method does not check whether the properties have a valid format or are
-     *           available
+     *               available
      * 
      * @return an empty {@link MessageList} if all required properties are filled, one containing at
-     *         least one error message otherwise
+     *             least one error message otherwise
      */
     public MessageList validateRequiredProperties() {
         MessageList messages = new MessageList();
@@ -202,7 +202,7 @@ public class IpsProjectCreationProperties {
      * {@link IJavaProject} to be turned into an {@link IIpsProject}.
      * 
      * @return an empty {@link MessageList} if all validation succeeds, one containing at least one
-     *         error message otherwise
+     *             error message otherwise
      * @see #validateRequiredProperties()
      * @see IIpsProjectConfigurator#validate(AJavaProject, IpsProjectCreationProperties)
      */

@@ -85,18 +85,16 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
             }
             if (params[1].equals(String.class)) {
                 if (IIpsObjectPartContainer.class.isAssignableFrom(params[0])) {
-                    @SuppressWarnings("unchecked")
-                    /*
-                     * necessary as Class.getDeclaredConstructors() is of type Constructor<?>[]
-                     * while returning Contructor<T>[] The Javaoc Class.getDeclaredConstructors()
-                     * for more information
-                     */
-                    Constructor<T> castedConstructor = (Constructor<T>)constructor;
-                    return castedConstructor;
+                    return castConstructor(constructor);
                 }
             }
         }
         throw new RuntimeException(this + ", Part class hasn't got an appropriate constructor."); //$NON-NLS-1$
+    }
+
+    @SuppressWarnings("unchecked")
+    private Constructor<T> castConstructor(Constructor<?> constructor) {
+        return (Constructor<T>)constructor;
     }
 
     public void clear() {
@@ -225,8 +223,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
     @SuppressWarnings("unchecked")
     public T newPart(Class<?> clazz) {
         if (partsPublishedInterface.isAssignableFrom(clazz)) {
-            T newPart = newPartInternal(parent.getNextPartId(), getConstructor((Class<? extends T>)clazz));
-            return newPart;
+            return newPartInternal(parent.getNextPartId(), getConstructor((Class<? extends T>)clazz));
         }
         return null;
     }
@@ -304,7 +301,7 @@ public class IpsObjectPartCollection<T extends IIpsObjectPart> implements Iterab
         /**
          * Initializes the provided {@link IpsObjectPart}.
          */
-        public void initialize(T part);
+        void initialize(T part);
 
     }
 }

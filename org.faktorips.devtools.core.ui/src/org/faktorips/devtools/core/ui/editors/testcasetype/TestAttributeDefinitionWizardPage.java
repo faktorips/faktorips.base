@@ -43,7 +43,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         super(PAGE_ID, Messages.TestAttributeDefinitionWizardPage_wizardPageTitle, null);
         setDescription(Messages.TestAttributeDefinitionWizardPage_wizardPageDescription);
         this.wizard = wizard;
-        this.testAttribute = new PmoTestAttribute();
+        testAttribute = new PmoTestAttribute();
     }
 
     @Override
@@ -178,7 +178,7 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         private void valueChanged() {
             // if the value has changed then the button state must be updated
             // to enable or disable the finish button
-            TestAttributeDefinitionWizardPage.this.getContainer().updateButtons();
+            getContainer().updateButtons();
         }
     }
 }

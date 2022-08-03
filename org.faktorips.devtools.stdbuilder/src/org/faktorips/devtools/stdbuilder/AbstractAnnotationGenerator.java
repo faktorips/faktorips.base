@@ -29,8 +29,7 @@ public abstract class AbstractAnnotationGenerator implements IAnnotationGenerato
     }
 
     protected JavaCodeFragment newJavaCodeFragment() {
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        return fragment;
+        return new JavaCodeFragment();
     }
 
     /**

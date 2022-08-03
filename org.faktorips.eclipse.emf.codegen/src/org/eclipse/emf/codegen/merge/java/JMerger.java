@@ -61,7 +61,7 @@ public class JMerger {
     public static final boolean DEBUG = false;
 
     public static final String DEFAULT_FACADE_HELPER_CLASS = ASTFacadeHelper.class.getName();
-    protected static final Object[] NO_ARGUMENTS = new Object[0];
+    protected static final Object[] NO_ARGUMENTS = {};
 
     protected static Pattern interfaceBracePattern = null;
 
@@ -231,8 +231,7 @@ public class JMerger {
         newParser.setCompilerOptions(getFacadeHelper().getJavaCoreOptions());
         newParser.setSource(source.toCharArray());
         ASTNode createAST = newParser.createAST(null);
-        CompilationUnit astCompilationUnit = (CompilationUnit)createAST;
-        return astCompilationUnit;
+        return (CompilationUnit)createAST;
     }
 
     public List<String> getAdditionalImports() {
@@ -604,10 +603,9 @@ public class JMerger {
                             //
 
                             Object oldValue = sourceGetMethod.invoke(targetNode, NO_ARGUMENTS);
-                            if (value == null ? oldValue == null : value.equals(oldValue)) {
-                                continue;
-                            } else if (value instanceof Object[] && oldValue instanceof Object[]
-                                    && Arrays.equals((Object[])value, (Object[])oldValue)) {
+                            if ((value == null ? oldValue == null : value.equals(oldValue))
+                                    || (value instanceof Object[] && oldValue instanceof Object[]
+                                            && Arrays.equals((Object[])value, (Object[])oldValue))) {
                                 continue;
                             } else if (targetPutMethod.getName().equals("setSuperclass")) {
                                 if (oldValue != null && value != null
@@ -703,19 +701,7 @@ public class JMerger {
                 }
             }
 
-        } catch (InvocationTargetException exception) {
-            if (DEBUG) {
-                exception.printStackTrace();
-            }
-        } catch (IllegalAccessException exception) {
-            if (DEBUG) {
-                exception.printStackTrace();
-            }
-        } catch (SecurityException e) {
-            if (DEBUG) {
-                e.printStackTrace();
-            }
-        } catch (NoSuchMethodException e) {
+        } catch (InvocationTargetException | IllegalAccessException | SecurityException | NoSuchMethodException e) {
             if (DEBUG) {
                 e.printStackTrace();
             }

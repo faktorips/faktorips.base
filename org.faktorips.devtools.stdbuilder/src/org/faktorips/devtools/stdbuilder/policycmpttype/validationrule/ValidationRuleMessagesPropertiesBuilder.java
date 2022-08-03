@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -19,7 +20,6 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class ValidationRuleMessagesPropertiesBuilder extends AbstractLocalizedPropertiesBuilder {
 

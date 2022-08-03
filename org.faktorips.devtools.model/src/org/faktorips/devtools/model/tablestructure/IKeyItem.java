@@ -23,29 +23,29 @@ public interface IKeyItem extends IIpsObjectPart, IDescribedElement, IVersionCon
      * Returns the item's name.
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Returns the name for a parameter in a table access function. For columns this is the name of
      * the column, for ranges this parameter can be specified.
      */
-    public String getAccessParameterName();
+    String getAccessParameterName();
 
     /**
      * Returns the item's data type. For columns this is the column's data type and for ranges this
      * is the data type of the column if it's a one column range and the first column's data type if
      * it is a two column range.
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Returns the columns this item comprises.
      */
-    public IColumn[] getColumns();
+    IColumn[] getColumns();
 
     /**
      * Returns <code>true</code> if this key item is a range, false if not.
      */
-    public boolean isRange();
+    boolean isRange();
 
 }

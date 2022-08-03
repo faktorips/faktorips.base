@@ -76,17 +76,17 @@ public class InferTemplateProcessor implements ICoreRunnable {
         this.templateGeneration = templateGeneration;
         this.productCmpts = productCmpts;
         this.propertyValueHistograms = propertyValueHistograms;
-        this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
-        this.generationLinkHistograms = ProductCmptLinkHistograms
+        productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
+        generationLinkHistograms = ProductCmptLinkHistograms
                 .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
     public InferTemplateProcessor(IProductCmptGeneration templateGeneration, List<IProductCmpt> productCmpts) {
         this.templateGeneration = templateGeneration;
         this.productCmpts = productCmpts;
-        this.propertyValueHistograms = PropertyValueHistograms.createFor(productCmpts);
-        this.productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
-        this.generationLinkHistograms = ProductCmptLinkHistograms
+        propertyValueHistograms = PropertyValueHistograms.createFor(productCmpts);
+        productCmptLinkHistograms = ProductCmptLinkHistograms.createFor(productCmpts);
+        generationLinkHistograms = ProductCmptLinkHistograms
                 .createFor(productCmpts.stream().map(LATEST_GENERATION).collect(Collectors.toList()));
     }
 
@@ -180,9 +180,8 @@ public class InferTemplateProcessor implements ICoreRunnable {
      */
     private <P extends IPropertyValue> BestValue<Object> getBestValueFor(P propertyValue) {
         Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyValue.getIdentifier());
-        BestValue<Object> bestValue = histogram
+        return histogram
                 .getBestValue(getIpsProjectProperties().getInferredTemplatePropertyValueThreshold());
-        return bestValue;
     }
 
     private IIpsProjectProperties getIpsProjectProperties() {

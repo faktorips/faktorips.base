@@ -54,9 +54,6 @@ public enum HtmlTextType {
         if (textType == TextType.BLOCK) {
             return DIV;
         }
-        if (textType == TextType.INLINE) {
-            return SPAN;
-        }
         return SPAN;
     }
 

@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
-import java.util.Iterator;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
@@ -58,8 +56,7 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
 
         if (selection instanceof IStructuredSelection) {
             IStructuredSelection sel = (IStructuredSelection)selection;
-            for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
-                Object selected = iter.next();
+            for (Object selected : sel) {
                 if (selected instanceof IJavaProject) {
                     preselectedIpsElement = IIpsModel.get()
                             .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));

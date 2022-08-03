@@ -78,16 +78,13 @@ final class ArgumentEditingSupport extends EnhancedCellTrackingEditingSupport {
 
     private IpsCellEditor createValueDatatypeTableCellEditor(ProductSearchConditionPresentationModel model,
             ValueDatatype valueDatatype) {
-        IpsCellEditor tableCellEditor;
-
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 valueDatatype);
 
         IValueSet valueSet = model.getConditionType().getValueSet(model.getSearchedElement());
 
-        tableCellEditor = controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype, valueSet,
+        return controlFactory.createTableCellEditor(new UIToolkit(null), valueDatatype, valueSet,
                 (TableViewer)getViewer(), 3, model.getSearchedElement().getIpsProject());
-        return tableCellEditor;
     }
 
     @Override

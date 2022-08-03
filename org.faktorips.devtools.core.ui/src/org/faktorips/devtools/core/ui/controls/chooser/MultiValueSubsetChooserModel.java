@@ -53,16 +53,14 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     public MessageList validateValue(ListChooserValue value) {
         ISingleValueHolder holder = findSingleValueHolderFor(value);
         MessageList messageList = multiValueHolder.validate(multiValueHolder.getIpsProject());
-        messageList = messageList.getMessagesFor(holder);
-        return messageList;
+        return messageList.getMessagesFor(holder);
     }
 
     protected ISingleValueHolder findSingleValueHolderFor(ListChooserValue value) {
         List<ISingleValueHolder> holders = multiValueHolder.getValue();
         for (ISingleValueHolder singleValueHolder : holders) {
-            if (value.getValue() == null && singleValueHolder.getStringValue() == null) {
-                return singleValueHolder;
-            } else if (value.getValue() != null && value.getValue().equals(singleValueHolder.getStringValue())) {
+            if ((value.getValue() == null && singleValueHolder.getStringValue() == null)
+                    || (value.getValue() != null && value.getValue().equals(singleValueHolder.getStringValue()))) {
                 return singleValueHolder;
             }
         }

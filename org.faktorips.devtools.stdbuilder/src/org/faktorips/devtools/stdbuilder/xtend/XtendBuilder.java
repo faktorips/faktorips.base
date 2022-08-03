@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
@@ -35,7 +36,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XClass;
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions;
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * An abstract implementation to use XTEND templates for code generation.
@@ -120,9 +120,8 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
         }
         IType[] allSupertypes = supertypeHierarchy.getAllSupertypes(generatedType);
         IType[] allSuperInterfaces = supertypeHierarchy.getAllSuperInterfaces(generatedType);
-        Set<String> noImportNecessary = Stream.concat(Arrays.stream(allSupertypes), Arrays.stream(allSuperInterfaces))
+        return Stream.concat(Arrays.stream(allSupertypes), Arrays.stream(allSuperInterfaces))
                 .map(IType::getFullyQualifiedName).collect(Collectors.toSet());
-        return noImportNecessary;
     }
 
     @Override
@@ -132,8 +131,7 @@ public abstract class XtendBuilder<T extends XClass> extends JavaSourceFileBuild
     }
 
     protected T getGeneratorModelRoot(IIpsObject ipsObject) {
-        T xClass = getModelService().getModelNode(ipsObject, getGeneratorModelRootType(), generatorModelContext);
-        return xClass;
+        return getModelService().getModelNode(ipsObject, getGeneratorModelRootType(), generatorModelContext);
     }
 
     public ModelService getModelService() {

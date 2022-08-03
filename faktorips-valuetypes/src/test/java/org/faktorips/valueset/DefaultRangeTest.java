@@ -179,7 +179,7 @@ public class DefaultRangeTest {
         new TestRange(1, 5, null).getValues(true);
     }
 
-    private class TestRange extends DefaultRange<Integer> {
+    private static class TestRange extends DefaultRange<Integer> {
 
         private static final long serialVersionUID = 3385179851895588865L;
 

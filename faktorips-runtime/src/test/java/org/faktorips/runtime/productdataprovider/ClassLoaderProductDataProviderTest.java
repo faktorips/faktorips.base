@@ -12,8 +12,8 @@ package org.faktorips.runtime.productdataprovider;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +29,7 @@ import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -49,14 +50,21 @@ public class ClassLoaderProductDataProviderTest {
     @Mock
     private ClassLoaderDataSource mockDataSource;
 
+    private AutoCloseable mocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        mocks = MockitoAnnotations.openMocks(this);
 
         when(mockDataSource.getLastModificationStamp(TOC_RESOURCE_PATH)).thenReturn(INITIAL_TOC_FILE_LAST_MODIFIED);
         mockRootElementForResourcePath(TOC_RESOURCE_PATH);
 
         productDataProvider = createProductDataProvider(true);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mocks.close();
     }
 
     @Test
@@ -354,7 +362,7 @@ public class ClassLoaderProductDataProviderTest {
 
     private Element mockRootElementForResourcePath(String resourcePath) {
         Document mockDocument = mock(Document.class);
-        Element mockRootElement = mock(Element.class, Answers.RETURNS_DEEP_STUBS.get());
+        Element mockRootElement = mock(Element.class, Answers.RETURNS_DEEP_STUBS);
         when(mockDataSource.loadDocument(eq(resourcePath), any(DocumentBuilder.class))).thenReturn(mockDocument);
         when(mockDocument.getDocumentElement()).thenReturn(mockRootElement);
         return mockRootElement;

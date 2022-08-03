@@ -144,8 +144,7 @@ public class FolderAndPackagePage extends WizardPage {
 
         @Override
         protected MessageList validatePage() {
-            MessageList messageList = getPmo().getValidator().validateFolderAndPackage();
-            return messageList;
+            return getPmo().getValidator().validateFolderAndPackage();
         }
 
     }

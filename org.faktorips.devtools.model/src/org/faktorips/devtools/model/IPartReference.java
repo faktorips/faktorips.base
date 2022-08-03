@@ -45,6 +45,6 @@ public interface IPartReference extends IIpsObjectPart {
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public void setName(String name);
+    void setName(String name);
 
 }

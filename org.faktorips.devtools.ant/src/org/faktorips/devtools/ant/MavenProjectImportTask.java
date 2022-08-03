@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
@@ -40,7 +41,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
      * @param dir Path to the Project as String
      */
     public void setDir(String dir) {
-        this.projectDir = dir;
+        projectDir = dir;
     }
 
     /**
@@ -49,7 +50,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
      * @return Path as String
      */
     public String getDir() {
-        return this.projectDir;
+        return projectDir;
     }
 
     /**
@@ -100,7 +101,7 @@ public class MavenProjectImportTask extends AbstractIpsTask {
                 System.out.println("Waiting for project(s) to be present in workspace: " + mavenProjectNames);
                 Set<String> projectNamesInWorkspace = Arrays
                         .stream(ResourcesPlugin.getWorkspace().getRoot().getProjects())
-                        .map(p -> p.getName())
+                        .map(IProject::getName)
                         .collect(Collectors.toSet());
                 mavenProjectNames.removeAll(projectNamesInWorkspace);
             }

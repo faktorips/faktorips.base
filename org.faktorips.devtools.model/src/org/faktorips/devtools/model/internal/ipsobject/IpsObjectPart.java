@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -153,9 +154,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + ((id == null) ? 0 : id.hashCode());
+
         // result = 31 * result + ((parent == null) ? 0 : parent.hashCode());
-        return result;
+        return 31 * result + ((id == null) ? 0 : id.hashCode());
     }
 
     /**
@@ -170,21 +171,8 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
             return false;
         }
         IpsObjectPart other = (IpsObjectPart)obj;
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(id, other.id)
+                && Objects.equals(getParent(), other.getParent());
     }
 
 }

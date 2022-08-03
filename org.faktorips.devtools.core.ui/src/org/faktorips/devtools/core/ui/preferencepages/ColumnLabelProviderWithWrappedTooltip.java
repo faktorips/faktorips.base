@@ -42,8 +42,7 @@ public class ColumnLabelProviderWithWrappedTooltip extends ColumnLabelProvider {
     @Override
     public String getToolTipText(Object element) {
         String text = textGetter.apply(element);
-        String wrappedText = StringUtils.wrapText(text, TOOLTIP_LINE_LENGTH, "\n"); //$NON-NLS-1$
-        return wrappedText;
+        return StringUtils.wrapText(text, TOOLTIP_LINE_LENGTH, "\n");
     }
 
     @Override

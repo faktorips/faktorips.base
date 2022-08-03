@@ -160,7 +160,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         return ((IPolicyCmptType)ipsElement).isPersistentEnabled();
     }
 
-    private class SearchTableNameInSuperTypes extends TypeHierarchyVisitor<IPolicyCmptType> {
+    private static class SearchTableNameInSuperTypes extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private String tableName = null;
 
@@ -172,7 +172,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         protected boolean visit(IPolicyCmptType currentType) {
             String tableNameTemp = currentType.getPersistenceTypeInfo().getTableName();
             if (StringUtils.isNotEmpty(tableNameTemp)) {
-                this.tableName = tableNameTemp;
+                tableName = tableNameTemp;
                 return false;
             }
             return true;

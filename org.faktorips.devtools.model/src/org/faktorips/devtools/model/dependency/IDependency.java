@@ -27,17 +27,17 @@ public interface IDependency {
     /**
      * Returns the type of this dependency.
      */
-    public DependencyType getType();
+    DependencyType getType();
 
     /**
      * The source which depends on the target. Sources are described by their qualified name types
      * since a source must always be an IpsObject.
      */
-    public QualifiedNameType getSource();
+    QualifiedNameType getSource();
 
     /**
      * The target from which the source depends on.
      */
-    public Object getTarget();
+    Object getTarget();
 
 }

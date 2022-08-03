@@ -468,11 +468,8 @@ public class InMemoryRuntimeRepositoryTest {
         IpsTestCase2 testCase5 = putIpsTestCase("test.pack.ipsTest2");
         IpsTestCase2 testCase6 = putIpsTestCase("test.pack.ipsTest3");
 
-        IpsTestSuite ipsTestSuite = null;
-        List<IpsTest2> tests = null;
-
-        ipsTestSuite = repository.getIpsTestSuite("pack");
-        tests = ipsTestSuite.getTests();
+        IpsTestSuite ipsTestSuite = repository.getIpsTestSuite("pack");
+        List<IpsTest2> tests = ipsTestSuite.getTests();
         assertTrue(tests.contains(testCase1));
         assertTrue(tests.contains(testCase2));
         assertTrue(tests.contains(testCase3));
@@ -545,10 +542,10 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     class TestTable2 extends TestTable {
-
+        // another table class
     }
 
-    private class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
+    private static class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
 
         @Override
         public String marshal(TestEnumValue value) throws Exception {
@@ -562,7 +559,7 @@ public class InMemoryRuntimeRepositoryTest {
 
     }
 
-    private class TestEnumValue {
+    private static class TestEnumValue {
 
         private final String id;
 
@@ -578,6 +575,7 @@ public class InMemoryRuntimeRepositoryTest {
     @Test
     public void testPutByType() {
         class MyRuntimeObject extends RuntimeObject {
+            // another class
         }
         MyRuntimeObject myRuntimeObject = new MyRuntimeObject();
         String ipsObjectQualifiedName = "MyRuntimeObjectId";

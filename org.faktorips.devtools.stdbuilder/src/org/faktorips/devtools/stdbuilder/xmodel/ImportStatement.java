@@ -34,8 +34,7 @@ public class ImportStatement extends AbstractImportStatement {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getClassName() == null) ? 0 : getClassName().hashCode());
-        result = prime * result + ((getPackageName() == null) ? 0 : getPackageName().hashCode());
-        return result;
+        return prime * result + ((getPackageName() == null) ? 0 : getPackageName().hashCode());
     }
 
     @Override

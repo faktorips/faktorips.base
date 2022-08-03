@@ -130,7 +130,7 @@ public class Histogram<V, E> {
      * Returns the distribution of values and elements with these values.
      * 
      * @return a multimap that contains all values in this histogram (the map's keys) and the
-     *         elements with these values (the map's values)
+     *             elements with these values (the map's values)
      */
     public Multimap<V, E> getDistribution() {
         return Multimaps.unmodifiableMultimap(valueToElements);
@@ -148,7 +148,7 @@ public class Histogram<V, E> {
      * 
      * @param value a value
      * @return the elements in this histogram that have the given value. The set is empty if no
-     *         elements in this histogram have the given value.
+     *             elements in this histogram have the given value.
      */
     public Set<E> getElements(V value) {
         return Collections.unmodifiableSet(valueToElements.get(value));
@@ -219,9 +219,9 @@ public class Histogram<V, E> {
      * 
      * @param threshold the relative occurrence at which a value is used.
      * @return the best value (regarding the relative distribution) whose occurrence is greater than
-     *         or equal to the threshold. Never returns <code>null</code>. Returns a
-     *         {@link BestValue} with {@link BestValue#isPresent()} <code>false</code> if there is
-     *         no best value.
+     *             or equal to the threshold. Never returns <code>null</code>. Returns a
+     *             {@link BestValue} with {@link BestValue#isPresent()} <code>false</code> if there
+     *             is no best value.
      */
     public BestValue<V> getBestValue(Decimal threshold) {
         SortedMap<V, Decimal> relativeDistribution = getRelativeDistribution();
@@ -239,7 +239,7 @@ public class Histogram<V, E> {
      * @param candidateValue the candidate value from the relative distribution (i.e. a key from the
      *            given map)
      * @return the {@link BestValue} for the given candidate value if its relative distribution is
-     *         above the given threshold or {@code BestValue.missingValue()} if it is not
+     *             above the given threshold or {@code BestValue.missingValue()} if it is not
      */
     protected BestValue<V> getBestValue(Decimal threshold,
             SortedMap<V, Decimal> relativeDistribution,

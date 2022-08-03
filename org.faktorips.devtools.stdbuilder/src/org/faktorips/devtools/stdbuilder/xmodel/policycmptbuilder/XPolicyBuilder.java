@@ -120,7 +120,7 @@ public class XPolicyBuilder extends XPolicyCmptClass
      * inverse composition nor derived are added to the set to return.
      * 
      * @return set of associations of the policy that are not derived or inverseComposition, casted
-     *         to XPolicyBuilderAssociations
+     *             to XPolicyBuilderAssociations
      */
     @Override
     public Set<XPolicyBuilderAssociation> getBuilderAssociations() {

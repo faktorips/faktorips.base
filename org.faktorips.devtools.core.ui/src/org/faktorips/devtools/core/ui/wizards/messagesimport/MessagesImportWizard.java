@@ -75,11 +75,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             if (!importStatus.isOK()) {
                 createImportResultDialog(importStatus);
             }
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        } catch (InterruptedException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        } catch (FileNotFoundException e) {
+        } catch (InvocationTargetException | InterruptedException | FileNotFoundException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } finally {
             if (fileInputStream != null) {

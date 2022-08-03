@@ -47,7 +47,7 @@ public class LinkEditDialog extends IpsPartEditDialog2 {
     private CardinalityField defaultCardinalityField;
 
     private ProductCmptRefControl targetControl;
-    private IProductCmpt[] toExclude = new IProductCmpt[0];
+    private IProductCmpt[] toExclude = {};
 
     private final LinkEditDialogPMO pmo;
 

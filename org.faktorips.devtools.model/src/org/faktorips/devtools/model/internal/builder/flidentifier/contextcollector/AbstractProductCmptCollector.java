@@ -75,7 +75,7 @@ public abstract class AbstractProductCmptCollector {
      * no product component could be determined because of failing assumptions.
      * 
      * @return The list of product components that may be the context component at the current
-     *         position. Returns <code>null</code> if no context could be determined.
+     *             position. Returns <code>null</code> if no context could be determined.
      */
     protected abstract Set<IProductCmpt> getContextProductCmpts();
 

@@ -24,8 +24,8 @@ public interface IModelObjectDeltaVisitor {
      * @param delta The delta to visit
      * 
      * @return <code>true</code> if the delta's children should be visited; <code>false</code> if
-     *         they should be skipped.
+     *             they should be skipped.
      */
-    public boolean visit(IModelObjectDelta delta);
+    boolean visit(IModelObjectDelta delta);
 
 }

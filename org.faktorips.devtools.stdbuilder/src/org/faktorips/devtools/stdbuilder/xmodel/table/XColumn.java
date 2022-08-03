@@ -34,8 +34,7 @@ public class XColumn extends AbstractGeneratorModelNode {
 
     protected DatatypeHelper getDatatypeHelper() {
         Datatype datatype = getColumn().findValueDatatype(getIpsProject());
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
-        return datatypeHelper;
+        return getIpsProject().getDatatypeHelper(datatype);
     }
 
     public String getAttributeName() {

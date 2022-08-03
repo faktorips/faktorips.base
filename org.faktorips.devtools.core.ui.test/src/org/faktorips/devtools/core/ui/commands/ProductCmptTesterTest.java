@@ -21,7 +21,7 @@ import org.junit.Test;
 
 public class ProductCmptTesterTest {
 
-    private static final Object[] NO_ARGS = new Object[] {};
+    private static final Object[] NO_ARGS = {};
 
     @Test
     public void testTest_NullValues() throws Exception {

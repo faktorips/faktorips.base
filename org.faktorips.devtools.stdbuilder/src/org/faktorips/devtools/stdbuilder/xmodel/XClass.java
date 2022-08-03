@@ -46,7 +46,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * {@link XClass}
      * 
      * @return The {@link IJavaClassNameProvider} to get the names of the generated java classes for
-     *         this {@link XClass}
+     *             this {@link XClass}
      */
     public IJavaClassNameProvider getJavaClassNameProvider() {
         return javaClassNameProvider;

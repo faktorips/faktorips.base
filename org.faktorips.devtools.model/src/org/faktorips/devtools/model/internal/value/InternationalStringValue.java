@@ -48,7 +48,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
      * New InternationalStringValue with empty {@link InternationalString}
      */
     public InternationalStringValue() {
-        this.content = new InternationalString();
+        content = new InternationalString();
     }
 
     /**
@@ -100,8 +100,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + getContent().hashCode();
-        return result;
+        return prime * result + getContent().hashCode();
     }
 
     @Override
@@ -109,10 +108,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof InternationalStringValue)) {
+        if ((obj == null) || !(obj instanceof InternationalStringValue)) {
             return false;
         }
         InternationalStringValue other = (InternationalStringValue)obj;
@@ -172,12 +168,12 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener l) {
-        this.content.addPropertyChangeListener(l);
+        content.addPropertyChangeListener(l);
     }
 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener l) {
-        this.content.removePropertyChangeListener(l);
+        content.removePropertyChangeListener(l);
     }
 
     @Override

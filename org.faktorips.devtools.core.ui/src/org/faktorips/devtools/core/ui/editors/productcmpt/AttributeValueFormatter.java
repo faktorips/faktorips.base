@@ -111,8 +111,7 @@ public class AttributeValueFormatter {
         } else {
             stringValue = holder.getStringValue();
         }
-        String formattedValue = datatypeFormatter.formatValue(datatype, stringValue);
-        return formattedValue;
+        return datatypeFormatter.formatValue(datatype, stringValue);
     }
 
     private IValueHolder<?> getActualValueHolder(IValueHolder<?> v) {

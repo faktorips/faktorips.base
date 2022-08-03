@@ -31,10 +31,7 @@ public class DatatypeUtil {
      * <code>false</code> if data type is <code>null</code>.
      */
     public static final boolean isExtensibleEnumType(Datatype datatype) {
-        if (datatype == null) {
-            return false;
-        }
-        if (!(datatype instanceof EnumTypeDatatypeAdapter)) {
+        if ((datatype == null) || !(datatype instanceof EnumTypeDatatypeAdapter)) {
             return false;
         }
         IEnumType enumType = ((EnumTypeDatatypeAdapter)datatype).getEnumType();

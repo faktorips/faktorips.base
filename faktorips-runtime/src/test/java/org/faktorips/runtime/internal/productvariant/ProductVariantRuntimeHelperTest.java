@@ -112,7 +112,7 @@ public class ProductVariantRuntimeHelperTest {
 
     @Test
     public void initProdCmptGeneration() {
-
+        // nothing to do
     }
 
 }

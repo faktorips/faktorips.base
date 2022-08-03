@@ -106,7 +106,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.setCategory("foo");
         tableStructureUsage.setChangingOverTime(false);
 
-        Element element = tableStructureUsage.toXml(this.newDocument());
+        Element element = tableStructureUsage.toXml(newDocument());
 
         ITableStructureUsage copy = productCmptType.newTableStructureUsage();
         copy.initFromXml(element);

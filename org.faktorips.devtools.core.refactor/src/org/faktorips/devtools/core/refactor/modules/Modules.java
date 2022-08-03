@@ -134,8 +134,7 @@ public class Modules {
             throw new CoreException(new IpsStatus(IStatus.ERROR,
                     "Java project " + javaProject.getElementName() + " has no " + MODULE_INFO_JAVA_FILE_NAME));
         }
-        ICompilationUnit moduleCompilationUnit = moduleDescription.getCompilationUnit();
-        return moduleCompilationUnit;
+        return moduleDescription.getCompilationUnit();
     }
 
     private static RequiresDirective newRequiresDirective(AST ast, boolean transitive, String requiredModule) {

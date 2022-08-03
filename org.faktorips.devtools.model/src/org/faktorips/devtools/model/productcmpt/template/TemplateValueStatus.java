@@ -73,7 +73,7 @@ public enum TemplateValueStatus {
 
     private String xmlValue;
 
-    private TemplateValueStatus(String xmlValue) {
+    TemplateValueStatus(String xmlValue) {
         this.xmlValue = xmlValue;
     }
 

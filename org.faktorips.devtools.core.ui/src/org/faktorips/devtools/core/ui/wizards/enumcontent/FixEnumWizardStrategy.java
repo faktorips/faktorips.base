@@ -99,7 +99,7 @@ public class FixEnumWizardStrategy implements DeltaFixWizardStrategy<IEnumType, 
     public boolean checkForCorrectDataType(String currentComboText, int i) {
         IEnumType contentType = findContentType(getIpsProject());
         if (contentType != null) {
-            String datatypeDestination = contentType.findAllEnumAttributes(false, this.getIpsProject()).get(i)
+            String datatypeDestination = contentType.findAllEnumAttributes(false, getIpsProject()).get(i)
                     .getDatatype();
             if ("String".equals(datatypeDestination)) { //$NON-NLS-1$
                 // all datatypes can be written to a String

@@ -70,7 +70,7 @@ public class ParseTreeVisitorTest {
         visitor = new DummyParseTreeVisitor(compiler);
     }
 
-    private class DummyCompilationResultImpl extends AbstractCompilationResult<CodeFragment> {
+    private static class DummyCompilationResultImpl extends AbstractCompilationResult<CodeFragment> {
 
         public DummyCompilationResultImpl(CodeFragment sourcecode, Datatype datatype) {
             super(sourcecode, datatype);
@@ -141,7 +141,7 @@ public class ParseTreeVisitorTest {
 
     }
 
-    private class DummyParseTreeVisitor extends ParseTreeVisitor<CodeFragment> {
+    private static class DummyParseTreeVisitor extends ParseTreeVisitor<CodeFragment> {
 
         DummyParseTreeVisitor(ExprCompiler<CodeFragment> compiler) {
             super(compiler);
@@ -171,11 +171,11 @@ public class ParseTreeVisitorTest {
 
     }
 
-    private class DummyExprCompiler extends ExprCompiler<CodeFragment> {
+    private static class DummyExprCompiler extends ExprCompiler<CodeFragment> {
 
         @Override
         protected void registerDefaults() {
-            //no defaults
+            // no defaults
         }
 
         @Override

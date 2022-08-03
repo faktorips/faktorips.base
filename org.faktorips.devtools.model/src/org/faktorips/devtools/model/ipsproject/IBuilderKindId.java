@@ -24,6 +24,6 @@ package org.faktorips.devtools.model.ipsproject;
  */
 public interface IBuilderKindId {
 
-    public String getId();
+    String getId();
 
 }

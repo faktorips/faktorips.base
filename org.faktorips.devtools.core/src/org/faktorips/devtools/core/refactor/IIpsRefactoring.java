@@ -32,7 +32,7 @@ public interface IIpsRefactoring {
     /**
      * Returns a copy of the set of IPS elements refactored by this IPS refactoring.
      */
-    public Set<IIpsElement> getIpsElements();
+    Set<IIpsElement> getIpsElements();
 
     /**
      * Validates any user input.
@@ -44,43 +44,43 @@ public interface IIpsRefactoring {
      * 
      * @throws IpsException If an error occurs while validating the user input
      */
-    public RefactoringStatus validateUserInput(IProgressMonitor pm) throws IpsException;
+    RefactoringStatus validateUserInput(IProgressMonitor pm) throws IpsException;
 
     /**
      * Returns whether this refactoring requires that all IPS source files are saved before the
      * refactoring may happen.
      */
-    public boolean isSourceFilesSavedRequired();
+    boolean isSourceFilesSavedRequired();
 
     /**
      * Returns whether the refactoring can be canceled by the user.
      */
-    public boolean isCancelable();
+    boolean isCancelable();
 
     /**
      * Allows to treat the IPS refactoring as LTK refactoring.
      */
-    public Refactoring toLtkRefactoring();
+    Refactoring toLtkRefactoring();
 
     /**
      * Returns the {@link IIpsProject} from which all the elements that are to be refactored
      * originate.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Method from {@link Refactoring}.
      * 
      * @see Refactoring#getName()
      */
-    public String getName();
+    String getName();
 
     /**
      * Method from {@link Refactoring}.
      * 
      * @see Refactoring#checkInitialConditions(IProgressMonitor)
      */
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
+    RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
             OperationCanceledException;
 
     /**
@@ -88,13 +88,13 @@ public interface IIpsRefactoring {
      * 
      * @see Refactoring#checkFinalConditions(IProgressMonitor)
      */
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException, OperationCanceledException;
+    RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException, OperationCanceledException;
 
     /**
      * Method from {@link Refactoring}.
      * 
      * @see Refactoring#createChange(IProgressMonitor)
      */
-    public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException;
+    Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException;
 
 }

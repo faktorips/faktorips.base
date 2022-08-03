@@ -27,14 +27,14 @@ public interface IoHandler {
      * 
      * 
      */
-    public void writeFile(DocumentationContext context, String relativPath, byte[] content) throws IOException;
+    void writeFile(DocumentationContext context, String relativPath, byte[] content) throws IOException;
 
     /**
      * writes the content into a file with the given filename.
      * 
      * 
      */
-    public void writeFile(String filename, byte[] content) throws IOException;
+    void writeFile(String filename, byte[] content) throws IOException;
 
     /**
      * Reads the content of a file from the given bundle
@@ -44,6 +44,6 @@ public interface IoHandler {
      * @return content of the file
      * @throws IOException if an IOException occurs
      */
-    public byte[] readFile(String fileName) throws IOException;
+    byte[] readFile(String fileName) throws IOException;
 
 }

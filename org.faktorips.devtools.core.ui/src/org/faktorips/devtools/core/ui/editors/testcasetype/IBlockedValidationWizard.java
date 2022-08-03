@@ -26,20 +26,20 @@ public interface IBlockedValidationWizard extends IWizard {
      * the page isn't valid. The page is valid if the editing object is valid or a page after the
      * given page number was displayed.
      */
-    public boolean isPageValid(int pageNumber);
+    boolean isPageValid(int pageNumber);
 
     /**
      * Sets the maximum page number which was displayed.
      */
-    public void setMaxPageShown(int pageNumber);
+    void setMaxPageShown(int pageNumber);
 
     /**
      * Starts given runnable in an asynchronous manner.
      */
-    public void postAsyncRunnable(Runnable runnable);
+    void postAsyncRunnable(Runnable runnable);
 
     /**
      * Returns the binding context.
      */
-    public BindingContext getBindingContext();
+    BindingContext getBindingContext();
 }

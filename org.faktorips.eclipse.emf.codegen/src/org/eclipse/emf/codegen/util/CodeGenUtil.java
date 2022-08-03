@@ -342,9 +342,8 @@ public class CodeGenUtil {
     }
 
     public static String validJavaIdentifier(String name) {
-        if (name == null || name.length() == 0) {
-            return name;
-        } else if (EMFPlugin.IS_ECLIPSE_RUNNING && EclipseHelper.isValidJavaIdentifier(name)) {
+        if ((name == null || name.length() == 0)
+                || (EMFPlugin.IS_ECLIPSE_RUNNING && EclipseHelper.isValidJavaIdentifier(name))) {
             return name;
         }
 
@@ -727,7 +726,7 @@ public class CodeGenUtil {
         public String apply(String string) {
             current = 0;
             this.string = string;
-            this.stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
 
             for (int start = 0, end = string.length(); start < end;) {
                 Matcher matcher = pattern.matcher(string.subSequence(start, end));

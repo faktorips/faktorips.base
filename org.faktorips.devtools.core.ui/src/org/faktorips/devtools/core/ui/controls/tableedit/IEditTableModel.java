@@ -26,18 +26,18 @@ import org.faktorips.runtime.MessageList;
  */
 public interface IEditTableModel<T> {
 
-    public void swapElements(int index1, int index2);
+    void swapElements(int index1, int index2);
 
-    public T addElement();
+    T addElement();
 
-    public void removeElement(int index);
+    void removeElement(int index);
 
-    public List<T> getElements();
+    List<T> getElements();
 
     /**
      * Validates the given element. Returns a message list containing all errors and warnings.
      * 
      * @param elementToValidate the element to be validated
      */
-    public MessageList validate(T elementToValidate);
+    MessageList validate(T elementToValidate);
 }

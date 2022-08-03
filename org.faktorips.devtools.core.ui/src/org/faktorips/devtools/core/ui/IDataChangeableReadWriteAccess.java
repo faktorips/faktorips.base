@@ -21,6 +21,6 @@ public interface IDataChangeableReadWriteAccess extends IDataChangeableReadAcces
     /**
      * Sets if the data shown in this user interface component can be changed or not.
      */
-    public void setDataChangeable(boolean changeable);
+    void setDataChangeable(boolean changeable);
 
 }

@@ -240,7 +240,7 @@ public abstract class JavaGeneratorForIpsPart {
      * @param datatype The data type of the property.
      * 
      * @deprecated Use {@link #getMethodNameSetPropertyValue(String)} instead as the data type is of
-     *             no relevance.
+     *                 no relevance.
      */
     @Deprecated
     // Deprecated since 3.0

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.util.Objects;
+
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -170,12 +172,7 @@ public class TextRegion implements Comparable<TextRegion> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + end;
-        result = prime * result + start;
-        result = prime * result + ((text == null) ? 0 : text.hashCode());
-        return result;
+        return Objects.hash(end, start, text);
     }
 
     @Override
@@ -183,27 +180,13 @@ public class TextRegion implements Comparable<TextRegion> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         TextRegion other = (TextRegion)obj;
-        if (end != other.end) {
-            return false;
-        }
-        if (start != other.start) {
-            return false;
-        }
-        if (text == null) {
-            if (other.text != null) {
-                return false;
-            }
-        } else if (!text.equals(other.text)) {
-            return false;
-        }
-        return true;
+        return (end == other.end)
+                && (start == other.start)
+                && Objects.equals(text, other.text);
     }
 
     @Override

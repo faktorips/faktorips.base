@@ -68,7 +68,7 @@ public abstract class ExtensionPropertyValue {
     }
 
     public void setValue(Object object) {
-        this.value = object;
+        value = object;
         valueInitialized = true;
     }
 
@@ -94,8 +94,7 @@ public abstract class ExtensionPropertyValue {
     }
 
     protected IExtensionPropertyDefinition getExtensionPropertyDefinition() {
-        IExtensionPropertyDefinition extensionPropertyDefinition = part.getExtensionPropertyDefinition(getPropertyId());
-        return extensionPropertyDefinition;
+        return part.getExtensionPropertyDefinition(getPropertyId());
     }
 
     protected Element createValueElement(String propertyId,
@@ -183,7 +182,7 @@ public abstract class ExtensionPropertyValue {
         protected void loadValue() {
             IExtensionPropertyDefinition propertyDefinition = getExtensionPropertyDefinition();
             String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-            if (StringUtils.isEmpty(isNull) || !Boolean.valueOf(isNull).booleanValue()) {
+            if (StringUtils.isEmpty(isNull) || !Boolean.parseBoolean(isNull)) {
                 if (propertyDefinition == null) {
                     logMissingPropertyDefinition();
                 } else {

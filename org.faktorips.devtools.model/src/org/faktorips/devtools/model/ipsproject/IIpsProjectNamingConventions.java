@@ -28,23 +28,23 @@ public interface IIpsProjectNamingConventions {
     /**
      * Message code for messages indicating that a name is discouraged.
      */
-    public static final String DISCOURAGED_NAME = "DISCOURAGED_NAME"; //$NON-NLS-1$
+    String DISCOURAGED_NAME = "DISCOURAGED_NAME"; //$NON-NLS-1$
 
     /**
      * Message code for messages indicating that a name is invalid.
      */
-    public static final String INVALID_NAME = "INVALID_NAME"; //$NON-NLS-1$
+    String INVALID_NAME = "INVALID_NAME"; //$NON-NLS-1$
 
     /**
      * Message code for messages indicating that a name is missing.
      */
-    public static final String NAME_IS_MISSING = "NAME_IS_MISSING"; //$NON-NLS-1$
+    String NAME_IS_MISSING = "NAME_IS_MISSING"; //$NON-NLS-1$
 
     /**
      * Message code for messages indicating that a given name should be unqualified but was
      * qualified.
      */
-    public static final String NAME_IS_QUALIFIED = "NAME_IS_QUALIFIED"; //$NON-NLS-1$
+    String NAME_IS_QUALIFIED = "NAME_IS_QUALIFIED"; //$NON-NLS-1$
 
     /**
      * Returns a message list containing errors if the given qualified name is missing or invalid
@@ -61,7 +61,7 @@ public interface IIpsProjectNamingConventions {
      * @throws NullPointerException if type is <code>null</code>
      * @throws IpsException if an error occurs while validating the name.
      */
-    public MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws IpsException;
+    MessageList validateQualifiedIpsObjectName(IpsObjectType type, String name) throws IpsException;
 
     /**
      * Returns a message list containing errors if the given unqualified name is missing or invalid
@@ -79,21 +79,21 @@ public interface IIpsProjectNamingConventions {
      * @throws NullPointerException if type is <code>null</code>
      * @throws IpsException if an error occurs while validating the name.
      */
-    public MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws IpsException;
+    MessageList validateUnqualifiedIpsObjectName(IpsObjectType type, String name) throws IpsException;
 
     /**
      * Validates if the given name is valid for IPS packages.
      * 
      * @throws IpsException if an error occurs while validating the name.
      */
-    public MessageList validateIpsPackageName(String name) throws IpsException;
+    MessageList validateIpsPackageName(String name) throws IpsException;
 
     /**
      * Validates if the given name is valid for IPS package roots.
      * 
      * @throws IpsException if an error occurs while validating the name.
      */
-    public MessageList validateIpsPackageRootName(String name) throws IpsException;
+    MessageList validateIpsPackageRootName(String name) throws IpsException;
 
     /**
      * Returns a Message object if the provided name doesn't comply to the java naming conventions.
@@ -111,7 +111,7 @@ public interface IIpsProjectNamingConventions {
      * 
      * @throws IpsException if an error occurs while validating the name.
      */
-    public Message validateIfValidJavaIdentifier(String name,
+    Message validateIfValidJavaIdentifier(String name,
             String text,
             Object validatedObject,
             IIpsProject ipsProject) throws IpsException;
@@ -121,6 +121,6 @@ public interface IIpsProjectNamingConventions {
      * 
      * @param qualifiedCheck true = qualified name; false = unqualified name
      */
-    public MessageList validateJavaTypeName(String name, boolean qualifiedCheck);
+    MessageList validateJavaTypeName(String name, boolean qualifiedCheck);
 
 }

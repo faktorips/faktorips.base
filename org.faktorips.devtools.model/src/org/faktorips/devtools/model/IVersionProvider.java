@@ -34,7 +34,7 @@ public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat 
      *             {@link IVersionProvider}. Use {@link #isCorrectVersionFormat(String)} to make
      *             sure to only get valid results.
      */
-    public IVersion<K> getVersion(String versionAsString);
+    IVersion<K> getVersion(String versionAsString);
 
     /**
      * Returns the version of the project this {@link IVersionProvider} belongs to. If there is no
@@ -42,12 +42,12 @@ public interface IVersionProvider<K extends IVersion<K>> extends IVersionFormat 
      * 
      * @return IVersion of the according project
      */
-    public IVersion<K> getProjectVersion();
+    IVersion<K> getProjectVersion();
 
     /**
      * Sets the given Version in the project this {@link IVersionProvider} belongs to.
      * 
      * @param version of the according model
      */
-    public void setProjectVersion(IVersion<K> version);
+    void setProjectVersion(IVersion<K> version);
 }

@@ -16,10 +16,10 @@ package org.faktorips.runtime.test;
  */
 public interface IpsTestListener {
 
-    public void testStarted(IpsTest2 test);
+    void testStarted(IpsTest2 test);
 
-    public void testFinished(IpsTest2 test);
+    void testFinished(IpsTest2 test);
 
-    public void testFailureOccured(IpsTestFailure failure);
+    void testFailureOccured(IpsTestFailure failure);
 
 }

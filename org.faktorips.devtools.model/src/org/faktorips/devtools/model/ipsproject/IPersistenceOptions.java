@@ -21,108 +21,108 @@ package org.faktorips.devtools.model.ipsproject;
  */
 public interface IPersistenceOptions {
 
-    public static final String XML_TAG_NAME = "PersistenceOptions"; //$NON-NLS-1$
+    String XML_TAG_NAME = "PersistenceOptions"; //$NON-NLS-1$
 
-    public static final String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength"; //$NON-NLS-1$
-    public static final String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
-    public static final String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
+    String MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME = "maxTableNameLength"; //$NON-NLS-1$
+    String MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME = "maxColumnNameLength"; //$NON-NLS-1$
+    String ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS = "allowLazyFetchForSingleValuedAssociations"; //$NON-NLS-1$
 
-    public static final String MAX_TABLE_COLUMN_SCALE = "maxTableColumnScale"; //$NON-NLS-1$
-    public static final String MAX_TABLE_COLUMN_PRECISION = "maxTableColumnPrecision"; //$NON-NLS-1$
-    public static final String MAX_TABLE_COLUMN_SIZE = "maxTableColumnSize"; //$NON-NLS-1$
+    String MAX_TABLE_COLUMN_SCALE = "maxTableColumnScale"; //$NON-NLS-1$
+    String MAX_TABLE_COLUMN_PRECISION = "maxTableColumnPrecision"; //$NON-NLS-1$
+    String MAX_TABLE_COLUMN_SIZE = "maxTableColumnSize"; //$NON-NLS-1$
 
     /**
      * Returns the maximum length allowed for a valid database table name.
      */
-    public int getMaxTableNameLength();
+    int getMaxTableNameLength();
 
     /**
      * Sets the maximum length allowed for a valid database table name.
      */
-    public void setMaxTableNameLength(int length);
+    void setMaxTableNameLength(int length);
 
     /**
      * Returns the maximum length allowed for a valid database table column name.
      */
-    public int getMaxColumnNameLenght();
+    int getMaxColumnNameLenght();
 
     /**
      * Sets the maximum length allowed for a valid database table column name.
      */
-    public void setMaxColumnNameLength(int length);
+    void setMaxColumnNameLength(int length);
 
     /**
      * Returns the strategy used for naming database tables.
      */
-    public ITableNamingStrategy getTableNamingStrategy();
+    ITableNamingStrategy getTableNamingStrategy();
 
     /**
      * Sets the strategy used for naming database tables.
      */
-    public void setTableNamingStrategy(ITableNamingStrategy newStrategy);
+    void setTableNamingStrategy(ITableNamingStrategy newStrategy);
 
     /**
      * Returns the strategy used for naming database table columns.
      */
-    public ITableColumnNamingStrategy getTableColumnNamingStrategy();
+    ITableColumnNamingStrategy getTableColumnNamingStrategy();
 
     /**
      * Sets the strategy used for naming database table columns.
      */
-    public void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
+    void setTableColumnNamingStrategy(ITableColumnNamingStrategy newStrategy);
 
     /**
      * Returns if the lazy fetching of single value associations (to-one) is allowed or not.
      */
-    public boolean isAllowLazyFetchForSingleValuedAssociations();
+    boolean isAllowLazyFetchForSingleValuedAssociations();
 
     /**
      * Sets if the lazy fetching of single value associations (to-one) is allowed or not.
      */
-    public void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
+    void setAllowLazyFetchForSingleValuedAssociations(boolean allowLazyFetchForSingleValuedAssociations);
 
     /**
      * Returns the maximum column size.
      */
-    public int getMaxTableColumnSize();
+    int getMaxTableColumnSize();
 
     /**
      * Returns the maximum column scale.
      */
-    public int getMaxTableColumnScale();
+    int getMaxTableColumnScale();
 
     /**
      * Returns the maximum column precision.
      */
-    public int getMaxTableColumnPrecision();
+    int getMaxTableColumnPrecision();
 
     /**
      * Returns the minimum column precision.
      */
-    public int getMinTableColumnPrecision();
+    int getMinTableColumnPrecision();
 
     /**
      * Returns the minimum column scale.
      */
-    public int getMinTableColumnScale();
+    int getMinTableColumnScale();
 
     /**
      * Returns the minimum column size.
      */
-    public int getMinTableColumnSize();
+    int getMinTableColumnSize();
 
     /**
      * Sets the maximum column scale.
      */
-    public void setMaxTableColumnScale(int scale);
+    void setMaxTableColumnScale(int scale);
 
     /**
      * Sets the maximum column precision.
      */
-    public void setMaxTableColumnPrecision(int precision);
+    void setMaxTableColumnPrecision(int precision);
 
     /**
      * Sets the maximum column size.
      */
-    public void setMaxTableColumnSize(int size);
+    void setMaxTableColumnSize(int size);
 }

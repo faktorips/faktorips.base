@@ -136,8 +136,7 @@ public class TableStructureUsageSection extends SimpleIpsPartsSection {
 
         @Override
         protected IIpsObjectPart newIpsPart() {
-            ITableStructureUsage tsu = productCmptType.newTableStructureUsage();
-            return tsu;
+            return productCmptType.newTableStructureUsage();
         }
 
         @Override

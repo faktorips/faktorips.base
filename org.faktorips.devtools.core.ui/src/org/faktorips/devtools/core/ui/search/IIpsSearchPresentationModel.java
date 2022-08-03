@@ -27,25 +27,25 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
  */
 public interface IIpsSearchPresentationModel extends IIpsSearchPartPresentationModel {
 
-    public static final String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
+    String SRC_FILE_PATTERN = "srcFilePattern"; //$NON-NLS-1$
 
     /**
      * @see #getSearchScope()
      */
-    public void setSearchScope(IIpsSearchScope searchScope);
+    void setSearchScope(IIpsSearchScope searchScope);
 
     /**
      * Returns the {@link IIpsSearchScope} of the search
      */
-    public IIpsSearchScope getSearchScope();
+    IIpsSearchScope getSearchScope();
 
     /**
      * @see #getSrcFilePattern()
      */
-    public void setSrcFilePattern(String newValue);
+    void setSrcFilePattern(String newValue);
 
     /**
      * Returns the pattern for matching {@link IIpsSrcFile IIpsSrcFiles}
      */
-    public String getSrcFilePattern();
+    String getSrcFilePattern();
 }

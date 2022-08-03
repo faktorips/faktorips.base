@@ -37,12 +37,12 @@ public interface IIpsObjectPathContainer {
     /**
      * Returns the IPS project this container belongs to.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the container's optional path information. Never returns null.
      */
-    public IPath getOptionalPath();
+    IPath getOptionalPath();
 
     /**
      * Returns the ID of the container provided by the {@link IIpsObjectPathContainerType}. The ID
@@ -50,13 +50,13 @@ public interface IIpsObjectPathContainer {
      * 
      * @return The identifier of this container according to its {@link IIpsObjectPathContainerType}
      */
-    public String getContainerId();
+    String getContainerId();
 
     /**
      * Returns a name for the given entry that can be presented to the user. E.g. for containers
      * based on a JDT classpath container, the name of the JDT classpath container is returned.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the list of entries of type {@link IIpsObjectPathEntry#TYPE_PROJECT_REFERENCE} or
@@ -67,7 +67,7 @@ public interface IIpsObjectPathContainer {
      * 
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public List<IIpsObjectPathEntry> resolveEntries();
+    List<IIpsObjectPathEntry> resolveEntries();
 
     /**
      * Validates if the given entry is valid.
@@ -76,5 +76,5 @@ public interface IIpsObjectPathContainer {
      * 
      * @throws NullPointerException if containerEntry is <code>null</code>.
      */
-    public MessageList validate();
+    MessageList validate();
 }

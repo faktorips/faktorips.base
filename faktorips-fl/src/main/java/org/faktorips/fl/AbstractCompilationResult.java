@@ -154,27 +154,19 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((codeFragment == null) ? 0 : codeFragment.hashCode());
-        result = prime * result + ((datatype == null) ? 0 : datatype.hashCode());
-        result = prime * result + ((messages == null) ? 0 : messages.hashCode());
-        return result;
+        return Objects.hash(codeFragment, datatype, messages);
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof AbstractCompilationResult)) {
+        if ((obj == null) || !(obj instanceof AbstractCompilationResult)) {
             return false;
         }
         AbstractCompilationResult<?> other = (AbstractCompilationResult<?>)obj;
-        return Objects.equals(codeFragment, other.codeFragment) 
+        return Objects.equals(codeFragment, other.codeFragment)
                 && Objects.equals(datatype, other.datatype)
                 && Objects.equals(messages, other.messages);
     }

@@ -40,8 +40,8 @@ public class TestArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
     public TestArtefactBuilderSetInfo(IIpsArtefactBuilderSet builderSet) {
         ArgumentCheck.notNull(builderSet, this);
         ArgumentCheck.notNull(builderSet.getIpsProject(), "The ips project of the provided builder set must be set.");
-        this.builderSets = new IIpsArtefactBuilderSet[] { builderSet };
-        this.builderSetId = builderSet.getId();
+        builderSets = new IIpsArtefactBuilderSet[] { builderSet };
+        builderSetId = builderSet.getId();
     }
 
     /**

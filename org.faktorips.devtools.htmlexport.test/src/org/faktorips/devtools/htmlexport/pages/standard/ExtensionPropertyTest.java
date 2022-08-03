@@ -51,7 +51,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, defaultValue };
+        String[] texts = { name, defaultValue };
 
         assertTextContained(objectContentPage, texts);
     }
@@ -71,7 +71,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, defaultValue };
+        String[] texts = { name, defaultValue };
 
         assertTextContained(objectContentPage, texts);
     }
@@ -94,7 +94,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, setValue };
+        String[] texts = { name, setValue };
 
         assertTextContained(objectContentPage, texts);
     }
@@ -115,7 +115,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, defaultValue };
+        String[] texts = { name, defaultValue };
 
         assertTextContained(objectContentPage, texts);
     }
@@ -136,7 +136,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, defaultValue };
+        String[] texts = { name, defaultValue };
 
         assertTextContained(objectContentPage, texts);
     }
@@ -160,7 +160,7 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
                 .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
-        String[] texts = new String[] { name, setValue };
+        String[] texts = { name, setValue };
 
         assertTextContained(objectContentPage, texts);
     }

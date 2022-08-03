@@ -42,7 +42,7 @@ public enum DeltaType {
 
     private final Kind kind;
 
-    private DeltaType(String description, Kind kind) {
+    DeltaType(String description, Kind kind) {
         this.description = description;
         this.kind = kind;
     }

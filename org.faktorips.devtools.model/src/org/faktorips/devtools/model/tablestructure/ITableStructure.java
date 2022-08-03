@@ -18,52 +18,52 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 
 public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersionControlledElement {
 
-    public static final String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
+    String PROPERTY_TYPE = "tableStructureType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TABLESTRUCTURE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TABLESTRUCTURE-"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if multiple table contents are allowed for this table structure,
      * otherwise <code>false</code>.
      */
-    public boolean isMultipleContentsAllowed();
+    boolean isMultipleContentsAllowed();
 
     /**
      * Set the type for this table structure represented by the given id. If no type is found for
      * the given id, the type is not modified.
      */
-    public void setTableStructureType(TableStructureType type);
+    void setTableStructureType(TableStructureType type);
 
     /**
      * @return The type of this table structure.
      */
-    public TableStructureType getTableStructureType();
+    TableStructureType getTableStructureType();
 
     /**
      * Returns the functions to access the table in the formula language.
      * 
      */
-    public ITableAccessFunction[] getAccessFunctions();
+    ITableAccessFunction[] getAccessFunctions();
 
     /**
      * Returns the table's columns.
      */
-    public IColumn[] getColumns();
+    IColumn[] getColumns();
 
     /**
      * Returns the first column with the indicated name or <code>null</code> if the table structure
      * does not contain a column with the name.
      */
-    public IColumn getColumn(String name);
+    IColumn getColumn(String name);
 
     /**
      * Returns the column at the given index. Returns null if the index is out of bounds (less than
      * zero or greater or equal than the number of columns).
      */
-    public IColumn getColumn(int index);
+    IColumn getColumn(int index);
 
     /**
      * Returns the index of the given column in this tablestructure's list of columns. Throws a
@@ -71,7 +71,7 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * 
      * @throws RuntimeException if the column was not found
      */
-    public int getColumnIndex(IColumn column);
+    int getColumnIndex(IColumn column);
 
     /**
      * Returns the index for the given name of a column in this tablestructure's list of columns.
@@ -80,17 +80,17 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * @param columnName The name of the column
      * @throws RuntimeException if the column was not found
      */
-    public int getColumnIndex(String columnName);
+    int getColumnIndex(String columnName);
 
     /**
      * Returns the number of columns in the table.
      */
-    public int getNumOfColumns();
+    int getNumOfColumns();
 
     /**
      * Creates a new column.
      */
-    public IColumn newColumn();
+    IColumn newColumn();
 
     /**
      * Moves the columns identified by the indexes up or down by one position. If one of the indexes
@@ -105,38 +105,38 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a column.
      */
-    public int[] moveColumns(int[] indexes, boolean up);
+    int[] moveColumns(int[] indexes, boolean up);
 
     /**
      * Returns the table's column ranges.
      */
-    public IColumnRange[] getRanges();
+    IColumnRange[] getRanges();
 
     /**
      * Returns the first range with the indicated name or <code>null</code> if the table structure
      * does not contain a range with the name.
      */
-    public IColumnRange getRange(String name);
+    IColumnRange getRange(String name);
 
     /**
      * Returns true if the table has a range with the specified name.
      */
-    public boolean hasRange(String name);
+    boolean hasRange(String name);
 
     /**
      * Returns true if the table has a column with the specified name.
      */
-    public boolean hasColumn(String name);
+    boolean hasColumn(String name);
 
     /**
      * Returns the number of ranges in the table.
      */
-    public int getNumOfRanges();
+    int getNumOfRanges();
 
     /**
      * Creates a new range.
      */
-    public IColumnRange newRange();
+    IColumnRange newRange();
 
     /**
      * Moves the ranges identified by the indexes up or down by one position. If one of the indexes
@@ -151,34 +151,34 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a range.
      */
-    public int[] moveRanges(int[] indexes, boolean up);
+    int[] moveRanges(int[] indexes, boolean up);
 
     /**
      * Returns the table's unique keys.
      */
-    public IIndex[] getUniqueKeys();
+    IIndex[] getUniqueKeys();
 
     /**
      * Returns the first unique key with the indicated name or <code>null</code> if the table
      * structure does not contain a unique key with the name.
      */
-    public IIndex getUniqueKey(String name);
+    IIndex getUniqueKey(String name);
 
     /**
      * Returns the number of unique keys in the table, these are all indices that are marked as
      * unique.
      */
-    public int getNumOfUniqueKeys();
+    int getNumOfUniqueKeys();
 
     /**
      * Returns true, if there are several indices based on the same datatypes
      */
-    public boolean hasIndexWithSameDatatype();
+    boolean hasIndexWithSameDatatype();
 
     /**
      * Creates a new index.
      */
-    public IIndex newIndex();
+    IIndex newIndex();
 
     /**
      * Moves the {@link IIndex} identified by the indices up or down by one position. If one of the
@@ -194,44 +194,44 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * @throws IndexOutOfBoundsException if one of the indices does not identify a {@link IIndex}
      *             object.
      */
-    public int[] moveIndex(int[] indices, boolean up);
+    int[] moveIndex(int[] indices, boolean up);
 
     /**
      * Returns the table's indices.
      */
-    public List<IIndex> getIndices();
+    List<IIndex> getIndices();
 
     /**
      * Returns the first index with the indicated name or <code>null</code> if the table structure
      * does not contain an index with the name.
      */
-    public IIndex getIndex(String name);
+    IIndex getIndex(String name);
 
     /**
      * Returns the number of indices in the table.
      */
-    public int getNumOfIndices();
+    int getNumOfIndices();
 
     /**
      * Returns the table's foreign keys.
      */
-    public IForeignKey[] getForeignKeys();
+    IForeignKey[] getForeignKeys();
 
     /**
      * Returns the first foreign key with the indicated name or <code>null</code> if the table
      * structure does not contain a foreign key with the name.
      */
-    public IForeignKey getForeignKey(String name);
+    IForeignKey getForeignKey(String name);
 
     /**
      * Returns the number of foreign keys in the table.
      */
-    public int getNumOfForeignKeys();
+    int getNumOfForeignKeys();
 
     /**
      * Creates a new foreign key.
      */
-    public IForeignKey newForeignKey();
+    IForeignKey newForeignKey();
 
     /**
      * Moves the foreign keys identified by the indexes up or down by one position. If one of the
@@ -246,13 +246,13 @@ public interface ITableStructure extends IIpsMetaClass, ILabeledElement, IVersio
      * @throws NullPointerException if indexes is null.
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a key.
      */
-    public int[] moveForeignKeys(int[] indexes, boolean up);
+    int[] moveForeignKeys(int[] indexes, boolean up);
 
     /**
      * Returns the columns not contained in the given key.
      * 
      * @throws NullPointerException if key is <code>null</code>.
      */
-    public IColumn[] getColumnsNotInKey(IKey key);
+    IColumn[] getColumnsNotInKey(IKey key);
 
 }

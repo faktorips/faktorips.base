@@ -74,7 +74,6 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
                 }
             } catch (IpsException e) {
                 IpsLog.log(e);
-                return label;
             }
             return label;
         } else {

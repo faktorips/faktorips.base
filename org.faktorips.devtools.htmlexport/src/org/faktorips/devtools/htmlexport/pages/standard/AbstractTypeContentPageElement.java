@@ -274,7 +274,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
      */
     abstract AttributesTablePageElement getAttributesTablePageElement();
 
-    private class SupertypeHierarchyVisitor extends TypeHierarchyVisitor<IType> {
+    private static class SupertypeHierarchyVisitor extends TypeHierarchyVisitor<IType> {
 
         private List<IType> hierSuperTypes = new ArrayList<>();
 

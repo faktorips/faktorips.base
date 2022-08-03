@@ -29,5 +29,5 @@ public interface IModelDescriptionSupport {
      * 
      * @return IPage new Page.
      */
-    public IPage createModelDescriptionPage() throws IpsException;
+    IPage createModelDescriptionPage() throws IpsException;
 }

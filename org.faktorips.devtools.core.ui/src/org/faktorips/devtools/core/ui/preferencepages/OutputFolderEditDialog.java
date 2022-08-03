@@ -58,8 +58,8 @@ public class OutputFolderEditDialog extends StatusDialog {
             throw new IllegalArgumentException("Attribute is not of type output folder."); //$NON-NLS-1$
         }
 
-        this.setTitle(Messages.OutputFolderEditDialog_dialog_title);
-        this.setHelpAvailable(false);
+        setTitle(Messages.OutputFolderEditDialog_dialog_title);
+        setHelpAvailable(false);
         this.attribute = attribute;
         this.srcFolderEntry = srcFolderEntry;
     }

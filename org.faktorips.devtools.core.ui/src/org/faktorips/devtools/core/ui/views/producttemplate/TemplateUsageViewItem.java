@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 
@@ -95,17 +96,13 @@ public class TemplateUsageViewItem {
     public BigDecimal getRelativeDistributionPercent() {
         SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         Integer definedDist = Optional.ofNullable(definedAbsoluteDistribution.get(value)).orElse(0);
-        BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100))
+        return new BigDecimal(definedDist).multiply(new BigDecimal(100))
                 .divide(new BigDecimal(pmo.getCount()), 1, RoundingMode.HALF_UP);
-        return distributionPercent;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((value == null) ? 0 : value.hashCode());
-        return result;
+        return Objects.hash(value);
     }
 
     @Override
@@ -113,21 +110,11 @@ public class TemplateUsageViewItem {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         TemplateUsageViewItem other = (TemplateUsageViewItem)obj;
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(value, other.value);
     }
 
 }

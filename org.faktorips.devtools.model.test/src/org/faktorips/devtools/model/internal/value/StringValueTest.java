@@ -76,7 +76,7 @@ public class StringValueTest extends AbstractIpsPluginTest {
         StringValue stringValue = new StringValue("Versicherung");
         assertTrue(stringValue.equals(stringValue));
         assertFalse(stringValue.equals(null));
-        assertFalse(stringValue.equals(new String("Versicherung")));
+        assertFalse(stringValue.equals("Versicherung"));
         StringValue copy = new StringValue("");
         assertFalse(stringValue.equals(copy));
         copy = new StringValue("Versicherung");

@@ -36,7 +36,7 @@ public class BuildLogPrintStream {
     public BuildLogPrintStream(String projectName, List<String> filters) throws IOException {
         this.projectName = projectName;
         this.filters = filters;
-        this.logFile = File.createTempFile(projectName + "_", ".log");
+        logFile = File.createTempFile(projectName + "_", ".log");
         printStream = new PrintStream(logFile);
     }
 

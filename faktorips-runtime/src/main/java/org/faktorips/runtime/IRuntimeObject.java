@@ -22,16 +22,16 @@ public interface IRuntimeObject {
     /**
      * @return a set of the extension property ids defined for this element.
      */
-    public abstract Set<String> getExtensionPropertyIds();
+    Set<String> getExtensionPropertyIds();
 
     /**
      * @param propertyId the id of the desired extension property.
      * 
      * @return the value of the extension property defined by the given <code>propertyId</code> or
-     *         <code>null</code> if the extension property's <code>isNull</code> attribute is
-     *         <code>true</code>.
+     *             <code>null</code> if the extension property's <code>isNull</code> attribute is
+     *             <code>true</code>.
      * @throws IllegalArgumentException if no such property exists.
      */
-    public abstract Object getExtensionPropertyValue(String propertyId);
+    Object getExtensionPropertyValue(String propertyId);
 
 }

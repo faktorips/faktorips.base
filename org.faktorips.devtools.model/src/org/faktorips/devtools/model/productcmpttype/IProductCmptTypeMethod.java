@@ -25,53 +25,53 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
  */
 public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProductCmptProperty {
 
-    public static final String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
-    public static final String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
-    public static final String PROPERTY_FORMULA_MANDATORY = "formulaMandatory"; //$NON-NLS-1$
-    public static final String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
-    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    String PROPERTY_FORMULA_SIGNATURE_DEFINITION = "formulaSignatureDefinition"; //$NON-NLS-1$
+    String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
+    String PROPERTY_FORMULA_MANDATORY = "formulaMandatory"; //$NON-NLS-1$
+    String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
+    String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of a formula signature definition is
      * void or a none value data type.
      */
-    public static final String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_DATATYPE_MUST_BE_A_VALUEDATATYPE_FOR_FORMULA_SIGNATURES = IBaseMethod.MSGCODE_PREFIX
             + "DatatypeMustBeAValueDatatypeForFormulaSignature"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a method is marked as formula signature but the
      * formula name is missing.
      */
-    public static final String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_FORMULA_MUSTNT_BE_ABSTRACT = IBaseMethod.MSGCODE_PREFIX
             + "FormulaMustntBeAbstract"; //$NON-NLS-1$
 
-    public static final String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY = IBaseMethod.MSGCODE_PREFIX
             + "NoFormulaWithSameNameInTypeHierarchy"; //$NON-NLS-1$
 
-    public static final String MSGCODE_FORMULA_MUSTBE_MANDATORY = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_FORMULA_MUSTBE_MANDATORY = IBaseMethod.MSGCODE_PREFIX
             + "NotOptionalIfNotOptionalInTypeHierarchy"; //$NON-NLS-1$
 
-    public static final String MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
             + "ChangingOverTimeIfNotChangingOverTimeInTypeHierarchy"; //$NON-NLS-1$
 
-    public static final String MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
             + "NotChangingOverTimeIfChangingOverTimeInTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this method belongs to.
      */
-    public IProductCmptType getProductCmptType();
+    IProductCmptType getProductCmptType();
 
     /**
      * Returns <code>true</code> if this is a formula signature definition, <code>false</code> if it
      * is not.
      */
-    public boolean isFormulaSignatureDefinition();
+    boolean isFormulaSignatureDefinition();
 
     /**
      * Sets if this method defines a formula signature or not.
      */
-    public void setFormulaSignatureDefinition(boolean newValue);
+    void setFormulaSignatureDefinition(boolean newValue);
 
     /**
      * Returns <code>true</code> if this is an mandatory formula, <code>false</code> if it is not.
@@ -80,9 +80,9 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * This method always returns true if {@link #isFormulaOptionalSupported()} returns false.
      * 
      * @return <code>true</code> if the formula is mandatory or if optional formula is not
-     *         supported.
+     *             supported.
      */
-    public boolean isFormulaMandatory();
+    boolean isFormulaMandatory();
 
     /**
      * Sets if this method is an mandatory formula or not.
@@ -92,7 +92,7 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * 
      * @see #isFormulaMandatory()
      */
-    public void setFormulaMandatory(boolean formulaMandatory);
+    void setFormulaMandatory(boolean formulaMandatory);
 
     /**
      * Returns <code>true</code> if this {@link IProductCmptTypeMethod} is a formula signature and
@@ -104,27 +104,27 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * 
      * @see #isFormulaMandatory()
      */
-    public boolean isFormulaOptionalSupported();
+    boolean isFormulaOptionalSupported();
 
     /**
      * Returns true if this is a formula method that overloads a formula method within the supertype
      * hierarchy.
      */
-    public boolean isOverloadsFormula();
+    boolean isOverloadsFormula();
 
     /**
      * Looks in the supertype hierarchy if a formula method can be found with the same formula name
      * than this one and returns the first that is found. If none can be found <code>null</code>
      * will be returned.
      */
-    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject);
+    IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject);
 
     /**
      * Sets if this formula method overloads a formula method in the supertype hierarchy. If so, the
      * next formula method in the supertype hierarchy with the same formula name will be chosen to
      * be the method that will be overloaded.
      */
-    public void setOverloadsFormula(boolean overloadsFormula);
+    void setOverloadsFormula(boolean overloadsFormula);
 
     /**
      * Configures this {@link IProductCmptTypeMethod} to change or be constant over time. If
@@ -133,6 +133,6 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * 
      * @param changingOverTime indicates whether or not this attribute should change over time
      */
-    public void setChangingOverTime(boolean changingOverTime);
+    void setChangingOverTime(boolean changingOverTime);
 
 }

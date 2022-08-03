@@ -40,7 +40,7 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
  */
 public class ProductCmptCompareItemComparator implements Comparator<AbstractCompareItem> {
 
-    private static final Class<?>[] TYPE_ORDER = new Class<?>[] { IPropertyValue.class, IProductCmptLink.class,
+    private static final Class<?>[] TYPE_ORDER = { IPropertyValue.class, IProductCmptLink.class,
             IProductCmptGeneration.class };
 
     private static final PropertyValueComparator PROPERTY_VALUE_COMPARATOR = new PropertyValueComparator();

@@ -28,7 +28,7 @@ public interface ITargetSystem {
      * 
      * return the name of the target system
      */
-    public String getName();
+    String getName();
 
     /**
      * Setting the {@link PasswordAuthentication} for this target system.
@@ -36,7 +36,7 @@ public interface ITargetSystem {
      * @param passwordAuthentication the {@link PasswordAuthentication} containing the username and
      *            password
      */
-    public void setPasswordAuthentication(PasswordAuthentication passwordAuthentication);
+    void setPasswordAuthentication(PasswordAuthentication passwordAuthentication);
 
     /**
      * Whether the {@link PasswordAuthentication} is valid. If the target system does not need any
@@ -45,6 +45,6 @@ public interface ITargetSystem {
      * 
      * @return true if the {@link PasswordAuthentication} is valid
      */
-    public boolean isValidAuthentication();
+    boolean isValidAuthentication();
 
 }

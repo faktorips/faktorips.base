@@ -62,12 +62,7 @@ public class EnumExportPage extends IpsObjectExportPage {
             return;
         }
         IEnumValueContainer enumValueContainer = getEnum();
-        if (enumValueContainer == null) {
-            setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
-            return;
-        }
-
-        if (!enumValueContainer.exists()) {
+        if ((enumValueContainer == null) || !enumValueContainer.exists()) {
             setErrorMessage(Messages.EnumExportPage_msgNonExistingEnum);
             return;
         }

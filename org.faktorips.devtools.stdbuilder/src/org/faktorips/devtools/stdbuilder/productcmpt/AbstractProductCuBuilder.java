@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.builder.BuilderHelper;
 import org.faktorips.devtools.model.builder.TypeSection;
@@ -38,7 +39,6 @@ import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -239,15 +239,11 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(),
                 resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
 
-        String[] parameterNames = null;
-        parameterNames = BuilderHelper.extractParameterNames(parameters);
+        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
         String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters,
                 resolveTypesToPublishedInterface, getBuilderSet(), method.getIpsProject());
         String[] parameterInSignatur = parameterNames;
         String[] parameterTypesInSignatur = parameterTypes;
-        parameterInSignatur = parameterNames;
-        parameterTypesInSignatur = parameterTypes;
-
         String methodName = method.getName();
         // extend the method signature with the given parameter names
         methodsBuilder.signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur,

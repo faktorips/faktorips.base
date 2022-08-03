@@ -387,10 +387,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
         }
         if (associations.length > 0) {
             for (ITestPolicyCmptLink association : associations) {
-                if (!association.isValid(getIpsProject())) {
-                    continue;
-                }
-                if (!associationsParentSameType(association, isInput)) {
+                if (!association.isValid(getIpsProject()) || !associationsParentSameType(association, isInput)) {
                     continue;
                 }
                 String associationType = "";
@@ -482,7 +479,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
     /**
      * Class to generate an unique object id within the input and the expected result.
      */
-    private class ObjectId {
+    private static class ObjectId {
         private int objectId = 0;
 
         public int nextValue() {

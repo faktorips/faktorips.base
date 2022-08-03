@@ -23,9 +23,9 @@ public interface IProductComponentLinkSource {
      * Getting the runtime repository of this link source.
      * 
      * @return The {@link IRuntimeRepository} that was used to create this
-     *         {@link IProductComponentLinkSource}
+     *             {@link IProductComponentLinkSource}
      */
-    public IRuntimeRepository getRepository();
+    IRuntimeRepository getRepository();
 
     /**
      * Returns a <code>List</code> of all the <code>IProductComponentLink</code>s from this product
@@ -33,12 +33,12 @@ public interface IProductComponentLinkSource {
      * 
      * @since 3.8
      */
-    public List<IProductComponentLink<? extends IProductComponent>> getLinks();
+    List<IProductComponentLink<? extends IProductComponent>> getLinks();
 
     /**
      * Returns the <code>IProductComponentLink</code> for the association with the given role name
      * to the given product component or <code>null</code> if no such association exists.
      */
-    public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
+    IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target);
 
 }

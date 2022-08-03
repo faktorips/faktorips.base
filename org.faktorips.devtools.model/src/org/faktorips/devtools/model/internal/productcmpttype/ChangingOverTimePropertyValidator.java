@@ -42,7 +42,7 @@ public class ChangingOverTimePropertyValidator {
 
     public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property) {
         this.property = property;
-        this.productCmptType = property.findProductCmptType(property.getIpsProject());
+        productCmptType = property.findProductCmptType(property.getIpsProject());
     }
 
     /**

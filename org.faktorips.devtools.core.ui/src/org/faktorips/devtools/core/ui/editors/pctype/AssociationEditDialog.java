@@ -156,8 +156,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     void updateMatchingProductCmptTypeAssociation() {
-        IProductCmptTypeAssociation newConstrainedAssociation = null;
-        newConstrainedAssociation = association.findMatchingProductCmptTypeAssociation(ipsProject);
+        IProductCmptTypeAssociation newConstrainedAssociation = association
+                .findMatchingProductCmptTypeAssociation(ipsProject);
         if (oldMatchingAssociation != null) {
             needToSaveOldMatchingAssociation(newConstrainedAssociation);
         }
@@ -597,9 +597,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         private IProductCmptTypeAssociation getDefaultMatchingAssociation() {
             try {
-                IProductCmptTypeAssociation matchingProductCmptTypeAssociation = getAssociation()
+                return getAssociation()
                         .findDefaultMatchingProductCmptTypeAssociation(ipsProject);
-                return matchingProductCmptTypeAssociation;
             } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return null;
@@ -647,8 +646,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 return;
             }
             actualConfiguredAssociationSourceName = configuredAssociationSourceName;
-            IProductCmptType configuredAssociationSource = null;
-            configuredAssociationSource = ipsProject.findProductCmptType(configuredAssociationSourceName);
+            IProductCmptType configuredAssociationSource = ipsProject
+                    .findProductCmptType(configuredAssociationSourceName);
             if (configuredAssociationSource == null) {
                 configuringAssociationField.setInput(new String[0]);
                 return;

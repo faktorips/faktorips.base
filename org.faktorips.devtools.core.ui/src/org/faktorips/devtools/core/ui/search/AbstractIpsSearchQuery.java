@@ -54,7 +54,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     public IStatus run(IProgressMonitor monitor) {
         getSearchResult().removeAll();
 
-        monitor.beginTask(this.getLabel(), 2);
+        monitor.beginTask(getLabel(), 2);
 
         try {
             if (isOnlyTypeNameSearch()) {

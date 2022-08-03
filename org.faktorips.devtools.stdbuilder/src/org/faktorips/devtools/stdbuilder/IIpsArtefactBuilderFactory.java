@@ -27,5 +27,5 @@ public interface IIpsArtefactBuilderFactory {
      * @param builderSet the new builder's builder set
      * @return a custom IPS artifact builder.
      */
-    public IIpsArtefactBuilder createBuilder(StandardBuilderSet builderSet);
+    IIpsArtefactBuilder createBuilder(StandardBuilderSet builderSet);
 }

@@ -25,7 +25,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
     /**
      * A {@link Comparator} comparing resources by name.
      */
-    static final Comparator<AResource> COMPARING_BY_NAME = Comparator.comparing(AResource::getName);
+    Comparator<AResource> COMPARING_BY_NAME = Comparator.comparing(AResource::getName);
 
     /**
      * The local name of this resource inside its {@link #getParent() parent}.
@@ -88,8 +88,8 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
      * Returns the project containing this resource.
      *
      * @return the project containing this resource; the project itself if this resource is a
-     *         {@link AResourceType#PROJECT project} and {@code null} if this resource is the
-     *         {@link AResourceType#WORKSPACE workspace}.
+     *             {@link AResourceType#PROJECT project} and {@code null} if this resource is the
+     *             {@link AResourceType#WORKSPACE workspace}.
      */
     @CheckForNull
     AProject getProject();
@@ -98,7 +98,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
      * Returns the workspace containing this resource.
      *
      * @return the workspace containing this resource; the workspace itself if this resource is a
-     *         {@link AResourceType#WORKSPACE workspace}.
+     *             {@link AResourceType#WORKSPACE workspace}.
      */
     AWorkspace getWorkspace();
 
@@ -113,7 +113,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
      * Returns the relative location of this resource in the containing project.
      *
      * @return this resource's location relative to its project or an empty path if the resource is
-     *         not contained in a project
+     *             not contained in a project
      */
     Path getProjectRelativePath();
 
@@ -121,7 +121,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
      * Returns the relative location of this resource in the containing workspace.
      *
      * @return this resource's location relative to its project or an empty path if the resource is
-     *         not contained in a workspace
+     *             not contained in a workspace
      */
     Path getWorkspaceRelativePath();
 
@@ -165,7 +165,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
      * @param depth whether to check only this resource, or also its children (and their
      *            children...)
      * @return whether this resource (and its children) is/are in sync with its/their corresponding
-     *         file-system resource(s)
+     *             file-system resource(s)
      */
     boolean isSynchronized(AResourceTreeTraversalDepth depth);
 
@@ -247,7 +247,7 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
     void move(Path destination, @CheckForNull IProgressMonitor monitor);
 
     @Override
-    public default int compareTo(AResource o) {
+    default int compareTo(AResource o) {
         return COMPARING_BY_NAME.compare(this, o);
     }
 

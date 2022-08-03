@@ -66,7 +66,7 @@ public enum AttributeValueType {
 
     private final String xmlTypeName;
 
-    private <T> AttributeValueType(String xmlTypeName) {
+    <T> AttributeValueType(String xmlTypeName) {
         this.xmlTypeName = xmlTypeName;
     }
 
@@ -102,8 +102,7 @@ public enum AttributeValueType {
         try {
             Class<? extends IAttributeValueHolderFactory<T>> valueHolderFactory = getValueHolderFactory();
             IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
-            IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue);
-            return newValueInstance;
+            return factory.createValueHolder(attributeValue);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
@@ -129,8 +128,7 @@ public enum AttributeValueType {
         try {
             Class<? extends IAttributeValueHolderFactory<T>> valueHolderFactory = getValueHolderFactory();
             IAttributeValueHolderFactory<T> factory = valueHolderFactory.getConstructor().newInstance();
-            IValueHolder<T> newValueInstance = factory.createValueHolder(attributeValue, defaultValue);
-            return newValueInstance;
+            return factory.createValueHolder(attributeValue, defaultValue);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
@@ -145,7 +143,7 @@ public enum AttributeValueType {
      * 
      * @param attribute The attribute you want to check against this {@link AttributeValueType}
      * @return {@code true} if this {@link AttributeValueType} is responsible for the specified
-     *         attribute, {@code false} if not
+     *             attribute, {@code false} if not
      */
     public abstract boolean isResponsibleFor(IProductCmptTypeAttribute attribute);
 
@@ -157,7 +155,7 @@ public enum AttributeValueType {
      *            attribute.
      * 
      * @return Returns the {@link AttributeValueType} instance that matches the type specified in
-     *         the XML element
+     *             the XML element
      * 
      * @see #getType(String)
      */

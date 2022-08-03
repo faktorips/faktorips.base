@@ -75,8 +75,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + uniqueResult.hashCode();
-        return result;
+        return prime * result + uniqueResult.hashCode();
     }
 
     @Override
@@ -84,10 +83,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         @SuppressWarnings("unchecked")

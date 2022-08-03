@@ -60,8 +60,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
 
     @Override
     protected IReadonlyTableOfContents loadTableOfContents() {
-        IReadonlyTableOfContents toc = productDataProvider.getToc();
-        return toc;
+        return productDataProvider.getToc();
     }
 
     /**
@@ -70,7 +69,7 @@ public class DetachedContentRuntimeRepository extends AbstractClassLoadingRuntim
      * the compiled formula.
      * 
      * @return the {@link IFormulaEvaluatorFactory} of this repository or null if formula should not
-     *         be evaluated
+     *             be evaluated
      */
     @Override
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {

@@ -519,12 +519,9 @@ class CategoryComposite extends ViewerButtonComposite {
         @Override
         public boolean validateDrop(Object target, int operation, TransferData transferType) {
             // Cannot drop directly onto items
-            if (getCurrentLocation() == LOCATION_ON) {
-                return false;
-            }
-
             // Cannot drop on properties from the supertype hierarchy
-            if (getTargetProperty() != null && !isPropertyOfContextType(getTargetProperty())) {
+            if ((getCurrentLocation() == LOCATION_ON)
+                    || (getTargetProperty() != null && !isPropertyOfContextType(getTargetProperty()))) {
                 return false;
             }
 

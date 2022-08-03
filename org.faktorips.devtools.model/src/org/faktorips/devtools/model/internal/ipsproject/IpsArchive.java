@@ -175,8 +175,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         if (qnts == null) {
             return new HashSet<>(0);
         }
-        Set<QualifiedNameType> packContent = new HashSet<>(qnts);
-        return packContent;
+        return new HashSet<>(qnts);
     }
 
     @Override
@@ -376,15 +375,12 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     public AResource getCorrespondingResource() {
         if (PathUtil.isAbsoluteInWorkspace(archivePath)) {
             AWorkspaceRoot wsRoot = Abstractions.getWorkspace().getRoot();
-            if (archivePath.getNameCount() == 0) {
-                return null;
-            }
             /*
              * on Unix, absolute paths always start with a slash (/). It is not possible to
              * distinguish between workspace absolut paths and absolute path to locations outside
              * the workspace so we check, if the first segment identifies a project.
              */
-            if (!wsRoot.getProject(PathUtil.segment(archivePath, 0)).exists()) {
+            if ((archivePath.getNameCount() == 0) || !wsRoot.getProject(PathUtil.segment(archivePath, 0)).exists()) {
                 return null;
                 // the archive is not located in the workspace
             }

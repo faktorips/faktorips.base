@@ -193,8 +193,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         }
         String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
         datatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
-                : Boolean.valueOf(isSupporting)
-                        .booleanValue());
+                : Boolean.parseBoolean(isSupporting));
 
         Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
         if (nullObjectEl == null) {
@@ -210,7 +209,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     private static DynamicValueDatatype createDynamicValueOrEnumDatatype(IIpsProject ipsProject, Element element) {
         DynamicValueDatatype datatype;
         String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.valueOf(isEnumTypeString).booleanValue()) {
+        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.parseBoolean(isEnumTypeString)) {
             datatype = new DynamicValueDatatype(ipsProject);
         } else {
             datatype = new DynamicEnumDatatype(ipsProject);

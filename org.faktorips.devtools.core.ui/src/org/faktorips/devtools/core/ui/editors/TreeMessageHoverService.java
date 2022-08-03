@@ -25,7 +25,7 @@ public abstract class TreeMessageHoverService extends MessageHoverService {
 
     public TreeMessageHoverService(TreeViewer viewer) {
         super(viewer.getTree());
-        this.tree = viewer.getTree();
+        tree = viewer.getTree();
     }
 
     @Override

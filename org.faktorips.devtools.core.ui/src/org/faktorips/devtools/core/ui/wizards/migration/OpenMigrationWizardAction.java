@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.migration;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -77,8 +76,7 @@ public class OpenMigrationWizardAction implements IWorkbenchWindowActionDelegate
         if (selection instanceof IStructuredSelection) {
             preSelected = new ArrayList<>();
             IStructuredSelection sel = (IStructuredSelection)selection;
-            for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
-                Object selected = iter.next();
+            for (Object selected : sel) {
                 if (selected instanceof IJavaProject) {
                     IProject javaProject = ((IJavaProject)selected).getProject();
                     IIpsProject project = IIpsModel.get()

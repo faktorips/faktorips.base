@@ -340,12 +340,12 @@ public enum Operation {
     private final String operator;
     private final Datatype[] operands;
 
-    private Operation(String operator, Datatype... operands) {
+    Operation(String operator, Datatype... operands) {
         this.operator = operator;
         this.operands = operands;
     }
 
-    private Operation(Datatype lhs, String operator, Datatype rhs) {
+    Operation(Datatype lhs, String operator, Datatype rhs) {
         this(operator, lhs, rhs);
     }
 

@@ -54,7 +54,7 @@ public class IpsSrcFileFromEditorInputFactory {
      * 
      * @param editorInput The passed {@link IEditorInput}
      * @return The required {@link IIpsSrcFile} or null if the passed {@link IEditorInput} is not
-     *         covered by the factory method
+     *             covered by the factory method
      * @throws PartInitException If creating failed (only possible in case of a passed
      *             {@link IStorageEditorInput})
      */
@@ -192,7 +192,7 @@ public class IpsSrcFileFromEditorInputFactory {
                     "No mutable counterpart of the external file has been found, even if it should exist. " //$NON-NLS-1$
                             + "Reason: the IPS package root does not exist."); //$NON-NLS-1$
         }
-        StringBuffer folderName = new StringBuffer();
+        StringBuilder folderName = new StringBuilder();
         for (int i = 1; i < segments.length - 1; i++) {
             if (i > 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);

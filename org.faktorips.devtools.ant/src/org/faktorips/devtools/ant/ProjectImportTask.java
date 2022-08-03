@@ -52,7 +52,7 @@ public class ProjectImportTask extends AbstractIpsTask {
      * @param dir Path to the Project as String
      */
     public void setDir(String dir) {
-        this.projectDir = dir;
+        projectDir = dir;
     }
 
     /**
@@ -61,7 +61,7 @@ public class ProjectImportTask extends AbstractIpsTask {
      * @return Path as String
      */
     public String getDir() {
-        return this.projectDir;
+        return projectDir;
     }
 
     public boolean isCopy() {
@@ -78,7 +78,7 @@ public class ProjectImportTask extends AbstractIpsTask {
      * @return File
      */
     private File getProjectFile() {
-        return new File(this.getDir(), IProjectDescription.DESCRIPTION_FILE_NAME);
+        return new File(getDir(), IProjectDescription.DESCRIPTION_FILE_NAME);
 
     }
 
@@ -98,7 +98,7 @@ public class ProjectImportTask extends AbstractIpsTask {
         IProgressMonitor monitor = new NullProgressMonitor();
 
         // get description provieded in .project File
-        InputStream inputStream = new FileInputStream(this.getProjectFile());
+        InputStream inputStream = new FileInputStream(getProjectFile());
         IProjectDescription description = null;
 
         try {
@@ -126,7 +126,7 @@ public class ProjectImportTask extends AbstractIpsTask {
 
             if (copy) {
                 RecursiveCopy copyUtil = new RecursiveCopy();
-                copyUtil.copyDir(Path.of(this.getDir()), project.getLocation().toFile().toPath());
+                copyUtil.copyDir(Path.of(getDir()), project.getLocation().toFile().toPath());
             }
         }
         project.open(monitor);
@@ -141,20 +141,20 @@ public class ProjectImportTask extends AbstractIpsTask {
      */
     private void checkDir() {
 
-        if (this.getDir() == null || "".equals(this.getDir())) {
+        if (getDir() == null || "".equals(getDir())) {
             throw new BuildException("Please provide the 'dir' attribute.");
         }
 
-        if (!new File(this.getDir()).exists()) {
-            throw new BuildException("Directory " + this.getDir() + " doesn't exist.");
+        if (!new File(getDir()).exists()) {
+            throw new BuildException("Directory " + getDir() + " doesn't exist.");
         }
 
-        if (!new File(this.getDir()).isDirectory()) {
-            throw new BuildException("Provided 'dir' " + this.getDir() + " is not a Directory.");
+        if (!new File(getDir()).isDirectory()) {
+            throw new BuildException("Provided 'dir' " + getDir() + " is not a Directory.");
         }
 
-        if (!new File(this.getDir()).canRead()) {
-            throw new BuildException("Provided 'dir' " + this.getDir() + " is not readable.");
+        if (!new File(getDir()).canRead()) {
+            throw new BuildException("Provided 'dir' " + getDir() + " is not readable.");
         }
     }
 

@@ -64,7 +64,7 @@ public class LocalizedStringsSet {
     public LocalizedStringsSet(String qualifiedName, ClassLoader loader) {
         ArgumentCheck.notNull(qualifiedName);
         ArgumentCheck.notNull(loader);
-        this.name = qualifiedName;
+        name = qualifiedName;
         this.loader = loader;
     }
 

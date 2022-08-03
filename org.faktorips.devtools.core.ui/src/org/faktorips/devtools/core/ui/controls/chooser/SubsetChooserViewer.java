@@ -257,7 +257,7 @@ public class SubsetChooserViewer {
         abstract List<ListChooserValue> getList(AbstractSubsetChooserModel model);
     }
 
-    private class ContentProvider implements IStructuredContentProvider {
+    private static class ContentProvider implements IStructuredContentProvider {
 
         private final ListAccessor listAccessor;
 

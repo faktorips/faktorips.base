@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.preferencepages;
 
-import java.util.Iterator;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -288,8 +286,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
         }
         if (selection instanceof ITreeSelection) {
             ITreeSelection treeSelection = (ITreeSelection)selection;
-            for (Iterator<?> it = treeSelection.iterator(); it.hasNext();) {
-                Object next = it.next();
+            for (Object next : treeSelection) {
                 if (!(next instanceof IIpsSrcFolderEntry)) {
                     continue;
                 }

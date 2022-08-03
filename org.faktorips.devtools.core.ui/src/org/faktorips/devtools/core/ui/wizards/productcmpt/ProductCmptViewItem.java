@@ -35,8 +35,7 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
 
     public IProductCmpt getProductCmpt() {
         if (getIpsSrcFile() != null && getIpsSrcFile().getIpsObject() instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)getIpsSrcFile().getIpsObject();
-            return productCmpt;
+            return (IProductCmpt)getIpsSrcFile().getIpsObject();
         } else {
             return null;
         }
@@ -63,7 +62,7 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
     }
 
     public boolean contains(ProductCmptViewItem viewItem) {
-        if (this.equals(viewItem)) {
+        if (equals(viewItem)) {
             return true;
         } else {
             for (ProductCmptViewItem child : getChildren()) {

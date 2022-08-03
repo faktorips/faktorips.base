@@ -23,7 +23,7 @@ public interface IVersionFormat {
      * @param version the version string to validate, could be null
      * @return true if the version format is correct, false otherwise
      */
-    public boolean isCorrectVersionFormat(String version);
+    boolean isCorrectVersionFormat(String version);
 
     /**
      * Returns a user readable string representation of the version format. For example
@@ -31,6 +31,6 @@ public interface IVersionFormat {
      * 
      * @return a readable version of the format
      */
-    public String getVersionFormat();
+    String getVersionFormat();
 
 }

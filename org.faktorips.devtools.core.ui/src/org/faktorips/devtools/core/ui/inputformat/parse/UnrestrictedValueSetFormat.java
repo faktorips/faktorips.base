@@ -39,8 +39,7 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isUnrestricted()) {
             return valueSet;
         } else {
-            UnrestrictedValueSet newValueSet = new UnrestrictedValueSet(getValueSetOwner(), getNextPartId());
-            return newValueSet;
+            return new UnrestrictedValueSet(getValueSetOwner(), getNextPartId());
         }
     }
 

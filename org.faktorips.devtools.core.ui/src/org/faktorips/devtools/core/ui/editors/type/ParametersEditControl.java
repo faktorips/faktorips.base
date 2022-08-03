@@ -307,11 +307,7 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
 
     private IParameter[] getSelectedElements() {
         ISelection selection = fTableViewer.getSelection();
-        if (selection == null) {
-            return new IParameter[0];
-        }
-
-        if (!(selection instanceof IStructuredSelection)) {
+        if ((selection == null) || !(selection instanceof IStructuredSelection)) {
             return new IParameter[0];
         }
         List<?> selected = ((IStructuredSelection)selection).toList();
@@ -685,16 +681,16 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         @Override
         public String getColumnText(Object element, int columnIndex) {
             IParameter info = (IParameter)element;
-            if (columnIndex == MESSAGE_PROP) {
-                return ""; //$NON-NLS-1$
+            switch (columnIndex) {
+                case MESSAGE_PROP:
+                    return ""; //$NON-NLS-1$
+                case TYPE_PROP:
+                    return info.getDatatype();
+                case NEWNAME_PROP:
+                    return info.getName();
+                default:
+                    throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
             }
-            if (columnIndex == TYPE_PROP) {
-                return info.getDatatype();
-            }
-            if (columnIndex == NEWNAME_PROP) {
-                return info.getName();
-            }
-            throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
         }
     }
 

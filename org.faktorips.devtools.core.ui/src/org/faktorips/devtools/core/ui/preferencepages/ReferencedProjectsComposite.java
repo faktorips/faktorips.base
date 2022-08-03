@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.preferencepages;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
@@ -143,9 +142,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
 
     /** add new project references to current IPS project, based on items selected in dialog */
     private void addIpsProjects() {
-        IIpsProject[] ipsProjects = null;
-        ipsProjects = getSelectableIpsProjects();
-
+        IIpsProject[] ipsProjects = getSelectableIpsProjects();
         ListSelectionDialog dialog = new ListSelectionDialog(null, ipsProjects, new ArrayContentProvider(),
                 new TableLabelProvider(), Messages.ReferencedProjectsComposite_select_projects_label);
 
@@ -169,8 +166,8 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
         IStructuredSelection selection = (IStructuredSelection)tableViewer.getSelection();
         if (selection.size() > 0) {
             dataChanged = true;
-            for (Iterator<?> it = selection.iterator(); it.hasNext();) {
-                IIpsProjectRefEntry refEntry = (IIpsProjectRefEntry)it.next();
+            for (Object name : selection) {
+                IIpsProjectRefEntry refEntry = (IIpsProjectRefEntry)name;
                 ipsObjectPath.removeProjectRefEntry((refEntry).getReferencedIpsProject());
                 tableViewer.refresh(false);
             }

@@ -20,6 +20,6 @@ public interface ICopySupport {
     /**
      * Creates and returns new copy of this object.
      */
-    public IModelObject newCopy();
+    IModelObject newCopy();
 
 }

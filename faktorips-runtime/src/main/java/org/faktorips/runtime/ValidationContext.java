@@ -112,8 +112,8 @@ public class ValidationContext implements IValidationContext {
      * {@inheritDoc}
      *
      * @implNote This implementation returns the configuration passed to the
-     *           {@link #ValidationContext(Locale, ClassLoader, IGenericAttributeValidationConfiguration)
-     *           constructor}.
+     *               {@link #ValidationContext(Locale, ClassLoader, IGenericAttributeValidationConfiguration)
+     *               constructor}.
      */
     @Override
     public IGenericAttributeValidationConfiguration getGenericAttributeValidationConfiguration() {

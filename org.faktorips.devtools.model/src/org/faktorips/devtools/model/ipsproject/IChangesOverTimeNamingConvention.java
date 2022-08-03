@@ -39,48 +39,48 @@ public interface IChangesOverTimeNamingConvention {
     /**
      * The id of the VAA naming convention.
      */
-    public static final String VAA = "VAA"; //$NON-NLS-1$
+    String VAA = "VAA"; //$NON-NLS-1$
 
     /**
      * The id of the product-manager naming convention.
      */
-    public static final String PM = "PM"; //$NON-NLS-1$
+    String PM = "PM"; //$NON-NLS-1$
 
     /**
      * The id of the default Faktor-IPS naming convention.
      */
-    public static final String FAKTOR_IPS = "FIPS"; //$NON-NLS-1$
+    String FAKTOR_IPS = "FIPS"; //$NON-NLS-1$
 
     /**
      * Returns the conventions' identification.
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the conventions' name, used to present it to the user.
      * 
      * @param locale The locale that determines the language in which the name should be returned.
      */
-    public String getName(Locale locale);
+    String getName(Locale locale);
 
     /**
      * Returns the conventions' name, used to present it to the user. The locale used is the one
      * returned from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the name for the generation concept in singular.
      * 
      * @param locale The locale that determines the language in which the name should be returned.
      */
-    public String getGenerationConceptNameSingular(Locale locale);
+    String getGenerationConceptNameSingular(Locale locale);
 
     /**
      * Returns the name for the generation concept in singular. The locale used is the one returned
      * from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getGenerationConceptNameSingular();
+    String getGenerationConceptNameSingular();
 
     /**
      * Returns the name for the generation concept in singular. The locale used is the one returned
@@ -88,7 +88,7 @@ public interface IChangesOverTimeNamingConvention {
      * 
      * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
      */
-    public String getGenerationConceptNameSingular(boolean usageInsideSentence);
+    String getGenerationConceptNameSingular(boolean usageInsideSentence);
 
     /**
      * Returns the name for the generation concept in singular.
@@ -96,20 +96,20 @@ public interface IChangesOverTimeNamingConvention {
      * @param locale The locale that determines the language in which the name should be returned.
      * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
      */
-    public String getGenerationConceptNameSingular(Locale locale, boolean usageInsideSentence);
+    String getGenerationConceptNameSingular(Locale locale, boolean usageInsideSentence);
 
     /**
      * Returns the name for the generation concept in plural.
      * 
      * @param locale The locale that determines the language in which the name should be returned.
      */
-    public String getGenerationConceptNamePlural(Locale locale);
+    String getGenerationConceptNamePlural(Locale locale);
 
     /**
      * Returns the name for the generation concept in plural. The locale used is the one returned
      * from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getGenerationConceptNamePlural();
+    String getGenerationConceptNamePlural();
 
     /**
      * Returns the name for the generation concept in plural.
@@ -117,7 +117,7 @@ public interface IChangesOverTimeNamingConvention {
      * @param locale The locale that determines the language in which the name should be returned.
      * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
      */
-    public String getGenerationConceptNamePlural(Locale locale, boolean usageInsideSentence);
+    String getGenerationConceptNamePlural(Locale locale, boolean usageInsideSentence);
 
     /**
      * Returns the name for the generation concept in plural. The locale used is the one returned
@@ -125,7 +125,7 @@ public interface IChangesOverTimeNamingConvention {
      * 
      * @param usageInsideSentence <code>true</code> if the name will be used inside a sentence
      */
-    public String getGenerationConceptNamePlural(boolean usageInsideSentence);
+    String getGenerationConceptNamePlural(boolean usageInsideSentence);
 
     /**
      * Returns the abbreviation for the generation concept (singular).
@@ -133,39 +133,39 @@ public interface IChangesOverTimeNamingConvention {
      * @param locale The locale that determines the language in which the abbreviation should be
      *            returned.
      */
-    public String getGenerationConceptNameAbbreviation(Locale locale);
+    String getGenerationConceptNameAbbreviation(Locale locale);
 
     /**
      * Returns the abbreviation for the generation concept (singular). The locale used is the one
      * returned from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getGenerationConceptNameAbbreviation();
+    String getGenerationConceptNameAbbreviation();
 
     /**
      * Returns the name for the version concept in singular.
      * 
      * @param locale The locale that determines the language in which the name should be returned.
      */
-    public String getVersionConceptNameSingular(Locale locale);
+    String getVersionConceptNameSingular(Locale locale);
 
     /**
      * Returns the name for the version concept in singular. The locale used is the one returned
      * from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getVersionConceptNameSingular();
+    String getVersionConceptNameSingular();
 
     /**
      * Returns the name for the version concept in plural.
      * 
      * @param locale The locale that determines the language in which the name should be returned.
      */
-    public String getVersionConceptNamePlural(Locale locale);
+    String getVersionConceptNamePlural(Locale locale);
 
     /**
      * Returns the name for the version concept in plural. The locale used is the one returned from
      * IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getVersionConceptNamePlural();
+    String getVersionConceptNamePlural();
 
     /**
      * Returns the abbreviation for the version concept (singular).
@@ -173,13 +173,13 @@ public interface IChangesOverTimeNamingConvention {
      * @param locale The locale that determines the language in which the abbreviation should be
      *            returned.
      */
-    public String getVersionConceptNameAbbreviation(Locale locale);
+    String getVersionConceptNameAbbreviation(Locale locale);
 
     /**
      * Returns the abbreviation for the version concept (singular). The locale used is the one
      * returned from IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getVersionConceptNameAbbreviation();
+    String getVersionConceptNameAbbreviation();
 
     /**
      * Returns the name for the effective date concept. E.g. in some cases this might be called
@@ -187,13 +187,13 @@ public interface IChangesOverTimeNamingConvention {
      * 
      * @param locale The locale that determines the language to use.
      */
-    public String getEffectiveDateConceptName(Locale locale);
+    String getEffectiveDateConceptName(Locale locale);
 
     /**
      * Returns the name for the effective date concept. E.g. in some cases this might be called
      * validFrom. The locale used is the one returned from
      * IpsModelPlugin.getUsedLanguagePackLocale().
      */
-    public String getEffectiveDateConceptName();
+    String getEffectiveDateConceptName();
 
 }

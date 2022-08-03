@@ -128,7 +128,7 @@ public interface ValueDatatype extends Datatype {
      * @param valueA The value to compare to valueB
      * @param valueB The value to compare to valueA
      * @return A value less than 0 if valueA is less than valueB, 0 if valueA is equal to valueB and
-     *         a value greater than 0 if valueA is greater than valueB.
+     *             a value greater than 0 if valueA is greater than valueB.
      * @throws UnsupportedOperationException if compare is not supported by this datatype.
      * @see #supportsCompare()
      * @see #getValue(String)
@@ -145,7 +145,7 @@ public interface ValueDatatype extends Datatype {
      * @param valueB The second parameter to compare
      * 
      * @return {@code true} if the two values are equal according to the datatype, returns
-     *         {@code false} if they are different.
+     *             {@code false} if they are different.
      * 
      * @throws IllegalArgumentException if one of the parameter values doesn't exist in the value
      *             set of this datatype.

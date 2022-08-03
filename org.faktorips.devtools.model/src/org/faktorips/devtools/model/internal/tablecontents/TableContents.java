@@ -234,9 +234,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
     }
 
     private ITableStructure findTableStructureInternal() {
-        ITableStructure tableStructure;
-        tableStructure = findTableStructure(getIpsProject());
-        return tableStructure;
+        return findTableStructure(getIpsProject());
     }
 
     private boolean isSingleContentStructure(ITableStructure tableStructure) {
@@ -247,7 +245,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
         List<IDependency> dependencies = new ArrayList<>();
         List<IIpsSrcFile> siblingSrcFiles = getSiblingTableSrcFiles(tableStructure);
         for (IIpsSrcFile other : siblingSrcFiles) {
-            IpsObjectDependency validationDependency = IpsObjectDependency.create(this.getQualifiedNameType(),
+            IpsObjectDependency validationDependency = IpsObjectDependency.create(getQualifiedNameType(),
                     other.getQualifiedNameType(), DependencyType.VALIDATION);
             dependencies.add(validationDependency);
         }
@@ -270,14 +268,10 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             reinitPartCollections();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
-        } catch (SAXNotSupportedException e) {
+        } catch (SAXNotSupportedException | ParserConfigurationException | IOException e) {
             throw new IpsException(new IpsStatus(e));
         } catch (SAXException e) {
             handleSaxException(e);
-        } catch (ParserConfigurationException e) {
-            throw new IpsException(new IpsStatus(e));
-        } catch (IOException e) {
-            throw new IpsException(new IpsStatus(e));
         }
     }
 
@@ -342,10 +336,8 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     @Override
     protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        IIpsObjectPart part;
         if (ITableRows.class.isAssignableFrom(partType)) {
-            part = createNewTableRowsInternal(getNextPartId());
-            return part;
+            return createNewTableRowsInternal(getNextPartId());
         } else {
             return null;
         }
@@ -409,7 +401,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
-        DeprecationValidation.validateTableStructureIsNotDeprecated(this, this.getQualifiedName(), tableStructure,
+        DeprecationValidation.validateTableStructureIsNotDeprecated(this, getQualifiedName(), tableStructure,
                 ipsProject, list);
         validateColumnReferences(list, tableStructure);
         SingleTableContentsValidator singleTableContentsValidator = SingleTableContentsValidator.createFor(this);

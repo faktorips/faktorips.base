@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * An {@link DefaultInternationalString} could be used for string properties that could be
@@ -72,11 +73,7 @@ public class DefaultInternationalString implements InternationalString {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((defaultLocale == null) ? 0 : defaultLocale.hashCode());
-        result = prime * result + ((localizedStringMap == null) ? 0 : localizedStringMap.hashCode());
-        return result;
+        return Objects.hash(defaultLocale, localizedStringMap);
     }
 
     @Override
@@ -84,18 +81,11 @@ public class DefaultInternationalString implements InternationalString {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof DefaultInternationalString)) {
+        if ((obj == null) || !(obj instanceof DefaultInternationalString)) {
             return false;
         }
         DefaultInternationalString other = (DefaultInternationalString)obj;
-        if (defaultLocale == null) {
-            if (other.defaultLocale != null) {
-                return false;
-            }
-        } else if (!defaultLocale.equals(other.defaultLocale)) {
+        if (!Objects.equals(defaultLocale, other.defaultLocale)) {
             return false;
         }
         if (localizedStringMap == null) {
@@ -110,10 +100,7 @@ public class DefaultInternationalString implements InternationalString {
 
     private boolean equalLocalizedMapValues(Collection<LocalizedString> otherLocalizedStringMapValues) {
         Collection<LocalizedString> values = getLocalizedStrings();
-        if (otherLocalizedStringMapValues == null) {
-            return false;
-        }
-        if (values.size() != otherLocalizedStringMapValues.size()) {
+        if ((otherLocalizedStringMapValues == null) || (values.size() != otherLocalizedStringMapValues.size())) {
             return false;
         }
         for (LocalizedString localizedString : values) {

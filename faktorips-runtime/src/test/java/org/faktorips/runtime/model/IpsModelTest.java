@@ -194,6 +194,7 @@ public class IpsModelTest {
 
     @IpsEnumType(name = "my.TestEnum", attributeNames = {})
     private static class TestEnum {
+        // an enum
     }
 
     @IpsEnumType(name = "my.TestJava5Enum", attributeNames = {})
@@ -201,11 +202,13 @@ public class IpsModelTest {
         Test1() {
             @Override
             public void test() {
+                // nothing to do
             }
         },
         Test2() {
             @Override
             public void test() {
+                // nothing to do
             }
         };
 
@@ -318,6 +321,7 @@ public class IpsModelTest {
     }
 
     private abstract static class TestProductWithoutAnnotation implements IProductComponent {
+        // an unannotated product
     }
 
     @IpsPolicyCmptType(name = "MyPolicy")
@@ -388,7 +392,8 @@ public class IpsModelTest {
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsPublishedInterface(implementation = MyPolicy.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model", defaultLocale = "de")
-    private static interface IMyPolicy extends IModelObject {
+    private interface IMyPolicy extends IModelObject {
+        // a policy
     }
 
     private static class MyPolicy implements IMyPolicy {
@@ -403,7 +408,8 @@ public class IpsModelTest {
     @IpsProductCmptType(name = "MyProduct")
     @IpsPublishedInterface(implementation = MyProduct.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model", defaultLocale = "de")
-    private static interface IMyProduct extends IProductComponent {
+    private interface IMyProduct extends IProductComponent {
+        // a product
     }
 
     private static class MyProduct extends ProductComponent implements IMyProduct {

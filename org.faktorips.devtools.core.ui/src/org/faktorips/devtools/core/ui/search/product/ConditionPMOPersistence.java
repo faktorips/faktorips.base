@@ -76,7 +76,7 @@ public class ConditionPMOPersistence {
             IDialogSettings settings) {
         Assert.isNotNull(productSearchPresentationModel);
         Assert.isNotNull(settings);
-        this.searchPMO = productSearchPresentationModel;
+        searchPMO = productSearchPresentationModel;
         this.settings = settings;
     }
 
@@ -113,10 +113,8 @@ public class ConditionPMOPersistence {
                 conditionPMO.setArgument(arguments[i]);
                 pmoList.add(conditionPMO);
             }
-        } catch (NullPointerException e) {
-            return pmoList;
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return pmoList;
+        } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {
+            // return what we found before the exception
         }
         return pmoList;
     }

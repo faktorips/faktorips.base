@@ -15,8 +15,8 @@ package org.faktorips.devtools.abstraction;
  * with the abstraction but use its own implementation where necessary.
  * 
  * @implSpec There should be an implementation of every abstraction for every platform, extending
- *           {@link AWrapper} to wrap the platform-specific objects corresponding to that
- *           abstraction.
+ *               {@link AWrapper} to wrap the platform-specific objects corresponding to that
+ *               abstraction.
  */
 public interface AAbstraction {
 
@@ -42,7 +42,7 @@ public interface AAbstraction {
      * @param <T> the type of the platform-specific object
      * 
      * @see Wrappers#unwrap(AAbstraction) Wrappers#unwrap(AAbstraction) for a way to unwrap
-     *      potentially null abstractions.
+     *          potentially null abstractions.
      */
     <T> T unwrap();
 

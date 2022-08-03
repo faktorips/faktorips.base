@@ -34,8 +34,8 @@ public interface IFormulaEvaluatorFactory {
      * @param nameToCompiledExpressionMap The map of compiled formula expressions with their name as
      *            a key
      * @return The new formula evaluator that is able to evaluate every formula the was in the list
-     *         of compiled expressions
+     *             of compiled expressions
      */
-    public IFormulaEvaluator createFormulaEvaluator(Object object, Map<String, String> nameToCompiledExpressionMap);
+    IFormulaEvaluator createFormulaEvaluator(Object object, Map<String, String> nameToCompiledExpressionMap);
 
 }

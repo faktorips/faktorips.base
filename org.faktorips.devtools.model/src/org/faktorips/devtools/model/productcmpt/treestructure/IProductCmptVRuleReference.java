@@ -22,5 +22,5 @@ public interface IProductCmptVRuleReference extends IProductCmptStructureReferen
     /**
      * @return the referenced {@link IValidationRuleConfig}.
      */
-    public IValidationRuleConfig getValidationRuleConfig();
+    IValidationRuleConfig getValidationRuleConfig();
 }

@@ -21,44 +21,44 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 public interface ITestParameter extends IIpsObjectPart, IDescribedElement {
 
     /** Property names */
-    public static final String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
-    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
+    String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTPARAMETER-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTPARAMETER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the test parameter name is duplicate.
      */
-    public static final String MSGCODE_DUPLICATE_NAME = MSGCODE_PREFIX + "DuplicateName"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_NAME = MSGCODE_PREFIX + "DuplicateName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate the correct name format.
      */
-    public static final String MSGCODE_INVALID_NAME = MSGCODE_PREFIX + "InvalidName"; //$NON-NLS-1$
+    String MSGCODE_INVALID_NAME = MSGCODE_PREFIX + "InvalidName"; //$NON-NLS-1$
 
     /**
      * Returns the parameters's name, e.g. 'effectiveDate'. {@inheritDoc}
      */
     @Override
-    public String getName();
+    String getName();
 
     /**
      * Sets the parameters's name, e.g. 'effectiveDate'.
      */
-    public void setName(String newName);
+    void setName(String newName);
 
     /**
      * Sets the data type.
      */
-    public void setDatatype(String datatype);
+    void setDatatype(String datatype);
 
     /**
      * Returns the data type.
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Returns <code>true</code> if the test parameter is an input parameter, otherwise
@@ -66,7 +66,7 @@ public interface ITestParameter extends IIpsObjectPart, IDescribedElement {
      * result, or combined) of the root test parameter will be checked. All children inherit the
      * type of the root parameter.
      */
-    public boolean isInputOrCombinedParameter();
+    boolean isInputOrCombinedParameter();
 
     /**
      * Returns <code>true</code> if the parameter is an expected result parameter, otherwise
@@ -74,7 +74,7 @@ public interface ITestParameter extends IIpsObjectPart, IDescribedElement {
      * result, or combined) of the root test parameter will be checked. All children inherit the
      * type of the root parameter.
      */
-    public boolean isExpextedResultOrCombinedParameter();
+    boolean isExpextedResultOrCombinedParameter();
 
     /**
      * Returns <code>true</code> if the test parameter is a combined parameter, otherwise
@@ -83,27 +83,27 @@ public interface ITestParameter extends IIpsObjectPart, IDescribedElement {
      * type (input, expected result, or combined) of the root test parameter will be checked. All
      * children inherit the type of the root parameter.
      */
-    public boolean isCombinedParameter();
+    boolean isCombinedParameter();
 
     /**
      * Returns the type of the test parameter.
      */
-    public TestParameterType getTestParameterType();
+    TestParameterType getTestParameterType();
 
     /**
      * Sets the parameter type of the test parameter.
      */
-    public void setTestParameterType(TestParameterType testParameterType);
+    void setTestParameterType(TestParameterType testParameterType);
 
     /**
      * Returns the root test parameter.
      */
-    public ITestParameter getRootParameter();
+    ITestParameter getRootParameter();
 
     /**
      * Returns <code>true</code> if the test parameter is a root parameter or <code>false</code> if
      * the parameter is a child of another object.
      */
-    public boolean isRoot();
+    boolean isRoot();
 
 }

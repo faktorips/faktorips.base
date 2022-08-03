@@ -42,8 +42,7 @@ public abstract class AbstractBinaryJavaOperation extends AbstractBinaryOperatio
     @Override
     public AbstractCompilationResult<JavaCodeFragment> generate(CompilationResult<JavaCodeFragment> lhs,
             CompilationResult<JavaCodeFragment> rhs) {
-        CompilationResultImpl result = generate((CompilationResultImpl)lhs, (CompilationResultImpl)rhs);
-        return result;
+        return generate((CompilationResultImpl)lhs, (CompilationResultImpl)rhs);
     }
 
     /**

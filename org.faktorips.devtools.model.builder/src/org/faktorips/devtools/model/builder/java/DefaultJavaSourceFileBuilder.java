@@ -60,7 +60,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  */
 public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder {
 
-    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+    protected static final String[] EMPTY_STRING_ARRAY = {};
 
     private TypeSection mainSection;
     private List<TypeSection> innerClassesSections;
@@ -593,9 +593,9 @@ public abstract class DefaultJavaSourceFileBuilder extends JavaSourceFileBuilder
      * 
      * @see org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention
      * @deprecated since 3.22. Access to builder settings is builder set specific. If you use the
-     *             StandardBuilderSet, use
-     *             GeneratorConfig#getChangesOverTimeNamingConvention()#getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode())
-     *             instead.
+     *                 StandardBuilderSet, use
+     *                 GeneratorConfig#getChangesOverTimeNamingConvention()#getGenerationConceptNameSingular(getLanguageUsedInGeneratedSourceCode())
+     *                 instead.
      */
     @Deprecated
     public String getNameForGenerationConcept(IIpsElement element) {

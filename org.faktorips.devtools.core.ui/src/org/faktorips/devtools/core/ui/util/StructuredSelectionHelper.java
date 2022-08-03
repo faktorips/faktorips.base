@@ -51,7 +51,7 @@ public class StructuredSelectionHelper {
      * @param <T> Subclass of {@link IIpsObject}
      * @param clazz the expected IpsObject class
      * @return the selected object converted or adapted to {@link IIpsObject} or <code>null</code>
-     *         if no IpsObject cannot be derived from the selections first element.
+     *             if no IpsObject cannot be derived from the selections first element.
      */
     public <T extends IIpsObject> T getFirstElementAsIpsObject(Class<T> clazz) {
         Object selectedObject = selection.getFirstElement();

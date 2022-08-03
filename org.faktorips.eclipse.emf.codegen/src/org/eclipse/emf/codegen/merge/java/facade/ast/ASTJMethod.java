@@ -109,7 +109,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
 
     @Override
     public void setReturnType(String type) {
-        this.returnType = type;
+        returnType = type;
         removeExtraDimensions();
         setTrackedNodeProperty(getASTNode(), type, MethodDeclaration.RETURN_TYPE2_PROPERTY, ASTNode.SIMPLE_TYPE);
     }
@@ -264,7 +264,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
             throw new IllegalArgumentException("Length of names must match number of existing parameters.");
         }
 
-        this.parameterNames = names;
+        parameterNames = names;
         int i = 0;
         for (SingleVariableDeclaration parameter : parameters) {
             setNodeProperty(parameter, names[i++], SingleVariableDeclaration.NAME_PROPERTY, ASTNode.SIMPLE_NAME);
@@ -290,8 +290,8 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
 
     @Override
     public void setExceptions(String[] exceptionTypes) {
-        this.exceptions = exceptionTypes;
-        this.addedExceptions = null;
+        exceptions = exceptionTypes;
+        addedExceptions = null;
         setListNodeProperty(getASTNode(), exceptionTypes, MethodDeclaration.THROWN_EXCEPTION_TYPES_PROPERTY,
                 ASTNode.SIMPLE_NAME);
     }

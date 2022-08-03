@@ -81,7 +81,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
         try {
             Decimal sum = Decimal.ZERO;
             Method method = beans[0].getClass().getMethod(getterMethod);
-            Object[] params = new Object[0];
+            Object[] params = {};
             for (Object bean : beans) {
                 Decimal value = (Decimal)method.invoke(bean, params);
                 sum = sum.add(value);

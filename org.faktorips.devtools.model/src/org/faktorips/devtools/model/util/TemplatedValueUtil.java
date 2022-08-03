@@ -50,7 +50,7 @@ public class TemplatedValueUtil {
      * 
      * @param v a templated value to search from
      * @return the next {@link ITemplatedValue} in the template hierarchy or {@code null} if there
-     *         is none
+     *             is none
      */
     public static ITemplatedValue findNextTemplateValue(ITemplatedValue v) {
         ITemplatedValueContainer propertyValueContainer = v.getTemplatedValueContainer();

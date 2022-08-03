@@ -28,7 +28,7 @@ public enum AssociationType {
     private final String id;
     private final String name;
 
-    private AssociationType(String id, String name) {
+    AssociationType(String id, String name) {
         this.name = name;
         this.id = id;
     }

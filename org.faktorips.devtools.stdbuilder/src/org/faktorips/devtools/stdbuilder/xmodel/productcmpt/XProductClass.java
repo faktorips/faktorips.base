@@ -84,7 +84,7 @@ public abstract class XProductClass extends XType {
      * Returns all declared attributes that are applicable for content generation.
      * 
      * @implNote For a set of all declared attributes use
-     *           {@link #getAttributesIncludingNoContentGeneration()}
+     *               {@link #getAttributesIncludingNoContentGeneration()}
      * 
      * @return a set of all attributes relevant for content generation
      */
@@ -151,7 +151,7 @@ public abstract class XProductClass extends XType {
             if (policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
                 return policyCmptClass.attributesFromSupertypeWhenDifferentUnifyValueSetSettingsFor(valueSetType)
                         .stream()
-                        .filter(a -> a.isProductRelevant())
+                        .filter(XPolicyAttribute::isProductRelevant)
                         .filter(filter)
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             }
@@ -299,8 +299,7 @@ public abstract class XProductClass extends XType {
         if (policyCmptType == null) {
             throw new NullPointerException("No policy found for " + getName());
         }
-        XPolicyCmptClass xPolicyCmptClass = getModelNode(policyCmptType, XPolicyCmptClass.class);
-        return xPolicyCmptClass;
+        return getModelNode(policyCmptType, XPolicyCmptClass.class);
     }
 
     @Override

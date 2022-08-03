@@ -111,7 +111,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         assertEquals(event, listener.lastEvent);
     }
 
-    private class ChangeListener implements PropertyChangeListener {
+    private static class ChangeListener implements PropertyChangeListener {
 
         PropertyChangeEvent lastEvent;
 
@@ -122,7 +122,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
 
     }
 
-    private class PcA extends AbstractModelObject {
+    private static class PcA extends AbstractModelObject {
 
         protected boolean valid = true;
         protected PcB b;
@@ -150,7 +150,7 @@ public class TestAbstractPolicyComponentTest extends XmlAbstractTestCase {
         }
     }
 
-    private class PcB extends AbstractModelObject implements INotificationSupport {
+    private static class PcB extends AbstractModelObject implements INotificationSupport {
 
         protected boolean valid = true;
 

@@ -51,8 +51,7 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
         Locale currentLocale = currentViewItem.getLocale();
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i > 0)) {
-                LocalizedString result = internationalString.get(supportedLocales.get(i - 1));
-                return result;
+                return internationalString.get(supportedLocales.get(i - 1));
             }
         }
         return null;
@@ -63,8 +62,7 @@ public class InternationalStringTraversalStrategy extends LinkedColumnsTraversal
         Locale currentLocale = currentViewItem.getLocale();
         for (int i = 0, n = supportedLocales.size(); i < n; i++) {
             if (supportedLocales.get(i).equals(currentLocale) && (i < n - 1)) {
-                LocalizedString result = internationalString.get(supportedLocales.get(i + 1));
-                return result;
+                return internationalString.get(supportedLocales.get(i + 1));
             }
         }
         return null;

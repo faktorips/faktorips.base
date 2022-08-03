@@ -171,7 +171,7 @@ public class IpsObjectType {
      * @param fileExtension The file extension of the searched IPS object type.
      * 
      * @return The IPS object type that corresponds to the given file extension or <code>null</code>
-     *         if no type with the given file extension can be found.
+     *             if no type with the given file extension can be found.
      */
     public static final IpsObjectType getTypeForExtension(String fileExtension) {
         for (IpsObjectType currentType : IIpsModel.get().getIpsObjectTypes()) {
@@ -190,7 +190,7 @@ public class IpsObjectType {
      * @param name The name of the searched IPS object type.
      * 
      * @return The IPS object type that corresponds to the given name or <code>null</code> if no
-     *         type with the given name can be found.
+     *             type with the given name can be found.
      * 
      * @throws NullPointerException If name is <code>null</code>.
      */
@@ -223,10 +223,7 @@ public class IpsObjectType {
         if (this == TABLE_STRUCTURE) {
             return new TableStructure(file);
         }
-        if (this == PRODUCT_CMPT) {
-            return new ProductCmpt(file);
-        }
-        if (this == PRODUCT_TEMPLATE) {
+        if ((this == PRODUCT_CMPT) || (this == PRODUCT_TEMPLATE)) {
             return new ProductCmpt(file);
         }
         if (this == TABLE_CONTENTS) {

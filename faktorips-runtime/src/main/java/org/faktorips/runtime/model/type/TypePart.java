@@ -22,9 +22,10 @@ public abstract class TypePart extends ModelElement {
 
     private final Type type;
 
-    public TypePart(String name, Type parent, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
+    public TypePart(String name, Type parent, IpsExtensionProperties extensionProperties,
+            Optional<Deprecation> deprecation) {
         super(name, extensionProperties, deprecation);
-        this.type = parent;
+        type = parent;
     }
 
     /**

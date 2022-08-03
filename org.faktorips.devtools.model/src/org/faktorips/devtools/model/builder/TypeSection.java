@@ -84,7 +84,7 @@ public final class TypeSection {
     public void setClass(boolean isClass) {
         this.isClass = isClass;
         if (this.isClass) {
-            this.isEnum = false;
+            isEnum = false;
         }
     }
 
@@ -101,7 +101,7 @@ public final class TypeSection {
     public void setEnum(boolean isEnum) {
         this.isEnum = isEnum;
         if (isEnum) {
-            this.isClass = false;
+            isClass = false;
         }
     }
 

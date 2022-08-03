@@ -34,55 +34,55 @@ public interface IIpsStorage {
      * Returns the absolute path in the local file system to this resource, or <code>null</code> if
      * no path can't be determined.
      */
-    public Path getLocation();
+    Path getLocation();
 
     /**
      * Returns the name of this storage. Represents the last segment of this storage path and does
      * not have to be unique.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns <code>true</code> if the archive exists, otherwise <code>false</code>.
      */
-    public boolean exists();
+    boolean exists();
 
     /**
      * Returns the names (in ascending order) of the non-empty packages contained in the archive.
      * <p>
      * A package is not empty, if it contains at least one IPS object.
      */
-    public String[] getNonEmptyPackages() throws IpsException;
+    String[] getNonEmptyPackages() throws IpsException;
 
     /**
      * Returns <code>true</code> if the archive contains the package (empty or not), otherwise
      * <code>false</code>.
      */
-    public boolean containsPackage(String name) throws IpsException;
+    boolean containsPackage(String name) throws IpsException;
 
     /**
      * Returns the names (in ascending order) of the non-empty direct sub packages for the given
      * parent package as list.
      */
-    public String[] getNonEmptySubpackages(String pack) throws IpsException;
+    String[] getNonEmptySubpackages(String pack) throws IpsException;
 
     /**
      * Returns the set of qualified name types for the IPS objects stored in the archive
      */
-    public Set<QualifiedNameType> getQNameTypes() throws IpsException;
+    Set<QualifiedNameType> getQNameTypes() throws IpsException;
 
     /**
      * Returns the set of qualified name types for the IPS objects stored in the given package.
      * Returns an empty set if the archive does not contain an object for the given package or
      * packName is <code>null</code>.
      */
-    public Set<QualifiedNameType> getQNameTypes(String packName) throws IpsException;
+    Set<QualifiedNameType> getQNameTypes(String packName) throws IpsException;
 
     /**
      * Returns <code>true</code> if the storage contains the IPS object or resource identified by
      * the given path, otherwise <code>false</code>.
      */
-    public boolean contains(Path path);
+    boolean contains(Path path);
 
     /**
      * Returns the content for the path or <code>null</code> if the archive does not contain the
@@ -90,7 +90,7 @@ public interface IIpsStorage {
      * <p>
      * The path is relative to the IPS object root.
      */
-    public InputStream getContent(Path path);
+    InputStream getContent(Path path);
 
     /**
      * Returns the content of a file with the given path. Returns <code>null</code> if path is
@@ -101,19 +101,19 @@ public interface IIpsStorage {
      *             {@link IIpsArchive}, or if problems are encountered opening, reading or writing
      *             this archive.
      */
-    public InputStream getResourceAsStream(String path);
+    InputStream getResourceAsStream(String path);
 
     /**
      * Returns the name of the base package for the mergeable artifacts (XML-Files, Java source
      * files). All mergeable artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws IpsException;
+    String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws IpsException;
 
     /**
      * Returns the name of the base package for the derived artifacts (XML-Files, Java source
      * files). All derived artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws IpsException;
+    String getBasePackageNameForDerivedArtefacts(QualifiedNameType qnt) throws IpsException;
 
     /**
      * Check weather this archive is valid or not. A archive is valid if the corresponding file
@@ -121,14 +121,14 @@ public interface IIpsStorage {
      * 
      * @return true if the archive exists and is readable
      */
-    public boolean isValid();
+    boolean isValid();
 
     /**
      * Returns true, if this archive is part of the provided delta or one of its children.
      * 
      * @see IIpsArchiveEntry#isAffectedBy(AResourceDelta)
      */
-    public boolean isAffectedBy(AResourceDelta delta);
+    boolean isAffectedBy(AResourceDelta delta);
 
     /**
      * Returns an IResource only if the resource can be located in the workspace. If the path is
@@ -136,12 +136,12 @@ public interface IIpsStorage {
      * but have to be relative (to the project) or the first segment must match an existing project.
      * 
      * @return The found {@link IResource} if the path is workspace or project relative. Returns
-     *         null if the path is not valid.
+     *             null if the path is not valid.
      */
-    public AResource getCorrespondingResource();
+    AResource getCorrespondingResource();
 
     /**
      * returns true, if the IIpsStorage represents a folder and false, if not.
      */
-    public boolean isFolder();
+    boolean isFolder();
 }

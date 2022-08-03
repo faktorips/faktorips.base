@@ -21,50 +21,50 @@ import java.util.Locale;
  */
 public interface IDescription extends IIpsObjectPart {
 
-    public static final String XML_TAG_NAME = "Description"; //$NON-NLS-1$
+    String XML_TAG_NAME = "Description"; //$NON-NLS-1$
 
-    public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
+    String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEXT = "text"; //$NON-NLS-1$
+    String PROPERTY_TEXT = "text"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "DESCRIPTION-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "DESCRIPTION-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the locale of this description is not supported by
      * the IPS project.
      */
-    public static final String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
+    String MSGCODE_LOCALE_NOT_SUPPORTED_BY_IPS_PROJECT = MSGCODE_PREFIX
             + "LocaleNotSupportedByIpsProject"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the locale of this description is missing.
      */
-    public static final String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
+    String MSGCODE_LOCALE_MISSING = MSGCODE_PREFIX + "LocaleMissing"; //$NON-NLS-1$
 
     /**
      * Returns the locale of this description or null if this information is for some reason not
      * available.
      */
-    public Locale getLocale();
+    Locale getLocale();
 
     /**
      * Sets the locale of this description.
      * 
      * @param locale The locale of this description
      */
-    public void setLocale(Locale locale);
+    void setLocale(Locale locale);
 
     /**
      * Returns the text of this description.
      */
-    public String getText();
+    String getText();
 
     /**
      * Sets the text of this description.
      * 
      * @param text The text for this description
      */
-    public void setText(String text);
+    void setText(String text);
 
 }

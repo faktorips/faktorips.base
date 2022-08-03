@@ -25,7 +25,7 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductObj
      * returns <code>null</code>.
      */
     @Override
-    public IRuntimeRepository getRepository();
+    IRuntimeRepository getRepository();
 
     /**
      * Returns the product component this generation belongs to. This method never returns
@@ -36,11 +36,11 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductObj
     /**
      * Returns the previous generation if available if not <code>null</code> will be returned.
      */
-    public IProductComponentGeneration getPreviousGeneration();
+    IProductComponentGeneration getPreviousGeneration();
 
     /**
      * Returns the next generation if available if not <code>null</code> will be returned.
      */
-    public IProductComponentGeneration getNextGeneration();
+    IProductComponentGeneration getNextGeneration();
 
 }

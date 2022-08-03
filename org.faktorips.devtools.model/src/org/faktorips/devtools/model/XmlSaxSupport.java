@@ -26,7 +26,7 @@ public interface XmlSaxSupport {
      * 
      * @param is input stream
      */
-    public void initFromInputStream(InputStream is) throws IpsException;
+    void initFromInputStream(InputStream is) throws IpsException;
 
     /**
      * Adds the given extension property. If the extension property not exists as definitions then
@@ -35,6 +35,6 @@ public interface XmlSaxSupport {
      * @param propertyId The id of the extension property
      * @param extPropertyValue The value of the extension property
      */
-    public void addExtensionProperty(String propertyId, String extPropertyValue);
+    void addExtensionProperty(String propertyId, String extPropertyValue);
 
 }

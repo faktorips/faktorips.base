@@ -38,7 +38,7 @@ public class ClassLoaderProviderFactoryExtension extends SimpleSingleLazyExtensi
     /**
      * An {@link IClassLoaderProvider} that does not register changes to the classpath's contents
      */
-    private static interface ISimpleClassLoaderProvider extends IClassLoaderProvider {
+    private interface ISimpleClassLoaderProvider extends IClassLoaderProvider {
 
         @Override
         default void addClasspathChangeListener(IClasspathContentsChangeListener listener) {

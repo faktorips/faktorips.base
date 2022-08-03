@@ -26,41 +26,41 @@ public interface IProductCmptStructureReference extends IIpsSrcFileWrapper {
     /**
      * @return The <code>IProductCmptStructure</code> this reference belongs to.
      */
-    public IProductCmptTreeStructure getStructure();
+    IProductCmptTreeStructure getStructure();
 
     /**
      * @return The <code>IIpsObject</code> referenced by this object or <code>null</code> if the
-     *         referenced IPS object doesn't exists.
+     *             referenced IPS object doesn't exists.
      */
-    public IIpsObject getWrappedIpsObject();
+    IIpsObject getWrappedIpsObject();
 
     /**
      * Returns the {@link IIpsProject} this structure reference belongs to.
      * 
      * @return The {@link IIpsProject} this reference belongs to
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the parent structure object of <code>null</code> if this element is the root.
      */
-    public IProductCmptStructureReference getParent();
+    IProductCmptStructureReference getParent();
 
     /**
      * Returns whether this reference is the root of its structure. Thus returns <code>true</code>
      * if it has no parent, <code>false</code> if it does have one.
      */
-    public boolean isRoot();
+    boolean isRoot();
 
     /**
      * @return The {@link IIpsObjectPart} referenced by this object.
      */
-    public abstract IIpsObjectPart getWrapped();
+    IIpsObjectPart getWrapped();
 
     /**
      * Getting the direct children of this {@link IProductCmptStructureReference}.
      * 
      * @return The children of this reference
      */
-    public abstract IProductCmptStructureReference[] getChildren();
+    IProductCmptStructureReference[] getChildren();
 }

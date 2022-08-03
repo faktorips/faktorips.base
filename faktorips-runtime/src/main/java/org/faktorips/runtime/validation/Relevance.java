@@ -63,11 +63,14 @@ public enum Relevance {
             Class<T> datatype = (Class<T>)policyAttribute.getDatatype();
             ValueSetKind valueSetKind = policyAttribute.getValueSetKind();
             if (valueSetKind == ValueSetKind.Range) {
-                @SuppressWarnings("unchecked")
-                ValueSet<T> range = (ValueSet<T>)createEmptyRange(datatype);
-                return range;
+                return castValueSet(datatype);
             }
             return new OrderedValueSet<>(false, null);
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T> ValueSet<T> castValueSet(Class<T> datatype) {
+            return (ValueSet<T>)createEmptyRange(datatype);
         }
     },
     /**
@@ -168,7 +171,7 @@ public enum Relevance {
         if (values != null) {
             return new OrderedValueSet<>(values.getValues(true), containsNull, null);
         } else {
-            return (ValueSet<T>)new OrderedValueSet<Boolean>(containsNull, null, Boolean.TRUE, Boolean.FALSE);
+            return (ValueSet<T>)new OrderedValueSet<>(containsNull, null, Boolean.TRUE, Boolean.FALSE);
         }
     }
 
@@ -434,9 +437,12 @@ public enum Relevance {
         if (Money.class.isAssignableFrom(datatype)) {
             return MoneyRange.empty();
         }
-        @SuppressWarnings("rawtypes")
-        DefaultRange defaultRange = new DefaultRange();
-        return defaultRange;
+        return newDefaultRange();
+    }
+
+    @SuppressWarnings("rawtypes")
+    private static DefaultRange newDefaultRange() {
+        return new DefaultRange();
     }
 
 }

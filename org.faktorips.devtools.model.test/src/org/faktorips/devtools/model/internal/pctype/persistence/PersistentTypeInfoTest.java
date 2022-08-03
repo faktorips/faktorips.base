@@ -221,9 +221,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
             DiscriminatorDatatype datatype) {
         persTypeInfo.setDiscriminatorDatatype(datatype);
         MessageList msgList = persTypeInfo.validate(ipsProject);
-        Message message = msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID);
-
-        return message;
+        return msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID);
     }
 
     @Test
@@ -373,7 +371,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateDiscriminatorValue() {
-        MessageList msgList = null;
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy1");
         PolicyCmptType policyCmptType2 = newPolicyCmptType(ipsProject, "Policy2");
         policyCmptType.setSupertype(superPcType.getQualifiedName());
@@ -390,7 +387,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persistenceTypeInfo1.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         persistenceTypeInfo2.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
 
-        msgList = persistenceTypeInfoSuper.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfoSuper.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_MISSING));
 
         // if no attribute exists then the discriminator is not necessary
@@ -496,7 +493,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateDiscriminator_ColumnLength() {
-        MessageList msgList = null;
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "SuperPolicy");
         policyCmptType.setSupertype(superPcType.getQualifiedName());
 
@@ -513,7 +509,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         persistenceTypeInfoSuper.setDiscriminatorColumnLength(2);
         persistenceTypeInfo.setDiscriminatorValue("123");
 
-        msgList = persistenceTypeInfo.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_DISCRIMINATOR_VALUE_INVALID));
 
         persistenceTypeInfoSuper.setDiscriminatorColumnLength(null);
@@ -524,12 +520,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testDiscriminatorDefinitionForMappedSuperclass() {
-        MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
         persistenceTypeInfo.setDefinesDiscriminatorColumn(true);
 
-        msgList = persistenceTypeInfo.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_DEFINITION_OF_DISCRIMINATOR_NOT_ALLOWED));
 
         persistenceTypeInfo.setDefinesDiscriminatorColumn(false);
@@ -569,12 +564,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testTableNameForMappedSuperclass() {
-        MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setPersistentType(PersistentType.MAPPED_SUPERCLASS);
         persistenceTypeInfo.setTableName("notValid");
 
-        msgList = persistenceTypeInfo.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfo.validate(ipsProject);
         assertNotNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_TABLE_NAME_INVALID));
 
         msgList = persistenceTypeInfo.validate(ipsProject);
@@ -584,12 +578,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateUseTableDefinedInSupertype() {
-        MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
 
         policyCmptType.setSupertype("");
         persistenceTypeInfo.setUseTableDefinedInSupertype(false);
-        msgList = persistenceTypeInfo.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_USE_TABLE_DEFINED_IN_SUPERTYPE_NOT_ALLOWED));
 
         // no superclass therefore it is not possible to use this definition
@@ -608,8 +601,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testDuplicateColumnName() {
-        MessageList ml = null;
-
         PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
         superPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
@@ -624,7 +615,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         IPersistentAttributeInfo pAttInfo2 = policyCmptType.newPolicyCmptTypeAttribute().getPersistenceAttributeInfo();
         pAttInfo2.setTableColumnName("b");
 
-        ml = pAttInfo.validate(ipsProject);
+        MessageList ml = pAttInfo.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         pAttInfo2.setTableColumnName("a");
@@ -690,8 +681,6 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testDuplicateColumnName_OverwriteAttribute() {
-        MessageList ml = null;
-
         PolicyCmptType superPolicyCmptType = newPolicyCmptType(ipsProject, "super");
         superPolicyCmptType.getPersistenceTypeInfo().setPersistentType(PersistentType.ENTITY);
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
@@ -708,7 +697,7 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
         // single table strategy
         pTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
         superPersTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
-        ml = pTypeInfo.validate(ipsProject);
+        MessageList ml = pTypeInfo.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IPersistentTypeInfo.MSGCODE_PERSISTENCEATTR_DUPLICATE_COLNAME));
 
         // joined table strategy
@@ -720,12 +709,11 @@ public class PersistentTypeInfoTest extends PersistenceIpsTest {
 
     @Test
     public void testValidateInheritanceStrategy() {
-        MessageList msgList = null;
         IPersistentTypeInfo persistenceTypeInfo = policyCmptType.getPersistenceTypeInfo();
         persistenceTypeInfo.setInheritanceStrategy(InheritanceStrategy.SINGLE_TABLE);
 
         policyCmptType.setSupertype("");
-        msgList = persistenceTypeInfo.validate(ipsProject);
+        MessageList msgList = persistenceTypeInfo.validate(ipsProject);
         assertNull(msgList.getMessageByCode(IPersistentTypeInfo.MSGCODE_PERSISTENCE_INHERITANCE_STRATEGY_INVALID));
 
         PolicyCmptType superPcType = newPolicyCmptType(ipsProject, "supertype");

@@ -22,116 +22,116 @@ import org.faktorips.runtime.model.type.PolicyCmptType;
  */
 public interface IValidationRule extends IProductCmptProperty {
 
-    public static final String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
+    String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
-    public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
+    String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
+    String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
+    String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MESSAGE_SEVERITY = "messageSeverity"; //$NON-NLS-1$
+    String PROPERTY_MESSAGE_SEVERITY = "messageSeverity"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes"; //$NON-NLS-1$
+    String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
+    String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
+    String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
+    String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
+    String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
+    String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
+    String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
      * The separator to concatenate the key. We use the minus character because this character is
      * not allowed in names.
      */
-    public static final String QNAME_SEPARATOR = "-"; //$NON-NLS-1$
+    String QNAME_SEPARATOR = "-"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message text contains a newline.
      */
-    public static final String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
+    String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message text contains a newline.
      */
-    public static final String MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID = MSGCODE_PREFIX + "InvalidTextParameter"; //$NON-NLS-1$
+    String MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID = MSGCODE_PREFIX + "InvalidTextParameter"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message code shouldn't be empty.
      */
-    public static final String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$
+    String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute referenced by the rule does not exist.
      */
-    public static final String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
+    String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that constant attributes can't be validated.
      */
-    public static final String MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED = MSGCODE_PREFIX
+    String MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED = MSGCODE_PREFIX
             + "ConstantAttributesCantBeValidated"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the rule already exists.
      */
-    public static final String MSGCODE_DUPLICATE_RULE_NAME = MSGCODE_PREFIX + "DuplicateRuleName"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_RULE_NAME = MSGCODE_PREFIX + "DuplicateRuleName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the rule is already used as method name
      * within the type.
      */
-    public static final String MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT = MSGCODE_PREFIX
+    String MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT = MSGCODE_PREFIX
             + "ValidationRuleMethodNameConflict"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the marker id does not exist in the marker enum.
      */
-    public static final String MSGCODE_INVALID_MARKER_ID = MSGCODE_PREFIX + "MsgInvalidMarkerID"; //$NON-NLS-1$
+    String MSGCODE_INVALID_MARKER_ID = MSGCODE_PREFIX + "MsgInvalidMarkerID"; //$NON-NLS-1$
 
     /**
      * Sets the rules name.
      */
-    public void setName(String newName);
+    void setName(String newName);
 
     /**
      * Returns the message text that is presented to the user, if the rule determines that a given
      * policy is invalid.
      */
-    public IValidationRuleMessageText getMessageText();
+    IValidationRuleMessageText getMessageText();
 
     /**
      * Returns the code of the message that is generated, if the rule determines that a given policy
      * is invalid.
      */
-    public String getMessageCode();
+    String getMessageCode();
 
     /**
      * Sets the code of the message that is generated, if the rule determines that a given policy is
      * invalid.
      */
-    public void setMessageCode(String newCode);
+    void setMessageCode(String newCode);
 
     /**
      * Returns the message's severity.
      */
-    public MessageSeverity getMessageSeverity();
+    MessageSeverity getMessageSeverity();
 
     /**
      * Sets the message's severity.
      */
-    public void setMessageSeverity(MessageSeverity newSeverity);
+    void setMessageSeverity(MessageSeverity newSeverity);
 
     /**
      * Adds the name of an attribute that is evaluated in the rules condition.
@@ -139,7 +139,7 @@ public interface IValidationRule extends IProductCmptProperty {
      * @param attributeName the name of the validated attribute
      * @return returns the name of the validated attribute
      */
-    public String addValidatedAttribute(String attributeName);
+    String addValidatedAttribute(String attributeName);
 
     /**
      * Sets the name of a validated attribute at the indexed position. Throws a runtime exception is
@@ -148,19 +148,19 @@ public interface IValidationRule extends IProductCmptProperty {
      * @param index the position where the provided attribute name is stored
      * @param attributeName the validated attributes name
      */
-    public void setValidatedAttributeAt(int index, String attributeName);
+    void setValidatedAttributeAt(int index, String attributeName);
 
     /**
      * Removes the validated attribute name at the given position.
      * 
      * @param index the array position at which the attribute name is stored
      */
-    public void removeValidatedAttribute(int index);
+    void removeValidatedAttribute(int index);
 
     /**
      * Returns the names of the attributes that are part of the rule's condition.
      */
-    public String[] getValidatedAttributes();
+    String[] getValidatedAttributes();
 
     /**
      * Returns the validated attribute at the indexed position.
@@ -168,18 +168,18 @@ public interface IValidationRule extends IProductCmptProperty {
      * @param index the position of the requested validated attribute
      * @return the validated attribute name
      */
-    public String getValidatedAttributeAt(int index);
+    String getValidatedAttributeAt(int index);
 
     /**
      * Returns if the validated attributes are specified in the source code instead of this rule.
      */
-    public boolean isValidatedAttrSpecifiedInSrc();
+    boolean isValidatedAttrSpecifiedInSrc();
 
     /**
      * Sets the specifiedInSourceCode flag that indicates if the validated attributes are specified
      * in the source code instead of this rule.
      */
-    public void setValidatedAttrSpecifiedInSrc(boolean validatedAttrSpecifiedInSrc);
+    void setValidatedAttrSpecifiedInSrc(boolean validatedAttrSpecifiedInSrc);
 
     /**
      * Returns <code>true</code> if this rule is a default rule for validating the value of an
@@ -187,7 +187,7 @@ public interface IValidationRule extends IProductCmptProperty {
      * not a manually build rule - it is an automatically created rule. The creation of this rule
      * has to be allowed by the user.
      */
-    public boolean isCheckValueAgainstValueSetRule();
+    boolean isCheckValueAgainstValueSetRule();
 
     /**
      * Sets the isAttributeValueValidationRule flag that indicates whether this is a default rule or
@@ -195,34 +195,34 @@ public interface IValidationRule extends IProductCmptProperty {
      * 
      * @see #isCheckValueAgainstValueSetRule()
      */
-    public void setCheckValueAgainstValueSetRule(boolean isCheckValueAgainstValueSetRule);
+    void setCheckValueAgainstValueSetRule(boolean isCheckValueAgainstValueSetRule);
 
     /**
      * returns whether this rule can be configured by a product component.
      * 
      * @return <code>true</code> if this rule and its containing {@link PolicyCmptType} are both
-     *         configurable, <code>false</code> else.
+     *             configurable, <code>false</code> else.
      */
-    public boolean isConfigurableByProductComponent();
+    boolean isConfigurableByProductComponent();
 
     /**
      * Sets a flag indicating whether this rule can be configured by a product component.
      * 
      */
-    public void setConfigurableByProductComponent(boolean configurable);
+    void setConfigurableByProductComponent(boolean configurable);
 
     /**
      * returns whether this rule is activated for newly created product components.
      * 
      * @return <code>true</code> if this rule is activated by default, <code>false</code> else.
      */
-    public boolean isActivatedByDefault();
+    boolean isActivatedByDefault();
 
     /**
      * Sets a flag indicating whether this rule is activated for newly created product components.
      * 
      */
-    public void setActivatedByDefault(boolean activated);
+    void setActivatedByDefault(boolean activated);
 
     /**
      * Returns the qualified name of the rule. The qualified name of the rule contains the qualified
@@ -231,22 +231,22 @@ public interface IValidationRule extends IProductCmptProperty {
      * 
      * @return The qualified name of the rule.
      */
-    public String getQualifiedRuleName();
+    String getQualifiedRuleName();
 
     /**
      * Returns a list of markers that are applied to this rule. The markers are represented by the
      * id of an enum value.
      */
-    public List<String> getMarkers();
+    List<String> getMarkers();
 
     /**
      * Sets the list of markers.
      */
-    public void setMarkers(List<String> markers);
+    void setMarkers(List<String> markers);
 
     /**
      * Set the given value to changingOverTime property
      */
-    public void setChangingOverTime(boolean changingOverTime);
+    void setChangingOverTime(boolean changingOverTime);
 
 }

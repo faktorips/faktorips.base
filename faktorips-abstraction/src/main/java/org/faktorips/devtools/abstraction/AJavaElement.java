@@ -38,7 +38,7 @@ public interface AJavaElement extends AAbstraction {
      * Returns the Java project containing this element.
      *
      * @return the containing Java project; may be {@code null} if this element is not contained in
-     *         a project
+     *             a project
      */
     @CheckForNull
     AJavaProject getJavaProject();

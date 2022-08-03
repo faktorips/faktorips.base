@@ -106,7 +106,7 @@ public abstract class Table<R> implements ITable<R> {
      * @return true if the the <em>isNull</em> attribute contains <em>true</em> otherwise false
      */
     protected boolean isNull(Element valueElement) {
-        return Boolean.valueOf(valueElement.getAttribute("isNull")).booleanValue();
+        return Boolean.parseBoolean(valueElement.getAttribute("isNull"));
     }
 
     /**

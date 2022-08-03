@@ -32,7 +32,7 @@ public class LinkViewItemLabelStyler {
     public LinkViewItemLabelStyler(LinkViewItem viewItem) {
         super();
         this.viewItem = viewItem;
-        this.status = TemplateValueUiStatus.mapStatus(viewItem.getLink());
+        status = TemplateValueUiStatus.mapStatus(viewItem.getLink());
     }
 
     public StyledString getStyledLabel() {
@@ -53,10 +53,8 @@ public class LinkViewItemLabelStyler {
 
     /** Returns the styled string for link's text and (if necessary) its cardinality. */
     private StyledString styledLinkCardinality() {
-        if (status == TemplateValueUiStatus.NEWLY_DEFINED) {
-            return new StyledString(formattedCardinality(), IpsStyler.DEFAULT_CARDINALITY_STYLER);
-        }
-        if (status == TemplateValueUiStatus.OVERWRITE || status == TemplateValueUiStatus.OVERWRITE_EQUAL) {
+        if ((status == TemplateValueUiStatus.NEWLY_DEFINED) || status == TemplateValueUiStatus.OVERWRITE
+                || status == TemplateValueUiStatus.OVERWRITE_EQUAL) {
             return new StyledString(formattedCardinality(), IpsStyler.DEFAULT_CARDINALITY_STYLER);
         }
         if (status == TemplateValueUiStatus.INHERITED) {

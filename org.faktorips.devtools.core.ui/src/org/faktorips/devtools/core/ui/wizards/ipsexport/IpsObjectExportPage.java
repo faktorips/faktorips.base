@@ -121,7 +121,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
      * @param toolkit A form toolkit
      * @param parent The parent composite
      * @return A concrete <code>IpsObjectRefControl</code> instance, like TableContentsRefControl,
-     *         ...
+     *             ...
      */
     protected abstract IpsObjectRefControl createExportedIpsObjectRefControlWithLabel(UIToolkit toolkit,
             Composite parent);

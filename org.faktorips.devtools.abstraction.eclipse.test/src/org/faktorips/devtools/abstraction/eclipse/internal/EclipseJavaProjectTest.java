@@ -31,7 +31,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AJavaProject;
@@ -87,7 +86,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testGetPackageFragmentRoot_asResource() throws CoreException {
+    public void testGetPackageFragmentRoot_asResource() {
         AFolder srcFodler = aProject.getFolder("src");
         APackageFragmentRoot pfr = aJavaProject.toPackageFragmentRoot(srcFodler);
 
@@ -103,7 +102,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testHasBuildState() throws InterruptedException {
+    public void testHasBuildState() {
         assertThat(aJavaProject.hasBuildState(), is(false));
 
         aJavaProject.getProject().build(ABuildKind.FULL, null);
@@ -147,7 +146,7 @@ public class EclipseJavaProjectTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testValidateJavaProjectBuildPath() throws JavaModelException {
+    public void testValidateJavaProjectBuildPath() {
 
         assertThat(aJavaProject.validateJavaProjectBuildPath(), is(isEmpty()));
     }

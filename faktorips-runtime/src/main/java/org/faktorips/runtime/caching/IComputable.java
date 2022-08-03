@@ -26,12 +26,12 @@ public interface IComputable<K, V> {
      * @return the computed Object of type V
      * @throws InterruptedException When computation was interrupted
      */
-    public V compute(K key) throws InterruptedException;
+    V compute(K key) throws InterruptedException;
 
     /**
      * Getting the {@link Class} of the value this computable produces.
      */
-    public Class<? super V> getValueClass();
+    Class<? super V> getValueClass();
 
     /**
      * Creates a new {@link IComputable} for the given value class using the given {@link Function}

@@ -23,6 +23,6 @@ public interface IProductCmptStructureTblUsageReference extends IProductCmptStru
     /**
      * @return The <code>IProductCmptTypeRelation</code> this reference refers to.
      */
-    public ITableContentUsage getTableContentUsage();
+    ITableContentUsage getTableContentUsage();
 
 }

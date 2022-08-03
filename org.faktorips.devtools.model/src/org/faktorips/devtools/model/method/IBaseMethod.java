@@ -19,36 +19,36 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  */
 public interface IBaseMethod extends IParameterContainer {
 
-    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    public static final String PROPERTY_PARAMETERS = "parameters"; //$NON-NLS-1$
+    String PROPERTY_PARAMETERS = "parameters"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "METHOD-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "METHOD-"; //$NON-NLS-1$
 
-    public static final String MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME = MSGCODE_PREFIX
+    String MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME = MSGCODE_PREFIX
             + "multipleUseOfSameParameterName"; //$NON-NLS-1$
 
-    public static final String MSGCODE_NO_NAME = MSGCODE_PREFIX + "noName"; //$NON-NLS-1$
+    String MSGCODE_NO_NAME = MSGCODE_PREFIX + "noName"; //$NON-NLS-1$
 
-    public static final String MSGCODE_INVALID_METHODNAME = MSGCODE_PREFIX + "InvalidMethodname"; //$NON-NLS-1$
+    String MSGCODE_INVALID_METHODNAME = MSGCODE_PREFIX + "InvalidMethodname"; //$NON-NLS-1$
 
     /**
      * Sets the method's name.
      */
-    public void setName(String newName);
+    void setName(String newName);
 
     /**
      * Returns the name of the value data type this method returns.
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Sets name of the value data type this method returns.
      */
-    public void setDatatype(String newDatatype);
+    void setDatatype(String newDatatype);
 
     /**
      * Returns the method's (return) data type. Returns <code>null</code> if the data type can't be
@@ -60,7 +60,7 @@ public interface IBaseMethod extends IParameterContainer {
      * @throws IpsException If an error occurs while searching.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public Datatype findDatatype(IIpsProject ipsProject) throws IpsException;
+    Datatype findDatatype(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Checks whether the signature of the <code>otherMethod</code> is the same as the signature of
@@ -73,18 +73,18 @@ public interface IBaseMethod extends IParameterContainer {
      * 
      * @param otherMethod The other method which this method has to be compared with.
      */
-    public boolean isSameSignature(IBaseMethod otherMethod);
+    boolean isSameSignature(IBaseMethod otherMethod);
 
     /**
      * Returns the method's signature in string format, e.g. <code>computePremium(base.Coverage,
      * base.Contract, Integer)</code>.
      */
-    public String getSignatureString();
+    String getSignatureString();
 
     /**
      * Returns the Java modifier. Determined from the IPS modifier and the abstract flag.
      * 
      * @see java.lang.reflect.Modifier
      */
-    public int getJavaModifier();
+    int getJavaModifier();
 }

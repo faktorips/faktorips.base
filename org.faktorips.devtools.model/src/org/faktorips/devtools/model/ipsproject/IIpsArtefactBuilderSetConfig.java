@@ -23,29 +23,29 @@ public interface IIpsArtefactBuilderSetConfig {
     /**
      * Returns the names of all properties provided by this configuration.
      */
-    public String[] getPropertyNames();
+    String[] getPropertyNames();
 
     /**
      * Returns the value of the property of the provided property name.
      */
-    public Object getPropertyValue(String propertyName);
+    Object getPropertyValue(String propertyName);
 
     /**
      * Tries to get a value for the provided property name and expects it to be a Boolean if not a
      * RuntimeException is thrown.
      */
-    public Boolean getPropertyValueAsBoolean(String propertyName);
+    Boolean getPropertyValueAsBoolean(String propertyName);
 
     /**
      * Tries to get a value for the provided property name and expects it to be a String if not a
      * RuntimeException is thrown.
      */
-    public String getPropertyValueAsString(String propertyName);
+    String getPropertyValueAsString(String propertyName);
 
     /**
      * Tries to get a value for the provided property name and expects it to be an Integer if not a
      * RuntimeException is thrown.
      */
-    public Integer getPropertyValueAsInteger(String propertyName);
+    Integer getPropertyValueAsInteger(String propertyName);
 
 }

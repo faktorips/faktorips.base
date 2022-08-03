@@ -38,7 +38,7 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
      */
     public AttributesTablePageElement(IType type, List<IAttribute> attributes, DocumentationContext context) {
         super(attributes, context);
-        this.setType(type);
+        setType(type);
         setId(type.getName() + "_" + "attributes"); //$NON-NLS-1$//$NON-NLS-2$
     }
 

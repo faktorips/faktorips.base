@@ -27,13 +27,13 @@ public interface IExtendableVersionManager extends IIpsFeatureVersionManager {
     /**
      * Returns the name of the contributing plug-In in which this version manager is registered.
      */
-    public String getContributorName();
+    String getContributorName();
 
     /**
      * Setting the name of the contributing plug-In in which this version manager is registered
      * 
      * @param contributorName The name of the contibutin plug-In
      */
-    public void setContributorName(String contributorName);
+    void setContributorName(String contributorName);
 
 }

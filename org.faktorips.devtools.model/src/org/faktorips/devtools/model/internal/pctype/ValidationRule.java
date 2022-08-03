@@ -321,7 +321,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private void initDefaultChangingOverTime() {
         IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-        this.changingOverTime = productCmptType != null && productCmptType.isChangingOverTime();
+        changingOverTime = productCmptType != null && productCmptType.isChangingOverTime();
     }
 
     @Override
@@ -513,8 +513,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     @Override
     public void setMarkers(List<String> newMarkers) {
-        List<String> oldMarkers = this.markers;
-        this.markers = newMarkers;
+        List<String> oldMarkers = markers;
+        markers = newMarkers;
         valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
     }
 }

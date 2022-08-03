@@ -32,60 +32,60 @@ public interface IIpsObjectPath {
     /**
      * Message code constant identifying the message of a validation rule.
      */
-    public static final String MSGCODE_SRC_FOLDER_ENTRY_MISSING = "SourceFolderEntryMissing"; //$NON-NLS-1$
+    String MSGCODE_SRC_FOLDER_ENTRY_MISSING = "SourceFolderEntryMissing"; //$NON-NLS-1$
 
     /**
      * Message code constant that indicates that the output folder for mergeable java sources is not
      * specified.
      */
-    public static final String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
+    String MSGCODE_MERGABLE_OUTPUT_FOLDER_NOT_SPECIFIED = "MergableOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
      * Message code constant that indicates that the output folder for derived java sources is not
      * specified.
      */
-    public static final String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
+    String MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED = "DerivedOutputFolderNotSpecified"; //$NON-NLS-1$
 
     /**
      * Returns the IPS project this path belongs to.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Returns the entry for the given IPS package fragment root name or <code>null</code> if no
      * such entry exists.
      */
-    public IIpsObjectPathEntry getEntry(String rootName);
+    IIpsObjectPathEntry getEntry(String rootName);
 
     /**
      * Returns the path' entries.
      */
-    public IIpsObjectPathEntry[] getEntries();
+    IIpsObjectPathEntry[] getEntries();
 
     /**
      * Returns the source folder entries of this IPS project path.
      */
-    public IIpsSrcFolderEntry[] getSourceFolderEntries();
+    IIpsSrcFolderEntry[] getSourceFolderEntries();
 
     /**
      * Returns the project reference entries of this IPS project path.
      */
-    public IIpsProjectRefEntry[] getProjectRefEntries();
+    IIpsProjectRefEntry[] getProjectRefEntries();
 
     /**
      * Returns the IPS archive entries of this IPS project path.
      */
-    public IIpsArchiveEntry[] getArchiveEntries();
+    IIpsArchiveEntry[] getArchiveEntries();
 
     /**
      * Sets the path' entries.
      */
-    public void setEntries(IIpsObjectPathEntry[] newEntries);
+    void setEntries(IIpsObjectPathEntry[] newEntries);
 
     /**
      * Returns the IPS projects directly referenced by this object path.
      */
-    public List<IIpsProject> getDirectlyReferencedIpsProjects();
+    List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
      * Returns all {@link IIpsProject IpsProjects} that are directly or indirectly referenced by
@@ -93,93 +93,93 @@ public interface IIpsObjectPath {
      * 
      * #see {@link #getDirectlyReferencedIpsProjects()}
      */
-    public List<IIpsProject> getAllReferencedIpsProjects();
+    List<IIpsProject> getAllReferencedIpsProjects();
 
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.
      */
-    public IIpsSrcFolderEntry newSourceFolderEntry(AFolder srcFolder);
+    IIpsSrcFolderEntry newSourceFolderEntry(AFolder srcFolder);
 
     /**
      * Factory method that creates a new archive entry and adds it to the list of entries. If there
      * is already an archive entry with the given path no entry is created but the existing entry is
      * returned.
      */
-    public IIpsArchiveEntry newArchiveEntry(Path archivePath) throws IpsException;
+    IIpsArchiveEntry newArchiveEntry(Path archivePath) throws IpsException;
 
     /**
      * Factory method that creates a new project reference entry and adds it to the list of entries.
      */
-    public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject project);
+    IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject project);
 
     /**
      * @return true if this path contains a reference to the given project.
      */
-    public boolean containsProjectRefEntry(IIpsProject ipsProject);
+    boolean containsProjectRefEntry(IIpsProject ipsProject);
 
     /**
      * Removes the given project from the list of entries if contained.
      */
-    public void removeProjectRefEntry(IIpsProject ipsProject);
+    void removeProjectRefEntry(IIpsProject ipsProject);
 
     /**
      * @return true if this path contains the given archive.
      */
-    public boolean containsArchiveEntry(IIpsArchive ipsArchive);
+    boolean containsArchiveEntry(IIpsArchive ipsArchive);
 
     /**
      * Removes the given archive from the list of entries if contained.
      */
-    public void removeArchiveEntry(IIpsArchive ipsArchive);
+    void removeArchiveEntry(IIpsArchive ipsArchive);
 
     /**
      * @return true if this path contains a reference to the given source folder.
      */
-    public boolean containsSrcFolderEntry(AFolder entry);
+    boolean containsSrcFolderEntry(AFolder entry);
 
     /**
      * Removes the given source folder from the list of entries if contained.
      */
-    public void removeSrcFolderEntry(AFolder srcFolder);
+    void removeSrcFolderEntry(AFolder srcFolder);
 
     /**
      * Returns true if the output folder and base package are defined per source folder, otherwise
      * false.
      */
-    public boolean isOutputDefinedPerSrcFolder();
+    boolean isOutputDefinedPerSrcFolder();
 
     /**
      * Sets if the output folder and base package are defined per source folder.
      */
-    public void setOutputDefinedPerSrcFolder(boolean newValue);
+    void setOutputDefinedPerSrcFolder(boolean newValue);
 
     /**
      * Returns the output folder for generated but mergeable sources used for all source folders.
      */
-    public AFolder getOutputFolderForMergableSources();
+    AFolder getOutputFolderForMergableSources();
 
     /**
      * Sets the output folder for generated but mergeable sources. If the output folder is not
      * defined per source folder that all mergeable sources are generated into this directory.
      */
-    public void setOutputFolderForMergableSources(AFolder outputFolder);
+    void setOutputFolderForMergableSources(AFolder outputFolder);
 
     /**
      * Returns all output folders specified in the path.
      */
-    public AFolder[] getOutputFolders();
+    AFolder[] getOutputFolders();
 
     /**
      * Returns the name of the base package for the generated Java source files that are to be
      * merged with the newly generated content during a build cycle.
      */
-    public String getBasePackageNameForMergableJavaClasses();
+    String getBasePackageNameForMergableJavaClasses();
 
     /**
      * Sets the name of the base package for the generated Java source files that are to be merged
      * with the newly generated content during a build cycle.
      */
-    public void setBasePackageNameForMergableJavaClasses(String name);
+    void setBasePackageNameForMergableJavaClasses(String name);
 
     /**
      * Returns the output folder for generated artifacts that are marked as derived. More precise
@@ -187,12 +187,12 @@ public interface IIpsObjectPath {
      * Derived artifacts are not managed by the resource management system (e.g. CVS). During the
      * clean build phase all resources in this folder will be deleted.
      */
-    public AFolder getOutputFolderForDerivedSources();
+    AFolder getOutputFolderForDerivedSources();
 
     /**
      * Sets the output folder for derived sources.
      */
-    public void setOutputFolderForDerivedSources(AFolder outputFolder);
+    void setOutputFolderForDerivedSources(AFolder outputFolder);
 
     /**
      * Returns the name of the base package for generated Java source files that are considered
@@ -200,7 +200,7 @@ public interface IIpsObjectPath {
      * 
      * @see #getOutputFolderForDerivedSources()
      */
-    public String getBasePackageNameForDerivedJavaClasses();
+    String getBasePackageNameForDerivedJavaClasses();
 
     /**
      * Sets the name of the base package for generated Java source files that are considered
@@ -208,12 +208,12 @@ public interface IIpsObjectPath {
      * 
      * @see #getOutputFolderForDerivedSources()
      */
-    public void setBasePackageNameForDerivedJavaClasses(String name);
+    void setBasePackageNameForDerivedJavaClasses(String name);
 
     /**
      * Validates the object path and returns the result as list of messages.
      */
-    public MessageList validate() throws IpsException;
+    MessageList validate() throws IpsException;
 
     /**
      * Moves the entries at at the given indices up/down and adjusts the positions of the elements
@@ -226,7 +226,7 @@ public interface IIpsObjectPath {
      * 
      * @return the indices of the entries' positions after the move operation
      */
-    public int[] moveEntries(int[] indices, boolean up);
+    int[] moveEntries(int[] indices, boolean up);
 
     /**
      * This method checks whether this object path has a resource with the specified path. The path
@@ -234,28 +234,28 @@ public interface IIpsObjectPath {
      * 
      * @param path The path of the requested resource
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
-     *         not
+     *             not
      */
-    public boolean containsResource(String path);
+    boolean containsResource(String path);
 
     /**
      * Retrieves the contents of a file in the {@link IIpsObjectPath}. Returns <code>null</code> if
      * no resource is found at the given path. If the {@link IIpsObjectPath} contains multiple
      * resources with the same path the first find will be returned.
      */
-    public InputStream getResourceAsStream(String path);
+    InputStream getResourceAsStream(String path);
 
     /**
      * Returns true, if the {@link IIpsObjectPathEntry entries} of this path are defined in the
      * manifest.mf and false if not.
      */
-    public boolean isUsingManifest();
+    boolean isUsingManifest();
 
     /**
      * Sets, if the {@link IIpsObjectPathEntry entries} are defined in the manifest.mf or in the
      * .ipsproject file.
      */
-    public void setUsingManifest(boolean useManifest);
+    void setUsingManifest(boolean useManifest);
 
     /**
      * Factory method that creates a new container entry and adds it to the list of entries. If
@@ -267,9 +267,9 @@ public interface IIpsObjectPath {
      * @param optionalPath The optional path or null if the container do not need an optional path
      * 
      * @return The created container or the existing one if there is already a container with the
-     *         same configuration
+     *             same configuration
      */
-    public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
+    IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
 
     /**
      * Returns the first {@link IIpsSrcFile} with the indicated qualified name type found on the
@@ -279,7 +279,7 @@ public interface IIpsObjectPath {
      *            {@link IIpsSrcFile}
      * @return the found {@link IIpsSrcFile}
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
+    IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
@@ -289,7 +289,7 @@ public interface IIpsObjectPath {
      * @param nameType representing the {@link QualifiedNameType} of the searched
      *            {@link IIpsSrcFile}
      */
-    public boolean findDuplicateIpsSrcFile(QualifiedNameType nameType);
+    boolean findDuplicateIpsSrcFile(QualifiedNameType nameType);
 
     /**
      * Returns {@link IIpsSrcFile IPS source files} with the indicated {@link IpsObjectType}.
@@ -297,5 +297,5 @@ public interface IIpsObjectPath {
      * @param ipsObjectType representing the {@link IpsObjectType} of the searched
      *            {@link IIpsSrcFile IIpsSrcFiles}
      */
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType);
+    List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType);
 }

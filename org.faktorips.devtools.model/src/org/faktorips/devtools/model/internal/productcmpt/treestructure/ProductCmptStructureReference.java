@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.productcmpt.treestructure;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.model.IIpsElement;
@@ -112,42 +113,14 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         ProductCmptStructureReference other = (ProductCmptStructureReference)obj;
-        if (parent == null) {
-            if (other.parent != null) {
-                return false;
-            }
-        } else if (!parent.equals(other.parent)) {
-            return false;
-        }
-        if (structure == null) {
-            if (other.structure != null) {
-                return false;
-            }
-        } else if (!structure.equals(other.structure)) {
-            return false;
-        }
-        if (getWrapped() == null) {
-            if (other.getWrapped() != null) {
-                return false;
-            }
-        } else if (!getWrapped().equals(other.getWrapped())) {
-            return false;
-        }
-        if (getWrappedIpsObject() == null) {
-            if (other.getWrappedIpsObject() != null) {
-                return false;
-            }
-        } else if (!getWrappedIpsObject().equals(other.getWrappedIpsObject())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(parent, other.parent)
+                && Objects.equals(structure, other.structure)
+                && Objects.equals(getWrapped(), other.getWrapped())
+                && Objects.equals(getWrappedIpsObject(), other.getWrappedIpsObject());
     }
 
     @Override

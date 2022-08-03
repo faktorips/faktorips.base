@@ -65,7 +65,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
 
     private static final long serialVersionUID = 5639586670329581901L;
 
-    private static final int[] POWER_10 = new int[] { 1, 10, 100, 1000, 10000, 100000 };
+    private static final int[] POWER_10 = { 1, 10, 100, 1000, 10000, 100000 };
 
     /**
      * the money's amount is stored internally as long; for example: The internal amount for 3.50EUR
@@ -171,13 +171,13 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             int dotPos = amountValue.indexOf('.');
             int fractionDigitsIn = 0;
             if (dotPos == -1) {
-                majorUnits = Long.valueOf(amountValue).longValue();
+                majorUnits = Long.parseLong(amountValue);
             } else {
-                majorUnits = Long.valueOf(amountValue.substring(0, dotPos)).longValue();
+                majorUnits = Long.parseLong(amountValue.substring(0, dotPos));
                 if (dotPos < amountValue.length() - 1) {
                     String minorUnitsString = amountValue.substring(dotPos + 1);
                     if (minorUnitsString.length() > 0) {
-                        minorUnits = Integer.valueOf(minorUnitsString).intValue();
+                        minorUnits = Integer.parseInt(minorUnitsString);
                         fractionDigitsIn = minorUnitsString.length();
                     }
                 }
@@ -326,9 +326,9 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Adds the money value to this money value.
      * 
      * @return A money value with the same currency this value object has and an amount that is the
-     *         sum of this value's amount and the passed value's amount. Returns Money.NULL if
-     *         either this object is the Money.NULL object, or the other value is the Money.NULL
-     *         object.
+     *             sum of this value's amount and the passed value's amount. Returns Money.NULL if
+     *             either this object is the Money.NULL object, or the other value is the Money.NULL
+     *             object.
      * 
      * @throws IllegalArgumentException if the two money values have different currencies
      * @throws NullPointerException if value is <code>null</code>
@@ -348,8 +348,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Subtracts the indicated money value from this money value.
      * 
      * @return A money value with the same currency this money object has and an amount that is this
-     *         value's amount minus the passed value's amount. Returns Money.NULL if either this
-     *         object is the Money.NULL object, or the other value is the Money.NULL object.
+     *             value's amount minus the passed value's amount. Returns Money.NULL if either this
+     *             object is the Money.NULL object, or the other value is the Money.NULL object.
      * 
      * @throws IllegalArgumentException if the two money values have different currencies
      * @throws NullPointerException if value is <code>null</code>
@@ -382,8 +382,8 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param factor The int factor this money amount is multiplied with.
      * 
      * @return new money amount with the same currency and a value of <code>this * factor</code>.
-     *         Returns <code>Money.NULL</code> if either this is <code>Money.NULL</code> or factor
-     *         is <code>null</code>.
+     *             Returns <code>Money.NULL</code> if either this is <code>Money.NULL</code> or
+     *             factor is <code>null</code>.
      */
     public Money multiply(Integer factor) {
         if (factor == null) {
@@ -451,10 +451,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object.
      * 
      * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
@@ -471,10 +471,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode The rounding mode.
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object.
      */
     public Money divide(int d, RoundingMode roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
@@ -492,10 +492,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object.
      * 
      * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
      */
@@ -512,10 +512,10 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode The rounding mode.
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object.
      */
     public Money divide(long d, RoundingMode roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
@@ -533,11 +533,11 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode One of the rounding modes defined in <code>BigDecimal</code>
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object or the divisor is
-     *         the <code>Decimal.NULL</code> object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object or the divisor
+     *             is the <code>Decimal.NULL</code> object.
      * 
      * @throws NullPointerException if d is <code>null</code>.
      * @throws IllegalArgumentException if roundingMode cannot be converted to {@link RoundingMode}.
@@ -555,11 +555,11 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode The rounding mode.
      * 
      * @return new money amount with the same currency and a value of <code>this / d</code> rounded
-     *         to the fractional digits defined by the money's currency using the given rounding
-     *         mode.
-     *         <p>
-     *         Returns <code>Money.null</code> if this is the Money.NULL object or the divisor is
-     *         the <code>Decimal.NULL</code> object.
+     *             to the fractional digits defined by the money's currency using the given rounding
+     *             mode.
+     *             <p>
+     *             Returns <code>Money.null</code> if this is the Money.NULL object or the divisor
+     *             is the <code>Decimal.NULL</code> object.
      * 
      * @throws NullPointerException if d is <code>null</code>.
      */

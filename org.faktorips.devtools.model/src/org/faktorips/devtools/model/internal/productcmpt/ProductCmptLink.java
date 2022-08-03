@@ -62,7 +62,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     public ProductCmptLink(IProductCmptLinkContainer parent, String id) {
         super(parent, id);
-        this.templateValueSettings = new TemplateValueSettings(this);
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -239,8 +239,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         getName());
             } else {
                 msg = MessageFormat.format(Messages.ProductCmptLink_msgChaningOverTimeMismatch_partOfGeneration,
-                        new Object[] { associationLabel, getName(), IIpsModelExtensions.get().getModelPreferences()
-                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true) });
+                        associationLabel, getName(), IIpsModelExtensions.get().getModelPreferences()
+                                .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true));
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -256,7 +256,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 if (getMaxCardinality() > associationObj.getMaxCardinality()) {
                     String text = MessageFormat.format(
                             Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
-                            this.getMaxCardinality(), associationObj.getMaxCardinality());
+                            getMaxCardinality(), associationObj.getMaxCardinality());
                     list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
                             PROPERTY_MAX_CARDINALITY));
                 }
@@ -397,7 +397,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * @param target The product component that will be used as target for the new relation.
      * @param ipsProject The ips project which ips object path is used.
      * @return <code>true</code> if it is possible to create a valid relation with the given
-     *         parameters at this time, <code>false</code> otherwise.
+     *             parameters at this time, <code>false</code> otherwise.
      * 
      * @throws IpsException if an error occurs during supertype-evaluation
      */

@@ -41,7 +41,7 @@ public class TemplateHierarchyFinder {
      * @param template the template whose hierarchy is returned
      * @param ipsProject the IPS project in which source files are searched
      * @return a tree with the hierarchy of the given template. The tree is empty if no template or
-     *         a non-template product component is given.
+     *             a non-template product component is given.
      */
     public static Tree<IIpsSrcFile> findTemplateHierarchyFor(IProductCmpt template, IIpsProject ipsProject) {
         if (template == null || !template.isProductTemplate()) {

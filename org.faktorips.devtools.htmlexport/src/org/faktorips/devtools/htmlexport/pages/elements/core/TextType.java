@@ -29,7 +29,7 @@ public enum TextType {
 
     private final boolean blockType;
 
-    private TextType(boolean blockType) {
+    TextType(boolean blockType) {
         this.blockType = blockType;
     }
 

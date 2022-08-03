@@ -31,36 +31,36 @@ package org.faktorips.devtools.model.enums;
 public interface IEnumLiteralNameAttribute extends IEnumAttribute {
 
     /** The XML tag for this <code>IpsObjectPart</code>. */
-    public static final String XML_TAG = "EnumLiteralNameAttribute"; //$NON-NLS-1$
+    String XML_TAG = "EnumLiteralNameAttribute"; //$NON-NLS-1$
 
     /** Name of the <code>defaultValueProviderAttribute</code> property. */
-    public static final String PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE = "defaultValueProviderAttribute"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_VALUE_PROVIDER_ATTRIBUTE = "defaultValueProviderAttribute"; //$NON-NLS-1$
 
     /** The default name for a <code>IEnumLiteralNameAttribute</code>. */
-    public static final String DEFAULT_NAME = "LITERAL_NAME"; //$NON-NLS-1$
+    String DEFAULT_NAME = "LITERAL_NAME"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the chosen default value provider attribute does not
      * exist.
      */
-    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the chosen default value provider attribute is not
      * of data type <code>String</code>.
      */
-    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
+    String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_DEFAULT_VALUE_PROVIDER_ATTRIBUTE_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeDefaultValueProviderAttributeNotOfDatatypeString"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumLiteralNameAttribute</code> is not
      * required by the <code>IEnumType</code> it belongs to and therefore should be deleted.
      */
-    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED = MSGCODE_PREFIX
+    String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_NOT_NEEDED = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeAttributeNotNeeded"; //$NON-NLS-1$
 
     /**
@@ -73,7 +73,7 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
      * @throws NullPointerException If <code>defaultValueProviderAttributeName</code> is
      *             <code>null</code>.
      */
-    public void setDefaultValueProviderAttribute(String defaultValueProviderAttributeName);
+    void setDefaultValueProviderAttribute(String defaultValueProviderAttributeName);
 
     /**
      * Returns the name of the <code>IEnumAttribute</code> currently being used as default value
@@ -82,6 +82,6 @@ public interface IEnumLiteralNameAttribute extends IEnumAttribute {
      * Returns an empty <code>String</code> if there is no default value provider attribute and
      * never returns <code>null</code>.
      */
-    public String getDefaultValueProviderAttribute();
+    String getDefaultValueProviderAttribute();
 
 }

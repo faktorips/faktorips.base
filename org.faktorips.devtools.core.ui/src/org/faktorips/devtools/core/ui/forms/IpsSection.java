@@ -98,7 +98,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         this.id = id;
         collapsible = true;
 
-        this.style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
+        style = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
         this.layoutData = layoutData;
         this.toolkit = toolkit;
 
@@ -273,7 +273,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
 
     /**
      * @return whether this section is currently expanded (<code>true</code>) or collapsed (
-     *         <code>false</code>).
+     *             <code>false</code>).
      */
     protected boolean isExpanded() {
         return getSectionControl().isExpanded();
@@ -440,7 +440,7 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
     /**
      * 
      * @return whether this section will grab excess vertical space if it is expanded. Default is
-     *         <code>true</code>.
+     *             <code>true</code>.
      */
     public boolean isGrabVerticalSpace() {
         return isGrabVerticalSpace;

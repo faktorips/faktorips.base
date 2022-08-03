@@ -58,7 +58,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsObjectPath implements IIpsObjectPath {
 
-    private IIpsObjectPathEntry[] entries = new IIpsObjectPathEntry[0];
+    private IIpsObjectPathEntry[] entries = {};
 
     private boolean outputDefinedPerSourceFolder = false;
 

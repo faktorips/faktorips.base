@@ -27,7 +27,7 @@ public abstract class TableMessageHoverService extends MessageHoverService {
     public TableMessageHoverService(TableViewer viewer) {
         super(viewer.getTable());
         this.viewer = viewer;
-        this.table = viewer.getTable();
+        table = viewer.getTable();
     }
 
     @Override

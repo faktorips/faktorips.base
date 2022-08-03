@@ -107,7 +107,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     }
 
     public void setAddToTableUsage(ITableContentUsage tableUsage, boolean autosafe) {
-        this.autosaveAddToFile = autosafe;
+        autosaveAddToFile = autosafe;
         IIpsProject ipsProject = tableUsage.getIpsProject();
         ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
         String[] tableStructures = tableStructureUsage.getTableStructures();
@@ -122,7 +122,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
         if (structuresList.size() > 0) {
             setSelectedStructure(structuresList.get(0));
         }
-        this.addToTableUsage = tableUsage;
+        addToTableUsage = tableUsage;
     }
 
     /**

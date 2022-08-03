@@ -91,7 +91,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         super.initPropertiesFromXml(element, id);
         String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
         if (StringUtils.isNotEmpty(abstractString)) {
-            abstractFlag = Boolean.valueOf(element.getAttribute(PROPERTY_ABSTRACT));
+            abstractFlag = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         } else {
             /*
              * Backwards-compatibility: if no attribute "abstract" is found, abstractFlag is assumed
@@ -125,8 +125,8 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * provided by the parent or the datatype provided is not a <code>ValueDatatype</code>.
      * 
      * @deprecated This method may provide the wrong datatype instance because always searches in
-     *             the current project instead of a given context ips project. Use
-     *             {@link #findValueDatatype(IIpsProject)} instead.
+     *                 the current project instead of a given context ips project. Use
+     *                 {@link #findValueDatatype(IIpsProject)} instead.
      */
     @Deprecated
     public ValueDatatype getValueDatatype() {
@@ -177,7 +177,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         if (otherValueSet.isUnrestricted() || otherValueSet.isDerived() || otherValueSet.isStringLength()) {
             return otherValueSet.containsValueSet(this);
         }
-        if (this.isEnum() && otherValueSet.isRange()) {
+        if (isEnum() && otherValueSet.isRange()) {
             // this is only possible if the method names and return types are unified
             if (getIpsProject().getIpsArtefactBuilderSet().usesUnifiedValueSets()) {
                 return otherValueSet.containsValueSet(this);
@@ -235,20 +235,8 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
             return -2;
         } else if (o.isDerived()) {
             return 2;
-        } else if (isUnrestricted()) {
+        } else if (isUnrestricted() || ((isEnum() || isStringLength()) && !o.isUnrestricted())) {
             return -1;
-        } else if (isEnum()) {
-            if (o.isUnrestricted()) {
-                return 1;
-            } else {
-                return -1;
-            }
-        } else if (isStringLength()) {
-            if (o.isUnrestricted()) {
-                return 1;
-            } else {
-                return -1;
-            }
         } else {
             return 1;
         }

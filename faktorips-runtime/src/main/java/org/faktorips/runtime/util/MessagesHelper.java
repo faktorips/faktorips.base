@@ -85,7 +85,7 @@ public class MessagesHelper {
      *            message in defaultLocale
      */
     public MessagesHelper(String qualifiedName, ClassLoader loader, Locale defaultLocale) {
-        this.name = qualifiedName;
+        name = qualifiedName;
         this.loader = loader;
         this.defaultLocale = defaultLocale;
     }

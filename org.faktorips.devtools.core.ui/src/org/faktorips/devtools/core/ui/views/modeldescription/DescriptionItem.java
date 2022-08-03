@@ -51,7 +51,7 @@ public class DescriptionItem {
 
     public DescriptionItem(String name, List<DescriptionItem> children) {
         this.name = name;
-        this.description = ""; //$NON-NLS-1$
+        description = ""; //$NON-NLS-1$
         this.children = children;
     }
 

@@ -127,23 +127,23 @@ public class TypeTest {
     @IpsAssociations({ "SuperTarget", "Target" })
     @IpsAttributes({ "SuperAttribute", "OverwrittenAttribute" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
-    public static interface ISuperSource extends IModelObject {
+    public interface ISuperSource extends IModelObject {
 
         @IpsAssociation(name = "SuperTarget", pluralName = "SuperTargets", kind = AssociationKind.Composition, targetClass = SuperTarget.class, min = 0, max = Integer.MAX_VALUE)
         @IpsDerivedUnion
         @IpsInverseAssociation("SuperSource")
-        public List<ISuperTarget> getSuperTargets();
+        List<ISuperTarget> getSuperTargets();
 
         @IpsAssociation(name = "Target", pluralName = "Targets", kind = AssociationKind.Composition, targetClass = Target.class, min = 0, max = Integer.MAX_VALUE)
         @IpsSubsetOfDerivedUnion("SuperTarget")
         @IpsInverseAssociation("SuperSource")
-        public List<? extends ITarget> getTargets();
+        List<? extends ITarget> getTargets();
 
         @IpsAttribute(name = "SuperAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
-        public int getSuperAttribute();
+        int getSuperAttribute();
 
         @IpsAttribute(name = "OverwrittenAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
-        public int getOverwrittenAttribute();
+        int getOverwrittenAttribute();
 
     }
 
@@ -173,18 +173,18 @@ public class TypeTest {
     @IpsAssociations({ "AnotherTarget" })
     @IpsAttributes({ "OverwrittenAttribute", "Attribute" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
-    public static interface ISource extends ISuperSource {
+    public interface ISource extends ISuperSource {
         @IpsAssociation(name = "AnotherTarget", pluralName = "", kind = AssociationKind.Composition, targetClass = Target.class, min = 0, max = 1)
         @IpsSubsetOfDerivedUnion("SuperTarget")
         @IpsInverseAssociation("Source")
-        public ITarget getAnotherTarget();
+        ITarget getAnotherTarget();
 
         @IpsAttribute(name = "Attribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
-        public int getAttribute();
+        int getAttribute();
 
         @Override
         @IpsAttribute(name = "OverwrittenAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
-        public int getOverwrittenAttribute();
+        int getOverwrittenAttribute();
 
     }
 
@@ -203,10 +203,10 @@ public class TypeTest {
     @IpsPolicyCmptType(name = "SuperTarget")
     @IpsAssociations({ "SuperSource" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
-    public static interface ISuperTarget extends IModelObject {
+    public interface ISuperTarget extends IModelObject {
         @IpsAssociation(name = "SuperSource", pluralName = "", kind = AssociationKind.CompositionToMaster, targetClass = SuperSource.class, min = 0, max = 1)
         @IpsInverseAssociation("SuperTarget")
-        public ISuperSource getSuperSource();
+        ISuperSource getSuperSource();
 
     }
 
@@ -230,10 +230,10 @@ public class TypeTest {
     @IpsPolicyCmptType(name = "Target")
     @IpsAssociations({ "SuperSource", "Source" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
-    public static interface ITarget extends ISuperTarget {
+    public interface ITarget extends ISuperTarget {
         @IpsAssociation(name = "Source", pluralName = "", kind = AssociationKind.CompositionToMaster, targetClass = Source.class, min = 0, max = 1)
         @IpsInverseAssociation("AnotherTarget")
-        public ISource getSource();
+        ISource getSource();
 
     }
 

@@ -43,8 +43,8 @@ import org.faktorips.util.ArgumentCheck;
  * An instance of the class is created per shell.
  * 
  * @deprecated This class uses nearly the same implementation as {@link ControlDecoration} which is
- *             available since Eclipse 3.3. We implemented a {@link MessageDecoration} which could
- *             be instantiated by {@link UIToolkit#createMessageDecoration(Control)}
+ *                 available since Eclipse 3.3. We implemented a {@link MessageDecoration} which
+ *                 could be instantiated by {@link UIToolkit#createMessageDecoration(Control)}
  */
 @Deprecated
 public class MessageCueController {
@@ -80,8 +80,9 @@ public class MessageCueController {
      * 
      * @throws NullPointerException if control is null
      * @deprecated This class uses nearly the same implementation as {@link ControlDecoration} which
-     *             is available since Eclipse 3.3. We implemented a {@link MessageDecoration} which
-     *             could be instantiated by {@link UIToolkit#createMessageDecoration(Control)}
+     *                 is available since Eclipse 3.3. We implemented a {@link MessageDecoration}
+     *                 which could be instantiated by
+     *                 {@link UIToolkit#createMessageDecoration(Control)}
      */
     @Deprecated
     public static void setMessageCue(Control control, MessageList list) {

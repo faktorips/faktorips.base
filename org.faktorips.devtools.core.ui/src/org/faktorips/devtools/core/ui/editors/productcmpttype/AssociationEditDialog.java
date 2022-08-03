@@ -73,7 +73,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         this.association = association;
         initialName = association.getName();
         initialPluralName = association.getTargetRolePlural();
-        this.pmoAssociation = new PmoAssociation(association);
+        pmoAssociation = new PmoAssociation(association);
         extFactory = new ExtensionPropertyControlFactory(association);
         oldMatchingAssociation = association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
         getBindingContext().addIgnoredMessageCode(IProductCmptTypeAssociation.MSGCODE_MATCHING_ASSOCIATION_INVALID);

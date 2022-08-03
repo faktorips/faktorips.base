@@ -128,8 +128,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
     protected Object getValue(Object element) {
         if (element instanceof IIpsBuilderSetPropertyDef) {
             IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
-            String propertyValue = builderSetConfigModel.getPropertyValue(propertyDef.getName());
-            return propertyValue;
+            return builderSetConfigModel.getPropertyValue(propertyDef.getName());
         }
         return null;
     }

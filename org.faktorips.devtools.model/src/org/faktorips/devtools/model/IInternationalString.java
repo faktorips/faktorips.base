@@ -28,11 +28,11 @@ import org.faktorips.values.LocalizedString;
  */
 public interface IInternationalString extends XmlSupport, Comparable<IInternationalString> {
 
-    public static final String XML_TAG = "InternationalString"; //$NON-NLS-1$
+    String XML_TAG = "InternationalString"; //$NON-NLS-1$
 
-    public static final String XML_ELEMENT_LOCALIZED_STRING = "LocalizedString"; //$NON-NLS-1$
+    String XML_ELEMENT_LOCALIZED_STRING = "LocalizedString"; //$NON-NLS-1$
 
-    public static final String XML_ATTR_LOCALE = "locale"; //$NON-NLS-1$
+    String XML_ATTR_LOCALE = "locale"; //$NON-NLS-1$
 
     /**
      * The name of the attribute for the default locale. Although this class does not support a
@@ -42,9 +42,9 @@ public interface IInternationalString extends XmlSupport, Comparable<IInternatio
      * 
      * @see InternationalString
      */
-    public static final String XML_ATTR_DEFAULT_LOCALE = "defaultLocale"; //$NON-NLS-1$
+    String XML_ATTR_DEFAULT_LOCALE = "defaultLocale"; //$NON-NLS-1$
 
-    public static final String XML_ATTR_TEXT = "text"; //$NON-NLS-1$
+    String XML_ATTR_TEXT = "text"; //$NON-NLS-1$
 
     /**
      * Getting the {@link LocalizedString} for the specified locale. Returns a new
@@ -53,7 +53,7 @@ public interface IInternationalString extends XmlSupport, Comparable<IInternatio
      * 
      * @param locale the locale of the text you want to get
      * @return return the text for the specified locale or an empty {@link LocalizedString} if no
-     *         such text exists
+     *             such text exists
      * @see #hasValueFor(Locale)
      */
     LocalizedString get(Locale locale);
@@ -72,7 +72,7 @@ public interface IInternationalString extends XmlSupport, Comparable<IInternatio
      * Getting all {@link LocalizedString} stored in this {@link IInternationalString}
      * 
      * @return a collection of {@link LocalizedString} that is stored in this
-     *         {@link IInternationalString}
+     *             {@link IInternationalString}
      */
     Collection<LocalizedString> values();
 

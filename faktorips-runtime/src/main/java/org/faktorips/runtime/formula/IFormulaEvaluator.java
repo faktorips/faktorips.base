@@ -26,7 +26,7 @@ public interface IFormulaEvaluator {
     /**
      * Returns the product component generation or product component this is an evaluator for.
      */
-    public Object getObject();
+    Object getObject();
 
     /**
      * Evaluates the formula with the given name and the specified parameters.
@@ -35,14 +35,14 @@ public interface IFormulaEvaluator {
      * @param parameters the parameters the formula requires when being evaluated
      * @return the result of the evaluated formula
      */
-    public Object evaluate(String formularName, Object... parameters);
+    Object evaluate(String formularName, Object... parameters);
 
     /**
      * Returns a defensive copy of the map of expressions/formulas held by this evaluator.
      * 
      * @return a map containing the expressions (with their names as keys) held by this formula
-     *         evaluator
+     *             evaluator
      */
-    public Map<String, String> getNameToExpressionMap();
+    Map<String, String> getNameToExpressionMap();
 
 }

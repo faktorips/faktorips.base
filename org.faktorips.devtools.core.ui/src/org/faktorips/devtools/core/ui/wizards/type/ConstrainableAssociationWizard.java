@@ -27,7 +27,7 @@ public class ConstrainableAssociationWizard extends Wizard {
 
     public ConstrainableAssociationWizard(ConstrainableAssociationPmo pmo) {
         super();
-        this.setWindowTitle(Messages.ConstrainableAssociationWizard_title);
+        setWindowTitle(Messages.ConstrainableAssociationWizard_title);
         this.pmo = pmo;
     }
 

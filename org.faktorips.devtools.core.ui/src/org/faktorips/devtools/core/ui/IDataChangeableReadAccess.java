@@ -22,6 +22,6 @@ public interface IDataChangeableReadAccess {
      * Returns <code>true</code> if the data shown in this user interface component can be changed,
      * otherwise <code>false</code>.
      */
-    public boolean isDataChangeable();
+    boolean isDataChangeable();
 
 }

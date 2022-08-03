@@ -15,6 +15,6 @@ import org.eclipse.jdt.core.IType;
 
 public interface IGeneratedJavaElement {
 
-    public abstract IJavaElement getJavaElement(IType javaType);
+    IJavaElement getJavaElement(IType javaType);
 
 }

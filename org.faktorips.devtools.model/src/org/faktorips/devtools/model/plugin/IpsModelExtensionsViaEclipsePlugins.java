@@ -97,7 +97,7 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
      * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      *
      * @see IpsModelExtensionsViaEclipsePlugins#get IpsModelExtensionsViaEclipsePlugins#get for the
-     *      singleton instance initialized from the Eclipse {@link Platform}.
+     *          singleton instance initialized from the Eclipse {@link Platform}.
      */
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaEclipsePlugins(IExtensionRegistry extensionRegistry) {

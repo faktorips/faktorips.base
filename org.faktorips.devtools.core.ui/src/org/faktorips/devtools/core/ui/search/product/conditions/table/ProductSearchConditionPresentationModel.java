@@ -59,8 +59,8 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
 
     public ProductSearchConditionPresentationModel(ProductSearchPresentationModel parentSearchPresentationModel) {
         this.parentSearchPresentationModel = parentSearchPresentationModel;
-        this.searchableElements = Collections.emptyList();
-        this.operatorTypes = Collections.emptyList();
+        searchableElements = Collections.emptyList();
+        operatorTypes = Collections.emptyList();
 
         List<IConditionType> conditionsWithSearchableElements = getConditionsWithSearchableElements();
         if (!conditionsWithSearchableElements.isEmpty()) {

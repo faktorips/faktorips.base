@@ -419,15 +419,7 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
             return true;
         }
 
-        if (!validateTargetName()) {
-            return false;
-        }
-
-        if (!validateTargetPackageFragment()) {
-            return false;
-        }
-
-        if (!validateTargetExists()) {
+        if (!validateTargetName() || !validateTargetPackageFragment() || !validateTargetExists()) {
             return false;
         }
 

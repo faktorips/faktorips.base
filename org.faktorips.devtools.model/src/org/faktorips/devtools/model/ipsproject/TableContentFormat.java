@@ -25,7 +25,7 @@ public enum TableContentFormat {
 
     private final String id;
 
-    private TableContentFormat(String id) {
+    TableContentFormat(String id) {
         this.id = id;
     }
 

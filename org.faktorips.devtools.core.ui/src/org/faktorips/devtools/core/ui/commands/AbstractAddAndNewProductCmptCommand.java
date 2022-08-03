@@ -67,8 +67,7 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
 
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
 
-        IProductCmptType productCmptType = null;
-        productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
+        IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
         if (productCmptType == null) {
             return false;
         }

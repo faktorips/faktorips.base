@@ -110,8 +110,8 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         if (element.hasAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)) {
-            formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
-                    .booleanValue();
+            formulaSignatureDefinition = Boolean
+                    .parseBoolean(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION));
         }
         overloadsFormula = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_OVERLOADS_FORMULA);
         formulaName = XmlUtil.getAttributeOrEmptyString(element, PROPERTY_FORMULA_NAME);
@@ -119,7 +119,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
-        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
+        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.parseBoolean(mandatoryXml);
     }
 
     @Override
@@ -287,7 +287,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     public void setFormulaName(String newFormulaName) {
         String oldFormulaName = getFormulaName();
-        this.formulaName = newFormulaName;
+        formulaName = newFormulaName;
         valueChanged(oldFormulaName, formulaName, PROPERTY_FORMULA_NAME);
     }
 

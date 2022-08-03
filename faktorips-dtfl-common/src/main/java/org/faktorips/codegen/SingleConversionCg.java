@@ -17,10 +17,10 @@ import org.faktorips.datatype.Datatype;
  */
 public interface SingleConversionCg<T extends CodeFragment> {
 
-    public Datatype getFrom();
+    Datatype getFrom();
 
-    public Datatype getTo();
+    Datatype getTo();
 
-    public T getConversionCode(T fromValue);
+    T getConversionCode(T fromValue);
 
 }

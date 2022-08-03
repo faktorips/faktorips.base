@@ -158,7 +158,7 @@ public class Wrappers {
      * A {@link Supplier} that may throw a {@link CoreException}.
      */
     @FunctionalInterface
-    public static interface CoreExceptionThrowingSupplier<T> {
+    public interface CoreExceptionThrowingSupplier<T> {
 
         T get() throws CoreException;
     }
@@ -167,7 +167,7 @@ public class Wrappers {
      * A {@link Runnable} that may throw a {@link CoreException}.
      */
     @FunctionalInterface
-    public static interface CoreExceptionThrowingRunnable {
+    public interface CoreExceptionThrowingRunnable {
 
         void run() throws CoreException;
     }
@@ -199,9 +199,7 @@ public class Wrappers {
             synchronized (abstractions) {
                 for (AAbstraction abstraction : abstractions) {
                     if (abstractionClass.isInstance(abstraction)) {
-                        @SuppressWarnings("unchecked")
-                        A wrapper = (A)abstraction;
-                        return wrapper;
+                        return castAbstraction(abstraction);
                     }
                 }
                 A wrapper = wrapInternal(original, abstractionClass);
@@ -210,15 +208,23 @@ public class Wrappers {
             }
         }
 
+        @SuppressWarnings("unchecked")
+        private <A extends AAbstraction> A castAbstraction(AAbstraction abstraction) {
+            return (A)abstraction;
+        }
+
         /**
          * Wraps the implementation-specific object-array in {@link AWrapper a wrapper-array}
          * implementing the given {@link AAbstraction abstraction}.
          */
         public <A extends AAbstraction> A[] asArrayOf(Class<A> abstraction) {
-            @SuppressWarnings("unchecked")
-            A[] wrapperArray = Arrays.stream((Object[])original).map(o -> Wrappers.wrap(o).as(abstraction))
-                    .toArray(l -> (A[])Array.newInstance(abstraction, l));
-            return wrapperArray;
+            return Arrays.stream((Object[])original).map(o -> Wrappers.wrap(o).as(abstraction))
+                    .toArray(l -> newArray(abstraction, l));
+        }
+
+        @SuppressWarnings("unchecked")
+        private <A extends AAbstraction> A[] newArray(Class<A> abstraction, int l) {
+            return (A[])Array.newInstance(abstraction, l);
         }
 
         /**

@@ -42,96 +42,96 @@ public interface Datatype extends Comparable<Datatype> {
     /**
      * Datatype representing {@link java.lang.Void}.
      */
-    public static final Void VOID = new Void();
+    Void VOID = new Void();
 
     /**
      * Datatype representing {@link java.lang.Boolean}.
      */
-    public static final BooleanDatatype BOOLEAN = new BooleanDatatype();
+    BooleanDatatype BOOLEAN = new BooleanDatatype();
 
     /**
      * Datatype representing {@link Decimal}.
      */
-    public static final DecimalDatatype DECIMAL = new DecimalDatatype();
+    DecimalDatatype DECIMAL = new DecimalDatatype();
 
     /**
      * Datatype representing {@link BigDecimal}.
      */
-    public static final BigDecimalDatatype BIG_DECIMAL = new BigDecimalDatatype();
+    BigDecimalDatatype BIG_DECIMAL = new BigDecimalDatatype();
 
     /**
      * Datatype representing {@link java.lang.Double}.
      */
-    public static final DoubleDatatype DOUBLE = new DoubleDatatype();
+    DoubleDatatype DOUBLE = new DoubleDatatype();
 
     /**
      * Datatype representing {@link Integer}.
      */
-    public static final IntegerDatatype INTEGER = new IntegerDatatype();
+    IntegerDatatype INTEGER = new IntegerDatatype();
 
     /**
      * Datatype representing {@link Long}.
      */
-    public static final LongDatatype LONG = new LongDatatype();
+    LongDatatype LONG = new LongDatatype();
 
     /**
      * Datatype representing {@link Money}.
      */
-    public static final MoneyDatatype MONEY = new MoneyDatatype();
+    MoneyDatatype MONEY = new MoneyDatatype();
 
     /**
      * Datatype representing the primitive {@code boolean}.
      */
-    public static final PrimitiveBooleanDatatype PRIMITIVE_BOOLEAN = new PrimitiveBooleanDatatype();
+    PrimitiveBooleanDatatype PRIMITIVE_BOOLEAN = new PrimitiveBooleanDatatype();
 
     /**
      * Datatype representing the primitive {@code int}.
      */
-    public static final PrimitiveIntegerDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
+    PrimitiveIntegerDatatype PRIMITIVE_INT = new PrimitiveIntegerDatatype();
 
     /**
      * Datatype representing the primitive {@code long}.
      */
-    public static final PrimitiveLongDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
+    PrimitiveLongDatatype PRIMITIVE_LONG = new PrimitiveLongDatatype();
 
     /**
      * Datatype representing {@code java.lang.String}
      */
-    public static final StringDatatype STRING = new StringDatatype();
+    StringDatatype STRING = new StringDatatype();
 
     /**
      * Datatype representing {@link java.util.GregorianCalendar}. Note that in Faktor-IPS values of
      * that datatype only contain the information about the date, not the time.
      */
-    public static final GregorianCalendarAsDateDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
+    GregorianCalendarAsDateDatatype GREGORIAN_CALENDAR = new GregorianCalendarAsDateDatatype();
 
     /**
      * Returns the datatype's name.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the datatype's qualified name.
      * <p>
      * The qualified name identifies the datatype.
      */
-    public String getQualifiedName();
+    String getQualifiedName();
 
     /**
      * Returns {@code true} if this is the Datatype {@link Void}, otherwise {@code false}.
      */
-    public boolean isVoid();
+    boolean isVoid();
 
     /**
      * Returns {@code true} if this datatype represents one of Java's primitive types.
      */
-    public boolean isPrimitive();
+    boolean isPrimitive();
 
     /**
      * Returns {@code true} if this datatype is an abstract datatype in means of the object oriented
      * paradigm.
      */
-    public boolean isAbstract();
+    boolean isAbstract();
 
     /**
      * Returns {@code true} if this datatype represents values.
@@ -139,13 +139,13 @@ public interface Datatype extends Comparable<Datatype> {
      * If the method returns {@code true}, the datatype can be safely casted to
      * {@code ValueDatatype}.
      */
-    public boolean isValueDatatype();
+    boolean isValueDatatype();
 
     /**
      * Returns {@code true} if this value datatype is an enum datatype. In this case the instance
      * can be cast to {@link EnumDatatype}. Returns {@code false} otherwise.
      */
-    public boolean isEnum();
+    boolean isEnum();
 
     /**
      * Returns {@code true} if the datatype has a special instance representing {@code null},
@@ -153,6 +153,6 @@ public interface Datatype extends Comparable<Datatype> {
      *
      * @see NullObject
      */
-    public boolean hasNullObject();
+    boolean hasNullObject();
 
 }

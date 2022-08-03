@@ -42,6 +42,6 @@ public interface IExpressionDependencyDetail extends IDependencyDetail {
      * 
      * @param textRegion A text region that points to a position within the expression text
      */
-    public void addTextRegion(TextRegion textRegion);
+    void addTextRegion(TextRegion textRegion);
 
 }

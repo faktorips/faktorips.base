@@ -32,12 +32,12 @@ public interface IIpsArtefactBuilder {
     /**
      * Returns the builder's name.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the builder set this builder belongs to.
      */
-    public IIpsArtefactBuilderSet getBuilderSet();
+    IIpsArtefactBuilderSet getBuilderSet();
 
     /**
      * Is called on every registered IpsArtefactBuilder before a build process starts.
@@ -49,7 +49,7 @@ public interface IIpsArtefactBuilder {
      *             CoreException or RuntimeException will stop the current build cycle of this
      *             builder.
      */
-    public void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
+    void beforeBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
 
     /**
      * Is called on every registered IpsArtefactBuilder after a build process has finished.
@@ -59,7 +59,7 @@ public interface IIpsArtefactBuilder {
      * 
      * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
+    void afterBuildProcess(IIpsProject ipsProject, ABuildKind buildKind) throws IpsException;
 
     /**
      * Is called directly before the build method is called if the isBuilderFor method has returned
@@ -78,7 +78,7 @@ public interface IIpsArtefactBuilder {
      *             a dialog at the end of the build routine. In addition the exception will be
      *             logged to the eclipse log file.
      */
-    public void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws IpsException;
+    void beforeBuild(IIpsSrcFile ipsSrcFile, MultiStatus status) throws IpsException;
 
     /**
      * Is called directly after the build method has finished only if the isBuilderFor method has
@@ -90,7 +90,7 @@ public interface IIpsArtefactBuilder {
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
      */
-    public void afterBuild(IIpsSrcFile ipsSrcFile) throws IpsException;
+    void afterBuild(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Is called during full or incremental build if the isBuilderFor method has returned true for
@@ -104,14 +104,14 @@ public interface IIpsArtefactBuilder {
      *             a dialog at the end of the build routine. In addition the exception will be
      *             logged to the eclipse log file.
      */
-    public void build(IIpsSrcFile ipsSrcFile) throws IpsException;
+    void build(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Is supposed to return <code>true</code> if this builder is a builder for the provided
      * <code>IIpsSrcFile</code>.
      */
     // TODO AW: This method does not need to - and should not - throw a checked exception.
-    public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws IpsException;
+    boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**
      * Indicates if the builder generates files that are considered derived. This means that the
@@ -120,16 +120,16 @@ public interface IIpsArtefactBuilder {
      * artifact is put is defined in the IpsObjectPath or alternatively in the IpsSrcFolderEntry of
      * an IpsObjectPath.
      */
-    public boolean buildsDerivedArtefacts();
+    boolean buildsDerivedArtefacts();
 
     /**
      * Indicates if the builder generates files that are considered internal. Internal files are
      * generated in internal packages.
      * 
      * @return <code>true</code> if this builder generates internal artifacts <code>false</code> for
-     *         published artifacts
+     *             published artifacts
      */
-    public boolean isBuildingInternalArtifacts();
+    boolean isBuildingInternalArtifacts();
 
     /**
      * Deletes the artifact that is created by this builder upon the provided IpsSrcFile.
@@ -139,5 +139,5 @@ public interface IIpsArtefactBuilder {
      *             exception will be reported to the used by means of a dialog at the end of the
      *             build routine. In addition the exception will be logged to the eclipse log file.
      */
-    public void delete(IIpsSrcFile ipsSrcFile) throws IpsException;
+    void delete(IIpsSrcFile ipsSrcFile) throws IpsException;
 }

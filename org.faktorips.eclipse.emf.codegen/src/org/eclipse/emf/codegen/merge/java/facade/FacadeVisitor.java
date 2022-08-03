@@ -18,7 +18,7 @@ public class FacadeVisitor {
     protected JNode rootNode;
 
     public void start(JNode node) {
-        this.rootNode = node;
+        rootNode = node;
         visit(getRootNode());
     }
 

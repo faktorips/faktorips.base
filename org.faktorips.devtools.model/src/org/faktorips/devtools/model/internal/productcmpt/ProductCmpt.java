@@ -102,7 +102,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
-        this.ipsObjectType = file.getIpsObjectType();
+        ipsObjectType = file.getIpsObjectType();
     }
 
     public ProductCmpt() {
@@ -187,7 +187,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             resetTemplateStatus();
         }
         String oldTemplate = template;
-        this.template = newTemplate;
+        template = newTemplate;
         valueChanged(oldTemplate, template, IProductCmpt.PROPERTY_TEMPLATE);
     }
 
@@ -225,10 +225,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
         IProductCmptType type = ProductCmptValidations.validateProductCmptType(this, productCmptType, list, ipsProject);
-        if (type == null) {
-            return;
-        }
-        if (!validateTypeHierarchy(list, ipsProject, type)) {
+        if ((type == null) || !validateTypeHierarchy(list, ipsProject, type)) {
             return;
         }
         validateUniqueVersionIdKindId(list, ipsProject);

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.table;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -22,7 +23,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.table.XTableRow;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.template.TableRowTmpl;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class TableRowBuilder extends XtendBuilder<XTableRow> {
 

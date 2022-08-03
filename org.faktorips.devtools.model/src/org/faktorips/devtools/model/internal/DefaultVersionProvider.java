@@ -36,7 +36,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
 
     public DefaultVersionProvider(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
-        this.versionFormat = createVersionFormat();
+        versionFormat = createVersionFormat();
     }
 
     public DefaultVersionProvider(IIpsProject ipsProject, IVersionFormat versionFormat) {

@@ -43,7 +43,7 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
      * @param initialCapacityForEnumContentByClassName not used anymore!
      * 
      * @deprecated Use the default constructor and set the cache size by calling
-     *             {@link #setInitialSize(Class, int)} instead
+     *                 {@link #setInitialSize(Class, int)} instead
      */
     @Deprecated
     public DefaultCacheFactory(ClassLoader cl, int initialCapacityForProductCmpts,
@@ -72,8 +72,7 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
     }
 
     protected int getInitialSize(Class<?> typeClass) {
-        Integer initSize = initialSizeMap.getOrDefault(typeClass, defaultInitialSize);
-        return initSize;
+        return initialSizeMap.getOrDefault(typeClass, defaultInitialSize);
     }
 
     @Override

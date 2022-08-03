@@ -18,7 +18,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Checks whether a {@link MessageList} is empty.
  * 
  * @deprecated since 21.12. Use {@link org.faktorips.testsupport.matchers.MessageListSizeMatcher}
- *             instead.
+ *                 instead.
  */
 @Deprecated
 public class MessageListSizeMatcher extends TypeSafeMatcher<MessageList> {

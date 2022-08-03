@@ -49,7 +49,7 @@ public class MessageLists {
      * 
      * @param ml a {@code MessageList}, may be {@code null}
      * @return the given {@code MessageList} if it is not {@code null} or a new empty
-     *         {@code MessageList} if it is
+     *             {@code MessageList} if it is
      */
     public static final MessageList orEmptyMessageList(MessageList ml) {
         if (ml == null) {
@@ -66,7 +66,7 @@ public class MessageLists {
      * 
      * @param unsortedMessageList a {@code MessageList} that may be {@code null}
      * @return a new {@code MessageList} containing the same messages as the given list, sorted by
-     *         descending {@code Severity}
+     *             descending {@code Severity}
      */
     public static final MessageList sortBySeverity(MessageList unsortedMessageList) {
         if (unsortedMessageList == null) {
@@ -86,7 +86,7 @@ public class MessageLists {
      * @param ml a {@code MessageList} that may be {@code null}
      * @param predicate a predicate to filter messages with
      * @return a new {@code MessageList} all messages from the given list that satisfy the given
-     *         predicate
+     *             predicate
      */
     public static final MessageList filtered(MessageList ml, Predicate<Message> predicate) {
         if (ml == null) {
@@ -102,7 +102,7 @@ public class MessageLists {
      * collect} a {@code Stream} of {@link MessageList MessageLists} into a new {@code MessageList}.
      * 
      * @return a {@code Collector} that collects {@link MessageList MessageLists} into a new
-     *         {@code MessageList}
+     *             {@code MessageList}
      */
     public static final Collector<MessageList, ?, MessageList> flatten() {
         return new MessageListCollector();
@@ -127,7 +127,7 @@ public class MessageLists {
      * @param messageLists the {@code MessageLists} that the new {@code MessageList} will join. May
      *            be {@code null}
      * @return a new {@code MessageList} that contains all messages of the given
-     *         {@code MessageLists}
+     *             {@code MessageLists}
      */
     public static final MessageList join(MessageList... messageLists) {
         if (messageLists == null) {

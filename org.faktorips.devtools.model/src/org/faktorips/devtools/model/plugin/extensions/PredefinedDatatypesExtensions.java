@@ -15,6 +15,7 @@ import static java.util.function.Predicate.not;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Predicate;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -76,7 +77,7 @@ public class PredefinedDatatypesExtensions extends
             Predicate<String> namespaceFilter) {
         datatypesByConfigElement.entrySet().stream()
                 .filter(e -> namespaceFilter.test(((IExtension)e.getKey().getParent()).getNamespaceIdentifier()))
-                .map(e -> e.getValue())
+                .map(Entry::getValue)
                 .forEach(d -> datatypesByQualifiedName.put(d.getQualifiedName(), d));
     }
 

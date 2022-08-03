@@ -154,7 +154,7 @@ public class EnumType extends ModelElement {
     }
 
     @FunctionalInterface
-    private static interface AttributeMatcher {
+    private interface AttributeMatcher {
         boolean matches(EnumAttribute attributeModel);
     }
 

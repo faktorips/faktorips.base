@@ -67,7 +67,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
 
         public MessageKey(String key, String ipsObjectQName, IpsObjectType type) {
             this.key = key;
-            this.ipsObjectQname = ipsObjectQName;
+            ipsObjectQname = ipsObjectQName;
             this.type = type;
         }
 
@@ -102,10 +102,7 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((key == null) ? 0 : key.hashCode());
-            return result;
+            return Objects.hash(key);
         }
 
         @Override
@@ -113,14 +110,11 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             MessageKey other = (MessageKey)obj;
-            return Objects.equals(this.key, other.key);
+            return Objects.equals(key, other.key);
         }
 
         @Override

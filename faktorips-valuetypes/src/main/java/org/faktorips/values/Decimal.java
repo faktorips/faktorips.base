@@ -509,8 +509,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @param scale scale of the Decimal value to be returned.
      * @param roundingMode The rounding mode to apply.
      * @return a Decimal whose scale is the specified value, and whose unscaled value is determined
-     *         by multiplying or dividing this Decimal's unscaled value by the appropriate power of
-     *         ten to maintain its overall value.
+     *             by multiplying or dividing this Decimal's unscaled value by the appropriate power
+     *             of ten to maintain its overall value.
      * @throws ArithmeticException <code>scale</code> is negative, or
      *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scaling operation
      *             would require rounding.
@@ -548,8 +548,8 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * 
      * @param roundingMode The rounding mode to apply.
      * @return a Decimal whose scale is the specified value, and whose unscaled value is determined
-     *         by multiplying or dividing this Decimal's unscaled value by the appropriate power of
-     *         ten to maintain its overall value.
+     *             by multiplying or dividing this Decimal's unscaled value by the appropriate power
+     *             of ten to maintain its overall value.
      * @throws ArithmeticException <code>scale</code> is negative, or
      *             <code>roundingMode==ROUND_UNNECESSARY</code> and the specified scaling operation
      *             would require rounding.

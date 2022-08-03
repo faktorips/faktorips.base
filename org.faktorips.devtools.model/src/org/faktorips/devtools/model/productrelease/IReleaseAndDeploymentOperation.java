@@ -32,7 +32,7 @@ public interface IReleaseAndDeploymentOperation {
      * 
      * @return A List of available target systems
      */
-    public List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject);
+    List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject);
 
     /**
      * Returns a list of resources that have to be commited when the release operation commits the
@@ -42,7 +42,7 @@ public interface IReleaseAndDeploymentOperation {
      * 
      * @return List of files to commit
      */
-    public List<IFile> additionalResourcesToCommit(IIpsProject ipsProject);
+    List<IFile> additionalResourcesToCommit(IIpsProject ipsProject);
 
     /**
      * This method is called by the release build processor just before committing changed files.
@@ -55,7 +55,7 @@ public interface IReleaseAndDeploymentOperation {
      * @deprecated Since 3.7 use {@link #preCommit(IIpsProject, IProgressMonitor)} instead
      */
     @Deprecated
-    public boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor);
+    boolean customReleaseSettings(IIpsProject ipsProject, IProgressMonitor progressMonitor);
 
     /**
      * This method is called by the release build processor just before committing changed files.
@@ -65,7 +65,7 @@ public interface IReleaseAndDeploymentOperation {
      * @param progressMonitor a {@link IProgressMonitor} to view sate of work
      * @return true when everything was right, false to stop the release process
      */
-    public boolean preCommit(IIpsProject ipsProject, IProgressMonitor progressMonitor);
+    boolean preCommit(IIpsProject ipsProject, IProgressMonitor progressMonitor);
 
     /**
      * Customize the tag name for the new version. This hook is called directly before tagging the
@@ -75,7 +75,7 @@ public interface IReleaseAndDeploymentOperation {
      * @param ipsProject The project that will be deployed
      * @return The comment that should be used for tagging the source control
      */
-    public String getTagName(String version, IIpsProject ipsProject);
+    String getTagName(String version, IIpsProject ipsProject);
 
     /**
      * This method should start the deployment on the selected target system. If this method does
@@ -89,7 +89,7 @@ public interface IReleaseAndDeploymentOperation {
      * @param progressMonitor the progress monitor to indicate the progress
      * @return true if the deployment is ok
      */
-    public boolean buildReleaseAndDeployment(IIpsProject ipsProject,
+    boolean buildReleaseAndDeployment(IIpsProject ipsProject,
             String tag,
             List<ITargetSystem> selectedTargetSystems,
             IProgressMonitor progressMonitor);
@@ -100,6 +100,6 @@ public interface IReleaseAndDeploymentOperation {
      * @see ObservableProgressMessages
      * 
      */
-    public void setObservableProgressMessages(ObservableProgressMessages observableProgressMessages);
+    void setObservableProgressMessages(ObservableProgressMessages observableProgressMessages);
 
 }

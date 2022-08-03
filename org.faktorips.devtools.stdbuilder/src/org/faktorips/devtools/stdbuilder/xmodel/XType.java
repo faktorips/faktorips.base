@@ -86,8 +86,7 @@ public abstract class XType extends XClass {
         if (superType == null) {
             throw new NullPointerException("Found no supertype for " + getName());
         }
-        XType xSuperType = getModelNode(superType, getClass());
-        return xSuperType;
+        return getModelNode(superType, getClass());
     }
 
     public String getSuperclassName() {
@@ -130,8 +129,7 @@ public abstract class XType extends XClass {
 
     @Override
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
-        LinkedHashSet<String> list = new LinkedHashSet<>();
-        return list;
+        return new LinkedHashSet<>();
     }
 
     @Override

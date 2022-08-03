@@ -24,7 +24,7 @@ import org.junit.Test;
 public class FunctionSignatureImplTest {
     @Test
     public void testMatch() {
-        Datatype[] argList = new Datatype[] { Datatype.DECIMAL, Datatype.MONEY };
+        Datatype[] argList = { Datatype.DECIMAL, Datatype.MONEY };
         FunctionSignatureImpl fct1 = new FunctionSignatureImpl("Function1", Datatype.DECIMAL, argList);
 
         // different name

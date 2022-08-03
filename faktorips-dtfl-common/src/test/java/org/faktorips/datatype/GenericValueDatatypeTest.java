@@ -351,7 +351,7 @@ public class GenericValueDatatypeTest {
         datatype.compare("5", "0"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    private class InvalidType extends GenericValueDatatype {
+    private static class InvalidType extends GenericValueDatatype {
 
         @Override
         public Class<?> getAdaptedClass() {

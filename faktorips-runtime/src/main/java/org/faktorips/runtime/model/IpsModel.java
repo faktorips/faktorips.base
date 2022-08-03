@@ -89,7 +89,7 @@ public enum IpsModel {
     /**
      * @param tableObjectClass a generated subclass of {@link ITable}
      * @return a {@link TableStructure} describing the type and columns of the given {@link ITable}
-     *         class
+     *             class
      */
     public static TableStructure getTableStructure(Class<? extends ITable<?>> tableObjectClass) {
         return get(TABLE_MODEL_CACHE, tableObjectClass);
@@ -171,8 +171,8 @@ public enum IpsModel {
 
     /**
      * @return the model object for the given policy or product model class. This is either the
-     *         implementation or the published interface of a product component type or policy
-     *         component type.
+     *             implementation or the published interface of a product component type or policy
+     *             component type.
      * @throws IllegalArgumentException if the given class is not properly annotated for a model
      *             type
      */

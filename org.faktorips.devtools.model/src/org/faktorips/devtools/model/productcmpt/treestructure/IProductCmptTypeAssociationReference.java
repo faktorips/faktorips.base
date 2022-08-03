@@ -23,6 +23,6 @@ public interface IProductCmptTypeAssociationReference extends IProductCmptStruct
     /**
      * Returns the <code>IProductCmptTypeAssociation</code> this reference refers to.
      */
-    public IProductCmptTypeAssociation getAssociation();
+    IProductCmptTypeAssociation getAssociation();
 
 }

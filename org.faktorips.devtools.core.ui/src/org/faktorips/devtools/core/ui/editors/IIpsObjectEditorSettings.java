@@ -32,20 +32,20 @@ public interface IIpsObjectEditorSettings {
      * @throws IllegalArgumentException if the key contains a space.
      * @see #remove(IIpsSrcFile, String)
      */
-    public void put(IIpsSrcFile file, String key, String value);
+    void put(IIpsSrcFile file, String key, String value);
 
     /**
      * Put for boolean.
      * 
      * @see #put(IIpsSrcFile, String, String)
      */
-    public void put(IIpsSrcFile file, String key, boolean value);
+    void put(IIpsSrcFile file, String key, boolean value);
 
     /**
      * Returns the value for the given ips source file and key. Returns <code>null</code> if no
      * value is found the file or key.
      */
-    public String get(IIpsSrcFile file, String key);
+    String get(IIpsSrcFile file, String key);
 
     /**
      * Returns the boolean value for the given ips source file and key. Returns <code>false</code>
@@ -53,17 +53,17 @@ public interface IIpsObjectEditorSettings {
      * 
      * @see #get(IIpsSrcFile, String)
      */
-    public boolean getBoolean(IIpsSrcFile file, String key);
+    boolean getBoolean(IIpsSrcFile file, String key);
 
     /**
      * Removes all key/value pairs for the given file. Does nothing if the file is <code>null</code>
      * .
      */
-    public void remove(IIpsSrcFile file);
+    void remove(IIpsSrcFile file);
 
     /**
      * Removes the key/value pair for the given file and key. Does nothing if file or key is
      * <code>null</code>.
      */
-    public void remove(IIpsSrcFile file, String key);
+    void remove(IIpsSrcFile file, String key);
 }

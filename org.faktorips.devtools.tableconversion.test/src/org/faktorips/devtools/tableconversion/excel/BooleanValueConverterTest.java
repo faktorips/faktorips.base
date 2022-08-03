@@ -49,7 +49,7 @@ public class BooleanValueConverterTest {
 
         value = converter.getIpsValue("3", ml);
         assertFalse(ml.isEmpty());
-        assertEquals(value, Integer.valueOf(3).toString());
+        assertEquals(value, Integer.toString(3));
 
         ml.clear();
 
@@ -63,7 +63,7 @@ public class BooleanValueConverterTest {
 
         value = converter.getIpsValue(3, ml);
         assertFalse(ml.isEmpty());
-        assertEquals(value, Integer.valueOf(3).toString());
+        assertEquals(value, Integer.toString(3));
 
         ml.clear();
 

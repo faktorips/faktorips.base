@@ -183,14 +183,11 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             @Override
             public String getText(Object element) {
                 String text = ""; //$NON-NLS-1$
-                if (element instanceof IIpsPackageFragment) {
-                    if (((IIpsPackageFragment)element).isDefaultPackage()) {
-                        text = super.getText(element);
-                    } else {
-                        text = ((IIpsPackageFragment)element).getName();
-                    }
-                } else {
+                if (!(element instanceof IIpsPackageFragment)
+                        || ((IIpsPackageFragment)element).isDefaultPackage()) {
                     text = super.getText(element);
+                } else {
+                    text = ((IIpsPackageFragment)element).getName();
                 }
                 return text;
             }

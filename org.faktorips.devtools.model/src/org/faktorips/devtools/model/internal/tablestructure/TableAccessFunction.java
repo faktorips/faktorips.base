@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ObjectUtils;
+import com.google.common.base.Objects;
+
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IIndex;
@@ -100,8 +101,7 @@ public class TableAccessFunction implements ITableAccessFunction {
         result = prime * result + ((column == null) ? 0 : column.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((tableStructure == null) ? 0 : tableStructure.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+        return prime * result + ((type == null) ? 0 : type.hashCode());
     }
 
     @Override
@@ -109,29 +109,15 @@ public class TableAccessFunction implements ITableAccessFunction {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         TableAccessFunction other = (TableAccessFunction)obj;
-        if (!argTypeNames.equals(other.argTypeNames)) {
-            return false;
-        }
-        if (!column.equals(other.column)) {
-            return false;
-        }
-        if (!description.equals(other.description)) {
-            return false;
-        }
-        if (ObjectUtils.notEqual(tableStructure, tableStructure)) {
-            return false;
-        }
-        if (ObjectUtils.notEqual(type, other.type)) {
-            return false;
-        }
-        return true;
+        return Objects.equal(argTypeNames, other.argTypeNames)
+                && Objects.equal(column, other.column)
+                && Objects.equal(description, other.description)
+                && Objects.equal(tableStructure, other.tableStructure)
+                && Objects.equal(type, other.type);
     }
 
 }

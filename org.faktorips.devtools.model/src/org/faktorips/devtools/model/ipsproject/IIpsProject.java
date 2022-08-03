@@ -58,113 +58,113 @@ public interface IIpsProject extends IIpsElement {
     /**
      * The id of the Faktor-IPS project nature.
      */
-    public static final String NATURE_ID = IpsModelActivator.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
+    String NATURE_ID = IpsModelActivator.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the project's property file is missing.
      */
-    public static final String MSGCODE_MISSING_PROPERTY_FILE = MSGCODE_PREFIX + "MissingPropertyFile"; //$NON-NLS-1$
+    String MSGCODE_MISSING_PROPERTY_FILE = MSGCODE_PREFIX + "MissingPropertyFile"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the project's property file's contents is not
      * parsable.
      */
-    public static final String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
+    String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate a xsd schema validation error.
      */
-    public static final String MSGCODE_XSD_VALIDATION_ERROR = MSGCODE_PREFIX + "XsdValidationError"; //$NON-NLS-1$
+    String MSGCODE_XSD_VALIDATION_ERROR = MSGCODE_PREFIX + "XsdValidationError"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate a xsd schema validation warning.
      */
-    public static final String MSGCODE_XSD_VALIDATION_WARNING = MSGCODE_PREFIX + "XsdValidationWarning"; //$NON-NLS-1$
+    String MSGCODE_XSD_VALIDATION_WARNING = MSGCODE_PREFIX + "XsdValidationWarning"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no version manager was installed for a required
      * feature.
      */
-    public static final String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
+    String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is too low.
      */
-    public static final String MSGCODE_VERSION_TOO_LOW = MSGCODE_PREFIX + "VersionTooLow"; //$NON-NLS-1$
+    String MSGCODE_VERSION_TOO_LOW = MSGCODE_PREFIX + "VersionTooLow"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is only
      * compatible
      */
-    public static final String MSGCODE_COMPATIBLE_VERSIONS = MSGCODE_PREFIX + "CompatibleVersions"; //$NON-NLS-1$
+    String MSGCODE_COMPATIBLE_VERSIONS = MSGCODE_PREFIX + "CompatibleVersions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is *not*
      * compatible.
      */
-    public static final String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
+    String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the migration information for this project for a
      * feature is invalid.
      */
-    public static final String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
+    String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding Java Project has build path
      * errors.
      */
-    public static final String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = MSGCODE_PREFIX
+    String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = MSGCODE_PREFIX
             + "JavaProjectHasBuildPathErrors"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the base package generated name is duplicated
      * specified in different projects.
      */
-    public static final String MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
             + "DuplicateTocFilePathInDifferentProjects"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is a cycle in the IPS object path.
      */
-    public static final String MSGCODE_CYCLE_IN_IPS_OBJECT_PATH = MSGCODE_PREFIX + "CycleInIpsObjectPath"; //$NON-NLS-1$
+    String MSGCODE_CYCLE_IN_IPS_OBJECT_PATH = MSGCODE_PREFIX + "CycleInIpsObjectPath"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exist two runtime ids which collide.
      */
-    public static final String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
+    String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
 
     /**
      * The file extension for IPS projects.
      */
-    public static final String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
+    String PROPERTY_FILE_EXTENSION = "ipsproject"; //$NON-NLS-1$
 
     /**
      * The file extension for IPS projects but with a dot added before.
      */
-    public static final String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
+    String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
 
     /**
      * Returns the corresponding platform project.
      */
-    public AProject getProject();
+    AProject getProject();
 
     /**
      * Returns the corresponding Java project.
      */
-    public AJavaProject getJavaProject();
+    AJavaProject getJavaProject();
 
     /**
      * Returns the Java naming convention that is used in this project.
      */
-    public IJavaNamingConvention getJavaNamingConvention();
+    IJavaNamingConvention getJavaNamingConvention();
 
-    public IClassLoaderProvider getClassLoaderProviderForJavaProject();
+    IClassLoaderProvider getClassLoaderProviderForJavaProject();
 
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
@@ -172,7 +172,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @see ClassLoader#getSystemClassLoader()
      */
-    public ClassLoader getClassLoaderForJavaProject();
+    ClassLoader getClassLoaderForJavaProject();
 
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
@@ -184,7 +184,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @since 3.1.0
      */
-    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent);
+    ClassLoader getClassLoaderForJavaProject(ClassLoader parent);
 
     /**
      * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that
@@ -198,7 +198,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @throws IpsException if an error occurs while checking the Java project.
      */
-    public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws IpsException;
+    Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws IpsException;
 
     /**
      * Returns all {@link IIpsProject IpsProjects} that are directly or indirectly referenced in the
@@ -206,7 +206,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @see IIpsObjectPath
      */
-    public List<IIpsProject> getAllReferencedIpsProjects();
+    List<IIpsProject> getAllReferencedIpsProjects();
 
     /**
      * Returns all direct {@link IIpsProject IIpsProjects} referenced in the project's
@@ -215,7 +215,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @see IIpsObjectPath
      */
-    public List<IIpsProject> getDirectlyReferencedIpsProjects();
+    List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
      * Returns <code>true</code> if this project is referenced by the other project. Returns
@@ -226,7 +226,7 @@ public interface IIpsProject extends IIpsElement {
      *            indirect references.
      * 
      */
-    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect);
+    boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect);
 
     /**
      * Returns all IPS projects that reference this one in their IPS object path.
@@ -234,7 +234,7 @@ public interface IIpsProject extends IIpsElement {
      * @param includeIndirect <code>true</code> if also indirect references should
      * 
      */
-    public IIpsProject[] findReferencingProjects(boolean includeIndirect);
+    IIpsProject[] findReferencingProjects(boolean includeIndirect);
 
     /**
      * Returns all {@link IIpsProject IIpsProjects} that reference this IPS project, excluding
@@ -260,9 +260,9 @@ public interface IIpsProject extends IIpsElement {
      * 
      * 
      * @return The IPS projects referencing this project excluding projects that are referenced by
-     *         another result
+     *             another result
      */
-    public IIpsProject[] findReferencingProjectLeavesOrSelf();
+    IIpsProject[] findReferencingProjectLeavesOrSelf();
 
     /**
      * Returns <code>true</code> if this project depends on the other project, because it is
@@ -272,7 +272,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @see IIpsObjectPath
      */
-    public boolean isReferencing(IIpsProject otherProject);
+    boolean isReferencing(IIpsProject otherProject);
 
     /**
      * This method returns the dependency graph for this project. The dependency graph is designed
@@ -285,14 +285,14 @@ public interface IIpsProject extends IIpsElement {
      * @return The {@link IDependencyGraph} for this project.
      * @see IDependencyGraph
      */
-    public IDependencyGraph getDependencyGraph();
+    IDependencyGraph getDependencyGraph();
 
     /**
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.
      * Returns <code>false</code> otherwise. E. g. if the project's properties file is missing the
      * project can't be build.
      */
-    public boolean canBeBuild();
+    boolean canBeBuild();
 
     /**
      * Returns the project's properties. Note that the method returns a copy of the properties, not
@@ -302,12 +302,12 @@ public interface IIpsProject extends IIpsElement {
      * Creating a copy of the project properties is costly. If read only access is required, use
      * {@link #getReadOnlyProperties()} instead.
      */
-    public IIpsProjectProperties getProperties();
+    IIpsProjectProperties getProperties();
 
     /**
      * Returns a read only copy of the project's properties.
      */
-    public IIpsProjectProperties getReadOnlyProperties();
+    IIpsProjectProperties getReadOnlyProperties();
 
     /**
      * Sets the project's properties and stores the properties in the project's property file
@@ -315,22 +315,22 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @throws IpsException if an error occurs while saving the properties to the file.
      */
-    public void setProperties(IIpsProjectProperties properties) throws IpsException;
+    void setProperties(IIpsProjectProperties properties) throws IpsException;
 
     /**
      * Returns the file that stores the project's properties. Note that the file need not exist.
      */
-    public AFile getIpsProjectPropertiesFile();
+    AFile getIpsProjectPropertiesFile();
 
     /**
      * Returns the char set / encoding in that the IIpsSrcFile contents is stored.
      */
-    public String getXmlFileCharset();
+    String getXmlFileCharset();
 
     /**
      * Returns the char set / encoding in that plain text files are stored.
      */
-    public String getPlainTextFileCharset();
+    String getPlainTextFileCharset();
 
     /**
      * Returns an {@link ExtendedExprCompiler} instance that is configured with the default set
@@ -338,14 +338,14 @@ public interface IIpsProject extends IIpsElement {
      * are also included.
      * 
      */
-    public ExtendedExprCompiler newExpressionCompiler();
+    ExtendedExprCompiler newExpressionCompiler();
 
     /**
      * Returns a copy of the project's object path. Note that a copy and not a reference is
      * returned. If you want to update the project's path, the updated object path has to b e
      * explicitly set on the project via the <code>setIpsObjectPath()</code> method.
      */
-    public IIpsObjectPath getIpsObjectPath();
+    IIpsObjectPath getIpsObjectPath();
 
     /**
      * Returns <code>true</code> if the given object is accessible via the project's object path,
@@ -362,52 +362,52 @@ public interface IIpsProject extends IIpsElement {
      * <p>
      * If the given ipsObject is <code>null</code>, the method returns <code>false</code>.
      */
-    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject);
+    boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject);
 
     /**
      * Returns all output folders specified in the project's object path.
      */
-    public AFolder[] getOutputFolders();
+    AFolder[] getOutputFolders();
 
     /**
      * Sets the new object path.
      */
-    public void setIpsObjectPath(IIpsObjectPath newPath) throws IpsException;
+    void setIpsObjectPath(IIpsObjectPath newPath) throws IpsException;
 
     /**
      * Returns the language in that the expression language's functions are used. E.g. the
      * <code>if</code> function is called IF in English, but WENN in German.
      */
-    public Locale getFormulaLanguageLocale();
+    Locale getFormulaLanguageLocale();
 
     /**
      * Returns the naming convention for changes over time used in the generated Java sourcecode.
      */
-    public IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
+    IChangesOverTimeNamingConvention getChangesInTimeNamingConventionForGeneratedCode();
 
     /**
      * Returns <code>true</code> if this project contains a model definition, otherwise
      * <code>false</code>.
      */
-    public boolean isModelProject();
+    boolean isModelProject();
 
     /**
      * Returns <code>true</code> if this project contains a product definition (that means it
      * contains product components), otherwise <code>false</code>.
      */
-    public boolean isProductDefinitionProject();
+    boolean isProductDefinitionProject();
 
     /**
      * Returns <code>true</code> if this is a project that supports persistence, otherwise
      * <code>false</code>. Persistent projects can store and retrieve policy component types to/from
      * a relational database.
      */
-    public boolean isPersistenceSupportEnabled();
+    boolean isPersistenceSupportEnabled();
 
     /**
      * Returns the root folder with the indicated name.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name);
+    IIpsPackageFragmentRoot getIpsPackageFragmentRoot(String name);
 
     /**
      * Returns the project's package fragment roots or an empty array if none is found.
@@ -420,7 +420,7 @@ public interface IIpsProject extends IIpsElement {
      * resolved.
      * 
      */
-    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots();
+    IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots();
 
     /**
      * Returns the project's package fragment roots or an empty array if none is found.
@@ -435,13 +435,13 @@ public interface IIpsProject extends IIpsElement {
      * The {@link IIpsPackageFragmentRoot package fragment roots} of referenced projects are not
      * resolved.
      */
-    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots(boolean resolveContainerEntries);
+    IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots(boolean resolveContainerEntries);
 
     /**
      * Searches and returns the root folder by the indicated name.<br>
      * Returns <code>null</code> if the root doesn't exists or an error occurs during search.
      */
-    public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name);
+    IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name);
 
     /**
      * Returns all <code>IResource</code> objects that do not correspond to
@@ -452,23 +452,23 @@ public interface IIpsProject extends IIpsElement {
      * to this <code>IIpsProject</code>. Both default output locations of the Java project and
      * output locations of class path entries are examined.
      */
-    public AResource[] getNonIpsResources() throws IpsException;
+    AResource[] getNonIpsResources() throws IpsException;
 
     /**
      * Returns the project's package fragment roots contains source code or an empty array if none
      * is found.
      */
-    public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots();
+    IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots();
 
     /**
      * Returns the first object with the indicated type and qualified name found on the object path.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
+    IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns the first object with the indicated qualified name type found on the object path.
      */
-    public IIpsObject findIpsObject(QualifiedNameType nameType);
+    IIpsObject findIpsObject(QualifiedNameType nameType);
 
     /**
      * Returns the first policy component type with the given qualified name found on the path.
@@ -476,12 +476,12 @@ public interface IIpsProject extends IIpsElement {
      * qualified name is <code>null</code>.
      * 
      */
-    public IPolicyCmptType findPolicyCmptType(String qualifiedName);
+    IPolicyCmptType findPolicyCmptType(String qualifiedName);
 
     /**
      * Returns the first product component type with the given qualified name found on the path.
      */
-    public IProductCmptType findProductCmptType(String qualifiedName);
+    IProductCmptType findProductCmptType(String qualifiedName);
 
     /**
      * Returns the product component with the given qualified name or <code>null</code> if no such
@@ -491,11 +491,11 @@ public interface IIpsProject extends IIpsElement {
      * @param qualifiedName The qualified name to find the product component for.
      * 
      * @return The first product component identified by the given qualified name that has been
-     *         found.
+     *             found.
      * 
      * @throws IpsException If an error occurs during the search.
      */
-    public IProductCmpt findProductCmpt(String qualifiedName) throws IpsException;
+    IProductCmpt findProductCmpt(String qualifiedName) throws IpsException;
 
     /**
      * Returns the product template with the given qualified name or <code>null</code> if no such
@@ -505,10 +505,10 @@ public interface IIpsProject extends IIpsElement {
      * @param qualifiedName The qualified name to find the product template for.
      * 
      * @return The first product component identified by the given qualified name that has been
-     *         found.
+     *             found.
      * 
      */
-    public IProductCmpt findProductTemplate(String qualifiedName);
+    IProductCmpt findProductTemplate(String qualifiedName);
 
     /**
      * Returns a collection of ipsSrcfiles containing product components with the given unqualified
@@ -518,7 +518,7 @@ public interface IIpsProject extends IIpsElement {
      *            for.
      * @return A collection containing ipsSrcfiles which names match the given unqualified name.
      */
-    public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName);
+    Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName);
 
     /**
      * Returns the enumeration type with the given qualified name or <code>null</code> if no such
@@ -528,17 +528,17 @@ public interface IIpsProject extends IIpsElement {
      * @param qualifiedName The qualified name to find the enumeration type for.
      * 
      * @return The first enumeration type identified by the given qualified name that has been
-     *         found.
+     *             found.
      * 
      * @throws NullPointerException If qualifiedName is <code>null</code>.
      */
-    public IEnumType findEnumType(String qualifiedName);
+    IEnumType findEnumType(String qualifiedName);
 
     /**
      * Returns all {@link IEnumType} objects found in this IPS project. An empty list will be
      * returned if none is found.
      */
-    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues);
+    List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues);
 
     /**
      * Returns the first enumeration content that is found within this IPS project that references
@@ -546,7 +546,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @throws NullPointerException if the provided parameter is <code>null</code>
      */
-    public IEnumContent findEnumContent(IEnumType enumType);
+    IEnumContent findEnumContent(IEnumType enumType);
 
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
@@ -556,7 +556,7 @@ public interface IIpsProject extends IIpsElement {
      * @param runtimeId The runtime-id to find the product component for.
      * @throws IpsException if an error occurs during search.
      */
-    public IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws IpsException;
+    IProductCmpt findProductCmptByRuntimeId(String runtimeId) throws IpsException;
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing <code>TableContents</code> that are based
@@ -567,20 +567,20 @@ public interface IIpsProject extends IIpsElement {
      * @param structure The product components type product component will be searched for.
      * @throws IpsException if an error occurs while searching
      */
-    public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure);
+    List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure);
 
     /**
      * Returns the first IPS source file on the IPS object path with the the indicated qualified
      * name and type. Returns <code>null</code> if no such file was found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType);
+    IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType);
 
     /**
      * Returns the first IPS source file with the the indicated IPS object type and qualified name
      * found on the object path.<br>
      * Returns <code>null</code> if the source file wasn't found (not exists).
      */
-    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
+    IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
@@ -590,7 +590,7 @@ public interface IIpsProject extends IIpsElement {
      * @param qNameType representing the {@link QualifiedNameType} of the searched
      *            {@link IIpsSrcFile}
      */
-    public boolean findDuplicateIpsSrcFile(QualifiedNameType qNameType);
+    boolean findDuplicateIpsSrcFile(QualifiedNameType qNameType);
 
     /**
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
@@ -600,18 +600,18 @@ public interface IIpsProject extends IIpsElement {
      * @param type representing the {@link IpsObjectType} of the searched {@link IIpsSrcFile}
      * @param qualifiedName representing the qualified name of the searched {@link IIpsSrcFile}
      */
-    public boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName);
+    boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns all IPS source files of the given type found on the class path.
      */
-    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws IpsException;
+    IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws IpsException;
 
     /**
      * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to
      * the given list.
      */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws IpsException;
+    void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws IpsException;
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
@@ -619,13 +619,13 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @throws IpsException if an error occurs while searching
      */
-    public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
+    List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
 
     /**
      * Adds all IPS source files that are accessible through IPS source folder entries to the result
      * list.
      */
-    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
+    void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
 
     /**
      * Returns all IPS source files represents product components that are based on the given
@@ -638,7 +638,7 @@ public interface IIpsProject extends IIpsElement {
      *            product components that are directly based on the given type are returned.
      * 
      */
-    public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
+    IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
             throws IpsException;
 
     /**
@@ -649,9 +649,9 @@ public interface IIpsProject extends IIpsElement {
      * @param includeTemplatesForSubtypes <code>true</code> to include subtypes while searching for
      *            templates
      * @return Returns a list of {@link IIpsSrcFile}, every source file holds a template that is
-     *         based on the given type
+     *             based on the given type
      */
-    public List<IIpsSrcFile> findAllProductTemplates(IProductCmptType productCmptType,
+    List<IIpsSrcFile> findAllProductTemplates(IProductCmptType productCmptType,
             boolean includeTemplatesForSubtypes);
 
     /**
@@ -662,9 +662,9 @@ public interface IIpsProject extends IIpsElement {
      * @param productCmptType The product component type to which the returned templates are
      *            compatible to
      * @return A list of all templates found from this project (including referenced projects) that
-     *         are compatible to the specified type
+     *             are compatible to the specified type
      */
-    public List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType);
+    List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType);
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing test cases that are based on the given
@@ -675,7 +675,7 @@ public interface IIpsProject extends IIpsElement {
      * @param testCaseType The <code>TestCaseType</code> to search the <code>TestCase</code>s for
      * @throws IpsException if an exception occurs while searching
      */
-    public IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws IpsException;
+    IIpsSrcFile[] findAllTestCaseSrcFiles(ITestCaseType testCaseType) throws IpsException;
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing <code>EnumContent</code>s that are based
@@ -687,7 +687,7 @@ public interface IIpsProject extends IIpsElement {
      *            included in the search
      * @throws IpsException if an exception occurs while searching
      */
-    public IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
+    IIpsSrcFile[] findAllEnumContentSrcFiles(IEnumType enumType, boolean includingSubtypes)
             throws IpsException;
 
     /**
@@ -696,7 +696,7 @@ public interface IIpsProject extends IIpsElement {
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid);
+    Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -705,7 +705,7 @@ public interface IIpsProject extends IIpsElement {
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives);
+    Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -716,7 +716,7 @@ public interface IIpsProject extends IIpsElement {
      * @param excludedDatatypes A list of data types that should NOT be included, may be
      *            <code>null</code> if none shall be excluded.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly,
+    Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
             List<Datatype> excludedDatatypes);
@@ -731,7 +731,7 @@ public interface IIpsProject extends IIpsElement {
      *            <code>null</code> if none shall be excluded.
      * @param includeAbstract true if abstract data types should be included.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly,
+    Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
             List<Datatype> excludedDatatypes,
@@ -740,26 +740,26 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns all enumeration data types accessible on the project's IPS object path.
      */
-    public EnumDatatype[] findEnumDatatypes();
+    EnumDatatype[] findEnumDatatypes();
 
     /**
      * Returns the first data type found on the path with the given qualified name. Returns
      * <code>null</code> if no data type with the given name is found.
      */
-    public Datatype findDatatype(String qualifiedName);
+    Datatype findDatatype(String qualifiedName);
 
     /**
      * Returns the first value data type found on the path with the given qualified name. Returns
      * <code>null</code> if no value data type with the given name is found. Returns
      * <code>null</code> if qualifiedName is <code>null</code>.
      */
-    public ValueDatatype findValueDatatype(String qualifiedName);
+    ValueDatatype findValueDatatype(String qualifiedName);
 
     /**
      * Returns the code generation helper for the given data type or <code>null</code> if no helper
      * is available for the given data type.
      */
-    public DatatypeHelper getDatatypeHelper(Datatype datatype);
+    DatatypeHelper getDatatypeHelper(Datatype datatype);
 
     /**
      * Returns the code generation helper for the given data type or <code>null</code> if no helper
@@ -767,7 +767,7 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @param qName The qualified data type name.
      */
-    public DatatypeHelper findDatatypeHelper(String qName);
+    DatatypeHelper findDatatypeHelper(String qName);
 
     /**
      * Returns the value set types that are allowed for the given data type. The type
@@ -777,7 +777,7 @@ public interface IIpsProject extends IIpsElement {
      * @throws IpsException if an error occurs while retrieving the value set types, possible
      *             reasons are that the data types files can't be read or the XML can't be parsed.
      */
-    public List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws IpsException;
+    List<ValueSetType> getValueSetTypes(ValueDatatype datatype) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given value set type is available for the given value data
@@ -788,52 +788,52 @@ public interface IIpsProject extends IIpsElement {
      * If this method returns <code>true</code>, it is guaranteed that the value set type is
      * returned by {@link #getValueSetTypes(ValueDatatype)}.
      */
-    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType);
+    boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType);
 
     /**
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If
      * no IpsArtefactBuilderSet is active for this project an <code>EmptyBuilderSet</code> is
      * returned.
      */
-    public IIpsArtefactBuilderSet getIpsArtefactBuilderSet();
+    IIpsArtefactBuilderSet getIpsArtefactBuilderSet();
 
     /**
      * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.
      */
-    public void reinitializeIpsArtefactBuilderSet();
+    void reinitializeIpsArtefactBuilderSet();
 
     /**
      * Returns the runtime id prefix configured for this project.
      */
-    public String getRuntimeIdPrefix();
+    String getRuntimeIdPrefix();
 
     /**
      * Returns the strategy used to name product components. This method never returns
      * <code>null</code>.
      */
-    public IProductCmptNamingStrategy getProductCmptNamingStrategy();
+    IProductCmptNamingStrategy getProductCmptNamingStrategy();
 
     /**
      * Returns the strategy used to name database tables used for persisting policy component types.
      * Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableNamingStrategy getTableNamingStrategy();
+    ITableNamingStrategy getTableNamingStrategy();
 
     /**
      * Returns the strategy used to name database columns used for persisting policy component
      * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
-    public ITableColumnNamingStrategy getTableColumnNamingStrategy();
+    ITableColumnNamingStrategy getTableColumnNamingStrategy();
 
     /**
      * Validates the project and returns the result as list of messages.
      */
-    public MessageList validate() throws IpsException;
+    MessageList validate() throws IpsException;
 
     /**
      * Returns the naming conventions used for this project.
      */
-    public IIpsProjectNamingConventions getNamingConventions();
+    IIpsProjectNamingConventions getNamingConventions();
 
     /**
      * Checks all given product components against all product components in the IPS object path for
@@ -842,12 +842,12 @@ public interface IIpsProject extends IIpsElement {
      * @param cmptsToCheck List of product components to check
      * 
      * @return A list of messages. For each combination of two product components with duplicate
-     *         runtime id a new message is created. This message has only one invalid object
-     *         property, containing the product component given to this method.
+     *             runtime id a new message is created. This message has only one invalid object
+     *             property, containing the product component given to this method.
      * 
      * @throws IpsException if an error occurs during search.
      */
-    public MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws IpsException;
+    MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given resource will be excluded from the product
@@ -855,7 +855,7 @@ public interface IIpsProject extends IIpsElement {
      * If the given resource is relevant for the product definition the method returns
      * <code>false</code>. Returns <code>false</code> if resource is <code>null</code>.
      */
-    public boolean isResourceExcludedFromProductDefinition(AResource resource);
+    boolean isResourceExcludedFromProductDefinition(AResource resource);
 
     /**
      * This method checks whether this project has a resource with the specified path. The path is
@@ -863,9 +863,9 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @param path The path of the requested resource
      * @return <code>true</code> if the resource could be found in this project's entries,
-     *         <code>false</code> if not
+     *             <code>false</code> if not
      */
-    public boolean containsResource(String path);
+    boolean containsResource(String path);
 
     /**
      * Retrieves the contents of a file in the {@link IIpsObjectPath}. Returns <code>null</code> if
@@ -873,7 +873,7 @@ public interface IIpsProject extends IIpsElement {
      * <p>
      * Callers of this method are responsible for closing the stream after use.
      */
-    public InputStream getResourceAsStream(String path);
+    InputStream getResourceAsStream(String path);
 
     /**
      * Returns the {@link IVersionProvider} that is configured for this project. This may be an
@@ -883,29 +883,29 @@ public interface IIpsProject extends IIpsElement {
      * one configured in {@link IIpsProjectProperties#getVersionProviderId()} is used.
      * 
      * @return The version provider that is configured to use by this project. If none is configured
-     *         the {@code DefaultVersionProvider} is returned.
+     *             the {@code DefaultVersionProvider} is returned.
      */
-    public IVersionProvider<?> getVersionProvider();
+    IVersionProvider<?> getVersionProvider();
 
     /**
      * Deletes all contained {@link IIpsPackageFragmentRoot IIpsPackageFragmentRoots} and the
      * corresponding project folder.
      */
     @Override
-    public void delete() throws IpsException;
+    void delete() throws IpsException;
 
     /**
      * Returns a Set of {@link IIpsSrcFile} representing all {@link EnumType EnumTypes} that are
      * used to define markers for {@link IValidationRule IValidationRules}.
      */
-    public LinkedHashSet<IIpsSrcFile> getMarkerEnums();
+    LinkedHashSet<IIpsSrcFile> getMarkerEnums();
 
     /**
      * This method is called when the project internal caches should be cleaned up. For example when
      * the IPS object path has changed.
      * 
      */
-    public void clearCaches();
+    void clearCaches();
 
     /**
      * Returns the hierarchy of the given template as a tree of source files. The root of the tree
@@ -916,8 +916,8 @@ public interface IIpsProject extends IIpsElement {
      * 
      * @param template the template whose hierarchy is returned
      * @return a tree with the hierarchy of the given template. The tree is empty if no template or
-     *         a non-template product component is given.
+     *             a non-template product component is given.
      */
-    public Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template);
+    Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template);
 
 }

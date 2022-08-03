@@ -174,7 +174,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
                 true);
         op.run(new NullProgressMonitor());
         assertEquals(9, ml.size());
-        String[] row2 = new String[] { null, null, null, null, null, null, null, null };
+        String[] row2 = { null, null, null, null, null, null, null, null };
         assertEnumAttributeValues(row2, enumType.getEnumValues().get(0).getEnumAttributeValues());
     }
 

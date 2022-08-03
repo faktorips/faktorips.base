@@ -49,11 +49,11 @@ public abstract class AbstractCardinalityField extends DefaultEditField<Integer>
     @Override
     public void setText(String newText) {
         try {
-            Integer value = Integer.valueOf(newText);
-            if (value.intValue() == Integer.MAX_VALUE) {
+            int value = Integer.parseInt(newText);
+            if (value == Integer.MAX_VALUE) {
                 setTextInternal("*"); //$NON-NLS-1$
             } else {
-                setTextInternal(value.toString());
+                setTextInternal(Integer.toString(value));
             }
         } catch (NumberFormatException e) {
             setTextInternal(newText);

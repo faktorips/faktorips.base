@@ -284,7 +284,7 @@ public class ValidationRuleEditingUI {
      * have been initialized.
      * 
      * @return <code>true</code> if the ui for a validation rule has been initialized,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      */
     public boolean isUiInitialized() {
         return uiInitialized;
@@ -388,8 +388,7 @@ public class ValidationRuleEditingUI {
         }
 
         private String[] splitCodeMsgByPointsInText(String codeText) {
-            String[] splittedContent = codeText.split(DELIMITER_REGEXT);
-            return splittedContent;
+            return codeText.split(DELIMITER_REGEXT);
         }
 
         private boolean isSeverityOrNameInMsgCode(String[] splittedMsgCode) {

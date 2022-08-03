@@ -18,7 +18,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
  * 
  * @author dirmeier
  * @deprecated Use {@link IpsObjectTypeTester#PROPERTY_IS_MODEL_TYPE} instead to avoid needless
- *             instantiation of {@link IIpsObject}.
+ *                 instantiation of {@link IIpsObject}.
  */
 @Deprecated(since = "21.6", forRemoval = true)
 public class ModelObjectTester extends PropertyTester {

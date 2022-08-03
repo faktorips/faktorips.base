@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal.tableindex;
 import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -69,10 +70,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((resultSet == null) ? 0 : resultSet.hashCode());
-        return result;
+        return Objects.hash(resultSet);
     }
 
     @Override
@@ -80,22 +78,12 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         @SuppressWarnings("unchecked")
         ResultStructure<R> other = (ResultStructure<R>)obj;
-        if (resultSet == null) {
-            if (other.resultSet != null) {
-                return false;
-            }
-        } else if (!resultSet.equals(other.resultSet)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(resultSet, other.resultSet);
     }
 
     @Override

@@ -118,8 +118,8 @@ public class IpsTestRunner implements IIpsTestRunner {
     private static final IpsTestRunner IPS_TEST_RUNNER = new IpsTestRunner();
 
     static {
-        TRACE_IPS_TEST_RUNNER = Boolean.valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")) //$NON-NLS-1$
-                .booleanValue();
+        TRACE_IPS_TEST_RUNNER = Boolean
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner"));
     }
 
     private int port;
@@ -220,7 +220,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         boolean matches = p.matcher(testCaseName).find();
         if (matches) {
             ml.add(new Message(INVALID_NAME, NLS.bind(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
-                    FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
+                    FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replace("\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return ml;
     }
@@ -250,9 +250,9 @@ public class IpsTestRunner implements IIpsTestRunner {
         this.classpathRepositories = checkEnclosed(classpathRepositories);
         this.testsuites = checkEnclosed(testsuites);
 
-        this.ipsProject = getCurrentIpsProject(this.ipsProject);
+        ipsProject = getCurrentIpsProject(ipsProject);
 
-        if (this.ipsProject == null) {
+        if (ipsProject == null) {
             trace("Cancel test run, no project found."); //$NON-NLS-1$
             resetLaunchAndTestRun();
             return;
@@ -294,7 +294,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        String[] classPath = computeClasspath(this.ipsProject.getJavaProject().unwrap());
+        String[] classPath = computeClasspath(ipsProject.getJavaProject().unwrap());
 
         VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(SocketIpsTestRunner.class.getName(), classPath);
         String[] args = new String[4];
@@ -305,7 +305,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         args[0] = Integer.toString(port);
         args[1] = this.classpathRepositories;
         args[2] = this.testsuites;
-        args[3] = fillArgsRepositoryPackages(this.ipsProject);
+        args[3] = fillArgsRepositoryPackages(ipsProject);
 
         vmConfig.setProgramArguments(args);
 
@@ -362,7 +362,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private IIpsProject getCurrentIpsProject(IIpsProject currentIpsProject) {
         if (currentIpsProject == null) {
-            return getIpsProjectFromTocPath(this.classpathRepositories);
+            return getIpsProjectFromTocPath(classpathRepositories);
         }
         return currentIpsProject;
     }
@@ -388,7 +388,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 (String)null);
         if (StringUtils.isNotEmpty(vmArgsInConfig)) {
             String[] vmArguments = vmConfig.getVMArguments();
-            String[] vmArgumentsFromLaunchConfig = new String[0];
+            String[] vmArgumentsFromLaunchConfig = {};
             if (vmArgsInConfig != null) {
                 vmArgumentsFromLaunchConfig = DebugPlugin.parseArguments(vmArgsInConfig);
             }
@@ -491,7 +491,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         ILaunchConfigurationWorkingCopy wc = configType.newInstance(null, name);
         wc.setAttribute(ATTR_PACKAGEFRAGMENTROOT, classpathRepositories);
         wc.setAttribute(ATTR_TESTCASES, testsuites);
-        wc.setAttribute(ATTR_PROJECT, this.ipsProject.getName());
+        wc.setAttribute(ATTR_PROJECT, ipsProject.getName());
         wc.setAttribute(IDebugUIConstants.ATTR_PRIVATE, false);
         wc.setAttribute(IDebugUIConstants.ATTR_LAUNCH_IN_BACKGROUND, true);
         return wc;
@@ -744,13 +744,11 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     private String parseTestQualifiedName(String line) {
-        String testName = line.substring(0, line.indexOf(BRACELEFT));
-        return testName;
+        return line.substring(0, line.indexOf(BRACELEFT));
     }
 
     private String parseTestFullPath(String line) {
-        String fullPath = line.substring(line.indexOf(BRACELEFT) + 1, line.indexOf(BRACERIGHT));
-        return fullPath;
+        return line.substring(line.indexOf(BRACELEFT) + 1, line.indexOf(BRACERIGHT));
     }
 
     private void parseErrorStack(ArrayList<String> errorDetailList, String errorDetails) {
@@ -759,7 +757,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        newErrorDetails = newErrorDetails.replaceAll("\t", ""); //$NON-NLS-1$ //$NON-NLS-2$
+        newErrorDetails = newErrorDetails.replace("\t", ""); //$NON-NLS-1$ //$NON-NLS-2$
         if (newErrorDetails.indexOf(BRACELEFT) == -1) {
             errorDetailList.add(newErrorDetails);
         } else {
@@ -1027,9 +1025,7 @@ public class IpsTestRunner implements IIpsTestRunner {
              * auto-build job completes, or until the join is interrupted or canceled.
              */
             Job.getJobManager().join(ResourcesPlugin.FAMILY_AUTO_BUILD, null);
-        } catch (OperationCanceledException ignored) {
-            IpsPlugin.log(ignored);
-        } catch (InterruptedException ignored) {
+        } catch (OperationCanceledException | InterruptedException ignored) {
             IpsPlugin.log(ignored);
         }
         job.schedule();
@@ -1086,7 +1082,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             this.classpathRepository = classpathRepository;
             this.testsuite = testsuite;
             this.mode = mode;
-            this.jobLaunch = launch;
+            jobLaunch = launch;
         }
 
         @Override

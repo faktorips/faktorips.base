@@ -29,13 +29,13 @@ public interface ISelectIpsObjectContext {
      * Called by the dialog to get the content elements. Use the progress monitor to visualize work
      * progress.
      */
-    public abstract List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws IpsException;
+    List<IIpsSrcFile> getIpsSrcFiles(IProgressMonitor progressMonitor) throws IpsException;
 
     /**
      * Configure a viewer filter to include or exclude some objects. Note that this filter is
      * important because the Dialog does not only show objects collected by
      * {@link #getIpsSrcFiles(IProgressMonitor)} but also elements from the history.
      */
-    public abstract ViewerFilter getContextFilter();
+    ViewerFilter getContextFilter();
 
 }

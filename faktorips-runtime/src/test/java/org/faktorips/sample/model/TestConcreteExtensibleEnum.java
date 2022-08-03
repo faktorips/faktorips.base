@@ -80,8 +80,8 @@ public final class TestConcreteExtensibleEnum
     protected TestConcreteExtensibleEnum(int index, String idString, String nameString,
             IRuntimeRepository productRepository) {
         this.index = index;
-        this.id = idString;
-        this.name = nameString;
+        id = idString;
+        name = nameString;
     }
 
     /**
@@ -135,7 +135,7 @@ public final class TestConcreteExtensibleEnum
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof TestConcreteExtensibleEnum) {
-            return this.getId().equals(((TestConcreteExtensibleEnum)obj).getId());
+            return getId().equals(((TestConcreteExtensibleEnum)obj).getId());
         }
         return false;
     }

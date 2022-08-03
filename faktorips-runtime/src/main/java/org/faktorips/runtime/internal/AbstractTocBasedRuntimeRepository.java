@@ -210,8 +210,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         if (tocEntry == null) {
             return null;
         }
-        ITable<?> table = createTable(tocEntry);
-        return table;
+        return createTable(tocEntry);
     }
 
     @Override
@@ -266,8 +265,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
      */
     protected Class<?> getClass(String className, ClassLoader cl) {
         try {
-            Class<?> clazz = cl.loadClass(className);
-            return clazz;
+            return cl.loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Can't load class " + className, e);
         }
@@ -292,8 +290,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         Class<XmlAdapter<String, ?>> xmlAdapterClass = (Class<XmlAdapter<String, ?>>)getClassLoader()
                 .loadClass(className);
         Constructor<XmlAdapter<String, ?>> constructor = xmlAdapterClass.getConstructor(IRuntimeRepository.class);
-        XmlAdapter<String, ?> instance = constructor.newInstance(repository);
-        return instance;
+        return constructor.newInstance(repository);
     }
 
     @Override
@@ -302,19 +299,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         if (tocEntry == null) {
             return null;
         }
-        IProductComponent pc = createProductCmpt(tocEntry);
-        return pc;
+        return createProductCmpt(tocEntry);
     }
 
     @Override
     protected <T> List<T> getNotCachedEnumValues(Class<T> clazz) {
-        List<T> enumValues;
         EnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
         if (tocEntries == null) {
             return null;
         }
-        enumValues = createEnumValues(tocEntries, clazz);
-        return enumValues;
+        return createEnumValues(tocEntries, clazz);
     }
 
     @Override

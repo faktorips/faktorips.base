@@ -84,11 +84,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     public boolean containsValue(String value, IIpsProject ipsProject) {
 
         ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (datatype == null) {
-            return false;
-        }
-
-        if (!datatype.isParsable(value)) {
+        if ((datatype == null) || !datatype.isParsable(value)) {
             return false;
         }
 
@@ -132,8 +128,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
-        UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id, isContainsNull());
-        return unrestrictedValueSet;
+        return new UnrestrictedValueSet(parent, id, isContainsNull());
     }
 
     @Override
@@ -149,7 +144,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean oldContainsNull = this.isContainsNull();
+        boolean oldContainsNull = isContainsNull();
         this.containsNull = containsNull;
         valueChanged(oldContainsNull, containsNull, PROPERTY_CONTAINS_NULL);
     }

@@ -87,7 +87,7 @@ public class InternationalStringXmlReaderWriter {
      * 
      * @param element the XML {@link Element} representing an international string
      * @return a collection of all {@link LocalizedString localized strings} defined in the
-     *         international string represented by the given {@link Element}.
+     *             international string represented by the given {@link Element}.
      */
     public static Collection<LocalizedString> fromXml(Element element) {
         List<LocalizedString> localizedStrings = new ArrayList<>();
@@ -120,7 +120,7 @@ public class InternationalStringXmlReaderWriter {
      * @param element the XML {@link Element} representing the parent of an international string.
      * @param tagName the name of the child node representing an international string.
      * @return a collection of all {@link LocalizedString localized strings} defined in the
-     *         international string.
+     *             international string.
      */
     public static Collection<LocalizedString> fromXml(Element element, String tagName) {
         Element internationalStringElement = getInternationalStringElement(element, tagName);
@@ -168,7 +168,7 @@ public class InternationalStringXmlReaderWriter {
      * 
      * @param e the XML element representing an international string
      * @return the default locale from the given element or {@code null} if the element does not
-     *         represent an international string or does not have a default locale attribute
+     *             represent an international string or does not have a default locale attribute
      */
     public static Locale defaultLocaleFromXml(Element e) {
         if (!e.getNodeName().equals(XML_TAG)) {

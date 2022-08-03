@@ -155,8 +155,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     /**
      * @deprecated since 19.12. Use
-     *             {@link #newAddDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
-     *             instead.
+     *                 {@link #newAddDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
+     *                 instead.
      */
     @Deprecated
     public static final ModelObjectDelta newAddDelta(IModelObject addedObject,
@@ -177,8 +177,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     /**
      * @deprecated since 19.12. Use
-     *             {@link #newRemoveDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
-     *             instead.
+     *                 {@link #newRemoveDelta(IModelObject, String, AssociationKind, IDeltaComputationOptions)}
+     *                 instead.
      */
     @Deprecated
     public static final ModelObjectDelta newRemoveDelta(IModelObject removedObject,
@@ -241,8 +241,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
 
     /**
      * @deprecated since 19.12. Use
-     *             {@link #newDifferentObjectAtPositionChangedDelta(IModelObject, IModelObject, String, AssociationKind)}
-     *             instead.
+     *                 {@link #newDifferentObjectAtPositionChangedDelta(IModelObject, IModelObject, String, AssociationKind)}
+     *                 instead.
      */
     @Deprecated
     public static final ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,

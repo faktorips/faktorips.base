@@ -24,14 +24,14 @@ import org.faktorips.devtools.model.plugin.IDatatypeFormatter;
  */
 public interface IPluginResourceFacade {
 
-    public IpsObjectType[] getDefaultIpsObjectTypes();
+    IpsObjectType[] getDefaultIpsObjectTypes();
 
-    public void log(IStatus status);
+    void log(IStatus status);
 
-    public String getIpsPluginPluginId();
+    String getIpsPluginPluginId();
 
-    public IDatatypeFormatter getDatatypeFormatter();
+    IDatatypeFormatter getDatatypeFormatter();
 
-    public Properties getMessageProperties(String resourceName) throws IpsException;
+    Properties getMessageProperties(String resourceName) throws IpsException;
 
 }

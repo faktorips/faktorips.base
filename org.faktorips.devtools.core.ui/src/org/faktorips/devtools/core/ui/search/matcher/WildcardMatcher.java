@@ -55,11 +55,7 @@ public class WildcardMatcher implements IMatcher<String> {
 
     @Override
     public boolean isMatching(String text) {
-        if (StringUtils.isEmpty(text)) {
-            return false;
-        }
-
-        if (pattern == null) {
+        if (StringUtils.isEmpty(text) || (pattern == null)) {
             return false;
         }
 

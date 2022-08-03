@@ -43,8 +43,8 @@ public class ChildDeltaCreator {
      * @param options The {@link IDeltaComputationOptions} that configures some behavior of delta
      *            computation
      * @deprecated since 19.12. Use
-     *             {@link ChildDeltaCreator#ChildDeltaCreator(String, AssociationKind, IDeltaComputationOptions)}
-     *             instead.
+     *                 {@link ChildDeltaCreator#ChildDeltaCreator(String, AssociationKind, IDeltaComputationOptions)}
+     *                 instead.
      */
     @Deprecated
     public ChildDeltaCreator(String association, IDeltaComputationOptions options) {

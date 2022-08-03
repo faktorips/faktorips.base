@@ -16,24 +16,24 @@ import org.faktorips.devtools.model.method.IBaseMethod;
 
 public interface IMethod extends ITypePart, IBaseMethod {
 
-    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
-    public static final String MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE = IBaseMethod.MSGCODE_PREFIX
+    String MSGCODE_RETURN_TYPE_IS_INCOMPATIBLE = IBaseMethod.MSGCODE_PREFIX
             + "returnTypeIsIncompatibleWithOverriddenMethod"; //$NON-NLS-1$
 
-    public static final String MSGCODE_MODIFIER_NOT_EQUAL = IBaseMethod.MSGCODE_PREFIX + "modifierNotEqual"; //$NON-NLS-1$
+    String MSGCODE_MODIFIER_NOT_EQUAL = IBaseMethod.MSGCODE_PREFIX + "modifierNotEqual"; //$NON-NLS-1$
 
-    public static final String MSGCODE_DUBLICATE_SIGNATURE = IBaseMethod.MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
+    String MSGCODE_DUBLICATE_SIGNATURE = IBaseMethod.MSGCODE_PREFIX + "duplicateSignature"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if this is an abstract method, <code>false</code> otherwise.
      */
-    public boolean isAbstract();
+    boolean isAbstract();
 
     /**
      * Sets if this is an abstract method or not.
      */
-    public void setAbstract(boolean newValue);
+    void setAbstract(boolean newValue);
 
     /**
      * Returns <code>true</code> if this method overrides the <code>otherMethod</code>. This method
@@ -46,7 +46,7 @@ public interface IMethod extends ITypePart, IBaseMethod {
      * 
      * @throws IpsException If there is an error in type hierarchy check.
      */
-    public boolean overrides(IMethod otherMethod) throws IpsException;
+    boolean overrides(IMethod otherMethod) throws IpsException;
 
     /**
      * Returns the method overriding this one or <code>null</code> if no such method is found. The
@@ -58,7 +58,7 @@ public interface IMethod extends ITypePart, IBaseMethod {
      * 
      * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws IpsException;
+    IMethod findOverridingMethod(IType typeToSearchFrom, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the first method, that is overridden by this method.
@@ -67,6 +67,6 @@ public interface IMethod extends ITypePart, IBaseMethod {
      * 
      * @throws IpsException If an error occurs while searching.
      */
-    public IMethod findOverriddenMethod(IIpsProject ipsProject) throws IpsException;
+    IMethod findOverriddenMethod(IIpsProject ipsProject) throws IpsException;
 
 }

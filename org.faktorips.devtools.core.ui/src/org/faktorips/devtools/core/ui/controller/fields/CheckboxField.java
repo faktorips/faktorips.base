@@ -49,7 +49,7 @@ public class CheckboxField extends DefaultEditField<Boolean> {
 
     @Override
     public void setText(String newText) {
-        checkbox.setChecked(Boolean.valueOf(newText).booleanValue());
+        checkbox.setChecked(Boolean.parseBoolean(newText));
     }
 
     @Override

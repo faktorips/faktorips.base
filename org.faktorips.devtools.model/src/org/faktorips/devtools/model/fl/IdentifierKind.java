@@ -16,7 +16,7 @@ public enum IdentifierKind {
     ATTRIBUTE;
 
     public boolean isDefaultIdentifier() {
-        return this.equals(DEFAULT_IDENTIFIER);
+        return equals(DEFAULT_IDENTIFIER);
     }
 
     public static IdentifierKind getDefaultIdentifierOrAttribute(boolean isDefaultIdentifier) {

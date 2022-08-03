@@ -56,7 +56,7 @@ public class JdtClasspathEntryCreator {
         }
 
         void setReferenceFactory(ReferenceFactory projectResolver) {
-            this.referenceFactory = projectResolver;
+            referenceFactory = projectResolver;
         }
 
         public IIpsObjectPathEntry createIpsEntry() {
@@ -99,8 +99,7 @@ public class JdtClasspathEntryCreator {
             if (ipsArchiveEntry != null) {
                 return ipsArchiveEntry;
             }
-            IpsBundleEntry ipsBundleEntry = createBundleEntry(path);
-            return ipsBundleEntry;
+            return createBundleEntry(path);
         }
 
         private IpsObjectPathEntry createIpsArchiveEntry(IPath path) {
@@ -157,8 +156,7 @@ public class JdtClasspathEntryCreator {
 
         public IIpsProject getIpsProject(IPath path) {
             AProject project = Abstractions.getWorkspace().getRoot().getProject(path.lastSegment());
-            IIpsProject ipsProject = IIpsModel.get().getIpsProject(project);
-            return ipsProject;
+            return IIpsModel.get().getIpsProject(project);
         }
 
     }

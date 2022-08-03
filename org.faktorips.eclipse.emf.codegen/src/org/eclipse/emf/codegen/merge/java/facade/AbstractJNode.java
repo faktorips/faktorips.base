@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2.2.0
  */
 public abstract class AbstractJNode implements JNode {
-    protected static final String[] EMPTY_STRING_ARRAY = new String[0];
+    protected static final String[] EMPTY_STRING_ARRAY = {};
 
     protected String qualifiedName;
 

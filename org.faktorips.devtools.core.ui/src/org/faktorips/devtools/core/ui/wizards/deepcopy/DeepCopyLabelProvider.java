@@ -121,13 +121,10 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     protected Image getObjectImage(Object element) {
-        if (element instanceof IProductCmptStructureReference) {
-            if (isLinkedElement((IProductCmptStructureReference)element)) {
-                Image image = getImage(element);
-                return (Image)resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
-            } else {
-                return getImage(element);
-            }
+        if ((element instanceof IProductCmptStructureReference)
+                && isLinkedElement((IProductCmptStructureReference)element)) {
+            Image image = getImage(element);
+            return (Image)resourceManager.get(new DecorationOverlayIcon(image, overlay, IDecoration.BOTTOM_RIGHT));
         } else {
             return getImage(element);
         }

@@ -26,69 +26,69 @@ import org.faktorips.devtools.model.type.IAttribute;
  */
 public interface ITestPolicyCmpt extends ITestObject {
 
-    public static final String PROPERTY_TESTPOLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
-    public static final String PROPERTY_PRODUCTCMPT = "productCmpt"; //$NON-NLS-1$
-    public static final String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$
+    String PROPERTY_TESTPOLICYCMPTTYPE = "testPolicyCmptType"; //$NON-NLS-1$
+    String PROPERTY_PRODUCTCMPT = "productCmpt"; //$NON-NLS-1$
+    String PROPERTY_POLICYCMPTTYPE = "policyCmptType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTPOLICYCMPT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTPOLICYCMPT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding test case type parameter not
      * exists.
      */
-    public static final String MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND = MSGCODE_PREFIX + "TestCaseTypeParamNotFound"; //$NON-NLS-1$
+    String MSGCODE_TEST_CASE_TYPE_PARAM_NOT_FOUND = MSGCODE_PREFIX + "TestCaseTypeParamNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a product component is required.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_IS_REQUIRED = MSGCODE_PREFIX + "ProductCmptIsRequired"; //$NON-NLS-1$
+    String MSGCODE_PRODUCT_CMPT_IS_REQUIRED = MSGCODE_PREFIX + "ProductCmptIsRequired"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component was not found.
      */
-    public static final String MSGCODE_PRODUCT_CMPT_NOT_EXISTS = MSGCODE_PREFIX + "ProductCmptNotExists"; //$NON-NLS-1$
+    String MSGCODE_PRODUCT_CMPT_NOT_EXISTS = MSGCODE_PREFIX + "ProductCmptNotExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the required product component is set to
      * <code>false</code> but there is a product component specified.
      */
-    public static final String MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED = MSGCODE_PREFIX + "ProductComponentNotRequired"; //$NON-NLS-1$
+    String MSGCODE_PRODUCT_COMPONENT_NOT_REQUIRED = MSGCODE_PREFIX + "ProductComponentNotRequired"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the minimum instances aren't reached.
      */
-    public static final String MSGCODE_MIN_INSTANCES_NOT_REACHED = MSGCODE_PREFIX + "MinInstancesNotReached"; //$NON-NLS-1$
+    String MSGCODE_MIN_INSTANCES_NOT_REACHED = MSGCODE_PREFIX + "MinInstancesNotReached"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the max instances are reached.
      */
-    public static final String MSGCODE_MAX_INSTANCES_REACHED = MSGCODE_PREFIX + "MaxInstancesReached"; //$NON-NLS-1$
+    String MSGCODE_MAX_INSTANCES_REACHED = MSGCODE_PREFIX + "MaxInstancesReached"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component is not allowed for the link.
      */
-    public static final String MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK = MSGCODE_PREFIX + "WrongProductCmptOfLink"; //$NON-NLS-1$
+    String MSGCODE_WRONG_PRODUCT_CMPT_OF_LINK = MSGCODE_PREFIX + "WrongProductCmptOfLink"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component of the parent of a link is not
      * specified.
      */
-    public static final String MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED = MSGCODE_PREFIX
+    String MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED = MSGCODE_PREFIX
             + "ParentProductCmptOfLinkNotSpecified"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the policy component type not exists.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
+    String MSGCODE_POLICY_CMPT_TYPE_NOT_EXISTS = MSGCODE_PREFIX + "PolicyCmptTypeNotExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the policy component type is not equal or not a
      * subtype of the policy component type specified in the test case type parameter.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE = MSGCODE_PREFIX + "PolicyCmptTypeNotAssignable"; //$NON-NLS-1$
+    String MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE = MSGCODE_PREFIX + "PolicyCmptTypeNotAssignable"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the policy component type and a product component
@@ -97,24 +97,24 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @see #getPolicyCmptType()
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN = MSGCODE_PREFIX
+    String MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN = MSGCODE_PREFIX
             + "PolicyCmptTypeAndProductCmptTypeGiven"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the policy component type is abstract and could not
      * instantiated during the test run.
      */
-    public static final String MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT = MSGCODE_PREFIX + "policyCmptTypeIsAbstract"; //$NON-NLS-1$
+    String MSGCODE_POLICY_CMPT_TYPE_IS_ABSTRACT = MSGCODE_PREFIX + "policyCmptTypeIsAbstract"; //$NON-NLS-1$
 
     /**
      * Returns the qualified name of the test policy component type parameter class.
      */
-    public String getTestPolicyCmptTypeParameter();
+    String getTestPolicyCmptTypeParameter();
 
     /**
      * Sets the name of the test policy component type parameter.
      */
-    public void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter);
+    void setTestPolicyCmptTypeParameter(String testPolicyCmptTypeParameter);
 
     /**
      * Returns the test policy component type parameter or <code>null</code> if the test policy
@@ -122,69 +122,69 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IpsException if an error occurs while searching for the policy component type.
      */
-    public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws IpsException;
+    ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the qualified name of the product component.
      */
-    public String getProductCmpt();
+    String getProductCmpt();
 
     /**
      * Sets the qualified name of the product component.
      */
-    public void setProductCmpt(String productCmpt);
+    void setProductCmpt(String productCmpt);
 
     /**
      * Returns the product component or <code>null</code> if the product component does not exist.
      * 
      * @throws IpsException if an error occurs while searching for the product component.
      */
-    public IProductCmpt findProductCmpt(IIpsProject ipsProject) throws IpsException;
+    IProductCmpt findProductCmpt(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if the given test policy component is product relevant, otherwise
      * <code>false</code>
      */
-    public boolean isProductRelevant();
+    boolean isProductRelevant();
 
     /**
      * Sets the policy component type this test policy component is related to.
      */
-    public void setPolicyCmptType(String policyCmptType);
+    void setPolicyCmptType(String policyCmptType);
 
     /**
      * Returns the qualified name of the policy component type, if the test policy component type
      * parameter doesn't requires a product component, otherwise if the test policy component type
      * parameter requires a product component this method returns <code>null</code>.
      */
-    public String getPolicyCmptType();
+    String getPolicyCmptType();
 
     /**
      * Sets the unique name of the test policy component.
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Creates a new attribute and returns it.
      */
-    public ITestAttributeValue newTestAttributeValue();
+    ITestAttributeValue newTestAttributeValue();
 
     /**
      * Returns the type's attributes.
      */
-    public ITestAttributeValue[] getTestAttributeValues();
+    ITestAttributeValue[] getTestAttributeValues();
 
     /**
      * Returns the attribute with the given name. If more than one attribute with the name exist,
      * the first attribute with the name is returned. Returns <code>null</code> if no attribute with
      * the given name exists.
      */
-    public ITestAttributeValue getTestAttributeValue(String name);
+    ITestAttributeValue getTestAttributeValue(String name);
 
     /**
      * Creates a new link and returns it.
      */
-    public ITestPolicyCmptLink newTestPolicyCmptLink();
+    ITestPolicyCmptLink newTestPolicyCmptLink();
 
     /**
      * Creates a new link on the test policy component and returns it. The given test policy
@@ -201,7 +201,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
      *             policyCmptType are both given
      */
-    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
+    ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
             String targetName) throws IpsException;
@@ -226,7 +226,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws IpsException if an error occurs while adding the new link. If the productCmpt and the
      *             policyCmptType are both given.
      */
-    public ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
+    ITestPolicyCmptLink addTestPcTypeLink(ITestPolicyCmptTypeParameter typeParam,
             String productCmpt,
             String policyCmptType,
             String targetName,
@@ -261,19 +261,19 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws IpsException if an error occurs while searching for the
      *             {@link ITestPolicyCmptTypeParameter} or while adding links
      */
-    public void addRequiredLinks(IIpsProject ipsProject) throws IpsException;
+    void addRequiredLinks(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns all test policy component links.
      */
-    public ITestPolicyCmptLink[] getTestPolicyCmptLinks();
+    ITestPolicyCmptLink[] getTestPolicyCmptLinks();
 
     /**
      * Returns the test policy component links with the given name which are related to the given
      * test policy component parameter.
      * 
      */
-    public ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName);
+    ITestPolicyCmptLink[] getTestPolicyCmptLinks(String typeParameterName);
 
     /**
      * Returns the first link with the indicated test policy component type name or null if no such
@@ -284,33 +284,33 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IllegalArgumentException if testPolicyCmptType is <code>null</code>.
      */
-    public ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType);
+    ITestPolicyCmptLink getTestPolicyCmptLink(String testPolicyCmptType);
 
     /**
      * Returns the test case which this test policy component belongs to. This object could be
      * directly a child of a test case or a child of another test policy component. The top level
      * test case of the test case hierarchy will be returned.
      */
-    public ITestCase getTestCase();
+    ITestCase getTestCase();
 
     /**
      * Returns <code>true</code> if this object is a root or <code>false</code> if this object is a
      * child object.
      */
     @Override
-    public boolean isRoot();
+    boolean isRoot();
 
     /**
      * Returns the parent test policy component.
      */
-    public ITestPolicyCmpt getParentTestPolicyCmpt();
+    ITestPolicyCmpt getParentTestPolicyCmpt();
 
     /**
      * Removes the given link.
      * 
      * @throws IpsException in case of an error.
      */
-    public void removeLink(ITestPolicyCmptLink link) throws IpsException;
+    void removeLink(ITestPolicyCmptLink link) throws IpsException;
 
     /**
      * Updates the default for all test attribute values. The default will be retrieved from the
@@ -320,7 +320,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IpsException in case of an error.
      */
-    public void updateDefaultTestAttributeValues() throws IpsException;
+    void updateDefaultTestAttributeValues() throws IpsException;
 
     /**
      * Moves the test policy component link identified by the indexes up or down by one position. If
@@ -336,7 +336,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws IndexOutOfBoundsException if one of the indexes does not identify a test policy
      *             component link.
      */
-    public int[] moveTestPolicyCmptLink(int[] indexes, boolean up);
+    int[] moveTestPolicyCmptLink(int[] indexes, boolean up);
 
     /**
      * Returns the index of the given child test policy component. The index starts with 0 (the
@@ -345,7 +345,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @throws IpsException if the given test policy component is no child of the current test
      *             policy component.
      */
-    public int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws IpsException;
+    int getIndexOfChildTestPolicyCmpt(ITestPolicyCmpt testPolicyCmpt) throws IpsException;
 
     /**
      * Searches the given attribute in the supertype of the product component type which is stored
@@ -357,7 +357,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * 
      * @throws IpsException if an error occurs while searching.
      */
-    public IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws IpsException;
+    IAttribute findProductCmptTypeAttribute(String attribute, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the policy component type this test object is related to, if this object is
@@ -365,7 +365,7 @@ public interface ITestPolicyCmpt extends ITestObject {
      * policy component type will be searched using the stored policy component type name. Return
      * <code>null</code> if the policy component type wasn't found.
      */
-    public IPolicyCmptType findPolicyCmptType();
+    IPolicyCmptType findPolicyCmptType();
 
     /**
      * If {@link #getProductCmpt()} would return <code>null</code> or "" (empty string) this method
@@ -374,10 +374,10 @@ public interface ITestPolicyCmpt extends ITestObject {
      * product component with the specified name.
      * 
      * @return <code>true</code> if the qualified name of a product component is specified in this
-     *         {@link ITestPolicyCmpt}, <code>false</code> otherwise.
+     *             {@link ITestPolicyCmpt}, <code>false</code> otherwise.
      * @since FIPS 3.0.0
      */
-    public boolean hasProductCmpt();
+    boolean hasProductCmpt();
 
     /**
      * Sets this instance's product component to the given qualified name and modifies this
@@ -406,6 +406,6 @@ public interface ITestPolicyCmpt extends ITestObject {
      * @since FIPS 3.0.0
      * @param prodCmptQName the qualified name of this test component's new product component.
      */
-    public void setProductCmptAndNameAfterIfApplicable(String prodCmptQName);
+    void setProductCmptAndNameAfterIfApplicable(String prodCmptQName);
 
 }

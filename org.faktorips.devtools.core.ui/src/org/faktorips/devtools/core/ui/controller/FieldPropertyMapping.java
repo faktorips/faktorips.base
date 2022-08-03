@@ -20,39 +20,39 @@ public interface FieldPropertyMapping<T> {
     /**
      * Returns the field this is a mapping for.
      */
-    public EditField<T> getField();
+    EditField<T> getField();
 
     /**
      * Returns the object this is a mapping for one of it's properties.
      */
-    public Object getObject();
+    Object getObject();
 
     /**
      * Returns the property's name this is a mapping for.
      */
-    public String getPropertyName();
+    String getPropertyName();
 
     /**
      * Updates the object's property with the value from the edit field.
      */
-    public void setPropertyValue();
+    void setPropertyValue();
 
     /**
      * Updates the value in the edit field with the value from the obejct's property.
      */
-    public void setControlValue();
+    void setControlValue();
 
     /**
      * Updates the value in the edit field with the value from the obejct's property.
      * 
      * @param force Whether the update should be forced, default is <code>false</code>
      */
-    public void setControlValue(boolean force);
+    void setControlValue(boolean force);
 
     /**
      * Getting the current value of the property.
      * 
      * @return The current value of the property in the object
      */
-    public T getPropertyValue();
+    T getPropertyValue();
 }

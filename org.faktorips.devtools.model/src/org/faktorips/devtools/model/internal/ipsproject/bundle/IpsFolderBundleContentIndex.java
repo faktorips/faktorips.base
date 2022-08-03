@@ -33,7 +33,7 @@ public class IpsFolderBundleContentIndex extends AbstractIpsBundleContentIndex {
 
     protected IpsFolderBundleContentIndex(List<Path> modelFolders, Path bundleRoot, FolderExplorer folderExplorer) {
         this.bundleRoot = bundleRoot;
-        this.explorer = folderExplorer;
+        explorer = folderExplorer;
         initFolderStructure(modelFolders, bundleRoot);
     }
 

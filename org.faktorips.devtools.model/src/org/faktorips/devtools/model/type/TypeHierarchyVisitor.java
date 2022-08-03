@@ -40,11 +40,10 @@ public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVis
         return getVisitedTypesAsSet().toArray(new IType[getVisitedTypesAsSet().size()]);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected T findSupertype(T currentType, IIpsProject ipsProject) {
-        @SuppressWarnings("unchecked")
-        T supertype = (T)currentType.findSupertype(ipsProject);
-        return supertype;
+        return (T)currentType.findSupertype(ipsProject);
     }
 
 }

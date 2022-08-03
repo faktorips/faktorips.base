@@ -108,8 +108,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
     @Override
     public String[] getNonEmptyPackages() {
         Set<String> nonEmptyPackagePaths = bundleContentIndex.getNonEmptyPackagePaths();
-        String[] result = nonEmptyPackagePaths.toArray(new String[nonEmptyPackagePaths.size()]);
-        return result;
+        return nonEmptyPackagePaths.toArray(new String[nonEmptyPackagePaths.size()]);
     }
 
     @Override

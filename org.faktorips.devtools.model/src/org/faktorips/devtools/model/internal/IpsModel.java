@@ -132,15 +132,13 @@ import org.xml.sax.SAXException;
 public class IpsModel extends IpsElement implements IIpsModel {
 
     public static final boolean TRACE_MODEL_MANAGEMENT = Boolean
-            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")).booleanValue(); //$NON-NLS-1$
+            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")); //$NON-NLS-1$
 
     public static final boolean TRACE_MODEL_CHANGE_LISTENERS = Boolean
-            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners")) //$NON-NLS-1$
-            .booleanValue();
+            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners"));
 
     public static final boolean TRACE_VALIDATION = Boolean
-            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/validation")) //$NON-NLS-1$
-            .booleanValue();
+            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/validation"));
 
     /**
      * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which
@@ -230,7 +228,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * Re-initializes the model (the singleton instance will be reset).
      *
      * @deprecated <strong><em>Should only be called in test cases to ensure a clean
-     *             environment.</em></strong>
+     *                 environment.</em></strong>
      */
     @Deprecated
     public static void reInit() {
@@ -244,7 +242,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *
      * @see IIpsModel#get
      * @deprecated <strong><em>This method should only be called when explicitly depending on
-     *             implementation details, otherwise use {@link IIpsModel#get}!</em></strong>
+     *                 implementation details, otherwise use {@link IIpsModel#get}!</em></strong>
      */
     @Deprecated
     public static final IpsModel get() {
@@ -934,7 +932,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
                 graph = new DependencyGraph(ipsProject);
                 getIpsProjectData(ipsProject).setDependencyGraph(graph);
             }
-            return graph;
         }
 
         return graph;
@@ -1082,8 +1079,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
         for (IIpsArtefactBuilderSetInfo info : infos) {
             if (info.getBuilderSetId().equals(builderSetId)) {
-                IIpsArtefactBuilderSet builderSet = info.create(ipsProject);
-                return builderSet;
+                return info.create(ipsProject);
             }
         }
         return null;

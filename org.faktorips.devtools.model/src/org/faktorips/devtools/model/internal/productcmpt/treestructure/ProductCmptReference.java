@@ -104,7 +104,7 @@ public class ProductCmptReference extends ProductCmptStructureReference implemen
      * 
      * @param prodCmptQualifiedName the qualified name of the searched {@link IProductCmpt}
      * @return the {@link IProductCmptReference} referencing the indicated {@link IProductCmpt}, or
-     *         <code>null</code> if none was found.
+     *             <code>null</code> if none was found.
      */
     @Override
     public IProductCmptReference findProductCmptReference(String prodCmptQualifiedName) {

@@ -91,7 +91,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
             }
             SyncInfoSet syncInfoSet = new SyncInfoSet();
             Subscriber subscriber = repositoryProvider.getSubscriber();
-            IResource[] resources = new IResource[] { project };
+            IResource[] resources = { project };
 
             SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
 
@@ -135,7 +135,7 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
         if (repositoryProvider == null) {
             observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
         } else {
-            IResource[] resources = new IResource[] { project };
+            IResource[] resources = { project };
 
             IStatus status = tagProject(repositoryProvider, resources, tagName, monitor);
             if (status.getException() != null) {

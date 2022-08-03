@@ -26,6 +26,6 @@ public interface IDeltaSupport {
      * @throws ClassCastException if otherObject is not an instance of the same class as 'this'.
      * @throws NullPointerException if otherObject is <code>null</code>.
      */
-    public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options);
+    IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options);
 
 }

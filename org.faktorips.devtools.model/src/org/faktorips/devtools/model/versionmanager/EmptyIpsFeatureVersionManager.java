@@ -21,7 +21,7 @@ public class EmptyIpsFeatureVersionManager implements IIpsFeatureVersionManager 
 
     public static final EmptyIpsFeatureVersionManager INSTANCE = new EmptyIpsFeatureVersionManager();
 
-    private AbstractIpsProjectMigrationOperation[] emptyOps = new AbstractIpsProjectMigrationOperation[0];
+    private AbstractIpsProjectMigrationOperation[] emptyOps = {};
 
     private EmptyIpsFeatureVersionManager() {
         // Singleton constructor.

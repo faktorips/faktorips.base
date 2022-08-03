@@ -49,7 +49,7 @@ public abstract class SearchStructure<R> {
      * 
      * @param key The key for the requested nested {@link SearchStructure}
      * @return The nested {@link SearchStructure} or an {@link EmptySearchStructure} if the key does
-     *         not exist.
+     *             not exist.
      */
     public abstract SearchStructure<R> get(Object key);
 
@@ -93,7 +93,7 @@ public abstract class SearchStructure<R> {
      * @param defaultValue The defaultValue which is returned if this {@link SearchStructure} is
      *            empty.
      * @return The result hold by this {@link SearchStructure} or the defaultValue if the structure
-     *         is empty.
+     *             is empty.
      * @throws AssertionError if your assertion that there is at most one element is wrong and hence
      *             there are more than one result values.
      */

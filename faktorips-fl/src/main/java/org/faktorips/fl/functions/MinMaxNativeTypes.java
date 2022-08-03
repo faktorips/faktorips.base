@@ -43,7 +43,7 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
 
     @Override
     public boolean match(String name, Datatype[] otherArgTypes) {
-        if (!this.getName().equals(name)) {
+        if (!getName().equals(name)) {
             return false;
         }
         Datatype[] args = getArgTypes();

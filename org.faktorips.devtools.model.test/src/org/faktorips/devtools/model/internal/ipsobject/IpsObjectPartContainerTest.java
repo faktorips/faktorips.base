@@ -249,7 +249,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNotNull(extPropertiesEl);
         Element extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         String isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-        assertFalse(Boolean.valueOf(isNull).booleanValue());
+        assertFalse(Boolean.parseBoolean(isNull));
         String valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNotNull(valueSection);
         assertEquals("default", valueSection);
@@ -261,7 +261,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNotNull(extPropertiesEl);
         extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-        assertFalse(Boolean.valueOf(isNull).booleanValue());
+        assertFalse(Boolean.parseBoolean(isNull));
         valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNotNull(valueSection);
         assertEquals("value", valueSection);
@@ -273,7 +273,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertNotNull(extPropertiesEl);
         extProp0El = XmlUtil.getFirstElement(extPropertiesEl, IpsObjectPartContainer.XML_VALUE_ELEMENT);
         isNull = extProp0El.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-        assertTrue(Boolean.valueOf(isNull).booleanValue());
+        assertTrue(Boolean.parseBoolean(isNull));
         valueSection = XmlUtil.getCDATAorTextContent(extProp0El);
         assertNull(valueSection);
     }
@@ -415,7 +415,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         Element docEl = getTestDocument().getDocumentElement();
         IIpsProjectProperties properties = ipsProject.getProperties();
         ipsProject.setProperties(properties);
-        String expectedVersion = new String("1.2.3");
+        String expectedVersion = "1.2.3";
 
         versionedContainer.initFromXml(docEl);
 

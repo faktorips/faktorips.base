@@ -69,7 +69,7 @@ public abstract class FormattedCellEditingSupport<T, V> extends CellTrackingEdit
      */
     public abstract String getFormattedValue(T element);
 
-    public static interface EditCondition {
+    public interface EditCondition {
 
         boolean isEditable();
 

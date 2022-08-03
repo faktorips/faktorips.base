@@ -23,16 +23,16 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 public interface IEnumLiteralNameAttributeValue extends IEnumAttributeValue {
 
     /** The XML tag for this {@link IIpsObjectPart}. */
-    public static final String XML_TAG = "EnumLiteralNameAttributeValue"; //$NON-NLS-1$
+    String XML_TAG = "EnumLiteralNameAttributeValue"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTEVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMLITERALNAMEATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the literal name value is not a valid Java
      * identifier.
      */
-    public static final String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER = MSGCODE_PREFIX
+    String MSGCODE_ENUM_LITERAL_NAME_ATTRIBUTE_VALUE_IS_NO_VALID_JAVA_IDENTIFIER = MSGCODE_PREFIX
             + "EnumLiteralNameAttributeValueIsNoValidJavaIdentifier"; //$NON-NLS-1$
 
 }

@@ -160,8 +160,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int[] moveParts(int[] indeces, boolean up) {
         ListElementMover<String> mover = new ListElementMover<>(values);
-        int[] newIndeces = mover.move(indeces, up);
-        return newIndeces;
+        return mover.move(indeces, up);
     }
 
     protected ITableStructure findTableStructure() {
@@ -277,12 +276,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             int toColumnIndex = structure.getColumnIndex(toColumnName);
             ValueDatatype valueDatatypeFrom = datatypes[fromColumnIndex];
             ValueDatatype valueDatatypeTo = datatypes[toColumnIndex];
-            if (valueDatatypeFrom == null || valueDatatypeTo == null) {
-                // Error 'from'-column or the 'to'-column datatype is null!
-                // ignored, will be another validation error
-                return;
-            }
-            if (!valueDatatypeFrom.equals(valueDatatypeTo)) {
+            if (valueDatatypeFrom == null || valueDatatypeTo == null || !valueDatatypeFrom.equals(valueDatatypeTo)) {
                 // Error the 'from'-column and the 'to'-column datatypes are different!
                 // ignored, will be another validation error
                 return;
@@ -290,12 +284,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
             String valueFrom = getValue(fromColumnIndex);
             String valueTo = getValue(toColumnIndex);
-            if (valueFrom == null || valueTo == null) {
-                // ignored, will be another validation error
-                return;
-            }
-
-            if (!valueDatatypeFrom.isParsable(valueFrom) || !valueDatatypeTo.isParsable(valueTo)) {
+            if (valueFrom == null || valueTo == null || !valueDatatypeFrom.isParsable(valueFrom)
+                    || !valueDatatypeTo.isParsable(valueTo)) {
                 // ignored, will be another validation error
                 return;
             }
@@ -311,9 +301,11 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 list.add(new Message(MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE, text,
                         Message.ERROR, new ObjectProperty(this, IRow.PROPERTY_VALUE, toColumnIndex)));
             }
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             // ignored, will be another validation error
         }
+        // CSON: IllegalCatch
     }
 
     private void validateUniqueKeyValue(MessageList list, ITableStructure structure, String columnName) {
@@ -328,10 +320,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));
                 list.add(message);
             }
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             // ignored, can't validate key value because of missing column
             // will be another validation error
         }
+        // CSON: IllegalCatch
     }
 
     private void validateRowValue(MessageList list, ITableStructure structure, ValueDatatype[] datatypes) {
@@ -349,7 +343,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
                 String localizedLabel = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(column);
                 String datatypeName = dataType == null ? column.getDatatype() : dataType.toString();
                 String text = MessageFormat.format(Messages.Row_ValueNotParsable,
-                        new Object[] { value, datatypeName, localizedLabel });
+                        value, datatypeName, localizedLabel);
                 Message message = new Message(MSGCODE_VALUE_NOT_PARSABLE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, i));
                 list.add(message);

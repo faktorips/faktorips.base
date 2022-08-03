@@ -43,7 +43,7 @@ public class ProjectImportTaskTest {
     public void testNotExistingDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
-        projectimporter.setDir(this.getTempDirPath());
+        projectimporter.setDir(getTempDirPath());
 
         try {
             projectimporter.execute();
@@ -57,10 +57,10 @@ public class ProjectImportTaskTest {
     public void testIsNoDirectory() {
 
         ProjectImportTask projectimporter = new ProjectImportTask();
-        projectimporter.setDir(this.getTempDirPath() + "/file.txt");
+        projectimporter.setDir(getTempDirPath() + "/file.txt");
 
-        File d = new File(this.getTempDirPath());
-        File f = new File(this.getTempDirPath() + "/file.txt");
+        File d = new File(getTempDirPath());
+        File f = new File(getTempDirPath() + "/file.txt");
 
         d.deleteOnExit();
         f.deleteOnExit();
@@ -70,16 +70,14 @@ public class ProjectImportTaskTest {
             f.createNewFile();
             projectimporter.execute();
             fail();
-        } catch (BuildException e) {
-            // expected
-        } catch (IOException e) {
+        } catch (BuildException | IOException e) {
             // expected
         }
     }
 
     @Test
     public void testImport() {
-        String path = this.getTempDirPath();
+        String path = getTempDirPath();
         ProjectImportTask projectimporter = new ProjectImportTask();
         projectimporter.setDir(path);
 

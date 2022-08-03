@@ -42,21 +42,21 @@ public interface IEnumValueSetProvider {
      * 
      * @return returns the valueset a subset is created of, or <code>null</code> if there is none.
      */
-    public IEnumValueSet getSourceEnumValueSet();
+    IEnumValueSet getSourceEnumValueSet();
 
     /**
      * Returns the label that is to be displayed above the source values list.
      */
-    public String getSourceLabel();
+    String getSourceLabel();
 
     /**
      * Returns the {@link IConfiguredValueSet} that defines and contains a subset of the
      * source-valueset.
      */
-    public IConfiguredValueSet getTargetConfiguredValueSet();
+    IConfiguredValueSet getTargetConfiguredValueSet();
 
     /**
      * Returns the label that is to be displayed above the target values list.
      */
-    public String getTargetLabel();
+    String getTargetLabel();
 }

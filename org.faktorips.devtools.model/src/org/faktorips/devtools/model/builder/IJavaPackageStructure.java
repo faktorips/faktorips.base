@@ -33,9 +33,9 @@ public interface IJavaPackageStructure {
      *            artifacts <code>false</code> for derived
      * 
      * @return The name of the package where the artifacts are generated for the given
-     *         {@link IIpsSrcFile} depending on the parameters
+     *             {@link IIpsSrcFile} depending on the parameters
      */
-    public String getPackageName(IIpsSrcFile ipsSrcFile, boolean internalArtifact, boolean mergableArtifacts);
+    String getPackageName(IIpsSrcFile ipsSrcFile, boolean internalArtifact, boolean mergableArtifacts);
 
     /**
      * Returns the base package for the given {@link IIpsSrcFolderEntry} depending on whether it is
@@ -49,6 +49,6 @@ public interface IJavaPackageStructure {
      * 
      * @return The name of the base package generated for the given parameters
      */
-    public String getBasePackageName(IIpsSrcFolderEntry entry, boolean internalArtifact, boolean mergableArtifacts);
+    String getBasePackageName(IIpsSrcFolderEntry entry, boolean internalArtifact, boolean mergableArtifacts);
 
 }

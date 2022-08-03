@@ -61,7 +61,7 @@ public class IpsObjectPartChangeRefreshHelper {
      * @param viewerToRefresh The {@link Viewer} that needs to be refreshed when ipsObject has
      *            changed
      * @return The {@link IpsObjectPartChangeRefreshHelper} that was created and initialized or
-     *         <code>null</code> if it could not be created
+     *             <code>null</code> if it could not be created
      */
     public static IpsObjectPartChangeRefreshHelper createAndInit(IIpsObject ipsObject, Viewer viewerToRefresh) {
         if (ipsObject != null && viewerToRefresh != null) {

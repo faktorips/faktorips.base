@@ -38,7 +38,7 @@ public interface ILabeledElement extends IIpsElement {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public ILabel getLabel(Locale locale);
+    ILabel getLabel(Locale locale);
 
     /**
      * Returns the list of labels this element currently has attached.
@@ -46,17 +46,17 @@ public interface ILabeledElement extends IIpsElement {
      * Note that only a defensive copy is returned. The labels are ordered according to the order of
      * the supported languages as they occur in the {@code .ipsproject} file.
      */
-    public List<ILabel> getLabels();
+    List<ILabel> getLabels();
 
     /**
      * Returns whether this element has a plural label.
      */
-    public boolean isPluralLabelSupported();
+    boolean isPluralLabelSupported();
 
     /**
      * Creates a new label for this element.
      */
-    public ILabel newLabel();
+    ILabel newLabel();
 
     /**
      * Returns the value of the {@link ILabel} that has the given {@link Locale} or null if no such
@@ -66,7 +66,7 @@ public interface ILabeledElement extends IIpsElement {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public String getLabelValue(Locale locale);
+    String getLabelValue(Locale locale);
 
     /**
      * Returns the plural value of the {@link ILabel} that has the given {@link Locale} or null if
@@ -76,7 +76,7 @@ public interface ILabeledElement extends IIpsElement {
      * 
      * @throws NullPointerException If the parameter is null
      */
-    public String getPluralLabelValue(Locale locale);
+    String getPluralLabelValue(Locale locale);
 
     /**
      * Sets the value of the {@link ILabel} that has the given {@link Locale}.

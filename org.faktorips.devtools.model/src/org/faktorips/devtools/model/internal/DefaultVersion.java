@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.model.internal;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,10 +68,7 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((versionString == null) ? 0 : versionString.hashCode());
-        return result;
+        return Objects.hash(versionString);
     }
 
     @Override
@@ -78,21 +76,11 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         DefaultVersion other = (DefaultVersion)obj;
-        if (versionString == null) {
-            if (other.versionString != null) {
-                return false;
-            }
-        } else if (!versionString.equals(other.versionString)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(versionString, other.versionString);
     }
 
     @Override
@@ -102,7 +90,7 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
 
     @Override
     public boolean isEmptyVersion() {
-        return this.equals(EMPTY_VERSION);
+        return equals(EMPTY_VERSION);
     }
 
     @Override

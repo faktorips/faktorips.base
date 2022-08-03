@@ -169,10 +169,10 @@ public class UIToolkit {
      * and do not check any child.
      * 
      * @return <code>true</code> if the data seems to be changeable, that means it is not set to be
-     *         read-only by {@link #setDataChangeable(Control, boolean)}. That does not necessarily
-     *         means that the control is enabled. For example a {@link Text} control may be editable
-     *         (by checking {@link Text#getEditable()} but disabled by checking
-     *         {@link Text#isEnabled()}.
+     *             read-only by {@link #setDataChangeable(Control, boolean)}. That does not
+     *             necessarily means that the control is enabled. For example a {@link Text} control
+     *             may be editable (by checking {@link Text#getEditable()} but disabled by checking
+     *             {@link Text#isEnabled()}.
      */
     public boolean isDataChangeable(Control c) {
         if (c == null) {
@@ -314,9 +314,8 @@ public class UIToolkit {
      * Creates a new composite with a grid layout and no borders.
      */
     public Composite createGridComposite(Composite parent, int numColumns, boolean equalSize, boolean margin) {
-        Composite composite = createGridComposite(parent, numColumns, equalSize, margin,
+        return createGridComposite(parent, numColumns, equalSize, margin,
                 new GridData(GridData.FILL_BOTH));
-        return composite;
     }
 
     /**
@@ -847,8 +846,8 @@ public class UIToolkit {
 
     /**
      * @deprecated use {@link #createCombo(Composite)} and
-     *             {@link BindingContext#bindContent(Combo, Object, String, Class)} to set the list
-     *             of valid values instead.
+     *                 {@link BindingContext#bindContent(Combo, Object, String, Class)} to set the
+     *                 list of valid values instead.
      */
     @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, Class<E> enumType) {
@@ -858,8 +857,8 @@ public class UIToolkit {
 
     /**
      * @deprecated use {@link #createCombo(Composite)} and
-     *             {@link BindingContext#bindContent(Combo, Object, String, Enum[])} to set the list
-     *             of valid values instead.
+     *                 {@link BindingContext#bindContent(Combo, Object, String, Enum[])} to set the
+     *                 list of valid values instead.
      */
     @Deprecated
     public <E extends Enum<E>> Combo createCombo(Composite parent, E[] values) {
@@ -991,7 +990,7 @@ public class UIToolkit {
 
     /**
      * @deprecated use {@link #createRadioButtonGroup(Composite, String, int, LinkedHashMap)}
-     *             instead
+     *                 instead
      */
     @Deprecated
     public RadioButtonGroup<?> createRadiobuttonGroup(Composite parent, int style, String text) {

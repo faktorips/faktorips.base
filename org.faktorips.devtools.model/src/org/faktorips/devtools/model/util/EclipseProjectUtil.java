@@ -123,8 +123,8 @@ public class EclipseProjectUtil {
 
     /**
      * @deprecated since 21.6; use
-     *             {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
-     *             instead
+     *                 {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *                 instead
      */
     @Deprecated
     // CSOFF: ParameterNumber
@@ -287,8 +287,8 @@ public class EclipseProjectUtil {
 
     /**
      * @deprecated since 21.6; use
-     *             {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
-     *             instead
+     *                 {@link EclipseProjectUtil#createIpsProject(IJavaProject, IpsProjectCreationProperties)}
+     *                 instead
      */
     @Deprecated
     public static IIpsProject createIpsProject(IJavaProject javaProject,
@@ -499,7 +499,7 @@ public class EclipseProjectUtil {
      * The configurators are provided by the extension point {@link ExtensionPoints#ADD_IPS_NATURE}.
      * 
      * @implNote If no extension is responsible for configuring the project, use the
-     *           {@link StandardJavaProjectConfigurator}
+     *               {@link StandardJavaProjectConfigurator}
      * 
      * @param ipsProject The created {@link IIpsProject}
      * @param creationProperties The {@link IpsProjectCreationProperties} required for creating an

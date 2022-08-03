@@ -210,10 +210,7 @@ public class TypeHierarchy implements ITypeHierarchy {
     public boolean isSubtypeOf(IType candidate, IType supertype) {
         List<IType> subtypes = getSubtypes(supertype);
         for (IType subtype : subtypes) {
-            if (subtype.equals(candidate)) {
-                return true;
-            }
-            if (isSubtypeOf(candidate, subtype)) {
+            if (subtype.equals(candidate) || isSubtypeOf(candidate, subtype)) {
                 return true;
             }
         }

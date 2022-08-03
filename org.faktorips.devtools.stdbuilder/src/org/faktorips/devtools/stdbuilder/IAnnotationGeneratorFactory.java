@@ -24,8 +24,8 @@ public interface IAnnotationGeneratorFactory {
      * @param ipsProject The {@link IIpsProject} for which the {@link IAnnotationGeneratorFactory}
      *            may be required.
      */
-    public boolean isRequiredFor(IIpsProject ipsProject);
+    boolean isRequiredFor(IIpsProject ipsProject);
 
-    public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type);
+    IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type);
 
 }

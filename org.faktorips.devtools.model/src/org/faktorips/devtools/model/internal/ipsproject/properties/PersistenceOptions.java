@@ -66,9 +66,9 @@ public class PersistenceOptions implements IPersistenceOptions {
         if (element == null || !element.getTagName().equals("PersistenceOptions")) { //$NON-NLS-1$
             return;
         }
-        maxColumnNameLength = Integer.valueOf(element.getAttribute(MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME));
-        maxTableNameLength = Integer.valueOf(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
-        allowLazyFetchForSingleValuedAssociations = Boolean.valueOf(element
+        maxColumnNameLength = Integer.parseInt(element.getAttribute(MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME));
+        maxTableNameLength = Integer.parseInt(element.getAttribute(MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME));
+        allowLazyFetchForSingleValuedAssociations = Boolean.parseBoolean(element
                 .getAttribute(ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS));
         maxTableColumnSize = getValueOrDefault(element, MAX_TABLE_COLUMN_SIZE, maxTableColumnSize);
         maxTableColumnScale = getValueOrDefault(element, MAX_TABLE_COLUMN_SCALE, maxTableColumnScale);
@@ -96,7 +96,7 @@ public class PersistenceOptions implements IPersistenceOptions {
         if (attributeValue == null || attributeValue.length() == 0) {
             return defaultValue;
         }
-        return Integer.valueOf(attributeValue);
+        return Integer.parseInt(attributeValue);
     }
 
     @Override
@@ -185,16 +185,16 @@ public class PersistenceOptions implements IPersistenceOptions {
 
     @Override
     public void setMaxTableColumnScale(int scale) {
-        this.maxTableColumnScale = scale;
+        maxTableColumnScale = scale;
     }
 
     @Override
     public void setMaxTableColumnPrecision(int precision) {
-        this.maxTableColumnPrecision = precision;
+        maxTableColumnPrecision = precision;
     }
 
     @Override
     public void setMaxTableColumnSize(int size) {
-        this.maxTableColumnSize = size;
+        maxTableColumnSize = size;
     }
 }

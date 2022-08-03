@@ -16,6 +16,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -32,7 +33,6 @@ import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefactBuilder {
 
@@ -118,8 +118,7 @@ public abstract class AbstractLocalizedPropertiesBuilder extends AbstractArtefac
         Path file = path.getFileName();
         String fileName = file == null ? IpsStringUtils.EMPTY : file.toString();
         path = path.resolveSibling(fileName + '.' + MESSAGES_EXTENSION);
-        AFile messagesFile = derivedFolder.getFile(path);
-        return messagesFile;
+        return derivedFolder.getFile(path);
     }
 
     private String getMessagesFileSuffix(Locale locale) {

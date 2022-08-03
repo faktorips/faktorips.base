@@ -61,8 +61,7 @@ public class RuntimeObjectTest {
 
     protected Element createProdCmptElement() throws ParserConfigurationException {
         Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        Element productCmpt = document.createElement("ProductComponent");
-        return productCmpt;
+        return document.createElement("ProductComponent");
     }
 
 }

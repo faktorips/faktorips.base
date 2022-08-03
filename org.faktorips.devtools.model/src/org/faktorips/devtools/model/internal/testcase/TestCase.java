@@ -240,8 +240,8 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public void setTestCaseType(String testCaseType) {
-        String oldTestCaseType = this.testCaseTypeName;
-        this.testCaseTypeName = testCaseType;
+        String oldTestCaseType = testCaseTypeName;
+        testCaseTypeName = testCaseType;
         valueChanged(oldTestCaseType, testCaseType);
     }
 
@@ -916,12 +916,8 @@ public class TestCase extends IpsObject implements ITestCase {
             TestObject testObject = (TestObject)iIpsObjectPart;
             boolean addParameter = true;
 
-            if (type != null && !isTypeOrDefault(testObject.getTestParameterName(), type, TestObject.DEFAULT_TYPE)) {
-                addParameter = false;
-                continue;
-            }
-
-            if (parameterClass != null && !testObject.getClass().equals(parameterClass)) {
+            if ((type != null && !isTypeOrDefault(testObject.getTestParameterName(), type, TestObject.DEFAULT_TYPE))
+                    || (parameterClass != null && !testObject.getClass().equals(parameterClass))) {
                 addParameter = false;
                 continue;
             }
@@ -973,10 +969,9 @@ public class TestCase extends IpsObject implements ITestCase {
         // TODO Joerg: aufraeumen, Verwendung von TestParameterType.isTypeMatching
         try {
             // compare the parameters type and return if the type matches the given type
-            if (testParameter.isInputOrCombinedParameter() && type.equals(TestParameterType.INPUT)) {
-                return true;
-            }
-            if (testParameter.isExpextedResultOrCombinedParameter() && type.equals(TestParameterType.EXPECTED_RESULT)) {
+            if ((testParameter.isInputOrCombinedParameter() && type.equals(TestParameterType.INPUT))
+                    || (testParameter.isExpextedResultOrCombinedParameter()
+                            && type.equals(TestParameterType.EXPECTED_RESULT))) {
                 return true;
             }
             if (testParameter.isCombinedParameter() && type.equals(TestParameterType.COMBINED)) {

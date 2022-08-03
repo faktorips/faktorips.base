@@ -26,7 +26,7 @@ public interface IElementMover {
      * @param indices The indices array identifying the elements to move.
      * @param up <code>true</code> to move up, <code>false</code> to move down.
      */
-    public int[] move(int[] indices, boolean up);
+    int[] move(int[] indices, boolean up);
 
     /**
      * Moves the elements identified by the given indices one position up and returns the new
@@ -34,7 +34,7 @@ public interface IElementMover {
      * <p>
      * Does not nothing if one of the indices is 0.
      */
-    public int[] moveUp(int[] indices);
+    int[] moveUp(int[] indices);
 
     /**
      * Moves the elements identified by the given indices one position down and returns the new
@@ -42,6 +42,6 @@ public interface IElementMover {
      * <p>
      * Does not nothing if one of the indices is the last index in the array (length - 1).
      */
-    public int[] moveDown(int[] indices);
+    int[] moveDown(int[] indices);
 
 }

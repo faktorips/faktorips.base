@@ -54,10 +54,10 @@ public class AssociationQualificationGroup extends Composite {
         layout.marginTop = 0;
         layout.marginHeight = 0;
         layout.marginWidth = 0;
-        this.setLayout(layout);
+        setLayout(layout);
 
         GridData gridData = new GridData(SWT.FILL, SWT.NONE, true, false);
-        this.setLayoutData(gridData);
+        setLayoutData(gridData);
 
         pmoAssociation = new PmoAssociation((IPolicyCmptTypeAssociation)association);
 
@@ -133,8 +133,8 @@ public class AssociationQualificationGroup extends Composite {
         public PmoAssociation(IPolicyCmptTypeAssociation association) {
             super(association);
             this.association = association;
-            this.ipsProject = association.getIpsProject();
-            AssociationQualificationGroup.this.addDisposeListener($ -> dispose());
+            ipsProject = association.getIpsProject();
+            addDisposeListener($ -> dispose());
         }
 
         public String getQualificationLabel() {

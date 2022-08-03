@@ -24,6 +24,6 @@ public interface IIpsSrcFileEditor {
      * 
      * @return the file actually edited
      */
-    public IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
 }

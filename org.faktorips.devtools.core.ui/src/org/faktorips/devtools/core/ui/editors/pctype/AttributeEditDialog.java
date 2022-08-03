@@ -575,8 +575,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private IProductCmptType findProductCmptTypeAndInformUserIfNotExists() {
         IPolicyCmptType policyCmptType = attribute.getPolicyCmptType();
-        IProductCmptType productCmptType = null;
-        productCmptType = policyCmptType.findProductCmptType(ipsProject);
+        IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         if (productCmptType == null) {
             String text = NLS.bind(Messages.AttributeEditDialog_TypeCantBeFound, policyCmptType.getProductCmptType());
             MessageDialog.openInformation(getShell(), Messages.AttributeEditDialog_Info, text);
@@ -924,11 +923,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (!isPersistentEnabled()) {
-                    getToolkit().setDataChangeable(group, false);
-                    return;
-                }
-                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                if (!isPersistentEnabled() || attribute.getPersistenceAttributeInfo().isTransient()) {
                     getToolkit().setDataChangeable(group, false);
                     return;
                 }
@@ -941,11 +936,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             @Override
             public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                 boolean enabled = isPersistentEnabled();
-                if (!enabled) {
-                    getToolkit().setDataChangeable(group, false);
-                    return;
-                }
-                if (attribute.getPersistenceAttributeInfo().isTransient()) {
+                if (!enabled || attribute.getPersistenceAttributeInfo().isTransient()) {
                     getToolkit().setDataChangeable(group, false);
                     return;
                 }

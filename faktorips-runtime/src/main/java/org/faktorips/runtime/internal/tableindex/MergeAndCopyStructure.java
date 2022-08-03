@@ -28,7 +28,7 @@ public interface MergeAndCopyStructure<T extends MergeAndCopyStructure<T>> {
      * 
      * @param otherMergeable The object that should be merged into this object
      */
-    public void merge(T otherMergeable);
+    void merge(T otherMergeable);
 
     /**
      * This method copies the object which calls it. The newly created object has the same
@@ -36,6 +36,6 @@ public interface MergeAndCopyStructure<T extends MergeAndCopyStructure<T>> {
      * 
      * @return T that is a copy of the calling object
      */
-    public T copy();
+    T copy();
 
 }

@@ -43,7 +43,7 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
     }
 
     private AbstractRootPageElement createRootPageElement() {
-        AbstractRootPageElement pageElement = new AbstractRootPageElement(getContext()) {
+        return new AbstractRootPageElement(getContext()) {
 
             @Override
             public String getPathToRoot() {
@@ -55,7 +55,6 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
                 return false;
             }
         };
-        return pageElement;
     }
 
 }

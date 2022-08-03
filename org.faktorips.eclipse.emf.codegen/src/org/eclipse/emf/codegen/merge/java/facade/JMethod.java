@@ -57,7 +57,7 @@ public interface JMethod extends JMember {
      * </p>
      *
      * @return the formal type parameters of this method, in the order declared in the source, or an
-     *         empty array if no type parameters are declared
+     *             empty array if no type parameters are declared
      */
     String[] getTypeParameters();
 
@@ -87,7 +87,7 @@ public interface JMethod extends JMember {
      * <code>"int[]"</code>.
      * 
      * @return the list of the erased types of the parameters, or an empty array if no parameters
-     *         are declared
+     *             are declared
      */
     String[] getParameterTypes();
 
@@ -98,7 +98,7 @@ public interface JMethod extends JMember {
      * For example: <code>"File"</code>, <code>"java.io.File"</code>, or <code>"int[]"</code>.
      *
      * @return the list of the full types of the parameters, or an empty array if no parameters are
-     *         declared
+     *             declared
      * @since 2.4
      */
     String[] getFullParameterTypes();
@@ -180,7 +180,7 @@ public interface JMethod extends JMember {
      * declaration, including the enclosing braces.
      *
      * @return the body, or <code>null</code> if the method has no body (for example, for an
-     *         abstract or native method)
+     *             abstract or native method)
      */
     String getBody();
 

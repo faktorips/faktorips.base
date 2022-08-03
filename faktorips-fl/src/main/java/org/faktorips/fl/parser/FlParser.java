@@ -972,10 +972,7 @@ public class FlParser/* @bgen(jjtree) */ implements FlParserTreeConstants, FlPar
     }
 
     final private boolean jj_3R_6() {
-        if (jj_scan_token(IDENTIFIER)) {
-            return true;
-        }
-        if (jj_scan_token(31)) {
+        if (jj_scan_token(IDENTIFIER) || jj_scan_token(31)) {
             return true;
         }
         return false;
@@ -1211,8 +1208,8 @@ public class FlParser/* @bgen(jjtree) */ implements FlParserTreeConstants, FlPar
                 jj_expentry[i] = jj_lasttokens[i];
             }
             boolean exists = false;
-            for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
-                int[] oldentry = (int[])(e.nextElement());
+            for (Object jj_expEntry2 : jj_expentries) {
+                int[] oldentry = (int[])(jj_expEntry2);
                 if (oldentry.length == jj_expentry.length) {
                     exists = true;
                     for (int i = 0; i < jj_expentry.length; i++) {

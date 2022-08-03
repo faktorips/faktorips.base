@@ -24,6 +24,6 @@ public interface IValueSource {
      * Returns all values defined in as for example in an {@link EnumValueSet}. Returns an empty
      * list if this value source cannot provide any values.
      */
-    public List<String> getValues();
+    List<String> getValues();
 
 }

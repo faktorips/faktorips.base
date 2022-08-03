@@ -80,7 +80,7 @@ public class PolicyCmptTypeAttributesSection extends AttributesSection {
                 boolean delete = MessageDialog.openQuestion(getShell(), Messages.AttributesSection_deleteTitle, msg);
                 if (delete) {
                     rule.delete();
-                } else if (!delete) {
+                } else {
                     rule.setCheckValueAgainstValueSetRule(false);
                 }
                 return true;

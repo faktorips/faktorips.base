@@ -522,7 +522,7 @@ public class AbstractRuntimeRepositoryTest {
         }
     }
 
-    private class Lookup implements IEnumValueLookupService<TestEnumValue> {
+    private static class Lookup implements IEnumValueLookupService<TestEnumValue> {
 
         private final TestEnumValue value1 = new TestEnumValue("value1");
         private final TestEnumValue value2 = new TestEnumValue("value2");
@@ -561,7 +561,7 @@ public class AbstractRuntimeRepositoryTest {
 
     }
 
-    private class AbstractLookup implements IEnumValueLookupService<TestAbstractEnum> {
+    private static class AbstractLookup implements IEnumValueLookupService<TestAbstractEnum> {
 
         private final TestConcreteExtensibleEnum extendedValue1 = new TestConcreteExtensibleEnum(2, "E1",
                 "Extended Value 1");
@@ -598,7 +598,7 @@ public class AbstractRuntimeRepositoryTest {
 
     }
 
-    private class ConcreteLookup implements IEnumValueLookupService<TestConcreteExtensibleEnum> {
+    private static class ConcreteLookup implements IEnumValueLookupService<TestConcreteExtensibleEnum> {
 
         private final TestConcreteExtensibleEnum extendedValue1 = new TestConcreteExtensibleEnum(2, "E1",
                 "Extended Value 1");

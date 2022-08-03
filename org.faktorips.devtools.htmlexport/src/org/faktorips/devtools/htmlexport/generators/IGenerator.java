@@ -20,11 +20,11 @@ import java.io.UnsupportedEncodingException;
  */
 public interface IGenerator {
 
-    public final String CHARSET = "UTF-8"; //$NON-NLS-1$
+    String CHARSET = "UTF-8"; //$NON-NLS-1$
 
     /**
      * returns generated data as byte[]
      * 
      */
-    public byte[] generate() throws UnsupportedEncodingException;
+    byte[] generate() throws UnsupportedEncodingException;
 }

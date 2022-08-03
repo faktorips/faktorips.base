@@ -41,21 +41,24 @@ public enum FormulaEvaluatorUtil {
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
      * @return the (first) {@link IConfigurableModelObject} in the list that is configured by a
-     *         {@link IProductComponent} with the given ID, {@code null} if no such object is found
-     *         in the list
+     *             {@link IProductComponent} with the given ID, {@code null} if no such object is
+     *             found in the list
      */
     public static <T extends IModelObject, R extends T> R getModelObjectById(List<? extends T> modelObjects,
             String id) {
         for (T modelObject : modelObjects) {
             if (modelObject instanceof IConfigurableModelObject) {
                 if (((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-                    @SuppressWarnings("unchecked")
-                    R castedModelObject = (R)modelObject;
-                    return castedModelObject;
+                    return castModelObject(modelObject);
                 }
             }
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends IModelObject, R extends T> R castModelObject(T modelObject) {
+        return (R)modelObject;
     }
 
     /**
@@ -68,8 +71,8 @@ public enum FormulaEvaluatorUtil {
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
      * @return the all {@link IConfigurableModelObject} in the list that is configured by a
-     *         {@link IProductComponent} with the given ID, the list is empty if no such object is
-     *         found in the list
+     *             {@link IProductComponent} with the given ID, the list is empty if no such object
+     *             is found in the list
      */
     public static <T extends IModelObject, R extends T> List<? extends R> getListModelObjectById(
             List<? extends T> modelObjects,
@@ -96,14 +99,12 @@ public enum FormulaEvaluatorUtil {
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(List, String)
      * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a
-     *         {@link IProductComponent} with the given ID, {@code null} otherwise
+     *             {@link IProductComponent} with the given ID, {@code null} otherwise
      */
     public static <T extends IModelObject, R extends T> R getModelObjectById(T modelObject, String id) {
         if (modelObject instanceof IConfigurableModelObject
                 && ((IConfigurableModelObject)modelObject).getProductComponent().getId().equals(id)) {
-            @SuppressWarnings("unchecked")
-            R castedModelObject = (R)modelObject;
-            return castedModelObject;
+            return castModelObject(modelObject);
         }
         return null;
     }

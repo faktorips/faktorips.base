@@ -144,8 +144,8 @@ public class MethodAccessTest {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "foo");
 
         try {
-            @SuppressWarnings("unused")
             String bar = methodAccess.invoke("will not be part of the message", this);
+            System.out.println(bar);
             fail("Expected " + ClassCastException.class.getSimpleName());
         } catch (ClassCastException e) {
             assertThat(e.getMessage(), containsString("Integer"));
@@ -260,8 +260,8 @@ public class MethodAccessTest {
         var methodAccess = MethodAccess.of(MethodAccessTest.class, "fooStatic");
 
         try {
-            @SuppressWarnings("unused")
             String bar = methodAccess.invokeStatic("will not be part of the message");
+            System.out.println(bar);
             fail("Expected " + ClassCastException.class.getSimpleName());
         } catch (ClassCastException e) {
             assertThat(e.getMessage(), containsString("Integer"));

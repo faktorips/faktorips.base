@@ -45,7 +45,7 @@ public class LinkChangingOverTimeMismatchEntry extends AbstractDeltaEntryForLink
     public LinkChangingOverTimeMismatchEntry(IProductCmptTypeAssociation association, IProductCmptLink link) {
         super(link);
         this.association = association;
-        this.unqualifiedTargetName = StringUtil.unqualifiedName(link.getTarget());
+        unqualifiedTargetName = StringUtil.unqualifiedName(link.getTarget());
     }
 
     @Override

@@ -45,15 +45,13 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 public interface IIpsModel extends IIpsElement {
 
     /** Prefix for all message codes of this class. */
-    static final String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IPSMODEL-"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IIpsModel} singleton instance.
      */
     static IIpsModel get() {
-        @SuppressWarnings("deprecation")
-        IpsModel ipsModel = IpsModel.get();
-        return ipsModel;
+        return IpsModel.get();
     }
 
     /** Returns the workspace. */
@@ -74,7 +72,7 @@ public interface IIpsModel extends IIpsElement {
      * IpsUIPlugin#runWorkspaceModification
      * 
      * @see IWorkspace#run(org.eclipse.core.runtime.ICoreRunnable,
-     *      org.eclipse.core.runtime.IProgressMonitor)
+     *          org.eclipse.core.runtime.IProgressMonitor)
      */
     void runAndQueueChangeEvents(ICoreRunnable action, IProgressMonitor monitor);
 

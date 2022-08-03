@@ -110,8 +110,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     }
 
     public String getProductCmptLabel(IProductCmpt productCmpt) {
-        String label = productCmpt.getName();
-        return label;
+        return productCmpt.getName();
     }
 
     /**

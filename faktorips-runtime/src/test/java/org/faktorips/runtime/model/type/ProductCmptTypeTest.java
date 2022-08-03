@@ -292,11 +292,11 @@ public class ProductCmptTypeTest {
 
     @IpsPolicyCmptType(name = "MyPolicy")
     private abstract static class Policy extends AbstractModelObject implements IConfigurableModelObject {
-
+        // a policy
     }
 
     @IpsEnumType(name = "enums.AnnotatedAbstractEnum", attributeNames = { "id", "name" })
-    private static interface AbstractEnum {
+    private interface AbstractEnum {
 
         @IpsEnumAttribute(name = "id", identifier = true, unique = true)
         String getId();
@@ -306,14 +306,14 @@ public class ProductCmptTypeTest {
     }
 
     @IpsEnumType(name = "enums.SubOfAnnotatedAbstractEnum", attributeNames = { "id", "name" })
-    private static enum SubOfAbstractEnum implements AbstractEnum {
+    private enum SubOfAbstractEnum implements AbstractEnum {
 
         VALUE("1", "1");
 
         private final String id;
         private final String name;
 
-        private SubOfAbstractEnum(String id, String name) {
+        SubOfAbstractEnum(String id, String name) {
             this.id = id;
             this.name = name;
         }

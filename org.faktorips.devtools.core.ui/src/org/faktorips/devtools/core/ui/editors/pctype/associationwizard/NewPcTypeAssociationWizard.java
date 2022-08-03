@@ -153,10 +153,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
 
     private boolean isSuppressedEventFor(IWizardPage page, boolean decreaseEvents) {
         Integer current = suppressedEventForPages.get(page);
-        if (current == null) {
-            return false;
-        }
-        if (current.intValue() == 0) {
+        if ((current == null) || (current.intValue() == 0)) {
             return false;
         }
 
@@ -190,11 +187,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
          * if the target role singular name has changed then we have to update the inverse
          * association definition in the corresponding inverse association
          */
-        if (event.isAffected(inverseAssociation)
-                && !prevInverseAssociationRoleName.equals(inverseAssociation.getTargetRoleSingular())) {
-            storeInverseAssociation(inverseAssociation);
-        } else if (event.isAffected(association)
-                && !prevAssociationRoleName.equals(association.getTargetRoleSingular())) {
+        if ((event.isAffected(inverseAssociation)
+                && !prevInverseAssociationRoleName.equals(inverseAssociation.getTargetRoleSingular()))
+                || (event.isAffected(association)
+                        && !prevAssociationRoleName.equals(association.getTargetRoleSingular()))) {
             storeInverseAssociation(inverseAssociation);
         }
     }
@@ -269,11 +265,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      */
     private boolean validatePageAndDisplayError(IBlockedValidationWizardPage page) {
         IAssociation associationForPage = getAssociationFor(page);
-        if (associationForPage == null) {
-            return true;
-        }
-
-        if (isValidationDisabledFor(page)) {
+        if ((associationForPage == null) || isValidationDisabledFor(page)) {
             return true;
         }
 
@@ -310,10 +302,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * Check if the validation for the given page is disabled.
      */
     private boolean isValidationDisabledFor(IBlockedValidationWizardPage page) {
-        if (page instanceof ConfProdCmptTypePropertyPage && !configureProductCmptType) {
-            return true;
-        } else if (page instanceof InverseAssociationPropertyPage
-                && inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION) {
+        if ((page instanceof ConfProdCmptTypePropertyPage && !configureProductCmptType)
+                || (page instanceof InverseAssociationPropertyPage
+                        && inverseAssociationManipulation == NONE_INVERSE_ASSOCIATION)) {
             return true;
         }
         return false;
@@ -429,7 +420,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
      * @param page the page to check the visibility state
      * 
      * @return <code>true</code> if the given page is visible, <code>false</code> if the page should
-     *         be hidden
+     *             be hidden
      */
     private boolean isPageVisible(IWizardPage page) {
         // if a detail to master association should be created then hide all pages which are not
@@ -804,15 +795,9 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
     public static boolean isProductCmptTypeAvailable(IIpsProject ipsProject,
             IPolicyCmptType sourcePolicyCmptType,
             IPolicyCmptType targetPolicyCmptType) {
-        if (targetPolicyCmptType == null) {
-            // target not set
-            return false;
-        }
-        if (!sourcePolicyCmptType.isConfigurableByProductCmptType()
-                || !targetPolicyCmptType.isConfigurableByProductCmptType()) {
-            return false;
-        }
-        if (sourcePolicyCmptType.findProductCmptType(ipsProject) == null) {
+        if ((targetPolicyCmptType == null) || !sourcePolicyCmptType.isConfigurableByProductCmptType()
+                || !targetPolicyCmptType.isConfigurableByProductCmptType()
+                || (sourcePolicyCmptType.findProductCmptType(ipsProject) == null)) {
             // product cmpt type not found
             return false;
         }
@@ -901,14 +886,10 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             return false;
         }
         List<IAssociation> correspondingAssociations = getExistingInverseAssociationCandidates();
-        if (correspondingAssociations.size() == 0) {
-            return false;
-        }
-
         // if one association found and the last operation was create new the this is the created
         // association
-        if (correspondingAssociations.size() == 1
-                && previousInverseAssociationManipulation == NEW_INVERSE_ASSOCIATION) {
+        if ((correspondingAssociations.size() == 0) || (correspondingAssociations.size() == 1
+                && previousInverseAssociationManipulation == NEW_INVERSE_ASSOCIATION)) {
             return false;
         }
         return true;

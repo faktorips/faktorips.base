@@ -50,9 +50,8 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
         adaptEnumValueProposal(toolkit, dateControl.getTextControl(), valueSet, datatype, ipsProject);
-        DateControlField<String> formatField = new DateControlField<>(dateControl, getInputFormat(datatype,
+        return new DateControlField<>(dateControl, getInputFormat(datatype,
                 valueSet, ipsProject));
-        return formatField;
     }
 
     protected abstract AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
@@ -66,9 +65,8 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
     }
 
     /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
+     * @deprecated use {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     *                 instead.
      */
     @Deprecated
     @Override
@@ -116,8 +114,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
         EditField<String> editField = new FormattingTextField<>(text, getInputFormat(dataType, valueSet,
                 ipsProject));
-        IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
-        return tableCellEditor;
+        return new EditFieldCellEditor(editField);
     }
 
     @Override

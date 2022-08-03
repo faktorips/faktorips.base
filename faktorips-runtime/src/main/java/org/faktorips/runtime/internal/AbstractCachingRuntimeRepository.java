@@ -119,12 +119,15 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     @Override
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
         try {
-            @SuppressWarnings("unchecked")
-            List<T> result = (List<T>)enumValuesCacheByClass.compute(clazz);
-            return result;
+            return cast((List<?>)enumValuesCacheByClass.compute(clazz));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> List<T> cast(List<?> enumValues) {
+        return (List<T>)enumValues;
     }
 
     protected abstract <T> List<T> getNotCachedEnumValues(Class<T> clazz);

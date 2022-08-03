@@ -11,5 +11,5 @@
 package org.faktorips.devtools.core.ui.test;
 
 public interface ITestConfigurationChangeListener {
-    public void testConfigurationHasChanged();
+    void testConfigurationHasChanged();
 }

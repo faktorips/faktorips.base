@@ -37,7 +37,7 @@ public class BuilderSetPropertyPage extends IpsProjectPropertyPage {
                 if (builderSetContainer.hasChangesInDialog()) {
                     String title = Messages.BuilderSetPropertyPage_saveDialog_Title;
                     String message = Messages.BuilderSetPropertyPage_saveDialog_Message;
-                    String[] buttonLabels = new String[] { Messages.BuilderSetPropertyPage_saveDialog_Apply,
+                    String[] buttonLabels = { Messages.BuilderSetPropertyPage_saveDialog_Apply,
                             Messages.BuilderSetPropertyPage_saveDialog_Discard,
                             Messages.BuilderSetPropertyPage_saveDialog_ApplyLater };
                     MessageDialog dialog = new MessageDialog(getShell(), title, null, message, MessageDialog.QUESTION,

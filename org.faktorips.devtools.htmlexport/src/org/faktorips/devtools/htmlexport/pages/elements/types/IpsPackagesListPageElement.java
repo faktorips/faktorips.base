@@ -94,10 +94,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
         Set<String> linkedPackagesNames = new HashSet<>();
 
         for (IIpsPackageFragment packageFragment : packageFragments) {
-            if (!getFilter().accept(packageFragment)) {
-                continue;
-            }
-            if (linkedPackagesNames.contains(packageFragment.getName())) {
+            if (!getFilter().accept(packageFragment) || linkedPackagesNames.contains(packageFragment.getName())) {
                 continue;
             }
 

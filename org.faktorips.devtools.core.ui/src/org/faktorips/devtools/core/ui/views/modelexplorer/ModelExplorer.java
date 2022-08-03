@@ -718,7 +718,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     }
 
-    private class LayoutAction extends Action {
+    private static class LayoutAction extends Action {
 
         private boolean isFlatLayout;
 

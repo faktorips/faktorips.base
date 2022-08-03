@@ -28,12 +28,12 @@ public interface ITeamOperations {
      * 
      * @return true if synchronized or false if there are any changes
      */
-    public boolean isProjectSynchronized(IProject ipsProject, IProgressMonitor monitor);
+    boolean isProjectSynchronized(IProject ipsProject, IProgressMonitor monitor);
 
     /**
      * Commit the files in the project. All files have to be from the same project.
      */
-    public void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
+    void commitFiles(IProject project, IResource[] resources, String comment, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
     /**
@@ -43,7 +43,7 @@ public interface ITeamOperations {
      * @param project TODO
      * @param monitor a progress monitor to indicate the progress
      */
-    public void tagProject(String tagName, IProject project, IProgressMonitor monitor)
+    void tagProject(String tagName, IProject project, IProgressMonitor monitor)
             throws TeamException, InterruptedException;
 
     /**
@@ -51,6 +51,6 @@ public interface ITeamOperations {
      * 
      * @return the name of the version control system
      */
-    public String getVersionControlSystem();
+    String getVersionControlSystem();
 
 }

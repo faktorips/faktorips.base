@@ -360,8 +360,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      * @param name The kindId to set.
      */
     public void setKindId(String name) {
-        String oldName = this.kindId;
-        this.kindId = name;
+        String oldName = kindId;
+        kindId = name;
         updateRuntimeId(getIpsProject());
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_KIND_ID, oldName, name));
     }

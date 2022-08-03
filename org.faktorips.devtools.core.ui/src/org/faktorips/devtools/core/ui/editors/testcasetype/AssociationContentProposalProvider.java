@@ -46,7 +46,7 @@ public class AssociationContentProposalProvider extends AbstractPrefixContentPro
     public AssociationContentProposalProvider(IPolicyCmptType pcType, boolean onlyAssoziationOrComposition) {
         ArgumentCheck.notNull(pcType);
         this.pcType = pcType;
-        this.onlyAssociationOrComposition = onlyAssoziationOrComposition;
+        onlyAssociationOrComposition = onlyAssoziationOrComposition;
     }
 
     @Override

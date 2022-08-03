@@ -30,7 +30,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * Returns the package fragment the file belongs to. If this IPS source file is constructed from
      * an input stream (for example to show an old revision/history) this method returns null!
      */
-    public IIpsPackageFragment getIpsPackageFragment();
+    IIpsPackageFragment getIpsPackageFragment();
 
     /**
      * Returns the corresponding platform file. This method returns <code>null</code> if the IPS
@@ -38,54 +38,54 @@ public interface IIpsSrcFile extends IIpsElement {
      * source file is contained in an IPS archive or is constructed from an input stream (e.g. to
      * display an old revision/history in an editor).
      */
-    public AFile getCorrespondingFile();
+    AFile getCorrespondingFile();
 
     /**
      * Returns <code>true</code> if the file contains unsaved changes to it's contents, otherwise
      * <code>false</code>.
      */
-    public boolean isDirty();
+    boolean isDirty();
 
     /**
      * Marks the file as containing no unsaved changed.
      */
-    public void markAsClean();
+    void markAsClean();
 
     /**
      * Marks the file as containing unsaved changes.
      */
-    public void markAsDirty();
+    void markAsDirty();
 
     /**
      * Discard all changes that haven't been saved yet. If the file is not dirty, nothing happens.
      */
-    public void discardChanges();
+    void discardChanges();
 
     /**
      * Returns a new memento with the file's content and dirty state.
      */
-    public IIpsSrcFileMemento newMemento() throws IpsException;
+    IIpsSrcFileMemento newMemento() throws IpsException;
 
     /**
      * Update the file's state with the information from the memento.
      * 
      * @throws IpsException if the memento wasn't taken from this file.
      */
-    public void setMemento(IIpsSrcFileMemento memento) throws IpsException;
+    void setMemento(IIpsSrcFileMemento memento) throws IpsException;
 
     /**
      * Saves the file's content to the file system.
      * 
      * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
-     *             {@code force} parameter is ignored anyways.
+     *                 {@code force} parameter is ignored anyways.
      */
     @Deprecated(forRemoval = true, since = "22.6")
-    public void save(boolean force, IProgressMonitor monitor) throws IpsException;
+    void save(boolean force, IProgressMonitor monitor) throws IpsException;
 
     /**
      * Saves the file's content to the file system.
      */
-    public void save(IProgressMonitor monitor) throws IpsException;
+    void save(IProgressMonitor monitor) throws IpsException;
 
     /**
      * Returns true if the content can be parsed and a IpsObject can be created based on the
@@ -94,12 +94,12 @@ public interface IIpsSrcFile extends IIpsElement {
      * 
      * @throws IpsException if an error occurs while reading the contents.
      */
-    public boolean isContentParsable() throws IpsException;
+    boolean isContentParsable() throws IpsException;
 
     /**
      * Returns <code>true</code> if the file has been read from the resource history.
      */
-    public boolean isHistoric();
+    boolean isHistoric();
 
     /**
      * Returns <code>true</code> if this file is contained in an existing
@@ -108,15 +108,15 @@ public interface IIpsSrcFile extends IIpsElement {
      * resource that is in an non-IPS folder.
      * 
      * @return <code>true</code> if this file is contained in an existing
-     *         {@link IIpsPackageFragmentRoot}, otherwise <code>false</code>
+     *             {@link IIpsPackageFragmentRoot}, otherwise <code>false</code>
      */
-    public boolean isContainedInIpsRoot();
+    boolean isContainedInIpsRoot();
 
     /**
      * Returns the IPS object stored in the file.
      * 
      */
-    public IIpsObject getIpsObject();
+    IIpsObject getIpsObject();
 
     /**
      * Returns the given property of the source file.Returns <code>null</code> if the given property
@@ -126,22 +126,22 @@ public interface IIpsSrcFile extends IIpsElement {
      * completely read until {@link #getIpsObject()} method is called.
      * 
      */
-    public String getPropertyValue(String name);
+    String getPropertyValue(String name);
 
     /**
      * Returns the IpsObjectType that is contain in this IpsSrcFile.
      */
-    public IpsObjectType getIpsObjectType();
+    IpsObjectType getIpsObjectType();
 
     /**
      * Returns the qualified name type of the IPS object contained within this IpsSrcFile.
      */
-    public QualifiedNameType getQualifiedNameType();
+    QualifiedNameType getQualifiedNameType();
 
     /**
      * Returns the name of the IPS object stored in the file.
      */
-    public String getIpsObjectName();
+    String getIpsObjectName();
 
     /**
      * Returns whether this file is mutable or not. An IPS source file is immutable in the following
@@ -154,7 +154,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * history.</li>
      * </ul>
      */
-    public boolean isMutable();
+    boolean isMutable();
 
     /**
      * Returns whether this file is read-only or not. An IPS source file is read-only in the
@@ -167,27 +167,27 @@ public interface IIpsSrcFile extends IIpsElement {
      * history.</li>
      * </ul>
      */
-    public boolean isReadOnly();
+    boolean isReadOnly();
 
     /**
      * Reads the content from the enclosing resource.
      * 
      * @throws IpsException if an error occurs while reading the contents.
      */
-    public InputStream getContentFromEnclosingResource() throws IpsException;
+    InputStream getContentFromEnclosingResource() throws IpsException;
 
     /**
      * Returns the name of the base package for the generated artifacts that are mergable. All
      * generated, mergeable artifacts are contained in this package or one of the child packages.
      */
-    public String getBasePackageNameForMergableArtefacts() throws IpsException;
+    String getBasePackageNameForMergableArtefacts() throws IpsException;
 
     /**
      * Returns the name of the base package for the generated artifacts that are 100%derived/not
      * mergable. All generated, 100% derived artifacts are contained in this package or one of the
      * child packages.
      */
-    public String getBasePackageNameForDerivedArtefacts() throws IpsException;
+    String getBasePackageNameForDerivedArtefacts() throws IpsException;
 
     /**
      * Deletes this source file by deleting the corresponding resource.
@@ -197,7 +197,7 @@ public interface IIpsSrcFile extends IIpsElement {
      * @throws UnsupportedOperationException If the source file is stored in an archive
      */
     @Override
-    public void delete() throws IpsException;
+    void delete() throws IpsException;
 
     /**
      * If {@code validateIpsSchema} is used this set may contain error from the XML parser.

@@ -25,12 +25,12 @@ public interface IIpsSearchScope {
     /**
      * @return Set of srcFile, which are related in this Scope
      */
-    public Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws IpsException;
+    Set<IIpsSrcFile> getSelectedIpsSrcFiles() throws IpsException;
 
     /**
      * returns the description of the scope
      * 
      * @return String
      */
-    public String getScopeDescription();
+    String getScopeDescription();
 }

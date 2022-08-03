@@ -21,7 +21,7 @@ public enum ContainsSearchOperatorType implements ISearchOperatorType {
 
     private final String label;
 
-    private ContainsSearchOperatorType(String label) {
+    ContainsSearchOperatorType(String label) {
         this.label = label;
     }
 

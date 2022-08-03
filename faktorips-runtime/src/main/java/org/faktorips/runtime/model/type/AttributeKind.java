@@ -37,7 +37,7 @@ public enum AttributeKind {
 
     private final String xmlName;
 
-    private AttributeKind(String xmlName) {
+    AttributeKind(String xmlName) {
         this.xmlName = xmlName;
     }
 

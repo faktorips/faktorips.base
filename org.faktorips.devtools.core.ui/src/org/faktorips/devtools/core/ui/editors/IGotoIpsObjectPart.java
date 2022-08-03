@@ -28,6 +28,6 @@ public interface IGotoIpsObjectPart {
      * 
      * @param part the {@link IIpsObjectPart}
      */
-    public void gotoIpsObjectPart(IIpsObjectPart part);
+    void gotoIpsObjectPart(IIpsObjectPart part);
 
 }

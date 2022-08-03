@@ -73,7 +73,8 @@ public class TypeValidations {
      * 
      * @throws IpsException Any raised exceptions are delegated by this method.
      * @deprecated since 21.6; use {@link #validateUniqueQualifiedName(IIpsObject)} or
-     *             {@link #validateUniqueQualifiedName(IpsObjectType, String, IIpsProject)} instead.
+     *                 {@link #validateUniqueQualifiedName(IpsObjectType, String, IIpsProject)}
+     *                 instead.
      */
     @Deprecated
     public static Message validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType otherIpsObjectType,
@@ -91,7 +92,7 @@ public class TypeValidations {
             return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS,
                     MessageFormat.format(
                             Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
-                            new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }),
+                            otherIpsObjectType.getId(), file.getIpsProject()),
                     Message.WARNING,
                     ipsObject != null ? new ObjectProperty[] { new ObjectProperty(ipsObject, IIpsObject.PROPERTY_NAME) }
                             : new ObjectProperty[0]);

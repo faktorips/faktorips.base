@@ -44,7 +44,7 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
     public MultilingualMismatchEntry(IAttributeValue attributeValue, IProductCmptTypeAttribute attribute) {
         super(attributeValue);
         this.attribute = attribute;
-        this.defaultLanguageLocale = getDefaultLanguage();
+        defaultLanguageLocale = getDefaultLanguage();
     }
 
     private Locale getDefaultLanguage() {

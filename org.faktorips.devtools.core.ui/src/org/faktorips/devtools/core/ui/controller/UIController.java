@@ -19,11 +19,11 @@ public interface UIController {
     /**
      * Updates the model with the the data in the user interface this controler is responsible for.
      */
-    public void updateModel();
+    void updateModel();
 
     /**
      * Updates the part of the user interface the controler is responsible for with the data from
      * the model.
      */
-    public void updateUI();
+    void updateUI();
 }

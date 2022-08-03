@@ -33,7 +33,7 @@ public abstract class AbstractPropertiesGenerator {
             AbstractLocalizedPropertiesBuilder propertiesBuilder, AbstractLocalizedProperties localizedProperties) {
         this.messagesPropertiesFile = messagesPropertiesFile;
         this.supportedLanguage = supportedLanguage;
-        this.builder = propertiesBuilder;
+        builder = propertiesBuilder;
         this.localizedProperties = localizedProperties;
         try {
             if (messagesPropertiesFile.exists()) {

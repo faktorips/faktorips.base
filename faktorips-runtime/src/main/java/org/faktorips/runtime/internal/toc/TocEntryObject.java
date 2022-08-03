@@ -76,8 +76,7 @@ public abstract class TocEntryObject extends TocEntry {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((ipsObjectId == null) ? 0 : ipsObjectId.hashCode());
-        result = prime * result + ((ipsObjectQualifiedName == null) ? 0 : ipsObjectQualifiedName.hashCode());
-        return result;
+        return prime * result + ((ipsObjectQualifiedName == null) ? 0 : ipsObjectQualifiedName.hashCode());
     }
 
     @Override
@@ -85,20 +84,13 @@ public abstract class TocEntryObject extends TocEntry {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof TocEntryObject)) {
+        if (!super.equals(obj) || !(obj instanceof TocEntryObject)) {
             return false;
         }
         TocEntryObject other = (TocEntryObject)obj;
-        if (!Objects.equals(ipsObjectId, other.ipsObjectId)) {
-            return false;
-        }
-        if (!Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)) {
-            return false;
-        }
-        return super.equals(obj);
+        return Objects.equals(ipsObjectId, other.ipsObjectId)
+                && Objects.equals(ipsObjectQualifiedName, other.ipsObjectQualifiedName)
+                && super.equals(obj);
     }
 
 }

@@ -26,13 +26,13 @@ public interface IDeleteListener {
      * @param part The part that will be deleted.
      * @return true to continue deletion or false to interrupt
      */
-    public boolean aboutToDelete(IIpsObjectPart part);
+    boolean aboutToDelete(IIpsObjectPart part);
 
     /**
      * Called after the part was deleted.
      * 
      * @param part The deleted part.
      */
-    public void deleted(IIpsObjectPart part);
+    void deleted(IIpsObjectPart part);
 
 }

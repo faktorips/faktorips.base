@@ -49,10 +49,9 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
         if (element instanceof ITestPolicyCmptTypeParameter) {
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
 
-            String targetExtension = ""; //$NON-NLS-1$
-
-            targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
+            String targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
                     : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
+
             if (StringUtils.isNotEmpty(targetExtension) && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
                 targetExtension = " : " + targetExtension; //$NON-NLS-1$
             } else {

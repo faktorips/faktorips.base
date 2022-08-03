@@ -79,7 +79,7 @@ import org.faktorips.util.StringUtil;
  */
 public class IpsPasteHandler extends AbstractCopyPasteHandler {
 
-    private static final IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = new IIpsObject[0];
+    private static final IIpsObject[] EMPTY_IPS_OBJECT_ARRAY = {};
 
     private Clipboard clipboard;
     private Shell shell;

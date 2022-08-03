@@ -45,7 +45,7 @@ public class ForeignKey extends Key implements IForeignKey {
 
     @Override
     public String getName() {
-        StringBuffer buffer = new StringBuffer(refTableStructure);
+        StringBuilder buffer = new StringBuilder(refTableStructure);
         buffer.append('(');
         buffer.append(refUniqueKey);
         buffer.append(')');
@@ -156,6 +156,13 @@ public class ForeignKey extends Key implements IForeignKey {
             list.add(ml);
             return;
         }
+        validateReferencedColumn(item, refStructure, list, refRange);
+    }
+
+    private void validateReferencedColumn(IColumnRange item,
+            ITableStructure refStructure,
+            MessageList list,
+            IColumnRange refRange) {
         IColumn from = getTableStructure().getColumn(item.getFromColumn());
         IColumn to = getTableStructure().getColumn(item.getToColumn());
         IColumn refFrom = refStructure.getColumn(refRange.getFromColumn());
@@ -164,7 +171,7 @@ public class ForeignKey extends Key implements IForeignKey {
             String text = MessageFormat.format(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, from.getName(),
                     refFrom);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
-        } else if ((from == null && refFrom != null) || (from != null && refFrom == null)) {
+        } else if ((from == null) == (refFrom != null)) {
             String text = Messages.ForeignKey_msgInvalidRange;
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
             return;
@@ -172,7 +179,7 @@ public class ForeignKey extends Key implements IForeignKey {
         if (to != null && refFrom != null && !to.getDatatype().equals(refTo.getDatatype())) {
             String text = MessageFormat.format(Messages.ForeignKey_msgForeignKeyDatatypeMismatch, to.getName(), refTo);
             list.add(new Message("", text, Message.ERROR, item.getName())); //$NON-NLS-1$
-        } else if ((to == null && refTo != null) || (to != null && refTo == null)) {
+        } else if ((to == null) == (refTo != null)) {
             String text = Messages.ForeignKey_msgReferencedRangeInvalid;
             list.add(new Message("", text, Message.WARNING, item.getName())); //$NON-NLS-1$
         }

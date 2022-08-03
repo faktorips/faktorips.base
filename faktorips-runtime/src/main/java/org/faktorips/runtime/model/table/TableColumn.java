@@ -59,11 +59,7 @@ public class TableColumn extends ModelElement {
     public Object getValue(Object row) {
         try {
             return getGetterMethod().invoke(row);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Can't get value for column \"" + getName() + "\"", e);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Can't get value for column \"" + getName() + "\"", e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             throw new RuntimeException("Can't get value for column \"" + getName() + "\"", e);
         }
     }

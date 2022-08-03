@@ -40,7 +40,7 @@ public final class ModelStructureInheritAssociationsContentProvider extends Abst
 
     @Override
     public boolean hasChildren(Object element) {
-        Object[] children = this.getChildren(element);
+        Object[] children = getChildren(element);
         return children != null && children.length > 0;
     }
 

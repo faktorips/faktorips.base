@@ -62,11 +62,11 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
         // we have to store previous and next here, because the evaulation of
         // previous and next depend on the valid-from date which we will modify...
-        this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
-        this.next = (IProductCmptGeneration)generation.getNextByValidDate();
+        previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
+        next = (IProductCmptGeneration)generation.getNextByValidDate();
         this.newGenerationDialog = newGenerationDialog;
-        this.pmo = new GenerationEditDialogPMO(generation);
-        this.extFactory = new ExtensionPropertyControlFactory(generation);
+        pmo = new GenerationEditDialogPMO(generation);
+        extFactory = new ExtensionPropertyControlFactory(generation);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         private GregorianCalendar cachedDate = null;
 
         public GenerationEditDialogPMO(IProductCmptGeneration currentGeneration) {
-            this.generation = currentGeneration;
+            generation = currentGeneration;
             cachedDate = generation.getValidFrom();
         }
 

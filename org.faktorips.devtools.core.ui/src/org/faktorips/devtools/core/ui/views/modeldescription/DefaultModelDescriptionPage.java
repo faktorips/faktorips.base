@@ -51,7 +51,7 @@ import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * A page for presenting {@link DescriptionItem DescriptionItems} similar to the outline view. 
+ * A page for presenting {@link DescriptionItem DescriptionItems} similar to the outline view.
  *
  * The attributes and their descriptions are presented within an ExpandableComposite.
  */
@@ -157,10 +157,9 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         IIpsObject structure = getIpsObject();
         String localizedDescription = createDescription(structure);
         String deprecation = createDeprecation(structure);
-        DescriptionItem descriptionItem = new DescriptionItem(
+        return new DescriptionItem(
                 Messages.DefaultModelDescriptionPage_GeneralInformation,
                 localizedDescription, deprecation);
-        return descriptionItem;
     }
 
     private String createDeprecation(IDescribedElement describedElement) {

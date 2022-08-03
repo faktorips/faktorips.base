@@ -194,7 +194,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private IIpsObjectPath path = null;
 
-    private String[] predefinedDatatypesUsed = new String[0];
+    private String[] predefinedDatatypesUsed = {};
 
     // all datatypes defined in the project including(!) the value datatypes.
     private List<Datatype> definedDatatypes = new ArrayList<>(0);
@@ -841,8 +841,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     public void initFromXml(IIpsProject ipsProject, Element element) {
-        modelProject = Boolean.valueOf(element.getAttribute("modelProject")).booleanValue(); //$NON-NLS-1$
-        productDefinitionProject = Boolean.valueOf(element.getAttribute("productDefinitionProject")).booleanValue(); //$NON-NLS-1$
+        modelProject = Boolean.parseBoolean(element.getAttribute("modelProject")); //$NON-NLS-1$
+        productDefinitionProject = Boolean.parseBoolean(element.getAttribute("productDefinitionProject")); //$NON-NLS-1$
         persistentProject = ValueToXmlHelper.isAttributeTrue(element, ATTRIBUTE_PERSISTENT_PROJECT);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
@@ -1000,7 +1000,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private Datatype createDefinedDatatype(IIpsProject ipsProject, Element element) {
         if (!element.hasAttribute("valueObject") //$NON-NLS-1$
-                || Boolean.valueOf(element.getAttribute("valueObject")).booleanValue()) { //$NON-NLS-1$
+                || Boolean.parseBoolean(element.getAttribute("valueObject"))) { //$NON-NLS-1$
             return DynamicValueDatatype.createFromXml(ipsProject, element);
         }
         String javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
@@ -1050,13 +1050,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         // migration for 1.0 files
         if (element.hasAttribute("containerRelationIsImplementedRuleEnabled")) { //$NON-NLS-1$
             derivedUnionIsImplementedRuleEnabled = Boolean
-                    .valueOf(element.getAttribute("containerRelationIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+                    .parseBoolean(element.getAttribute("containerRelationIsImplementedRuleEnabled")); //$NON-NLS-1$
         }
 
         // migration for 2.0-rc files
         if (element.hasAttribute("derivedUnionIsImplementedRuleEnabled")) { //$NON-NLS-1$
             derivedUnionIsImplementedRuleEnabled = Boolean
-                    .valueOf(element.getAttribute("derivedUnionIsImplementedRuleEnabled")).booleanValue(); //$NON-NLS-1$
+                    .parseBoolean(element.getAttribute("derivedUnionIsImplementedRuleEnabled")); //$NON-NLS-1$
         }
 
         // since 2.0: read from <AdditionalSettings> (and not from <OptionalConstraints> anymore)
@@ -1112,7 +1112,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             // for example for marker enums where you could skip the enabled attribute
             return !Boolean.FALSE.toString().equals(value);
         } else {
-            return Boolean.valueOf(enabledAttributeValue).booleanValue();
+            return Boolean.parseBoolean(enabledAttributeValue);
         }
     }
 
@@ -1930,7 +1930,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     @Override
     public void setEscapeNonStandardBlanks(boolean enabled) {
-        this.escapeNonStandardBlanks = enabled;
+        escapeNonStandardBlanks = enabled;
     }
 
     @Override

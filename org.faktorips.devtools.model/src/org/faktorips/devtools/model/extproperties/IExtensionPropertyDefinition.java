@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
  * <code>IpsModel</code>.
  * 
  * @see org.faktorips.devtools.model.IIpsModel#getExtensionPropertyDefinitions(IIpsObjectPartContainer)
- *      )
+ *          )
  * 
  * @author Jan Ortmann
  */
@@ -38,24 +38,24 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * Position to indicate that controls to edit the extension property should be placed above the
      * standard Faktor-IPS controls.
      */
-    public static final String POSITION_TOP = "top"; //$NON-NLS-1$
+    String POSITION_TOP = "top"; //$NON-NLS-1$
 
     /**
      * Position to indicate that controls to edit the extension property should be placed below the
      * standard Faktor-IPS controls.
      */
-    public static final String POSITION_BOTTOM = "bottom"; //$NON-NLS-1$
+    String POSITION_BOTTOM = "bottom"; //$NON-NLS-1$
 
     /**
      * Default sort order.
      */
-    public static final int DEFAULT_ORDER = 10000;
+    int DEFAULT_ORDER = 10000;
 
     /**
      * Returns the type this object defines a property for, e.g.
      * <code>org.faktorips.plugin.model.pctype.IAttribute</code>.
      */
-    public Class<?> getExtendedType();
+    Class<?> getExtendedType();
 
     /**
      * Returns the unique property id. The id is the unique id of the extension that defines this
@@ -65,7 +65,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * E.g. if the IPS model type IAttribute is extended with a 'prop0' property, the recommended
      * extension id is 'attribute.prop0'.
      */
-    public String getPropertyId();
+    String getPropertyId();
 
     /**
      * Returns the order of the extension property. By default the order is used for display
@@ -76,7 +76,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * 1000-1999 so that extension properties of the same plug-in are grouped together. Don't use
      * sequential numbers for your initial properties, so that you can insert others later.
      */
-    public int getOrder();
+    int getOrder();
 
     /**
      * Returns the default value configured by this definition.
@@ -86,7 +86,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * {@link IIpsObjectPartContainer} instance call
      * {@link #getDefaultValue(IIpsObjectPartContainer)}.
      */
-    public Object getDefaultValue();
+    Object getDefaultValue();
 
     /**
      * Returns the initial value (default value) of the extension property when it is created for
@@ -99,7 +99,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @param ipsObjectPartContainer The part for which the extension property is created
      * @return The default value that is set when the new extension property is created
      */
-    public Object getDefaultValue(IIpsObjectPartContainer ipsObjectPartContainer);
+    Object getDefaultValue(IIpsObjectPartContainer ipsObjectPartContainer);
 
     /**
      * Stores the value in the XML element. Simple values should be appended as CDATA sections to
@@ -109,7 +109,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @param value The value to add to the XML. The passed value is <strong>never</strong>
      *            <code>null</code>. Null handling is done before this method is called.
      */
-    public void valueToXml(Element valueElement, Object value);
+    void valueToXml(Element valueElement, Object value);
 
     /**
      * Returns the property's value from the given XML element. The method is only called if a value
@@ -118,7 +118,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * 
      * @param valueElement The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      */
-    public Object getValueFromXml(Element valueElement);
+    Object getValueFromXml(Element valueElement);
 
     /**
      * Returns the property's value from the given string. The method is only called if a value
@@ -127,7 +127,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * 
      * @param value The value element (textual representation &lt;value&gt;&lt;/value&gt;).
      */
-    public Object getValueFromString(String value);
+    Object getValueFromString(String value);
 
     /**
      * This method is called before a value is set to an object's extension property.
@@ -137,10 +137,10 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      *            method.
      * 
      * @return <code>true</code> if the value can be set, <code>false</code> if the value can't be
-     *         set. Note that model objects should allow inconsistent state and report
-     *         inconsistencies via the validate() method. So use wisely.
+     *             set. Note that model objects should allow inconsistent state and report
+     *             inconsistencies via the validate() method. So use wisely.
      */
-    public boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
+    boolean beforeSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
      * This method is called after a value was set to a object's extension property.
@@ -148,7 +148,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @param ipsObjectPart The IPS object part which property has been set.
      * @param value The value that will be set to the property via the setExtProperty method.
      */
-    public void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
+    void afterSetValue(IIpsObjectPartContainer ipsObjectPart, Object value);
 
     /**
      * Validates the property value for the given IPS object part.
@@ -157,11 +157,11 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @param value The property value in string format.
      * 
      * @return A list of messages describing invalid property state or warnings about the state.
-     *         <code>null</code> if the value is valid.
+     *             <code>null</code> if the value is valid.
      * 
      * @throws IpsException if an error occurs while validating the property.
      */
-    public MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws IpsException;
+    MessageList validate(IIpsObjectPartContainer ipsObjectPart, Object value) throws IpsException;
 
     /**
      * Returns the position of the label and editing field of the extension property in the display
@@ -171,13 +171,13 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * @see #POSITION_BOTTOM
      * @see #POSITION_TOP
      */
-    public String getPosition();
+    String getPosition();
 
     /**
      * Returns the property's name. This name is also the label of the editing field of this
      * property.
      */
-    public String getName();
+    String getName();
 
     /**
      * This method is called by the extension property framework to decide whether this extension
@@ -187,7 +187,7 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      *            extension property should be active or inactive
      * @return <code>true</code> if this extension property is active for the given part
      */
-    public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer);
+    boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer);
 
     /**
      * Indicates how long extension properties are to be retained and thus where they can be
@@ -207,9 +207,9 @@ public interface IExtensionPropertyDefinition extends Comparable<IExtensionPrope
      * 
      * @return The defined {@link RetentionPolicy}
      */
-    public RetentionPolicy getRetention();
+    RetentionPolicy getRetention();
 
-    public boolean isRetainedAtRuntime();
+    boolean isRetainedAtRuntime();
 
     public enum RetentionPolicy {
         DEFINITION,

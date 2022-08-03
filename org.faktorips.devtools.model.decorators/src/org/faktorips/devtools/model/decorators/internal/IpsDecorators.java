@@ -160,7 +160,7 @@ public class IpsDecorators implements IIpsDecorators {
      *
      * @see IIpsDecorators#get
      * @deprecated <em>This method should only be called when explicitly depending on implementation
-     *             details, otherwise use {@link IIpsDecorators#get}!</em>
+     *                 details, otherwise use {@link IIpsDecorators#get}!</em>
      */
     @Deprecated
     public static final IpsDecorators get() {

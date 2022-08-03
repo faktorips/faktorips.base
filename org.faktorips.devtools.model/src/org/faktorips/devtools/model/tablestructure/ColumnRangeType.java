@@ -31,7 +31,7 @@ public enum ColumnRangeType implements INamedValue {
     /**
      * Private constructor according to the type save enumeration pattern.
      */
-    private ColumnRangeType(String id, String name) {
+    ColumnRangeType(String id, String name) {
         ArgumentCheck.notNull(id);
         ArgumentCheck.notNull(name);
         this.id = id;

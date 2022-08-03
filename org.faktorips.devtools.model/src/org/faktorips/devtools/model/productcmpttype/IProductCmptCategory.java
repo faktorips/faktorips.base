@@ -40,32 +40,32 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
  */
 public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, IDescribedElement {
 
-    public static final String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_FOR_FORMULA_SIGNATURE_DEFINITIONS = "defaultForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
-    public static final String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_FOR_VALIDATION_RULES = "defaultForValidationRules"; //$NON-NLS-1$
 
-    public static final String PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = "defaultForTableStructureUsages"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_FOR_TABLE_STRUCTURE_USAGES = "defaultForTableStructureUsages"; //$NON-NLS-1$
 
-    public static final String PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = "defaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = "defaultForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
-    public static final String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
+    String PROPERTY_DEFAULT_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = "defaultForProductCmptTypeAttributes"; //$NON-NLS-1$
 
-    public static final String PROPERTY_POSITION = "position"; //$NON-NLS-1$
+    String PROPERTY_POSITION = "position"; //$NON-NLS-1$
 
-    public static final String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ProductCmptCategory-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no name has been specified for this
      * {@link IProductCmptCategory}.
      */
-    public static final String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
+    String MSGCODE_NAME_IS_EMPTY = MSGCODE_PREFIX + "NameIsEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name given to this {@link IProductCmptCategory}
      * is already used for another {@link IProductCmptCategory} in the scope of the product
      * component type's supertype hierarchy.
      */
-    public static final String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_NAME_ALREADY_USED_IN_TYPE_HIERARCHY = MSGCODE_PREFIX
             + "NameAlreadyUsedInTypeHierarchy"; //$NON-NLS-1$
 
     /**
@@ -73,7 +73,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for formula signature definitions.
      */
-    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_DEFAULTS_FOR_FORMULA_SIGNATURE_DEFINITIONS = MSGCODE_PREFIX
             + "DuplicateDefaultsForFormulaSignatureDefinitions"; //$NON-NLS-1$
 
     /**
@@ -81,7 +81,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for configurable validation rules.
      */
-    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES = MSGCODE_PREFIX
             + "DuplicateDefaultsForValidationRules"; //$NON-NLS-1$
 
     /**
@@ -89,7 +89,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for table structure usages.
      */
-    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_DEFAULTS_FOR_TABLE_STRUCTURE_USAGES = MSGCODE_PREFIX
             + "DuplicateDefaultsForTableStructureUsages"; //$NON-NLS-1$
 
     /**
@@ -97,7 +97,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for product relevant policy component type attributes.
      */
-    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_DEFAULTS_FOR_POLICY_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForPolicyCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
@@ -105,20 +105,20 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * within the product component type's supertype hierarchy is marked to be the default
      * {@link IProductCmptCategory} for product component type attributes.
      */
-    public static final String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
+    String MSGCODE_DUPLICATE_DEFAULTS_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES = MSGCODE_PREFIX
             + "DuplicateDefaultsForProductCmptTypeAttributes"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IProductCmptType} this {@link IProductCmptCategory} belongs to.
      */
-    public IProductCmptType getProductCmptType();
+    IProductCmptType getProductCmptType();
 
     /**
      * Sets the name of this {@link IProductCmptCategory}.
      * 
      * @see #getName()
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Returns the list of product component properties assigned to this
@@ -137,7 +137,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
+    List<IProductCmptProperty> findProductCmptProperties(IProductCmptType contextType,
             boolean searchSupertypeHierarchy,
             IIpsProject ipsProject) throws IpsException;
 
@@ -159,7 +159,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @throws IpsException if an error occurs during the search
      */
-    public boolean findIsContainingProperty(IProductCmptProperty property,
+    boolean findIsContainingProperty(IProductCmptProperty property,
             IProductCmptType contextType,
             IIpsProject ipsProject) throws IpsException;
 
@@ -171,7 +171,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link IProductCmptCategory}, new properties of the same {@link ProductCmptPropertyType} will
      * be automatically assigned to this {@link IProductCmptCategory}.
      */
-    public boolean isDefaultFor(IProductCmptProperty property);
+    boolean isDefaultFor(IProductCmptProperty property);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is the corresponding default
@@ -181,7 +181,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link IProductCmptCategory}, new properties of the indicated {@link ProductCmptPropertyType}
      * will be automatically assigned to this {@link IProductCmptCategory}.
      */
-    public boolean isDefaultFor(ProductCmptPropertyType propertyType);
+    boolean isDefaultFor(ProductCmptPropertyType propertyType);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
@@ -191,7 +191,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link ProductCmptPropertyType#FORMULA_SIGNATURE_DEFINITION} will be automatically assigned
      * to this {@link IProductCmptCategory}.
      */
-    public boolean isDefaultForFormulaSignatureDefinitions();
+    boolean isDefaultForFormulaSignatureDefinitions();
 
     /**
      * Sets whether this {@link IProductCmptCategory} is marked as default category for formula
@@ -199,7 +199,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see #isDefaultForFormulaSignatureDefinitions()
      */
-    public void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
+    void setDefaultForFormulaSignatureDefinitions(boolean defaultForFormulaSignatureDefinitions);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
@@ -209,7 +209,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link ProductCmptPropertyType#POLICY_CMPT_TYPE_ATTRIBUTE} will be automatically assigned to
      * this {@link IProductCmptCategory}.
      */
-    public boolean isDefaultForPolicyCmptTypeAttributes();
+    boolean isDefaultForPolicyCmptTypeAttributes();
 
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
@@ -217,7 +217,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see #isDefaultForPolicyCmptTypeAttributes()
      */
-    public void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
+    void setDefaultForPolicyCmptTypeAttributes(boolean defaultForPolicyCmptTypeAttributes);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
@@ -227,7 +227,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link ProductCmptPropertyType#PRODUCT_CMPT_TYPE_ATTRIBUTE} will be automatically assigned to
      * this {@link IProductCmptCategory}.
      */
-    public boolean isDefaultForProductCmptTypeAttributes();
+    boolean isDefaultForProductCmptTypeAttributes();
 
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
@@ -235,7 +235,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see #isDefaultForProductCmptTypeAttributes()
      */
-    public void setDefaultForProductCmptTypeAttributes(boolean defaultForProductCmptTypeAttributes);
+    void setDefaultForProductCmptTypeAttributes(boolean defaultForProductCmptTypeAttributes);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
@@ -245,7 +245,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link ProductCmptPropertyType#TABLE_STRUCTURE_USAGE} will be automatically assigned to this
      * {@link IProductCmptCategory}.
      */
-    public boolean isDefaultForTableStructureUsages();
+    boolean isDefaultForTableStructureUsages();
 
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
@@ -253,7 +253,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see #isDefaultForTableStructureUsages()
      */
-    public void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
+    void setDefaultForTableStructureUsages(boolean defaultForTableStructureUsages);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is marked as default
@@ -263,7 +263,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * {@link ProductCmptPropertyType#VALIDATION_RULE} will be automatically assigned to this
      * {@link IProductCmptCategory}.
      */
-    public boolean isDefaultForValidationRules();
+    boolean isDefaultForValidationRules();
 
     /**
      * Sets whether this {@link IProductCmptCategory} is the default {@link IProductCmptCategory}
@@ -271,7 +271,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see #isDefaultForValidationRules()
      */
-    public void setDefaultForValidationRules(boolean defaultForValidationRules);
+    void setDefaultForValidationRules(boolean defaultForValidationRules);
 
     /**
      * Returns the {@link Position} of this {@link IProductCmptCategory}.
@@ -281,7 +281,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * 
      * @see Position
      */
-    public Position getPosition();
+    Position getPosition();
 
     /**
      * Sets the {@link Position} of this {@link IProductCmptCategory}.
@@ -289,17 +289,17 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @see #getPosition()
      * @see Position
      */
-    public void setPosition(Position side);
+    void setPosition(Position side);
 
     /**
      * Returns whether this {@link IProductCmptCategory} is positioned at {@link Position#LEFT}.
      */
-    public boolean isAtLeftPosition();
+    boolean isAtLeftPosition();
 
     /**
      * Returns whether this {@link IProductCmptCategory} is positioned at {@link Position#RIGHT}.
      */
-    public boolean isAtRightPosition();
+    boolean isAtRightPosition();
 
     /**
      * Moves the product component properties identified by the provided indexes up or down by one
@@ -325,7 +325,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @throws IpsException if an error occurs while searching the supertype hierarchy or while
      *             searching for policy component types
      */
-    public int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
+    int[] moveProductCmptProperties(int[] indexes, boolean up, IProductCmptType contextType)
             throws IpsException;
 
     /**
@@ -350,14 +350,14 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
      * @throws IpsException if an error occurs while searching for the indices of the currently
      *             assigned properties or while moving properties
      */
-    public boolean insertProductCmptProperty(IProductCmptProperty property,
+    boolean insertProductCmptProperty(IProductCmptProperty property,
             IProductCmptProperty targetProperty,
             boolean above) throws IpsException;
 
     /**
      * Defines the user interface position of an {@link IProductCmptCategory}.
      */
-    public static enum Position {
+    public enum Position {
 
         LEFT("left"), //$NON-NLS-1$
 
@@ -365,7 +365,7 @@ public interface IProductCmptCategory extends IIpsObjectPart, ILabeledElement, I
 
         private final String id;
 
-        private Position(String id) {
+        Position(String id) {
             this.id = id;
         }
 

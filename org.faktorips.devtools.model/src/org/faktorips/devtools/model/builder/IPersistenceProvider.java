@@ -62,9 +62,9 @@ public interface IPersistenceProvider {
      */
     JavaCodeFragment getIndexAnnotations(IPersistentTypePartInfo persistentAttributeInfo);
 
-    public String getQualifiedName(PersistenceClass persistenceClass);
+    String getQualifiedName(PersistenceClass persistenceClass);
 
-    public static interface PersistenceClass {
+    public interface PersistenceClass {
         // marker for class name enums
     }
 

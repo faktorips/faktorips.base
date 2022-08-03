@@ -20,48 +20,48 @@ public interface IRangeValueSet extends IValueSet {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "RANGE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "RANGE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the lower bound of the subset is less than the lower
      * bound of this value set.
      */
-    public static final String MSGCODE_LBOUND_GREATER_UBOUND = MSGCODE_PREFIX + "LBoundGreaterUBound"; //$NON-NLS-1$
+    String MSGCODE_LBOUND_GREATER_UBOUND = MSGCODE_PREFIX + "LBoundGreaterUBound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of the attribute this range is based
      * on is not a numeric data type (ranges are only possible for numeric data types).
      */
-    public static final String MSGCODE_NOT_NUMERIC_DATATYPE = MSGCODE_PREFIX + "notNumericDatatype"; //$NON-NLS-1$
+    String MSGCODE_NOT_NUMERIC_DATATYPE = MSGCODE_PREFIX + "notNumericDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the range defined by the lower and upper bound is
      * not dividable without remainder using the step.
      */
-    public static final String MSGCODE_STEP_RANGE_MISMATCH = MSGCODE_PREFIX + "stepRangeMissmatch"; //$NON-NLS-1$
+    String MSGCODE_STEP_RANGE_MISMATCH = MSGCODE_PREFIX + "stepRangeMissmatch"; //$NON-NLS-1$
 
-    public static final String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
+    String PROPERTY_UPPERBOUND = "upperBound"; //$NON-NLS-1$
 
-    public static final String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$
+    String PROPERTY_LOWERBOUND = "lowerBound"; //$NON-NLS-1$
 
-    public static final String PROPERTY_STEP = "step"; //$NON-NLS-1$
+    String PROPERTY_STEP = "step"; //$NON-NLS-1$
 
-    public static final String PROPERTY_EMPTY = "empty"; //$NON-NLS-1$
+    String PROPERTY_EMPTY = "empty"; //$NON-NLS-1$
 
-    public static final String RANGE_VALUESET_START = "["; //$NON-NLS-1$
+    String RANGE_VALUESET_START = "["; //$NON-NLS-1$
 
-    public static final String RANGE_VALUESET_END = "]"; //$NON-NLS-1$
+    String RANGE_VALUESET_END = "]"; //$NON-NLS-1$
 
-    public static final String RANGE_VALUESET_POINTS = " ... "; //$NON-NLS-1$
+    String RANGE_VALUESET_POINTS = " ... "; //$NON-NLS-1$
 
-    public static final String RANGE_STEP_SEPERATOR = " / "; //$NON-NLS-1$
+    String RANGE_STEP_SEPERATOR = " / "; //$NON-NLS-1$
 
     /**
      * Sets the lower bound. An empty string means that the range is unbounded.
      * 
      * @throws NullPointerException if {@code lowerBound} is {@code null}
      */
-    public void setLowerBound(String lowerBound);
+    void setLowerBound(String lowerBound);
 
     /**
      * Sets the step. An empty string means that no step exists and all possible values in the range
@@ -69,29 +69,29 @@ public interface IRangeValueSet extends IValueSet {
      * 
      * @throws NullPointerException if {@code step} is {@code null}
      */
-    public void setStep(String step);
+    void setStep(String step);
 
     /**
      * Sets the upper bound. An empty string means that the range is unbounded.
      * 
      * @throws NullPointerException if {@code upperBound} is {@code null}
      */
-    public void setUpperBound(String upperBound);
+    void setUpperBound(String upperBound);
 
     /**
      * Returns the lower bound of the range.
      */
-    public String getLowerBound();
+    String getLowerBound();
 
     /**
      * Returns the upper bound of the range.
      */
-    public String getUpperBound();
+    String getUpperBound();
 
     /**
      * Returns the step of the range.
      */
-    public String getStep();
+    String getStep();
 
     /**
      * Sets the range to empty. Will reset all bounds and step if set to {@code true}.

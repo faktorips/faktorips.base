@@ -71,7 +71,7 @@ public class SingleTableContentsValidator {
      * Validates if {@link #canValidate()} returns <code>true</code>. Does nothing otherwise.
      * 
      * @return the message list containing the validation messages. Contains no messages if no
-     *         problems were detected.
+     *             problems were detected.
      */
     public MessageList validateIfPossible() {
         MessageList messageList = new MessageList();
@@ -83,8 +83,8 @@ public class SingleTableContentsValidator {
 
     /**
      * @return <code>true</code> if this validator has been given a <code>ITableStructure</code>
-     *         which is not <code>null</code>. Returns <code>false</code> if the
-     *         <code>ITableStructure</code> is <code>null</code>.
+     *             which is not <code>null</code>. Returns <code>false</code> if the
+     *             <code>ITableStructure</code> is <code>null</code>.
      */
     public boolean canValidate() {
         return tableStructure != null;

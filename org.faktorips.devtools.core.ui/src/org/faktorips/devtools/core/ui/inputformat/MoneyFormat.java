@@ -16,7 +16,6 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
@@ -90,7 +89,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
      * allowed in graphical representations.
      * 
      * @return the currency symbol configured in the {@link Locale}, or the {@code EUR} sign if the
-     *         used {@link Currency} is Euro and the {@link Locale} has no country configured.
+     *             used {@link Currency} is Euro and the {@link Locale} has no country configured.
      */
     private String getCurrencySymbol() {
         if (Money.EUR.equals(currentCurrency) && locale.getCountry().isBlank()) {
@@ -138,7 +137,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     protected String[] splitStringToBeParsed(String value) {
         String currency = value.replaceAll(VALID_AMOUNT_CHARS, StringUtils.EMPTY).trim();
         String[] splittedString = new String[2];
-        splittedString[0] = value.replaceAll(Pattern.quote(currency), StringUtils.EMPTY).trim();
+        splittedString[0] = value.replace(currency, StringUtils.EMPTY).trim();
         splittedString[1] = currency;
         return splittedString;
     }
@@ -153,7 +152,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     }
 
     public void setCurrentCurrency(Currency actualCurrency) {
-        this.currentCurrency = actualCurrency;
+        currentCurrency = actualCurrency;
         if (actualCurrency != null) {
             amountFormat.getNumberFormat().setCurrency(getCurrentCurrency());
             amountFormat.getNumberFormat().setMaximumFractionDigits(getCurrentCurrency().getDefaultFractionDigits());

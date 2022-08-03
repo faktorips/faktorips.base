@@ -36,12 +36,7 @@ public class MoneyValueConverter extends AbstractValueConverter {
             try {
                 return Money.valueOf((String)externalDataValue).toString();
             } catch (IllegalArgumentException e) {
-                messageList
-                        .add(ExtSystemsMessageUtil
-                                .createConvertExtToIntErrorMessage(
-                                        "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
-                                        getSupportedDatatype().getQualifiedName()));
-                return externalDataValue.toString();
+                // fall through to error message
             }
         }
         messageList

@@ -59,10 +59,8 @@ public class IpsFolderBundle extends AbstractIpsBundle {
 
     public Manifest getManifest() throws IOException {
         File file = folder.resolve(IpsBundleManifest.MANIFEST_NAME).toFile();
-        Manifest manifest;
         try (InputStream is = ioFactory.createInputStream(file)) {
-            manifest = new Manifest(is);
-            return manifest;
+            return new Manifest(is);
         }
     }
 

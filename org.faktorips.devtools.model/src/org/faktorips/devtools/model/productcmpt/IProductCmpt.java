@@ -36,90 +36,90 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * The name of the product component type property
      */
-    public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
+    String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
-    public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+    String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
+    String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
 
-    public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the product component type the product component
      * is an instance of is missing.
      */
-    public static final String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
+    String MSGCODE_MISSINGG_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "MissingProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the product component type is abstract. Abstract
      * product component types can't have an instance (=product component)
      */
-    public static final String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
+    String MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "AbstractProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the product component type is deprecated. A
      * replacement/migration strategy should be documented in its
      * {@link IDeprecation#getDescriptions() deprecation descriptions}.
      */
-    public static final String MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "DeprecatedProductCmptType"; //$NON-NLS-1$
+    String MSGCODE_DEPRECATED_PRODUCT_CMPT_TYPE = MSGCODE_PREFIX + "DeprecatedProductCmptType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the type's hierarchy the product component is based
      * on is inconsistent.
      */
-    public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
+    String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the specified template could not be found
      */
-    public static final String MSGCODE_INVALID_TEMPLATE = MSGCODE_PREFIX + "InvalidTemplate"; //$NON-NLS-1$
+    String MSGCODE_INVALID_TEMPLATE = MSGCODE_PREFIX + "InvalidTemplate"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the template's type is inconsistent to this
      * product's type
      */
-    public static final String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
+    String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the template's type is inconsistent to this
      * product's type
      */
-    public static final String MSGCODE_INCONSISTENT_TEMPLATE_VALID_FROM = MSGCODE_PREFIX + "InconsistTemplateValidFrom"; //$NON-NLS-1$
+    String MSGCODE_INCONSISTENT_TEMPLATE_VALID_FROM = MSGCODE_PREFIX + "InconsistTemplateValidFrom"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template hierarchy for this template contains a
      * cycle.
      */
-    public static final String MSGCODE_TEMPLATE_CYCLE = MSGCODE_PREFIX + "TemplateCycle"; //$NON-NLS-1$
+    String MSGCODE_TEMPLATE_CYCLE = MSGCODE_PREFIX + "TemplateCycle"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template for the product this generation is for
      * could not be found.
      */
-    public static final String MSGCODE_DIFFERENCES_TO_MODEL = MSGCODE_PREFIX + "DifferencesToModel"; //$NON-NLS-1$
+    String MSGCODE_DIFFERENCES_TO_MODEL = MSGCODE_PREFIX + "DifferencesToModel"; //$NON-NLS-1$
 
-    public static final String MSGCODE_DUPLICATE_KINDID_VERSIONID = MSGCODE_PREFIX + "IdsNotUnique"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_KINDID_VERSIONID = MSGCODE_PREFIX + "IdsNotUnique"; //$NON-NLS-1$
 
     /**
      * Returns the product component's generation at the specified index.
      * 
      * @throws IndexOutOfBoundsException if the index is out of bounds.
      */
-    public IProductCmptGeneration getProductCmptGeneration(int index);
+    IProductCmptGeneration getProductCmptGeneration(int index);
 
     /**
      * @return Returns the latest generation of this product component or <code>null</code>, if no
-     *         generation exists.
+     *             generation exists.
      */
-    public IProductCmptGeneration getLatestProductCmptGeneration();
+    IProductCmptGeneration getLatestProductCmptGeneration();
 
     @Override
-    public IProductCmptGeneration getGenerationByEffectiveDate(GregorianCalendar date);
+    IProductCmptGeneration getGenerationByEffectiveDate(GregorianCalendar date);
 
     /**
      * Returns the product component's kind or <code>null</code> if the kind can't be found.
      */
-    public IProductCmptKind getKindId();
+    IProductCmptKind getKindId();
 
     /**
      * Returns the product component's version id. The version id is extracted from the components
@@ -128,24 +128,24 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @throws IpsException if an exception occurs while accessing the project properties to get the
      *             naming strategy or the version id can't be derived from the component's name.
      */
-    public String getVersionId() throws IpsException;
+    String getVersionId() throws IpsException;
 
     /**
      * Searches the policy component type that is configured by this product component.
      * 
      * @return The policy component type this product component configures or <code>null</code> if
-     *         the policy component type can't be found or this product component does not configure
-     *         a product component.
+     *             the policy component type can't be found or this product component does not
+     *             configure a product component.
      */
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
+    IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the product component type this product component is based on.
      * 
      * @throws NullPointerException if newType is <code>null</code>.
      */
-    public void setProductCmptType(String newType);
+    void setProductCmptType(String newType);
 
     /**
      * Searches the product component type this product component is based on.
@@ -154,17 +154,17 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      *            necessarily the project this component is part of.
      * 
      * @return The product component type this product component is based on or <code>null</code> if
-     *         the product component type can't be found.
+     *             the product component type can't be found.
      * 
      */
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
+    IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if any of the generations contain at least one formula. Returns
      * <code>false</code> otherwise.
      */
-    public boolean containsGenerationFormula();
+    boolean containsGenerationFormula();
 
     /**
      * Returns the product component structure representing the structure defined by relations. The
@@ -178,13 +178,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
-    public IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
+    IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
             throws CycleInProductStructureException;
 
     /**
      * Returns the id this object is identified by at runtime.
      */
-    public String getRuntimeId();
+    String getRuntimeId();
 
     /**
      * Sets the given runtimeId for this product component.
@@ -192,7 +192,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Be aware of the problems that can be caused by setting a new runtime id to an object where
      * already data with references to the old runtime id exists...
      */
-    public void setRuntimeId(String runtimeId);
+    void setRuntimeId(String runtimeId);
 
     /**
      * Returns <code>true</code> if the given policy component type is used as target in at least
@@ -200,19 +200,19 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * 
      * @since FIPS 3.0.0
      */
-    public boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
+    boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
 
     /**
      * @return all {@link IAttributeValue IAttributeValues} in this component.
      */
-    public List<IAttributeValue> getAttributeValues();
+    List<IAttributeValue> getAttributeValues();
 
     /**
      * Returns the attribute value for the given attribute name. Returns <code>null</code> if this
      * container has no value for the given attribute. Returns <code>null</code> if attribute is
      * <code>null</code>.
      */
-    public IAttributeValue getAttributeValue(String attribute);
+    IAttributeValue getAttributeValue(String attribute);
 
     /**
      * Overrides the original {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)}
@@ -221,14 +221,14 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * {@inheritDoc}
      */
     @Override
-    public IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
+    IPropertyValueContainerToTypeDelta computeDeltaToModel(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this {@link IProductCmpt}'s generations in a type safe list.
      * 
      * @return this {@link IProductCmpt}'s generations as a type safe list.
      */
-    public List<IProductCmptGeneration> getProductCmptGenerations();
+    List<IProductCmptGeneration> getProductCmptGenerations();
 
     /**
      * Returns all {@link IPropertyValue property values} of this {@link IProductCmpt product
@@ -250,18 +250,18 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      *             component properties} belonging to the {@link IProductCmptType product component
      *             type}
      */
-    public List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
+    List<IPropertyValue> findPropertyValues(IProductCmptCategory category,
             GregorianCalendar effectiveDate,
             IIpsProject ipsProject) throws IpsException;
 
     @Override
-    public IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date);
+    IProductCmptGeneration getGenerationEffectiveOn(GregorianCalendar date);
 
     @Override
-    public IProductCmptGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
+    IProductCmptGeneration getBestMatchingGenerationEffectiveOn(GregorianCalendar date);
 
     @Override
-    public IProductCmptGeneration getFirstGeneration();
+    IProductCmptGeneration getFirstGeneration();
 
     /**
      * Returns a list containing all links defined in this product component including all links of
@@ -269,31 +269,31 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * 
      * @return A list containing every link of this product component and its generations
      */
-    public List<IProductCmptLink> getLinksIncludingGenerations();
+    List<IProductCmptLink> getLinksIncludingGenerations();
 
     /**
      * @param rolename The role name for the required content usage.
      * @return The table content usage for the table structure usage with the given role name.
      */
-    public ITableContentUsage getTableContentUsage(String rolename);
+    ITableContentUsage getTableContentUsage(String rolename);
 
     /**
      * Returns all table content usages defined by this product component. Returns an empty array if
      * the product component hasn't got a table content.
      */
-    public ITableContentUsage[] getTableContentUsages();
+    ITableContentUsage[] getTableContentUsages();
 
     /**
      * Returns the formulas defined in this product component. Returns an empty array if the product
      * component hasn't got a formula.
      */
-    public IFormula[] getFormulas();
+    IFormula[] getFormulas();
 
     /**
      * Returns the formula with given name or <code>null</code> if no such formula is found. Returns
      * <code>null</code> if formulaName is <code>null</code>.
      */
-    public IFormula getFormula(String formulaName);
+    IFormula getFormula(String formulaName);
 
     /**
      * Returns <code>true</code> if this object represents a product template.
@@ -301,7 +301,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return <code>true</code> if this is a template, <code>false</code> if not
      */
     @Override
-    public boolean isProductTemplate();
+    boolean isProductTemplate();
 
     /**
      * Set the name of the template that should be used by this product component. Set
@@ -311,7 +311,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @param template The name of the template that should be used by this product component or
      *            <code>null</code> to not use any template.
      */
-    public void setTemplate(String template);
+    void setTemplate(String template);
 
     /**
      * Returns the template object that is used by this product component if this product component

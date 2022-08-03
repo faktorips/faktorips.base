@@ -68,10 +68,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             IStructuredSelection structuredSelection = (IStructuredSelection)selection;
             if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
                 addLinkOnReference(event);
-                return null;
             } else if (structuredSelection.getFirstElement() instanceof AbstractAssociationViewItem) {
                 addLinksOnAssociation(event);
-                return null;
             } else {
                 throw new RuntimeException();
             }
@@ -171,9 +169,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         if (!typedSelection.isValid()) {
             return;
         }
-        IIpsProject ipsProject = null;
         IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
-        ipsProject = structureReference.getIpsProject();
+        IIpsProject ipsProject = structureReference.getIpsProject();
         if (ipsProject != null) {
             List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference,
                     HandlerUtil.getActiveShell(event));
@@ -211,9 +208,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             Shell shell) {
         SingleTypeSelectIpsObjectContext context = new SingleTypeSelectIpsObjectContext(ipsProject,
                 IpsObjectType.PRODUCT_CMPT, new LinkViewerFilter(linkTarget));
-        OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(shell,
+        return new OpenIpsObjectSelectionDialog(shell,
                 Messages.AddLinkAction_selectDialogTitle, context, true);
-        return dialog;
     }
 
     private static class LinkViewerFilter extends ViewerFilter {

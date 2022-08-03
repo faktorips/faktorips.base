@@ -230,7 +230,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
     }
 
     /**
-     * Returns the extension for the test rule: " - <policy cmpt type name>"
+     * Returns the extension for the test rule: " - &lt;policy cmpt type name&gt;"
      */
     private String getLabelExtensionForTestRule(ITestRule testRule) {
         String extForPolicyCmptForValidationRule = ""; //$NON-NLS-1$
@@ -297,7 +297,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
      * Returns the label for the target of a association.
      */
     public String getAssoziationTargetLabel(String target) {
-        return target.replaceAll(TestCaseHierarchyPath.SEPARATOR, "/"); //$NON-NLS-1$
+        return target.replace(TestCaseHierarchyPath.SEPARATOR, "/"); //$NON-NLS-1$
     }
 
     @Override

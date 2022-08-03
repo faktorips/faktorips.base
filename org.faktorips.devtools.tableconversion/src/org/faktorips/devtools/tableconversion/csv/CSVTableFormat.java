@@ -194,7 +194,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
     /**
      * @return A preview of the imported data to be imported using the given structure which can be
-     *         an {@link ITableStructure} or an {@link IEnumType}.
+     *             an {@link ITableStructure} or an {@link IEnumType}.
      */
     @SuppressWarnings("unchecked")
     private List<String[]> getImportPreview(IIpsObject structure,

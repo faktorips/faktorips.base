@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
@@ -56,7 +57,7 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
      * @param valueColumnIndex the index of the value column, containing the message
      */
     public void setKeyAndValueColumn(int keyColumnInex, int valueColumnIndex) {
-        this.keyColumnIndex = keyColumnInex;
+        keyColumnIndex = keyColumnInex;
         this.valueColumnIndex = valueColumnIndex;
     }
 
@@ -143,11 +144,7 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((key == null) ? 0 : key.hashCode());
-            result = prime * result + ((value == null) ? 0 : value.hashCode());
-            return result;
+            return Objects.hash(key, value);
         }
 
         @Override
@@ -155,28 +152,12 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             CsvTableBean other = (CsvTableBean)obj;
-            if (key == null) {
-                if (other.key != null) {
-                    return false;
-                }
-            } else if (!key.equals(other.key)) {
-                return false;
-            }
-            if (value == null) {
-                if (other.value != null) {
-                    return false;
-                }
-            } else if (!value.equals(other.value)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(key, other.key)
+                    && Objects.equals(value, other.value);
         }
 
         @Override

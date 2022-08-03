@@ -70,8 +70,7 @@ public abstract class IpsObjectExportWizard extends Wizard implements IExportWiz
             }
 
             ITableFormat tableFormat = exportPage.getFormat();
-            TableFormatPropertiesPage nextPage = customPages.get(tableFormat);
-            return nextPage;
+            return customPages.get(tableFormat);
         }
         return null;
     }

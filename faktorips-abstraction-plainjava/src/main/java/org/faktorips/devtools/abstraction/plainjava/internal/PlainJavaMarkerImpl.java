@@ -37,8 +37,7 @@ public class PlainJavaMarkerImpl {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(id);
-        return result;
+        return prime * result + Objects.hash(id);
     }
 
     @Override
@@ -46,10 +45,7 @@ public class PlainJavaMarkerImpl {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof PlainJavaMarkerImpl)) {
+        if (!super.equals(obj) || !(obj instanceof PlainJavaMarkerImpl)) {
             return false;
         }
         PlainJavaMarkerImpl other = (PlainJavaMarkerImpl)obj;

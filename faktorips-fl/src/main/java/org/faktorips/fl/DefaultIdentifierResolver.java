@@ -51,15 +51,13 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
             Locale locale) {
         FragmentDatatypeWrapper wrapper = identifiers.get(identifier);
         if (wrapper != null) {
-            CompilationResultImpl compilationResult = new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment),
+            return new CompilationResultImpl(new JavaCodeFragment(wrapper.fragment),
                     wrapper.datatype);
-            return compilationResult;
         }
         String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
                 identifier);
-        CompilationResultImpl compilationResult = new CompilationResultImpl(Message.newError(
+        return new CompilationResultImpl(Message.newError(
                 ExprCompiler.UNDEFINED_IDENTIFIER, text));
-        return compilationResult;
     }
 
     static class FragmentDatatypeWrapper {

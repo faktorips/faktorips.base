@@ -40,7 +40,7 @@ import org.faktorips.devtools.abstraction.Abstractions;
 public class JarFileFactory {
 
     private static final boolean TRACE_JAR_FILES = Boolean
-            .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")).booleanValue(); //$NON-NLS-1$
+            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")); //$NON-NLS-1$
 
     private static final Map<Path, OpenedJar> CACHE = new ConcurrentHashMap<>();
 

@@ -53,7 +53,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
             IElementModifier<SingleValueViewItem, LocalizedString> elementModifier) {
         super(tableViewer, elementModifier);
         this.toolkit = toolkit;
-        this.multiValueTableViewer = tableViewer;
+        multiValueTableViewer = tableViewer;
     }
 
     @Override
@@ -115,8 +115,7 @@ public class LocalizedStringEditingSupportForSingleValueViewItems extends
         protected IInternationalString getInternationalString() {
             IValue<?> value = singleValueHolder.getValue();
             if (value.getContent() instanceof IInternationalString) {
-                IInternationalString internationalString = (IInternationalString)value.getContent();
-                return internationalString;
+                return (IInternationalString)value.getContent();
             } else {
                 throw new IllegalArgumentException(
                         "The value provided to the InternationalStringDialog is not supported: The type was " //$NON-NLS-1$

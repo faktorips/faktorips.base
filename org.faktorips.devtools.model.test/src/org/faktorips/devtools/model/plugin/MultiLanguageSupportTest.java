@@ -133,6 +133,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -178,6 +179,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedPluralCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -205,6 +207,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -240,6 +243,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultPluralCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -301,6 +305,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedLabel(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -357,6 +362,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedPluralLabel(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -366,6 +372,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedPluralLabel(productCmptType.newAttribute());
             fail();
         } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 
@@ -392,6 +399,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultLabel(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -424,6 +432,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultPluralLabel(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -433,6 +442,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultPluralLabel(productCmptType.newAttribute());
             fail();
         } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 
@@ -454,6 +464,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.setDefaultLabel(null, "foo");
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -491,6 +502,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.setDefaultPluralLabel(null, "foos");
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -506,6 +518,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.setDefaultPluralLabel(productCmptType.newAttribute(), "foos");
             fail();
         } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 
@@ -576,6 +589,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getLocalizedDescription(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -590,6 +604,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.getDefaultDescription(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -624,6 +639,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.setDefaultDescription(null, "foo");
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -633,6 +649,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
             support.setDefaultDescription(testContainer, null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -781,10 +798,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
         @Override
         public String getCaption(Locale locale) {
-            if (locale.equals(missingCaptionLocale1) && emptyCaptionLocale1) {
-                return "";
-            }
-            if (locale.equals(missingCaptionLocale2) && emptyCaptionLocale2) {
+            if ((locale.equals(missingCaptionLocale1) && emptyCaptionLocale1)
+                    || (locale.equals(missingCaptionLocale2) && emptyCaptionLocale2)) {
                 return "";
             }
             if (locale.equals(missingCaptionLocale1) || locale.equals(missingCaptionLocale2)) {
@@ -795,10 +810,8 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
         @Override
         public String getPluralCaption(Locale locale) {
-            if (locale.equals(missingCaptionLocale1) && emptyCaptionLocale1) {
-                return "";
-            }
-            if (locale.equals(missingCaptionLocale2) && emptyCaptionLocale2) {
+            if ((locale.equals(missingCaptionLocale1) && emptyCaptionLocale1)
+                    || (locale.equals(missingCaptionLocale2) && emptyCaptionLocale2)) {
                 return "";
             }
             if (locale.equals(missingCaptionLocale1) || locale.equals(missingCaptionLocale2)) {

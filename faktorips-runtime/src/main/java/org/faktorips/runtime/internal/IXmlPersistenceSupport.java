@@ -30,5 +30,5 @@ public interface IXmlPersistenceSupport extends IClRepositoryObject {
      * @param document the document to use for creating {@link Element}s
      * @return an {@link Element} that represents this object as XML element
      */
-    public Element toXml(Document document);
+    Element toXml(Document document);
 }

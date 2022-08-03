@@ -62,10 +62,13 @@ public abstract class AbstractAttributeDescriptor<T extends Attribute> extends P
                     .orElseThrow(() -> new IllegalArgumentException(type.getDeclarationClass() + " lists \"" + getName()
                             + "\" as one of it's @IpsAttributes but no matching @IpsAttribute could be found."));
 
-            @SuppressWarnings("unchecked")
-            T overwritingAttribute = (T)attribute.createOverwritingAttributeFor(type);
-            return overwritingAttribute;
+            return castOverwritingAttribute(type, attribute);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private T castOverwritingAttribute(Type type, Attribute attribute) {
+        return (T)attribute.createOverwritingAttributeFor(type);
     }
 
     protected abstract T createValid(Type type);

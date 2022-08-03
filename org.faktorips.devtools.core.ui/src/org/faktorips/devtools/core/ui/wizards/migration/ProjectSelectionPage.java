@@ -104,7 +104,7 @@ public class ProjectSelectionPage extends WizardPage {
         return projects;
     }
 
-    private class TreeLabelProvider extends LabelProvider {
+    private static class TreeLabelProvider extends LabelProvider {
 
         @Override
         public String getText(Object element) {

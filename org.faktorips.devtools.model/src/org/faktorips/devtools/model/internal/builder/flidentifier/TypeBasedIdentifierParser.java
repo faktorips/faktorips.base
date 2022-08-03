@@ -74,7 +74,7 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
      * @see #parse()
      * 
      * @return The parsed {@link IdentifierNode} or null if this parser is not responsible for the
-     *         identifier part
+     *             identifier part
      */
     protected abstract IdentifierNode parseInternal();
 }

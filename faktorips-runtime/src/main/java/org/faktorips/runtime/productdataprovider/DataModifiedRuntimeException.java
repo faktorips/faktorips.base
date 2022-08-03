@@ -23,7 +23,7 @@ public class DataModifiedRuntimeException extends RuntimeException {
 
     public DataModifiedRuntimeException(DataModifiedException e) {
         super(e);
-        this.dataModifiedException = e;
+        dataModifiedException = e;
     }
 
     /**

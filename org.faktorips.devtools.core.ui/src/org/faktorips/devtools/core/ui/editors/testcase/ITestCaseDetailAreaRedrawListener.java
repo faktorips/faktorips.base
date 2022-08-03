@@ -22,6 +22,6 @@ import org.faktorips.devtools.model.testcase.ITestObject;
  */
 public interface ITestCaseDetailAreaRedrawListener {
 
-    public void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws IpsException;
+    void visibleTestObjectsChanges(List<ITestObject> visibleTestObjects) throws IpsException;
 
 }

@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -92,18 +93,14 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (containsNull ? 1231 : 1237);
-        result = prime * result + ((maximumLength == null) ? 0 : maximumLength.hashCode());
-        return result;
+        return Objects.hash(containsNull, maximumLength);
     }
 
     @Override
     public boolean equals(Object o) {
         return (o instanceof StringLengthValueSet
-                && (this.containsNull() == ((StringLengthValueSet)o).containsNull())
-                && (this.getMaximumLength().equals(((StringLengthValueSet)o).getMaximumLength())));
+                && (containsNull() == ((StringLengthValueSet)o).containsNull())
+                && (getMaximumLength().equals(((StringLengthValueSet)o).getMaximumLength())));
     }
 
     /**

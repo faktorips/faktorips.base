@@ -34,7 +34,7 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         if (getResult().length > 0) {
             Object result = getResult()[0];
             if (result instanceof IIpsPackageFragmentRoot) {
-                return (IIpsPackageFragmentRoot)this.getResult()[0];
+                return (IIpsPackageFragmentRoot)getResult()[0];
             } else if (result instanceof IIpsProject) {
                 return ((IIpsProject)result).getIpsPackageFragmentRoots()[0];
             }

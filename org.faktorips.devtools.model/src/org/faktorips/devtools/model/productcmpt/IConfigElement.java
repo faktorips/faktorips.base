@@ -24,41 +24,41 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
  */
 public interface IConfigElement extends IPropertyValue {
 
-    public static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
-    public static final String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$
+    String PROPERTY_TYPE = "type"; //$NON-NLS-1$
+    String PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE = "policyCmptTypeAttribute"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "CONFIGELEMENT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the configuration element is based
      * can't be found.
      */
-    public static final String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
+    String MSGCODE_UNKNWON_ATTRIBUTE = MSGCODE_PREFIX + "UnknownAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute's data type can't be found and so the
      * value can't be parsed.
      */
-    public static final String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_DATATYPE = MSGCODE_PREFIX + "UnknownDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type is invalid. (E.g. the definition of a
      * dynamic data type can be wrong.)
      */
-    public static final String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
+    String MSGCODE_INVALID_DATATYPE = MSGCODE_PREFIX + "InvalidDatatype"; //$NON-NLS-1$
 
     /**
      * Returns the name of the product component type's attribute this element is based on.
      */
-    public String getPolicyCmptTypeAttribute();
+    String getPolicyCmptTypeAttribute();
 
     /**
      * Sets the name of the product component type's attribute this element is based on.
      */
-    public void setPolicyCmptTypeAttribute(String policyCmptTypeAttribute);
+    void setPolicyCmptTypeAttribute(String policyCmptTypeAttribute);
 
     /**
      * Finds the corresponding attribute in the product component type this product component is an
@@ -70,7 +70,7 @@ public interface IConfigElement extends IPropertyValue {
      * 
      * @throws IpsException if an exception occurs while searching for the attribute.
      */
-    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws IpsException;
+    IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the element's value data type, or <code>null</code> if it can't be found. The
@@ -79,5 +79,5 @@ public interface IConfigElement extends IPropertyValue {
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
+    ValueDatatype findValueDatatype(IIpsProject ipsProject);
 }

@@ -19,5 +19,5 @@ public interface IDefaultFocusPage {
     /**
      * Set the default focus.
      */
-    public void setDefaultFocus();
+    void setDefaultFocus();
 }

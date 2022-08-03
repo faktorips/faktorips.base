@@ -110,8 +110,7 @@ public class TableUtil {
         }
 
         String getText(TableItem item, int column) {
-            String text = item.getText(column);
-            return text;
+            return item.getText(column);
         }
     }
 }

@@ -27,7 +27,7 @@ public interface IProductCmptKind {
      * Returns the name of this product component kind. The name is used to present this kind to the
      * user.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the id that uniquely identifies this kind at runtime. When operative systems access
@@ -38,6 +38,6 @@ public interface IProductCmptKind {
      * with operative systems. If this id is persisted in a database some people prefer to use
      * numeric values as they consume less disk space.
      */
-    public String getRuntimeId();
+    String getRuntimeId();
 
 }

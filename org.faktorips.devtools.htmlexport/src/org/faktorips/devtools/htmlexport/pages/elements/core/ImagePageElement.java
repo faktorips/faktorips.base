@@ -28,7 +28,7 @@ public class ImagePageElement extends AbstractPageElement {
         super(context);
         this.imageData = imageData;
         this.title = title;
-        this.fileName = path;
+        fileName = path;
     }
 
     @Override

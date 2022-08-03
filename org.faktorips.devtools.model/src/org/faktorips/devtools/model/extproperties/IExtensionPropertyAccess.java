@@ -27,7 +27,7 @@ public interface IExtensionPropertyAccess {
      * 
      * @return a set with extension property definitions that are relevant for this object
      */
-    public Collection<IExtensionPropertyDefinition> getExtensionPropertyDefinitions();
+    Collection<IExtensionPropertyDefinition> getExtensionPropertyDefinitions();
 
     /**
      * Get the {@link IExtensionPropertyDefinition} with the specified property id if there is any
@@ -36,7 +36,7 @@ public interface IExtensionPropertyAccess {
      * @param propertyId The id of the extension property you want to have the definition for.
      * @return The {@link IExtensionPropertyDefinition} you requested or <code>null</code>
      */
-    public IExtensionPropertyDefinition getExtensionPropertyDefinition(String propertyId);
+    IExtensionPropertyDefinition getExtensionPropertyDefinition(String propertyId);
 
     /**
      * Returns true if a definition of the extension property is available in the current eclipse
@@ -44,9 +44,9 @@ public interface IExtensionPropertyAccess {
      * 
      * @param propertyId The id of an extension property.
      * @return true if a definition of the extension property is available in the current eclipse
-     *         installation, otherwise false.
+     *             installation, otherwise false.
      */
-    public boolean isExtPropertyDefinitionAvailable(String propertyId);
+    boolean isExtPropertyDefinitionAvailable(String propertyId);
 
     /**
      * Returns the object's value for extension property identified by the id.
@@ -56,7 +56,7 @@ public interface IExtensionPropertyAccess {
      * @throws IllegalArgumentException if no extension property with given id is defined for this
      *             object's type.
      */
-    public Object getExtPropertyValue(String propertyId);
+    Object getExtPropertyValue(String propertyId);
 
     /**
      * Sets the object's value for the extension property identified by the id. The method does not
@@ -68,10 +68,10 @@ public interface IExtensionPropertyAccess {
      * @throws IllegalArgumentException if no extension property with given id is defined for this
      *             object's type.
      */
-    public void setExtPropertyValue(String propertyId, Object value);
+    void setExtPropertyValue(String propertyId, Object value);
 
     /**
      * Removes all obsolete extension properties.
      */
-    public void removeObsoleteExtensionProperties();
+    void removeObsoleteExtensionProperties();
 }

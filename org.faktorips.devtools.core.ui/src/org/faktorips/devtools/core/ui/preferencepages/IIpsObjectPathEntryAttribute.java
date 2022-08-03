@@ -20,72 +20,72 @@ import org.faktorips.runtime.MessageList;
  */
 public interface IIpsObjectPathEntryAttribute {
 
-    public static final String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
-    public static final String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable"; //$NON-NLS-1$
+    String DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "defaultOutputFolderMergable"; //$NON-NLS-1$
+    String SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES = "specificOutputFolderMergable"; //$NON-NLS-1$
 
-    public static final String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived"; //$NON-NLS-1$
-    public static final String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived"; //$NON-NLS-1$
+    String DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "defaultOutputFolderDerived"; //$NON-NLS-1$
+    String SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES = "specificOutputFolderDerived"; //$NON-NLS-1$
 
-    public static final String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable"; //$NON-NLS-1$
-    public static final String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable"; //$NON-NLS-1$
+    String DEFAULT_BASE_PACKAGE_MERGABLE = "defaultBasePackageMergable"; //$NON-NLS-1$
+    String SPECIFIC_BASE_PACKAGE_MERGABLE = "specificBasePackageMergable"; //$NON-NLS-1$
 
-    public static final String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived"; //$NON-NLS-1$
-    public static final String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived"; //$NON-NLS-1$
+    String DEFAULT_BASE_PACKAGE_DERIVED = "defaultBasePackageDerived"; //$NON-NLS-1$
+    String SPECIFIC_BASE_PACKAGE_DERIVED = "specificBasePackageDerived"; //$NON-NLS-1$
 
-    public static final String SPECIFIC_TOC_PATH = "tocPath"; //$NON-NLS-1$
+    String SPECIFIC_TOC_PATH = "tocPath"; //$NON-NLS-1$
 
     /**
      * @return the mappings value, which can be any arbitrary object
      */
-    public Object getValue();
+    Object getValue();
 
     /**
      * Set the value object for this mapping
      * 
      * @param value an arbitrary object
      */
-    public void setValue(Object value);
+    void setValue(Object value);
 
     /**
      * @return the type of this entry as defined in this interface
      */
-    public String getType();
+    String getType();
 
     /**
      * @return true if this mapping is a derived folder mapping (either the IPS object path's
-     *         default folder for derived sources, or a IpsSrcPathEntry-specific output folder),
-     *         false otherwise
+     *             default folder for derived sources, or a IpsSrcPathEntry-specific output folder),
+     *             false otherwise
      */
-    public boolean isFolderForDerivedSources();
+    boolean isFolderForDerivedSources();
 
     /**
      * @return true if this mapping is a mergable folder mapping (either the IPS object path's
-     *         default folder for mergable sources, or a IpsSrcPathEntry-specific output folder),
-     *         false otherwise
+     *             default folder for mergable sources, or a IpsSrcPathEntry-specific output
+     *             folder), false otherwise
      */
-    public boolean isFolderForMergableSources();
+    boolean isFolderForMergableSources();
 
     /**
      * @return true if this mapping is toc file mapping, false otherwise
      */
-    public boolean isTocPath();
+    boolean isTocPath();
 
     /**
      * @return true if this mapping is a package name mapping for derived sources (either the IPS
-     *         object path's default package name for derived sources, or a IpsSrcPathEntry-specific
-     *         package name), false otherwise
+     *             object path's default package name for derived sources, or a
+     *             IpsSrcPathEntry-specific package name), false otherwise
      */
-    public boolean isPackageNameForDerivedSources();
+    boolean isPackageNameForDerivedSources();
 
     /**
      * @return true if this mapping is a package name mapping for mergable sources (either the IPS
-     *         object path's default package name for mergable sources, or a
-     *         IpsSrcPathEntry-specific package name), false otherwise
+     *             object path's default package name for mergable sources, or a
+     *             IpsSrcPathEntry-specific package name), false otherwise
      */
-    public boolean isPackageNameForMergableSources();
+    boolean isPackageNameForMergableSources();
 
     /**
      * Validates the object path entry attribute and returns the result as list of messages.
      */
-    public MessageList validate() throws IpsException;
+    MessageList validate() throws IpsException;
 }

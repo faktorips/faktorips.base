@@ -490,7 +490,7 @@ public class IpsPreferences implements IIpsModelPreferences {
      * locale.
      * 
      * @return the currently configured locale for formating values of the data types Integer,
-     *         Double, Date.
+     *             Double, Date.
      */
     @Override
     public Locale getDatatypeFormattingLocale() {

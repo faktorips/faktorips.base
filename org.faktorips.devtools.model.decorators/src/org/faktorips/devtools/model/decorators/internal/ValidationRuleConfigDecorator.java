@@ -40,9 +40,7 @@ public class ValidationRuleConfigDecorator implements IIpsObjectPartDecorator {
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IValidationRuleConfig) {
             IValidationRuleConfig config = (IValidationRuleConfig)ipsObjectPart;
-            if (config.isActive()) {
-                return getDefaultImageDescriptor();
-            } else {
+            if (!config.isActive()) {
                 return IIpsDecorators.getImageHandling().getDisabledImageDescriptor(getDefaultImageDescriptor());
             }
         }

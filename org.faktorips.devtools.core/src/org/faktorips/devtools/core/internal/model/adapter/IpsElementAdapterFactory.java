@@ -73,7 +73,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
     /**
      * Resource mapping based on the mapping for the resource model.
      */
-    private class IpsElementResourceMapping extends ResourceMapping {
+    private static class IpsElementResourceMapping extends ResourceMapping {
 
         private IIpsElement ipsElement;
 

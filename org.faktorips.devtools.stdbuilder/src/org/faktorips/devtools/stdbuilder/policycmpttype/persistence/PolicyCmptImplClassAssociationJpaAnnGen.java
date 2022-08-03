@@ -165,10 +165,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             JavaCodeFragmentBuilder fragmentBuilder,
             IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
-        if (!persistenceAssociatonInfo.isJoinTableRequired()) {
-            return;
-        }
-        if (StringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
+        if (!persistenceAssociatonInfo.isJoinTableRequired()
+                || StringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
             return;
         }
 
@@ -295,21 +293,10 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             IPolicyCmptTypeAssociation association,
             XPolicyAssociation xInverseAssociation) {
         IPolicyCmptTypeAssociation inverseAssociation = xInverseAssociation.getAssociation();
-        if (inverseAssociation == null) {
-            // inverse generator not exist,
-            // maybe this is an unidirectional association
-            return;
-        }
-
-        if (isOwnerOfRelationship(association, inverseAssociation)) {
-            // the owned by must be defined on the inverse side of the owner side,
-            // otherwise the joined table annotation will be ignored
-            return;
-        }
-
         // many-to-one side is the owning side, so a join column is defined on that side
         // the mappedBy attribute is not necessary
-        if (relationShip == RelationshipType.MANY_TO_ONE) {
+        if ((inverseAssociation == null) || isOwnerOfRelationship(association, inverseAssociation)
+                || (relationShip == RelationshipType.MANY_TO_ONE)) {
             return;
         }
 
@@ -345,11 +332,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         }
 
         // no many-to-many association, the owner is the many-to-one side
-        if (inverseAssociation.getMaxCardinality() > 1) {
-            return true;
-        }
-
-        if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
+        if ((inverseAssociation.getMaxCardinality() > 1)
+                || StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
             return true;
         }
         return false;
@@ -361,10 +345,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             return false;
         }
         IPolicyCmptTypeAssociation pcTypeAssociation = (IPolicyCmptTypeAssociation)ipsElement;
-        if (!pcTypeAssociation.getPolicyCmptType().isPersistentEnabled()) {
-            return false;
-        }
-        if (pcTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
+        if (!pcTypeAssociation.getPolicyCmptType().isPersistentEnabled()
+                || pcTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
             return false;
         }
         return isTargetPolicyCmptTypePersistenceEnabled(pcTypeAssociation);

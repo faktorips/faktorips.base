@@ -105,8 +105,7 @@ public class ExtensionFunctionResolversCache {
     private FunctionResolver<JavaCodeFragment> createFuntionResolver(
             IFunctionResolverFactory<JavaCodeFragment> factory) {
         try {
-            FunctionResolver<JavaCodeFragment> resolver = createFunctionResolver(factory);
-            return resolver;
+            return createFunctionResolver(factory);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch

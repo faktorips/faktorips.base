@@ -123,13 +123,8 @@ public abstract class Method extends TypePart implements IMethod {
 
     @Override
     public boolean overrides(IMethod other) {
-        if (this.equals(other)) {
-            return false;
-        }
-        if (!isSameSignature(other)) {
-            return false;
-        }
-        if (!getType().isSubtypeOf(other.getType(), other.getIpsProject())) {
+        if (equals(other) || !isSameSignature(other)
+                || !getType().isSubtypeOf(other.getType(), other.getIpsProject())) {
             return false;
         }
         return true;
@@ -228,7 +223,7 @@ public abstract class Method extends TypePart implements IMethod {
         List<IMethod> methods = getType().getMethods();
         String thisSignature = getSignatureString();
         for (IBaseMethod formulaMethod : methods) {
-            if (this.equals(formulaMethod)) {
+            if (equals(formulaMethod)) {
                 continue;
             }
             if (formulaMethod.getSignatureString().equals(thisSignature)) {

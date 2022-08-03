@@ -26,8 +26,8 @@ public abstract class NumberValueConverter extends AbstractValueConverter {
      * instance.
      * 
      * @return A decimal format with custom decimal separator and grouping character symbols,
-     *         according to the properties set on the table format. A default decimal format is
-     *         returned if the properties are not set.
+     *             according to the properties set on the table format. A default decimal format is
+     *             returned if the properties are not set.
      */
     protected DecimalFormat getDecimalFormat(ITableFormat tableFormat) {
         DecimalFormat decimalFormat = new DecimalFormat();

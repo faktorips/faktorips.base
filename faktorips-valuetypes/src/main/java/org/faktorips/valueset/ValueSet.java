@@ -26,7 +26,7 @@ public interface ValueSet<T> extends Serializable {
      * the another value is in the set is found that is equal to it. Two values are considered to be
      * equal according to the equals() method semantic.
      */
-    public boolean contains(T value);
+    boolean contains(T value);
 
     /**
      * Returns true if this set contains discrete values. Also an empty {@link ValueSet} is
@@ -38,28 +38,28 @@ public interface ValueSet<T> extends Serializable {
      * 
      * @see #getValues(boolean)
      */
-    public boolean isDiscrete();
+    boolean isDiscrete();
 
     /**
      * Returns true if this set contains null.
      */
-    public boolean containsNull();
+    boolean containsNull();
 
     /**
      * Returns <code>true</code> if the set is empty, otherwise <code>false</code>.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns <code>true</code> if the set is a range, otherwise <code>false</code>.
      */
-    public boolean isRange();
+    boolean isRange();
 
     /**
      * Returns the number of values in the set or <code>Integer.MAX_VALUE</code> if there is an
      * unlimited number of values in the set.
      */
-    public int size();
+    int size();
 
     /**
      * If this set contains discrete values this method returns all values. If null or a null
@@ -70,7 +70,7 @@ public interface ValueSet<T> extends Serializable {
      * @throws IllegalStateException if the method is called on a set that doesn't contain discrete
      *             values or has an unlimited number of values
      */
-    public Set<T> getValues(boolean excludeNull);
+    Set<T> getValues(boolean excludeNull);
 
     /**
      * Determines whether this set restricts the number of its values.

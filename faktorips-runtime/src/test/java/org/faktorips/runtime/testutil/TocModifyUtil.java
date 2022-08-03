@@ -78,9 +78,7 @@ public class TocModifyUtil {
     protected static final DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        builder = factory.newDocumentBuilder();
-        return builder;
+        return factory.newDocumentBuilder();
     }
 
 }

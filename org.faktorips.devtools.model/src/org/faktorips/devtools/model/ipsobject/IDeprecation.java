@@ -22,32 +22,32 @@ import org.faktorips.devtools.model.XmlSupport;
  */
 public interface IDeprecation extends IDescribedElement, XmlSupport {
 
-    public static final String XML_TAG = "Deprecation"; //$NON-NLS-1$
+    String XML_TAG = "Deprecation"; //$NON-NLS-1$
 
-    public static final String XML_ATTRIBUTE_DEPRECATION_VERSION = "since"; //$NON-NLS-1$
+    String XML_ATTRIBUTE_DEPRECATION_VERSION = "since"; //$NON-NLS-1$
 
-    public static final String XML_ATTRIBUTE_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
+    String XML_ATTRIBUTE_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
 
-    public static final String PROPERTY_SINCE_VERSION_STRING = IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING;
+    String PROPERTY_SINCE_VERSION_STRING = IVersionControlledElement.PROPERTY_SINCE_VERSION_STRING;
 
-    public static final String PROPERTY_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
+    String PROPERTY_FOR_REMOVAL = "forRemoval"; //$NON-NLS-1$
 
     /**
      * Returns whether the part is marked for removal.
      */
-    public boolean isForRemoval();
+    boolean isForRemoval();
 
     /**
      * Marks the part for removal.
      */
-    public void setForRemoval(boolean forRemoval);
+    void setForRemoval(boolean forRemoval);
 
     /**
      * Sets the version since which this part is deprecated using a version string representation.
      * 
      * @param version The version-string that should be set as since-version
      */
-    public void setSinceVersionString(String version);
+    void setSinceVersionString(String version);
 
     /**
      * Returns the version since which this part is deprecated as a string. The version was set by
@@ -56,7 +56,7 @@ public interface IDeprecation extends IDescribedElement, XmlSupport {
      * @return the version since which this element is deprecated
      * @see #getSinceVersion()
      */
-    public String getSinceVersionString();
+    String getSinceVersionString();
 
     /**
      * Returns the version since which this part is deprecated. The version was set by
@@ -67,7 +67,7 @@ public interface IDeprecation extends IDescribedElement, XmlSupport {
      *             to the configured {@link IVersionProvider}
      * @see #isValidSinceVersion()
      */
-    public IVersion<?> getSinceVersion();
+    IVersion<?> getSinceVersion();
 
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
@@ -76,8 +76,8 @@ public interface IDeprecation extends IDescribedElement, XmlSupport {
      * <code>false</code>. That means no version is no valid version!
      * 
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
-     *         return a valid version. Otherwise <code>false</code>.
+     *             return a valid version. Otherwise <code>false</code>.
      */
-    public boolean isValidSinceVersion();
+    boolean isValidSinceVersion();
 
 }

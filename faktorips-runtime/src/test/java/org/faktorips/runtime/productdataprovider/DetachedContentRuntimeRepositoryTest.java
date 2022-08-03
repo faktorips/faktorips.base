@@ -27,6 +27,7 @@ import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
@@ -44,12 +45,19 @@ public class DetachedContentRuntimeRepositoryTest {
     @Mock
     private IFormulaEvaluatorFactory formulaEvaluatorFactory;
 
+    private AutoCloseable mocks;
+
     @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+    public void setUp() {
+        mocks = MockitoAnnotations.openMocks(this);
 
         repository = new DetachedContentRuntimeRepository("", mock(ICacheFactory.class), mock(ClassLoader.class),
                 productDataProvider, formulaEvaluatorFactory);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        mocks.close();
     }
 
     @Test
@@ -118,7 +126,7 @@ public class DetachedContentRuntimeRepositoryTest {
         ProductCmptTocEntry prodctCmptTocEntry = new ProductCmptTocEntry("", "", "", "", "", "",
                 generationImplClassName, mock(DateTime.class));
         GenerationTocEntry generationTocEntry = new GenerationTocEntry(prodctCmptTocEntry, mock(DateTime.class,
-                Answers.RETURNS_DEEP_STUBS.get()), "", "");
+                Answers.RETURNS_DEEP_STUBS), "", "");
 
         assertEquals(generationImplClassName, repository.getProductComponentGenerationImplClass(generationTocEntry));
     }
@@ -130,7 +138,7 @@ public class DetachedContentRuntimeRepositoryTest {
 
         String generationImplClassName = "generationImplClassName";
         GenerationTocEntry generationTocEntry = new GenerationTocEntry(mock(ProductCmptTocEntry.class), mock(
-                DateTime.class, Answers.RETURNS_DEEP_STUBS.get()), generationImplClassName, "");
+                DateTime.class, Answers.RETURNS_DEEP_STUBS), generationImplClassName, "");
 
         assertEquals(generationImplClassName, repository.getProductComponentGenerationImplClass(generationTocEntry));
     }

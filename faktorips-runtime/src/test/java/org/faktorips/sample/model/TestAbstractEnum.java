@@ -27,7 +27,7 @@ public interface TestAbstractEnum {
      * @generated
      */
     @IpsEnumAttribute(name = "id", identifier = true, unique = true)
-    public String getId();
+    String getId();
 
     /**
      * Gibt den Wert des Attributs name zurück.
@@ -35,5 +35,5 @@ public interface TestAbstractEnum {
      * @generated
      */
     @IpsEnumAttribute(name = "name", unique = true, displayName = true)
-    public String getName();
+    String getName();
 }

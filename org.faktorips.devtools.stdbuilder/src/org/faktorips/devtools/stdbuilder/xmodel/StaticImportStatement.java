@@ -37,8 +37,7 @@ public class StaticImportStatement extends AbstractImportStatement {
         int result = 1;
         result = prime * result + ((getClassName() == null) ? 0 : getClassName().hashCode());
         result = prime * result + ((getPackageName() == null) ? 0 : getPackageName().hashCode());
-        result = prime * result + ((element == null) ? 0 : element.hashCode());
-        return result;
+        return prime * result + ((element == null) ? 0 : element.hashCode());
     }
 
     @Override

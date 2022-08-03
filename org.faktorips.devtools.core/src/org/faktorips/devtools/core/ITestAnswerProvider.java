@@ -20,21 +20,21 @@ public interface ITestAnswerProvider {
     /**
      * Returns the answer as boolean.
      */
-    public boolean getBooleanAnswer();
+    boolean getBooleanAnswer();
 
     /**
      * Returns the answer as integer.
      */
-    public int getIntAnswer();
+    int getIntAnswer();
 
     /**
      * Returns the answer as String.
      */
-    public String getStringAnswer();
+    String getStringAnswer();
 
     /**
      * Returns the answer as unspecified object.
      */
-    public Object getAnswer();
+    Object getAnswer();
 
 }

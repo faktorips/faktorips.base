@@ -46,14 +46,17 @@ public class FieldPropertyMappingByPropertyDescriptor<T> extends AbstractFieldPr
     public T getPropertyValue() {
         try {
             Method getter = property.getReadMethod();
-            @SuppressWarnings("unchecked")
-            T result = (T)getter.invoke(getObject());
-            return result;
+            return invoke(getter);
 
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException("Error getting property value " + property.getName(), e); //$NON-NLS-1$
         }
         // CSON: IllegalCatch
+    }
+
+    @SuppressWarnings("unchecked")
+    private T invoke(Method getter) throws IllegalAccessException, InvocationTargetException {
+        return (T)getter.invoke(getObject());
     }
 }

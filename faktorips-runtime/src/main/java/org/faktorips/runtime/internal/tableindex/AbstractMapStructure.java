@@ -110,7 +110,7 @@ public abstract class AbstractMapStructure<K, V extends SearchStructure<R> & Mer
      * 
      * @param result a valid result or <code>null</code>.
      * @return the given result or an {@link EmptySearchStructure} if the given result is
-     *         <code>null</code>. Never returns <code>null</code>.
+     *             <code>null</code>. Never returns <code>null</code>.
      */
     protected SearchStructure<R> getValidResult(V result) {
         if (result == null) {

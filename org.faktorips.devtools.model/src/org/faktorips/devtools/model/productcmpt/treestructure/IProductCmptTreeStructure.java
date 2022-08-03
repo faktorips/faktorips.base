@@ -38,20 +38,20 @@ public interface IProductCmptTreeStructure {
     /**
      * Returns the reference wrapping the root product component of this structure.
      */
-    public IProductCmptReference getRoot();
+    IProductCmptReference getRoot();
 
     /**
      * Refreshes the structure to reflect changes to the underlying objects.
      * 
      * @throws CycleInProductStructureException If a circle is detected.
      */
-    public void refresh() throws CycleInProductStructureException;
+    void refresh() throws CycleInProductStructureException;
 
     /**
      * @return Returns the date this structure was created for. That means, all relations
-     *         represented by this structure are valid at the returned date.
+     *             represented by this structure are valid at the returned date.
      */
-    public GregorianCalendar getValidAt();
+    GregorianCalendar getValidAt();
 
     /**
      * Returns all references contained in this structure as plain list.
@@ -59,16 +59,17 @@ public interface IProductCmptTreeStructure {
      * @param productCmptOnly <code>true</code> to get only references to <code>IProductCmpt</code>
      *            s.
      */
-    public Set<IProductCmptStructureReference> toSet(boolean productCmptOnly);
+    Set<IProductCmptStructureReference> toSet(boolean productCmptOnly);
 
     /**
      * Returns the parent reference to the given one which refers to a <code>IProductCmpt</code>.
      * 
      * @param child The child reference to get the parent from.
      * @return The found reference to the parent <code>IProductCmpt</code> or <code>null</code> if
-     *         no parent was found (if the given child is the root of the structure, for example).
+     *             no parent was found (if the given child is the root of the structure, for
+     *             example).
      */
-    public IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child);
+    IProductCmptReference getParentProductCmptReference(IProductCmptStructureReference child);
 
     /**
      * Returns the parent reference to the given one which refers to a
@@ -76,17 +77,17 @@ public interface IProductCmptTreeStructure {
      * 
      * @param child The child reference to get the parent from.
      * @return The found references to the parent <code>IProductCmptTypeRelation</code> or
-     *         <code>null</code> if no parent was found (if the given child is the root of the
-     *         structure, for example).
+     *             <code>null</code> if no parent was found (if the given child is the root of the
+     *             structure, for example).
      */
-    public IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(
+    IProductCmptTypeAssociationReference getParentProductCmptTypeRelationReference(
             IProductCmptStructureReference child);
 
     /**
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmpt</code>s.
      */
-    public IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent);
+    IProductCmptReference[] getChildProductCmptReferences(IProductCmptStructureReference parent);
 
     /**
      * Get all product component type association references from the parent structure reference.
@@ -96,7 +97,7 @@ public interface IProductCmptTreeStructure {
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+    IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
             IProductCmptStructureReference parent);
 
     /**
@@ -106,7 +107,7 @@ public interface IProductCmptTreeStructure {
      * @param includeEmptyAssociations true if empty associations have to be included
      * @return The found references from the given parent to <code>IProductCmptTypeRelation</code>s.
      */
-    public IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
+    IProductCmptTypeAssociationReference[] getChildProductCmptTypeAssociationReferences(
             IProductCmptStructureReference parent,
             boolean includeEmptyAssociations);
 
@@ -114,14 +115,14 @@ public interface IProductCmptTreeStructure {
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptReference</code>s.
      */
-    public IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(
+    IProductCmptStructureTblUsageReference[] getChildProductCmptStructureTblUsageReference(
             IProductCmptStructureReference parent);
 
     /**
      * @param parent The parent-reference to start the search for child-references.
      * @return The found references from the given parent to <code>IProductCmptReference</code>s.
      */
-    public IProductCmptVRuleReference[] getChildProductCmptVRuleReferences(IProductCmptStructureReference parent);
+    IProductCmptVRuleReference[] getChildProductCmptVRuleReferences(IProductCmptStructureReference parent);
 
     /**
      * Searches this structure/tree for {@link IProductCmptReference IProductCmptReferences}
@@ -129,22 +130,22 @@ public interface IProductCmptTreeStructure {
      * 
      * @param string the {@link IProductCmpt}'s qualified name to search for
      * @return <code>true</code> if this structure references the given qualified name,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      */
-    public boolean referencesProductCmptQualifiedName(String string);
+    boolean referencesProductCmptQualifiedName(String string);
 
     /**
      * Searches this structure/tree for {@link IProductCmptReference references} to any of the given
      * {@link IProductCmpt product components}.
      * 
      * @return a list of references referring to at least one {@link IProductCmpt} given in the
-     *         list.
+     *             list.
      */
-    public List<IProductCmptReference> findReferencesFor(List<IProductCmpt> cmpts);
+    List<IProductCmptReference> findReferencesFor(List<IProductCmpt> cmpts);
 
     /**
      * Returns the validTo property from the {@link IProductCmptReference}
      */
-    public GregorianCalendar getValidTo();
+    GregorianCalendar getValidTo();
 
 }

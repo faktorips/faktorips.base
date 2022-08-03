@@ -58,11 +58,11 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     public ProductCmptLinkContainerValidator(IIpsProject ipsProject, IProductCmptLinkContainer linkContainer) {
         super(ipsProject);
         this.linkContainer = linkContainer;
-        this.list = new MessageList();
+        list = new MessageList();
     }
 
     public void startAndAddMessagesToList(IProductCmptType type, MessageList parentList) {
-        this.list = new MessageList();
+        list = new MessageList();
         start(type);
         parentList.add(list);
     }
@@ -71,10 +71,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     protected boolean visit(IProductCmptType currentType) {
         List<IProductCmptTypeAssociation> associations = currentType.getProductCmptTypeAssociations();
         for (IProductCmptTypeAssociation association : associations) {
-            if (association.isDerivedUnion()) {
-                continue;
-            }
-            if (!linkContainer.isContainerFor(association)) {
+            if (association.isDerivedUnion() || !linkContainer.isContainerFor(association)) {
                 continue;
             }
             validateAssociation(association);
@@ -273,8 +270,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
 
     private MessageList getErrorMessagesFor(IAssociation association) {
         MessageList errorList = association.validate(getIpsProject());
-        errorList = errorList.getMessagesBySeverity(Severity.ERROR);
-        return errorList;
+        return errorList.getMessagesBySeverity(Severity.ERROR);
     }
 
 }

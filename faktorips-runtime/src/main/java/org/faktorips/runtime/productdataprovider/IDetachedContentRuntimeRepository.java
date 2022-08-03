@@ -21,6 +21,6 @@ public interface IDetachedContentRuntimeRepository extends IRuntimeRepository {
      * 
      * @return version of the product data provider
      */
-    public String getProductDataVersion();
+    String getProductDataVersion();
 
 }

@@ -75,7 +75,7 @@ public class DeleteRowAction extends IpsAction {
             super(srcFile);
             this.selection = selection;
             this.tableViewer = tableViewer;
-            this.contentPage = page;
+            contentPage = page;
         }
 
         @Override

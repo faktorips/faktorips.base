@@ -130,9 +130,9 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
 
         List<?> commentList = compilationUnit.getCommentList();
         if (commentList != null) {
-            this.commentArray = commentList.toArray(new Comment[commentList.size()]);
-            this.commentStartPositions = new int[commentList.size()];
-            this.commentEndPositions = new int[commentList.size()];
+            commentArray = commentList.toArray(new Comment[commentList.size()]);
+            commentStartPositions = new int[commentList.size()];
+            commentEndPositions = new int[commentList.size()];
             int i = 0;
             for (Object name : commentList) {
                 Comment comment = (Comment)name;
@@ -141,9 +141,9 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
                 i++;
             }
         } else {
-            this.commentArray = new Comment[0];
-            this.commentStartPositions = new int[0];
-            this.commentEndPositions = new int[0];
+            commentArray = new Comment[0];
+            commentStartPositions = new int[0];
+            commentEndPositions = new int[0];
         }
     }
 
@@ -333,7 +333,7 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      * 
      * @param node
      * @return start position of the first preceding comment, or extended start position if there
-     *         are no comments
+     *             are no comments
      */
     protected int computeStartOfPrecedingComments(ASTNode node) {
         int nodeStartPosition = compilationUnit.getExtendedStartPosition(node);
@@ -368,7 +368,7 @@ public class CommentAwareSourceRangeComputer extends TargetSourceRangeComputer {
      * 
      * @param node
      * @return end position of the last trailing comment, or extended end position if there are no
-     *         comments
+     *             comments
      */
     protected int computeEndOfTrailingComments(ASTNode node) {
         int nodeEndPosition = compilationUnit.getExtendedStartPosition(node) + compilationUnit.getExtendedLength(node);

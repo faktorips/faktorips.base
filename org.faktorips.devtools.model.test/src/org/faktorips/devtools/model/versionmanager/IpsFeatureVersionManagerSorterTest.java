@@ -20,7 +20,7 @@ public class IpsFeatureVersionManagerSorterTest {
     @Test
     public void testGetMigrationOperation() {
         IpsFeatureVersionManagerSorter sorter = new IpsFeatureVersionManagerSorter();
-        Manager[] managers = new Manager[] { new Manager("6", "1"), new Manager("2", ""), new Manager("3", ""),
+        Manager[] managers = { new Manager("6", "1"), new Manager("2", ""), new Manager("3", ""),
                 new Manager("4", ""), new Manager("5", ""), new Manager("1", "") };
 
         IIpsFeatureVersionManager[] result = sorter.sortForMigartionOrder(managers);
@@ -70,7 +70,7 @@ public class IpsFeatureVersionManagerSorterTest {
         }
     }
 
-    private class Manager implements IIpsFeatureVersionManager {
+    private static class Manager implements IIpsFeatureVersionManager {
 
         private String id;
 
@@ -78,7 +78,7 @@ public class IpsFeatureVersionManagerSorterTest {
 
         public Manager(String id, String predecessorId) {
             this.id = id;
-            this.prevId = predecessorId;
+            prevId = predecessorId;
         }
 
         @Override

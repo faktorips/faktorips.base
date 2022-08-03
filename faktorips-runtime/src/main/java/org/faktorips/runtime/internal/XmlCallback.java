@@ -27,5 +27,5 @@ public interface XmlCallback {
      * @param modelObject The model object which is currently initialized via XML
      * @param propMap Map containing all node properties
      */
-    public void initProperties(String pathFromAggregateRoot, IModelObject modelObject, Map<String, String> propMap);
+    void initProperties(String pathFromAggregateRoot, IModelObject modelObject, Map<String, String> propMap);
 }

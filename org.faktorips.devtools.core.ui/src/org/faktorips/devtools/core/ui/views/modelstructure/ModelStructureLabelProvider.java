@@ -90,8 +90,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
                         .createImage(IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(imageName,
                                 overlayImages));
             } else {
-                Image image = IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
-                return image;
+                return IpsUIPlugin.getImageHandling().getSharedImage(imageName, true);
             }
         }
         return null;
@@ -159,7 +158,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
      * @see #setShowCardinalities(boolean)
      */
     public boolean getShowCardinalities() {
-        return this.showCardinalities;
+        return showCardinalities;
     }
 
     /**
@@ -175,14 +174,14 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
      * @see #setShowCardinalities(boolean)
      */
     public void toggleShowCardinalities() {
-        this.showCardinalities = !this.showCardinalities;
+        showCardinalities = !showCardinalities;
     }
 
     /**
      * @see #setShowRolenames(boolean)
      */
     public boolean getShowRolenames() {
-        return this.showRolenames;
+        return showRolenames;
     }
 
     /**
@@ -198,14 +197,14 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
      * @see #setShowRolenames(boolean)
      */
     public void toggleShowRolenames() {
-        this.showRolenames = !this.showRolenames;
+        showRolenames = !showRolenames;
     }
 
     /**
      * @see #setShowProjects(boolean) .
      */
     public boolean getShowProjects() {
-        return this.showProjects;
+        return showProjects;
     }
 
     /**
@@ -221,7 +220,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
      * @see #setShowProjects(boolean)
      */
     public void toggleShowProjects() {
-        this.showProjects = !this.showProjects;
+        showProjects = !showProjects;
     }
 
     public String getToolTipText(Object element) {

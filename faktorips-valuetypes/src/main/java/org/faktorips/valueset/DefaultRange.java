@@ -164,10 +164,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * this range if the range is instantiated with a step size different from {@code null}.
      */
     protected final void checkIfStepFitsIntoBounds() {
-        if (isStepNull()) {
-            return;
-        }
-        if (isLowerBoundNull() || isUpperBoundNull()) {
+        if (isStepNull() || isLowerBoundNull() || isUpperBoundNull()) {
             return;
         }
         if (!checkIfValueCompliesToStepIncrement(getLowerBound(), getUpperBound())) {
@@ -248,10 +245,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     @Override
     @SuppressWarnings("unchecked")
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!obj.getClass().equals(getClass())) {
+        if ((obj == null) || !obj.getClass().equals(getClass())) {
             return false;
         }
         Range<T> otherRange = (Range<T>)obj;
@@ -283,8 +277,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             int result = 17;
             result = result * 37 + lowerBound.hashCode();
             result = result * 37 + upperBound.hashCode();
-            result = (step == null) ? result : result * 37 + step.hashCode();
-            return result;
+            return (step == null) ? result : result * 37 + step.hashCode();
         }
     }
 

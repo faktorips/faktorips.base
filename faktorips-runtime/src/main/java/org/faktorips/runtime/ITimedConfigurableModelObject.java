@@ -19,11 +19,11 @@ public interface ITimedConfigurableModelObject extends IConfigurableModelObject 
     /**
      * The name of the property 'productCmptGeneration'.
      */
-    public static final String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
+    String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
 
     /**
      * Returns the product component generation this policy component is based on.
      */
-    public IProductComponentGeneration getProductCmptGeneration();
+    IProductComponentGeneration getProductCmptGeneration();
 
 }

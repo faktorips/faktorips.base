@@ -34,7 +34,7 @@ public class LocalizedStringsSetTest {
         GregorianCalendar calendar = new GregorianCalendar(2004, 11, 20);
         Date date = calendar.getTime();
         Double x = Double.valueOf(9.34);
-        Object[] replacements = new Object[] { date, x };
+        Object[] replacements = { date, x };
 
         assertEquals("Date=12/20/04, x=9.34", set.getString("replacements", Locale.ENGLISH, replacements)); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Datum=20.12.04, x=9,34", set.getString("replacements", Locale.GERMAN, replacements)); //$NON-NLS-1$ //$NON-NLS-2$

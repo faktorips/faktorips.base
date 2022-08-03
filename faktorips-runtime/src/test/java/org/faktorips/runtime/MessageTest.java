@@ -191,7 +191,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test
     public void testMessage_StringStringintObjectPropertyArray() {
-        ObjectProperty[] op = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
+        ObjectProperty[] op = { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pB") };
         Message msg = new Message("code", "text", Message.INFO, op);
         assertEquals("code", msg.getCode());
@@ -289,14 +289,14 @@ public class MessageTest extends XmlAbstractTestCase {
         assertTrue(msg.equals(msg2));
 
         // different referenced object properties (different object)
-        ObjectProperty[] op = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
+        ObjectProperty[] op = { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pB") };
         msg = new Message("1", "blabla", Message.ERROR, op);
         msg2 = new Message("1", "blabla", Message.ERROR, "objectA", "pA", "pB");
         assertFalse(msg.equals(msg2));
 
         // different referenced object properties (different property)
-        ObjectProperty[] op2 = new ObjectProperty[] { new ObjectProperty("objectA", "pA"),
+        ObjectProperty[] op2 = { new ObjectProperty("objectA", "pA"),
                 new ObjectProperty("objectB", "pDifferent") };
         msg2 = new Message("1", "blabla", Message.ERROR, op2);
         assertFalse(msg.equals(msg2));
@@ -333,7 +333,7 @@ public class MessageTest extends XmlAbstractTestCase {
         Message msg = new Message("code", "text", Message.ERROR);
         assertEquals(0, msg.getNumOfInvalidObjectProperties());
 
-        ObjectProperty[] props = new ObjectProperty[] { new ObjectProperty(this, "prop1"),
+        ObjectProperty[] props = { new ObjectProperty(this, "prop1"),
                 new ObjectProperty(this, "prop2"), };
         msg = new Message("code", "text", Message.ERROR, props);
 
@@ -345,7 +345,7 @@ public class MessageTest extends XmlAbstractTestCase {
         Message msg = new Message("code", "text", Message.ERROR);
         assertEquals(0, msg.getNumOfReplacementParameters());
 
-        MsgReplacementParameter[] params = new MsgReplacementParameter[] {
+        MsgReplacementParameter[] params = {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", Integer.valueOf(18)) };
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
@@ -356,7 +356,7 @@ public class MessageTest extends XmlAbstractTestCase {
     @Test
     public void testGetNumOfReplacementParameters_defensiveCopy() {
         MsgReplacementParameter msgReplacementParameter = new MsgReplacementParameter("sumInsured", Money.euro(100));
-        MsgReplacementParameter[] params = new MsgReplacementParameter[] { msgReplacementParameter };
+        MsgReplacementParameter[] params = { msgReplacementParameter };
 
         Message msg = Message.error("text").code("code").replacements(params).create();
         params[0] = null;
@@ -370,7 +370,7 @@ public class MessageTest extends XmlAbstractTestCase {
         Message msg = new Message("code", "text", Message.ERROR);
         assertFalse(msg.hasReplacementParameter("param"));
 
-        MsgReplacementParameter[] params = new MsgReplacementParameter[] {
+        MsgReplacementParameter[] params = {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", Integer.valueOf(18)) };
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
@@ -384,7 +384,7 @@ public class MessageTest extends XmlAbstractTestCase {
         Message msg = new Message("code", "text", Message.ERROR);
         assertNull(msg.getReplacementValue("param"));
 
-        MsgReplacementParameter[] params = new MsgReplacementParameter[] {
+        MsgReplacementParameter[] params = {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", Integer.valueOf(18)) };
         msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
@@ -467,7 +467,7 @@ public class MessageTest extends XmlAbstractTestCase {
     @Test
     public void testGetMarkers_defensiveCopy() {
         IMarker testMarker = mock(IMarker.class);
-        IMarker[] markerArray = new IMarker[] { testMarker };
+        IMarker[] markerArray = { testMarker };
         Message message = Message.warning("text").code("1").markers(markerArray).create();
 
         markerArray[0] = null;

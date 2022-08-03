@@ -46,9 +46,7 @@ public class IpsRemoveImportsOperation {
         String withoutComments = removeComments(input);
         String withoutImports = removeImports(withoutComments);
         Set<String> words = getRelevantWords(withoutImports);
-        String inputWithRemovedImports = removeImports(input, words);
-
-        return inputWithRemovedImports;
+        return removeImports(input, words);
     }
 
     private String removeImports(String input, Set<String> words) {

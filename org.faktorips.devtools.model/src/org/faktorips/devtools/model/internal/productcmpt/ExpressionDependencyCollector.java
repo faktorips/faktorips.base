@@ -74,8 +74,7 @@ public class ExpressionDependencyCollector {
     private static IdentifierVisitor newIdentifierVisitor(IExpression expression) {
         IdentifierParser identifierParser = new IdentifierParser(expression, expression.getIpsProject(),
                 IIpsModelExtensions.get().getIdentifierFilter());
-        IdentifierVisitor identifierVisitor = new IdentifierVisitor(expression.getExpression(), identifierParser);
-        return identifierVisitor;
+        return new IdentifierVisitor(expression.getExpression(), identifierParser);
     }
 
     Map<IDependency, IExpressionDependencyDetail> getResult() {
@@ -113,8 +112,7 @@ public class ExpressionDependencyCollector {
     private SimpleNode parseExpressionInternal() throws ParseException {
         StringReader reader = new StringReader(expression.getExpression());
         FlParser parser = new FlParser(reader);
-        SimpleNode rootNode = parser.start();
-        return rootNode;
+        return parser.start();
     }
 
     /**
@@ -148,9 +146,8 @@ public class ExpressionDependencyCollector {
 
     private IpsObjectDependency createQualifiedNodeDependency(IdentifierNode identifierNode) {
         QualifierNode qualifierNode = (QualifierNode)identifierNode;
-        IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(expression.getIpsObject()
+        return IpsObjectDependency.createReferenceDependency(expression.getIpsObject()
                 .getQualifiedNameType(), qualifierNode.getProductCmpt().getQualifiedNameType());
-        return dependency;
     }
 
     TextRegion getTextRegion(IdentifierNode identifierNode, int identifierOffset, int startOffset, int endOffset) {

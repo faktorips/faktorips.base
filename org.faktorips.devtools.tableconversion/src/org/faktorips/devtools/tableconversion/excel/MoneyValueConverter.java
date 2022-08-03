@@ -31,14 +31,11 @@ public class MoneyValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof String) {
             try {
                 return Money.valueOf((String)externalDataValue).toString();
+                // CSOFF: IllegalCatch
             } catch (RuntimeException e) {
-                messageList
-                        .add(ExtSystemsMessageUtil
-                                .createConvertExtToIntErrorMessage(
-                                        "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
-                                        getSupportedDatatype().getQualifiedName()));
-                return externalDataValue.toString();
+                // fall through to error message
             }
+            // CSON: IllegalCatch
         }
         messageList
                 .add(ExtSystemsMessageUtil

@@ -14,6 +14,6 @@ import org.eclipse.jface.fieldassist.IContentProposalProvider;
 
 public interface ICachedContentProposalProvider extends IContentProposalProvider {
 
-    public void clearCache();
+    void clearCache();
 
 }

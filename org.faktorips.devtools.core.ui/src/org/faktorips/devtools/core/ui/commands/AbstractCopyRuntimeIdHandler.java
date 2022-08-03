@@ -53,7 +53,7 @@ public class AbstractCopyRuntimeIdHandler<T extends IIpsObject> extends IpsAbstr
                 .flatMap(Optional::stream)
                 .map(getRuntimeId)
                 .collect(Collectors.joining(System.lineSeparator()));
-        Object[] ids = new Object[] { runtimeIds };
+        Object[] ids = { runtimeIds };
         clipboard.setContents(ids, new Transfer[] { TextTransfer.getInstance() });
     }
 

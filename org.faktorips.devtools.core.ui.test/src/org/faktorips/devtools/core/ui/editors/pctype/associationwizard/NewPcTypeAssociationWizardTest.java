@@ -44,7 +44,7 @@ public class NewPcTypeAssociationWizardTest extends AbstractIpsPluginTest {
      * IType.findAssociationsForTargetAndAssociationType()
      * 
      * @see IType#findAssociationsForTargetAndAssociationType(String, AssociationType, IIpsProject,
-     *      boolean)
+     *          boolean)
      */
     @Test
     public void testGetCorrespondingTargetAssociations() throws Exception {

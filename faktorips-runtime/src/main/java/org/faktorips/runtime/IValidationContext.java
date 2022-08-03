@@ -36,9 +36,9 @@ public interface IValidationContext {
      * Returns the configuration for generic attribute validation.
      *
      * @implSpec Implementers should overwrite this method to return their own implementation with
-     *           custom error messages.
+     *               custom error messages.
      * @implNote The default implementation always creates a new
-     *           {@link DefaultGenericAttributeValidationConfiguration}.
+     *               {@link DefaultGenericAttributeValidationConfiguration}.
      * @since 21.6
      */
     default IGenericAttributeValidationConfiguration getGenericAttributeValidationConfiguration() {

@@ -102,7 +102,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     }
 
     private synchronized void initialize(ISearchResult result) {
-        this.searchResult = result;
+        searchResult = result;
 
         if (searchResult == null) {
             return;
@@ -116,8 +116,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     @Override
     public Object[] getChildren(Object parentElement) {
         if (ipsElementTree.containsKey(parentElement)) {
-            Object[] children = ipsElementTree.get(parentElement).getChildren().toArray();
-            return children;
+            return ipsElementTree.get(parentElement).getChildren().toArray();
         }
         return new Object[0];
     }
@@ -125,8 +124,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     @Override
     public Object getParent(Object element) {
         if (element instanceof IIpsElement) {
-            IIpsElement ipsElementParent = getParentOfIpsElement((IIpsElement)element);
-            return ipsElementParent;
+            return getParentOfIpsElement((IIpsElement)element);
         }
         return null;
     }
@@ -134,8 +132,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     @Override
     public boolean hasChildren(Object element) {
         if (ipsElementTree.containsKey(element)) {
-            boolean hasChildren = ipsElementTree.get(element).hasChildren();
-            return hasChildren;
+            return ipsElementTree.get(element).hasChildren();
         }
         return false;
     }
@@ -253,7 +250,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         private final Set<IIpsElement> children;
 
         protected IpsElementSearchTreeNode() {
-            this.children = new HashSet<>();
+            children = new HashSet<>();
         }
 
         protected void addChild(IIpsElement child) {

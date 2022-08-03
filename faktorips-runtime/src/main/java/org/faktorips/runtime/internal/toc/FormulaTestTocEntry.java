@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import java.util.Objects;
+
 import org.w3c.dom.Element;
 
 /**
@@ -56,42 +58,21 @@ public class FormulaTestTocEntry extends TestCaseTocEntry {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + ((kindId == null) ? 0 : kindId.hashCode());
-        result = prime * result + ((versionId == null) ? 0 : versionId.hashCode());
-        return result;
+        return prime * result + ((versionId == null) ? 0 : versionId.hashCode());
     }
 
-    // CSOFF: CyclomaticComplexity
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (!(obj instanceof FormulaTestTocEntry)) {
+        if (!super.equals(obj) || !(obj instanceof FormulaTestTocEntry)) {
             return false;
         }
         FormulaTestTocEntry other = (FormulaTestTocEntry)obj;
-        if (kindId == null) {
-            if (other.kindId != null) {
-                return false;
-            }
-        } else if (!kindId.equals(other.kindId)) {
-            return false;
-        }
-        if (versionId == null) {
-            if (other.versionId != null) {
-                return false;
-            }
-        } else if (!versionId.equals(other.versionId)) {
-            return false;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(kindId, other.kindId)
+                && Objects.equals(versionId, other.versionId)
+                && super.equals(obj);
     }
-    // CSON: CyclomaticComplexity
 
 }

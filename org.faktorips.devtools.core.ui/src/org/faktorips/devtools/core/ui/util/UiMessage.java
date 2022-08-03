@@ -75,8 +75,7 @@ public final class UiMessage implements IMessage {
         }
 
         ObjectProperty invalidObjectProperty = objectProperties.get(0);
-        Object contextObject = invalidObjectProperty.getObject();
-        return contextObject;
+        return invalidObjectProperty.getObject();
     }
 
     private String getPrefix(Object contextObject) {

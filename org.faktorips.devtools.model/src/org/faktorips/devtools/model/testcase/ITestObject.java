@@ -25,39 +25,39 @@ public interface ITestObject extends IIpsObjectPart {
     /**
      * Returns the name of the corresponding test parameter.
      */
-    public String getTestParameterName();
+    String getTestParameterName();
 
     /**
      * Returns the root test policy component element.
      */
-    public ITestObject getRoot();
+    ITestObject getRoot();
 
     /**
      * Returns <code>true</code> if the test parameter is an input object otherwise
      * <code>false</code>.
      */
-    public boolean isInput();
+    boolean isInput();
 
     /**
      * Returns <code>true</code> if the test parameter is a expected object otherwise
      * <code>false</code>.
      */
-    public boolean isExpectedResult();
+    boolean isExpectedResult();
 
     /**
      * Returns <code>true</code> if the test parameter is a combined object (containing input and
      * expected result) otherwise <code>false</code>.
      */
-    public boolean isCombined();
+    boolean isCombined();
 
     /**
      * Returns <code>true</code> if the test object is a root object otherwise <code>false</code>.
      */
-    public boolean isRoot();
+    boolean isRoot();
 
     /**
      * Finds the corresponding test parameter. Returns <code>null</code> if no test parameter found.
      */
-    public ITestParameter findTestParameter(IIpsProject ipsProject) throws IpsException;
+    ITestParameter findTestParameter(IIpsProject ipsProject) throws IpsException;
 
 }

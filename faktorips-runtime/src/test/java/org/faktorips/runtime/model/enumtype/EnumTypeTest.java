@@ -141,14 +141,14 @@ public class EnumTypeTest {
     @IpsExtensibleEnum(enumContentName = "my.baz")
     @IpsEnumType(name = "my.bar", attributeNames = {})
     private static class Bar {
-
+        // en extensible enum
     }
 
     @IpsExtensibleEnum(enumContentName = "deprecated.content")
     @IpsEnumType(name = "deprecated.structure", attributeNames = {})
     @Deprecated
     private static class DeprecatedEnum {
-
+        // a dreprecated enum
     }
 
 }

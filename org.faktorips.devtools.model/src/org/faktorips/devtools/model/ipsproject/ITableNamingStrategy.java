@@ -22,13 +22,13 @@ import org.w3c.dom.Element;
  */
 public interface ITableNamingStrategy {
 
-    public static final String XML_TAG_NAME = "TableNamingStrategy"; //$NON-NLS-1$
-    public static final String EXTENSION_ID = "org.faktorips.devtools.model.ITable"; //$NON-NLS-1$
+    String XML_TAG_NAME = "TableNamingStrategy"; //$NON-NLS-1$
+    String EXTENSION_ID = "org.faktorips.devtools.model.ITable"; //$NON-NLS-1$
 
     /**
      * Applies this naming strategy to the given name and returns the possibly altered table name.
      */
-    public String getTableName(String baseName);
+    String getTableName(String baseName);
 
     /**
      * Applies this naming strategy to the given name and returns the possibly altered table name.
@@ -37,7 +37,7 @@ public interface ITableNamingStrategy {
      * @param maxLength A positive nonzero number which marks the maximum length of the returned
      *            String.
      */
-    public String getTableName(String baseName, int maxLength);
+    String getTableName(String baseName, int maxLength);
 
     /**
      * Sets the IPS project this strategy belongs to. Is called when the strategy is instantiated.
@@ -45,12 +45,12 @@ public interface ITableNamingStrategy {
      * 
      * @throws NullPointerException if project is <code>null</code>.
      */
-    public void setIpsProject(IIpsProject project);
+    void setIpsProject(IIpsProject project);
 
     /**
      * Returns the IPS project the strategy belongs to.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * Initializes the strategy with the data from the XML element. This method must be able to read
@@ -66,7 +66,7 @@ public interface ITableNamingStrategy {
      *     &lt;/TableNamingStrategy&gt;
      * </pre>
      */
-    public void initFromXml(Element el);
+    void initFromXml(Element el);
 
     /**
      * Creates an XML element representation of this strategy. The element's node name is defined in
@@ -74,11 +74,11 @@ public interface ITableNamingStrategy {
      * 
      * @param doc The XML document to create new elements.
      */
-    public Element toXml(Document doc);
+    Element toXml(Document doc);
 
     /**
      * Validates if the given table name conforms to this strategy.
      */
-    public void validate(String name);
+    void validate(String name);
 
 }

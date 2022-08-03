@@ -45,7 +45,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
      * {@inheritDoc}
      * 
      * @deprecated since 3.9.0: The method name was a false translation from German. The correct
-     *             method is called {@link #getCurrentRuntimeRepository()}
+     *                 method is called {@link #getCurrentRuntimeRepository()}
      */
     @Override
     @Deprecated
@@ -95,7 +95,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * @param productDataProviderFactory The builder to create {@link IProductDataProvider}s
          */
         public Builder(IProductDataProviderFactory productDataProviderFactory) {
-            this.dataProviderFactory = productDataProviderFactory;
+            dataProviderFactory = productDataProviderFactory;
         }
 
         /**
@@ -112,7 +112,7 @@ public class DetachedContentRuntimeRepositoryManager extends AbstractRuntimeRepo
          * @param name the name of the repositories
          */
         public Builder setRepositoryName(String name) {
-            this.repositoryName = name;
+            repositoryName = name;
             return this;
         }
 

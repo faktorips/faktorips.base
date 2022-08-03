@@ -27,7 +27,7 @@ public class IpsTestCase2TestAssertsTest {
     /**
      * Dummy test case class to call the assert methods
      */
-    private class IpsTestCaseAssert extends IpsTestCase2 {
+    private static class IpsTestCaseAssert extends IpsTestCase2 {
         public IpsTestCaseAssert() {
             super("IpsTestCaseAssert");
         }

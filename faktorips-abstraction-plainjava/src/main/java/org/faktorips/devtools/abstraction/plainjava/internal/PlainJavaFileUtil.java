@@ -148,8 +148,8 @@ public class PlainJavaFileUtil {
     }
 
     @FunctionalInterface
-    public static interface PathHandler {
-        public void handle(Path path) throws IOException;
+    public interface PathHandler {
+        void handle(Path path) throws IOException;
     }
 
     private static final class PathHandlerFileVisitor extends SimpleFileVisitor<java.nio.file.Path> {

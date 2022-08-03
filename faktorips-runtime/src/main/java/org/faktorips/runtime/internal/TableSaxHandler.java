@@ -99,7 +99,7 @@ public class TableSaxHandler extends DefaultHandler {
             insideRowNode = true;
         } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
-            nullValue = Boolean.valueOf(attributes.getValue("isNull")).booleanValue();
+            nullValue = Boolean.parseBoolean(attributes.getValue("isNull"));
         }
     }
 

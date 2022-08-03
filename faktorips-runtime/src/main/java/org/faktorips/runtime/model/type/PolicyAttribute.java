@@ -71,7 +71,7 @@ public abstract class PolicyAttribute extends Attribute {
      * 
      * @param modelObject a model object corresponding to the {@link Type} this attribute belongs to
      * @return the value of the given model object's attribute identified by this model type
-     *         attribute
+     *             attribute
      * @throws IllegalArgumentException if the model object does not have an attribute fitting this
      *             model type attribute or that attribute is not accessible for any reason
      */
@@ -151,7 +151,7 @@ public abstract class PolicyAttribute extends Attribute {
      * 
      * @see #getDefaultValue(IModelObject)
      * @apiNote this method is supplanted by the more general {@link #getDefaultValue(IModelObject)}
-     *          but remains here for compile time compatibility with older versions.
+     *              but remains here for compile time compatibility with older versions.
      */
     public Object getDefaultValue(IConfigurableModelObject modelObject) {
         return getDefaultValue((IModelObject)modelObject);

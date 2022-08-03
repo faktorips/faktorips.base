@@ -104,5 +104,5 @@ public interface ICustomModelExtensions {
      * 
      * @see IProductCmptNamingStrategyFactory#getExtensionId()
      */
-    public IProductCmptNamingStrategyFactory getProductCmptNamingStrategyFactory(String extensionId);
+    IProductCmptNamingStrategyFactory getProductCmptNamingStrategyFactory(String extensionId);
 }

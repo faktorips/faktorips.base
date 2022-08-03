@@ -26,6 +26,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
@@ -51,7 +52,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerati
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * Base class for every Xtend generator model object. This class provides some useful methods e.g.
@@ -119,7 +119,7 @@ public abstract class AbstractGeneratorModelNode {
      * instead.
      * 
      * @see #AbstractGeneratorModelNode(IIpsObjectPartContainer, GeneratorModelContext,
-     *      ModelService)
+     *          ModelService)
      * 
      * @param ipsObjectPartContainer The object this generator model object is responsible for
      * @param context The generator model context used to store context sensitive information
@@ -131,12 +131,12 @@ public abstract class AbstractGeneratorModelNode {
             ModelService modelService, LocalizedStringsSet localizedStringsSet) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         this.ipsObjectPartContainer = ipsObjectPartContainer;
-        this.modelContext = context;
+        modelContext = context;
         this.modelService = modelService;
         if (localizedStringsSet == null) {
-            this.localizedStringSet = new LocalizedStringsSet(getClass());
+            localizedStringSet = new LocalizedStringsSet(getClass());
         } else {
-            this.localizedStringSet = localizedStringsSet;
+            localizedStringSet = localizedStringsSet;
         }
     }
 
@@ -334,8 +334,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the unqualified name of the type
      */
     public String addImport(String qName) {
-        String className = getContext().addImport(qName);
-        return className;
+        return getContext().addImport(qName);
     }
 
     /**
@@ -440,24 +439,21 @@ public abstract class AbstractGeneratorModelNode {
      * the prefix for comments ("//").
      */
     public String localizedText(String key) {
-        String text = getLocalizedText(key);
-        return text;
+        return getLocalizedText(key);
     }
 
     /**
      * Returns the localized string for the given key and replacement parameter.
      */
     public String localizedText(String key, String replacement) {
-        String text = getLocalizedText(key, replacement);
-        return text;
+        return getLocalizedText(key, replacement);
     }
 
     /**
      * Returns the localized string for the given key and replacement parameters.
      */
     public String localizedText(String key, String replacement, String replacement2) {
-        String text = getLocalizedText(key, replacement, replacement2);
-        return text;
+        return getLocalizedText(key, replacement, replacement2);
     }
 
     /**
@@ -631,8 +627,8 @@ public abstract class AbstractGeneratorModelNode {
      *            If you want to create the Method {@link String#indexOf(String, int)}, you would
      *            pass {@code "String", "str", "int", "fromIndex"}.
      * @return The method's definition. For example for a method name <em>setFoo</em> with parameter
-     *         <em>bar</em> of type <em>String</em> the method definition is <em>setFoo(String
-     *         bar)</em>
+     *             <em>bar</em> of type <em>String</em> the method definition is <em>setFoo(String
+     *             bar)</em>
      */
     public String method(String methodName, String... parameterTypesAndNames) {
         return methodInternal(methodName, MethodParameter.arrayOf(parameterTypesAndNames));

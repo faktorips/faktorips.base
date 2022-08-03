@@ -26,6 +26,6 @@ public interface IVersionProviderFactory {
      * 
      * @return The new {@link IVersionProvider}
      */
-    public IVersionProvider<?> createVersionProvider(IIpsProject ipsProject);
+    IVersionProvider<?> createVersionProvider(IIpsProject ipsProject);
 
 }

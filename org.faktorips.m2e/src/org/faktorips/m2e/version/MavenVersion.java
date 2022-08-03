@@ -73,10 +73,7 @@ public class MavenVersion implements IVersion<MavenVersion> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         MavenVersion other = (MavenVersion)obj;
@@ -91,7 +88,7 @@ public class MavenVersion implements IVersion<MavenVersion> {
 
     /**
      * @see <a href=
-     *      "http://www.mojohaus.org/versions-maven-plugin/version-rules.html">http://www.mojohaus.org/versions-maven-plugin/version-rules.html</a>
+     *          "http://www.mojohaus.org/versions-maven-plugin/version-rules.html">http://www.mojohaus.org/versions-maven-plugin/version-rules.html</a>
      */
     static String getVersionFormat() {
         return "<MajorVersion [> . <MinorVersion [> . <IncrementalVersion ] ] [> - <BuildNumber | Qualifier ]> "; //$NON-NLS-1$

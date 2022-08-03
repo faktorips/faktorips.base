@@ -158,7 +158,7 @@ public class AttributeValueEditComposite
 
         private MyMultilingualValueAttributeHandler(Shell shell, IAttributeValue part) {
             super(shell, part);
-            this.attributeValue = part;
+            attributeValue = part;
         }
 
         @Override
@@ -169,8 +169,7 @@ public class AttributeValueEditComposite
                 IValue<?> value = singleValueHolder.getValue();
                 Object content = value.getContent();
                 if (content instanceof IInternationalString) {
-                    IInternationalString internationalString = (IInternationalString)content;
-                    return internationalString;
+                    return (IInternationalString)content;
                 }
             }
             throw new IllegalArgumentException(

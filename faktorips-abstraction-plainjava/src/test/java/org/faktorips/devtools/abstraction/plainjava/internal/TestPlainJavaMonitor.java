@@ -26,7 +26,7 @@ public class TestPlainJavaMonitor implements IProgressMonitor {
     }
 
     public int getWork() {
-        return this.work;
+        return work;
     }
 
     public int getTotalWork() {
@@ -53,12 +53,12 @@ public class TestPlainJavaMonitor implements IProgressMonitor {
 
     @Override
     public void done() {
-        this.done = true;
+        done = true;
     }
 
     @Override
     public void internalWorked(double work) {
-        this.internalWork = work;
+        internalWork = work;
     }
 
     @Override

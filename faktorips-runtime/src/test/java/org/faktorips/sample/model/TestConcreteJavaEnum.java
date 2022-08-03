@@ -69,7 +69,7 @@ public enum TestConcreteJavaEnum implements TestAbstractEnum {
      *
      * @generated
      */
-    private TestConcreteJavaEnum(String id, String name) {
+    TestConcreteJavaEnum(String id, String name) {
         this.id = id;
         this.name = name;
     }

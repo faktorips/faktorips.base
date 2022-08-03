@@ -35,7 +35,7 @@ import org.junit.Test;
  */
 public class ExprCompilerTest {
 
-    private class DummyCompilationResultImpl extends AbstractCompilationResult<CodeFragment> {
+    private static class DummyCompilationResultImpl extends AbstractCompilationResult<CodeFragment> {
 
         public DummyCompilationResultImpl(CodeFragment sourcecode, Datatype datatype) {
             super(sourcecode, datatype);
@@ -55,7 +55,7 @@ public class ExprCompilerTest {
 
     }
 
-    private class DummyParseTreeVisitor extends ParseTreeVisitor<CodeFragment> {
+    private static class DummyParseTreeVisitor extends ParseTreeVisitor<CodeFragment> {
 
         DummyParseTreeVisitor(ExprCompiler<CodeFragment> compiler) {
             super(compiler);
@@ -132,7 +132,7 @@ public class ExprCompilerTest {
 
             @Override
             public void setDatatype(Datatype datatype) {
-                //don't
+                // don't
             }
 
             @Override
@@ -278,9 +278,8 @@ public class ExprCompilerTest {
         compiler.setIdentifierResolver((identifier, exprCompiler, locale) -> {
             String text = ExprCompiler.getLocalizedStrings().getString(ExprCompiler.UNDEFINED_IDENTIFIER, locale,
                     identifier);
-            DummyCompilationResultImpl compilationResult = new DummyCompilationResultImpl(
+            return new DummyCompilationResultImpl(
                     Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, text));
-            return compilationResult;
         });
     }
 

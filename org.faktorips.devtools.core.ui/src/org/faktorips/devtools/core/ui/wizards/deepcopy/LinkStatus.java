@@ -33,12 +33,12 @@ public class LinkStatus {
     public LinkStatus(IIpsObjectPart ipsObjectPart, IIpsObject target, boolean checked, CopyOrLink copyOrLink) {
         this.ipsObjectPart = ipsObjectPart;
         this.target = target;
-        this.setChecked(checked);
-        this.setCopyOrLink(copyOrLink);
+        setChecked(checked);
+        setCopyOrLink(copyOrLink);
     }
 
     public void setChecked(boolean newValue) {
-        this.checked = newValue;
+        checked = newValue;
     }
 
     public boolean isChecked() {
@@ -50,7 +50,7 @@ public class LinkStatus {
     }
 
     void setCopyOrLinkInternal(CopyOrLink newValue) {
-        this.copyOrLink = newValue;
+        copyOrLink = newValue;
     }
 
     public CopyOrLink getCopyOrLink() {
@@ -72,7 +72,7 @@ public class LinkStatus {
 
         private final String text;
 
-        private CopyOrLink(String text) {
+        CopyOrLink(String text) {
             this.text = text;
         }
 

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 import org.faktorips.devtools.core.ui.views.IpsElementDragListener;
@@ -52,10 +54,7 @@ public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsS
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((ipsSrcFile == null) ? 0 : ipsSrcFile.hashCode());
-        return result;
+        return Objects.hash(ipsSrcFile);
     }
 
     @Override
@@ -63,21 +62,11 @@ public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsS
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         IpsSrcFileViewItem other = (IpsSrcFileViewItem)obj;
-        if (ipsSrcFile == null) {
-            if (other.ipsSrcFile != null) {
-                return false;
-            }
-        } else if (!ipsSrcFile.equals(other.ipsSrcFile)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(ipsSrcFile, other.ipsSrcFile);
     }
 
 }

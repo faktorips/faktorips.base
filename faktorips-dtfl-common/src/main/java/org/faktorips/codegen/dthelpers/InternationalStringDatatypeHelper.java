@@ -62,8 +62,7 @@ public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
 
     @Override
     protected JavaCodeFragment valueOfExpression(String valueExpression) {
-        JavaCodeFragment javaCodeFragment = new JavaCodeFragment(valueExpression);
-        return javaCodeFragment;
+        return new JavaCodeFragment(valueExpression);
     }
 
     /**

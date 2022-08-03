@@ -42,14 +42,12 @@ public class EnumInternationalStringCellModifier implements IElementModifier<IEn
     @Override
     public LocalizedString getValue(IEnumValue element) {
         IInternationalString content = getInternationalString(element);
-        LocalizedString result = content.get(getLocale());
-        return result;
+        return content.get(getLocale());
     }
 
     private IInternationalString getInternationalString(IEnumValue element) {
         IEnumAttributeValue enumAttributeValue = element.getEnumAttributeValues().get(columnIndex);
-        IInternationalString content = (IInternationalString)enumAttributeValue.getValue().getContent();
-        return content;
+        return (IInternationalString)enumAttributeValue.getValue().getContent();
     }
 
     @Override

@@ -539,15 +539,15 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
     private interface IndicationProvider {
 
-        public boolean uiValue();
+        boolean uiValue();
 
-        public boolean modelValue(IEnumAttribute enumAttribute);
+        boolean modelValue(IEnumAttribute enumAttribute);
 
-        public Message message();
+        Message message();
 
-        public String getPropertyName();
+        String getPropertyName();
 
-        public String getPropertyDisplayName();
+        String getPropertyDisplayName();
     }
 
     private class IdentifierIndicationProvider implements IndicationProvider {

@@ -67,8 +67,7 @@ public class DecimalNumberFormat extends AbstractNumberFormat {
                 valueAsObject = decimalValue.bigDecimalValue();
             }
         }
-        String stringToBeDisplayed = numberFormat.format(valueAsObject);
-        return stringToBeDisplayed;
+        return numberFormat.format(valueAsObject);
     }
 
     @Override

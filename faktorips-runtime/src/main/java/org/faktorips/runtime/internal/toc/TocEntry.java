@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal.toc;
 
+import java.util.Objects;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -30,7 +32,7 @@ public abstract class TocEntry {
 
     public TocEntry(String implementationClassName, String xmlResource) {
         this.implementationClassName = implementationClassName;
-        this.xmlResourceName = xmlResource;
+        xmlResourceName = xmlResource;
     }
 
     public String getXmlResourceName() {
@@ -64,11 +66,7 @@ public abstract class TocEntry {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((implementationClassName == null) ? 0 : implementationClassName.hashCode());
-        result = prime * result + ((xmlResourceName == null) ? 0 : xmlResourceName.hashCode());
-        return result;
+        return Objects.hash(implementationClassName, xmlResourceName);
     }
 
     @Override
@@ -76,28 +74,12 @@ public abstract class TocEntry {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof TocEntry)) {
+        if ((obj == null) || !(obj instanceof TocEntry)) {
             return false;
         }
         TocEntry other = (TocEntry)obj;
-        if (implementationClassName == null) {
-            if (other.implementationClassName != null) {
-                return false;
-            }
-        } else if (!implementationClassName.equals(other.implementationClassName)) {
-            return false;
-        }
-        if (xmlResourceName == null) {
-            if (other.xmlResourceName != null) {
-                return false;
-            }
-        } else if (!xmlResourceName.equals(other.xmlResourceName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(implementationClassName, other.implementationClassName)
+                && Objects.equals(xmlResourceName, other.xmlResourceName);
     }
 
 }

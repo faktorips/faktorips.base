@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
@@ -28,7 +29,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.junit.Test;
 
 public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTest {
@@ -111,7 +111,7 @@ public class AbstractLocalizedPropertiesBuilderTest extends AbstractIpsPluginTes
 
         @Override
         public void build(IIpsSrcFile ipsSrcFile) {
-
+            // nothing to do
         }
 
         @Override

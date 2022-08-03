@@ -53,8 +53,7 @@ public class OrderedValueSetTest {
         }
 
         try {
-            OrderedValueSet<Money> valueSet4 = new OrderedValueSet<>(true, null, Money.valueOf("1"),
-                    Money.NULL, null);
+            new OrderedValueSet<>(true, null, Money.valueOf("1"), Money.NULL, null);
             fail();
         } catch (IllegalArgumentException e) {
             // Expected exception.
@@ -96,7 +95,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testGetValues() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
         assertEquals(Arrays.asList(values), Arrays.asList(valueSet.getValues(false).toArray()));
 
@@ -120,7 +119,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testStream() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), null, Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), null, Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = OrderedValueSet.<Integer> of(values);
         Stream<Integer> valueStream = valueSet.stream();
         assertThat(valueStream.collect(Collectors.toList()), hasItems(values));
@@ -134,7 +133,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testContains() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3), null };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(true, null, values);
 
         assertTrue(valueSet.contains(Integer.valueOf(2)));
@@ -159,21 +158,21 @@ public class OrderedValueSetTest {
         valueSet = new OrderedValueSet<>(true, null, new Object[] { null });
         assertTrue(valueSet.isEmpty());
 
-        Object[] values = new Object[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Object[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         valueSet = new OrderedValueSet<>(false, null, values);
         assertFalse(valueSet.isEmpty());
     }
 
     @Test
     public void testSize() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
         assertEquals(3, valueSet.size());
     }
 
     @Test
     public void testSerializable() throws Exception {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
         TestUtil.testSerializable(valueSet);
     }
@@ -181,7 +180,7 @@ public class OrderedValueSetTest {
     @Test
     public void testEquals() {
 
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
 
         values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
@@ -201,7 +200,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testHashCode() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
 
         values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
@@ -226,7 +225,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testToString() {
-        Integer[] values = new Integer[] { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
+        Integer[] values = { Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3) };
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, values);
         assertEquals("[1, 2, 3]", valueSet.toString());
     }
@@ -241,7 +240,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testIsUnrestricted_WithNull_includesNull() {
-        OrderedValueSet<String> set = new OrderedValueSet<>(true, null, new String[0]);
+        OrderedValueSet<String> set = new OrderedValueSet<>(true, null);
 
         // OrderedValueSet is never unrestricted
         assertThat(set.isUnrestricted(false), is(false));
@@ -257,7 +256,7 @@ public class OrderedValueSetTest {
 
     @Test
     public void testIsUnrestricted_WithNull_excludesNull() {
-        OrderedValueSet<String> set = new OrderedValueSet<>(true, null, new String[0]);
+        OrderedValueSet<String> set = new OrderedValueSet<>(true, null);
 
         // OrderedValueSet is never unrestricted
         assertThat(set.isUnrestricted(true), is(false));

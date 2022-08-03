@@ -19,7 +19,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Checks whether a {@link MessageList} contains an error message.
  * 
  * @deprecated since 21.12. Use {@link MessageSeverityMatcher new MessageListMessageMatcher(new
- *             MessageSeverityMatcher(Severity#ERROR)} instead.
+ *                 MessageSeverityMatcher(Severity#ERROR)} instead.
  */
 @Deprecated
 public class ContainsErrorMatcher extends TypeSafeMatcher<MessageList> {

@@ -169,8 +169,8 @@ public class Index extends Key implements IIndex {
 
     @Override
     public void setUniqueKey(boolean unique) {
-        boolean oldValue = this.uniqueKey;
-        this.uniqueKey = unique;
+        boolean oldValue = uniqueKey;
+        uniqueKey = unique;
         valueChanged(oldValue, uniqueKey, PROPERTY_UNIQUE_KEY);
     }
 

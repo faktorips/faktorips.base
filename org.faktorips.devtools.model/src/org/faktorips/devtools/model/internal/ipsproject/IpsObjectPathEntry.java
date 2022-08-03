@@ -49,7 +49,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     public IpsObjectPathEntry(IpsObjectPath ipsObjectPath) {
         ArgumentCheck.notNull(ipsObjectPath);
-        this.path = ipsObjectPath;
+        path = ipsObjectPath;
     }
 
     @Override
@@ -119,7 +119,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      */
     protected void initFromXml(Element element, AProject project) {
         if (element.hasAttribute(XML_ATTRIBUTE_REEXPORTED)) {
-            reexported = Boolean.valueOf(element.getAttribute(XML_ATTRIBUTE_REEXPORTED)).booleanValue();
+            reexported = Boolean.parseBoolean(element.getAttribute(XML_ATTRIBUTE_REEXPORTED));
         }
     }
 

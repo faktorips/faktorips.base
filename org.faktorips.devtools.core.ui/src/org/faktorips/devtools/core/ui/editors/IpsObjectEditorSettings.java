@@ -77,7 +77,7 @@ public class IpsObjectEditorSettings implements IIpsObjectEditorSettings, ISaveP
         if (s == null) {
             return false;
         }
-        return Boolean.valueOf(s).booleanValue();
+        return Boolean.parseBoolean(s);
     }
 
     @Override

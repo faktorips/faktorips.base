@@ -21,5 +21,5 @@ public interface DataPageElement {
     /**
      * @return true, if there is no data to show
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 }

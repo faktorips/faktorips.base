@@ -28,7 +28,7 @@ public interface JField extends JMember {
      * </p>
      *
      * @return the initializer expression, or <code>null</code> if this field does not have an
-     *         initializer
+     *             initializer
      */
     String getInitializer();
 

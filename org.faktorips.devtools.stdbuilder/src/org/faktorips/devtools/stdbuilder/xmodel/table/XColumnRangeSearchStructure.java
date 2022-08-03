@@ -59,7 +59,7 @@ public class XColumnRangeSearchStructure extends AbstractGeneratorModelNode {
 
     /**
      * @return parameter name of the column range if the column type is one column (from or to),
-     *         else return empty String
+     *             else return empty String
      */
     public String getRangeStructureParameter() {
         return getRangeStructureParameter(getColumnRange());

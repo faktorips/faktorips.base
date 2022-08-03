@@ -30,20 +30,20 @@ public interface IProductPartsContainer extends IIpsObjectPartContainer {
      * Returns all property values for the given type. Returns an empty array if type is
      * <code>null</code> or no property values were found for the given type.
      */
-    public <T extends IIpsObjectPart> List<T> getProductParts(Class<T> type);
+    <T extends IIpsObjectPart> List<T> getProductParts(Class<T> type);
 
     /**
      * Returns the product component for this container. If this container is a
      * {@link IProductCmptGeneration product component generation} the corresponding product
      * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
      */
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     /**
      * Returns the qualified name of the product component type this property value container is
      * based on.
      */
-    public String getProductCmptType();
+    String getProductCmptType();
 
     /**
      * Finds the {@link IProductCmptType product component type} this container is based on.
@@ -51,12 +51,12 @@ public interface IProductPartsContainer extends IIpsObjectPartContainer {
      * @param ipsProject The IPS project which search path is used to search the type.
      * 
      * @return The product component type this link container is based on or <code>null</code> if
-     *         the product component type can't be found.
+     *             the product component type can't be found.
      * 
      * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
+    IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this container may contains parts that could change over time,
@@ -67,6 +67,6 @@ public interface IProductPartsContainer extends IIpsObjectPartContainer {
      * 
      * @return <code>true</code> if this container may contains parts that could change over time.
      */
-    public boolean isChangingOverTimeContainer();
+    boolean isChangingOverTimeContainer();
 
 }

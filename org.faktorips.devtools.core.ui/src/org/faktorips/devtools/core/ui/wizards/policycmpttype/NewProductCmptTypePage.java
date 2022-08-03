@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
-import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.IpsObjectRefControl;
 import org.faktorips.devtools.core.ui.wizards.NewWizardUtil;
 import org.faktorips.devtools.core.ui.wizards.type.NewTypePage;
@@ -36,8 +34,6 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.Message;
 
 public class NewProductCmptTypePage extends NewTypePage {
-
-    private TextButtonField pcTypeField;
 
     public NewProductCmptTypePage(IStructuredSelection selection, NewPcTypePage pcTypePage) {
         super(IpsObjectType.PRODUCT_CMPT_TYPE, selection, Messages.NewProductCmptTypePage_title);
@@ -95,29 +91,6 @@ public class NewProductCmptTypePage extends NewTypePage {
     protected void fillNameComposite(Composite nameComposite, UIToolkit toolkit) {
         super.fillNameComposite(nameComposite, toolkit);
         addAbstractField(nameComposite, toolkit);
-    }
-
-    private IPolicyCmptType getPolicyCmptType() {
-        String pcTypeQualifiedName = pcTypeField.getText();
-        if (getIpsProject() != null) {
-            IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
-            if (policyCmptType != null) {
-                return policyCmptType;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    protected void valueChangedExtension(FieldValueChangedEvent e) {
-        super.valueChangedExtension(e);
-
-        if (e.field == pcTypeField) {
-            IPolicyCmptType policyCmptType = getPolicyCmptType();
-            if (policyCmptType != null) {
-                setAbstract(policyCmptType.isAbstract());
-            }
-        }
     }
 
     @Override
@@ -211,10 +184,8 @@ public class NewProductCmptTypePage extends NewTypePage {
                 }
                 IPolicyCmptType policyCmptType = ipsProject
                         .findPolicyCmptType(getPageOfAssociatedType().getSuperType());
-                if (policyCmptType == null) {
-                    return msg;
-                }
-                if (!superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
+                if ((policyCmptType == null)
+                        || !superType.getPolicyCmptType().equals(policyCmptType.getQualifiedName())) {
                     return msg;
                 }
             }

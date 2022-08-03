@@ -184,10 +184,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     @Override
     public boolean isExtensionCompilationUnitGenerated() {
-        if (forceExtensionCompilationUnitGeneration) {
-            return true;
-        }
-        if (getNumOfRules() > 0) {
+        if (forceExtensionCompilationUnitGeneration || (getNumOfRules() > 0)) {
             return true;
         }
         for (IMethod method : methods) {

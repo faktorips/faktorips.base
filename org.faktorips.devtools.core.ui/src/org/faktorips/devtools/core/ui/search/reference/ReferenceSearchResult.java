@@ -31,7 +31,7 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
 
     @Override
     public String getLabel() {
-        return "" + super.getMatchCount() + Messages.ReferenceSearchResult_label + this.query.getReferencedName(); //$NON-NLS-1$
+        return "" + super.getMatchCount() + Messages.ReferenceSearchResult_label + query.getReferencedName(); //$NON-NLS-1$
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
 
     @Override
     public ISearchQuery getQuery() {
-        return this.query;
+        return query;
     }
 
     @Override

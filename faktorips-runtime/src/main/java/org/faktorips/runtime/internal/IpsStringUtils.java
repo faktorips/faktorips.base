@@ -35,7 +35,7 @@ public final class IpsStringUtils {
      * Returns {@code true} if {@code s} is either {@code null} or the empty string, otherwise
      * {@code false}.
      */
-    public static final boolean isEmpty(String s) {
+    public static boolean isEmpty(String s) {
         return s == null || s.isEmpty();
     }
 
@@ -43,7 +43,7 @@ public final class IpsStringUtils {
      * Returns {@code true} if {@code s} is neither {@code null} nor the empty string, otherwise
      * {@code false}.
      */
-    public static final boolean isNotEmpty(String s) {
+    public static boolean isNotEmpty(String s) {
         return !isEmpty(s);
     }
 
@@ -51,7 +51,7 @@ public final class IpsStringUtils {
      * Returns {@code true} if {@code s} is either {@code null}, the empty string or a string that
      * only contains whitespace, otherwise {@code false}.
      */
-    public static final boolean isBlank(String s) {
+    public static boolean isBlank(String s) {
         return s == null || s.trim().isEmpty();
     }
 
@@ -59,7 +59,7 @@ public final class IpsStringUtils {
      * Returns {@code true} if {@code s} is neither {@code null}, the empty string nor a string that
      * only contains whitespace, otherwise {@code false}.
      */
-    public static final boolean isNotBlank(String s) {
+    public static boolean isNotBlank(String s) {
         return !isBlank(s);
     }
 
@@ -71,7 +71,7 @@ public final class IpsStringUtils {
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
-    public static final String join(Collection<?> collection, String separator) {
+    public static String join(Collection<?> collection, String separator) {
         return join((Iterable<?>)collection, separator);
     }
 
@@ -83,7 +83,7 @@ public final class IpsStringUtils {
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
-    public static final String join(Iterable<?> iterable, String separator) {
+    public static String join(Iterable<?> iterable, String separator) {
         // 16 (default) may be too small
         StringBuilder stringBuilder = new StringBuilder(256);
         StringBuilderJoiner.join(stringBuilder, iterable, separator, t -> stringBuilder.append(Objects.toString(t)));
@@ -98,7 +98,7 @@ public final class IpsStringUtils {
      * @param iterable the Collection of values to join together, may be {@code null}
      * @return the joined String, empty if the collection is {@code null}
      */
-    public static final String join(Iterable<?> iterable) {
+    public static String join(Iterable<?> iterable) {
         return join(iterable, DEFAULT_SEPARATOR);
     }
 
@@ -110,7 +110,7 @@ public final class IpsStringUtils {
      * @param objectArray the array of values to join together, may be {@code null}
      * @return the joined String, empty if the collection is {@code null}
      */
-    public static final String join(Object[] objectArray) {
+    public static String join(Object[] objectArray) {
         return join(Arrays.asList(objectArray));
     }
 
@@ -122,7 +122,7 @@ public final class IpsStringUtils {
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
      */
-    public static final String join(Object[] objectArray, String separator) {
+    public static String join(Object[] objectArray, String separator) {
         return join(Arrays.asList(objectArray), separator);
     }
 
@@ -137,7 +137,7 @@ public final class IpsStringUtils {
      *            String
      * @return the joined String, {@code null} if the collection is {@code null}
      */
-    public static final <T> String join(Iterable<T> iterable, Function<? super T, String> toString) {
+    public static <T> String join(Iterable<T> iterable, Function<? super T, String> toString) {
         // 16 (default) may be too small
         StringBuilder stringBuilder = new StringBuilder(256);
         StringBuilderJoiner.join(stringBuilder, iterable, t -> stringBuilder.append(toString.apply(t)));
@@ -155,14 +155,14 @@ public final class IpsStringUtils {
      *            String
      * @return the joined String, {@code null} if the collection is {@code null}
      */
-    public static final <T> String join(Iterable<T> iterable, Function<? super T, String> toString, String separator) {
+    public static <T> String join(Iterable<T> iterable, Function<? super T, String> toString, String separator) {
         // 16 (default) may be too small
         StringBuilder stringBuilder = new StringBuilder(256);
         StringBuilderJoiner.join(stringBuilder, iterable, separator, t -> stringBuilder.append(toString.apply(t)));
         return stringBuilder.toString();
     }
 
-    public static final String toLowerFirstChar(String string) {
+    public static String toLowerFirstChar(String string) {
         if (isEmpty(string)) {
             return string;
         }

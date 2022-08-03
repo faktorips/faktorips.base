@@ -29,11 +29,10 @@ public class FieldExtensionPropertyMapping<T> extends AbstractFieldPropertyMappi
         getObject().setExtPropertyValue(getPropertyName(), getField().getValue());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T getPropertyValue() {
-        @SuppressWarnings("unchecked")
-        T extPropertyValue = (T)getObject().getExtPropertyValue(getPropertyName());
-        return extPropertyValue;
+        return (T)getObject().getExtPropertyValue(getPropertyName());
     }
 
     @Override

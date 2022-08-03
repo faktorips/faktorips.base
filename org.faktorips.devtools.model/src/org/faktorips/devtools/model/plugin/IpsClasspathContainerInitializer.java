@@ -141,8 +141,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * @param includeGroovy <code>true</code> if the support library for GROOVY should be included.
      * 
      * @return A Path like
-     *         "org.faktorips.devtools.model.ipsClasspathContainer/org.faktorips.valuetypes.joda,org.faktorips.runtime.groovy"
-     *         if both additional libraries are included.
+     *             "org.faktorips.devtools.model.ipsClasspathContainer/org.faktorips.valuetypes.joda,org.faktorips.runtime.groovy"
+     *             if both additional libraries are included.
      */
     public static final IPath newEntryPath(boolean includeJoda, boolean includeGroovy) {
         List<String> bundleIds = new ArrayList<>();
@@ -176,7 +176,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     @Override
     public void initialize(IPath containerPath, IJavaProject project) {
-        IClasspathContainer[] respectiveContainers = new IClasspathContainer[] { new IpsClasspathContainer(
+        IClasspathContainer[] respectiveContainers = { new IpsClasspathContainer(
                 containerPath) };
         try {
             JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { project }, respectiveContainers, null);

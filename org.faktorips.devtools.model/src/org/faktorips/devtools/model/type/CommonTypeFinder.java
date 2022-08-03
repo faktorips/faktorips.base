@@ -32,8 +32,8 @@ public class CommonTypeFinder {
      * 
      * @param cmpts the product components to find the most specific common type
      * @return the most specific type that is common to all given product components; {@code null}
-     *         if no product components are given or the given product components do not have a
-     *         common type.
+     *             if no product components are given or the given product components do not have a
+     *             common type.
      */
     public IProductCmptType findCommonType(Collection<IProductCmpt> cmpts) {
         if (cmpts == null || cmpts.isEmpty()) {
@@ -83,8 +83,8 @@ public class CommonTypeFinder {
      * @param candidateTypes the potential common type candidates
      * @param cmpt the product component whose matching type is searched
      * @return the given type if it contained in the set; the given type's or most specific super
-     *         type contained in the set; {@code null} if the set contains neither the given type
-     *         nor one of its super types
+     *             type contained in the set; {@code null} if the set contains neither the given
+     *             type nor one of its super types
      */
     private IProductCmptType findMostSpecificType(Set<IProductCmptType> candidateTypes, IProductCmpt cmpt) {
         CommonTypeVisitor<IProductCmptType> typeHierarchyVisitor = new CommonTypeVisitor<>(
@@ -99,8 +99,8 @@ public class CommonTypeFinder {
      * 
      * @param cmpt a product component
      * @return a {@code LinkedHashSet} containing the "upward" type hierarchy starting with the
-     *         given type. The elements in the set are iterated in from the given type to its
-     *         super-types
+     *             given type. The elements in the set are iterated in from the given type to its
+     *             super-types
      */
     private LinkedHashSet<IProductCmptType> createTypeHierarchy(IProductCmpt cmpt) {
         TypeHierarchyVisitor<IProductCmptType> superTypeFinder = new TypeHierarchyFinder<>(

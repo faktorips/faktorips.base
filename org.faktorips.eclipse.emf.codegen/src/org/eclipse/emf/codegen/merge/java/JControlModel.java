@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
  * A control model that provides dictionaries and rules to drive a merge process.
  */
 public class JControlModel extends PrefixHandler {
-    protected static final Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
+    protected static final Class<?>[] NO_PARAMETER_TYPES = {};
 
     static Map<String, Class<?>> classNameToClassMap = new HashMap<>();
 
@@ -321,7 +321,7 @@ public class JControlModel extends PrefixHandler {
     }
 
     public static class DictionaryPattern extends PrefixHandler {
-        protected static Class<?>[] stringParameterType = new Class<?>[] { String.class };
+        protected static Class<?>[] stringParameterType = { String.class };
         protected String name;
         protected Feature selectorFeature;
         protected Pattern pattern;
@@ -374,7 +374,7 @@ public class JControlModel extends PrefixHandler {
     }
 
     public static class PullRule extends PrefixHandler {
-        protected static Class<?>[] noParameterTypes = new Class<?>[0];
+        protected static Class<?>[] noParameterTypes = {};
         protected String name;
 
         protected Pattern sourceMarkup;
@@ -626,7 +626,7 @@ public class JControlModel extends PrefixHandler {
      * </p>
      */
     public static class SweepRule extends PrefixHandler {
-        public static enum Action {
+        public enum Action {
             REMOVE,
             RENAME,
             COMMENT;
@@ -878,7 +878,7 @@ public class JControlModel extends PrefixHandler {
         }
 
         public boolean isStopMatching() {
-            return this.stopMatching;
+            return stopMatching;
         }
 
         public void setStopMatching(boolean stopMatching) {

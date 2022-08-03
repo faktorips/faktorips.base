@@ -185,7 +185,7 @@ public class IdentifierParserTest {
         when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
         when(type2.getIpsProject()).thenReturn(ipsProject);
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
+        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
         when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
         when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);

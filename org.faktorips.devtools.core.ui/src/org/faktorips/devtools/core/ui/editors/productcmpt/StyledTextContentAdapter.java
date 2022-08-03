@@ -113,7 +113,7 @@ public class StyledTextContentAdapter implements IControlContentAdapter, IContro
 
     /**
      * @see org.eclipse.jface.fieldassist.IControlContentAdapter2#setSelection(org.eclipse.swt.widgets.Control,
-     *      org.eclipse.swt.graphics.Point)
+     *          org.eclipse.swt.graphics.Point)
      * 
      * @since 3.4
      */

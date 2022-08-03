@@ -30,14 +30,14 @@ import org.faktorips.util.ArgumentCheck;
 public interface IPropertyValue extends ITemplatedValue {
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "PROPERTYVALUE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "PROPERTYVALUE-"; //$NON-NLS-1$
 
     /**
      * Returns the name of the product definition property, this is a value of.
      * 
      * @see IProductCmptProperty
      */
-    public String getPropertyName();
+    String getPropertyName();
 
     /**
      * Returns the property this object provides a value for. Returns <code>null</code> if the
@@ -47,7 +47,7 @@ public interface IPropertyValue extends ITemplatedValue {
      * 
      * @throws IpsException if an error occurs
      */
-    public IProductCmptProperty findProperty(IIpsProject ipsProject) throws IpsException;
+    IProductCmptProperty findProperty(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the type of the property value.
@@ -56,29 +56,29 @@ public interface IPropertyValue extends ITemplatedValue {
      * 
      * @see #getProductCmptPropertyType()
      */
-    public PropertyValueType getPropertyValueType();
+    PropertyValueType getPropertyValueType();
 
     /**
      * Returns the type of the product definition property.
      * 
      * @see #getPropertyValueType()
      */
-    public ProductCmptPropertyType getProductCmptPropertyType();
+    ProductCmptPropertyType getProductCmptPropertyType();
 
     /**
      * Returns the value.
      */
-    public Object getPropertyValue();
+    Object getPropertyValue();
 
     /**
      * Returns the {@link IPropertyValueContainer} this property value belongs to.
      * 
      * @return The container this value belongs to
      */
-    public IPropertyValueContainer getPropertyValueContainer();
+    IPropertyValueContainer getPropertyValueContainer();
 
     @Override
-    public IPropertyValue findTemplateProperty(IIpsProject ipsProject);
+    IPropertyValue findTemplateProperty(IIpsProject ipsProject);
 
     /** A identifier that identifies property values by means of their property's name. */
     static class PropertyValueIdentifier implements ITemplatedValueIdentifier {
@@ -99,11 +99,7 @@ public interface IPropertyValue extends ITemplatedValue {
 
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
-            result = prime * result + ((type == null) ? 0 : type.hashCode());
-            return result;
+            return Objects.hash(propertyName, type);
         }
 
         @Override
@@ -111,17 +107,12 @@ public interface IPropertyValue extends ITemplatedValue {
             if (this == obj) {
                 return true;
             }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if ((obj == null) || (getClass() != obj.getClass())) {
                 return false;
             }
             PropertyValueIdentifier other = (PropertyValueIdentifier)obj;
-            if (!Objects.equals(propertyName, other.propertyName)) {
-                return false;
-            }
-            return type == other.type;
+            return Objects.equals(propertyName, other.propertyName)
+                    && type == other.type;
         }
 
         @Override

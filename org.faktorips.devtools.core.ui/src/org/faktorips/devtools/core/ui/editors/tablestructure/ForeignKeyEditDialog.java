@@ -38,7 +38,7 @@ public class ForeignKeyEditDialog extends KeyEditDialog {
 
     public ForeignKeyEditDialog(IForeignKey key, Shell parentShell) {
         super(key, parentShell, Messages.KeyEditDialogForeignKey_titleText);
-        this.pmo = new ForeignKeyPMO(key);
+        pmo = new ForeignKeyPMO(key);
     }
 
     @Override

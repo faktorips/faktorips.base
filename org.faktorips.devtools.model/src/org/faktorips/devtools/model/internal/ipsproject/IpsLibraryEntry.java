@@ -38,14 +38,13 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
-        if (getIpsStorage() == null || nameType == null) {
-            return null;
-        } else if (getIpsStorage().contains(nameType.toPath())) {
+        if (getIpsStorage() != null
+                && nameType != null
+                && getIpsStorage().contains(nameType.toPath())) {
             return getIpsPackageFragmentRoot().getIpsPackageFragment(nameType.getPackageName()).getIpsSrcFile(
                     nameType.getFileName());
-        } else {
-            return null;
         }
+        return null;
     }
 
     @Override

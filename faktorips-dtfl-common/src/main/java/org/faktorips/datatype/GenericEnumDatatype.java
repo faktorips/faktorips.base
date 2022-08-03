@@ -145,10 +145,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
 
     private int getIndeoxOfNullOrNullObject(String[] valueIds) {
         for (int i = 0; i < valueIds.length; i++) {
-            if (valueIds[i] == null) {
-                return i;
-            }
-            if (hasNullObject() && Objects.equals(valueIds[i], getNullObjectId())) {
+            if ((valueIds[i] == null) || (hasNullObject() && Objects.equals(valueIds[i], getNullObjectId()))) {
                 return i;
             }
         }

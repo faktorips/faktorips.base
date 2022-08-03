@@ -23,7 +23,7 @@ public interface IVersionChecker {
     /**
      * A strict version checker that requires an exact match of the full version strings.
      */
-    public static final IVersionChecker STRICT = String::equals;
+    IVersionChecker STRICT = String::equals;
 
     /**
      * Returns true if the new version is compatible to the old version or both versions are equal
@@ -32,6 +32,6 @@ public interface IVersionChecker {
      * @param newVersion the new version
      * @return true if versions are compatible
      */
-    public boolean isCompatibleVersion(String oldVersion, String newVersion);
+    boolean isCompatibleVersion(String oldVersion, String newVersion);
 
 }

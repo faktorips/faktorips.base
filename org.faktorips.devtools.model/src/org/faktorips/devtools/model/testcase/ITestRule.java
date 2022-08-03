@@ -23,42 +23,42 @@ import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 public interface ITestRule extends ITestObject {
 
     /** Property names */
-    public static final String PROPERTY_TEST_RULE_PARAMETER = "testRuleParameter"; //$NON-NLS-1$
+    String PROPERTY_TEST_RULE_PARAMETER = "testRuleParameter"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VALIDATIONRULE = "validationRule"; //$NON-NLS-1$
+    String PROPERTY_VALIDATIONRULE = "validationRule"; //$NON-NLS-1$
 
-    public static final String PROPERTY_VIOLATED = "violationType"; //$NON-NLS-1$
+    String PROPERTY_VIOLATED = "violationType"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "TESTRULE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "TESTRULE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the validation rule is inside the policy components
      * which are related by the test policy component type parameters inside the test case type.
      */
-    public static final String MSGCODE_VALIDATION_RULE_NOT_EXISTS = MSGCODE_PREFIX + "ValidationRuleNotExists"; //$NON-NLS-1$
+    String MSGCODE_VALIDATION_RULE_NOT_EXISTS = MSGCODE_PREFIX + "ValidationRuleNotExists"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that validation rule is duplicated in the test case.
      */
-    public static final String MSGCODE_DUPLICATE_VALIDATION_RULE = MSGCODE_PREFIX + "DuplicateValidationRule"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_VALIDATION_RULE = MSGCODE_PREFIX + "DuplicateValidationRule"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding test rule parameter not exists.
      */
-    public static final String MSGCODE_TEST_RULE_PARAM_NOT_FOUND = MSGCODE_PREFIX + "TestRuleParamNotFound"; //$NON-NLS-1$
+    String MSGCODE_TEST_RULE_PARAM_NOT_FOUND = MSGCODE_PREFIX + "TestRuleParamNotFound"; //$NON-NLS-1$
 
     /**
      * Returns the test rule parameter.
      */
-    public String getTestRuleParameter();
+    String getTestRuleParameter();
 
     /**
      * Sets the test rule parameter.
      */
-    public void setTestRuleParameter(String testRuleParameter);
+    void setTestRuleParameter(String testRuleParameter);
 
     /**
      * Returns the test rule parameter or <code>null</code> if the object does not exist.
@@ -67,17 +67,17 @@ public interface ITestRule extends ITestObject {
      * 
      * @throws IpsException if an error occurs while searching for the test rule parameter.
      */
-    public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws IpsException;
+    ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the validation rule.
      */
-    public String getValidationRule();
+    String getValidationRule();
 
     /**
      * Sets the validation rule.
      */
-    public void setValidationRule(String ruleParameter);
+    void setValidationRule(String ruleParameter);
 
     /**
      * Returns the validation rule or <code>null</code> if the object does not exist.
@@ -86,7 +86,7 @@ public interface ITestRule extends ITestObject {
      * 
      * @throws IpsException if an error occurs while searching for the validation rule.
      */
-    public IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
+    IValidationRule findValidationRule(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns the violation type.
@@ -94,13 +94,13 @@ public interface ITestRule extends ITestObject {
      * @see TestRuleViolationType
      * 
      */
-    public TestRuleViolationType getViolationType();
+    TestRuleViolationType getViolationType();
 
     /**
      * Sets if the validation rule is expected to be violated or not expected to be violated.
      * 
      * @see ITestRule#getViolationType()
      */
-    public void setViolationType(TestRuleViolationType violated);
+    void setViolationType(TestRuleViolationType violated);
 
 }

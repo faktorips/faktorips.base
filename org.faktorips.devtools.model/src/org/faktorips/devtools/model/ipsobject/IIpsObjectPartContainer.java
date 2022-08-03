@@ -29,37 +29,37 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
         MementoSupport {
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "IPSOBJECTPARTCONTAINER-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of descriptions this container has does
      * not correspond to the number of languages supported by the IPS project.
      */
-    public static final String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
+    String MSGCODE_INVALID_DESCRIPTION_COUNT = MSGCODE_PREFIX + "InvalidDescriptionCount"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the number of labels this container has does not
      * correspond to the number of languages supported by the IPS project.
      */
-    public static final String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
+    String MSGCODE_INVALID_LABEL_COUNT = MSGCODE_PREFIX + "InvalidLabelCount"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the entered version does not correspond to the valid
      * version format
      */
-    public static final String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
+    String MSGCODE_INVALID_VERSION_FORMAT = "InvalidVersionFormat"; //$NON-NLS-1$
 
     /**
      * Returns the IPS object this part belongs to if this <code>IIpsObjectPartContainer</code> is a
      * part, or the IPS object itself, if this <code>IIpsObjectPartContainer</code> is the IPS
      * object.
      */
-    public IIpsObject getIpsObject();
+    IIpsObject getIpsObject();
 
     /**
      * Returns the IPS source file this <code>IIpsObjectPartContainer</code> belongs to.
      */
-    public IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
     /**
      * Returns the caption of this <code>IIpsObjectPartContainer</code> for the given
@@ -72,7 +72,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * @throws IpsException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
-    public String getCaption(Locale locale) throws IpsException;
+    String getCaption(Locale locale) throws IpsException;
 
     /**
      * Returns the plural caption of this <code>IIpsObjectPartContainer</code> for the given
@@ -85,7 +85,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * @throws IpsException If any error occurs while retrieving the caption.
      * @throws NullPointerException If <code>locale</code> is <code>null</code>.
      */
-    public String getPluralCaption(Locale locale) throws IpsException;
+    String getPluralCaption(Locale locale) throws IpsException;
 
     /**
      * Returns the last resort caption of this <code>IIpsObjectPartContainer</code>. The last resort
@@ -94,7 +94,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * <p>
      * Never returns <code>null</code>.
      */
-    public String getLastResortCaption();
+    String getLastResortCaption();
 
     /**
      * Returns the last resort plural caption of this <code>IIpsObjectPartContainer</code>. The last
@@ -103,7 +103,7 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * <p>
      * Never returns <code>null</code>.
      */
-    public String getLastResortPluralCaption();
+    String getLastResortPluralCaption();
 
     /**
      * Copies the properties of the given source container to this container.
@@ -114,6 +114,6 @@ public interface IIpsObjectPartContainer extends IIpsElement, IExtensionProperty
      * @throws IllegalArgumentException If the class of the source container is not the same as the
      *             class of this container
      */
-    public void copyFrom(IIpsObjectPartContainer source);
+    void copyFrom(IIpsObjectPartContainer source);
 
 }

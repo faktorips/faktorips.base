@@ -38,8 +38,7 @@ public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
     public IEnumValueSet getSourceEnumValueSet() {
         IPolicyCmptTypeAttribute attribute = configuredValueSet.findPcTypeAttribute(configuredValueSet
                 .getIpsProject());
-        IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
-        return sourceSet;
+        return (IEnumValueSet)attribute.getValueSet();
     }
 
     /**

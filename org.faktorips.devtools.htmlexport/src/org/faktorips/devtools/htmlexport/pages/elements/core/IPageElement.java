@@ -27,47 +27,47 @@ public interface IPageElement {
      * 
      * @return Set of Styles
      */
-    public Set<Style> getStyles();
+    Set<Style> getStyles();
 
     /**
      * adds {@link Style}s and returns this
      * 
      */
-    public IPageElement addStyles(Style... style);
+    IPageElement addStyles(Style... style);
 
     /**
      * checks, whether IPageElement has the Style
      * 
      */
-    public boolean hasStyle(Style style);
+    boolean hasStyle(Style style);
 
     /**
      * removes the given {@link Style}s
      * 
      */
-    public void removeStyles(Style... style);
+    void removeStyles(Style... style);
 
     /**
      * accepts an {@link ILayouter}
      * 
      */
-    public void acceptLayouter(ILayouter layouter);
+    void acceptLayouter(ILayouter layouter);
 
     /**
      * builds the content of the node
      */
-    public void build();
+    void build();
 
     /**
      * changes the IPageElement to a block
      */
-    public void makeBlock();
+    void makeBlock();
 
-    public String getId();
+    String getId();
 
-    public void setId(String id);
+    void setId(String id);
 
-    public String getAnchor();
+    String getAnchor();
 
-    public void setAnchor(String anchor);
+    void setAnchor(String anchor);
 }

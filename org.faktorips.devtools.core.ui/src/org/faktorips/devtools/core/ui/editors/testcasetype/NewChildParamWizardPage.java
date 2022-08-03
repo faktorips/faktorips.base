@@ -58,7 +58,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
 
     public NewChildParamWizardPage(NewChildParameterWizard wizard) {
         super(PAGE_ID, Messages.NewChildParamWizardPage_Title, null);
-        this.setDescription(Messages.NewChildParamWizardPage_Description);
+        setDescription(Messages.NewChildParamWizardPage_Description);
         this.wizard = wizard;
     }
 
@@ -179,8 +179,7 @@ public class NewChildParamWizardPage extends WizardPage implements ValueChangeLi
      * Updates the page complete status.
      */
     private void updateSetPageComplete() {
-        boolean completeAllowed = false;
-        completeAllowed = validatePage();
+        boolean completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 

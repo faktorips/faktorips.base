@@ -221,8 +221,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public void setChangingOverTime(boolean changesOverTime) {
-        boolean oldValue = this.changingOverTime;
-        this.changingOverTime = changesOverTime;
+        boolean oldValue = changingOverTime;
+        changingOverTime = changesOverTime;
         valueChanged(oldValue, changesOverTime, PROPERTY_CHANGING_OVER_TIME);
     }
 
@@ -493,7 +493,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 String stringPosition = pendingPolicyChanges.get(property).get(CategoryChange.POSITION);
                 int position = -1;
                 if (stringPosition != null) {
-                    position = Integer.valueOf(stringPosition);
+                    position = Integer.parseInt(stringPosition);
                 }
                 property.setCategoryPosition(position);
             }
@@ -1036,7 +1036,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public boolean isDefining(IProductCmptCategory category) {
-        return this.equals(category.getParent());
+        return equals(category.getParent());
     }
 
     @Override
@@ -1106,7 +1106,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @param property the property you want to get the name of the category for
      * @return The name of the category in respect to pending changes. May be {@code null} or empty
-     *         String if no category is set.
+     *             String if no category is set.
      */
     String getCategoryNameFor(IProductCmptProperty property) {
         String pendingCategory = pendingPolicyChanges.getOrDefault(property, Map.of()).get(CategoryChange.NAME);
@@ -1124,7 +1124,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      * 
      * @param property the property you want to get the position for
      * @return The position inside the category in respect to pending changes. May be {@code -1} if
-     *         no position is set.
+     *             no position is set.
      */
     int getCategoryPositionFor(IProductCmptProperty property) {
         String pendingPosition = pendingPolicyChanges.getOrDefault(property, Map.of()).get(CategoryChange.POSITION);
@@ -1723,7 +1723,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private static enum CategoryChange {
+    private enum CategoryChange {
         NAME,
         POSITION;
     }

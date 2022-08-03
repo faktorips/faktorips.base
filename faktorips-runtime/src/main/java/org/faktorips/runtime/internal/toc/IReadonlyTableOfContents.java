@@ -26,69 +26,69 @@ public interface IReadonlyTableOfContents {
      * Returns the toc entry representing a product component for the given id or null if no entry
      * exists for the given id.
      */
-    public ProductCmptTocEntry getProductCmptTocEntry(String id);
+    ProductCmptTocEntry getProductCmptTocEntry(String id);
 
     /**
      * Returns the toc entry representing a product component for the given product component kind
      * id and versionId or null if no such entry exists.
      */
-    public ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
+    ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
 
     /**
      * Returns all toc's entries representing product components.
      */
-    public List<ProductCmptTocEntry> getProductCmptTocEntries();
+    List<ProductCmptTocEntry> getProductCmptTocEntries();
 
     /**
      * Returns all toc's entries representing product components that belong to the indicated
      * product component kind.
      */
-    public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId);
+    List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId);
 
     /**
      * Returns all toc's entries representing tables.
      */
-    public List<TableContentTocEntry> getTableTocEntries();
+    List<TableContentTocEntry> getTableTocEntries();
 
     /**
      * Returns all toc's entries representing test cases.
      */
-    public List<TestCaseTocEntry> getTestCaseTocEntries();
+    List<TestCaseTocEntry> getTestCaseTocEntries();
 
     /**
      * Returns a toc entry representing a test case for the given qualified name.
      */
-    public TestCaseTocEntry getTestCaseTocEntryByQName(String qName);
+    TestCaseTocEntry getTestCaseTocEntryByQName(String qName);
 
     /**
      * Returns a toc entry representing a table for the table's class object.
      */
-    public TableContentTocEntry getTableTocEntryByClassname(String implementationClass);
+    TableContentTocEntry getTableTocEntryByClassname(String implementationClass);
 
     /**
      * Returns a toc entry representing a table for this table's qualified table name.
      */
-    public TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
+    TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
 
     /**
      * Returns all toc's entries representing model types.
      */
-    public Set<ModelTypeTocEntry> getModelTypeTocEntries();
+    Set<ModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
      * Returns all toc's entries representing enum contents.
      */
-    public List<EnumContentTocEntry> getEnumContentTocEntries();
+    List<EnumContentTocEntry> getEnumContentTocEntries();
 
     /**
      * Returns the toc entry representing enum contents for the specified implementation class.
      */
-    public EnumContentTocEntry getEnumContentTocEntry(String className);
+    EnumContentTocEntry getEnumContentTocEntry(String className);
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
-    public Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
+    Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
     /**
      * Return the version of the product data in this table of content. This may be a version numbe
@@ -96,7 +96,7 @@ public interface IReadonlyTableOfContents {
      * 
      * @return The version of the table of content
      */
-    public String getProductDataVersion();
+    String getProductDataVersion();
 
     <T> CustomTocEntryObject<T> getCustomTocEntry(Class<T> type, String ipsObjectQualifiedName);
 

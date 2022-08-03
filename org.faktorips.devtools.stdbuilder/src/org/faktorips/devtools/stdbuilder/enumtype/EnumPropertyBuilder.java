@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Set;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * This builder generates property files for every language and every enum type that contains
@@ -58,7 +58,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
         if (ipsObject instanceof IEnumType) {
             IEnumType foundEnumType = (IEnumType)ipsObject;
-            this.enumType = foundEnumType;
+            enumType = foundEnumType;
             if (foundEnumType.containsValues()) {
                 generatePropertyFilesFor();
             }

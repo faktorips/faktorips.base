@@ -34,17 +34,17 @@ public interface IModelObjectDelta {
      * are equal and this object has neither been added to or removed from its parent nor has the
      * position of the object changed.
      */
-    public static final int EMPTY = 0;
+    int EMPTY = 0;
 
     /**
      * Delta kind constant indicating that the model object has been added to it's parent.
      */
-    public static final int ADDED = 16;
+    int ADDED = 16;
 
     /**
      * Delta kind constant indicating that the model object has been removed from it's parent.
      */
-    public static final int REMOVED = 8;
+    int REMOVED = 8;
 
     /**
      * Delta kind constant indicating that the model object has been moved, meaning it's position in
@@ -54,14 +54,14 @@ public interface IModelObjectDelta {
      * Note that an object can be moved and changed! In this case getKind() returns
      * {@code MOVED & CHANGED}.
      */
-    public static final int MOVED = 4;
+    int MOVED = 4;
 
     /**
      * Delta kind constant indicating that a different model object is now at a given position. This
      * type of delta is only returned if the computation method is
      * {@link IDeltaComputationOptions.ComputationMethod#BY_POSITION}.
      */
-    public static final int DIFFERENT_OBJECT_AT_POSITION = 2;
+    int DIFFERENT_OBJECT_AT_POSITION = 2;
 
     /**
      * Delta kind constant indicating that the model object has changed somehow. If the object has
@@ -75,7 +75,7 @@ public interface IModelObjectDelta {
      * @see #PROPERTY_CHANGED
      * @see #CHILD_CHANGED
      */
-    public static final int CHANGED = 1;
+    int CHANGED = 1;
 
     /**
      * Delta change type constant indicating that the object's structure has changed, that means
@@ -84,31 +84,31 @@ public interface IModelObjectDelta {
      * a given position (if the computation method is
      * {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      */
-    public static final int STRUCTURE_CHANGED = 1;
+    int STRUCTURE_CHANGED = 1;
 
     /**
      * Delta change type constant indicating that at least one of the object's properties has
      * changed.
      */
-    public static final int PROPERTY_CHANGED = 2;
+    int PROPERTY_CHANGED = 2;
 
     /**
      * Delta change type constant indicating that at least one child (that has neither been added or
      * removed or just moved) has changed. Either one of the child's properties has changed or it's
      * structure (or both).
      */
-    public static final int CHILD_CHANGED = 4;
+    int CHILD_CHANGED = 4;
 
     /**
      * Delta change type constant indicating that the class of the object has changed.
      */
-    public static final int CLASS_CHANGED = 8;
+    int CLASS_CHANGED = 8;
 
     /**
      * The model object this delta is computed for. If this is a delta for a a child that was added
      * to the new object, the method returns <code>null</code>.
      */
-    public IModelObject getOriginalObject();
+    IModelObject getOriginalObject();
 
     /**
      * The model object that is taken as a reference to which the orginal model object is compared
@@ -117,7 +117,7 @@ public interface IModelObjectDelta {
      * If this is a delta for a a child that was removed from the orginial model object, the method
      * returns <code>null</code>.
      */
-    public IModelObject getReferenceObject();
+    IModelObject getReferenceObject();
 
     /**
      * Returns the kind of change. Note that an object can be moved and changed! To allow this type
@@ -130,7 +130,7 @@ public interface IModelObjectDelta {
      * @see #DIFFERENT_OBJECT_AT_POSITION
      * @see #CHANGED
      */
-    public int getKind();
+    int getKind();
 
     /**
      * If delta's kind is {@link #CHANGED}, this method returns the kind of changed defined by the
@@ -142,73 +142,73 @@ public interface IModelObjectDelta {
      * @see #STRUCTURE_CHANGED
      * @see #CHILD_CHANGED
      */
-    public int getKindOfChange();
+    int getKindOfChange();
 
     /**
      * Returns <code>true</code> if the delta is empty, the two objects are the same, otherwise
      * <code>false</code>.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns <code>true</code> if this model object has been added to its parent,
      * <code>false</code> otherwise.
      */
-    public boolean isAdded();
+    boolean isAdded();
 
     /**
      * Returns <code>true</code> if this model object has been removed from its parent,
      * <code>false</code> otherwise.
      */
-    public boolean isRemoved();
+    boolean isRemoved();
 
     /**
      * Returns <code>true</code> if this model object has changed its position in the ordered
      * association. This type of delta is only returned if the computation method is
      * {@link IDeltaComputationOptions.ComputationMethod#BY_OBJECT}.
      */
-    public boolean isMoved();
+    boolean isMoved();
 
     /**
      * Returns <code>true</code> if a different model object is at a position, otherwise
      * <code>false</code>. This type of delta is only returned if the computation method is
      * {@link IDeltaComputationOptions.ComputationMethod#BY_POSITION}.
      */
-    public boolean isDifferentObjectAtPosition();
+    boolean isDifferentObjectAtPosition();
 
     /**
      * Returns <code>true</code> if this model object has been changed.
      */
-    public boolean isChanged();
+    boolean isChanged();
 
     /**
      * Returns <code>true</code> if this model object's structure has changed. That means either a
      * child has been added or removed or a child has been been moved.
      */
-    public boolean isStructureChanged();
+    boolean isStructureChanged();
 
     /**
      * Returns <code>true</code> if the model object's Java class has "changed". (Technically its of
      * course just an instance of another class). Returns <code>false</code> otherwise.
      */
-    public boolean isClassChanged();
+    boolean isClassChanged();
 
     /**
      * Returns <code>true</code> if at least one the model object's properties has changed,
      * otherwise <code>false</code>.
      */
-    public boolean isPropertyChanged();
+    boolean isPropertyChanged();
 
     /**
      * Returns <code>true</code> if at least one model object's children has been changed.
      */
-    public boolean isChildChanged();
+    boolean isChildChanged();
 
     /**
      * The name of the association in which the object has been added, removed or changed. The
      * association name is always <code>null</code> for the root of the delta.
      */
-    public String getAssociation();
+    String getAssociation();
 
     /**
      * Returns the kind of association if this delta has any incoming association, that means it is
@@ -216,7 +216,7 @@ public interface IModelObjectDelta {
      * 
      * @return the {@link AssociationKind} or <code>null</code> if this is the root
      */
-    public AssociationKind getAssociationKind();
+    AssociationKind getAssociationKind();
 
     /**
      * Returns the properties that have a different value in the model object and the reference
@@ -227,27 +227,27 @@ public interface IModelObjectDelta {
      * the {@link IConfigurableModelObject#PROPERTY_PRODUCT_COMPONENT product component}, are placed
      * before manually defined attributes.
      */
-    public List<String> getChangedProperties();
+    List<String> getChangedProperties();
 
     /**
      * Returns <code>true</code> if the model object contains a different value for the given
      * property than the reference model object. Returns <code>false</code> otherwise. Returns
      * <code>false</code> if propertyName is <code>null</code>.
      */
-    public boolean isPropertyChanged(String propertyName);
+    boolean isPropertyChanged(String propertyName);
 
     /**
      * Returns deltas for all children of the model object which were added, removed, or changed.
      * Returns an empty array if there are no affected children.
      */
-    public List<IModelObjectDelta> getChildDeltas();
+    List<IModelObjectDelta> getChildDeltas();
 
     /**
      * Returns deltas for all children of this model object whose kind is included in the given
      * mask. Kind masks are formed by the bitwise or of <code>IModelObjectDelta</code> kind
      * constants. Returns an empty array if there are no affected children.
      */
-    public List<IModelObjectDelta> getChildDeltas(int kind);
+    List<IModelObjectDelta> getChildDeltas(int kind);
 
     /**
      * Accepts the given visitor.
@@ -261,6 +261,6 @@ public interface IModelObjectDelta {
      * 
      * @see IModelObjectDeltaVisitor#visit(IModelObjectDelta)
      */
-    public void accept(IModelObjectDeltaVisitor visitor);
+    void accept(IModelObjectDeltaVisitor visitor);
 
 }

@@ -48,7 +48,7 @@ public abstract class IpsTest2 {
      * Sets the test's file name including the path.
      */
     public void setFullPath(String fileName) {
-        this.fullPath = fileName;
+        fullPath = fileName;
     }
 
     /**

@@ -28,7 +28,7 @@ public class XTypeBuilderClassNameProvider {
         defNameProvider = new DefaultJavaClassNameProvider(
                 type.getGeneratorConfig().isGeneratePublishedInterfaces(type.getIpsProject()));
         this.type = type;
-        this.ipsSrcFile = type.getIpsObjectPartContainer().getIpsSrcFile();
+        ipsSrcFile = type.getIpsObjectPartContainer().getIpsSrcFile();
     }
 
     public BuilderJavaClassNameProvider getBuilderNameProvider() {
@@ -71,7 +71,7 @@ public class XTypeBuilderClassNameProvider {
      * Import
      * 
      * @return name of the published interface of XType that is built by the builder. If no
-     *         published interface is generated, the implementation class name is returned.
+     *             published interface is generated, the implementation class name is returned.
      */
     public String getTypePublishedInterfaceName() {
         if (type.getGeneratorConfig().isGeneratePublishedInterfaces(type.getIpsProject())) {

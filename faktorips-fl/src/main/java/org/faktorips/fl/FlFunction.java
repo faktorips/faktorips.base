@@ -23,26 +23,26 @@ public interface FlFunction<T extends CodeFragment> extends FunctionSignature {
      * Generates the {@link CompilationResult source code} for the function given the
      * {@link CompilationResult compilation results} for the arguments.
      */
-    public CompilationResult<T> compile(CompilationResult<T>[] argResults);
+    CompilationResult<T> compile(CompilationResult<T>[] argResults);
 
     /**
      * Sets the compiler in which the function is used.
      */
-    public void setCompiler(ExprCompiler<T> compiler);
+    void setCompiler(ExprCompiler<T> compiler);
 
     /**
      * Returns the compiler in which the function is used.
      */
-    public ExprCompiler<T> getCompiler();
+    ExprCompiler<T> getCompiler();
 
     /**
      * Returns the function's description.
      */
-    public String getDescription();
+    String getDescription();
 
     /**
      * Sets the function's description.
      */
-    public void setDescription(String description);
+    void setDescription(String description);
 
 }

@@ -25,7 +25,7 @@ import org.faktorips.runtime.jaxb.IpsJAXBContext;
  * @see IRuntimeRepository
  * 
  * @deprecated use {@link IRuntimeRepository#newJAXBContext()} instead; that method uses a
- *             {@link IpsJAXBContext} that includes all necessary adapters.
+ *                 {@link IpsJAXBContext} that includes all necessary adapters.
  */
 @Deprecated
 public final class JAXBContextFactory {

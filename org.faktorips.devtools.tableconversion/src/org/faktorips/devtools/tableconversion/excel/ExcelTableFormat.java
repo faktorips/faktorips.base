@@ -12,7 +12,6 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,11 +120,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             fis = new FileInputStream(file);
             WorkbookFactory.create(file);
             return true;
-        } catch (FileNotFoundException fe) {
-            return false;
-        } catch (IOException e) {
-            return false;
-        } catch (InvalidFormatException e) {
+        } catch (IOException | InvalidFormatException e) {
             return false;
         } finally {
             if (fis != null) {
@@ -188,9 +183,6 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
         Sheet sheet = null;
         try {
             sheet = ExcelHelper.getWorksheetFromWorkbook(filename.toOSString(), 0);
-        } catch (FileNotFoundException e) {
-            IpsPlugin.log(e);
-            return Collections.emptyList();
         } catch (IOException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();

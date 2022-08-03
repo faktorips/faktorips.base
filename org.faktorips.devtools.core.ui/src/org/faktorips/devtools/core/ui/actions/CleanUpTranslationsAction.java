@@ -128,9 +128,7 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
         ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
         try {
             dialog.run(true, true, new CleanUpTranslationsRunnableWithProgress(ipsProjects));
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

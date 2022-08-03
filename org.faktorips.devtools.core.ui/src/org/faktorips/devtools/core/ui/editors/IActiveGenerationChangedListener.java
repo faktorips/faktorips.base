@@ -24,6 +24,6 @@ public interface IActiveGenerationChangedListener {
      * 
      * @param generation current generation.
      */
-    public void activeGenerationChanged(IIpsObjectGeneration generation);
+    void activeGenerationChanged(IIpsObjectGeneration generation);
 
 }

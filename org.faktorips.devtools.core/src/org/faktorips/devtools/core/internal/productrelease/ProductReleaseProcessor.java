@@ -91,10 +91,8 @@ public class ProductReleaseProcessor {
         observableProgressMessages.info(Messages.ProductReleaseProcessor_status_start);
 
         String tag = buildRelease(ipsProject, newVersion, subMonitor.split(50));
-        // start extended release
-        boolean buildReleaseAndDeployment = getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
+        return getReleaseAndDeploymentOperation().buildReleaseAndDeployment(
                 ipsProject, tag, selectedTargetSystems, subMonitor.split(50));
-        return buildReleaseAndDeployment;
     }
 
     /**
@@ -137,10 +135,7 @@ public class ProductReleaseProcessor {
         // commit property file and toc file
         commitFiles(ipsProject, newVersion, subMonitor.split(10));
 
-        // tag the project with the new version
-        String tagProject = tagProject(ipsProject, newVersion, subMonitor.split(20));
-
-        return tagProject;
+        return tagProject(ipsProject, newVersion, subMonitor.split(20));
     }
 
     public IReleaseAndDeploymentOperation loadReleaseDeploymentOperation(IIpsProject ipsProject) throws CoreException {
@@ -148,9 +143,8 @@ public class ProductReleaseProcessor {
         if (releaseExtensionElement == null) {
             return null;
         }
-        IReleaseAndDeploymentOperation result = (IReleaseAndDeploymentOperation)releaseExtensionElement
+        return (IReleaseAndDeploymentOperation)releaseExtensionElement
                 .createExecutableExtension(EXTENSION_OPERATION_PROPERTY);
-        return result;
     }
 
     private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) {

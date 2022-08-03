@@ -148,10 +148,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         IProductCmpt target = associationLinks.get(part);
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
-            if (reference instanceof IProductCmptTypeAssociationReference) {
-                continue;
-            }
-            if (reference instanceof IProductCmptReference && associationLinks.containsKey(reference.getWrapped())) {
+            if ((reference instanceof IProductCmptTypeAssociationReference)
+                    || (reference instanceof IProductCmptReference
+                            && associationLinks.containsKey(reference.getWrapped()))) {
                 continue;
             }
             IProductCmpt parent = getProductCmpt(reference.getWrapped());
@@ -393,11 +392,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         HashSet<IProductCmptStructureReference> result = new HashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
-            if (reference instanceof IProductCmptTypeAssociationReference) {
-                continue;
-            }
-            if (!includeAssociations && reference instanceof IProductCmptReference
-                    && associationLinks.containsKey(reference.getWrapped())) {
+            if ((reference instanceof IProductCmptTypeAssociationReference)
+                    || (!includeAssociations && reference instanceof IProductCmptReference
+                            && associationLinks.containsKey(reference.getWrapped()))) {
                 continue;
             }
             LinkStatus status = getStatus(reference);
@@ -414,11 +411,9 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         HashSet<IProductCmptStructureReference> result = new HashSet<>();
         Set<IProductCmptStructureReference> set = structure.toSet(false);
         for (IProductCmptStructureReference reference : set) {
-            if (reference instanceof IProductCmptTypeAssociationReference) {
-                continue;
-            }
-            if (!includeAssociations && reference instanceof IProductCmptReference
-                    && associationLinks.containsKey(reference.getWrapped())) {
+            if ((reference instanceof IProductCmptTypeAssociationReference)
+                    || (!includeAssociations && reference instanceof IProductCmptReference
+                            && associationLinks.containsKey(reference.getWrapped()))) {
                 continue;
             }
             LinkStatus status = getStatus(reference);

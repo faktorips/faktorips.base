@@ -51,6 +51,6 @@ public interface IdentifierResolver<T extends CodeFragment> {
      *            properties or services that are necessary to be able to resolve an identifier
      *            properly
      */
-    public CompilationResult<T> compile(String identifier, ExprCompiler<T> exprCompiler, Locale locale);
+    CompilationResult<T> compile(String identifier, ExprCompiler<T> exprCompiler, Locale locale);
 
 }

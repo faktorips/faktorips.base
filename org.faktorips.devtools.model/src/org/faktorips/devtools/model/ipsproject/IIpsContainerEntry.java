@@ -20,24 +20,24 @@ import java.util.List;
  */
 public interface IIpsContainerEntry extends IIpsObjectPathEntry {
 
-    public static final String MSG_CODE_INVALID_CONTAINER_ENTRY = "IpsContainerEntry-InvalidContainerEntry"; //$NON-NLS-1$
+    String MSG_CODE_INVALID_CONTAINER_ENTRY = "IpsContainerEntry-InvalidContainerEntry"; //$NON-NLS-1$
 
     /**
      * Returns a human readable name for the container entry.
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the ID of the container type.
      */
-    public String getContainerTypeId();
+    String getContainerTypeId();
 
     /**
      * Returns the IPS object path container that is referenced by this entry. The container is used
      * to resolve the entries that contain IPS objects. Returns <code>null</code> if the container
      * is not found.
      */
-    public IIpsObjectPathContainer getIpsObjectPathContainer();
+    IIpsObjectPathContainer getIpsObjectPathContainer();
 
     /**
      * Returns the optional path information needed by certain IPS object path containers to resolve
@@ -47,13 +47,13 @@ public interface IIpsContainerEntry extends IIpsObjectPathEntry {
      * the path returned by the JDT, is the same as the container type. So this path here represents
      * the optional segments,
      */
-    public String getOptionalPath();
+    String getOptionalPath();
 
     /**
      * Returns the list of entries that are provided by the container this entry refers to. The
      * returned list does does not contain any container entries.
      */
-    public List<IIpsObjectPathEntry> resolveEntries();
+    List<IIpsObjectPathEntry> resolveEntries();
 
     /**
      * Returns the resolved entry that defines the given IPS package fragment root. Returns
@@ -62,6 +62,6 @@ public interface IIpsContainerEntry extends IIpsObjectPathEntry {
      * 
      * @param rootName The name of the IPS package fragment root to search the entry for
      */
-    public IIpsObjectPathEntry getResolvedEntry(String rootName);
+    IIpsObjectPathEntry getResolvedEntry(String rootName);
 
 }

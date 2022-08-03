@@ -26,12 +26,12 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param id The new id for this manager.
      */
-    public void setId(String id);
+    void setId(String id);
 
     /**
      * Returns the id of this manager.
      */
-    public String getId();
+    String getId();
 
     /**
      * Sets the id of the predecessor manager. This method is used by the framework to initialize
@@ -39,12 +39,12 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param predecessorId The id of the predecessor of this manager.
      */
-    public void setPredecessorId(String predecessorId);
+    void setPredecessorId(String predecessorId);
 
     /**
      * Returns the id of the predecessor for this manager.
      */
-    public String getPredecessorId();
+    String getPredecessorId();
 
     /**
      * Sets the id of the feature this is a version manager for. This method is used by the
@@ -52,17 +52,17 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param featureId The feature id.
      */
-    public void setFeatureId(String featureId);
+    void setFeatureId(String featureId);
 
     /**
      * Returns the id of the feature this is the version manager for.
      */
-    public String getFeatureId();
+    String getFeatureId();
 
     /**
      * Returns the current version of the feature this manager is responsible for.
      */
-    public String getCurrentVersion();
+    String getCurrentVersion();
 
     /**
      * Returns <code>true</code> if the current version is compatible to the given one. If
@@ -71,7 +71,7 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param otherVersion The version-string to check for compatibility.
      */
-    public boolean isCurrentVersionCompatibleWith(String otherVersion);
+    boolean isCurrentVersionCompatibleWith(String otherVersion);
 
     /**
      * Returns a value less 0 if otherVersion is less then currentVersion, 0 if they are equal and a
@@ -79,7 +79,7 @@ public interface IIpsFeatureVersionManager {
      * 
      * @param otherVersion The version-string to compare the current version to.
      */
-    public int compareToCurrentVersion(String otherVersion);
+    int compareToCurrentVersion(String otherVersion);
 
     /**
      * Returns n array of all migration operations which have to run to migrate the given project to
@@ -91,7 +91,7 @@ public interface IIpsFeatureVersionManager {
      * @throws IpsException If an error occurs during evaluation or instantiation of the migration
      *             operations.
      */
-    public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+    AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
             throws IpsException;
 
     /**
@@ -104,12 +104,12 @@ public interface IIpsFeatureVersionManager {
      * @return whether a feature version must be required by all projects
      * @since 3.7.0
      */
-    public boolean isRequiredForAllProjects();
+    boolean isRequiredForAllProjects();
 
     /**
      * @see IIpsFeatureVersionManager#isRequiredForAllProjects()
      * @param required whether a feature version must be required by all projects
      */
-    public void setRequiredForAllProjects(boolean required);
+    void setRequiredForAllProjects(boolean required);
 
 }

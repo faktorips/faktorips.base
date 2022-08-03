@@ -41,7 +41,7 @@ public abstract class ModelElement {
     private final String name;
 
     private final Map<String, Object> extPropertyValues;
-    
+
     private final Optional<Deprecation> deprecation;
 
     public ModelElement(String name, IpsExtensionProperties extensionProperties, Optional<Deprecation> deprecation) {
@@ -83,7 +83,7 @@ public abstract class ModelElement {
      * in the default locale the element's name is returned.
      * 
      * @return the label for the given locale or the element's name if no label exists for the given
-     *         locale nor in the default locale
+     *             locale nor in the default locale
      */
     public String getLabel(Locale locale) {
         return getDocumentation(locale, DocumentationKind.LABEL, getName());
@@ -95,7 +95,7 @@ public abstract class ModelElement {
      * If there is also no description in the default locale it returns the empty string.
      * 
      * @return the description for the given locale or an empty string if no description exists for
-     *         the given locale
+     *             the given locale
      */
     public String getDescription(Locale locale) {
         return getDocumentation(locale, DocumentationKind.DESCRIPTION, IpsStringUtils.EMPTY);
@@ -131,8 +131,8 @@ public abstract class ModelElement {
      * returns {@link Object} for future changes.
      * 
      * @return the value of the extension property defined by the given <code>propertyId</code> or
-     *         <code>null</code> if the extension property's <code>isNull</code> attribute is
-     *         <code>true</code>
+     *             <code>null</code> if the extension property's <code>isNull</code> attribute is
+     *             <code>true</code>
      * @throws IllegalArgumentException if no such property exists
      */
     public Object getExtensionPropertyValue(String propertyId) {
@@ -155,15 +155,9 @@ public abstract class ModelElement {
     protected static Object invokeMethod(Method method, Object source, Object... arguments) {
         try {
             return method.invoke(source, arguments);
-        } catch (NullPointerException e) {
-            throw createGetterError(source, method, arguments, e);
-        } catch (IllegalArgumentException e) {
-            throw createGetterError(source, method, arguments, e);
-        } catch (IllegalAccessException e) {
-            throw createGetterError(source, method, arguments, e);
         } catch (InvocationTargetException e) {
             throw createGetterError(source, method, arguments, e.getCause());
-        } catch (SecurityException e) {
+        } catch (NullPointerException | IllegalArgumentException | IllegalAccessException | SecurityException e) {
             throw createGetterError(source, method, arguments, e);
         }
     }
@@ -179,13 +173,7 @@ public abstract class ModelElement {
     protected static Object invokeField(Field field, Object source) {
         try {
             return field.get(source);
-        } catch (NullPointerException e) {
-            throw createFieldError(source, field, e);
-        } catch (IllegalArgumentException e) {
-            throw createFieldError(source, field, e);
-        } catch (IllegalAccessException e) {
-            throw createFieldError(source, field, e);
-        } catch (SecurityException e) {
+        } catch (NullPointerException | IllegalArgumentException | IllegalAccessException | SecurityException e) {
             throw createFieldError(source, field, e);
         }
     }
@@ -207,7 +195,7 @@ public abstract class ModelElement {
      *            configuration is not changing over time.
      * @param changingOverTime whether the model element is changing over time.
      * @return The given product component or the effective generation, depending on
-     *         changingOverTime and effectiveDate.
+     *             changingOverTime and effectiveDate.
      */
     protected static Object getRelevantProductObject(IProductComponent productComponent,
             Calendar effectiveDate,

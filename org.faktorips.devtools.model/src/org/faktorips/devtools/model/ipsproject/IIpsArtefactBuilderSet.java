@@ -44,7 +44,7 @@ import org.faktorips.fl.IdentifierResolver;
 public interface IIpsArtefactBuilderSet {
 
     /** The XML element name. */
-    public static final String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
+    String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
 
     /**
      * Returns the <code>IIpsArtefactBuilderSetConfig</code> that configures this builder set. The
@@ -52,31 +52,31 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @since 2.1
      */
-    public IIpsArtefactBuilderSetConfig getConfig();
+    IIpsArtefactBuilderSetConfig getConfig();
 
     /**
      * Returns all <code>IIpsArtefactBuilders</code> of this set.
      * <p>
      * An empty array has to be returned, if the set is empty.
      */
-    public IIpsArtefactBuilder[] getArtefactBuilders();
+    IIpsArtefactBuilder[] getArtefactBuilders();
 
     /**
      * Returns <code>true</code> if the builder set supports table access functions, otherwise
      * false.
      */
-    public boolean isSupportTableAccess();
+    boolean isSupportTableAccess();
 
     /**
      * Returns <code>true</code> if the builder set supports a formula language identifier resolver.
      */
-    public boolean isSupportFlIdentifierResolver();
+    boolean isSupportFlIdentifierResolver();
 
     /**
      * Returns <code>true</code> if this builder set requires role names in plural form, even for
      * relations with a max cardinality of 1.
      */
-    public boolean isRoleNamePluralRequiredForTo1Relations();
+    boolean isRoleNamePluralRequiredForTo1Relations();
 
     /**
      * Returns <code>true</code> if this artefact builder set requires that master-to-detail
@@ -85,13 +85,13 @@ public interface IIpsArtefactBuilderSet {
      * The standard Faktor-IPS generator doesn't need this link. See the artikel on modeling
      * relations for further details.
      */
-    public boolean isInverseRelationLinkRequiredFor2WayCompositions();
+    boolean isInverseRelationLinkRequiredFor2WayCompositions();
 
     /**
      * @return <code>true</code> if the validations for the Table as Enum-Datatype is required (as
-     *         by the standard Faktor-IPS generator, <code>false</code> otherwise.
+     *             by the standard Faktor-IPS generator, <code>false</code> otherwise.
      */
-    public boolean isTableBasedEnumValidationRequired();
+    boolean isTableBasedEnumValidationRequired();
 
     /**
      * If there is any persistence provider configured for this builder set, this method returns it.
@@ -101,7 +101,7 @@ public interface IIpsArtefactBuilderSet {
      * @return The currently configured persistence provider.
      * @see IPersistenceProvider
      */
-    public IPersistenceProvider getPersistenceProvider();
+    IPersistenceProvider getPersistenceProvider();
 
     /**
      * Returns a compilation result that gives access to a table via the indicated function. Returns
@@ -112,7 +112,7 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @throws IpsException if an error occurs while generating the code.
      */
-    public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
+    CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
             CompilationResult<JavaCodeFragment>[] argResults) throws IpsException;
 
@@ -124,14 +124,14 @@ public interface IIpsArtefactBuilderSet {
      * @param exprCompiler can be used by the {@link IdentifierResolver} to ask for properties or
      *            services that are necessary to be able to resolve an identifier properly
      */
-    public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression expression,
+    IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression expression,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws IpsException;
 
     /**
      * Returns the file that contain the runtime repository toc file. Note that the file might not
      * exists.
      */
-    public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws IpsException;
+    AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) throws IpsException;
 
     /**
      * Returns the name of the resource containing the root's table of contents at runtime. E.g.
@@ -142,13 +142,13 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @see org.faktorips.runtime.ClassloaderRuntimeRepository#create(String)
      */
-    public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root);
+    String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root);
 
     /**
      * Returns the locale of the language that is used by the generator to generate source code and
      * documentation.
      */
-    public Locale getLanguageUsedInGeneratedSourceCode();
+    Locale getLanguageUsedInGeneratedSourceCode();
 
     /**
      * When the builder set is loaded by the Faktor-IPS plug-in the extension id is set by means of
@@ -156,7 +156,7 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @param id the extension id
      */
-    public void setId(String id);
+    void setId(String id);
 
     /**
      * When the builder set is loaded by the Faktor-IPS plug-in the extension description label is
@@ -164,23 +164,23 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @param label the extension description label
      */
-    public void setLabel(String label);
+    void setLabel(String label);
 
     /**
      * Returns the extension id declared in the plug-in descriptor.
      */
-    public String getId();
+    String getId();
 
     /**
      * Returns the extension description label declared in the plug-in descriptor.
      */
-    public String getLabel();
+    String getLabel();
 
     /**
      * This version indicates the version of the generated code. That means changes to the generator
      * that do not change the generated code a not reflected in this version identifier.
      */
-    public String getVersion();
+    String getVersion();
 
     /**
      * Initializes this set. Creation of IpsArtefactBuilders has to go here instead of the
@@ -193,28 +193,28 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @see IIpsArtefactBuilderSetConfig class description
      */
-    public void initialize(IIpsArtefactBuilderSetConfig config) throws IpsException;
+    void initialize(IIpsArtefactBuilderSetConfig config) throws IpsException;
 
     /**
      * Subclasses should re-implement this method if an aggregate root builder is contained
      * 
      * @return <code>true</code> if this builder set contains an builder which requires to be called
-     *         for the aggregate root object if any child (regardless of the relations depth) has
-     *         been modified. Only composite-relations are allowed for this dependency scan.
-     *         <code>false</code> if only builder are contained which need only a dependency scan of
-     *         depth one.
+     *             for the aggregate root object if any child (regardless of the relations depth)
+     *             has been modified. Only composite-relations are allowed for this dependency scan.
+     *             <code>false</code> if only builder are contained which need only a dependency
+     *             scan of depth one.
      */
-    public boolean containsAggregateRootBuilder();
+    boolean containsAggregateRootBuilder();
 
     /**
      * The IpsProject for which this builder set is registered.
      */
-    public void setIpsProject(IIpsProject ipsProject);
+    void setIpsProject(IIpsProject ipsProject);
 
     /**
      * Returns the IpsProject for which this builder set is registered.
      */
-    public IIpsProject getIpsProject();
+    IIpsProject getIpsProject();
 
     /**
      * This method is called when the build process starts for this builder set. This method is
@@ -227,7 +227,7 @@ public interface IIpsArtefactBuilderSet {
      * @throws IpsException implementations can throw or delegate rising CoreExceptions. Throwing a
      *             CoreException or RuntimeException will interrupt the build cycle
      */
-    public void beforeBuildProcess(ABuildKind buildKind) throws IpsException;
+    void beforeBuildProcess(ABuildKind buildKind) throws IpsException;
 
     /**
      * This method is called when the build process is finished for this builder set. It is called
@@ -239,7 +239,7 @@ public interface IIpsArtefactBuilderSet {
      * 
      * @throws IpsException implementations can throw or delegate rising CoreExceptions.
      */
-    public void afterBuildProcess(ABuildKind buildKind) throws IpsException;
+    void afterBuildProcess(ABuildKind buildKind) throws IpsException;
 
     /**
      * Returns an array of builders which are sub types of or from the same type as the provided
@@ -250,7 +250,7 @@ public interface IIpsArtefactBuilderSet {
      * @see #getBuilderById(IBuilderKindId)
      * @see #getBuilderById(IBuilderKindId, Class)
      */
-    public <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
+    <T extends IIpsArtefactBuilder> List<T> getBuildersByClass(Class<T> builderClass);
 
     /**
      * Returns the builder specified by the builder kind id.
@@ -262,7 +262,7 @@ public interface IIpsArtefactBuilderSet {
      * @return The builder registered by the specified kindId.
      * @throws RuntimeException if there is no builder for the specified kind ID
      */
-    public IIpsArtefactBuilder getBuilderById(IBuilderKindId kindId);
+    IIpsArtefactBuilder getBuilderById(IBuilderKindId kindId);
 
     /**
      * Returns the builder specified by the builder kind id. The builder must be of the specified
@@ -277,14 +277,14 @@ public interface IIpsArtefactBuilderSet {
      * @throws RuntimeException if there is no builder for the specified kind ID matching the
      *             specified class.
      */
-    public <T extends IIpsArtefactBuilder> T getBuilderById(IBuilderKindId kindId, Class<T> builderClass);
+    <T extends IIpsArtefactBuilder> T getBuilderById(IBuilderKindId kindId, Class<T> builderClass);
 
     /**
      * Getting true if none mergeable resources should be marked as derived or not.
      * 
      * @return True to mark the files and folders as derived
      */
-    public boolean isMarkNoneMergableResourcesAsDerived();
+    boolean isMarkNoneMergableResourcesAsDerived();
 
     /**
      * Called by the {@link IpsBuilder} when {@link IpsBuilder#clean(IProgressMonitor)} is called
@@ -294,17 +294,17 @@ public interface IIpsArtefactBuilderSet {
      * 
      */
     @SuppressWarnings("javadoc")
-    public void clean(IProgressMonitor monitor);
+    void clean(IProgressMonitor monitor);
 
     /**
      * Returns the data type helper for the given data type. Returns {@code null} if there is no
      * helper for the given data type in this builder set.
      */
-    public DatatypeHelper getDatatypeHelper(Datatype datatype);
+    DatatypeHelper getDatatypeHelper(Datatype datatype);
 
     /**
      * Returns whether the type of value set affects the name and/or return type of value set
      * accessor methods.
      */
-    public boolean usesUnifiedValueSets();
+    boolean usesUnifiedValueSets();
 }

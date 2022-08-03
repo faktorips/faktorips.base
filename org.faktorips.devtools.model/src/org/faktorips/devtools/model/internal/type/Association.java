@@ -254,8 +254,7 @@ public abstract class Association extends TypePart implements IAssociation {
         if (supertype == null) {
             return null;
         }
-        IAssociation superAssociation = supertype.findAssociation(getName(), ipsProject);
-        return superAssociation;
+        return supertype.findAssociation(getName(), ipsProject);
     }
 
     @Override
@@ -683,10 +682,7 @@ public abstract class Association extends TypePart implements IAssociation {
         protected boolean visit(IType currentType) {
             List<IAssociation> associations = currentType.getAssociations();
             for (IAssociation association : associations) {
-                if (!association.isDerivedUnion()) {
-                    continue;
-                }
-                if (association.equals(Association.this)) {
+                if (!association.isDerivedUnion() || association.equals(Association.this)) {
                     continue;
                 }
                 IType derivedUnionTarget = association.findTarget(getIpsProject());

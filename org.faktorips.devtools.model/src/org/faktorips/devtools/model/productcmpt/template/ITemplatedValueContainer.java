@@ -21,13 +21,13 @@ public interface ITemplatedValueContainer {
      * {@link IProductCmptGeneration product component generation} the corresponding product
      * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
      */
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     /**
      * @return <code>true</code> if this property container is itself defined as a template or is
-     *         part of a template. <code>false</code> if it is a regular product component.
+     *             part of a template. <code>false</code> if it is a regular product component.
      */
-    public boolean isProductTemplate();
+    boolean isProductTemplate();
 
     /**
      * Returns the name of the template of this property container. Returns <code>null</code> if
@@ -35,7 +35,7 @@ public interface ITemplatedValueContainer {
      * 
      * @return The qualified name of the referenced template
      */
-    public String getTemplate();
+    String getTemplate();
 
     /**
      * Returns <code>true</code> if this container is using a template. This is the case if
@@ -44,7 +44,7 @@ public interface ITemplatedValueContainer {
      * 
      * @return <code>true</code> if there is a template specified by this product component
      */
-    public boolean isUsingTemplate();
+    boolean isUsingTemplate();
 
     /**
      * Returns the template object that is used by this property container if this property
@@ -54,13 +54,13 @@ public interface ITemplatedValueContainer {
      * @param ipsProject The project that should be used to search for the template
      * @return The property container that is specified as the template of this property container
      */
-    public ITemplatedValueContainer findTemplate(IIpsProject ipsProject);
+    ITemplatedValueContainer findTemplate(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if properties of this container are used in a template hierarchy,
      * <code>false</code> else. Returns <code>true</code> if this property's container is based on a
      * template or is a template itself.
      */
-    public boolean isPartOfTemplateHierarchy();
+    boolean isPartOfTemplateHierarchy();
 
 }

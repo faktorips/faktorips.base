@@ -96,13 +96,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             Constructor<?> constructor = getProductComponentConstructor(implementationClassName);
             productCmpt = (ProductComponent)constructor
                     .newInstance(this, ipsObjectId, kindId, versionId);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException("Can't create product component instance for class name \""
-                    + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException("Can't create product component instance for class name \""
-                    + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException("Can't create product component instance for class name \""
                     + implementationClassName + "\". RuntimeId=" + ipsObjectId, e);
         }
@@ -113,9 +107,8 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             Class<?> implClass = getClass(implementationClassName, getClassLoader());
             Class<?> runtimeRepoClass = getClass(IRuntimeRepository.class.getName(), getClassLoader());
-            Constructor<?> constructor = implClass
+            return implClass
                     .getConstructor(runtimeRepoClass, String.class, String.class, String.class);
-            return constructor;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(
                     "Can't create product component instance for class name \"" + implementationClassName);
@@ -201,15 +194,10 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(xmlAsStream), saxhandler);
-        } catch (SAXException e) {
-            throwCantParseEnumContentException(tocEntry, e);
-        } catch (ParserConfigurationException e) {
-            throwCantParseEnumContentException(tocEntry, e);
-        } catch (IOException e) {
+        } catch (SAXException | ParserConfigurationException | IOException e) {
             throwCantParseEnumContentException(tocEntry, e);
         }
-        List<List<Object>> enumValueList = saxhandler.getEnumValueList();
-        return enumValueList;
+        return saxhandler.getEnumValueList();
     }
 
     private static void throwCantParseEnumContentException(EnumContentTocEntry tocEntry, Exception e) {
@@ -265,11 +253,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         T enumValue;
         try {
             enumValue = constructor.newInstance(parameters);
-        } catch (InstantiationException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (IllegalAccessException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw createCannotInstantiateException(e, tocEntry);
         }
         return enumValue;
@@ -342,11 +326,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             Constructor<?> constructor = getTableConstructor(implClass, tocEntry);
             table = (Table<?>)constructor.newInstance();
-        } catch (IllegalAccessException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InstantiationException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw createCannotInstantiateException(e, tocEntry);
         }
 
@@ -384,11 +364,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         try {
             Constructor<?> constructor = getTestCaseConstructor(tocEntry);
             test = (IpsTestCaseBase)constructor.newInstance(tocEntry.getIpsObjectQualifiedName());
-        } catch (IllegalAccessException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InstantiationException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw createCannotInstantiateException(e, tocEntry);
         }
         /*
@@ -410,8 +386,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     private Constructor<?> getTestCaseConstructor(TestCaseTocEntry tocEntry) {
         try {
             Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
-            Constructor<?> constructor = implClass.getConstructor(String.class);
-            return constructor;
+            return implClass.getConstructor(String.class);
         } catch (NoSuchMethodException e) {
             throw createCannotInstantiateException(e, tocEntry);
         }

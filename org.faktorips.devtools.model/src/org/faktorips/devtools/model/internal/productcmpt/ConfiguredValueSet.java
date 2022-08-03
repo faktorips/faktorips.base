@@ -245,8 +245,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     private IValueSet findModelValueSet() {
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(valueSet.getIpsProject());
-        IValueSet modelValueSet = attribute == null ? null : attribute.getValueSet();
-        return modelValueSet;
+        return attribute == null ? null : attribute.getValueSet();
     }
 
     @Override
@@ -274,7 +273,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     @Override
     protected void templateValueChanged() {
-        this.valueSet = getValueSet().copy(this, getNextPartId());
+        valueSet = getValueSet().copy(this, getNextPartId());
     }
 
     @Override

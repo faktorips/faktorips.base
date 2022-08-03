@@ -62,8 +62,7 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
         }
         if (target instanceof IProductCmptStructureReference) {
             IProductCmptStructureReference structureReference = (IProductCmptStructureReference)target;
-            boolean result = canCreateLinks(draggedCmpts, structureReference);
-            return result;
+            return canCreateLinks(draggedCmpts, structureReference);
         } else {
             return false;
         }

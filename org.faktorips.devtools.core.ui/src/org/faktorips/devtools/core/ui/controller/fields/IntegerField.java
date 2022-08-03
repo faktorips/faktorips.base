@@ -38,10 +38,7 @@ public class IntegerField extends DefaultEditField<Integer> {
     @Override
     public Integer parseContent() {
         String content = getText();
-        if (content != null && content.length() == 0) {
-            return null;
-        }
-        if (content == null) {
+        if ((content != null && content.length() == 0) || (content == null)) {
             return null;
         }
         return Integer.valueOf(content);

@@ -23,6 +23,6 @@ public interface IIpsElementFilter {
      * @param element filtered {@link IIpsElement}
      * @return true, if the given {@link IIpsElement} fulfills the conditions of the filter
      */
-    public boolean accept(IIpsElement element);
+    boolean accept(IIpsElement element);
 
 }

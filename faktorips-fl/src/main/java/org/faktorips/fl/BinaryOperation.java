@@ -20,50 +20,50 @@ import org.faktorips.datatype.Datatype;
  */
 public interface BinaryOperation<T extends CodeFragment> {
 
-    public static final String PLUS = "+";
+    String PLUS = "+";
 
-    public static final String MINUS = "-";
+    String MINUS = "-";
 
-    public static final String MULTIPLY = "*";
+    String MULTIPLY = "*";
 
-    public static final String DIVIDE = "/";
+    String DIVIDE = "/";
 
-    public static final String GREATER_THAN = ">";
+    String GREATER_THAN = ">";
 
-    public static final String GREATER_THAN_OR_EQUAL = ">=";
+    String GREATER_THAN_OR_EQUAL = ">=";
 
-    public static final String LESSER_THAN = "<";
+    String LESSER_THAN = "<";
 
-    public static final String LESSER_THAN_OR_EQUAL = "<=";
+    String LESSER_THAN_OR_EQUAL = "<=";
 
-    public static final String EQUAL = "=";
+    String EQUAL = "=";
 
-    public static final String NOT_EQUAL = "!=";
+    String NOT_EQUAL = "!=";
 
     /**
      * Sets the compiler in which the operation is used.
      */
-    public void setCompiler(ExprCompiler<T> compiler);
+    void setCompiler(ExprCompiler<T> compiler);
 
     /**
      * Returns the compiler this operation belongs to.
      */
-    public ExprCompiler<T> getCompiler();
+    ExprCompiler<T> getCompiler();
 
     /**
      * Returns the operator.
      */
-    public String getOperator();
+    String getOperator();
 
     /**
      * Returns the {@link Datatype} of the left hand side operand.
      */
-    public Datatype getLhsDatatype();
+    Datatype getLhsDatatype();
 
     /**
      * Returns the {@link Datatype} of the right hand side operand.
      */
-    public Datatype getRhsDatatype();
+    Datatype getRhsDatatype();
 
     /**
      * Generates the combined {@link CompilationResult} from the given operands.
@@ -72,6 +72,6 @@ public interface BinaryOperation<T extends CodeFragment> {
      * @param rhs the right hand side operand
      * @return the given operands combined with this operation's operator
      */
-    public CompilationResult<T> generate(CompilationResult<T> lhs, CompilationResult<T> rhs);
+    CompilationResult<T> generate(CompilationResult<T> lhs, CompilationResult<T> rhs);
 
 }

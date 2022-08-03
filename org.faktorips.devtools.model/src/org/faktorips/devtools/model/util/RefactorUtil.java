@@ -51,7 +51,7 @@ public final class RefactorUtil {
      *             <code>null</code>
      * @throws IllegalArgumentException if the source file to be copied is dirty
      */
-    public static final IIpsSrcFile copyIpsSrcFile(IIpsSrcFile toBeCopied,
+    public static IIpsSrcFile copyIpsSrcFile(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
             String copyName,
             IProgressMonitor progressMonitor) {
@@ -89,7 +89,7 @@ public final class RefactorUtil {
      *             <code>targetIpsPackageFragment</code> or <code>newName</code> is
      *             <code>null</code>.
      */
-    public static final IIpsSrcFile copyIpsSrcFileToTemporary(IIpsSrcFile toBeCopied,
+    public static IIpsSrcFile copyIpsSrcFileToTemporary(IIpsSrcFile toBeCopied,
             IIpsPackageFragment targetIpsPackageFragment,
             String copyName,
             IProgressMonitor progressMonitor) {

@@ -41,7 +41,7 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
      * {@inheritDoc}
      * 
      * @deprecated since 3.9.0: The method name was a false translation from German. The correct
-     *             method is called {@link #getCurrentRuntimeRepository()}
+     *                 method is called {@link #getCurrentRuntimeRepository()}
      */
     @Override
     @Deprecated
@@ -148,10 +148,8 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
                         if (candidate != this && !result.contains(candidate)) {
                             result.add(candidate);
                         }
-                        for (IRuntimeRepositoryManager newCandidate : candidate
-                                .getDirectlyReferencedRepositoryManagers()) {
-                            candidates.add(newCandidate);
-                        }
+                        candidates.addAll(candidate
+                                .getDirectlyReferencedRepositoryManagers());
                     }
                     result = Collections.unmodifiableList(result);
                     allManagers = result;

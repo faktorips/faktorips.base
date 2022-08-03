@@ -69,9 +69,7 @@ public class IpsModelActivator implements BundleActivator {
     }
 
     private EclipseIpsModel getEclipseIpsModel() {
-        @SuppressWarnings("deprecation")
-        EclipseIpsModel eclipseIpsModel = (EclipseIpsModel)IpsModel.get();
-        return eclipseIpsModel;
+        return (EclipseIpsModel)IpsModel.get();
     }
 
     /**
@@ -109,7 +107,7 @@ public class IpsModelActivator implements BundleActivator {
      * @throws IllegalStateException when the system is running with no data area (-data @none), or
      *             when a data area has not been set yet.
      * @return a local file system path XXX Investigate the usage of a service factory (see also
-     *         platform.getStateLocation)
+     *             platform.getStateLocation)
      */
     public static IPath getStateLocation() throws IllegalStateException {
         return Platform.getStateLocation(get().bundle);

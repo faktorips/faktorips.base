@@ -247,7 +247,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         assertEquals(validation4.msgToReturn, result.getMessageByCode("M4"));
     }
 
-    private class MyValidation1 extends AbstractCustomValidation<PolicyCmptTypeAttribute> {
+    private static class MyValidation1 extends AbstractCustomValidation<PolicyCmptTypeAttribute> {
 
         private Message msgToReturn = Message.newError("M1", "blabal");
 
@@ -264,7 +264,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
     }
 
-    private class MyValidation2 extends AbstractCustomValidation<IPolicyCmptTypeAttribute> {
+    private static class MyValidation2 extends AbstractCustomValidation<IPolicyCmptTypeAttribute> {
 
         private Message msgToReturn = Message.newError("M2", "blabal");
 
@@ -281,7 +281,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
     }
 
-    private class MyValidation3 extends AbstractCustomValidation<Attribute> {
+    private static class MyValidation3 extends AbstractCustomValidation<Attribute> {
 
         private Message msgToReturn = Message.newError("M3", "blabal");
 
@@ -298,7 +298,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
 
     }
 
-    private class MyValidation4 extends AbstractCustomValidation<IAttribute> {
+    private static class MyValidation4 extends AbstractCustomValidation<IAttribute> {
 
         private Message msgToReturn = Message.newError("M4", "blabal");
 

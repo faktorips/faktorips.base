@@ -19,11 +19,11 @@ import org.hamcrest.TypeSafeMatcher;
  * A typesafe {@link Matcher} for a {@link Message}.
  *
  * @implSpec the methods {@link #describeMessageProperty(Description)} and
- *           {@link #describeMismatchedProperty(Message, Description)} should only describe the
- *           matched property; they will be combined with a leading {@value #A_MESSAGE_THAT} when
- *           this matcher is used as is and embedded in more descriptive messages when used with
- *           {@link #and(MessageMatcher)} or a {@link MessageListMessageMatcher} as created by
- *           {@link IpsMatchers#hasMessages(Matcher...)}.
+ *               {@link #describeMismatchedProperty(Message, Description)} should only describe the
+ *               matched property; they will be combined with a leading {@value #A_MESSAGE_THAT}
+ *               when this matcher is used as is and embedded in more descriptive messages when used
+ *               with {@link #and(MessageMatcher)} or a {@link MessageListMessageMatcher} as created
+ *               by {@link IpsMatchers#hasMessages(Matcher...)}.
  * @since 22.6
  */
 public abstract class MessageMatcher extends TypeSafeMatcher<Message> {
@@ -34,7 +34,7 @@ public abstract class MessageMatcher extends TypeSafeMatcher<Message> {
      * {@inheritDoc}
      * 
      * @implNote uses {@link #describeMessageProperty(Description)} to describe the property the
-     *           message should have
+     *               message should have
      */
     @Override
     public void describeTo(Description description) {
@@ -51,7 +51,7 @@ public abstract class MessageMatcher extends TypeSafeMatcher<Message> {
      * {@inheritDoc}
      * 
      * @implNote uses {@link #describeMismatchedProperty(Message, Description)} to describe the
-     *           property the actually has
+     *               property the actually has
      */
     @Override
     protected void describeMismatchSafely(Message message, Description mismatchDescription) {

@@ -81,9 +81,9 @@ public class CategoryPmo extends IpsObjectPartPmo {
      * Returns null if no default {@link IProductCmptCategory} could be found as well.
      * 
      * @return the {@link IProductCmptCategory} the {@link IProductCmptProperty} of this
-     *         {@link CategoryPmo} is assigned to or null if neither a specific
-     *         {@link IProductCmptCategory} nor the corresponding default
-     *         {@link IProductCmptCategory} could be found
+     *             {@link CategoryPmo} is assigned to or null if neither a specific
+     *             {@link IProductCmptCategory} nor the corresponding default
+     *             {@link IProductCmptCategory} could be found
      */
     public IProductCmptCategory getCategory() {
         IProductCmptCategory correspondingDefaultCategory = null;

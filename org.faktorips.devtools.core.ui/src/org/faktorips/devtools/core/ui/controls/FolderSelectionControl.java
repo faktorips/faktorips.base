@@ -44,7 +44,7 @@ public class FolderSelectionControl extends TextButtonControl {
      */
     public FolderSelectionControl(Composite parent, UIToolkit toolkit, String buttonText) {
         super(parent, toolkit, buttonText);
-        this.root = ResourcesPlugin.getWorkspace().getRoot();
+        root = ResourcesPlugin.getWorkspace().getRoot();
     }
 
     /**
@@ -86,7 +86,7 @@ public class FolderSelectionControl extends TextButtonControl {
     public void setRoot(IContainer root) {
         this.root = root;
         setText(""); //$NON-NLS-1$
-        this.folder = null;
+        folder = null;
     }
 
     /**

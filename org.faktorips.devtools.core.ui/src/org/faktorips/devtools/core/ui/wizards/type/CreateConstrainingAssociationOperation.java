@@ -114,8 +114,7 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private IType getConstrainedTargetType() {
-        IType constrainedTargetType = getConstrainedAssociation().findTarget(getIpsProject());
-        return constrainedTargetType;
+        return getConstrainedAssociation().findTarget(getIpsProject());
     }
 
     /**

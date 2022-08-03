@@ -15,8 +15,8 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 
 /**
  * Implementations of this interface are called whenever an {@link IpsSrcFile} is
- * {@link IpsSrcFile#save(org.eclipse.core.runtime.IProgressMonitor) saved} to allow
- * additional processing.
+ * {@link IpsSrcFile#save(org.eclipse.core.runtime.IProgressMonitor) saved} to allow additional
+ * processing.
  * <p>
  * Every {@link IPreSaveProcessor} is responsible for a specific {@link IpsObjectType}, which it
  * must return from its {@link #getIpsObjectType()} method. Its {@link #process(IIpsObject)} method
@@ -30,17 +30,17 @@ public interface IPreSaveProcessor {
      * The extension point id of the extension point
      * {@value #EXTENSION_POINT_ID_PRE_SAVE_PROCESSOR}.
      */
-    public static final String EXTENSION_POINT_ID_PRE_SAVE_PROCESSOR = "preSaveProcessor"; //$NON-NLS-1$
+    String EXTENSION_POINT_ID_PRE_SAVE_PROCESSOR = "preSaveProcessor"; //$NON-NLS-1$
 
     /**
      * Processes the given {@link IIpsObject}.
      *
      * @param ipsObject the {@link IIpsObject} about to be saved
      */
-    public void process(IIpsObject ipsObject);
+    void process(IIpsObject ipsObject);
 
     /**
      * Returns the {@link IpsObjectType} this {@link IPreSaveProcessor} can process.
      */
-    public IpsObjectType getIpsObjectType();
+    IpsObjectType getIpsObjectType();
 }

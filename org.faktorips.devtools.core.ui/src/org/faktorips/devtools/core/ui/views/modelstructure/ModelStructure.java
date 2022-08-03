@@ -222,7 +222,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
             ((GridData)treeViewer.getTree().getLayoutData()).exclude = false;
         }
         panel.layout();
-        this.setFocus();
+        setFocus();
     }
 
     private void activateContext() {
@@ -299,16 +299,14 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     }
 
     private TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
-        TypedSelection<IAdaptable> typedSelection;
         ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                 .getSelectionService();
-        typedSelection = new TypedSelection<>(IAdaptable.class, selectionService.getSelection());
-        return typedSelection;
+        return new TypedSelection<>(IAdaptable.class, selectionService.getSelection());
     }
 
     @Override
     public void setFocus() {
-        this.treeViewer.getTree().setFocus();
+        treeViewer.getTree().setFocus();
     }
 
     @Override
@@ -329,9 +327,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         if (projectSpecificITypes.isEmpty()) {
             showInfoMessage(Messages.ModelStructure_NothingToShow_message);
         } else {
-            this.treeViewer.setInput(input);
-            this.showTree();
-            this.updateView();
+            treeViewer.setInput(input);
+            showTree();
+            updateView();
         }
     }
 
@@ -350,7 +348,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
                 toggleProductPolicyAction.setEnabled(false);
             }
             toggledPolicyCmptInput = (IPolicyCmptType)input;
-            this.provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
+            provider.setShowTypeState(ShowTypeState.SHOW_POLICIES);
         } else if (input instanceof IProductCmptType) {
             setPolicyCmptTypeImage();
             IProductCmptType product = (IProductCmptType)input;
@@ -359,15 +357,15 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
                 toggleProductPolicyAction.setEnabled(false);
             }
             toggledProductCmptInput = (IProductCmptType)input;
-            this.provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
+            provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
         }
-        this.treeViewer.setInput(input);
-        this.showTree();
-        this.updateView();
+        treeViewer.setInput(input);
+        showTree();
+        updateView();
     }
 
     private TreePath[] computePathsForIType(IType typeToExpand) {
-        List<ComponentNode> rootElements = this.provider.getStoredRootElements();
+        List<ComponentNode> rootElements = provider.getStoredRootElements();
         List<List<ComponentNode>> paths = new ArrayList<>();
 
         for (ComponentNode rootElement : rootElements) {
@@ -402,11 +400,11 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         if (element == null) {
             return;
         } else if (element instanceof IType) {
-            this.label.setText(((IType)element).getQualifiedName());
+            label.setText(((IType)element).getQualifiedName());
         } else if (element instanceof IIpsProject) {
-            this.label.setText(((IIpsProject)element).getName());
+            label.setText(((IIpsProject)element).getName());
         } else {
-            this.label.setText(element.toString());
+            label.setText(element.toString());
         }
     }
 
@@ -432,8 +430,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     }
 
     private Action createRefreshAction() {
-        // refresh action
-        Action newRefreshAction = new Action(Messages.ModelStructure_tooltipRefreshContents,
+        return new Action(Messages.ModelStructure_tooltipRefreshContents,
                 IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
@@ -445,7 +442,6 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
                 return Messages.ModelStructure_tooltipRefreshContents;
             }
         };
-        return newRefreshAction;
     }
 
     private void initMenu() {
@@ -645,7 +641,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
         newProvider.removeCollectorFinishedListener(this);
 
-        this.provider = newProvider;
+        provider = newProvider;
 
         treeViewer.setContentProvider(newProvider);
         newProvider.setShowTypeState(currentShowTypeState);
@@ -666,7 +662,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         if (input instanceof IIpsProject) {
             // switch the viewShowState for project selections
             provider.toggleShowTypeState();
-            treeViewer.getContentProvider().inputChanged(this.treeViewer, input, treeViewer.getInput());
+            treeViewer.getContentProvider().inputChanged(treeViewer, input, treeViewer.getInput());
         } else if (input instanceof IPolicyCmptType) {
             provider.setShowTypeState(ShowTypeState.SHOW_PRODUCTS);
             treeViewer.setInput(toggledProductCmptInput);
@@ -721,7 +717,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
             ctrl.setRedraw(false);
             ctrl.getDisplay().syncExec(runnable);
-            this.updateView();
+            updateView();
         } finally {
             ctrl.setRedraw(true);
         }
@@ -729,9 +725,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getNewValue().equals(this.provider)) {
-            if (this.treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
-                expandPaths((IType)this.treeViewer.getInput());
+        if (evt.getNewValue().equals(provider)) {
+            if (treeViewer.getInput() instanceof IType && provider.getStoredRootElements() != null) {
+                expandPaths((IType)treeViewer.getInput());
             }
         }
     }
@@ -740,21 +736,21 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
         TreePath[] treePaths = computePathsForIType(typeToExpand);
 
         for (TreePath treePath : treePaths) {
-            this.treeViewer.expandToLevel(treePath, 0);
+            treeViewer.expandToLevel(treePath, 0);
         }
-        this.treeViewer.setSelection(new TreeSelection(treePaths));
+        treeViewer.setSelection(new TreeSelection(treePaths));
     }
 
     @Override
     public void saveState(IMemento memento) {
         super.saveState(memento);
-        memento.putBoolean(SHOW_CARDINALITIES, this.labelProvider.getShowCardinalities());
-        memento.putBoolean(SHOW_ROLENAMES, this.labelProvider.getShowRolenames());
-        memento.putBoolean(SHOW_PROJECTS, this.labelProvider.getShowProjects());
+        memento.putBoolean(SHOW_CARDINALITIES, labelProvider.getShowCardinalities());
+        memento.putBoolean(SHOW_ROLENAMES, labelProvider.getShowRolenames());
+        memento.putBoolean(SHOW_PROJECTS, labelProvider.getShowProjects());
 
-        memento.putInteger(PROVIDER_SHOW_STATE, this.provider.getShowTypeState().getState());
+        memento.putInteger(PROVIDER_SHOW_STATE, provider.getShowTypeState().getState());
 
-        memento.putString(INITIAL_CONTENT_PROVIDER, this.provider.getClass().getCanonicalName());
+        memento.putString(INITIAL_CONTENT_PROVIDER, provider.getClass().getCanonicalName());
     }
 
     @Override

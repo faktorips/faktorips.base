@@ -42,7 +42,7 @@ class ProductCmptDropListener extends IpsElementDropListener {
     public void drop(DropTargetEvent event) {
         Object[] transferred = super.getTransferedElements(event.currentDataType);
         if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-            this.productStructureExplorer.showStructure((IIpsSrcFile)transferred[0]);
+            productStructureExplorer.showStructure((IIpsSrcFile)transferred[0]);
         }
     }
 
@@ -51,7 +51,7 @@ class ProductCmptDropListener extends IpsElementDropListener {
         Object[] transferred = super.getTransferedElements(event.currentDataType);
         // in linux transferred is always null while drag action
         if (transferred == null || transferred.length > 0 && transferred[0] instanceof IIpsSrcFile
-                && this.productStructureExplorer.isSupported((IIpsSrcFile)transferred[0])) {
+                && productStructureExplorer.isSupported((IIpsSrcFile)transferred[0])) {
             event.detail = DND.DROP_LINK;
         } else {
             event.detail = DND.DROP_NONE;

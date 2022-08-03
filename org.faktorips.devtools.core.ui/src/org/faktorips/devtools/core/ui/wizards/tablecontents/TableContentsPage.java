@@ -124,8 +124,7 @@ public class TableContentsPage extends WizardPage {
 
         @Override
         protected MessageList validatePage() {
-            MessageList messageList = pmo.getValidator().validateTableContents();
-            return messageList;
+            return pmo.getValidator().validateTableContents();
         }
     }
 

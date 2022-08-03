@@ -127,7 +127,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
         public ContentTablePageElement(ITableRows tableContentsGeneration) {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
-            this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
+            tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 

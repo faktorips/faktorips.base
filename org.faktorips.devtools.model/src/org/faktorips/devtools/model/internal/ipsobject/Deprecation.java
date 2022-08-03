@@ -75,7 +75,7 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
     protected void initPropertiesFromXml(Element deprecationNode, String id) {
         super.initPropertiesFromXml(deprecationNode, id);
         setSinceVersionStringInternal(deprecationNode.getAttribute(XML_ATTRIBUTE_DEPRECATION_VERSION));
-        forRemoval = Boolean.valueOf(deprecationNode.getAttribute(XML_ATTRIBUTE_FOR_REMOVAL));
+        forRemoval = Boolean.parseBoolean(deprecationNode.getAttribute(XML_ATTRIBUTE_FOR_REMOVAL));
     }
 
     @Override

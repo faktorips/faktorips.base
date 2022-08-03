@@ -40,7 +40,7 @@ public class RequireBundleManifestElement {
     public RequireBundleManifestElement(ManifestElement manifestElement) {
         ArgumentCheck.notNull(manifestElement);
         this.manifestElement = manifestElement;
-        this.pluginName = manifestElement.getValue();
+        pluginName = manifestElement.getValue();
     }
 
     /**
@@ -51,7 +51,7 @@ public class RequireBundleManifestElement {
      */
     public RequireBundleManifestElement(String pluginName, VersionRange versionRange) {
         this.pluginName = pluginName;
-        this.setVersionRange(versionRange);
+        setVersionRange(versionRange);
     }
 
     public String getPluginName() {

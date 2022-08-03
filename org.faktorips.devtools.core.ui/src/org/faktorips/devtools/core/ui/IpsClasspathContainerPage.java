@@ -119,12 +119,12 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
 
     @Override
     public void setSelection(IClasspathEntry containerEntry) {
-        this.entry = containerEntry;
+        entry = containerEntry;
     }
 
     @Override
     public void initialize(IJavaProject project, IClasspathEntry[] currentEntries) {
-        this.javaProject = project;
+        javaProject = project;
     }
 
     public IJavaProject getJavaProject() {

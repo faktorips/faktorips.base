@@ -95,12 +95,9 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         IIpsObjectGeneration generation = null;
         for (IIpsObjectGeneration each : generations) {
             if (!each.getValidFrom().after(date)) {
-                if (generation == null) {
+                if ((generation == null)
+                        || each.getValidFrom().after(generation.getValidFrom())) {
                     generation = each;
-                } else {
-                    if (each.getValidFrom().after(generation.getValidFrom())) {
-                        generation = each;
-                    }
                 }
             }
         }
@@ -222,10 +219,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        IIpsObjectPart part;
         if (IIpsObjectGeneration.class.isAssignableFrom(partType)) {
-            part = newGenerationInternal(getNextPartId());
-            return part;
+            return newGenerationInternal(getNextPartId());
         } else {
             return null;
         }
@@ -353,9 +348,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
                 if (validBefore || validAfter) {
                     // The first generation in the target must be valid from the new date.
                     generation.setValidFrom(newDate);
-                    generationIndex++;
-                    newGenerationCount++;
-                    continue;
                 }
             }
             generationIndex++;

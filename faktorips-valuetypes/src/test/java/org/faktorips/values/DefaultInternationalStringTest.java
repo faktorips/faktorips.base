@@ -122,8 +122,7 @@ public class DefaultInternationalStringTest {
         objOut.writeObject(internationalString);
         InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
         ObjectInputStream objIn = new ObjectInputStream(inputStream);
-        Object readObject = objIn.readObject();
-        return readObject;
+        return objIn.readObject();
     }
 
     @Test

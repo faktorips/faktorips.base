@@ -24,6 +24,6 @@ public interface IIpsSearchQuery extends ISearchQuery {
      * 
      * @param matchCount number of matches
      */
-    public String getResultLabel(int matchCount);
+    String getResultLabel(int matchCount);
 
 }

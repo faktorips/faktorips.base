@@ -122,16 +122,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     @Override
     public void setDataChangeable(boolean changeable) {
-        if (!(changeable)) {
+        if (!(changeable) || literalNameAttribute) {
             super.setDataChangeable(changeable);
-        } else {
-            if (literalNameAttribute) {
-                super.setDataChangeable(changeable);
-            } else {
-                if (getDialogArea() != null) {
-                    rebindContents();
-                }
-            }
+        } else if (getDialogArea() != null) {
+            rebindContents();
         }
     }
 

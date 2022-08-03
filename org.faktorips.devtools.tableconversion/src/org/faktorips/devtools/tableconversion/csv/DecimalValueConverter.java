@@ -38,10 +38,12 @@ public class DecimalValueConverter extends NumberValueConverter {
             }
 
             return result;
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
                     getSupportedDatatype().getQualifiedName()));
         }
+        // CSON: IllegalCatch
         return ipsValue;
     }
 
@@ -56,19 +58,8 @@ public class DecimalValueConverter extends NumberValueConverter {
 
                 Number number = decimalFormat.parse((String)externalDataValue);
                 return number.toString();
-            } catch (NumberFormatException e) {
-                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                        "" + externalDataValue, externalDataValue //$NON-NLS-1$
-                                .getClass().getName(),
-                        getSupportedDatatype().getQualifiedName()));
-                return externalDataValue.toString();
-
-            } catch (ParseException e) {
-                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                        "" + externalDataValue, externalDataValue //$NON-NLS-1$
-                                .getClass().getName(),
-                        getSupportedDatatype().getQualifiedName()));
-                return externalDataValue.toString();
+            } catch (NumberFormatException | ParseException e) {
+                // fall through to error message
             }
         }
         messageList

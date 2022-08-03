@@ -25,7 +25,7 @@ import org.junit.Test;
 
 public class IpsObjectTypesParserTest {
 
-    private static final IpsObjectType[] ALL_STANDARD_TYPES = new IpsObjectType[] { IpsObjectType.ENUM_CONTENT,
+    private static final IpsObjectType[] ALL_STANDARD_TYPES = { IpsObjectType.ENUM_CONTENT,
             IpsObjectType.ENUM_TYPE, IpsObjectType.POLICY_CMPT_TYPE,
             IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.PRODUCT_TEMPLATE,
             IpsObjectType.TABLE_CONTENTS, IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TEST_CASE,

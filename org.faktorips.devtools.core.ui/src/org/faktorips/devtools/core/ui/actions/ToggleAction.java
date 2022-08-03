@@ -36,7 +36,7 @@ public class ToggleAction extends Action {
         ArgumentCheck.isTrue(value.getValueType() == Boolean.class);
         this.value = value;
 
-        setChecked(value.getValue() == Boolean.TRUE ? true : false);
+        setChecked(value.getValue() == Boolean.TRUE);
         setToolTipText(description);
         setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(iconName));
 

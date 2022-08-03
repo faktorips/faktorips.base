@@ -29,7 +29,7 @@ public interface JCompilationUnit extends JNode {
      * first declaration in a compilation unit.
      *
      * @return the header comment for this compilation unit, or <code>null</code> if no header
-     *         comment is present
+     *             comment is present
      */
     String getHeader();
 

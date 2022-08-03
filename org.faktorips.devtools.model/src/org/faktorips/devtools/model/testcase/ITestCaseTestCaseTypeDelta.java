@@ -25,84 +25,84 @@ public interface ITestCaseTestCaseTypeDelta extends IFixDifferencesComposite {
     /**
      * Returns the test case type this delta was computed for.
      */
-    public ITestCaseType getTestCaseType();
+    ITestCaseType getTestCaseType();
 
     /**
      * Returns the test case this delta was computed for.
      */
-    public ITestCase getTestCase();
+    ITestCase getTestCase();
 
     /**
      * Returns true if the delta is empty. The test case conforms to the test case type it is based
      * on.
      */
     @Override
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * Returns <code>true</code> if the sort order of the test parameter changed.
      */
-    public boolean isDifferentTestParameterOrder();
+    boolean isDifferentTestParameterOrder();
 
     /**
      * Test Case Side: Returns the test policy components with missing test policy component type
      * parameter.
      */
-    public ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
+    ITestPolicyCmpt[] getTestPolicyCmptsWithMissingTypeParam();
 
     /**
      * Test Case Side: Returns the test policy components link with missing test policy component
      * type parameter.
      */
-    public ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam();
+    ITestPolicyCmptLink[] getTestPolicyCmptLinkWithMissingTypeParam();
 
     /**
      * Test Case Side: Returns the test attribute value with missing test attribute.
      */
-    public ITestAttributeValue[] getTestAttributeValuesWithMissingTestAttribute();
+    ITestAttributeValue[] getTestAttributeValuesWithMissingTestAttribute();
 
     /**
      * Test Case Side: Returns the test value with missing test value parameter
      */
-    public ITestValue[] getTestValuesWithMissingTestValueParam();
+    ITestValue[] getTestValuesWithMissingTestValueParam();
 
     /**
      * Test Case Side: Returns the test rules with missing test value parameter
      */
-    public ITestRule[] getTestRulesWithMissingTestValueParam();
+    ITestRule[] getTestRulesWithMissingTestValueParam();
 
     /**
      * Test Case Type Side: Returns the root test policy component type parameter with missing test
      * policy component.
      */
-    public ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
+    ITestPolicyCmptTypeParameter[] getTestPolicyCmptTypeParametersWithMissingTestPolicyCmpt();
 
     /**
      * Test Case Type Side: Returns the test attribute with missing test attribute value.
      */
-    public ITestAttribute[] getTestAttributesWithMissingTestAttributeValue();
+    ITestAttribute[] getTestAttributesWithMissingTestAttributeValue();
 
     /**
      * Test Case Type Side: Returns the test value parameter with missing test value.
      */
-    public ITestValueParameter[] getTestValueParametersWithMissingTestValue();
+    ITestValueParameter[] getTestValueParametersWithMissingTestValue();
 
     /**
      * Returns the test policy components for the missing test attribute.<br>
      * Returns <code>null</code> if the given test attribute has no corresponding test policy cmpt.
      */
-    public ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
+    ITestPolicyCmpt[] getTestPolicyCmptForMissingTestAttribute(ITestAttribute testAttribute);
 
     /**
      * Returns the test policy components which have a different sort order compared to their
      * corresponding test policy component type parameter.
      */
-    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
+    ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrder();
 
     /**
      * Returns the test policy components which have a different sort order of their test attribute
      * values compared to their corresponding test policy component type parameter.
      */
-    public ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrderTestAttr();
+    ITestPolicyCmpt[] getTestPolicyCmptWithDifferentSortOrderTestAttr();
 
 }

@@ -39,9 +39,11 @@ public abstract class XmlAbstractTestCase {
             }
             String resourceName = className + ".xml";
             return getTestDocument(resourceName);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        // CSON: IllegalCatch
     }
 
     public Document getTestDocument(String resourceName) {
@@ -51,17 +53,21 @@ public abstract class XmlAbstractTestCase {
                 throw new RuntimeException("Can't find resource " + resourceName);
             }
             return getDocumentBuilder().parse(is);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        // CSON: IllegalCatch
     }
 
     public final Document newDocument() {
         try {
             return getDocumentBuilder().newDocument();
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        // CSON: IllegalCatch
     }
 
     public static final DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {

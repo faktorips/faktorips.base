@@ -50,7 +50,7 @@ public class PageElementUtils {
      * {@link TextType}s
      * 
      * @return array of {@link IPageElement}s. To enable storing of other types of PageElements like
-     *         LinkPageElement, the return type is not TextPageElement[]
+     *             LinkPageElement, the return type is not TextPageElement[]
      */
     public IPageElement[] createTextPageElements(List<String> texts, Set<Style> styles, TextType type) {
         IPageElement[] textPageElements = new IPageElement[texts.size()];

@@ -276,25 +276,21 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
     }
 
     private ImageDescriptor getAddNewProductCmptImageDescriptor() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add_new.gif", true); //$NON-NLS-1$
-        return imageDescriptor;
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add_new.gif", true);
     }
 
     private ImageDescriptor getAddProductCmptImageDescriptor() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add.gif", true); //$NON-NLS-1$
-        return imageDescriptor;
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Add.gif", true);
     }
 
     private ImageDescriptor getNewTableContentsImageDescriptor() {
-        ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                "NewTableContentsWizard.gif", true); //$NON-NLS-1$
-        return imageDescriptor;
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
+                "NewTableContentsWizard.gif", true);
     }
 
     private ImageDescriptor getExistingTableContentsImageDescriptor() {
-        ImageDescriptor imageDescriptor = IIpsDecorators.getImageHandling().getSharedImageDescriptor(
-                "TableContents.gif", true); //$NON-NLS-1$
-        return imageDescriptor;
+        return IIpsDecorators.getImageHandling().getSharedImageDescriptor(
+                "TableContents.gif", true);
     }
 
 }

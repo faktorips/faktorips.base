@@ -638,8 +638,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         if (!(selection instanceof IStructuredSelection)) {
             return null;
         }
-        Object selectedRef = ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
-        return selectedRef;
+        return ((IStructuredSelection)treeViewer.getSelection()).getFirstElement();
     }
 
     @Override
@@ -672,11 +671,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
      */
     public void showStructure(final IProductCmpt product) {
         BusyIndicator.showWhile(getSite().getShell().getDisplay(), () -> {
-            if (product == null) {
-                return;
-            }
-
-            if (errormsg == null) {
+            if ((product == null) || (errormsg == null)) {
                 // return if called before the explorer is shown
                 return;
             }
@@ -1123,7 +1118,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     }
 
-    private static enum MessageTableSwitch {
+    private enum MessageTableSwitch {
         MESSAGE,
         TABLE;
 

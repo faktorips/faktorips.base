@@ -289,12 +289,16 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     public <T> CustomTocEntryObject<T> getCustomTocEntry(Class<T> type, String ipsObjectQualifiedName) {
         Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
         if (otherTocEntryMap != null) {
-            @SuppressWarnings("unchecked")
-            CustomTocEntryObject<T> typedTocEntryObject = (CustomTocEntryObject<T>)otherTocEntryMap
-                    .get(ipsObjectQualifiedName);
-            return typedTocEntryObject;
+            return castCustomEntryObject(ipsObjectQualifiedName, otherTocEntryMap);
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> CustomTocEntryObject<T> castCustomEntryObject(String ipsObjectQualifiedName,
+            Map<String, CustomTocEntryObject<?>> otherTocEntryMap) {
+        return (CustomTocEntryObject<T>)otherTocEntryMap
+                .get(ipsObjectQualifiedName);
     }
 
     @Override
@@ -312,14 +316,14 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return list;
     }
 
-    private class VersionIdTocEntry {
+    private static class VersionIdTocEntry {
 
         private String versionId;
         private ProductCmptTocEntry tocEntry;
 
         public VersionIdTocEntry(String versionId, ProductCmptTocEntry entry) {
             this.versionId = versionId;
-            this.tocEntry = entry;
+            tocEntry = entry;
         }
 
     }

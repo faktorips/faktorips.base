@@ -135,9 +135,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             if (candidate != this && !result.contains(candidate)) {
                 result.add(candidate);
             }
-            for (IRuntimeRepository newCandidate : candidate.getDirectlyReferencedRepositories()) {
-                candidates.add(newCandidate);
-            }
+            candidates.addAll(candidate.getDirectlyReferencedRepositories());
         }
         allRepositories = Collections.unmodifiableList(result);
         return allRepositories;
@@ -654,9 +652,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     /**
      * @deprecated This method does only return valid enums if the id attribute of the enum is of
-     *             type {@link String}. You should never use this method! Use
-     *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in
-     *             future releases.
+     *                 type {@link String}. You should never use this method! Use
+     *                 {@link #getEnumValue(Class, Object)} instead. This method may be returned in
+     *                 future releases.
      */
     @Override
     @Deprecated
@@ -694,14 +692,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                     return enumValue;
                 }
             }
-        } catch (SecurityException e) {
-            throwUnableToCallMethodException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
                     "The provided enumeration class doesn't provide an identifying method getEnumValueId.", e); //$NON-NLS-1$
-        } catch (IllegalAccessException e) {
-            throwUnableToCallMethodException(e);
-        } catch (InvocationTargetException e) {
+        } catch (SecurityException | IllegalAccessException | InvocationTargetException e) {
             throwUnableToCallMethodException(e);
         }
         return null;
@@ -770,7 +764,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * 
      * @param enumClass The class of which you want to get the enumeration values
      * @return A list of instances of enumClass that are defined as enumeration values of the
-     *         specified type.
+     *             specified type.
      */
     protected <T> List<T> getEnumValuesDefinedInType(Class<T> enumClass) {
         if (ENUMVALUECACHE.containsKey(enumClass)) {
@@ -780,10 +774,9 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private <T> List<T> getCachedEnumValuesDefinedInType(Class<T> enumClass) {
-        @SuppressWarnings("unchecked")
-        List<T> values = (List<T>)ENUMVALUECACHE.get(enumClass);
-        return values;
+        return (List<T>)ENUMVALUECACHE.get(enumClass);
     }
 
     private <T> List<T> getEnumValuesDefinedInTypeByReflection(Class<T> enumClass) {
@@ -796,23 +789,22 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             List<T> values = (List<T>)valuesField.get(null);
             List<?> previousValues = ENUMVALUECACHE.putIfAbsent(enumClass, values);
             if (previousValues != null) {
-                @SuppressWarnings("unchecked")
-                List<T> castedPreviousValues = (List<T>)previousValues;
-                return castedPreviousValues;
+                return castPreviousValues(previousValues);
             } else {
                 return values;
             }
-        } catch (SecurityException e) {
-            throw new RuntimeException(e);
         } catch (NoSuchFieldException e) {
             // No values are defined in the enum class
             ENUMVALUECACHE.putIfAbsent(enumClass, Collections.emptyList());
             return Collections.emptyList();
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> List<T> castPreviousValues(List<?> previousValues) {
+        return (List<T>)previousValues;
     }
 
     @Override
@@ -1018,7 +1010,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     @Override
     public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup) {
-        this.runtimeRepositoryLookup = repositoryLookup;
+        runtimeRepositoryLookup = repositoryLookup;
     }
 
 }

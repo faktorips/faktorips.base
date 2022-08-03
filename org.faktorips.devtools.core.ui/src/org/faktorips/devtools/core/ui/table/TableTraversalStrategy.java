@@ -96,13 +96,9 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
      * (first cell of the table).
      */
     private void editPreviousColumn() {
-        if (getPreviousColumn() >= columnIndex) {
-            if (getCurrentRow() > 0) {
-                fireApplyEditorValue();
-                editCell(getPreviousRow(), getPreviousColumn());
-            } else {
-                editCell(getCurrentRow(), getPreviousColumn());
-            }
+        if ((getPreviousColumn() >= columnIndex) && (getCurrentRow() > 0)) {
+            fireApplyEditorValue();
+            editCell(getPreviousRow(), getPreviousColumn());
         } else {
             editCell(getCurrentRow(), getPreviousColumn());
         }
@@ -149,8 +145,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
      * will be returned.
      */
     protected int getNextColumn() {
-        int nextColumn = (isAtNewColumn()) ? columnIndex : columnIndex + 1;
-        return nextColumn;
+        return (isAtNewColumn()) ? columnIndex : columnIndex + 1;
     }
 
     /**

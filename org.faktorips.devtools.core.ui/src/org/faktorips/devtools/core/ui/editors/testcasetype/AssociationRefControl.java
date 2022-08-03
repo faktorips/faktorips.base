@@ -41,8 +41,8 @@ public class AssociationRefControl extends TextButtonControl {
 
     public AssociationRefControl(Composite parent, UIToolkit toolkit, IPolicyCmptType parentPolicyCmptType) {
         super(parent, toolkit, Messages.AssociationRefControl_Button_Browse);
-        this.dialogTitle = Messages.AssociationRefControl_Title;
-        this.dialogMessage = Messages.AssociationRefControl_Description;
+        dialogTitle = Messages.AssociationRefControl_Title;
+        dialogMessage = Messages.AssociationRefControl_Description;
         this.parentPolicyCmptType = parentPolicyCmptType;
 
         ContentProposals.forText(getTextControl(), new AssociationContentProposalProvider(parentPolicyCmptType, true));

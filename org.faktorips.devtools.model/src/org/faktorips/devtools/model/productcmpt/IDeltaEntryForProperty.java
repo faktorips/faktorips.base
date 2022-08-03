@@ -20,11 +20,11 @@ public interface IDeltaEntryForProperty extends IDeltaEntry {
     /**
      * Returns the type of the property this entry refers.
      */
-    public PropertyValueType getPropertyType();
+    PropertyValueType getPropertyType();
 
     /**
      * Returns the name of the product definition property this entry relates.
      */
-    public String getPropertyName();
+    String getPropertyName();
 
 }

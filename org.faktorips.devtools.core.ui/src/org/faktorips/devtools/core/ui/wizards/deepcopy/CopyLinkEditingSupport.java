@@ -29,7 +29,7 @@ public class CopyLinkEditingSupport extends EditingSupport {
 
     public CopyLinkEditingSupport(CheckboxTreeViewer viewer, DeepCopyTreeStatus treeStatus) {
         super(viewer);
-        this.comboBoxCellEditor = new ComboBoxViewerCellEditor(viewer.getTree(), SWT.READ_ONLY);
+        comboBoxCellEditor = new ComboBoxViewerCellEditor(viewer.getTree(), SWT.READ_ONLY);
         comboBoxCellEditor.setContentProvider(new ArrayContentProvider());
         comboBoxCellEditor.setInput(new CopyOrLink[] { CopyOrLink.COPY, CopyOrLink.LINK });
         this.treeStatus = treeStatus;

@@ -95,7 +95,7 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     /**
      * @deprecated since 22.6 for removal; use {@link #save(IProgressMonitor)} instead, as the
-     *             {@code force} parameter is ignored anyways.
+     *                 {@code force} parameter is ignored anyways.
      */
     @Deprecated(forRemoval = true, since = "22.6")
     @Override

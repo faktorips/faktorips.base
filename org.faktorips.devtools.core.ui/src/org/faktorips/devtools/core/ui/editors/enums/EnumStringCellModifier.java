@@ -42,12 +42,9 @@ public class EnumStringCellModifier implements IElementModifier<IEnumValue, Stri
     @Override
     public void setValue(IEnumValue element, String value) {
         IEnumAttributeValue enumAttributeValue = element.getEnumAttributeValues().get(columnIndex);
-        if (enumAttributeValue.isEnumLiteralNameAttributeValue()) {
-            if (IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
-                applyRenameLiteralNameRefactoring(value, (IEnumLiteralNameAttributeValue)enumAttributeValue);
-            } else {
-                enumAttributeValue.setValue(ValueFactory.createStringValue(value));
-            }
+        if (enumAttributeValue.isEnumLiteralNameAttributeValue()
+                && IpsPlugin.getDefault().getIpsPreferences().isRefactoringModeDirect()) {
+            applyRenameLiteralNameRefactoring(value, (IEnumLiteralNameAttributeValue)enumAttributeValue);
         } else {
             enumAttributeValue.setValue(ValueFactory.createStringValue(value));
         }

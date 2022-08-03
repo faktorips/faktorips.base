@@ -25,22 +25,22 @@ public interface IPropertyValueContainerToTypeDelta extends IFixDifferencesCompo
     /**
      * Returns the product component generation this delta was computed for.
      */
-    public IPropertyValueContainer getPropertyValueContainer();
+    IPropertyValueContainer getPropertyValueContainer();
 
     /**
      * Returns the product component type this delta was computed for.
      */
-    public IProductCmptType getProductCmptType();
+    IProductCmptType getProductCmptType();
 
     /**
      * Returns the delta entries that describe the delta details. Each entry reports a difference
      * between the generation and the product component type.
      */
-    public IDeltaEntry[] getEntries();
+    IDeltaEntry[] getEntries();
 
     /**
      * Returns all entries for the given type.
      */
-    public IDeltaEntry[] getEntries(DeltaType type);
+    IDeltaEntry[] getEntries(DeltaType type);
 
 }

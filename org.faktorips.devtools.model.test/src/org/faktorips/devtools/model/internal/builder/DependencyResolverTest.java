@@ -931,7 +931,6 @@ public class DependencyResolverTest {
     private MultiMap<IIpsProject, IDependency> collectDependenciesOf(QualifiedNameType objectNameType) {
         dependencyResolver.collectDependencies(objectNameType, new HashSet<IIpsProject>(),
                 EnumSet.allOf(DependencyType.class));
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
-        return collectedDependencies;
+        return dependencyResolver.getCollectedDependencies();
     }
 }

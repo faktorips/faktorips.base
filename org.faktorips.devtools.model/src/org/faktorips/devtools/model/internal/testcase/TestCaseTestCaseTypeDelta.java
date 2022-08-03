@@ -393,11 +393,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         ITestValue[] testValues = testCase.getTestValues();
         for (ITestValue testValue : testValues) {
             ITestParameter testParameter = testCaseType.getTestParameterByName(testValue.getTestValueParameter());
-            if (testParameter == null) {
-                // not found by name
-                missing.add(testValue);
-            } else if (!(testParameter instanceof ITestValueParameter)) {
-                // wrong instanceof
+            if ((testParameter == null) || !(testParameter instanceof ITestValueParameter)) {
                 missing.add(testValue);
             }
         }
@@ -412,11 +408,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
         ITestRule[] testRules = testCase.getTestRuleObjects();
         for (ITestRule testRule : testRules) {
             ITestParameter testParameter = testCaseType.getTestParameterByName(testRule.getTestRuleParameter());
-            if (testParameter == null) {
-                // not found by name
-                missing.add(testRule);
-            } else if (!(testParameter instanceof ITestRuleParameter)) {
-                // wrong instanceof
+            if ((testParameter == null) || !(testParameter instanceof ITestRuleParameter)) {
                 missing.add(testRule);
             }
         }
@@ -601,6 +593,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
 
     @Override
     public boolean isEmptyThis() {
+        // CSOFF: BooleanExpressionComplexity
         return errorInTestCaseType || testValuesWithMissingTestValueParam.length == 0
                 && testPolicyCmptsWithMissingTypeParam.length == 0
                 && testPolicyCmptLinksWithMissingTypeParam.length == 0
@@ -609,6 +602,7 @@ public class TestCaseTestCaseTypeDelta extends AbstractFixDifferencesComposite i
                 && testPolicyCmptTypeParametersWithMissingTestPolicyCmpt.length == 0
                 && testValueParametersWithMissingTestValue.length == 0 && testRulesWithMissingTestRuleParam.length == 0
                 && !differentTestParameterOrder;
+        // CSON: BooleanExpressionComplexity
     }
 
     @Override

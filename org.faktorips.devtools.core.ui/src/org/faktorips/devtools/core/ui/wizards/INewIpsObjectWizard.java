@@ -23,5 +23,5 @@ public interface INewIpsObjectWizard extends INewWizard {
     /**
      * Returns the type of the object created by the wizard.
      */
-    public IpsObjectType getIpsObjectType();
+    IpsObjectType getIpsObjectType();
 }

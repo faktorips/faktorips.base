@@ -26,22 +26,22 @@ import org.faktorips.devtools.model.value.ValueType;
  */
 public interface ISingleValueHolder extends IValueHolder<IValue<?>> {
 
-    public static final String DEFAULT_XML_TYPE_NAME = "SingleValue"; //$NON-NLS-1$
+    String DEFAULT_XML_TYPE_NAME = "SingleValue"; //$NON-NLS-1$
 
     @Override
-    public default List<IValue<?>> getValueList() {
+    default List<IValue<?>> getValueList() {
         ArrayList<IValue<?>> result = new ArrayList<>(1);
         result.add(getValue());
         return result;
     }
 
     @Override
-    public default ValueType getValueType() {
+    default ValueType getValueType() {
         return ValueType.getValueType(getValue());
     }
 
     @Override
-    public default boolean isMultiValue() {
+    default boolean isMultiValue() {
         return false;
     }
 }

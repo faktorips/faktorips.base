@@ -33,7 +33,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
  */
 public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemplatedValueContainer {
 
-    public static final String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this link container contains less relations of a
@@ -45,7 +45,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * cases the property part of the ObjectProperty is empty.
      * 
      */
-    public static final String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
+    String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this link container contains more relations of a
@@ -58,21 +58,21 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * cases the property part of the ObjectProperty is empty.
      * 
      */
-    public static final String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
+    String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that two or more relations of a specific type have the
      * same target.
      * 
      */
-    public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicates that a link references to a product component that
      * doesn't have an effective date that is before or equal to the effective date of the
      * referencing link container.
      */
-    public static final String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
+    String MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE = MSGCODE_PREFIX + "LinksWithWrongEffectivDate"; //$NON-NLS-1$
 
     /**
      * Returns <code>true</code> if this container is responsible for the given association. For
@@ -83,7 +83,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * @param association The association that should be checked by the container
      * 
      * @return <code>true</code> if the association could part of this container, <code>false</code>
-     *         otherwise.
+     *             otherwise.
      * 
      * @throws NullPointerException if the association is <code>null</code>
      */
@@ -92,7 +92,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     /**
      * Returns the number of relations.
      */
-    public int getNumOfLinks();
+    int getNumOfLinks();
 
     /**
      * Creates a new link that is an instance of the product component type association identified
@@ -100,21 +100,21 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * 
      * @throws NullPointerException if associationName is <code>null</code>.
      */
-    public IProductCmptLink newLink(String associationName);
+    IProductCmptLink newLink(String associationName);
 
     /**
      * Creates a new link that is an instance of the product component type association.
      * 
      * @throws NullPointerException if the association is <code>null</code>.
      */
-    public IProductCmptLink newLink(IProductCmptTypeAssociation association);
+    IProductCmptLink newLink(IProductCmptTypeAssociation association);
 
     /**
      * Creates a new link that is an instance of the given association. The new link is placed
      * before the given one or at the end of the list of links, if the given link is
      * <code>null</code>.
      */
-    public IProductCmptLink newLink(String association, IProductCmptLink insertAbove);
+    IProductCmptLink newLink(String association, IProductCmptLink insertAbove);
 
     /**
      * Checks whether a new link as instance of the given {@link IProductCmptTypeAssociation product
@@ -124,11 +124,11 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      *            necessarily the project this component is an element of.
      * 
      * @return <code>true</code> if a new relation with the given values will be valid,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      * 
      * @throws IpsException if a problem occur during the search of the type hierarchy.
      */
-    public boolean canCreateValidLink(IProductCmpt target,
+    boolean canCreateValidLink(IProductCmpt target,
             IProductCmptTypeAssociation association,
             IIpsProject ipsProject) throws IpsException;
 
@@ -149,17 +149,17 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      *            place it below the target
      * 
      * @return The method returns <code>true</code> if the link could be moved and returns
-     *         <code>false</code> if either the link or the target are <code>null</code> or if one
-     *         of the links is not a part of this container.
+     *             <code>false</code> if either the link or the target are <code>null</code> or if
+     *             one of the links is not a part of this container.
      * 
      */
-    public boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above);
+    boolean moveLink(IProductCmptLink toMove, IProductCmptLink target, boolean above);
 
     /**
      * Returns all {@link IProductCmptLink product component links} this class contains as a typed
      * list.
      */
-    public List<IProductCmptLink> getLinksAsList();
+    List<IProductCmptLink> getLinksAsList();
 
     /**
      * Returns all {@link IProductCmptLink product component links} for the given association name
@@ -168,19 +168,19 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * @param associationName the name (=target role singular) of the association to return links
      *            for
      */
-    public List<IProductCmptLink> getLinksAsList(String associationName);
+    List<IProductCmptLink> getLinksAsList(String associationName);
 
     @Override
-    public IProductCmpt getProductCmpt();
+    IProductCmpt getProductCmpt();
 
     @Override
-    public String getProductCmptType();
+    String getProductCmptType();
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
+    IProductCmptType findProductCmptType(IIpsProject ipsProject) throws IpsException;
 
     @Override
-    public IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);
+    IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);
 
     /**
      * Removes all links whose
@@ -189,11 +189,11 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
      * {@link org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus#UNDEFINED
      * UNDEFINED}
      */
-    public void removeUndefinedLinks();
+    void removeUndefinedLinks();
 
     /**
      * Returns the point in time from that on this generation contains the object's data.
      */
-    public GregorianCalendar getValidFrom();
+    GregorianCalendar getValidFrom();
 
 }

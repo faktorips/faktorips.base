@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.fl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -56,9 +57,9 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
         ArgumentCheck.notNull(tableContentsQName);
         ArgumentCheck.notNull(referencedName);
         this.fct = fct;
-        this.tableContentsQualifiedName = tableContentsQName;
+        tableContentsQualifiedName = tableContentsQName;
         this.referencedName = referencedName;
-        this.name = StringUtils.capitalize(referencedName) + "." + fct.getAccessedColumnName(); //$NON-NLS-1$
+        name = StringUtils.capitalize(referencedName) + "." + fct.getAccessedColumnName(); //$NON-NLS-1$
     }
 
     @Override
@@ -66,9 +67,8 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
         try {
             IIpsArtefactBuilderSet builderSet = getIpsProject().getIpsArtefactBuilderSet();
             if (!builderSet.isSupportTableAccess()) {
-                CompilationResultImpl result = new CompilationResultImpl(Message.newError(
-                        "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess)); //$NON-NLS-1$
-                return result;
+                return new CompilationResultImpl(Message.newError(
+                        "", Messages.TableAccessFunctionFlFunctionAdapter_msgNoTableAccess));
             }
             return builderSet.getTableAccessCode(tableContentsQualifiedName, fct, argResults);
         } catch (IpsException e) {
@@ -125,11 +125,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((fct == null) ? 0 : fct.hashCode());
-        result = prime * result + ((referencedName == null) ? 0 : referencedName.hashCode());
-        return result;
+        return Objects.hash(fct, referencedName);
     }
 
     @Override
@@ -137,27 +133,11 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         TableAccessFunctionFlFunctionAdapter other = (TableAccessFunctionFlFunctionAdapter)obj;
-        if (fct == null) {
-            if (other.fct != null) {
-                return false;
-            }
-        } else if (!fct.equals(other.fct)) {
-            return false;
-        }
-        if (referencedName == null) {
-            if (other.referencedName != null) {
-                return false;
-            }
-        } else if (!referencedName.equals(other.referencedName)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(fct, other.fct)
+                && Objects.equals(referencedName, other.referencedName);
     }
 }

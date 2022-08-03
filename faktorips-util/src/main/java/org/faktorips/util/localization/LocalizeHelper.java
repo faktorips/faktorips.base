@@ -66,7 +66,7 @@ public class LocalizeHelper {
     /**
      * Class which supports properties with predictable iteration order.
      */
-    private class SortedProperties extends Properties {
+    private static class SortedProperties extends Properties {
 
         private static final long serialVersionUID = 1L;
 

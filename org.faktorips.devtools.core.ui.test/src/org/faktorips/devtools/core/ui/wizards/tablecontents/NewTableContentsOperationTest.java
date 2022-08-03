@@ -191,8 +191,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     private IProductCmpt newProductCmpt() {
-        IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProductCmptNoGeneration");
-        return productCmpt;
+        return newProductCmpt(ipsProject, "TestProductCmptNoGeneration");
     }
 
     @Test
@@ -243,9 +242,8 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     private IProductCmptGeneration newProductCmptGeneration() {
         IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProductCmpt");
-        IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmpt
+        return (IProductCmptGeneration)productCmpt
                 .newGeneration(new GregorianCalendar(2013, 0, 1));
-        return productCmptGeneration;
     }
 
     private NewTableContentsPMO mockPMO(ITableContentUsage tableUsage, boolean autosafe) {

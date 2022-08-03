@@ -22,6 +22,6 @@ public interface ConversionMatrix {
      * 
      * @throws IllegalArgumentException if either from or to is null.
      */
-    public boolean canConvert(Datatype from, Datatype to);
+    boolean canConvert(Datatype from, Datatype to);
 
 }

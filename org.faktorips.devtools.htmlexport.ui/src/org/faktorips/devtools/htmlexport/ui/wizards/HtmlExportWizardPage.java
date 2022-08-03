@@ -369,12 +369,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
     }
 
     private void canFinish() {
-        if (getSelectedIpsProject() == null) {
-            setPageComplete(false);
-            return;
-        }
-
-        if (getSupportedLanguage() == null) {
+        if ((getSelectedIpsProject() == null) || (getSupportedLanguage() == null)) {
             setPageComplete(false);
             return;
         }
@@ -475,7 +470,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
 
     private static final class IpsObjectTreeContentProvider implements ITreeContentProvider {
 
-        private static final Object[] EMPTY_ARRAY = new Object[0];
+        private static final Object[] EMPTY_ARRAY = {};
 
         private static final IpsObjectTypeTreeViewBaseNodes[] OBJECT_TYPES_ARRAY = {
                 IpsObjectTypeTreeViewBaseNodes.POLICY, IpsObjectTypeTreeViewBaseNodes.PRODUCT };
@@ -529,9 +524,9 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
                     ipsObjectTypesPolicyList.add(ipsObjectType);
                 }
             }
-            this.ipsObjectTypesPolicy = ipsObjectTypesPolicyList.toArray(new IpsObjectType[ipsObjectTypesPolicyList
+            ipsObjectTypesPolicy = ipsObjectTypesPolicyList.toArray(new IpsObjectType[ipsObjectTypesPolicyList
                     .size()]);
-            this.ipsObjectTypesProduct = ipsObjectTypesProductList.toArray(new IpsObjectType[ipsObjectTypesProductList
+            ipsObjectTypesProduct = ipsObjectTypesProductList.toArray(new IpsObjectType[ipsObjectTypesProductList
                     .size()]);
         }
 

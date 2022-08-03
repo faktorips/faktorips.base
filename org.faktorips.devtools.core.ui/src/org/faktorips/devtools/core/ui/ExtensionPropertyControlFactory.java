@@ -266,7 +266,7 @@ public class ExtensionPropertyControlFactory {
         }
     }
 
-    private class ExtPropControlData implements Comparable<ExtPropControlData> {
+    private static class ExtPropControlData implements Comparable<ExtPropControlData> {
 
         private IExtensionPropertyDefinition extProperty;
         private EditField<?> editField;

@@ -162,7 +162,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     }
 
     protected void createDatatypeFormattingField() {
-        Locale[] availableLocales = new Locale[] { Locale.GERMANY, Locale.US, Locale.UK };
+        Locale[] availableLocales = { Locale.GERMANY, Locale.US, Locale.UK };
         String[][] localeDisplayNameValues = new String[availableLocales.length][2];
         for (int i = 0; i < availableLocales.length; i++) {
             localeDisplayNameValues[i][0] = availableLocales[i].getDisplayName();

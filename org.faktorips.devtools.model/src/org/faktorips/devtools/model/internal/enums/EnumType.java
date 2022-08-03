@@ -1052,7 +1052,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         return true;
     }
 
-    private final class AttributeFinder extends EnumTypeHierarchyVisitor {
+    private static final class AttributeFinder extends EnumTypeHierarchyVisitor {
         private final LinkedList<IEnumAttribute> allAttributes;
         private final boolean includeLiteralName;
 
@@ -1083,7 +1083,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
          * inherited, add all those attributes (or "duplicates") to the list. This case is necessary
          * to detect errors during object validation.
          */
-        private final boolean contains(IEnumAttribute attribute) {
+        private boolean contains(IEnumAttribute attribute) {
             for (IEnumAttribute enumAttribute : allAttributes) {
                 if (enumAttribute.getName().equals(attribute.getName()) && enumAttribute.isInherited()) {
                     return true;

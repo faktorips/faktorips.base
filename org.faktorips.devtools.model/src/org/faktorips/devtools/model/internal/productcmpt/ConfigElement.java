@@ -44,7 +44,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     public ConfigElement(IPropertyValueContainer parent, String policyAttribute, String id) {
         super(parent, id);
         this.policyAttribute = policyAttribute;
-        this.templateValueSettings = new TemplateValueSettings(this);
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -69,8 +69,8 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     @Override
     public void setPolicyCmptTypeAttribute(String policyCmptTypeAttribute) {
-        String oldAttribute = this.policyAttribute;
-        this.policyAttribute = policyCmptTypeAttribute;
+        String oldAttribute = policyAttribute;
+        policyAttribute = policyCmptTypeAttribute;
         valueChanged(oldAttribute, policyAttribute, PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE);
     }
 

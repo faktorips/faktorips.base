@@ -88,7 +88,7 @@ public class XProductAssociation extends XAssociation {
     public String matchingMethod(String methodName, String... parameterTypesAndNames) {
         MethodDefinition methodSignature = new MethodDefinition(methodName,
                 MethodParameter.arrayOf(parameterTypesAndNames));
-        getContext().addGeneratedJavaElement(this.getMatchingAssociation(), methodSignature);
+        getContext().addGeneratedJavaElement(getMatchingAssociation(), methodSignature);
         return super.method(methodName, parameterTypesAndNames);
     }
 
@@ -100,7 +100,7 @@ public class XProductAssociation extends XAssociation {
      * @param prefix The prefix defining the scope of the generated code, for example
      *            "METHOD_GET_CMPT"
      * @return The key used to localize the java doc for example "METHOD_GET_CMPT_ONE" or
-     *         "METHOD_GET_CMPT_MANY"
+     *             "METHOD_GET_CMPT_MANY"
      */
     public String getJavadocKey(String prefix) {
         return prefix + (isOneToMany() ? "_MANY" : "_ONE");

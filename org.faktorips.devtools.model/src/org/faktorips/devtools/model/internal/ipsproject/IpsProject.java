@@ -130,7 +130,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean
-                .valueOf(Platform.getDebugOption("org.faktorips.devtools.model/trace/properties")).booleanValue(); //$NON-NLS-1$
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
     }
 
     /**
@@ -315,10 +315,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @CheckForNull
     private Boolean isJavaProjectErrorFree(AJavaProject javaProject, boolean checkReferencedJavaProjects) {
         AProject tmpProject = javaProject.getProject();
-        if (!tmpProject.isAccessible()) {
-            return null;
-        }
-        if (!javaProject.exists()) {
+        if (!tmpProject.isAccessible() || !javaProject.exists()) {
             return null;
         }
         // implementation note: if the java project has buildpath problems it also hasn't got a
@@ -414,7 +411,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List<IIpsProject> result = new ArrayList<>(ipsPprojects.length);
         result.add(this);
         for (IIpsProject ipsProject : ipsPprojects) {
-            if (this.isReferencedBy(ipsProject, true)) {
+            if (isReferencedBy(ipsProject, true)) {
                 boolean foundDependent = false;
                 for (Iterator<IIpsProject> iterator = result.iterator(); iterator.hasNext();) {
                     IIpsProject aResult = iterator.next();
@@ -522,10 +519,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 return new IpsPackageFragmentRoot(this, name);
             }
         } catch (IpsException e) {
-            // nothing to do,
-            return null;
+            // nothing to do
         }
-
         return null;
     }
 
@@ -712,10 +707,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
         List<IEnumType> filteredList = new ArrayList<>(enumTypes.size());
         for (IEnumType currentEnumType : enumTypes) {
-            if (!includeAbstract && currentEnumType.isAbstract()) {
-                continue;
-            }
-            if (!includeNotContainingValues && currentEnumType.isExtensible()) {
+            if ((!includeAbstract && currentEnumType.isAbstract())
+                    || (!includeNotContainingValues && currentEnumType.isExtensible())) {
                 continue;
             }
             filteredList.add(currentEnumType);
@@ -1004,9 +997,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        datatype = findValueDatatypeInReferencedProjects(ipsProject, qualifiedName);
-
-        return datatype;
+        return findValueDatatypeInReferencedProjects(ipsProject, qualifiedName);
     }
 
     private ValueDatatype findValueDatatypeInReferencedProjects(IpsProject ipsProject, String qualifiedName) {
@@ -1242,8 +1233,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure) {
         if (structure == null) {
-            List<IIpsSrcFile> ipsSrcFiles = findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
-            return ipsSrcFiles;
+            return findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
         }
 
         return getTableContentsStructureCache().getTableContents(structure.getIpsSrcFile());
@@ -1628,11 +1618,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
                     }
                 }
             } catch (CoreException e) {
-                // if we can't get the project nature, the project is not in a state we would
-                // consider full existence
-                return false;
+                // does not exist
             }
-
             return false;
         }
     }

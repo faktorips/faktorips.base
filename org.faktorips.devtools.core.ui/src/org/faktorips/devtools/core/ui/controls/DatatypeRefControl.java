@@ -79,7 +79,7 @@ public class DatatypeRefControl extends TextButtonControl {
     }
 
     public void setIpsProject(IIpsProject project) {
-        this.ipsProject = project;
+        ipsProject = project;
         proposalProvider.setIpsProject(project);
     }
 

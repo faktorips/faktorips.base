@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 public class ProductCmptRefControl extends IpsObjectRefControl {
 
     private boolean includeCmptsForSubtypes = true;
-    private IProductCmpt[] toExclude = new IProductCmpt[0];
+    private IProductCmpt[] toExclude = {};
     private IProductCmptType productCmptType;
     private boolean searchTemplates;
 

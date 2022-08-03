@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -69,10 +71,7 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((srcFile == null) ? 0 : srcFile.hashCode());
-        return result;
+        return Objects.hash(srcFile);
     }
 
     /**
@@ -85,21 +84,11 @@ public class IpsArchiveEditorInput extends PlatformObject implements IEditorInpu
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         IpsArchiveEditorInput other = (IpsArchiveEditorInput)obj;
-        if (srcFile == null) {
-            if (other.srcFile != null) {
-                return false;
-            }
-        } else if (!srcFile.equals(other.srcFile)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(srcFile, other.srcFile);
     }
 
 }

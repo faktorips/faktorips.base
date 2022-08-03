@@ -128,8 +128,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.id = id;
         this.productKindId = productKindId;
         this.versionId = versionId;
-        this.formulaHandler = new FormulaHandler(this, this.repository);
-        this.validationRules = new ValidationRules(this);
+        formulaHandler = new FormulaHandler(this, this.repository);
+        validationRules = new ValidationRules(this);
     }
 
     @Override
@@ -207,7 +207,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         if (validfrom == null) {
             throw new NullPointerException();
         }
-        this.validFrom = validfrom;
+        validFrom = validfrom;
     }
 
     @Override

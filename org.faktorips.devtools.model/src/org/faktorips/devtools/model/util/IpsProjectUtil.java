@@ -37,7 +37,7 @@ public final class IpsProjectUtil {
      * @param project A platform project.
      * @param natureId The id of a nature.
      */
-    public static final void addNature(IProject project, String natureId) throws CoreException {
+    public static void addNature(IProject project, String natureId) throws CoreException {
         IProjectDescription description = project.getDescription();
         String[] natures = description.getNatureIds();
         String[] newNatures = new String[natures.length + 1];
@@ -47,7 +47,7 @@ public final class IpsProjectUtil {
         project.setDescription(description, null);
     }
 
-    public static final IPackageFragmentRoot addFolderAsPackageFragmentRoot(IJavaProject project, IFolder folder)
+    public static IPackageFragmentRoot addFolderAsPackageFragmentRoot(IJavaProject project, IFolder folder)
             throws JavaModelException {
 
         IPackageFragmentRoot root = project.getPackageFragmentRoot(folder);

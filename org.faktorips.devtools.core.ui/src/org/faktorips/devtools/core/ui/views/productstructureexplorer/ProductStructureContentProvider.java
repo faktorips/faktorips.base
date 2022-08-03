@@ -239,7 +239,7 @@ public class ProductStructureContentProvider implements ITreeContentProvider {
      * 
      * @param ipsSrcFile the source file containing the product component.
      * @return <code>true</code> if the given product component is referenced by the structure,
-     *         <code>false</code> otherwise.
+     *             <code>false</code> otherwise.
      */
     public boolean isIpsSrcFilePartOfStructure(IIpsSrcFile ipsSrcFile) {
         if (ipsSrcFile != null && structure != null && ipsSrcFile.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT) {

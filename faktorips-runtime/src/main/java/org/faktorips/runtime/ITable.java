@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface ITable<R> {
 
-    public static final String TAG_NAME = "TableContents";
+    String TAG_NAME = "TableContents";
 
     /**
      * Returns the qualified name of this table.

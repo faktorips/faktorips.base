@@ -61,7 +61,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
-        this.templateValueSettings = new TemplateValueSettings(this);
+        templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override

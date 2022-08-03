@@ -52,9 +52,7 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
             // tag must start with a letter
             tag = "v" + tag; //$NON-NLS-1$
         }
-        // replace not allowed characters to '_'
-        tag = tag.replaceAll("[\\$,\\.:;@]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-        return tag;
+        return tag.replaceAll("[\\$,\\.:;@]", "_");
     }
 
     @Override

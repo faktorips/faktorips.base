@@ -60,14 +60,16 @@ public class IpsObjectPartTester extends PropertyTester {
      */
     public static <T extends IIpsObjectPart> T castOrAdaptToPart(Object object, Class<T> partClass) {
         if (partClass.isAssignableFrom(object.getClass())) {
-            @SuppressWarnings("unchecked")
-            T part = (T)object;
-            return part;
+            return castObject(object);
         } else if (object instanceof IAdaptable) {
-            T part = Platform.getAdapterManager().getAdapter(object, partClass);
-            return part;
+            return Platform.getAdapterManager().getAdapter(object, partClass);
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T extends IIpsObjectPart> T castObject(Object object) {
+        return (T)object;
     }
 
     private boolean isPartEditableInEditor(IIpsObjectPart ipsObjectPart) {

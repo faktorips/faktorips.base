@@ -53,10 +53,8 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
                 return (IType)file.getIpsObject();
             } catch (IpsException e) {
                 IpsPlugin.log(e);
-                return null;
             }
         }
-
         return null;
     }
 
@@ -75,10 +73,8 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
                 return (IProductCmpt)file.getIpsObject();
             } catch (IpsException e) {
                 IpsPlugin.log(e);
-                return null;
             }
         }
-
         return null;
     }
 

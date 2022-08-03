@@ -20,13 +20,13 @@ public interface MementoSupport {
     /**
      * Creates a new memento that holds the object's current state.
      */
-    public Memento newMemento();
+    Memento newMemento();
 
     /**
      * Sets the object's state to the one stored in the memento.
      * 
      * @throws IllegalArgumentException if the memento does not contain this object's state.
      */
-    public void setState(Memento memento);
+    void setState(Memento memento);
 
 }

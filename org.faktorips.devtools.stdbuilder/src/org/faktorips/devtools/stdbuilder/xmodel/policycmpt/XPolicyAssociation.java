@@ -495,7 +495,7 @@ public class XPolicyAssociation extends XAssociation {
      * this is no shared association this method always returns false.
      * 
      * @return True if this is a shared association and it is already implemented in a super class.
-     *         Returns false if it is no shared association or it is not already implement
+     *             Returns false if it is no shared association or it is not already implement
      */
     public boolean isSharedAssociationImplementedInSuperclass() {
         if (isSharedAssociation()) {

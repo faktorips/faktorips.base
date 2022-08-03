@@ -147,7 +147,7 @@ public class StdBuilderPlugin extends Plugin {
 
     /**
      * @return a defensive copy of the {@link ITocEntryBuilderFactory}s currently registered with
-     *         this plugin.
+     *             this plugin.
      */
     public List<ITocEntryBuilderFactory> getTocEntryBuilderFactories() {
         return new ArrayList<>(tocEntryBuilderFactories);
@@ -155,7 +155,7 @@ public class StdBuilderPlugin extends Plugin {
 
     /**
      * @return a defensive copy of the {@link ITocEntryFactory}s currently registered with this
-     *         plugin.
+     *             plugin.
      */
     public List<ITocEntryFactory<?>> getTocEntryFactories() {
         return new ArrayList<>(tocEntryFactories);

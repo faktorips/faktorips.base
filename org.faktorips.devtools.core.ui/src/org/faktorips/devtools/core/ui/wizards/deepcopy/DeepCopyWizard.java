@@ -223,9 +223,7 @@ public class DeepCopyWizard extends ResizableWizard {
                 }
             };
             getContainer().run(true, true, operation);
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.", e)); //$NON-NLS-1$
-        } catch (InterruptedException e) {
+        } catch (InvocationTargetException | InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.", e)); //$NON-NLS-1$
         }
 

@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
@@ -58,7 +57,7 @@ public class EclipseWorkspaceTest extends EclipseAbstractionTestSetup {
     }
 
     @Test
-    public void testBuild() throws CoreException {
+    public void testBuild() {
         newSimpleIpsProject("someProject");
 
         Abstractions.getWorkspace().build(ABuildKind.CLEAN, new NullProgressMonitor());

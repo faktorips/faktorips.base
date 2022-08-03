@@ -99,7 +99,7 @@ public class XIndex extends AbstractGeneratorModelNode {
 
     /**
      * @return class name if any key is a column. Else returns the class name of the type of the
-     *         first key item
+     *             first key item
      */
     public String getClassOrTypeName() {
         if (getIndex().containsColumns()) {
@@ -137,7 +137,7 @@ public class XIndex extends AbstractGeneratorModelNode {
     }
 
     private ITableStructure getTableStructure() {
-        return (ITableStructure)this.getIpsObjectPartContainer().getIpsObject();
+        return (ITableStructure)getIpsObjectPartContainer().getIpsObject();
     }
 
     public boolean isFirstKeyRange() {

@@ -99,8 +99,8 @@ public class MessagesImportPMO extends PresentationModelObject {
      * @param fileName The fileName to set.
      */
     public void setFilename(String fileName) {
-        String oldValue = this.filename;
-        this.filename = fileName;
+        String oldValue = filename;
+        filename = fileName;
         updateFormat();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FILE_NAME, oldValue, fileName));
     }
@@ -249,7 +249,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     /**
      * @return Returns if the warnings concerning missing messages should be displayed after the
-     *         import.
+     *             import.
      */
     public boolean isEnableWarningsForMissingMessages() {
         return enableWarningsForMissingMessages;
@@ -346,7 +346,7 @@ public class MessagesImportPMO extends PresentationModelObject {
         }
     }
 
-    static enum ImportFormat {
+    enum ImportFormat {
 
         CSV("csv"), //$NON-NLS-1$
 
@@ -356,7 +356,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
         private final String extension;
 
-        private ImportFormat(String extension) {
+        ImportFormat(String extension) {
             this.extension = extension;
         }
 

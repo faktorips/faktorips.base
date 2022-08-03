@@ -13,8 +13,8 @@ package org.faktorips.devtools.stdbuilder.propertybuilder;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 
 public interface PropertyKey {
-    public String getKey();
+    String getKey();
 
-    public QualifiedNameType getIpsObjectQNameType();
+    QualifiedNameType getIpsObjectQNameType();
 
 }

@@ -474,8 +474,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             public int hashCode() {
                 int result = 17;
                 result = 31 * result + id.hashCode();
-                result = 31 * result + position.hashCode();
-                return result;
+                return 31 * result + position.hashCode();
             }
 
         }

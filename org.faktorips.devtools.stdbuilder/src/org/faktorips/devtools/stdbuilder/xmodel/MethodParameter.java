@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jdt.core.Signature;
 
@@ -109,11 +110,7 @@ public class MethodParameter {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((paramName == null) ? 0 : paramName.hashCode());
-        result = prime * result + ((type == null) ? 0 : type.hashCode());
-        return result;
+        return Objects.hash(paramName, type);
     }
 
     @Override
@@ -121,28 +118,12 @@ public class MethodParameter {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         MethodParameter other = (MethodParameter)obj;
-        if (paramName == null) {
-            if (other.paramName != null) {
-                return false;
-            }
-        } else if (!paramName.equals(other.paramName)) {
-            return false;
-        }
-        if (type == null) {
-            if (other.type != null) {
-                return false;
-            }
-        } else if (!type.equals(other.type)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(paramName, other.paramName)
+                && Objects.equals(type, other.type);
     }
 
     @Override

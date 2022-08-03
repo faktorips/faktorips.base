@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
@@ -26,7 +27,6 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.model.type.AssociationKind;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public abstract class XAssociation extends AbstractGeneratorModelNode {
 
@@ -252,8 +252,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     protected XClass getTargetModelNode() {
         IType target = getTargetType();
-        XClass xClass = getModelNode(target, getModelNodeType(false));
-        return xClass;
+        return getModelNode(target, getModelNodeType(false));
     }
 
     public String getTargetQualifiedClassName() {
@@ -281,7 +280,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
      *            return a generation type or the normal product type.
      * 
      * @return The class of the {@link XType} that could be used to get the source type of this
-     *         association
+     *             association
      */
     protected Class<? extends XType> getModelNodeType(boolean considerChangeOverTime) {
         // TODO is there a better way? Cannot move to subclass because of derived unions

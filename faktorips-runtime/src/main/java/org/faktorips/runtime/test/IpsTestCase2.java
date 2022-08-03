@@ -87,7 +87,7 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
     /*
      * Wrapper class stores all extension attributes.
      */
-    private class ModelObjectAttribute {
+    private static class ModelObjectAttribute {
 
         private IModelObject modelObject;
         private String attributeName;
@@ -117,23 +117,19 @@ public abstract class IpsTestCase2 extends IpsTestCaseBase {
             if ((this == other)) {
                 return true;
             }
-            if ((other == null)) {
-                return false;
-            }
-            if (!(other instanceof ModelObjectAttribute)) {
+            if ((other == null) || !(other instanceof ModelObjectAttribute)) {
                 return false;
             }
             ModelObjectAttribute castOther = (ModelObjectAttribute)other;
-            return (this.getAttributeName() != null && this.getAttributeName().equals(castOther.getAttributeName()))
-                    && (this.getModelObject() != null && this.getModelObject().equals(castOther.getModelObject()));
+            return (getAttributeName() != null && getAttributeName().equals(castOther.getAttributeName()))
+                    && (getModelObject() != null && getModelObject().equals(castOther.getModelObject()));
         }
 
         @Override
         public int hashCode() {
             int result = 17;
             result = 37 * result + (getModelObject() == null ? 0 : getModelObject().hashCode());
-            result = 37 * result + (getAttributeName() == null ? 0 : getAttributeName().hashCode());
-            return result;
+            return 37 * result + (getAttributeName() == null ? 0 : getAttributeName().hashCode());
         }
 
     }

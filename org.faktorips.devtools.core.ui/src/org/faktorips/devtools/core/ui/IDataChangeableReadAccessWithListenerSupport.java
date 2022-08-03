@@ -20,11 +20,11 @@ public interface IDataChangeableReadAccessWithListenerSupport extends IDataChang
     /**
      * Adds the listener.
      */
-    public void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener);
+    void addDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener);
 
     /**
      * Removes the listener.
      */
-    public void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener);
+    void removeDataChangeableStateChangeListener(IDataChangeableStateChangeListener listener);
 
 }

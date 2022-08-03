@@ -36,6 +36,6 @@ public interface IProductCmptPropertyFilter {
      * 
      * @param property the {@link IProductCmptProperty product component property} to filter or not
      */
-    public boolean isFiltered(IProductCmptProperty property);
+    boolean isFiltered(IProductCmptProperty property);
 
 }

@@ -39,7 +39,7 @@ public enum ExcelFunction {
 
     private final String propertyKey;
 
-    private ExcelFunction(String propertyKey) {
+    ExcelFunction(String propertyKey) {
         this.propertyKey = propertyKey;
     }
 

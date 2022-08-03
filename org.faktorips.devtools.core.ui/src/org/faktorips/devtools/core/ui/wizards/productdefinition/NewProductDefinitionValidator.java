@@ -104,7 +104,7 @@ public abstract class NewProductDefinitionValidator {
      * Only if this validation does return no error the further validations will be performed.
      * 
      * @return The {@link MessageList} containing all validation error except those of the root
-     *         folder and the package
+     *             folder and the package
      */
     protected abstract MessageList validateBeforeFolderAndPacket();
 

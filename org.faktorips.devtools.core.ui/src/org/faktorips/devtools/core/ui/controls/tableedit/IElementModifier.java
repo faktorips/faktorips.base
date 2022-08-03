@@ -24,12 +24,12 @@ public interface IElementModifier<T, V> {
      * 
      * @param element the value to access
      */
-    public V getValue(T element);
+    V getValue(T element);
 
     /**
      * Sets the given value as value for the given element.
      * 
      * @param element the value to modify
      */
-    public void setValue(T element, V value);
+    void setValue(T element, V value);
 }

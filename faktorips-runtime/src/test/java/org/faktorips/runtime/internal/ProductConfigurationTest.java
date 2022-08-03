@@ -235,9 +235,8 @@ public class ProductConfigurationTest {
     private ProductConfiguration deserializeProductConfiguration(byte[] byteArray) throws IOException,
             ClassNotFoundException {
         try (ObjectInputStream osgiCompatibleInputStream = new ObjectInputStream(new ByteArrayInputStream(byteArray))) {
-            ProductConfiguration deserializedProductConfiguration = (ProductConfiguration)osgiCompatibleInputStream
+            return (ProductConfiguration)osgiCompatibleInputStream
                     .readObject();
-            return deserializedProductConfiguration;
         }
 
     }

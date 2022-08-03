@@ -34,7 +34,7 @@ public abstract class Association extends TypePart {
     public Association(Type type, Method getter) {
         super(getAssociationAnnotation(getter).name(), type,
                 getter.getAnnotation(IpsExtensionProperties.class), Deprecation.of(getter));
-        this.annotation = getAssociationAnnotation(getter);
+        annotation = getAssociationAnnotation(getter);
         this.getter = getter;
     }
 
@@ -49,7 +49,7 @@ public abstract class Association extends TypePart {
      * returned.
      * 
      * @return the label for the given locale or the element's name if no label exists for the given
-     *         locale nor in the default locale
+     *             locale nor in the default locale
      */
     public String getLabelForPlural(Locale locale) {
         return getDocumentation(locale, DocumentationKind.PLURAL_LABEL, getNamePlural());
@@ -122,7 +122,7 @@ public abstract class Association extends TypePart {
      * Returns the name of the inverse association if it is defined.
      * 
      * @return The name of the inverse association or {@code null} if there is no inverse
-     *         association or it is a product component associations
+     *             association or it is a product component associations
      */
     public String getInverseAssociation() {
         if (getter.isAnnotationPresent(IpsInverseAssociation.class)) {

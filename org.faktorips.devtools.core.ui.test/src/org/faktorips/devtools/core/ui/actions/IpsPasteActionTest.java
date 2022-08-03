@@ -249,8 +249,8 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
         Clipboard clipboard = new Clipboard(IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell()
                 .getDisplay());
         FileTransfer fileTransfer = FileTransfer.getInstance();
-        Transfer[] transfers = new Transfer[] { fileTransfer };
-        Object[] data = new Object[] { new String[] { file.getAbsolutePath() } };
+        Transfer[] transfers = { fileTransfer };
+        Object[] data = { new String[] { file.getAbsolutePath() } };
         clipboard.setContents(data, transfers);
 
         // paste clipboard
@@ -279,7 +279,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
                 .getActiveWorkbenchWindow().getShell());
     }
 
-    private class TestSelectionProvider implements ISelectionProvider {
+    private static class TestSelectionProvider implements ISelectionProvider {
         Object selected;
 
         public TestSelectionProvider(Object selected) {

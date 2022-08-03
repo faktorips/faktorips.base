@@ -25,6 +25,6 @@ public interface IIpsSrcFileViewItem extends IIpsSrcFileWrapper {
      * 
      * @return <code>IpsSrcFile</code>
      */
-    public IIpsSrcFile getIpsSrcFile();
+    IIpsSrcFile getIpsSrcFile();
 
 }

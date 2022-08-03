@@ -41,7 +41,7 @@ public abstract class AbstractProposalProvider extends AbstractPrefixContentProp
 
     public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
             IInputFormat<String> inputFormat) {
-        this.valueSetOwner = owner;
+        valueSetOwner = owner;
         this.valueDatatype = valueDatatype;
         this.inputFormat = inputFormat;
         valueSource = createValueSource(valueSetOwner, valueDatatype);
@@ -105,8 +105,7 @@ public abstract class AbstractProposalProvider extends AbstractPrefixContentProp
 
     private ContentProposal createProposal(String prefix, String formattedValue) {
         final String textToInsert = getContentForAcceptanceStyle(formattedValue);
-        ContentProposal contentProposal = new ContentProposal(textToInsert, formattedValue, null, prefix);
-        return contentProposal;
+        return new ContentProposal(textToInsert, formattedValue, null, prefix);
     }
 
     private String getContentForAcceptanceStyle(String formattedValue) {

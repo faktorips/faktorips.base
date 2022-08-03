@@ -95,8 +95,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         if (movedCmptLinks != null) {
             if ((target instanceof IProductCmptLink || target instanceof ILinkSectionViewItem)
                     && (getCurrentLocation() == LOCATION_BEFORE || getCurrentLocation() == LOCATION_AFTER)) {
-                boolean result = canMove(target);
-                return result;
+                return canMove(target);
             } else {
                 return false;
             }
@@ -110,8 +109,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 return true;
             }
             try {
-                boolean result = canCreateLinks(draggedCmpts, target);
-                return result;
+                return canCreateLinks(draggedCmpts, target);
             } catch (IpsException e) {
                 IpsPlugin.log(e);
                 return false;

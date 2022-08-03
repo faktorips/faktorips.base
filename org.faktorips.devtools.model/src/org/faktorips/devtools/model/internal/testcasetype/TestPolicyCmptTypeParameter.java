@@ -186,11 +186,8 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(association)) {
-            return null;
-        }
         // if this is a root parameter then the association field is not used
-        if (isRoot()) {
+        if (StringUtils.isEmpty(association) || isRoot()) {
             return null;
         }
 
@@ -297,7 +294,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     public ITestAttribute[] getTestAttributes(String attributeName) {
         List<ITestAttribute> testAttributeList = new ArrayList<>();
 
-        for (ITestAttribute testAttribute : this.testAttributes) {
+        for (ITestAttribute testAttribute : testAttributes) {
             if (testAttribute.getAttribute().equals(attributeName)) {
                 testAttributeList.add(testAttribute);
             }
@@ -571,8 +568,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     for (ITestParameter element : allTestParameter) {
                         if (element instanceof ITestPolicyCmptTypeParameter) {
                             ITestPolicyCmptTypeParameter tPCTP = (ITestPolicyCmptTypeParameter)element;
-                            boolean isTestObject = false;
-                            isTestObject = isRoot();
+                            boolean isTestObject = isRoot();
                             if (!isTestObject) {
                                 // check if the test parameter implements no accosiation
                                 // because we search only for non accosiations

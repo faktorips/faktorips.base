@@ -51,15 +51,13 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         @Override
         protected List<IEnumAttribute> getAvailableParts(IIpsObject ipsObject) {
             IEnumType enumType = (IEnumType)ipsObject;
-            List<IEnumAttribute> candiates = enumType.findInheritEnumAttributeCandidates(enumType.getIpsProject());
-            return candiates;
+            return enumType.findInheritEnumAttributeCandidates(enumType.getIpsProject());
         }
 
         @Override
         protected List<IEnumType> getSupertypes(IIpsObject ipsObject) {
             IEnumType enumType = (IEnumType)ipsObject;
-            List<IEnumType> supertypes = enumType.findAllSuperEnumTypes(enumType.getIpsProject());
-            return supertypes;
+            return enumType.findAllSuperEnumTypes(enumType.getIpsProject());
         }
 
     }

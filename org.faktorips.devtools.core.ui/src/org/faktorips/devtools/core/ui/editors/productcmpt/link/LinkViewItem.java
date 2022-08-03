@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import java.util.Objects;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -72,10 +74,7 @@ public class LinkViewItem extends PlatformObject implements ILinkSectionViewItem
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((link == null) ? 0 : link.hashCode());
-        return result;
+        return Objects.hash(link);
     }
 
     @Override
@@ -83,20 +82,10 @@ public class LinkViewItem extends PlatformObject implements ILinkSectionViewItem
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         LinkViewItem other = (LinkViewItem)obj;
-        if (link == null) {
-            if (other.link != null) {
-                return false;
-            }
-        } else if (!link.equals(other.link)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(link, other.link);
     }
 }

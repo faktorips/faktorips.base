@@ -21,7 +21,7 @@ import org.faktorips.runtime.model.type.ModelElement;
 
 public abstract class TypePartCollector<T extends ModelElement, D extends PartDescriptor<T>> {
 
-    protected static final String[] NO_NAMES = new String[0];
+    protected static final String[] NO_NAMES = {};
 
     private final LinkedHashMap<String, D> descriptors = new LinkedHashMap<>();
 

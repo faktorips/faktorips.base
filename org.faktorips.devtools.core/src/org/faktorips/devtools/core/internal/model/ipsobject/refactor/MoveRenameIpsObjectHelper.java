@@ -129,10 +129,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
 
             rememberTargetJavaElementsForRefactoringParticipants(refactoredTarget);
 
-            // Perform validation on target file.
-            MessageList validationMessageList = refactoredTarget.validate(refactoredTarget.getIpsProject());
-
-            return validationMessageList;
+            return refactoredTarget.validate(refactoredTarget.getIpsProject());
             // CSOFF: IllegalCatch
             // Need to catch Exception to get really every exception and set corresponding
             // fatal error status
@@ -185,7 +182,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = copiedIpsObject.getIpsProject().getIpsArtefactBuilderSet();
         if (ipsArtefactBuilderSet instanceof IJavaBuilderSet) {
             IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
-            this.targetJavaElements = javaBuilderSet.getGeneratedJavaElements(copiedIpsObject);
+            targetJavaElements = javaBuilderSet.getGeneratedJavaElements(copiedIpsObject);
         }
     }
 
@@ -250,9 +247,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             originalSrcFile.save(null);
         }
 
-        IIpsSrcFile targetSrcFile = null;
-        targetSrcFile = RefactorUtil.moveIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
-
+        IIpsSrcFile targetSrcFile = RefactorUtil.moveIpsSrcFile(originalSrcFile, targetIpsPackageFragment, newName, pm);
         /*
          * If the original source file has changed by means of the updateDependencies(...) method,
          * we have to touch the new file so that the change is reported to the environment.

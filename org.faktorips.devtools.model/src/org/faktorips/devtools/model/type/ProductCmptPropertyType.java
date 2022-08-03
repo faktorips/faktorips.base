@@ -100,7 +100,7 @@ public enum ProductCmptPropertyType {
 
     private final String name;
 
-    private ProductCmptPropertyType(String name) {
+    ProductCmptPropertyType(String name) {
         this.name = name;
     }
 

@@ -18,7 +18,6 @@ import java.util.ResourceBundle;
 import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
-import org.faktorips.runtime.Message.Builder;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.values.ObjectUtil;
@@ -91,7 +90,7 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
             @CheckForNull IMarker requiredInformationMissingMarker) {
         this.messages = requireNonNull(messages, "messages must not be null");
         this.locale = requireNonNull(locale, "locale must not be null");
-        this.missingMandatoryValueMarker = requiredInformationMissingMarker;
+        missingMandatoryValueMarker = requiredInformationMissingMarker;
     }
 
     /**
@@ -128,8 +127,8 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
      * invalid object property for the given attribute.
      *
      * @implSpec calling
-     *           {@link #builderForErrorMessage(PolicyAttribute, IModelObject, org.faktorips.runtime.validation.GenericRelevanceValidation.Error, Class, String)}
-     *           is preferred if you want to adapt the message.
+     *               {@link #builderForErrorMessage(PolicyAttribute, IModelObject, org.faktorips.runtime.validation.GenericRelevanceValidation.Error, Class, String)}
+     *               is preferred if you want to adapt the message.
      */
     protected Message createErrorMessage(PolicyAttribute policyAttribute,
             IModelObject modelObject,
@@ -151,10 +150,9 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
             Class<? extends IModelObject> definingModelObjectClass,
             String message) {
         String msgCode = createMsgCode(error, policyAttribute, definingModelObjectClass);
-        Builder messageBuilder = Message.error(message)
+        return Message.error(message)
                 .code(msgCode)
                 .invalidObjectWithProperties(modelObject, policyAttribute.getName());
-        return messageBuilder;
     }
 
     /**
@@ -183,8 +181,8 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
      * Returns the label for the given attribute to be used in an error message.
      *
      * @implNote The default implementation uses the {@link PolicyAttribute#getLabel(Locale)
-     *           attribute's label} in the locale provided to this configuration's constructor and
-     *           returns it in double quotes.
+     *               attribute's label} in the locale provided to this configuration's constructor
+     *               and returns it in double quotes.
      * @implSpec Implementers may use the given model object to further qualify the field.
      * @param policyAttribute the model type reference for the validated attribute
      * @param modelObject the model object instance on which the attribute was validated

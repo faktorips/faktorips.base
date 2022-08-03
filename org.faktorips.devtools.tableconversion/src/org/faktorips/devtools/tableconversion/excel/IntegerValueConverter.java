@@ -40,7 +40,7 @@ public class IntegerValueConverter extends AbstractValueConverter {
                         externalDataValue.toString(), restored.toString()));
                 return externalDataValue.toString();
             }
-            return Integer.valueOf(value).toString();
+            return Integer.toString(value);
         }
         if (StringUtils.isNumeric("" + externalDataValue)) { //$NON-NLS-1$
             // if the excel datatype isn't Integer or Double but the value is numeric then convert

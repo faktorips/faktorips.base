@@ -57,9 +57,9 @@ public class GenericRelevanceValidation {
      * @param validationContext the context containing information on what to validate and how to
      *            create error messages
      * @return the messages resulting from the validation, if any, or an empty message list if
-     *         validation was successful (or not performed because of
-     *         {@link IGenericAttributeValidationConfiguration#shouldValidate(PolicyAttribute, IModelObject)}
-     *         returning {@code false}
+     *             validation was successful (or not performed because of
+     *             {@link IGenericAttributeValidationConfiguration#shouldValidate(PolicyAttribute, IModelObject)}
+     *             returning {@code false}
      */
     public static MessageList of(IModelObject modelObject,
             Class<? extends IModelObject> definingModelObjectClass,

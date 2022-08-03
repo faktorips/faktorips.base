@@ -14,5 +14,5 @@ import org.eclipse.core.runtime.IStatus;
 @FunctionalInterface
 public interface ALogListener {
 
-    public void logging(IStatus status, String contextId);
+    void logging(IStatus status, String contextId);
 }

@@ -33,12 +33,12 @@ import org.faktorips.devtools.model.XmlSupport;
  */
 public interface ISupportedLanguage extends XmlSupport {
 
-    public static final String XML_TAG_NAME = "SupportedLanguage"; //$NON-NLS-1$
+    String XML_TAG_NAME = "SupportedLanguage"; //$NON-NLS-1$
 
     /**
      * Returns the {@link Locale} of the language.
      */
-    public Locale getLocale();
+    Locale getLocale();
 
     /**
      * Returns the name of the language.
@@ -46,11 +46,11 @@ public interface ISupportedLanguage extends XmlSupport {
      * This is a shortcut for<br>
      * <code>getLocale().getDisplayLanguage();</code>
      */
-    public String getLanguageName();
+    String getLanguageName();
 
     /**
      * Returns whether this supported language is also the "default language".
      */
-    public boolean isDefaultLanguage();
+    boolean isDefaultLanguage();
 
 }

@@ -20,17 +20,17 @@ import org.faktorips.datatype.Datatype;
  */
 public interface UnaryOperation<T extends CodeFragment> {
 
-    public static final String NOT = "!";
+    String NOT = "!";
 
     /**
      * Returns the operator.
      */
-    public String getOperator();
+    String getOperator();
 
     /**
      * Returns the {@link Datatype} of the operation's result.
      */
-    public Datatype getDatatype();
+    Datatype getDatatype();
 
     /**
      * Generates the {@link CompilationResult} for the given operand.
@@ -38,6 +38,6 @@ public interface UnaryOperation<T extends CodeFragment> {
      * @param arg the operand
      * @return the given operand combined with this operation's operator
      */
-    public CompilationResult<T> generate(CompilationResult<T> arg);
+    CompilationResult<T> generate(CompilationResult<T> arg);
 
 }

@@ -263,7 +263,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(association.findTarget(getIpsProject())).thenReturn(targetType);
         when(targetType.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
+        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
         when(getIpsProject().findAllProductCmptSrcFiles(getProductCmptType(), true)).thenReturn(ipsSourceFiles);
         when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);

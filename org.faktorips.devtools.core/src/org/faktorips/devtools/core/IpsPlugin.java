@@ -51,7 +51,7 @@ public class IpsPlugin extends AbstractUIPlugin {
     public static final String PLUGIN_ID = "org.faktorips.devtools.core"; //$NON-NLS-1$
 
     public static final boolean TRACE_UI = Boolean
-            .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")).booleanValue(); //$NON-NLS-1$
+            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.core/trace/ui")); //$NON-NLS-1$
 
     /** The shared instance. */
     private static IpsPlugin plugin;
@@ -196,7 +196,7 @@ public class IpsPlugin extends AbstractUIPlugin {
      * Returns whether the product definition perspective is currently active or not
      * 
      * @return <code>true</code> if the current active perspective is the product definition
-     *         perspective, <code>false</code> if not.
+     *             perspective, <code>false</code> if not.
      */
     public boolean isProductDefinitionPerspective() {
         IWorkbenchWindow activeWorkbenchWindow = getWorkbench().getActiveWorkbenchWindow();
@@ -225,9 +225,8 @@ public class IpsPlugin extends AbstractUIPlugin {
      * return the Locale for "en".
      */
     public Locale getUsedLanguagePackLocale() {
-        Locale retValue = new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
+        return new Locale(Messages.IpsPlugin_languagePackLanguage, Messages.IpsPlugin_languagePackCountry,
                 Messages.IpsPlugin_languagePackVariant);
-        return retValue;
     }
 
     /**

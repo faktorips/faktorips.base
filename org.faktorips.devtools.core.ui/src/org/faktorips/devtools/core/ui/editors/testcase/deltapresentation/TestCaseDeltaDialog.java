@@ -42,7 +42,7 @@ public class TestCaseDeltaDialog extends AbstractDeltaDialog {
         super.setShellStyle(getShellStyle() | SWT.RESIZE);
         this.delta = delta;
 
-        this.toolkit = new UIToolkit(null);
+        toolkit = new UIToolkit(null);
     }
 
     @Override

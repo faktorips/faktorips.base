@@ -24,7 +24,7 @@ import org.faktorips.devtools.model.IVersionProvider;
  */
 public interface IVersionControlledElement extends IIpsObjectPartContainer {
 
-    public static final String PROPERTY_SINCE_VERSION_STRING = "sinceVersionString"; //$NON-NLS-1$
+    String PROPERTY_SINCE_VERSION_STRING = "sinceVersionString"; //$NON-NLS-1$
 
     /**
      * Sets the Version since which this part is available in the model using a version string
@@ -61,7 +61,7 @@ public interface IVersionControlledElement extends IIpsObjectPartContainer {
      * <code>false</code>. That means no version is no valid version!
      * 
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
-     *         return a valid version. Otherwise <code>false</code>.
+     *             return a valid version. Otherwise <code>false</code>.
      */
     boolean isValidSinceVersion();
 

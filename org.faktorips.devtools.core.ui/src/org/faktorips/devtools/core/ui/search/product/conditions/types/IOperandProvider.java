@@ -23,5 +23,5 @@ public interface IOperandProvider {
      * Returns the operand of an given (=searched) IProductCmptGeneration e.g. an attribute value or
      * a used table.
      */
-    public Object getSearchOperand(IProductPartsContainer productComponentGeneration);
+    Object getSearchOperand(IProductPartsContainer productComponentGeneration);
 }

@@ -234,8 +234,7 @@ public class ProductCmptLinkCollectionTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration createContainer() {
         IIpsProject ipsProject = newIpsProject();
         ProductCmpt productCmpt = newProductCmpt(ipsProject, "ProdCmpt");
-        IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
-        return gen;
+        return (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
     }
 
     @Test

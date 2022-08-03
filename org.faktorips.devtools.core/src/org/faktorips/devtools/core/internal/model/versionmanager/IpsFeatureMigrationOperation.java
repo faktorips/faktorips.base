@@ -81,13 +81,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
                 }
                 result.add(operation.migrate(monitor.split(1000)));
             }
-        } catch (IpsException e) {
-            rollback();
-            throw (e);
-        } catch (InvocationTargetException e) {
-            rollback();
-            throw (e);
-        } catch (InterruptedException e) {
+        } catch (IpsException | InvocationTargetException | InterruptedException e) {
             rollback();
             throw (e);
             // CSOFF: IllegalCatch
@@ -143,10 +137,8 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         Hashtable<String, String> features = new Hashtable<>();
         for (AbstractIpsProjectMigrationOperation operation : operations) {
             String version = features.get(operation.getFeatureId());
-            if (version == null) {
-                features.put(operation.getFeatureId(), operation.getTargetVersion());
-            } else if (AVersion.parse(version)
-                    .compareTo(AVersion.parse(operation.getTargetVersion())) < 0) {
+            if ((version == null)
+                    || (AVersion.parse(version).compareTo(AVersion.parse(operation.getTargetVersion())) < 0)) {
                 features.put(operation.getFeatureId(), operation.getTargetVersion());
             }
         }

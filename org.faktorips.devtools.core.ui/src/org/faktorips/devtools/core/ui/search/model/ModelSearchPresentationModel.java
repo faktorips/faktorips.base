@@ -59,7 +59,7 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
 
     public void setSearchTerm(String newValue) {
         String oldValue = searchTerm;
-        this.searchTerm = newValue;
+        searchTerm = newValue;
         notifyListeners(new PropertyChangeEvent(this, SEARCH_TERM, oldValue, newValue));
     }
 

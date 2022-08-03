@@ -249,7 +249,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
     public void testIsSubsetOfDerivedUnion_Union() {
         assertFalse(association.isSubsetOfDerivedUnion(null, ipsProject));
 
-        IAssociation union = this.productType.newAssociation();
+        IAssociation union = productType.newAssociation();
         union.setTargetRoleSingular("Target");
         union.setDerivedUnion(true);
         assertFalse(association.isSubsetOfDerivedUnion(union, ipsProject));

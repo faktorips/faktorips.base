@@ -288,7 +288,7 @@ public class EnumValueSubsetChooserModelTest {
         when(valueSet.getValuesAsList()).thenReturn(valueList);
         when(valueSet.isEnum()).thenReturn(enumValueSet);
         when(valueSet.isAbstract()).thenReturn(abstractValueSet);
-        when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(enumValueSet & !abstractValueSet);
+        when(valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(enumValueSet && !abstractValueSet);
         return valueSet;
     }
 

@@ -47,13 +47,10 @@ public abstract class IpsAbstractHandler extends AbstractHandler {
     }
 
     protected TypedSelection<IAdaptable> getSelectionFromSelectionProvider() {
-        TypedSelection<IAdaptable> typedSelection;
         ISelectionService selectionService = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow()
                 .getSelectionService();
         ISelection selection = selectionService.getSelection();
-        typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
-
-        return typedSelection;
+        return TypedSelection.createAnyCount(IAdaptable.class, selection);
     }
 
     protected TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {

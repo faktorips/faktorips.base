@@ -25,88 +25,88 @@ import org.faktorips.runtime.MessageList;
  */
 public interface IEnumValueSet extends IValueSet {
 
-    public static final String PROPERTY_VALUES = "values"; //$NON-NLS-1$
+    String PROPERTY_VALUES = "values"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "ENUMVALUESET-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMVALUESET-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a value in this value set is duplicate.
      */
-    public static final String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue"; //$NON-NLS-1$
+    String MSGCODE_DUPLICATE_VALUE = MSGCODE_PREFIX + "DuplicateValue"; //$NON-NLS-1$
 
     /**
      * Returns an array of all values in the set.
      */
-    public String[] getValues();
+    String[] getValues();
 
     /**
      * Returns a List of all positions/indexes the given value occurs in the set.
      */
-    public List<Integer> getPositions(String value);
+    List<Integer> getPositions(String value);
 
     /**
      * Adds the value to the set. Duplicate values are allowed but will lead to an error message if
      * validated.
      */
-    public void addValue(String val);
+    void addValue(String val);
 
     /**
      * Adds all values in the list to this set. Duplicate values are allowed but will lead to an
      * error message if validated.
      */
-    public void addValues(List<String> values);
+    void addValues(List<String> values);
 
     /**
      * Removes the value at the given index from the value set.
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public void removeValue(int index);
+    void removeValue(int index);
 
     /**
      * Removes the given value. If the value is not contained, nothing happens.
      */
-    public void removeValue(String string);
+    void removeValue(String string);
 
     /**
      * Removes the given values from this value set. If a value is not contained in this value set,
      * it will be ignored.
      */
-    public void removeValues(List<String> values);
+    void removeValues(List<String> values);
 
     /**
      * Retrieves the value at the given index.
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public String getValue(int index);
+    String getValue(int index);
 
     /**
      * Sets the value at the given index.
      * 
      * @throws IndexOutOfBoundsException If the given index is out of bounds.
      */
-    public void setValue(int index, String value);
+    void setValue(int index, String value);
 
     /**
      * Returns the number of values in the set.
      */
-    public int size();
+    int size();
 
     /**
      * Returns an array with all values contained in the given other value set but not in this one.
      * 
      * @param otherSet The set to take the values from to find in this one.
      */
-    public String[] getValuesNotContained(IEnumValueSet otherSet);
+    String[] getValuesNotContained(IEnumValueSet otherSet);
 
     /**
      * Adds all values from the given {@link EnumDatatype} to the value set.
      */
-    public void addValuesFromDatatype(EnumDatatype datatype);
+    void addValuesFromDatatype(EnumDatatype datatype);
 
     /**
      * Checks if the value at the specified position is a valid. Note that if this value is a
@@ -116,7 +116,7 @@ public interface IEnumValueSet extends IValueSet {
      * index as the position holding the invalid value. So the other duplicates are NOT returned as
      * invalid!
      */
-    public MessageList validateValue(int index, IIpsProject ipsProject) throws IpsException;
+    MessageList validateValue(int index, IIpsProject ipsProject) throws IpsException;
 
     /**
      * Getting a copy of the list of values

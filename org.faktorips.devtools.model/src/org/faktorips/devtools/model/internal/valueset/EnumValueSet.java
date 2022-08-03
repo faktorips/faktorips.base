@@ -140,10 +140,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if (isNullValue(datatype, value) && isContainsNull()) {
-            return true;
-        }
-        if (isAbstract()) {
+        if ((isNullValue(datatype, value) && isContainsNull()) || isAbstract()) {
             return true;
         }
         return isValueInEnum(value, datatype);
@@ -161,9 +158,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
                 if ((Objects.equals(each, value) || datatype.areValuesEqual(each, value))) {
                     return true;
                 }
-            } catch (IllegalArgumentException e) {
-                continue;
-            } catch (NullPointerException e) {
+            } catch (IllegalArgumentException | NullPointerException e) {
                 continue;
             }
         }
@@ -175,13 +170,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
 
-        if (!(subset.isEnum())) {
-            return false;
-        }
-        if (!datatypesCompatible(subset, datatype, contextProject)) {
-            return false;
-        }
-        if (!isContainsNull() && subset.isContainsNull()) {
+        if (!(subset.isEnum()) || !datatypesCompatible(subset, datatype, contextProject)
+                || (!isContainsNull() && subset.isContainsNull())) {
             return false;
         }
         if (isAbstract()) {

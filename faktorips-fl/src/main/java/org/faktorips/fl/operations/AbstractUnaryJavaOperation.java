@@ -39,8 +39,7 @@ public abstract class AbstractUnaryJavaOperation extends AbstractUnaryOperation<
 
     @Override
     public CompilationResult<JavaCodeFragment> generate(CompilationResult<JavaCodeFragment> arg) {
-        CompilationResultImpl result = generate((CompilationResultImpl)arg);
-        return result;
+        return generate((CompilationResultImpl)arg);
     }
 
     /**

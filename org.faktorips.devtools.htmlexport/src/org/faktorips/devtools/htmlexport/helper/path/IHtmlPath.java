@@ -21,13 +21,13 @@ package org.faktorips.devtools.htmlexport.helper.path;
  */
 public interface IHtmlPath {
 
-    public static final String EMPTY_PATH = ""; //$NON-NLS-1$
+    String EMPTY_PATH = ""; //$NON-NLS-1$
 
     /**
      * returns relative path of this location to the root
      * 
      */
-    public abstract String getPathToRoot();
+    String getPathToRoot();
 
     /**
      * returns relative path of this location from the root
@@ -35,5 +35,5 @@ public interface IHtmlPath {
      * @param linkedFileType type of path
      * 
      */
-    public abstract String getPathFromRoot(LinkedFileType linkedFileType);
+    String getPathFromRoot(LinkedFileType linkedFileType);
 }

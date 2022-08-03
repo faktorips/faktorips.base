@@ -28,7 +28,7 @@ public interface IBlockedValidationWizardPage extends IWizardPage {
     /**
      * Returns all properties wich are edit by this page.
      */
-    public List<String> getProperties();
+    List<String> getProperties();
 
     /**
      * Sets the error message. If the given error message is <code>null</code> then the currently
@@ -36,7 +36,7 @@ public interface IBlockedValidationWizardPage extends IWizardPage {
      * 
      * @see DialogPage#setErrorMessage(String)
      */
-    public void setErrorMessage(String errorMessage);
+    void setErrorMessage(String errorMessage);
 
     /**
      * Sets if the page is complete or not. Note that a non complete pages avoids the wizrad to get
@@ -44,5 +44,5 @@ public interface IBlockedValidationWizardPage extends IWizardPage {
      * 
      * @see WizardPage#setPageComplete(boolean)
      */
-    public void setPageComplete(boolean complete);
+    void setPageComplete(boolean complete);
 }

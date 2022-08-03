@@ -158,7 +158,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
 
     @Override
     protected void templateValueChanged() {
-        this.value = getValue();
+        value = getValue();
     }
 
     @Override

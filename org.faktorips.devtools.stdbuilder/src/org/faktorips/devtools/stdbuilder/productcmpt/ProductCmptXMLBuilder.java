@@ -64,7 +64,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     public ProductCmptXMLBuilder(IpsObjectType type, StandardBuilderSet builderSet) {
         super(type, builderSet);
-        this.expressionXMLBuilderHelper = new ExpressionXMLBuilderHelper(builderSet);
+        expressionXMLBuilderHelper = new ExpressionXMLBuilderHelper(builderSet);
     }
 
     public StandardBuilderSet getStandardBuilderSet() {

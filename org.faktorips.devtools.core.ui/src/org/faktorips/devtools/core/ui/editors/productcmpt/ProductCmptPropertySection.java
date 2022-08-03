@@ -241,7 +241,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      * @see IPropertyValue
      * @see EditPropertyValueComposite
      */
-    private static enum PropertyValueUI {
+    private enum PropertyValueUI {
 
         ATTRIBUTE_VALUE() {
             @Override

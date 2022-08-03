@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject.properties;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.w3c.dom.Document;
@@ -68,10 +69,7 @@ public class SupportedLanguage implements ISupportedLanguage {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((locale == null) ? 0 : locale.hashCode());
-        return result;
+        return Objects.hash(locale);
     }
 
     @Override
@@ -79,27 +77,17 @@ public class SupportedLanguage implements ISupportedLanguage {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         SupportedLanguage other = (SupportedLanguage)obj;
-        if (locale == null) {
-            if (other.locale != null) {
-                return false;
-            }
-        } else if (!locale.equals(other.locale)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(locale, other.locale);
     }
 
     @Override
     public void initFromXml(Element element) {
         locale = new Locale(element.getAttribute("locale")); //$NON-NLS-1$
-        defaultLanguage = Boolean.valueOf(element.getAttribute("defaultLanguage")); //$NON-NLS-1$
+        defaultLanguage = Boolean.parseBoolean(element.getAttribute("defaultLanguage")); //$NON-NLS-1$
     }
 
     @Override

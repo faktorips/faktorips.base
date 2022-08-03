@@ -52,7 +52,7 @@ public class EnumValueSourceTest {
         valueSetValues.add("drei");
         when(valueSet.getValuesAsList()).thenReturn(valueSetValues);
 
-        String[] enumDatatypeValues = new String[] { "A", "BB", "CCC" };
+        String[] enumDatatypeValues = { "A", "BB", "CCC" };
         when(datatype.getAllValueIds(true)).thenReturn(enumDatatypeValues);
     }
 

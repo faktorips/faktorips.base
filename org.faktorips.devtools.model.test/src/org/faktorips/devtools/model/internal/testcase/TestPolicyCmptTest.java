@@ -276,8 +276,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
     private void assertAssociation(ITestPolicyCmptLink association, String policyCmptTypeName) {
         assertNotNull(association);
-        ITestPolicyCmpt targetChild = null;
-        targetChild = association.findTarget();
+        ITestPolicyCmpt targetChild = association.findTarget();
         assertNotNull(targetChild);
         assertEquals(policyCmptTypeName, targetChild.getTestPolicyCmptTypeParameter());
     }
@@ -676,11 +675,11 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindProductCmpsCurrentGeneration_notProdRelevant() {
+        testPolicyCmptObjectInput.setProductCmpt(null);
         // test find method if no product is specified, e.g. test object is not product relevant
         // in this case the find method should return null
-        IPropertyValueContainer generation = null;
-        testPolicyCmptObjectInput.setProductCmpt(null);
-        generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration(project);
+        IPropertyValueContainer generation = ((TestPolicyCmpt)testPolicyCmptObjectInput)
+                .findProductCmpsCurrentGeneration(project);
         assertNull(generation);
         testPolicyCmptObjectInput.setProductCmpt("");
         generation = ((TestPolicyCmpt)testPolicyCmptObjectInput).findProductCmpsCurrentGeneration(project);

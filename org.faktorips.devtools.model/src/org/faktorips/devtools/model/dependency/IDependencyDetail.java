@@ -46,7 +46,7 @@ public interface IDependencyDetail {
      * 
      * @return The part of the source causing the dependency
      */
-    public IIpsObjectPartContainer getPart();
+    IIpsObjectPartContainer getPart();
 
     /**
      * The property name of the part causing this dependency.
@@ -56,7 +56,7 @@ public interface IDependencyDetail {
      * 
      * @return The name of the property causing this dependency
      */
-    public String getPropertyName();
+    String getPropertyName();
 
     /**
      * Called by the refactoring framework when the target of this dependency has changed. The
@@ -71,6 +71,6 @@ public interface IDependencyDetail {
      *             {@link CoreException} needs to be thrown. In case of throwing any
      *             {@link RuntimeException} the whole refactoring may break
      */
-    public void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws IpsException;
+    void refactorAfterRename(IIpsPackageFragment targetIpsPackageFragment, String newName) throws IpsException;
 
 }

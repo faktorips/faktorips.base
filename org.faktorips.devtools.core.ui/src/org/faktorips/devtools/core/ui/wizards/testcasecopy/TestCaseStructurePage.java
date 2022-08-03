@@ -430,8 +430,7 @@ public class TestCaseStructurePage extends WizardPage {
         public void modify(Object element, String property, Object value) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
             checkedProductCmpt = ipsSrcFile;
-            IProductCmpt newProductCmpt = null;
-            newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+            IProductCmpt newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
             replaceSelectedProductCmpt(newProductCmpt);
             refreshTree();
             tableViewer.refresh();

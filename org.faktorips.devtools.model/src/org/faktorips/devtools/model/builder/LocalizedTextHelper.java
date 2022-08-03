@@ -44,7 +44,7 @@ public class LocalizedTextHelper {
      *            prefix
      * 
      * @deprecated Use {@link #getLocalizedText(String, Locale)} instead since the builder is of no
-     *             relevance.
+     *                 relevance.
      */
     @Deprecated
     // Deprecated since 3.0
@@ -104,7 +104,7 @@ public class LocalizedTextHelper {
             Locale locale) {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", locale); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
+        String[] annotations = { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
@@ -136,7 +136,7 @@ public class LocalizedTextHelper {
             Locale locale) {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacement, locale); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
+        String[] annotations = { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {
@@ -172,7 +172,7 @@ public class LocalizedTextHelper {
             Locale locale) {
 
         String text = getLocalizedText(keyPrefix + "_JAVADOC", replacements, locale); //$NON-NLS-1$
-        String[] annotations = new String[] { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
+        String[] annotations = { getLocalizedText(keyPrefix + "_ANNOTATION", locale) }; //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append(text);
         if (modelDescription != null) {

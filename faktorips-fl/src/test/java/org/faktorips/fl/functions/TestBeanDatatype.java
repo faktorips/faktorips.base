@@ -30,7 +30,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
 
     public TestBeanDatatype(String javaClassName) {
         ArgumentCheck.notNull(javaClassName);
-        this.name = StringUtil.unqualifiedName(javaClassName);
+        name = StringUtil.unqualifiedName(javaClassName);
     }
 
     public void add(PropertyDatatype property) {

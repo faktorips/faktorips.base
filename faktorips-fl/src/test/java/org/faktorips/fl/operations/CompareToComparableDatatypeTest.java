@@ -80,8 +80,7 @@ public class CompareToComparableDatatypeTest extends FunctionAbstractTest {
     private CompilationResult<JavaCodeFragment> getCompileResult(String operator) {
         getCompiler().setBinaryOperations(
                 toArray(new CompareToComparableDatatype(operator, LocalDateDatatype.DATATYPE)));
-        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+        return getCompiler().compile(
                 "DATE(2014; 02; 01)" + operator + "DATE(2014; 02; 08)");
-        return compile;
     }
 }

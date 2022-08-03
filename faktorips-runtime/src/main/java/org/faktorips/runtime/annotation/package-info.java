@@ -12,6 +12,6 @@
  * Faktor-IPS.
  *
  * @see org.faktorips.runtime.model.annotation org.faktorips.runtime.model.annotation for
- *      Annotations created by Faktor-IPS to document meta information
+ *          Annotations created by Faktor-IPS to document meta information
  */
 package org.faktorips.runtime.annotation;

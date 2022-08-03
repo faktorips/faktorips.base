@@ -33,13 +33,11 @@ public class DecimalValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof String) {
             try {
                 return Decimal.valueOf((String)externalDataValue).toString();
+                // CSOFF: IllegalCatch
             } catch (RuntimeException e) {
-                messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                        "" + externalDataValue, externalDataValue //$NON-NLS-1$
-                                .getClass().getName(),
-                        getSupportedDatatype().getQualifiedName()));
-                return externalDataValue.toString();
+                // fall through to error message
             }
+            // CSON: IllegalCatch
         } else if (externalDataValue instanceof Number) {
             return Decimal.valueOf(new BigDecimal(((Number)externalDataValue).toString())).toString();
         }
@@ -58,10 +56,12 @@ public class DecimalValueConverter extends AbstractValueConverter {
                 return null;
             }
             return decimal.doubleValue();
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
             messageList.add(ExtSystemsMessageUtil.createConvertIntToExtErrorMessage(ipsValue, Decimal.class.getName(),
                     getSupportedDatatype().getQualifiedName()));
         }
+        // CSON: IllegalCatch
         return ipsValue;
     }
 

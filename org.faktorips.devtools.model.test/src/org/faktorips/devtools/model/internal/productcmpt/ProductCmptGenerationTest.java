@@ -414,8 +414,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptType subProductCmptType = subPolicyCmptType.findProductCmptType(ipsProject);
         subProductCmptType.setSupertype(productCmptType.getName());
         ProductCmpt subProductCmpt = newProductCmpt(subProductCmptType, "SubTestProduct");
-        IProductCmptGeneration subGeneration = subProductCmpt.getProductCmptGeneration(0);
-        return subGeneration;
+        return subProductCmpt.getProductCmptGeneration(0);
     }
 
     @Test

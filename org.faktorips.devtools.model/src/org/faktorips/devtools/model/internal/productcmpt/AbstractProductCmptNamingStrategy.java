@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -297,12 +298,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((ipsProject == null) ? 0 : ipsProject.hashCode());
-        result = prime * result + ((separator == null) ? 0 : separator.hashCode());
-        result = prime * result + ((specialCharReplacements == null) ? 0 : specialCharReplacements.hashCode());
-        return result;
+        return Objects.hash(ipsProject, separator, specialCharReplacements);
     }
 
     @Override
@@ -310,35 +306,13 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         AbstractProductCmptNamingStrategy other = (AbstractProductCmptNamingStrategy)obj;
-        if (ipsProject == null) {
-            if (other.ipsProject != null) {
-                return false;
-            }
-        } else if (!ipsProject.equals(other.ipsProject)) {
-            return false;
-        }
-        if (separator == null) {
-            if (other.separator != null) {
-                return false;
-            }
-        } else if (!separator.equals(other.separator)) {
-            return false;
-        }
-        if (specialCharReplacements == null) {
-            if (other.specialCharReplacements != null) {
-                return false;
-            }
-        } else if (!specialCharReplacements.equals(other.specialCharReplacements)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(ipsProject, other.ipsProject)
+                && Objects.equals(separator, other.separator)
+                && Objects.equals(specialCharReplacements, other.specialCharReplacements);
     }
 
     @Override

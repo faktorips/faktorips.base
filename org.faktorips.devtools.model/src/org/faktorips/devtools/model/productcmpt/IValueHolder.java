@@ -30,12 +30,12 @@ import org.faktorips.devtools.model.value.ValueType;
  */
 public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IValueHolder<T>> {
 
-    public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
+    String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
      * Name of the XML attribute for the value holder type.
      */
-    public static final String XML_ATTRIBUTE_VALUE_TYPE = "valueType"; //$NON-NLS-1$
+    String XML_ATTRIBUTE_VALUE_TYPE = "valueType"; //$NON-NLS-1$
 
     /**
      * Returning the {@link IAttributeValue} of which this value holder is a child of. Every value
@@ -44,21 +44,21 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * 
      * @return The parent {@link IIpsObjectPart}
      */
-    public IAttributeValue getParent();
+    IAttributeValue getParent();
 
     /**
      * Returning a string representation of the value.
      * 
      * @return a string representation of this part.
      */
-    public String getStringValue();
+    String getStringValue();
 
     /**
      * Returns the value of this value holder. The type of the value depends on the generic type T.
      * 
      * @return The current value stored in this value holder.
      */
-    public T getValue();
+    T getValue();
 
     /**
      * Setting a new value for this value holder. The type of the value must match the generic type
@@ -68,7 +68,7 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * 
      * @param value The value that should be set as current value in this holder.
      */
-    public void setValue(T value);
+    void setValue(T value);
 
     /**
      * Get the list of single values. If this {@link IValueHolder} is a {@link ISingleValueHolder}
@@ -115,7 +115,7 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * 
      * @return Returns <code>true</code> if the value holder has multiple values
      */
-    public boolean isMultiValue();
+    boolean isMultiValue();
 
     /**
      * Creates a new {@link IValueHolder} by copying this value holder. The new value holder gets
@@ -123,11 +123,11 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * 
      * @return A new value holder with the same content as this value holder
      */
-    public IValueHolder<?> copy(IAttributeValue parent);
+    IValueHolder<?> copy(IAttributeValue parent);
 
     /**
      * Compares this {@link IValueHolder} with the given one, unwrapping delegating value holders.
      */
-    public boolean equalsValueHolder(IValueHolder<?> valueHolder);
+    boolean equalsValueHolder(IValueHolder<?> valueHolder);
 
 }

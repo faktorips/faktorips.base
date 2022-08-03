@@ -31,7 +31,7 @@ public class MessageListCodeMatcher extends TypeSafeMatcher<MessageList> {
      */
     public MessageListCodeMatcher(@CheckForNull String messageCode) {
         this.messageCode = messageCode;
-        this.expectMessage = true;
+        expectMessage = true;
     }
 
     /**

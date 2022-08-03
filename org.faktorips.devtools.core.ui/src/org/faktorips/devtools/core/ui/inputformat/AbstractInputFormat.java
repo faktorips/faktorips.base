@@ -239,7 +239,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * 
      * @param resultingText the string to be parsed
      * @return <code>true</code> if the entire String could be parsed to a value, <code>false</code>
-     *         else.
+     *             else.
      */
     protected boolean isParsable(Format format, String resultingText) {
         ParsePosition position = new ParsePosition(0);
@@ -253,7 +253,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * @param template an example string that contains all allowed non digit characters.
      * @param inputString the string whose (non digit) characters should be verified
      * @return <code>true</code> if stringToBeVerified contains only allowed characters.
-     *         <code>false</code> else.
+     *             <code>false</code> else.
      */
     protected boolean containsAllowedCharactersOnly(String template, String inputString) {
         String stringToBeVerified = getNonDigitString(inputString);

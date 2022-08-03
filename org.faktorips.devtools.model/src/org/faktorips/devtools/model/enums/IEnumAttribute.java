@@ -47,96 +47,96 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabeledElement, IVersionControlledElement {
 
     /** The XML tag for this IPS object part. */
-    public static final String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
+    String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
 
     /** Name of the <code>datatype</code> property. */
-    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
     /** Name of the <code>inherited</code> property. */
-    public static final String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
+    String PROPERTY_INHERITED = "inherited"; //$NON-NLS-1$
 
     /** Name of the <code>unique</code> property. */
-    public static final String PROPERTY_UNIQUE = "unique"; //$NON-NLS-1$
+    String PROPERTY_UNIQUE = "unique"; //$NON-NLS-1$
 
     /** Name of the <code>usedAsNameInFaktorIpsUi</code> property. */
-    public static final String PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI = "usedAsNameInFaktorIpsUi"; //$NON-NLS-1$
+    String PROPERTY_USED_AS_NAME_IN_FAKTOR_IPS_UI = "usedAsNameInFaktorIpsUi"; //$NON-NLS-1$
 
     /** Name of the <code>identifier</code> property. */
-    public static final String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
+    String PROPERTY_IDENTIFIER = "identifier"; //$NON-NLS-1$
 
     /** Name of the <code>multilingual</code> property. */
-    public static final String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
+    String PROPERTY_MULTILINGUAL = "multilingual"; //$NON-NLS-1$
 
-    public static final String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
+    String PROPERTY_MULTILINGUAL_SUPPORTED = "multilingualSupported"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of this <code>IEnumAttribute</code> is
      * missing.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING = MSGCODE_PREFIX + "EnumAttributeNameMissing"; //$NON-NLS-1$
+    String MSGCODE_ENUM_ATTRIBUTE_NAME_MISSING = MSGCODE_PREFIX + "EnumAttributeNameMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of this <code>IEnumAttribute</code> is
      * already used.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME = MSGCODE_PREFIX + "EnumAttributeDuplicateName"; //$NON-NLS-1$
+    String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME = MSGCODE_PREFIX + "EnumAttributeDuplicateName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of this <code>IEnumAttribute</code> is
      * already used in the super type hierarchy.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_NAME_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeDuplicateNameInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <code>IEnumAttribute</code> is
      * missing.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_MISSING = MSGCODE_PREFIX
             + "EnumAttributeDatatypeMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <code>IEnumAttribute</code>
      * does not exist.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumAttributeDatatypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute is defined multilingual and also used
      * as default identifier.
      */
-    public static final String MSGCODE_MULTILINGUAL_ATTRIBUTES_CANNOT_BE_IDENTIFIERS = MSGCODE_PREFIX
+    String MSGCODE_MULTILINGUAL_ATTRIBUTES_CANNOT_BE_IDENTIFIERS = MSGCODE_PREFIX
             + "IdentifierNotAllowed"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <code>IEnumAttribute</code> is
      * the void data type, which is forbidden.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID = MSGCODE_PREFIX + "EnumAttributeDatatypeIsVoid"; //$NON-NLS-1$
+    String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_VOID = MSGCODE_PREFIX + "EnumAttributeDatatypeIsVoid"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <code>IEnumAttribute</code> is
      * an abstract data type, which is forbidden.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_ABSTRACT = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsAbstract"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this <code>IEnumAttribute</code> is
      * the containing <code>IEnumType</code> or a subclass of it, which is forbidden.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DATATYPE_IS_CONTAINING_ENUM_TYPE_OR_SUBCLASS = MSGCODE_PREFIX
             + "EnumAttributeDatatypeIsContainingEnumTypeOrSubclass"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumAttribute</code> is marked as
      * literal name but is not of data type <code>String</code>.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_NOT_OF_DATATYPE_STRING = MSGCODE_PREFIX
             + "EnumAttributeLiteralNameNotOfDatatypeString"; //$NON-NLS-1$
 
     /**
@@ -144,7 +144,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * the super type hierarchy but there is no such <code>IEnumAttribute</code> in the supertype
      * hierarchy.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_NO_SUCH_ATTRIBUTE_IN_SUPERTYPE_HIERARCHY = MSGCODE_PREFIX
             + "EnumAttributeNoSuchAttributeInSupertypeHierarchy"; //$NON-NLS-1$
 
     /**
@@ -152,21 +152,21 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * the super type hierarchy but the containing <code>IEnumType</code> has no super enumeration
      * type.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE = MSGCODE_PREFIX
             + "EnumAttributeInheritedButNoSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is at least one other
      * <code>IEnumAttribute</code> marked as literal name in the parent <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_LITERAL_NAME = MSGCODE_PREFIX
             + "EnumAttributeDuplicateLiteralName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this <code>IEnumAttribute</code> is marked to be
      * used as literal name but is not a unique identifier.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_LITERAL_NAME_BUT_NOT_UNIQUE_IDENTIFIER = MSGCODE_PREFIX
             + "EnumAttributeLiteralNameButNotUniqueIdentifier"; //$NON-NLS-1$ ;
 
     /**
@@ -174,7 +174,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * <code>IEnumAttribute</code> marked to be used as name in the Faktor-IPS UI in the parent
      * <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_NAME_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
             + "EnumAttributeDuplicateUsedAsNameInFaktorIpsUi"; //$NON-NLS-1$
 
     /**
@@ -182,7 +182,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * <code>IEnumAttribute</code> marked to be used as ID in the Faktor-IPS UI in the parent
      * <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_DUPLICATE_USED_AS_ID_IN_FAKTOR_IPS_UI = MSGCODE_PREFIX
             + "EnumAttributeDuplicateUsedAsIdInFaktorIpsUi"; //$NON-NLS-1$
 
     /**
@@ -190,21 +190,21 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * an <code>IEnumType</code> that does not contain values while the parent
      * <code>IEnumType</code> does.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_ENUM_DATATYPE_DOES_NOT_CONTAIN_VALUES_BUT_PARENT_ENUM_TYPE_DOES = MSGCODE_PREFIX
             + "EnumAttributeEnumDatatypeDoesNotContainValuesButParentEnumTypeDoes"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of this <code>IEnumAttribute</code> is not
      * a valid Java field name.
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME = MSGCODE_PREFIX
             + "EnumAttributeNameNotAValidFieldName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is a mismatch with the setting multilingual at
      * the supertype
      */
-    public static final String MSGCODE_ENUM_ATTRIBUTE_INHERITED_LINGUAL_MISMATCH = MSGCODE_PREFIX
+    String MSGCODE_ENUM_ATTRIBUTE_INHERITED_LINGUAL_MISMATCH = MSGCODE_PREFIX
             + "EnumAttributeInheritedLingualMismatch"; //$NON-NLS-1$
 
     /**
@@ -214,7 +214,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public void setName(String name);
+    void setName(String name);
 
     /**
      * Returns the qualified name of the data type of this <code>IEnumAttribute</code>.
@@ -225,7 +225,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @see #findDatatype(IIpsProject)
      */
-    public String getDatatype();
+    String getDatatype();
 
     /**
      * Returns this <code>IEnumAttribute</code>'s <code>ValueDatatype</code>.
@@ -246,7 +246,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public ValueDatatype findDatatype(IIpsProject ipsProject) throws IpsException;
+    ValueDatatype findDatatype(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns this <code>IEnumAttribute</code>'s <code>ValueDatatype</code>. If the datatype is
@@ -265,7 +265,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *             data type.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws IpsException;
+    ValueDatatype findDatatypeIgnoreEnumContents(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets the data type of this <code>IEnumAttribute</code>.
@@ -274,13 +274,13 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @throws NullPointerException If <code>dataType</code> is <code>null</code>.
      */
-    public void setDatatype(String dataType);
+    void setDatatype(String dataType);
 
     /**
      * Returns <code>true</code> if this <code>IEnumAttribute</code> is inherited from the super
      * type hierarchy, <code>false</code> if not.
      */
-    public boolean isInherited();
+    boolean isInherited();
 
     /**
      * Sets whether this <code>IEnumAttribute</code> is inherited from the super type hierarchy.
@@ -296,14 +296,14 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @param isInherited Flag indicating whether this <code>IEnumAttribute</code> is inherited from
      *            the super type hierarchy.
      */
-    public void setInherited(boolean isInherited);
+    void setInherited(boolean isInherited);
 
     /**
      * Returns the <code>IEnumType</code> this <code>IEnumAttribute</code> belongs to.
      * <p>
      * This is a shortcut for: <code>(IEnumType)this.getParent();</code>
      */
-    public IEnumType getEnumType();
+    IEnumType getEnumType();
 
     /**
      * Returns <code>true</code> if by means of this attribute a value of this enumeration type can
@@ -315,7 +315,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @see #findIsUnique(IIpsProject)
      */
-    public boolean isUnique();
+    boolean isUnique();
 
     /**
      * Returns <code>true</code> if this enumeration attribute is marked as unique,
@@ -332,7 +332,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @throws IpsException If an error occurs while searching
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public boolean findIsUnique(IIpsProject ipsProject) throws IpsException;
+    boolean findIsUnique(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Sets whether this <code>IEnumAttribute</code> is a unique identifier.
@@ -340,7 +340,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @param uniqueIdentifier Flag indicating whether this <code>IEnumAttribute</code> will be a
      *            unique identifier.
      */
-    public void setUnique(boolean uniqueIdentifier);
+    void setUnique(boolean uniqueIdentifier);
 
     /**
      * Sets whether the values of this <code>IEnumAttribute</code> shall be used as name of
@@ -350,7 +350,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *            be used as name of enumeration values in the Faktor-IPS UI (<code>true</code>) or
      *            not ( <code>false</code>).
      */
-    public void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi);
+    void setUsedAsNameInFaktorIpsUi(boolean usedAsNameInFaktorIpsUi);
 
     /**
      * Returns a flag indicating whether this <code>IEnumAttribute</code> is marked to be used as
@@ -362,7 +362,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @see #findIsUsedAsNameInFaktorIpsUi(IIpsProject)
      */
-    public boolean isUsedAsNameInFaktorIpsUi();
+    boolean isUsedAsNameInFaktorIpsUi();
 
     /**
      * Sets whether the values of this <code>IEnumAttribute</code> shall be used as (default)
@@ -372,7 +372,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      *            (default) identifier of enumeration values in the Faktor-IPS UI
      *            (<code>true</code>) or not ( <code>false</code>).
      */
-    public void setIdentifier(boolean identifier);
+    void setIdentifier(boolean identifier);
 
     /**
      * Returns <code>true</code> if this attribute is the identifying attribute of the parent
@@ -384,7 +384,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @see #findIsIdentifier(IIpsProject)
      */
-    public boolean isIdentifier();
+    boolean isIdentifier();
 
     /**
      * Returns <code>true</code> if this <code>IEnumAttribute</code> is marked to be used as name in
@@ -402,7 +402,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject);
+    boolean findIsUsedAsNameInFaktorIpsUi(IIpsProject ipsProject);
 
     /**
      * Returns the original <code>IEnumAttribute</code> this <code>IEnumAttribute</code> is a copy
@@ -411,7 +411,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * Returns <code>null</code> if this <code>IEnumAttribute</code> is not inherited or the super
      * <code>IEnumAttribute</code> cannot be found.
      */
-    public IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws IpsException;
+    IEnumAttribute findSuperEnumAttribute(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns <code>true</code> if this <code>IEnumAttribute</code> is marked to be used as ID in
@@ -428,7 +428,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public boolean findIsIdentifier(IIpsProject ipsProject);
+    boolean findIsIdentifier(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this <code>IEnumAttribute</code> is used by the first
@@ -440,7 +440,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * This information is only valid for the <code>IEnumAttribute</code> itself, not for copies
      * created due to inheritance.
      */
-    public boolean isLiteralNameDefaultValueProvider();
+    boolean isLiteralNameDefaultValueProvider();
 
     /**
      * Returns a list containing all copies of this <code>IEnumAttribute</code> in the hierarchy of
@@ -452,12 +452,12 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * @throws IpsException If an error occurs while searching for the copies.
      * @throws NullPointerException If <code>ipsProject</code> is <code>null</code>.
      */
-    public List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws IpsException;
+    List<IEnumAttribute> searchInheritedCopies(IIpsProject ipsProject) throws IpsException;
 
     /**
      * Returns whether this <code>IEnumAttribute</code> is a <code>IEnumLiteralNameAttribute</code>.
      */
-    public boolean isEnumLiteralNameAttribute();
+    boolean isEnumLiteralNameAttribute();
 
     /**
      * Sets the multilingual property of this attribute. If multilingual is set to <code>true</code>
@@ -466,7 +466,7 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * 
      * @param multilingual true to enable multi language support, false otherwise.
      */
-    public void setMultilingual(boolean multilingual);
+    void setMultilingual(boolean multilingual);
 
     /**
      * Returns true if multi language support for this attribute is activated and supported, false
@@ -477,10 +477,10 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * language support has been set but is not supported by this attribute (for example, because it
      * has a data type that does not allow more than one language).
      */
-    public boolean isMultilingual();
+    boolean isMultilingual();
 
     /**
      * Returns true if multi language support for this attribute is supported, false otherwise.
      */
-    public boolean isMultilingualSupported();
+    boolean isMultilingualSupported();
 }

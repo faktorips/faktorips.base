@@ -53,7 +53,7 @@ public enum AttributeType {
     private final String id;
     private final String name;
 
-    private AttributeType(String id, String name) {
+    AttributeType(String id, String name) {
         this.id = id;
         this.name = name;
     }

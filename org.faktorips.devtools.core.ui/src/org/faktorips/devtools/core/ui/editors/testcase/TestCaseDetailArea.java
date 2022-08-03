@@ -325,8 +325,8 @@ public class TestCaseDetailArea {
 
     private boolean isResultAndInputAttribute(boolean isInputAttribute, boolean isExpectedResultAttribute) {
         TestCaseContentProvider testCaseContentProvider = testCaseSection.getContentProvider();
-        Boolean isInput = testCaseContentProvider.isInput() && isInputAttribute;
-        Boolean isExpectedResult = testCaseContentProvider.isExpectedResult() && isExpectedResultAttribute;
+        boolean isInput = testCaseContentProvider.isInput() && isInputAttribute;
+        boolean isExpectedResult = testCaseContentProvider.isExpectedResult() && isExpectedResultAttribute;
         return testCaseContentProvider.isCombined() || isInput || isExpectedResult;
     }
 
@@ -463,8 +463,7 @@ public class TestCaseDetailArea {
         sectionControls.put(uniquePath, section);
 
         // create a hyperlink to the target
-        ITestPolicyCmpt target = null;
-        target = contentProvider.getTestCase().findTestPolicyCmpt(currLink.getTarget());
+        ITestPolicyCmpt target = contentProvider.getTestCase().findTestPolicyCmpt(currLink.getTarget());
         if (target != null) {
             Hyperlink linkHyperlink = toolkit.getFormToolkit().createHyperlink(hyperlinkArea,
                     TestCaseHierarchyPath.unqualifiedName(currLink.getTarget()), SWT.WRAP);
@@ -557,8 +556,7 @@ public class TestCaseDetailArea {
 
         ValueDatatype datatype = null;
         ValueDatatypeControlFactory ctrlFactory = null;
-        ITestValueParameter param = null;
-        param = testValue.findTestValueParameter(ipsProject);
+        ITestValueParameter param = testValue.findTestValueParameter(ipsProject);
         if (param != null) {
             datatype = param.findValueDatatype(ipsProject);
             ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);

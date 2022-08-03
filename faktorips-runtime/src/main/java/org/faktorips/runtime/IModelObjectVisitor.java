@@ -22,8 +22,8 @@ public interface IModelObjectVisitor {
      * Visits the given model object.
      * 
      * @return <code>true</code> if the visitor should continue visiting the object's children,
-     *         otherwise <code>false</code>.
+     *             otherwise <code>false</code>.
      */
-    public boolean visit(IModelObject modelObject);
+    boolean visit(IModelObject modelObject);
 
 }

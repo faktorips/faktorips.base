@@ -47,12 +47,12 @@ public class TableStructure extends ModelElement {
                 Deprecation.of(AnnotatedDeclaration.from(tableObjectClass)));
         IpsTableStructure annotation = tableObjectClass.getAnnotation(IpsTableStructure.class);
 
-        this.kind = annotation.type();
-        this.columnNames = Arrays.asList(annotation.columns());
+        kind = annotation.type();
+        columnNames = Arrays.asList(annotation.columns());
 
         Class<?> tableRowClass = (Class<?>)((ParameterizedType)tableObjectClass.getGenericSuperclass())
                 .getActualTypeArguments()[0];
-        this.columnModels = TableColumn.createModelsFrom(this, tableObjectClass, tableRowClass);
+        columnModels = TableColumn.createModelsFrom(this, tableObjectClass, tableRowClass);
         messagesHelper = createMessageHelper(tableObjectClass.getAnnotation(IpsDocumented.class),
                 tableObjectClass.getClassLoader());
     }

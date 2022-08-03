@@ -67,7 +67,7 @@ public abstract class AbstractTableImportOperation implements ICoreRunnable {
         this.format = format;
         this.nullRepresentationString = nullRepresentationString;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
-        this.messageList = list;
+        messageList = list;
         this.importIntoExisting = importIntoExisting;
     }
 

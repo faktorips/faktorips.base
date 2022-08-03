@@ -32,11 +32,10 @@ public class AssociationsLabelProvider extends DefaultLabelProvider {
         }
 
         String maxC;
-        if (association.isQualified()) {
+        if (association.isQualified()
+                || (association.getMaxCardinality() == Integer.MAX_VALUE)) {
             // qualified associations are always unbounded as the max cardinality applies per
             // qualifier instance!
-            maxC = "*"; //$NON-NLS-1$
-        } else if (association.getMaxCardinality() == Integer.MAX_VALUE) {
             maxC = "*"; //$NON-NLS-1$
         } else {
             maxC = "" + association.getMaxCardinality(); //$NON-NLS-1$

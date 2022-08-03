@@ -19,6 +19,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.builder.TypeSection;
 import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
@@ -34,7 +35,6 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * A builder for JAXB XmlAdapters. XmlAdapters are generated for Faktor-IPS enumerations that defer

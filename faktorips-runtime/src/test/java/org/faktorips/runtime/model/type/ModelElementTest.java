@@ -110,7 +110,7 @@ public class ModelElementTest {
             @IpsExtensionProperty(id = "id2", value = "anyValue") })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class AnnotatedModelElement {
-
+        // a model element with extensions
     }
 
     @IpsExtensionProperties({ @IpsExtensionProperty(id = "id1", isNull = true),
@@ -118,7 +118,7 @@ public class ModelElementTest {
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     @Deprecated
     private static class DeprecatedAnnotatedModelElement {
-
+        // a deprecated element
     }
 
 }

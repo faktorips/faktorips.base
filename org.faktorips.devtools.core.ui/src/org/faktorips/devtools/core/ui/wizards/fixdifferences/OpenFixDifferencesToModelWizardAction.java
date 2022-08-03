@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.wizards.fixdifferences;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -115,8 +114,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
         if (selection instanceof IStructuredSelection) {
             try {
                 IStructuredSelection sel = (IStructuredSelection)selection;
-                for (Iterator<?> iter = sel.iterator(); iter.hasNext();) {
-                    Object selected = iter.next();
+                for (Object selected : sel) {
                     addElementToFix(ipsElementsToFix, selected);
                 }
             } catch (IpsException e) {
@@ -159,10 +157,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElements(IIpsProject ipsProject, Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
-        if (ipsProject == null) {
-            return;
-        }
-        if (!ipsProject.exists()) {
+        if ((ipsProject == null) || !ipsProject.exists()) {
             return;
         }
         IIpsPackageFragmentRoot[] roots = ipsProject.getIpsPackageFragmentRoots(false);
@@ -174,10 +169,7 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     private void addIpsElements(IIpsPackageFragmentRoot element, Set<IFixDifferencesToModelSupport> ipsElementsToFix) {
-        if (element == null) {
-            return;
-        }
-        if (!element.exists()) {
+        if ((element == null) || !element.exists()) {
             return;
         }
         IIpsPackageFragment pack = element.getDefaultIpsPackageFragment();

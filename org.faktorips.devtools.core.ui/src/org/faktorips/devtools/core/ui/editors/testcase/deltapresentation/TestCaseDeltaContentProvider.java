@@ -34,7 +34,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
  * Content provider to represent differnces between test case and test case type.
  * 
  * @see org.faktorips.devtools.core.ui.editors.testcase.deltapresentation.TestCaseDeltaType for all
- *      provided types of delta objects.
+ *          provided types of delta objects.
  * 
  * @author Joerg Ortmann
  */
@@ -88,6 +88,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
     /**
      * Retruns the 4 elements containing the aspects for the delta description.
      */
+    // CSOFF: CyclomaticComplexity
     @Override
     public Object[] getElements(Object inputElement) {
         if (!(inputElement instanceof ITestCaseTestCaseTypeDelta)) {
@@ -132,6 +133,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
 
         return result.toArray();
     }
+    // CSON: CyclomaticComplexity
 
     @Override
     public boolean hasChildren(Object element) {
@@ -226,6 +228,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             return true;
         }
 
+        // CSOFF: CyclomaticComplexity
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (element instanceof TestCaseDeltaWrapperObject) {
@@ -250,13 +253,10 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                     }
 
                     // checks the child object, if a parent should be deleted then show the childs
-                    if (wrapperObject.isWillBeDeleted()
-                            && wrapperObject.getDeltaType() == TestCaseDeltaType.MISSING_TEST_PARAM) {
-                        return true;
-                    }
-
                     // check if a child object is visible, if true show the parent object
-                    if (isFilterFor(wrapperObject.getBaseObject(), wrapperObject.getDeltaType())) {
+                    if ((wrapperObject.isWillBeDeleted()
+                            && wrapperObject.getDeltaType() == TestCaseDeltaType.MISSING_TEST_PARAM)
+                            || isFilterFor(wrapperObject.getBaseObject(), wrapperObject.getDeltaType())) {
                         return true;
                     }
 
@@ -270,11 +270,13 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 return true;
             }
         }
+        // CSON: CyclomaticComplexity
 
         /**
          * Returns <code>true</code> if the object itself or a child of the object is visible for
          * the given delta type aspect.
          */
+        // CSOFF: CyclomaticComplexity
         private boolean isFilterFor(Object object, TestCaseDeltaType deltaType) {
             // the object is visible
             if (checkVisibility(object, deltaType)) {
@@ -310,10 +312,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                 ITestPolicyCmptLink[] testLinks = parentTestPolicyCmpt.getTestPolicyCmptLinks(dummyAssociation
                         .getName());
                 for (ITestPolicyCmptLink testLink : testLinks) {
-                    if (checkVisibility(testLink, deltaType)) {
-                        return true;
-                    }
-                    if (isFilterFor(testLink.findTarget(), deltaType)) {
+                    if (checkVisibility(testLink, deltaType) || isFilterFor(testLink.findTarget(), deltaType)) {
                         return true;
                     }
                 }
@@ -324,6 +323,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
             }
             return false;
         }
+        // CSON: CyclomaticComplexity
 
         /**
          * Checks the visibility for the given object and delta type.

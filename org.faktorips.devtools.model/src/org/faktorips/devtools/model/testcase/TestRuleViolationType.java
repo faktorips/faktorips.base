@@ -31,7 +31,7 @@ public enum TestRuleViolationType implements INamedValue {
     private final String name;
     private final String text;
 
-    private TestRuleViolationType(String id, String name, String text) {
+    TestRuleViolationType(String id, String name, String text) {
         ArgumentCheck.notNull(id);
         ArgumentCheck.notNull(name);
         ArgumentCheck.notNull(text);

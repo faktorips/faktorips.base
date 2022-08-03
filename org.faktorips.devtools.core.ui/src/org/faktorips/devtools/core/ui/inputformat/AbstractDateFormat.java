@@ -96,12 +96,11 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
      * 
      * @param date the date to be represented as string
      * @return the string that represents the given date, or <code>null</code> if the given
-     *         {@link Date} is <code>null</code>.
+     *             {@link Date} is <code>null</code>.
      */
     public String formatDate(Date date) {
         if (date != null) {
-            String formattedString = getDateFormat().format(date);
-            return formattedString;
+            return getDateFormat().format(date);
         } else {
             return null;
         }
@@ -112,7 +111,7 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
      * 
      * @param dateFormatString a string that can be parsed by this format
      * @return a {@link Date} object or <code>null</code> if the given string is <code>null</code>
-     *         or cannot be parsed.
+     *             or cannot be parsed.
      */
     public Date parseToDate(String dateFormatString) {
         ParsePosition pos = new ParsePosition(0);

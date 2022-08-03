@@ -301,8 +301,7 @@ public class CreateConstrainingAssociationOperationTest extends AbstractIpsPlugi
 
     private IAssociation getConstrainedMatchingAssociation(IType type, IAssociation constrainedAssociation) {
         IAssociation association = getConstrainingAssociation(type, constrainedAssociation);
-        IAssociation matchingAssociation = association.findMatchingAssociation();
-        return matchingAssociation;
+        return association.findMatchingAssociation();
     }
 
     private void assertConstrainedMatchingAssociationExistsFor(IType type, IAssociation constrainedAssociation) {

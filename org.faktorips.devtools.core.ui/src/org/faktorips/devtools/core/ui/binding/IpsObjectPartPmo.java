@@ -88,8 +88,8 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
      * 
      * @param event the change event sent by the IPS model
      * @return <code>true</code> if this PMO is affected by the event. Listeners are notified and
-     *         {@link #partHasChanged()} is called in that case. <code>false</code> if the PMO is
-     *         unaffected.
+     *             {@link #partHasChanged()} is called in that case. <code>false</code> if the PMO
+     *             is unaffected.
      */
     protected boolean isAffected(ContentChangeEvent event) {
         return event.isAffected(part);
@@ -105,8 +105,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
             return new MessageList();
         } else {
             MessageList messageList = getIpsObjectPartContainer().getIpsObject().validate(ipsProject);
-            MessageList copy = createCopyAndMapObjectProperties(messageList);
-            return copy;
+            return createCopyAndMapObjectProperties(messageList);
         }
     }
 

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.productcmpt;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.Message;
@@ -153,12 +154,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + defaultCard;
-        result = prime * result + max;
-        result = prime * result + min;
-        return result;
+        return Objects.hash(defaultCard, max, min);
     }
 
     @Override
@@ -166,23 +162,13 @@ public class Cardinality implements Comparable<Cardinality> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         Cardinality other = (Cardinality)obj;
-        if (defaultCard != other.defaultCard) {
-            return false;
-        }
-        if (max != other.max) {
-            return false;
-        }
-        if (min != other.min) {
-            return false;
-        }
-        return true;
+        return (defaultCard == other.defaultCard)
+                && (max == other.max)
+                && (min == other.min);
     }
 
     @Override
@@ -196,7 +182,7 @@ public class Cardinality implements Comparable<Cardinality> {
             return -1;
         }
 
-        if (this.min != o.min) {
+        if (min != o.min) {
             return Integer.compare(min, o.min);
         }
 

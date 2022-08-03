@@ -97,8 +97,7 @@ public class IpsDeepCopyAction extends IpsAction {
     }
 
     protected void runCopyWizard(IProductCmptGeneration generation) {
-        IProductCmptNamingStrategy ns = null;
-        ns = generation.getIpsProject().getProductCmptNamingStrategy();
+        IProductCmptNamingStrategy ns = generation.getIpsProject().getProductCmptNamingStrategy();
         if (type == DeepCopyWizard.TYPE_NEW_VERSION && ns == null) {
             String title = NLS.bind(Messages.IpsDeepCopyAction_titleNoVersion, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getVersionConceptNameSingular());

@@ -141,9 +141,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step, boolean containsNull) {
-        IRangeValueSet range = new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
+        return new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
                 containsNull);
-        return range;
     }
 
     @Override

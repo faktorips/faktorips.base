@@ -28,10 +28,10 @@ import org.faktorips.runtime.model.type.ProductCmptType;
 public interface ITemplatedValue extends IIpsObjectPart {
 
     /** The name of the template value status property. */
-    public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
+    String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
 
     /** Validation message code to indicate that this property's template status is invalid. */
-    public static final String MSGCODE_INVALID_TEMPLATE_VALUE_STATUS = "TEMPLATEDPROPERTY-InvalidTemplateValueStatus"; //$NON-NLS-1$
+    String MSGCODE_INVALID_TEMPLATE_VALUE_STATUS = "TEMPLATEDPROPERTY-InvalidTemplateValueStatus"; //$NON-NLS-1$
 
     /**
      * Sets this property's template status (e.g. whether it is inherited from a parent template or
@@ -39,25 +39,25 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * 
      * @param status the new template status
      */
-    public void setTemplateValueStatus(TemplateValueStatus status);
+    void setTemplateValueStatus(TemplateValueStatus status);
 
     /**
      * Returns the current template status of this property. It specifies whether a property is is
      * defined in this object or inherited from a template.
      * 
      * @return this property's template status (e.g. whether it is inherited from a parent template
-     *         or not).
+     *             or not).
      * 
      * @see TemplateValueStatus
      */
-    public TemplateValueStatus getTemplateValueStatus();
+    TemplateValueStatus getTemplateValueStatus();
 
     /**
      * Sets the next valid template value status. The template value status order is defined in
      * {@link TemplateValueStatus}.
      * 
      */
-    public void switchTemplateValueStatus();
+    void switchTemplateValueStatus();
 
     /**
      * Finds the property in the template hierarchy (parent or grand*-parent template) that has the
@@ -74,9 +74,9 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * 
      * @param ipsProject The {@link IIpsProject} used to search the template hierarchy
      * @return the property that should be used as template or <code>null</code> if there is no such
-     *         property.
+     *             property.
      */
-    public ITemplatedValue findTemplateProperty(IIpsProject ipsProject);
+    ITemplatedValue findTemplateProperty(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if somewhere in the template hierarchy (parent or grand*-parent
@@ -87,9 +87,9 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * parent-product-types that don't include the property, <code>false</code> is returned.
      * 
      * @return <code>true</code> if the corresponding container uses a template that could define a
-     *         value for this property.
+     *             value for this property.
      */
-    public boolean hasTemplateForProperty(IIpsProject ipsProject);
+    boolean hasTemplateForProperty(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this property is part of a template hierarchy, by either acting
@@ -107,7 +107,7 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * could be added in the sub-{@link ProductCmptType} this property's parent configures).
      * 
      * @return <code>true</code> if the corresponding container is using a template or if itself is
-     *         a template.
+     *             a template.
      */
     boolean isPartOfTemplateHierarchy();
 
@@ -116,7 +116,7 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * 
      * @return the container this object belongs to
      */
-    public ITemplatedValueContainer getTemplatedValueContainer();
+    ITemplatedValueContainer getTemplatedValueContainer();
 
     Comparator<Object> getValueComparator();
 
@@ -144,6 +144,6 @@ public interface ITemplatedValue extends IIpsObjectPart {
      * 
      * @return whether this value defines a concrete value.
      */
-    public boolean isConcreteValue();
+    boolean isConcreteValue();
 
 }

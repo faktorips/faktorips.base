@@ -230,9 +230,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         }
 
         boolean isInverseAssociationOneToMany = (inverseAssociation != null) && inverseAssociation.is1ToMany();
-        boolean isManyToManyAssociation = isOneToManyAssociation && isInverseAssociationOneToMany;
-
-        return isManyToManyAssociation;
+        return isOneToManyAssociation && isInverseAssociationOneToMany;
     }
 
     @Override
@@ -423,10 +421,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         if (isJoinColumnImpossible(inverseAssociation)) {
             return false;
         }
-        if (isUnidirectional()) {
-            return true;
-        }
-        if (isBidirectional() && inverseAssociation == null) {
+        if (isUnidirectional() || (isBidirectional() && inverseAssociation == null)) {
             // error inverse not found
             return true;
         }
@@ -434,10 +429,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         if (relType == RelationshipType.ONE_TO_ONE) {
             return isJoinColumnRequiredForOneToOne(inverseAssociation);
         }
-        if (relType == RelationshipType.MANY_TO_MANY) {
-            return false;
-        }
-        if (relType == RelationshipType.ONE_TO_MANY) {
+        if ((relType == RelationshipType.MANY_TO_MANY) || (relType == RelationshipType.ONE_TO_MANY)) {
             return false;
         }
         if (relType == RelationshipType.MANY_TO_ONE) {
@@ -447,9 +439,8 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     private boolean isJoinColumnImpossible(IPolicyCmptTypeAssociation inverseAssociation) {
-        if (getPolicyComponentTypeAssociation().isDerivedUnion()) {
-            return true;
-        } else if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
+        if (getPolicyComponentTypeAssociation().isDerivedUnion()
+                || (inverseAssociation != null && inverseAssociation.isDerivedUnion())) {
             return true;
         } else {
             return isOwnerOfManyToManyAssociation();
@@ -457,11 +448,9 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     }
 
     private boolean isJoinColumnRequiredForOneToOne(IPolicyCmptTypeAssociation inverseAssociation) {
-        if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
-            return false;
-        }
-        if (inverseAssociation != null && getPolicyComponentTypeAssociation().isAssoziation()
-                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
+        if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail() || (inverseAssociation != null
+                && getPolicyComponentTypeAssociation().isAssoziation()
+                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName()))) {
             // target join column is defined on the target side
             return false;
         }
@@ -535,7 +524,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         String strJoinColumnNullable = element.getAttribute(PROPERTY_JOIN_COLUMN_NULLABLE);
         joinColumnNullable = strJoinColumnNullable == null || strJoinColumnNullable.length() == 0 ? true
                 : Boolean
-                        .valueOf(strJoinColumnNullable);
+                        .parseBoolean(strJoinColumnNullable);
 
         orphanRemoval = XmlUtil.getBooleanAttributeOrFalse(element, PROPERTY_ORPHAN_REMOVAL);
 
@@ -757,7 +746,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         if (columnName.length() > maxColumnNameLenght) {
             msgList.add(new Message(messageCode,
                     MessageFormat.format(Messages.PersistentAssociationInfo_msgMaxLengthExceeds,
-                            new Object[] { propertyName, columnName.length(), maxColumnNameLenght }),
+                            propertyName, columnName.length(), maxColumnNameLenght),
                     Message.ERROR, this,
                     property));
         }

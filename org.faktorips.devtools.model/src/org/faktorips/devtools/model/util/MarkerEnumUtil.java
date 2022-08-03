@@ -44,8 +44,7 @@ public class MarkerEnumUtil {
     private IEnumType getMarkerEnumFromProject() {
         List<IIpsSrcFile> enumSrcFiles = new ArrayList<>(ipsProject.getMarkerEnums());
         if (!enumSrcFiles.isEmpty()) {
-            IEnumType enumType = (IEnumType)enumSrcFiles.get(0).getIpsObject();
-            return enumType;
+            return (IEnumType)enumSrcFiles.get(0).getIpsObject();
         } else {
             return null;
         }

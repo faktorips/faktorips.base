@@ -233,8 +233,8 @@ public class ExtensionPropertyAnnGenTest {
 
     }
 
-    private static interface MockExtensionPropertyValue {
-        public void valueToXml(Element valueElement);
+    private interface MockExtensionPropertyValue {
+        void valueToXml(Element valueElement);
     }
 
 }

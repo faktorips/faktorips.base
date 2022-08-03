@@ -66,7 +66,7 @@ public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplate
 
     /**
      * @return the formatted value from the template or the empty string, if the template value
-     *         cannot be found.
+     *             cannot be found.
      */
     protected String getTemplateValue() {
         T templateProperty = findTemplateProperty();

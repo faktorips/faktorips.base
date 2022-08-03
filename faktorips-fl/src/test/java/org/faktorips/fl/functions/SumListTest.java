@@ -68,7 +68,7 @@ public class SumListTest {
         doReturn(compiler).when(sumList).getCompiler();
         when(sumList.getCompiler().getDatatypeHelper(Datatype.DECIMAL)).thenReturn(helper);
 
-        CompilationResultImpl[] argument = new CompilationResultImpl[] { argumentCompilationResult };
+        CompilationResultImpl[] argument = { argumentCompilationResult };
 
         CompilationResult<JavaCodeFragment> compile = sumList.compile(argument);
         assertNotNull(compile);

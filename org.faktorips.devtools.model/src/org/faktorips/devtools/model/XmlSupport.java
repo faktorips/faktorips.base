@@ -28,13 +28,13 @@ public interface XmlSupport {
      * 
      * @return the XML element representation
      */
-    public Element toXml(Document doc);
+    Element toXml(Document doc);
 
     /**
      * (Re)Initializes the object's state with the data found in the XML element.
      * 
      * @param element the XML element containing the object's state
      */
-    public void initFromXml(Element element);
+    void initFromXml(Element element);
 
 }

@@ -434,8 +434,7 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         IConfiguredDefault templateConfigElement = templateGen.newPropertyValue(policyCmptTypeAttribute,
                 IConfiguredDefault.class);
         productCmpt.setTemplate(template.getQualifiedName());
-        IConfiguredDefault templateConfiguredDefault = templateConfigElement;
-        return templateConfiguredDefault;
+        return templateConfigElement;
     }
 
     private IConfiguredDefault createDefaultValueAndValueSetInNewTemplate(

@@ -82,8 +82,7 @@ public class StringValue extends AbstractValue<String> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getContent() == null) ? 0 : getContent().hashCode());
-        return result;
+        return prime * result + ((getContent() == null) ? 0 : getContent().hashCode());
     }
 
     @Override
@@ -91,10 +90,7 @@ public class StringValue extends AbstractValue<String> {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof StringValue)) {
+        if ((obj == null) || !(obj instanceof StringValue)) {
             return false;
         }
         StringValue other = (StringValue)obj;

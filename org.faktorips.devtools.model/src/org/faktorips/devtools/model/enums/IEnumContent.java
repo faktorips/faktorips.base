@@ -33,32 +33,32 @@ import org.faktorips.devtools.model.ipsobject.IDeprecation;
 public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
 
     /** The XML tag for this IPS object. */
-    public static final String XML_TAG = "EnumContent"; //$NON-NLS-1$
+    String XML_TAG = "EnumContent"; //$NON-NLS-1$
 
     /** Name of the <code>enumType</code> property. */
-    public static final String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
+    String PROPERTY_ENUM_TYPE = "enumType"; //$NON-NLS-1$
 
     /** Prefix for all message codes of this class. */
-    public static final String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
+    String MSGCODE_PREFIX = "ENUMCONTENT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the <code>IEnumType</code> this
      * <code>IEnumContent</code> is built upon is not specified.
      */
-    public static final String MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING = MSGCODE_PREFIX + "EnumContentEnumTypeMissing"; //$NON-NLS-1$
+    String MSGCODE_ENUM_CONTENT_ENUM_TYPE_MISSING = MSGCODE_PREFIX + "EnumContentEnumTypeMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the <code>IEnumType</code> this
      * <code>IEnumContent</code> is built upon does not exist.
      */
-    public static final String MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST = MSGCODE_PREFIX
             + "EnumContentEnumTypeDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the <code>IEnumType</code> this
      * <code>IEnumContent</code> is built upon is abstract.
      */
-    public static final String MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_ENUM_TYPE_IS_ABSTRACT = MSGCODE_PREFIX
             + "EnumContentEnumTypeIsAbstract"; //$NON-NLS-1$
 
     /**
@@ -66,7 +66,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <code>IEnumContent</code> refers to are defined in the type itself instead of inside a
      * separate <code>IEnumContent</code>.
      */
-    public static final String MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_VALUES_ARE_PART_OF_TYPE = MSGCODE_PREFIX
             + "EnumContentValuesArePartOfType"; //$NON-NLS-1$
 
     /**
@@ -74,7 +74,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <code>IEnumAttribute</code>s does not correspond to the number of
      * <code>IEnumAttribute</code>s defined in the referenced <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID = MSGCODE_PREFIX
             + "EnumContentReferencedEnumAttributesCountInvalid"; //$NON-NLS-1$
 
     /**
@@ -82,7 +82,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <code>IEnumAttribute</code>s as stored in this <code>IEnumContent</code> do not match the
      * names of the <code>IEnumAttribute</code> s as defined in the base <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_NAMES_INVALID = MSGCODE_PREFIX
             + "EnumContentReferencedEnumAttributeNamesInvalid"; //$NON-NLS-1$
 
     /**
@@ -90,7 +90,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <code>IEnumAttribute</code>s as stored in this <code>IEnumContent</code> does not match the
      * ordering of the <code>IEnumAttribute</code>s as defined in the base <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID = MSGCODE_PREFIX
+    String MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTE_ORDERING_INVALID = MSGCODE_PREFIX
             + "EnumContentReferencedEnumAttributeOrderingInvalid"; //$NON-NLS-1$
 
     /**
@@ -98,14 +98,14 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * is stored in is not correct due to the specification in the referenced
      * <code>IEnumType</code>.
      */
-    public static final String MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT = MSGCODE_PREFIX + "EnumContentNameNotCorrect"; //$NON-NLS-1$
+    String MSGCODE_ENUM_CONTENT_NAME_NOT_CORRECT = MSGCODE_PREFIX + "EnumContentNameNotCorrect"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates that the enum type is deprecated. A
      * replacement/migration strategy should be documented in its
      * {@link IDeprecation#getDescriptions() deprecation descriptions}.
      */
-    public static final String MSGCODE_DEPRECATED_ENUM_TYPE = MSGCODE_PREFIX + "DeprecatedEnumType"; //$NON-NLS-1$
+    String MSGCODE_DEPRECATED_ENUM_TYPE = MSGCODE_PREFIX + "DeprecatedEnumType"; //$NON-NLS-1$
 
     /**
      * Sets the <code>IEnumType</code> this <code>IEnumContent</code> is based upon.
@@ -119,13 +119,13 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * @throws IpsException If an error occurs while searching for the new <code>IEnumType</code>.
      * @throws NullPointerException If <code>enumType</code> is <code>null</code>.
      */
-    public void setEnumType(String enumType) throws IpsException;
+    void setEnumType(String enumType) throws IpsException;
 
     /**
      * Returns the qualified name of the <code>IEnumType</code> this <code>IEnumContent</code> is
      * based upon.
      */
-    public String getEnumType();
+    String getEnumType();
 
     /**
      * Returns <code>true</code> if this <code>IEnumContent</code> is inconsistent with the model
@@ -133,7 +133,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * 
      * @throws IpsException If an error occurs during the validation.
      */
-    public boolean isFixToModelRequired() throws IpsException;
+    boolean isFixToModelRequired() throws IpsException;
 
     /**
      * Returns a list containing all <code>IPartReference</code>s that belong to this
@@ -141,7 +141,7 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * <p>
      * Returns an empty list if there are none, never returns <code>null</code>.
      */
-    public List<IPartReference> getEnumAttributeReferences();
+    List<IPartReference> getEnumAttributeReferences();
 
     /**
      * Returns the <code>IPartReference</code> with the given name or <code>null</code> if there is
@@ -151,12 +151,12 @@ public interface IEnumContent extends IIpsMetaObject, IEnumValueContainer {
      * 
      * @throws NullPointerException If <code>name</code> is <code>null</code>.
      */
-    public IPartReference getEnumAttributeReference(String name);
+    IPartReference getEnumAttributeReference(String name);
 
     /**
      * Returns the number of <code>IEnumAttribute</code>s that are currently referenced by this
      * <code>IEnumContent</code>.
      */
-    public int getEnumAttributeReferencesCount();
+    int getEnumAttributeReferencesCount();
 
 }

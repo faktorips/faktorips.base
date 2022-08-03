@@ -55,8 +55,8 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
      * @param basicDatatype The data type of the elements in the list this function processes.
      * 
      * @return a {@link CompilationResult} with an error if the element data type is illegal.
-     *         Returns <code>null</code> or an error free compilation result if the data type is
-     *         valid.
+     *             Returns <code>null</code> or an error free compilation result if the data type is
+     *             valid.
      */
     protected CompilationResult<JavaCodeFragment> validateBasicDatatype(Datatype basicDatatype) {
         return null;
@@ -105,11 +105,10 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
 
     protected CompilationResult<JavaCodeFragment> generateFunctionCall(CompilationResultImpl argument1,
             CompilationResultImpl argument2) {
-        CompilationResultImpl[] arguments = new CompilationResultImpl[] { argument1, argument2 };
-        Datatype[] datatypes = new Datatype[] { argument1.getDatatype(), argument2.getDatatype() };
-        CompilationResult<JavaCodeFragment> matchingFunctionUsingConversion = getCompiler()
+        CompilationResultImpl[] arguments = { argument1, argument2 };
+        Datatype[] datatypes = { argument1.getDatatype(), argument2.getDatatype() };
+        return getCompiler()
                 .getMatchingFunctionUsingConversion(arguments, datatypes, getName());
-        return matchingFunctionUsingConversion;
     }
 
     protected CompilationResultImpl createCompilationResult(CompilationResult<JavaCodeFragment> listArgument,
@@ -122,8 +121,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
 
     protected Datatype getBasicType(CompilationResult<JavaCodeFragment> listArgument) {
         ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)listArgument.getDatatype();
-        Datatype basicDatatype = listDatatype.getBasicDatatype();
-        return basicDatatype;
+        return listDatatype.getBasicDatatype();
     }
 
 }

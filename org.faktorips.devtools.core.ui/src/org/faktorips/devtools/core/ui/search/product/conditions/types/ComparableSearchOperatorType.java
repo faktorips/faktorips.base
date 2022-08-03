@@ -28,9 +28,9 @@ public enum ComparableSearchOperatorType implements ISearchOperatorType {
     private final boolean equalityAllowed;
     private final boolean ascendingOrder;
 
-    private ComparableSearchOperatorType(String label, boolean equality, boolean ascendingOrder) {
+    ComparableSearchOperatorType(String label, boolean equality, boolean ascendingOrder) {
         this.label = label;
-        this.equalityAllowed = equality;
+        equalityAllowed = equality;
         this.ascendingOrder = ascendingOrder;
     }
 

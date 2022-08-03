@@ -41,11 +41,7 @@ public class DerivedValueSet extends ValueSet implements IDerivedValueSet {
     @Override
     public boolean containsValue(String value, IIpsProject ipsProject) {
         ValueDatatype datatype = findValueDatatype(ipsProject);
-        if (datatype == null) {
-            return false;
-        }
-
-        if (!datatype.isParsable(value)) {
+        if ((datatype == null) || !datatype.isParsable(value)) {
             return false;
         }
 

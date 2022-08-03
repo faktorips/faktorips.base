@@ -383,14 +383,12 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                         .getMigrationOperation(ipsProject);
                 MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection);
                 migrateAction.setEnabled(!(migrationOperation.isEmpty()));
-                if (modelExplorer.isModelExplorer()) {
-                    // in model explorer the action is always added
+                if (
+                // in model explorer the action is always added
+                modelExplorer.isModelExplorer()
+                        // in product explorer only if it is enabled
+                        || !migrationOperation.isEmpty()) {
                     manager.add(migrateAction);
-                } else {
-                    // in product explorer only if it is enabled
-                    if (!migrationOperation.isEmpty()) {
-                        manager.add(migrateAction);
-                    }
                 }
             } catch (IpsException e) {
                 IpsPlugin.log(e);
@@ -499,8 +497,10 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createRefactorMenu(IMenuManager manager, Object selected) {
-        if (selected instanceof IIpsElement & !(selected instanceof IIpsProject) | selected instanceof IFile
-                | selected instanceof IFolder) {
+        if (selected instanceof IIpsElement
+                && !(selected instanceof IIpsProject)
+                || selected instanceof IFile
+                || selected instanceof IFolder) {
             if (!isRootArchive(selected)) {
                 MenuManager subMm = new MenuManager(Messages.ModelExplorer_submenuRefactor,
                         "org.faktorips.devtools.core.ui.views.modelexplorer.refactoring"); //$NON-NLS-1$

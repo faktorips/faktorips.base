@@ -215,7 +215,7 @@ public class IpsArtefactBuilderSetInfoTest {
                 children.toArray(new IConfigurationElement[children.size()]));
     }
 
-    public static interface ConfigElementModifier {
+    public interface ConfigElementModifier {
 
     }
 

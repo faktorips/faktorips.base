@@ -29,7 +29,7 @@ public interface NamedDatatype extends ValueDatatype {
      * annual payment mode with ID "1". If this method returns {@code false} a call to the
      * {@link #getValueName(String)} method is supposed to throw an {@link IllegalStateException}.
      */
-    public boolean isSupportingNames();
+    boolean isSupportingNames();
 
     /**
      * Returns a short description of the value of this datatype specified by the ID.

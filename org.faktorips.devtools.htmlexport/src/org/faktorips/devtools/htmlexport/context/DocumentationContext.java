@@ -213,18 +213,18 @@ public class DocumentationContext {
     }
 
     public void setShowInheritedObjectPartsInTable(boolean showInheritedObjectPartsInJavaDocStyle) {
-        this.showInheritedObjectPartsInTable = showInheritedObjectPartsInJavaDocStyle;
+        showInheritedObjectPartsInTable = showInheritedObjectPartsInJavaDocStyle;
     }
 
     public void setShowValidationErrors(boolean outputMessages) {
-        this.showValidationErrors = outputMessages;
+        showValidationErrors = outputMessages;
     }
 
     public void setDocumentationLocale(Locale descriptionLocale) {
-        if (this.documentationLocale == descriptionLocale) {
+        if (documentationLocale == descriptionLocale) {
             return;
         }
-        this.documentationLocale = descriptionLocale;
+        documentationLocale = descriptionLocale;
         multiLanguageSupport = new MultiLanguageSupport(descriptionLocale);
         messagesManager = new MessagesManager(this);
     }

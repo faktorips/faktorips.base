@@ -45,7 +45,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JPackage;
  */
 public class JPatternDictionary extends FacadeVisitor {
     protected static final Pattern COMMENT = Pattern.compile("/\\*.*?\\*/", Pattern.MULTILINE | Pattern.DOTALL);
-    protected static final Object[] NO_ARGUMENTS = new Object[0];
+    protected static final Object[] NO_ARGUMENTS = {};
 
     protected static final boolean DEBUG = JMerger.DEBUG;
 
@@ -396,11 +396,7 @@ public class JPatternDictionary extends FacadeVisitor {
                     if (selection != null) {
                         markupNode(selection, dictionaryPattern, node);
                     }
-                } catch (IllegalAccessException exception) {
-                    if (DEBUG) {
-                        exception.printStackTrace();
-                    }
-                } catch (InvocationTargetException exception) {
+                } catch (IllegalAccessException | InvocationTargetException exception) {
                     if (DEBUG) {
                         exception.printStackTrace();
                     }

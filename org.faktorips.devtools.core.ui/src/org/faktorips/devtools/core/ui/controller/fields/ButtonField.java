@@ -56,8 +56,7 @@ public class ButtonField extends DefaultEditField<Boolean> {
     @Override
     public Boolean parseContent() {
         Boolean content = button.getSelection();
-        content = invertBooleanIfNeccessary(content);
-        return content;
+        return invertBooleanIfNeccessary(content);
     }
 
     protected Boolean invertBooleanIfNeccessary(Boolean booleanObject) {

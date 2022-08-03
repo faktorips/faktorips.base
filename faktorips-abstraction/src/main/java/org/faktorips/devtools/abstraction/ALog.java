@@ -17,17 +17,17 @@ public interface ALog extends AAbstraction {
     /**
      * Logs the status.
      */
-    public void log(IStatus status);
+    void log(IStatus status);
 
     /**
      * Logs the given core exception.
      */
-    public default void log(CoreException e) {
+    default void log(CoreException e) {
         log(e.getStatus());
     }
 
-    public void addLogListener(ALogListener listener);
+    void addLogListener(ALogListener listener);
 
-    public void removeLogListener(ALogListener listener);
+    void removeLogListener(ALogListener listener);
 
 }

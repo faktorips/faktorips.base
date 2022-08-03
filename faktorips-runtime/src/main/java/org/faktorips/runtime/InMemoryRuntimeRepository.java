@@ -127,7 +127,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     @Override
     protected void getAllTables(List<ITable<?>> result) {
-        result.addAll(this.tables);
+        result.addAll(tables);
     }
 
     /**
@@ -231,10 +231,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
-        if (productCmptId == null) {
-            return null;
-        }
-        if (effectiveDate == null) {
+        if ((productCmptId == null) || (effectiveDate == null)) {
             return null;
         }
         SortedSet<IProductComponentGeneration> genSortedSet = getGenerationSortedSet(productCmptId);
@@ -395,11 +392,14 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String id) {
         Map<String, IRuntimeObject> otherRuntimeObjects = customRuntimeObjectsByType.get(type);
         if (otherRuntimeObjects != null) {
-            @SuppressWarnings("unchecked")
-            T runtimeObject = (T)otherRuntimeObjects.get(id);
-            return runtimeObject;
+            return cast(otherRuntimeObjects.get(id));
         }
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T cast(IRuntimeObject runtimeObject) {
+        return (T)runtimeObject;
     }
 
     private static class ProductCmptGenerationComparator implements Comparator<IProductComponentGeneration> {

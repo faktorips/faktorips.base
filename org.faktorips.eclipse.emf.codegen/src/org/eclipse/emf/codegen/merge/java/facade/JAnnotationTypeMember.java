@@ -28,7 +28,7 @@ package org.eclipse.emf.codegen.merge.java.facade;
  * </blockquote>
  * 
  * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/interfaces.html">JLS3 Section
- *      9.6</a>
+ *          9.6</a>
  * @since 2.3.0
  */
 public interface JAnnotationTypeMember extends JMember {

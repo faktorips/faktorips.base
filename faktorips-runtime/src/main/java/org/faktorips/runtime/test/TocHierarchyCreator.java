@@ -62,7 +62,7 @@ public class TocHierarchyCreator {
      * @param runtimePackages the runtime packages
      * @param clazzLoader the {@link ClassLoader} to use
      * @return a {@link IRuntimeRepository} with additional directly referenced repositories or
-     *         {@code null}
+     *             {@code null}
      */
     public static IRuntimeRepository createRuntimeRepository(List<String> runtimePackages,
             ClassLoader clazzLoader) {
@@ -163,7 +163,7 @@ public class TocHierarchyCreator {
 
         public void addAll(Collection<TocHierarchy> deps) {
             for (TocHierarchy th : deps) {
-                this.classLoaderRepository.addDirectlyReferencedRepository(th.classLoaderRepository);
+                classLoaderRepository.addDirectlyReferencedRepository(th.classLoaderRepository);
                 dependencies.add(th);
             }
         }

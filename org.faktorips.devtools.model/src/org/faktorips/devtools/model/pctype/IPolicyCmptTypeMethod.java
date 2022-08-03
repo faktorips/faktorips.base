@@ -24,6 +24,6 @@ public interface IPolicyCmptTypeMethod extends IMethod {
     /**
      * Returns the {@link IPolicyCmptType} this {@link IPolicyCmptTypeMethod} belongs to.
      */
-    public IPolicyCmptType getPolicyCmptType();
+    IPolicyCmptType getPolicyCmptType();
 
 }

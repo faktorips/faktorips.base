@@ -34,8 +34,8 @@ public class IpsTestFailure {
      * been thrown.
      */
     public IpsTestFailure(IpsTestCaseBase test, Throwable t) {
-        this.testCase = test;
-        this.throwable = t;
+        testCase = test;
+        throwable = t;
     }
 
     /**
@@ -43,7 +43,7 @@ public class IpsTestFailure {
      * expected value.
      */
     public IpsTestFailure(IpsTestCaseBase test, Object expectedValue, Object actualValue) {
-        this.testCase = test;
+        testCase = test;
         this.expectedValue = expectedValue;
         this.actualValue = actualValue;
     }
@@ -64,7 +64,7 @@ public class IpsTestFailure {
      * Creates a new test failure that was caused because an assertion has failed.
      */
     public IpsTestFailure(IpsTestCaseBase test) {
-        this.testCase = test;
+        testCase = test;
     }
 
     /**

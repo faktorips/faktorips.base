@@ -44,7 +44,7 @@ public class IpsObjectPathXmlPersister {
      * .ipsproject file.
      * 
      * @return the {@link Element} within the given Document, which represents the
-     *         {@link IpsObjectPath} in the .ipsproject file.
+     *             {@link IpsObjectPath} in the .ipsproject file.
      */
     public Element store(Document doc, IpsObjectPath path) {
         Element element = doc.createElement(IpsObjectPathXmlPersister.XML_TAG_NAME);
@@ -110,8 +110,8 @@ public class IpsObjectPathXmlPersister {
             path.setOutputFolderForDerivedSources(ipsProject.getProject().getFolder(
                     java.nio.file.Path.of(outputFolderDerivedSourcesString)));
         }
-        path.setOutputDefinedPerSrcFolder(Boolean.valueOf(
-                element.getAttribute(ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER)).booleanValue());
+        path.setOutputDefinedPerSrcFolder(
+                Boolean.parseBoolean(element.getAttribute(ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER)));
 
         // init entries
         NodeList nl = element.getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);

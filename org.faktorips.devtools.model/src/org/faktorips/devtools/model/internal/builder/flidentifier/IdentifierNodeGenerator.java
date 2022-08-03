@@ -50,7 +50,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
      *            "contextCode.someFunction()") or code that is used as an argument for a function
      *            this builder generates (as in "someFunction(contextCode)").
      * @return The {@link CompilationResult} containing the complete code for the given identifier
-     *         and all of its successors.
+     *             and all of its successors.
      * 
      * @see #getCompilationResultForCurrentNode(IdentifierNode, CompilationResult)
      */
@@ -103,7 +103,7 @@ public abstract class IdentifierNodeGenerator<T extends CodeFragment> {
      *            used as an argument for a function this builder generates (as in
      *            "someFunction(contextCode)").
      * @return a {@link CompilationResult} containing the code this builder generates for the given
-     *         {@link IdentifierNode}.
+     *             {@link IdentifierNode}.
      */
     protected abstract CompilationResult<T> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
             CompilationResult<T> contextCompilationResult);

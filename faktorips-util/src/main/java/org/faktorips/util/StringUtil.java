@@ -238,7 +238,7 @@ public class StringUtil {
      * 
      * @param string {@link String} to be checked
      * @return {@code true} if the {@code string} contains {@link Character#isWhitespace(char)
-     *         whitespace}, {@code false} if not
+     *             whitespace}, {@code false} if not
      */
     public static boolean containsWhitespace(String string) {
         return string != null && string.codePoints().anyMatch(Character::isWhitespace);

@@ -58,7 +58,7 @@ public class ClassToInstancesMap<T> {
      * 
      * @param value the value you want to add
      * @return the list of all values already added to the map for the given key including the new
-     *         one.
+     *             one.
      */
     public <K extends T> List<K> put(K value) {
         @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ public class ClassToInstancesMap<T> {
      * @param key The key specifying the class of the value
      * @param value the value you want to add
      * @return the list of all values already added to the map for the given key including the new
-     *         one.
+     *             one.
      */
     public <K extends T> List<K> put(Class<K> key, K value) {
         List<K> list = getInstanceList(key);
@@ -240,10 +240,9 @@ public class ClassToInstancesMap<T> {
      * 
      * @type K a sub class of the key
      */
+    @SuppressWarnings("unchecked")
     private <K extends T> List<K> getInstanceList(Class<K> key) {
-        @SuppressWarnings("unchecked")
-        List<K> castedList = (List<K>)internalMap.computeIfAbsent(key, $ -> new ArrayList<K>());
-        return castedList;
+        return (List<K>)internalMap.computeIfAbsent(key, $ -> new ArrayList<K>());
     }
 
 }

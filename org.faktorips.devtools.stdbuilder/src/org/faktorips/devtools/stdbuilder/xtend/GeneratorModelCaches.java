@@ -43,14 +43,13 @@ public class GeneratorModelCaches {
      * @param type The type of the cached nodes
      * 
      * @return The list of cached nodes of the specified type for the sourceNode. If there is no
-     *         cache for the specified parameter this method returns an empty list, never returns
-     *         null.
+     *             cache for the specified parameter this method returns an empty list, never
+     *             returns null.
      */
     public <T extends AbstractGeneratorModelNode> List<T> getCachedNodes(AbstractGeneratorModelNode sourceNode,
             Class<T> type) {
         ClassToInstancesMap<AbstractGeneratorModelNode> classToInstancesMap = caches.get(sourceNode);
-        List<T> cachedList = classToInstancesMap.get(type);
-        return cachedList;
+        return classToInstancesMap.get(type);
     }
 
     public <T extends AbstractGeneratorModelNode> boolean isCached(AbstractGeneratorModelNode sourceNodee,

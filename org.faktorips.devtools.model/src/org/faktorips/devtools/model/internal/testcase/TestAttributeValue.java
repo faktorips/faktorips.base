@@ -197,10 +197,8 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
             }
 
             // compare the parameters type and return if the type matches the given type
-            if (attribute.isInputAttribute() && type.equals(TestParameterType.INPUT)) {
-                return true;
-            }
-            if (attribute.isExpextedResultAttribute() && type.equals(TestParameterType.EXPECTED_RESULT)) {
+            if ((attribute.isInputAttribute() && type.equals(TestParameterType.INPUT))
+                    || (attribute.isExpextedResultAttribute() && type.equals(TestParameterType.EXPECTED_RESULT))) {
                 return true;
             }
             // CSOFF: Empty Statement

@@ -86,7 +86,7 @@ public abstract class SimpleIpsPartsSection extends IpsObjectPartContainerSectio
      * @param toolkit The UI toolkit to use for creating UI elements.
      * 
      * @return The <code>IpsPartsComposite</code> to show inside this
-     *         <code>SimpleIpsPartsSection</code>.
+     *             <code>SimpleIpsPartsSection</code>.
      */
     protected abstract IpsPartsComposite createIpsPartsComposite(Composite parent, UIToolkit toolkit);
 

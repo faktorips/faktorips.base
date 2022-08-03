@@ -114,7 +114,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     public void testSaveWithPreProcessor() {
         try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions
-                    .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, (ipsObject) -> {
+                    .setPreSaveProcessor(IpsObjectType.POLICY_CMPT_TYPE, ipsObject -> {
                         IDescription description = ((IPolicyCmptType)ipsObject).getDescription(Locale.GERMAN);
                         description.setText(description.getText().toUpperCase());
                     });
@@ -131,7 +131,7 @@ public class IpsSrcFileTest extends AbstractIpsPluginTest implements IModificati
     public void testSaveWithPreProcessorForDifferentIpsObjectType() {
         try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             testIpsModelExtensions
-                    .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, (ipsObject) -> {
+                    .setPreSaveProcessor(IpsObjectType.PRODUCT_CMPT, ipsObject -> {
                         fail("This PreSaveProcessor should never be called while saving a PolicyCmptType as it is registered for ProductCmpts");
                     });
             policyCmptType.getDescription(Locale.GERMAN).setText("foo");

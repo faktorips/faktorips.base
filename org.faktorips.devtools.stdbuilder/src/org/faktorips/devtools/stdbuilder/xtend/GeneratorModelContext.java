@@ -94,7 +94,7 @@ public class GeneratorModelContext {
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap,
             IIpsProject ipsProject) {
         this.annotationGeneratorMap = annotationGeneratorMap;
-        this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
+        javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         baseGeneratorConfig = new GeneratorConfig(config, ipsProject);
 
         for (IIpsPackageFragmentRoot packageFragmentRoot : ipsProject.getIpsPackageFragmentRoots()) {
@@ -251,7 +251,7 @@ public class GeneratorModelContext {
      * @param importHandler The thread local import handler
      */
     protected void setImportHandler(ImportHandler importHandler) {
-        this.importHandlerThreadLocal.set(importHandler);
+        importHandlerThreadLocal.set(importHandler);
     }
 
     /**
@@ -312,7 +312,7 @@ public class GeneratorModelContext {
      * files in different threads.
      * 
      * @return The thread local map holding the generated java elements for the generator model
-     *         nodes
+     *             nodes
      */
     private LinkedHashMap<AbstractGeneratorModelNode, List<IGeneratedJavaElement>> getGeneratedJavaElementsMap() {
         return generatedJavaElements.get();
@@ -352,7 +352,7 @@ public class GeneratorModelContext {
      * 
      * @param type The {@link AnnotatedJavaElementType} you want to get the generators for
      * @return the list of {@link IAnnotationGenerator annotation generators} or an empty list if
-     *         there is none
+     *             there is none
      */
     public List<IAnnotationGenerator> getAnnotationGenerator(AnnotatedJavaElementType type) {
         List<IAnnotationGenerator> result = annotationGeneratorMap.get(type);

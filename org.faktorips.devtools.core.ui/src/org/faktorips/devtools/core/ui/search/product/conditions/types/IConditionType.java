@@ -31,7 +31,7 @@ public interface IConditionType {
      * Returns a List of {@link IIpsElement IIpsElements} of the specified {@link IProductCmptType},
      * which can be searched with the implementation of IConditionType.
      */
-    public List<IIpsElement> getSearchableElements(IProductCmptType productCmptType);
+    List<IIpsElement> getSearchableElements(IProductCmptType productCmptType);
 
     /**
      * Returns a List of {@link ISearchOperatorType ISearchOperatorTypes}, which can be used in a
@@ -41,19 +41,19 @@ public interface IConditionType {
      * {@link ValueDatatype} of the specified IIpsElement. The result depends for example, whether
      * the ValueDatatype is a Comparable or not.
      */
-    public List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement);
+    List<? extends ISearchOperatorType> getSearchOperatorTypes(IIpsElement searchableElement);
 
     /**
      * Returns the {@link ValueDatatype} of the specified {@link IIpsElement}
      */
-    public ValueDatatype getValueDatatype(IIpsElement elementPart);
+    ValueDatatype getValueDatatype(IIpsElement elementPart);
 
     /**
      * Returns true, if the condition can deliver a {@link IValueSet}.
      * <p>
      * Call this method before calling {@link #getValueSet(IIpsElement)}
      */
-    public boolean hasValueSet();
+    boolean hasValueSet();
 
     /**
      * Returns a {@link IValueSet} according to the specified {@link IIpsElement}.
@@ -62,28 +62,28 @@ public interface IConditionType {
      * 
      * @throws IllegalStateException if there is no {@link IValueSet} for this condition.
      */
-    public IValueSet getValueSet(IIpsElement elementPart);
+    IValueSet getValueSet(IIpsElement elementPart);
 
     /**
      * Returns a Collection with all allowed values for the specified {@link IIpsElement}, which are
      * allowed by this condition.
      * 
      */
-    public Collection<?> getAllowedValues(IIpsElement elementPart);
+    Collection<?> getAllowedValues(IIpsElement elementPart);
 
     /**
      * Creates an {@link IOperandProvider} using the specified {@link IIpsElement}
      */
-    public IOperandProvider createOperandProvider(IIpsElement elementPart);
+    IOperandProvider createOperandProvider(IIpsElement elementPart);
 
     /**
      * Returns the name of the condition
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns true, if the argument of the condition is an {@link IIpsObject}.
      */
-    public boolean isArgumentIpsObject();
+    boolean isArgumentIpsObject();
 
 }

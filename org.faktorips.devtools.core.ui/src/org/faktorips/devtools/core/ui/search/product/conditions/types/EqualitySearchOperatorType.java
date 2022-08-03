@@ -25,7 +25,7 @@ public enum EqualitySearchOperatorType implements ISearchOperatorType {
     private final String label;
     private final boolean equality;
 
-    private EqualitySearchOperatorType(String label, boolean equality) {
+    EqualitySearchOperatorType(String label, boolean equality) {
         this.label = label;
         this.equality = equality;
     }

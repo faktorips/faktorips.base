@@ -415,7 +415,7 @@ public class PolicyCmptTypeTest {
     @IpsPolicyCmptType(name = "SeparatelyValidatedSuperPolicy")
     @IpsValidatedBy(SeparatelyValidatedSuperPolicyValidator.class)
     private static class SeparatelyValidatedSuperPolicy extends AbstractModelObject {
-
+        // another policy
     }
 
     @IpsValidationRules({ "superRule" })
@@ -434,7 +434,7 @@ public class PolicyCmptTypeTest {
     @IpsPolicyCmptType(name = "SeparatelyValidatedPolicy")
     @IpsValidatedBy(SeparatelyValidatedPolicyValidator.class)
     private static class SeparatelyValidatedPolicy extends SeparatelyValidatedSuperPolicy {
-
+        // yet another policy
     }
 
     @IpsValidationRules({ "rule", "configuredRule" })

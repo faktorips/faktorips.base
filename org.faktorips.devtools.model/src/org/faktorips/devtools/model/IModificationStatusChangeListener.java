@@ -23,6 +23,6 @@ public interface IModificationStatusChangeListener {
      * 
      * @param event The event with the detailed information, is never <code>null</code>.
      */
-    public void modificationStatusHasChanged(ModificationStatusChangedEvent event);
+    void modificationStatusHasChanged(ModificationStatusChangedEvent event);
 
 }

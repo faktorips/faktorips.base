@@ -84,8 +84,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     public ProductGenerationAttributeTable(IProductCmpt productCmpt, DocumentationContext context) {
         super(context);
         this.productCmpt = productCmpt;
-        this.productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
-        this.attributes = productCmptType.findAllAttributes(productCmpt.getIpsProject());
+        productCmptType = context.getIpsProject().findProductCmptType(productCmpt.getProductCmptType());
+        attributes = productCmptType.findAllAttributes(productCmpt.getIpsProject());
     }
 
     @Override
@@ -118,8 +118,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private IPolicyCmptType getPolicyCmptType() {
-        IPolicyCmptType policyCmptType = productCmptType.findPolicyCmptType(getContext().getIpsProject());
-        return policyCmptType;
+        return productCmptType.findPolicyCmptType(getContext().getIpsProject());
     }
 
     private void addSubHeadline(String category) {
@@ -216,10 +215,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {
-        String value = getContext().getDatatypeFormatter().formatValue(
+        return getContext().getDatatypeFormatter().formatValue(
                 productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
                 attributeValue == null ? null : attributeValue.getPropertyValue());
-        return value;
     }
 
     private void addFormulas() {
@@ -343,15 +341,13 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         builder.append(COMMA_SEPARATOR);
         builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getStep()));
 
-        TextPageElement textPageElement = new TextPageElement(builder.toString(), TextType.BLOCK, getContext());
-        return textPageElement;
+        return new TextPageElement(builder.toString(), TextType.BLOCK, getContext());
     }
 
     private TextPageElement createUnrestrictedEnumValueCell() {
-        TextPageElement textPageElement = new TextPageElement(
+        return new TextPageElement(
                 getContext().getMessage("ProductGenerationAttributeTable_valueSetUnrestricted"), TextType.BLOCK, //$NON-NLS-1$
                 getContext());
-        return textPageElement;
     }
 
     private TextPageElement createEnumValueSetCell(IEnumValueSet enumValueSet) {
@@ -365,11 +361,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     .formatValue(enumValueSet.findValueDatatype(getContext().getIpsProject()), enumValue));
 
         }
-        TextPageElement textPageElement = new TextPageElement(
+        return new TextPageElement(
                 getContext().getMessage("ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
                         + COLON_SEPARATOR + builder.toString(),
                 getContext());
-        return textPageElement;
     }
 
     private void addTableStructureUsages() {
@@ -564,8 +559,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     @FunctionalInterface
-    private static interface CellCreator<C, P extends IChangingOverTimeProperty> {
-        public IPageElement createCell(C container, P property);
+    private interface CellCreator<C, P extends IChangingOverTimeProperty> {
+        IPageElement createCell(C container, P property);
     }
 
 }

@@ -81,7 +81,7 @@ public class ElementSelectionPage extends WizardPage {
                     if (checked2 != checked) {
                         treeViewer.setGrayed(parent1, true);
                     }
-                    checked = checked | checked2;
+                    checked = checked || checked2;
                 }
                 treeViewer.setChecked(parent1, checked);
             }

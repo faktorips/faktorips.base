@@ -202,12 +202,8 @@ public class NewRootParameterWizard extends Wizard implements IBlockedValidation
     public boolean isPageValid(int pageNo) {
         // special check for the last page, valid if no new test policy cmpt type param is chosen,
         // because in this case the page is not necessary
-        if (pageNo == 3 && kindOfTestParameter != TEST_POLICY_CMPT_TYPE_PARAMETER) {
-            return true;
-        }
-
         // the page is valid if the next page was displayed
-        if (pageNo < pageDisplayedMax) {
+        if ((pageNo == 3 && kindOfTestParameter != TEST_POLICY_CMPT_TYPE_PARAMETER) || (pageNo < pageDisplayedMax)) {
             return true;
         }
 

@@ -15,6 +15,7 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -96,8 +97,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         } else {
             result = prime * result + root.getWrapped().hashCode();
         }
-        result = prime * result + ((workingDate == null) ? 0 : workingDate.hashCode());
-        return result;
+        return prime * result + ((workingDate == null) ? 0 : workingDate.hashCode());
     }
 
     // CSOFF: CyclomaticComplexity
@@ -106,18 +106,11 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if ((obj == null) || (getClass() != obj.getClass())) {
             return false;
         }
         ProductCmptTreeStructure other = (ProductCmptTreeStructure)obj;
-        if (ipsProject == null) {
-            if (other.ipsProject != null) {
-                return false;
-            }
-        } else if (!ipsProject.equals(other.ipsProject)) {
+        if (!Objects.equals(ipsProject, other.ipsProject)) {
             return false;
         }
         /*
@@ -138,14 +131,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 return false;
             }
         }
-        if (workingDate == null) {
-            if (other.workingDate != null) {
-                return false;
-            }
-        } else if (!workingDate.equals(other.workingDate)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(workingDate, other.workingDate);
     }
     // CSON: CyclomaticComplexity
 

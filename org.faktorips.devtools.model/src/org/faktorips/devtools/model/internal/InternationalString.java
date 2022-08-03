@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -127,10 +128,7 @@ public class InternationalString implements IInternationalString {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((localizedStringMap == null) ? 0 : localizedStringMap.hashCode());
-        return result;
+        return Objects.hash(localizedStringMap);
     }
 
     @Override
@@ -138,10 +136,7 @@ public class InternationalString implements IInternationalString {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof InternationalString)) {
+        if ((obj == null) || !(obj instanceof InternationalString)) {
             return false;
         }
         InternationalString other = (InternationalString)obj;
@@ -157,10 +152,7 @@ public class InternationalString implements IInternationalString {
 
     private boolean equalLocalizedMapValues(Collection<LocalizedString> otherLocalizedStringMapValues) {
         Collection<LocalizedString> values = values();
-        if (otherLocalizedStringMapValues == null) {
-            return false;
-        }
-        if (values.size() != otherLocalizedStringMapValues.size()) {
+        if ((otherLocalizedStringMapValues == null) || (values.size() != otherLocalizedStringMapValues.size())) {
             return false;
         }
         for (LocalizedString localizedString : values) {

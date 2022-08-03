@@ -107,8 +107,8 @@ public class ASTJType extends ASTJAbstractType<TypeDeclaration> implements JType
 
     @Override
     public void setSuperInterfaces(String[] interfaceNames) {
-        this.superInterfaces = interfaceNames;
-        this.addedSuperInterfaces = null;
+        superInterfaces = interfaceNames;
+        addedSuperInterfaces = null;
         setListNodeProperty(getASTNode(), interfaceNames, TypeDeclaration.SUPER_INTERFACE_TYPES_PROPERTY,
                 ASTNode.SIMPLE_TYPE);
     }
