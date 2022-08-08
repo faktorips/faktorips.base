@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -222,6 +223,35 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         subProductToSubCoverType.setConstrain(true);
 
         assertThat(subProductToSubCoverType.findDefaultPolicyCmptTypeAssociation(ipsProject), is(policyToCover));
+    }
+
+    /**
+     * Test for FIPS-8562
+     */
+    @Test
+    public void testFindDefaultPolicyCmptTypeAssociation_FindMatchingAssociationForConstrainedAssociation_TargetHierarchy()
+            throws Exception {
+        PolicyCmptType ereignis = newPolicyAndProductCmptType(ipsProject, "Ereignis", "SuperEreignisKonfiguration");
+        IProductCmptType superEreignisKonfiguration = ereignis.findProductCmptType(ipsProject);
+
+        superEreignisKonfiguration.setAbstract(true);
+        ProductCmptType ereignisKonfiguration = newProductCmptType(ipsProject, "EreignisKonfiguration", ereignis);
+        ereignisKonfiguration.setSupertype(superEreignisKonfiguration.getQualifiedName());
+
+        PolicyCmptType lvb = newPolicyAndProductCmptType(ipsProject, "Lvb", "LvbBaustein");
+        IProductCmptType lvbBaustein = lvb.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation lvbToEreignis = newPolicyCmptTypeAssociation(lvb, ereignis);
+        IProductCmptTypeAssociation lvbBausteinToSuperEreignisKonfiguration = newProductCmptTypeAssociation(lvbBaustein,
+                superEreignisKonfiguration);
+
+        IProductCmptTypeAssociation lvbBausteinToEreignisKonfiguration = newProductCmptTypeAssociation(lvbBaustein,
+                ereignisKonfiguration);
+
+        assertThat(lvbBausteinToSuperEreignisKonfiguration.findDefaultPolicyCmptTypeAssociation(ipsProject),
+                is(lvbToEreignis));
+        assertThat(lvbBausteinToEreignisKonfiguration.findDefaultPolicyCmptTypeAssociation(ipsProject),
+                is(not(lvbToEreignis)));
     }
 
     /**

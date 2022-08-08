@@ -230,6 +230,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         if (targetPolicyCmptType == null) {
             return null;
         }
+
         IPolicyCmptTypeAssociation[] policyAssoc = getAssociationsFor(policyCmptType, targetPolicyCmptType);
         if (policyAssoc.length == 0) {
             return null;
@@ -265,7 +266,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     private int getAssociationIndex() {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<>();
         for (IAssociation element : getType().getAssociations()) {
-            if (getTarget().equals(element.getTarget())) {
+            IProductCmptType target = getIpsProject().findProductCmptType(getTarget());
+            IProductCmptType elementTarget = getIpsProject().findProductCmptType(element.getTarget());
+            if (getTarget().equals(element.getTarget())
+                    || target.isSubtypeOf(elementTarget, getIpsProject())) {
                 allAssociationsForTheTargetType.add(element);
             }
         }
@@ -391,7 +395,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     private boolean isMatchingAssociationSourceAndNameNotEmpty() {
-        return StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName);
+        return StringUtils.isNotEmpty(matchingAssociationSource)
+                && StringUtils.isNotEmpty(matchingAssociationName);
     }
 
     private void validateConstrainedChangeOverTime(MessageList list, IIpsProject ipsProject) {
