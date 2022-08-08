@@ -13,6 +13,8 @@ package org.faktorips.devtools.core.ui.views.modeldescription;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+
 public class DescriptionItem {
 
     private String name;
@@ -20,6 +22,8 @@ public class DescriptionItem {
     private String description;
 
     private String deprecation;
+
+    private IDescribedElement element;
 
     private List<DescriptionItem> children = new ArrayList<>(0);
 
@@ -38,10 +42,21 @@ public class DescriptionItem {
         this.deprecation = deprecation;
     }
 
-    public DescriptionItem(String name, List<DescriptionItem> children) {
-        this.description = ""; //$NON-NLS-1$
+    public DescriptionItem(String name, String description, String deprecation, IDescribedElement element) {
         this.name = name;
+        this.description = description;
+        this.deprecation = deprecation;
+        this.element = element;
+    }
+
+    public DescriptionItem(String name, List<DescriptionItem> children) {
+        this.name = name;
+        this.description = ""; //$NON-NLS-1$
         this.children = children;
+    }
+
+    public void setElement(IDescribedElement element) {
+        this.element = element;
     }
 
     public String getDescription() {
@@ -81,6 +96,10 @@ public class DescriptionItem {
 
     public void setDeprecation(String deprecation) {
         this.deprecation = deprecation;
+    }
+
+    public IDescribedElement getElement() {
+        return element;
     }
 
 }

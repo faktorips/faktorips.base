@@ -18,6 +18,8 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 
@@ -60,7 +62,17 @@ public class ProductCmptTypeDescriptionPage extends DefaultModelDescriptionPage 
                 if (!association.isDerivedUnion()) {
                     createDescriptionItem(association, descriptions);
                 }
+
             }
+            List<ITableStructureUsage> tableUsages = getIpsObject().getTableStructureUsages();
+            for (ITableStructureUsage tableUsage : tableUsages) {
+                createDescriptionItem(tableUsage, descriptions);
+            }
+            List<IProductCmptTypeMethod> formulas = getIpsObject().getFormulaSignatures();
+            for (IProductCmptTypeMethod formula : formulas) {
+                createDescriptionItem(formula, descriptions);
+            }
+
         }
         return descriptions;
     }

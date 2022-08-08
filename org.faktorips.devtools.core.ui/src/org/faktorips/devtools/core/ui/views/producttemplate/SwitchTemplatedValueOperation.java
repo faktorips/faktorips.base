@@ -18,6 +18,7 @@ import java.util.function.Function;
 import com.google.common.collect.Iterables;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueContainer;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
@@ -49,27 +50,26 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
         this.definingValues = definingValues;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) {
         int count = getInheritingPropertyValues().size() + getDefiningPropertyValues().size() + 1;
-        monitor.beginTask(Messages.SwitchTemplatePropertyValueOperation_progress, count + 10);
+        SubMonitor subMonitor = SubMonitor.convert(monitor, Messages.SwitchTemplatePropertyValueOperation_progress,
+                count + 10);
         for (ITemplatedValue inheritingPropertyValue : getInheritingPropertyValues()) {
             checkForSave(inheritingPropertyValue);
             inheritingPropertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-            monitor.worked(1);
+            subMonitor.worked(1);
         }
         checkForSave(getTemplateValue());
         getTemplateValue().setTemplateValueStatus(TemplateValueStatus.DEFINED);
         setNewValueInTemplate();
-        monitor.worked(1);
+        subMonitor.worked(1);
         for (ITemplatedValue definingPropertyValue : getDefiningPropertyValues()) {
             checkForSave(definingPropertyValue);
             definingPropertyValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-            monitor.worked(1);
+            subMonitor.worked(1);
         }
-        save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 10));
-        monitor.done();
+        save(subMonitor.split(10));
     }
 
     @SuppressWarnings("unchecked")

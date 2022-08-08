@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -203,7 +204,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         Composite c = createTabItemComposite(folder, 1, false);
         Composite workArea = getToolkit().createLabelEditColumnComposite(c);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
+        Label createFormLabel = getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_defaultvalueLabel);
+        getBindingContext().bindEnabled(createFormLabel, attributePmo,
+                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE_CONTROLS);
         defaultEditFieldPlaceholder = getToolkit().createComposite(workArea);
         defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -218,7 +221,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         updateValueSetTypes();
 
         getBindingContext().bindEnabled(valueSetEditControl, attributePmo,
-                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
+                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE_PAGE);
 
         Object layoutData = valueSetEditControl.getLayoutData();
         if (layoutData instanceof GridData) {
@@ -270,7 +273,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.getParent().getParent().layout();
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
         getBindingContext().bindEnabled(defaultValueField.getControl(), attributePmo,
-                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
+                ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE_CONTROLS);
     }
 
     private void setDefaultValueField() {
@@ -393,7 +396,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     public static class ProductCmptTypeAttributePmo extends IpsObjectPartPmo {
 
-        public static final String PROPERTY_ENABLED_VALUE = "enabledDefaultAndValueset"; //$NON-NLS-1$
+        public static final String PROPERTY_ENABLED_VALUE_PAGE = "enabledDefaultAndValuesetPage"; //$NON-NLS-1$
+        public static final String PROPERTY_ENABLED_VALUE_CONTROLS = "enabledDefaultAndValuesetControls"; //$NON-NLS-1$
 
         public ProductCmptTypeAttributePmo(IProductCmptTypeAttribute attribute) {
             super(attribute);
@@ -405,16 +409,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         /**
+         * Returns the enabled state for the default and valueset page. Returns <code>true</code> if
+         * datatype is correct. Otherwise returns <code>false</code>.
+         */
+        public boolean isEnabledDefaultAndValuesetPage() {
+            ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
+                    getIpsObjectPartContainer().getIpsProject());
+            return newDatatype != null;
+        }
+
+        /**
          * Returns the enabled state for the default and valueset controls. Returns
          * <code>true</code> if datatype is correct and the multilingual is not set. Otherwise
          * returns <code>false</code>.
          */
-        public boolean isEnabledDefaultAndValueset() {
-            boolean enabled = true;
-            ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
-                    getIpsObjectPartContainer().getIpsProject());
-            enabled = newDatatype != null && !this.getIpsObjectPartContainer().isMultilingual();
-            return enabled;
+        public boolean isEnabledDefaultAndValuesetControls() {
+            return isEnabledDefaultAndValuesetPage() && !this.getIpsObjectPartContainer().isMultilingual();
         }
     }
 

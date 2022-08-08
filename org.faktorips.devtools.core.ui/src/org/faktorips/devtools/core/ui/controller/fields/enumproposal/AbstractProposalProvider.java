@@ -20,6 +20,7 @@ import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
+import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractPrefixContentProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.devtools.model.valueset.IValueSet;
@@ -29,7 +30,7 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
  * Base class for {@link ConfigElementProposalProvider} and {@link EnumerationProposalProvider}. It
  * implements {@link IContentProposalProvider}.
  */
-public abstract class AbstractProposalProvider implements IContentProposalProvider {
+public abstract class AbstractProposalProvider extends AbstractPrefixContentProposalProvider {
 
     private final IInputFormat<String> inputFormat;
     private final IValueSetOwner valueSetOwner;
@@ -72,14 +73,9 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
     }
 
     @Override
-    public IContentProposal[] getProposals(String contents, int position) {
-        String prefix = getPrefixFor(contents, position);
+    public IContentProposal[] getProposals(String prefix) {
         List<IContentProposal> result = createContentProposals(prefix);
         return result.toArray(new IContentProposal[result.size()]);
-    }
-
-    protected String getPrefixFor(String contents, int position) {
-        return StringUtils.left(contents, position);
     }
 
     /**
@@ -139,7 +135,7 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      * Returns all allowed values declared in the model of a specific {@link IValueSet} or
      * {@link EnumDatatype}.
      * 
-     * @return List<String> containing all allowed values.
+     * @return List&lt;String&gt; containing all allowed values.
      */
     private List<String> getAllowedValuesAsList() {
         return valueSource.getValues();

@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.CompletionUtil;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -38,8 +37,9 @@ import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
+import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.editors.type.DerivedUnionCompletionProcessor;
+import org.faktorips.devtools.core.ui.editors.type.DerivedUnionContentProposalProvider;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -239,9 +239,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(unionText, association,
                 IProductCmptTypeAssociation.PROPERTY_SUBSETTED_DERIVED_UNION);
         getBindingContext().bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
-        DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
-        completionProcessor.setComputeProposalForEmptyPrefix(true);
-        CompletionUtil.createHandlerForText(unionText, completionProcessor);
+
+        ContentProposals.forText(unionText, new DerivedUnionContentProposalProvider(association));
     }
 
     @Override

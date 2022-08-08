@@ -32,6 +32,15 @@ public class Messages extends NLS {
     public static String DefaultModelDescriptionPage_FilterEmptyDescription;
     public static String DefaultModelDescriptionPage_FilterEmptyText;
     public static String DefaultModelDescriptionPage_FilterEmptyTooltipText;
+    public static String DefaultModelDescriptionPage_FilterDescriptionsByType;
+    public static String DefaultModelDescriptionPage_FilterDescriptionsByTypeText;
+    public static String DefaultModelDescriptionPage_FilterDescriptionsByTypeTooltipText;
     public static String DefaultModelDescriptionPage_ErrorIpsModelNotFound;
     public static String DefaultModelDescriptionPage_GeneralInformation;
+    public static String DefaultModelDescriptionPage_FilterDescriptionsByTypeDialogTitle;
+    public static String FilterDescriptionsByTypeDialog_getTextForAssociation;
+    public static String FilterDescriptionsByTypeDialog_getTextForRule;
+    public static String FilterDescriptionsByTypeDialog_getTextForAttribute;
+    public static String FilterDescriptionsByTypeDialog_getTextForTable;
+    public static String FilterDescriptionsByTypeDialog_getTextForMethod;
 }

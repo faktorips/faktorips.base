@@ -162,16 +162,13 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
         } else {
             String deprecationDescription = getDeprecationDescription(element);
             String descriptionString = getDescription(element);
-
+            StyledTextUtil.clear(description);
             if (StringUtils.isNotEmpty(deprecationDescription)) {
-                StyledTextUtil.clear(description);
                 StyledTextUtil.appendStyled(description, deprecationDescription,
                         SWT.BOLD);
                 description.append(System.lineSeparator());
             }
-
             if (StringUtils.isEmpty(descriptionString) && StringUtils.isEmpty(deprecationDescription)) {
-                StyledTextUtil.clear(description);
                 StyledTextUtil.appendStyled(description,
                         Messages.TypeSelectionComposite_label_noDescriptionAvailable,
                         SWT.ITALIC);

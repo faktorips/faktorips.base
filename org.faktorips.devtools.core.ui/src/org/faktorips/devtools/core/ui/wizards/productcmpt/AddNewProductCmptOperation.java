@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -35,10 +36,9 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
      * {@link IProductCmptLink} using the new product component as target. The link will be created
      * at the {@link IProductCmptGeneration} as configured by the {@link NewProductCmptPMO}.
      */
-    @SuppressWarnings("deprecation")
     @Override
     protected void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
-        monitor.beginTask(null, 2);
+        SubMonitor subMonitor = SubMonitor.convert(monitor, 2);
 
         IProductCmptTypeAssociation association = getPmo().getAddToAssociation();
         IProductCmptGeneration generationToAddTo = getPmo().getAddToProductCmptGeneration();
@@ -53,10 +53,10 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
 
                 String targetQName = ipsSrcFile.getQualifiedNameType().getName();
                 new LinkCreatorUtil(false).createLink(association, generationToAddTo, targetQName);
-                monitor.worked(1);
+                subMonitor.worked(1);
 
                 if (!wasDirty) {
-                    srcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                    srcFile.save(subMonitor.split(1));
                 }
             }
         }

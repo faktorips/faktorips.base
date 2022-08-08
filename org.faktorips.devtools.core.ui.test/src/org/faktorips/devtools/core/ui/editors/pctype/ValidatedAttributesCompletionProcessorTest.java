@@ -12,10 +12,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.jface.text.contentassist.ICompletionProposal;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -51,34 +48,27 @@ public class ValidatedAttributesCompletionProcessorTest extends AbstractIpsPlugi
         attr.setName("Berta");
 
         IValidationRule rule = pcType.newRule();
-        ValidatedAttributesCompletionProcessor processor = new ValidatedAttributesCompletionProcessor(rule);
-        List<ICompletionProposal> proposals = new ArrayList<>();
-        processor.doComputeCompletionProposals("", 0, proposals);
-        assertEquals(5, proposals.size());
+        ValidatedAttributesContentProposalProvider processor = new ValidatedAttributesContentProposalProvider(rule);
+        IContentProposal[] proposals = processor.getProposals("", 0);
+        assertEquals(5, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("a", 0, proposals);
-        assertEquals(4, proposals.size());
+        proposals = processor.getProposals("a", 1);
+        assertEquals(4, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("an", 0, proposals);
-        assertEquals(3, proposals.size());
+        proposals = processor.getProposals("an", 2);
+        assertEquals(3, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("al", 0, proposals);
-        assertEquals(1, proposals.size());
+        proposals = processor.getProposals("al", 2);
+        assertEquals(1, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("An", 0, proposals);
-        assertEquals(3, proposals.size());
+        proposals = processor.getProposals("An", 2);
+        assertEquals(3, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("B", 0, proposals);
-        assertEquals(1, proposals.size());
+        proposals = processor.getProposals("B", 1);
+        assertEquals(1, proposals.length);
 
-        proposals.clear();
-        processor.doComputeCompletionProposals("b", 0, proposals);
-        assertEquals(1, proposals.size());
+        proposals = processor.getProposals("b", 1);
+        assertEquals(1, proposals.length);
     }
 
 }

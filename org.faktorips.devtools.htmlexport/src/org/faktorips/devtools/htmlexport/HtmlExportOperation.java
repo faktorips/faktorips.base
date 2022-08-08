@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -66,23 +67,19 @@ public class HtmlExportOperation implements ICoreRunnable {
      * 
      * {@inheritDoc}
      */
-    @SuppressWarnings("deprecation")
     @Override
     public void run(IProgressMonitor monitor) {
         List<IDocumentorScript> scripts = getDocumentationContext().getScripts();
 
         int monitorScriptFaktor = 9;
-        monitor.beginTask("Html Export", scripts.size() * monitorScriptFaktor + 1); //$NON-NLS-1$
+        SubMonitor subMonitor = SubMonitor.convert(monitor, "Html Export", scripts.size() * monitorScriptFaktor + 1); //$NON-NLS-1$
 
         for (IDocumentorScript documentorScript : scripts) {
-            IProgressMonitor subProgressMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor,
-                    monitorScriptFaktor);
+            SubMonitor subProgressMonitor = subMonitor.split(monitorScriptFaktor);
             documentorScript.execute(getDocumentationContext(), subProgressMonitor);
         }
 
-        refreshIfNecessary(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
-
-        monitor.done();
+        refreshIfNecessary(subMonitor.split(1));
     }
 
     private void refreshIfNecessary(IProgressMonitor monitor) {

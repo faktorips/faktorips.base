@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.emf.codegen.CodeGenPlugin;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.common.EMFPlugin;
@@ -848,7 +849,7 @@ public class CodeGenUtil {
          * A constant that will always represent the latest language level supported by the version
          * of JDT in the installed runtime. It will determine the
          */
-        private static final int JLS = AST.JLS11;
+        private static final int JLS = AST.JLS13;
 
         /**
          * Return an ASTParser that supports the latest language level in the version of the JDT in
@@ -930,50 +931,44 @@ public class CodeGenUtil {
             return findOrCreateContainer(path, forceRefresh, projectDescription, progressMonitor);
         }
 
-        @SuppressWarnings("deprecation")
         public static IContainer findOrCreateContainer(IPath path,
                 boolean forceRefresh,
                 IProjectDescription projectDescription,
                 IProgressMonitor progressMonitor) throws CoreException {
-            try {
-                String projectName = path.segment(0);
-                progressMonitor.beginTask("", path.segmentCount() + 3);
-                progressMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_ExaminingProject_message",
-                        new Object[] { projectName }));
-                IWorkspace workspace = ResourcesPlugin.getWorkspace();
-                IProject project = workspace.getRoot().getProject(path.segment(0));
+            String projectName = path.segment(0);
+            SubMonitor subMonitor = SubMonitor.convert(progressMonitor, path.segmentCount() + 3);
 
-                if (forceRefresh) {
-                    project.refreshLocal(IResource.DEPTH_INFINITE,
-                            new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
-                } else {
-                    progressMonitor.worked(1);
-                }
+            subMonitor.subTask(CodeGenPlugin.getPlugin().getString("_UI_ExaminingProject_message",
+                    new Object[] { projectName }));
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            IProject project = workspace.getRoot().getProject(path.segment(0));
 
-                if (!project.exists()) {
-                    project.create(projectDescription,
-                            new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
-                    project.open(new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
-                } else {
-                    project.open(new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 2));
-                }
-
-                IContainer container = project;
-                for (int i = 1, length = path.segmentCount(); i < length; ++i) {
-                    IFolder folder = container.getFolder(new Path(path.segment(i)));
-                    if (!folder.exists()) {
-                        folder.create(false, true, new org.eclipse.core.runtime.SubProgressMonitor(progressMonitor, 1));
-                    } else {
-                        progressMonitor.worked(1);
-                    }
-
-                    container = folder;
-                }
-
-                return container;
-            } finally {
-                progressMonitor.done();
+            if (forceRefresh) {
+                project.refreshLocal(IResource.DEPTH_INFINITE, subMonitor.split(1));
+            } else {
+                progressMonitor.worked(1);
             }
+
+            if (!project.exists()) {
+                project.create(projectDescription, subMonitor.split(1));
+                project.open(subMonitor.split(1));
+            } else {
+                project.open(subMonitor.split(2));
+            }
+
+            IContainer container = project;
+            for (int i = 1, length = path.segmentCount(); i < length; ++i) {
+                IFolder folder = container.getFolder(new Path(path.segment(i)));
+                if (!folder.exists()) {
+                    folder.create(false, true, subMonitor.split(1));
+                } else {
+                    subMonitor.worked(1);
+                }
+
+                container = folder;
+            }
+
+            return container;
         }
 
         public static String getJavaComplianceLevel(IProject project) {

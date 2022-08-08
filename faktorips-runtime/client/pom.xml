@@ -9,7 +9,6 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.faktorips</groupId>
     <artifactId>faktorips-runtime-client</artifactId>
 
     <name>Faktor-IPS Runtime Client Library</name>
@@ -50,6 +49,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
     </licenses>
 
     <properties>
+        <java.version>8</java.version>
         <flatten-maven-plugin-version>1.2.7</flatten-maven-plugin-version>
     </properties>
 
@@ -113,7 +113,6 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>${flatten-maven-plugin-version}</version>
                 <configuration>
                     <pomElements>
                         <name>keep</name>

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -40,8 +41,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
  * <li>{@link #postProcess(IIpsSrcFile, IProgressMonitor)}
  * </ul>
  * <p>
- * It is also possible to override {@link #createIpsSrcFile(IProgressMonitor)} if it should be
- * necessary to hook into creation of the source file.
+ * It is also possible to override {@link #createIpsSrcFile(SubMonitor)} if it should be necessary
+ * to hook into creation of the source file.
  * 
  * @param <PMO> type of the {@link PresentationModelObject} that configures this operation
  */
@@ -60,34 +61,28 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     @Override
     protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(NLS.bind(Messages.NewProductCmptWizard_title, getPmo().getIpsObjectType().getDisplayName()),
+        SubMonitor subMonitor = SubMonitor.convert(monitor,
+                NLS.bind(Messages.NewProductCmptWizard_title, getPmo().getIpsObjectType().getDisplayName()),
                 5);
 
-        try {
-            createIpsPackageFragmentIfNonExistent(monitor);
+        createIpsPackageFragmentIfNonExistent(subMonitor);
 
-            IIpsSrcFile ipsSrcFile = createIpsSrcFile(monitor);
-            finishIpsSrcFile(ipsSrcFile, monitor);
-            callParticipants(ipsSrcFile, monitor);
-            saveIpsSrcFile(ipsSrcFile, monitor);
-            postProcess(ipsSrcFile, monitor);
-        } finally {
-            monitor.done();
-        }
+        IIpsSrcFile ipsSrcFile = createIpsSrcFile(subMonitor);
+        finishIpsSrcFile(ipsSrcFile, subMonitor);
+        callParticipants(ipsSrcFile, subMonitor);
+        saveIpsSrcFile(ipsSrcFile, subMonitor);
+        postProcess(ipsSrcFile, subMonitor);
     }
 
-    @SuppressWarnings("deprecation")
-    private void createIpsPackageFragmentIfNonExistent(IProgressMonitor monitor) {
+    private void createIpsPackageFragmentIfNonExistent(SubMonitor monitor) {
         IIpsPackageFragment ipsPackage = pmo.getIpsPackage();
         if (!ipsPackage.exists()) {
-            pmo.getPackageRoot().createPackageFragment(ipsPackage.getName(), true,
-                    new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+            pmo.getPackageRoot().createPackageFragment(ipsPackage.getName(), true, monitor.split(1));
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
-        ipsSrcFile.save(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+    private void saveIpsSrcFile(IIpsSrcFile ipsSrcFile, SubMonitor monitor) {
+        ipsSrcFile.save(monitor.split(1));
     }
 
     /**
@@ -103,14 +98,13 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      * 
      * @throws IpsException in case of exceptions during file creation
      */
-    @SuppressWarnings("deprecation")
-    protected IIpsSrcFile createIpsSrcFile(IProgressMonitor monitor) {
+    protected IIpsSrcFile createIpsSrcFile(SubMonitor monitor) {
         // @formatter:off
         return pmo.getIpsPackage().createIpsFile(
                 pmo.getIpsObjectType(),
                 pmo.getName(),
                 true,
-                new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1));
+                monitor.split(1));
         // @formatter:on
     }
 
@@ -139,7 +133,7 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
      */
     protected abstract void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor);
 
-    private void callParticipants(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
+    private void callParticipants(IIpsSrcFile ipsSrcFile, SubMonitor monitor) {
         for (INewProductDefinitionOperationParticipant participant : participants) {
             participant.finishIpsSrcFile(ipsSrcFile, monitor);
         }

@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ContentViewer;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -26,6 +27,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -750,26 +752,31 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (getSelection().isEmpty()) {
             return;
         }
-
-        try {
-            Table tableControl = (Table)getViewer().getControl();
-            int selectedIndexAfterDeletion = Math
-                    .min(tableControl.getSelectionIndex(), tableControl.getItemCount() - 2);
-            IIpsObjectPart part = getSelectedPart();
-            if (!fireAboutToDelete(part)) {
-                return;
+        String deleteDialogMessage = NLS.bind(Messages.IpsPartsComposite_deleteAttributeConfirm,
+                getSelectedPart().getName());
+        boolean deleteAttribute = MessageDialog.openConfirm(getShell(),
+                Messages.IpsPartsComposite_deleteAttribute,
+                deleteDialogMessage);
+        if (deleteAttribute) {
+            try {
+                Table tableControl = (Table)getViewer().getControl();
+                int selectedIndexAfterDeletion = Math
+                        .min(tableControl.getSelectionIndex(), tableControl.getItemCount() - 2);
+                IIpsObjectPart part = getSelectedPart();
+                if (!fireAboutToDelete(part)) {
+                    return;
+                }
+                deleteIpsPart(part);
+                if (selectedIndexAfterDeletion >= 0) {
+                    Object selected = tableViewer.getElementAt(selectedIndexAfterDeletion);
+                    tableViewer.setSelection(new StructuredSelection(selected), true);
+                }
+                fireDeleted(part);
+            } catch (IpsException ex) {
+                IpsPlugin.logAndShowErrorDialog(ex);
             }
-            deleteIpsPart(part);
-            if (selectedIndexAfterDeletion >= 0) {
-                Object selected = tableViewer.getElementAt(selectedIndexAfterDeletion);
-                tableViewer.setSelection(new StructuredSelection(selected), true);
-            }
-            fireDeleted(part);
-        } catch (IpsException ex) {
-            IpsPlugin.logAndShowErrorDialog(ex);
+            refresh();
         }
-
-        refresh();
     }
 
     /**

@@ -26,6 +26,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
@@ -46,21 +47,25 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
- * A page for presenting {@link DescriptionItem}s similar to the outline view.
- * 
- * The attributes and their description are presented within a ExpandableComposite.
- * 
- * @author Markus Blum
- * 
+ * A page for presenting {@link DescriptionItem DescriptionItems} similar to the outline view. 
+ *
+ * The attributes and their descriptions are presented within an ExpandableComposite.
  */
 public abstract class DefaultModelDescriptionPage extends Page implements IIpsSrcFilesChangeListener {
+
+    @SuppressWarnings("restriction")
+    private static final ImageDescriptor DESC_ELCL_FILTER = org.eclipse.jdt.internal.ui.JavaPluginImages.DESC_ELCL_FILTER;
+
+    private final Listener listener = $ -> sortAndFilterDescriptionList();
 
     private FormToolkit toolkit;
 
     private ScrolledForm form;
+
     private Composite expandableContainer;
 
     // List of DescriptionItems sorted by parent
@@ -78,11 +83,14 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
     private LexicalSortingAction lexicalSortingAction;
 
+    private FilterDescriptionsByTypeAction filterDescriptionsByTypeAction;
+
+    private FilterDescriptionsByTypeDialog dialog;
+
     public DefaultModelDescriptionPage() {
         defaultList = new ArrayList<>();
         activeList = new ArrayList<>();
         IIpsModel.get().addIpsSrcFilesChangedListener(this);
-
     }
 
     /**
@@ -104,12 +112,10 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         } catch (IpsException e) {
             IpsPlugin.log(e);
         }
-
     }
 
     /**
      * Creates a List of DescriptionItems
-     * 
      */
     protected abstract List<DescriptionItem> createDescriptions() throws IpsException;
 
@@ -120,7 +126,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         String label = createLabel(describedElement);
         String description = createDescription(describedElement);
         String deprecation = createDeprecation(describedElement);
-        DescriptionItem item = new DescriptionItem(label, description, deprecation);
+        DescriptionItem item = new DescriptionItem(label, description, deprecation, describedElement);
         descriptions.add(item);
     }
 
@@ -189,13 +195,13 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
         form = toolkit.createScrolledForm(parent);
         // form.setBackground(parent.getDisplay().getSystemColor(SWT.COLOR_YELLOW));
-
         TableWrapLayout layoutForm = new TableWrapLayout();
         layoutForm.verticalSpacing = 1;
         layoutForm.horizontalSpacing = 1;
         layoutForm.numColumns = 1;
 
         form.getBody().setLayout(layoutForm);
+        form.addListener(SWT.Show, listener);
 
         registerToolbarActions();
     }
@@ -208,11 +214,11 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         IToolBarManager toolBarManager = getSite().getActionBars().getToolBarManager();
         filterEmptyDescriptionsAction = new FilterEmptyDescriptionsAction();
         lexicalSortingAction = new LexicalSortingAction();
+        filterDescriptionsByTypeAction = new FilterDescriptionsByTypeAction();
         toolBarManager.add(filterEmptyDescriptionsAction);
         toolBarManager.add(lexicalSortingAction);
-        // if (lexicalSortingAction.isChecked()) {
-        // sortLexical();
-        // }
+        toolBarManager.add(filterDescriptionsByTypeAction);
+        sortAndFilterDescriptionList();
     }
 
     /**
@@ -341,7 +347,10 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         }
 
         if (form != null) {
-            form.dispose();
+            if (!form.isDisposed()) {
+                form.removeListener(SWT.Show, listener);
+                form.dispose();
+            }
         }
         super.dispose();
     }
@@ -382,6 +391,11 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
     private void sortAndFilterDescriptionList() {
         final boolean filter = filterEmptyDescriptionsAction != null && filterEmptyDescriptionsAction.isChecked();
         final boolean sort = lexicalSortingAction != null && lexicalSortingAction.isChecked();
+        final boolean filterByType = filterDescriptionsByTypeAction != null
+                && filterDescriptionsByTypeAction.isChecked();
+        if (form == null) {
+            return;
+        }
         BusyIndicator.showWhile(form.getDisplay(), () -> {
             activeList = copyDescriptionItems(defaultList);
             if (filter) {
@@ -390,13 +404,39 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
             if (sort) {
                 sortRecursive(activeList);
             }
+            if (filterByType) {
+                filterDescriptionsByType();
+            }
             refresh();
         });
+
+    }
+
+    /**
+     * Filters the displayed {@link DescriptionItem}s by the selected types in the
+     * {@link FilterDescriptionsByTypeDialog}
+     */
+    private void filterDescriptionsByType() {
+        List<DescriptionItem> copyActiveList = copyDescriptionItems(activeList);
+        List<Class<? extends ITypePart>> selectedPartsList = dialog.getSavedParts();
+        if (!selectedPartsList.isEmpty()) {
+            activeList.clear();
+            for (DescriptionItem item : copyActiveList) {
+                IDescribedElement element = item.getElement();
+                for (Class<? extends ITypePart> part : selectedPartsList) {
+
+                    if (element != null && part.isAssignableFrom(element.getClass())) {
+                        activeList.add(item);
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
     /**
      * Delete empty descriptions
-     * 
      */
     private void deleteEmptyDescriptions() {
         List<DescriptionItem> copyActiveList = copyDescriptionItems(activeList);
@@ -452,6 +492,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         defaultList = items;
         activeList = copyDescriptionItems(defaultList);
         refresh();
+        sortAndFilterDescriptionList();
     }
 
     public List<DescriptionItem> copyDescriptionItems(List<DescriptionItem> original) {
@@ -461,7 +502,6 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
             copy.add(itemCopy);
         }
         return copy;
-
     }
 
     private DescriptionItem copyItem(DescriptionItem item) {
@@ -470,13 +510,12 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         copyItem.setDescription(item.getDescription());
         copyItem.setDeprecation(item.getDeprecation());
         copyItem.setChildren(copyDescriptionItems(item.getChildren()));
+        copyItem.setElement(item.getElement());
         return copyItem;
     }
 
     /**
      * "sort" action for DescriptionItems.
-     * 
-     * @author Markus Blum
      */
     class LexicalSortingAction extends Action {
 
@@ -495,7 +534,6 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
             boolean checked = IpsPlugin.getDefault().getPreferenceStore()
                     .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
             setChecked(checked);
-            sortAndFilterDescriptionList();
         }
 
         @Override
@@ -509,8 +547,6 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
     /**
      * "filter" action for DescriptionItems.
-     * 
-     * @author Quirin Stoll
      */
     class FilterEmptyDescriptionsAction extends Action {
         public FilterEmptyDescriptionsAction() {
@@ -523,17 +559,50 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
             setImageDescriptor(descriptor);
 
             boolean checked = IpsPlugin.getDefault().getPreferenceStore()
-                    .getBoolean("DefaultModelDescriptionPage.LexicalSortingAction.isChecked"); //$NON-NLS-1$
+                    .getBoolean("DefaultModelDescriptionPage.FilterEmptyDescriptionsAction.isChecked"); //$NON-NLS-1$
             setChecked(checked);
-            sortAndFilterDescriptionList();
         }
 
         @Override
         public void run() {
             sortAndFilterDescriptionList();
             IpsPlugin.getDefault().getPreferenceStore()
-                    .setValue("DefaultModelDescriptionPage.LexicalSortingAction.isChecked", isChecked()); //$NON-NLS-1$
+                    .setValue("DefaultModelDescriptionPage.FilterEmptyDescriptionsAction.isChecked", isChecked()); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * "filter by type" action for {@link DescriptionItem}.
+     */
+    class FilterDescriptionsByTypeAction extends Action {
+
+        public FilterDescriptionsByTypeAction() {
+            super(Messages.DefaultModelDescriptionPage_FilterDescriptionsByTypeText, SWT.OPEN);
+
+            setToolTipText(Messages.DefaultModelDescriptionPage_FilterDescriptionsByTypeTooltipText);
+            setDescription(Messages.DefaultModelDescriptionPage_FilterDescriptionsByType);
+            setImageDescriptor(DESC_ELCL_FILTER);
+            boolean checked = IpsPlugin.getDefault().getPreferenceStore()
+                    .getBoolean("DefaultModelDescriptionPage.FilterDescriptionsByTypeAction.isChecked"); //$NON-NLS-1$
+
+            setChecked(checked);
+            dialog = new FilterDescriptionsByTypeDialog(getSite().getShell(),
+                    new FilterDescriptionByTypeDialogContentProvider());
+        }
+
+        @Override
+        public void run() {
+            dialog.setTitle(Messages.DefaultModelDescriptionPage_FilterDescriptionsByTypeDialogTitle);
+            dialog.setHelpAvailable(false);
+
+            dialog.open();
+            boolean isSaved = !dialog.getSavedParts().isEmpty();
+            IpsPlugin.getDefault().getPreferenceStore()
+                    .setValue("DefaultModelDescriptionPage.FilterDescriptionsByTypeAction.isChecked", isSaved); //$NON-NLS-1$
+            setChecked(isSaved);
+            sortAndFilterDescriptionList();
+        }
+
     }
 
     /**

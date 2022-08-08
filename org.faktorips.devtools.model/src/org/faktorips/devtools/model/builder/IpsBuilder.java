@@ -38,6 +38,7 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.ABuilder;
 import org.faktorips.devtools.abstraction.AFile;
@@ -121,8 +122,8 @@ public class IpsBuilder {
         ABuildKind currentKind = kind;
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
-            monitor.beginTask("build", 100000); //$NON-NLS-1$
-            monitor.subTask(Messages.IpsBuilder_validatingProject);
+            SubMonitor subMonitor = SubMonitor.convert(monitor, "build", 100000); //$NON-NLS-1$
+            subMonitor.subTask(Messages.IpsBuilder_validatingProject);
             /*
              * We have to clear the validation cache as for example the deletion of IPS source files
              * might still be undetected as the validation result cache gets cleared in a resource
@@ -131,11 +132,10 @@ public class IpsBuilder {
              */
             getIpsProject().getIpsModel().clearValidationCache();
             if (!checkIpsProjectBeforeBuild(getIpsProject())) {
-                monitor.done();
                 return null;
             }
-            monitor.worked(100);
-            monitor.subTask(Messages.IpsBuilder_preparingBuild);
+            subMonitor.worked(100);
+            subMonitor.subTask(Messages.IpsBuilder_preparingBuild);
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(getIpsProject());
             boolean isFullBuildRequired = isFullBuildRequired(currentKind);
             if (isFullBuildRequired) {
@@ -143,30 +143,33 @@ public class IpsBuilder {
             }
             beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
-                    new BeforeBuildProcessCommand(currentKind, getIpsProject()), monitor);
-            monitor.worked(100);
+                    new BeforeBuildProcessCommand(currentKind, getIpsProject()), subMonitor);
+            subMonitor.worked(100);
             try {
                 if (isFullBuildRequired) {
                     currentKind = ABuildKind.FULL;
-                    monitor.subTask(Messages.IpsBuilder_startFullBuild);
-                    fullBuild(ipsArtefactBuilderSet, buildStatus, newSubProgressMonitor(monitor));
+                    subMonitor.subTask(Messages.IpsBuilder_startFullBuild);
+                    fullBuild(ipsArtefactBuilderSet, buildStatus, subMonitor.split(9970));
                 } else {
-                    monitor.subTask(Messages.IpsBuilder_startIncrementalBuild);
-                    incrementalBuild(ipsArtefactBuilderSet, buildStatus, newSubProgressMonitor(monitor));
+                    subMonitor.subTask(Messages.IpsBuilder_startIncrementalBuild);
+                    incrementalBuild(ipsArtefactBuilderSet, buildStatus, subMonitor.split(9970));
                 }
             } finally {
-                monitor.subTask(Messages.IpsBuilder_finishBuild);
+                subMonitor.subTask(Messages.IpsBuilder_finishBuild);
                 applyBuildCommand(ipsArtefactBuilderSet, buildStatus,
-                        new AfterBuildProcessCommand(currentKind, getIpsProject()), monitor);
+                        new AfterBuildProcessCommand(currentKind, getIpsProject()), subMonitor);
                 afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             }
-            monitor.worked(100);
+            subMonitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
                 return builder.getProject().getReferencedProjects();
             }
 
+            printBuildExceptionMessages(buildStatus);
+
             // Re-initialize the builders of the current builder set if an error occurs.
             getIpsProject().reinitializeIpsArtefactBuilderSet();
+
             throw new CoreException(buildStatus);
 
         } catch (OperationCanceledException e) {
@@ -179,15 +182,21 @@ public class IpsBuilder {
              * just writes a Warning to the error log. So we wrap the error into a CoreException.
              */
             throw new IpsException(new IpsStatus(t));
-        } finally {
-            monitor.done();
         }
         return builder.getProject().getReferencedProjects();
     }
 
-    @SuppressWarnings("deprecation")
-    private IProgressMonitor newSubProgressMonitor(IProgressMonitor monitor) {
-        return new org.eclipse.core.runtime.SubProgressMonitor(monitor, 99700);
+    private void printBuildExceptionMessages(MultiStatus buildStatus) {
+        IStatus[] builds = buildStatus.getChildren();
+        for (int i = 0; i < builds.length; i++) {
+            IStatus[] buildResults = builds[i].getChildren();
+            for (int j = 0; j < buildResults.length; j++) {
+                Throwable exception = buildResults[j].getException();
+                if (exception != null) {
+                    System.out.println("ERROR: " + exception.getMessage()); //$NON-NLS-1$
+                }
+            }
+        }
     }
 
     private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {

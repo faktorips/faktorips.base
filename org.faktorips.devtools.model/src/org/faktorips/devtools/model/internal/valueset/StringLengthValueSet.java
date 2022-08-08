@@ -72,7 +72,7 @@ public class StringLengthValueSet extends ValueSet implements IStringLengthValue
 
     @Override
     public boolean containsValue(String value, IIpsProject ipsProject) {
-        if (IpsStringUtils.isBlank(value)) {
+        if (value == null) {
             return isContainsNull();
         }
         if (maximumLength == null) {

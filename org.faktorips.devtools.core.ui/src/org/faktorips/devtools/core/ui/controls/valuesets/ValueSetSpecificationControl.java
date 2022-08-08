@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
+import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
@@ -265,9 +266,14 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private void createValueSetTypesCombo(UIToolkit toolkit, Composite parentArea) {
         valueSetTypeLabel = toolkit.createLabel(parentArea, Messages.ValueSetEditControl_labelType);
+        bindingContext.bindEnabled(valueSetTypeLabel, valueSetPmo,
+                ValueSetPmo.PROPERTY_ENABLED_VALUE);
 
         valueSetTypesCombo = toolkit.createCombo(parentArea);
         valueSetTypesCombo.setText(getValueSetType().getName());
+        bindingContext.bindEnabled(valueSetTypesCombo, valueSetPmo,
+                ValueSetPmo.PROPERTY_ENABLED_VALUE);
+
         valueSetTypeField = new StringValueComboField(valueSetTypesCombo);
         valueSetTypeField.addChangeListener(e -> {
             String selectedText = e.field.getText();
@@ -441,6 +447,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
         public static final String PROPERTY_RELEVANCE_TEXT = "relevanceText"; //$NON-NLS-1$
+        public static final String PROPERTY_ENABLED_VALUE = "enabledDefaultAndValueset"; //$NON-NLS-1$
+
         private IValueSet sourceSet;
 
         public ValueSetPmo(IValueSetOwner valueSetOwner) {
@@ -516,6 +524,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public String getRelevanceText() {
             return isContainsNull() ? Messages.ValueSetSpecificationControl_RelevanceOptional
                     : Messages.ValueSetSpecificationControl_RelevanceMandatory;
+        }
+
+        /**
+         * Returns the enabled state for the default and valueset controls. Returns
+         * <code>false</code> if the attribute is a {@link IProductCmptTypeAttribute} and the
+         * multilingual is set. Otherwise returns <code>true</code>.
+         */
+        public boolean isEnabledDefaultAndValueset() {
+            if (getValueSetOwner() instanceof IProductCmptTypeAttribute) {
+                return !((IProductCmptTypeAttribute)getValueSetOwner()).isMultilingual();
+            }
+            return true;
         }
     }
 

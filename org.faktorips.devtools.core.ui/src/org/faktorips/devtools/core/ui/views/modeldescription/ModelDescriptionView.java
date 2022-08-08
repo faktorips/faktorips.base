@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
  * <li>list specified attributes with their description
  * </ul>
  * <p>
- * The view is supposed to look like the cheatscheet view (ExpandableComposites) and behave like the
+ * The view is supposed to look like the cheatsheet view (ExpandableComposites) and behave like the
  * outline view. For this reason it derives {@link PageBookView}.
  * 
  * @see PageBookView
@@ -64,7 +64,7 @@ public class ModelDescriptionView extends PageBookView {
     }
 
     /**
-     * Create a page for showing the localized message of an excetpion.
+     * Create a page for showing the localized message of an exception.
      * 
      * @param e Exception
      * @return new page with exception message.

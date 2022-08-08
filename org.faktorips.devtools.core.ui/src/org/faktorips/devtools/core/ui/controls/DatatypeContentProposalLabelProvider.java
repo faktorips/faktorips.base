@@ -15,7 +15,7 @@ import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 
 /**
- * The label provider for <code>DatatypeContentProposal</code>.
+ * The label provider for {@link DatatypeContentProposal}.
  * 
  * @see DatatypeContentProposal
  * 

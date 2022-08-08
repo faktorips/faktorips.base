@@ -10,24 +10,23 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractPrefixContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
- * An <code>IContentProposalProvider</code> for <code>Datatype</code> proposal.
- * 
- * @author hbaagil
+ * An {@link IContentProposalProvider} for {@link Datatype} proposals.
  */
-
-public class DatatypeContentProposalProvider implements ICachedContentProposalProvider {
+public class DatatypeContentProposalProvider extends AbstractPrefixContentProposalProvider
+        implements ICachedContentProposalProvider {
 
     private IIpsProject ipsProject;
     private Datatype[] dataType;
@@ -105,18 +104,16 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
         checkDataType();
+        return super.getProposals(contents, position);
+    }
 
-        String prefix = StringUtils.left(contents, position);
+    @Override
+    protected IContentProposal[] getProposals(String prefix) {
         searchPattern.setPattern(prefix);
-        List<IContentProposal> result = new ArrayList<>();
-        for (Datatype type : getDataType()) {
-            String unqualifiedName = type.getName();
-            if (searchPattern.matches(unqualifiedName)) {
-                DatatypeContentProposal contentProposal = new DatatypeContentProposal(type);
-                result.add(contentProposal);
-            }
-        }
-        return result.toArray(new IContentProposal[result.size()]);
+        return Stream.of(getDataType())
+                .filter(datatype -> searchPattern.matches(datatype.getName()))
+                .map(DatatypeContentProposal::new)
+                .toArray(IContentProposal[]::new);
     }
 
     private void checkDataType() {

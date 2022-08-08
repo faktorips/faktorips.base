@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -64,16 +65,11 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         IProgressMonitor theMonitor = monitor != null ? monitor : new NullProgressMonitor();
 
         String msg = NLS.bind(Messages.IpsContentMigrationOperation_labelMigrateProject, projectToMigrate.getName());
-        theMonitor.beginTask(msg, 1010 + operations.size() * 1000);
-        try {
-            executeInternal(theMonitor);
-        } finally {
-            theMonitor.done();
-        }
+        SubMonitor subMonitor = SubMonitor.convert(theMonitor, msg, 1010 + operations.size() * 1000);
+        executeInternal(subMonitor);
     }
 
-    @SuppressWarnings("deprecation")
-    private void executeInternal(IProgressMonitor monitor) throws IpsException, InvocationTargetException,
+    private void executeInternal(SubMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException {
 
         try {
@@ -83,7 +79,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
                 if (monitor.isCanceled()) {
                     throw new InterruptedException();
                 }
-                result.add(operation.migrate(new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000)));
+                result.add(operation.migrate(monitor.split(1000)));
             }
         } catch (IpsException e) {
             rollback();
@@ -104,7 +100,7 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList<IIpsSrcFile> files = new ArrayList<>();
         projectToMigrate.findAllIpsSrcFiles(files);
-        IProgressMonitor saveMonitor = new org.eclipse.core.runtime.SubProgressMonitor(monitor, 1000);
+        IProgressMonitor saveMonitor = monitor.split(1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, files.size());
 
         // at this point, we do not allow the user to cancel this operation any more because
@@ -117,7 +113,6 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             }
             saveMonitor.worked(1);
         }
-        saveMonitor.done();
         updateIpsProject();
     }
 
