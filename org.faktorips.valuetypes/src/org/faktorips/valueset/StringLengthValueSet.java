@@ -46,7 +46,7 @@ public class StringLengthValueSet implements ValueSet<String> {
 
     @Override
     public boolean contains(String value) {
-        if (value == null) {
+        if (value == null || value.trim().isEmpty()) {
             return containsNull();
         }
         return getMaximumLength() == null ? true : value.length() <= getMaximumLength();

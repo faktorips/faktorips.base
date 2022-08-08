@@ -45,8 +45,8 @@ public class StringLengthValueSetTest {
         sl = new StringLengthValueSet(10, false);
 
         assertThat(sl.contains(null), is(false));
-        assertThat(sl.contains(""), is(true));
-        assertThat(sl.contains(" "), is(true));
+        assertThat(sl.contains(""), is(false));
+        assertThat(sl.contains(" "), is(false));
     }
 
     @Test
