@@ -287,7 +287,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) {
         IValueSet valueSet = getValueSet();
-        return valueSet == null || defaultValueToValidate == null
+        return valueSet == null || StringUtils.isBlank(defaultValueToValidate)
                 || valueSet.containsValue(defaultValueToValidate, ipsProject);
     }
 

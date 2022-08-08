@@ -112,7 +112,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list) {
         String valueToValidate = getValue();
         IValueSet valueSetToValidate = getValueSet();
-        if (StringUtils.isNotEmpty(valueToValidate) && valueSetToValidate != null) {
+        if (StringUtils.isNotBlank(valueToValidate) && valueSetToValidate != null) {
             if (!valueSetToValidate.containsValue(valueToValidate, ipsProject)) {
                 String formattedValue = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter()
                         .formatValue(valueDatatype, valueToValidate);
