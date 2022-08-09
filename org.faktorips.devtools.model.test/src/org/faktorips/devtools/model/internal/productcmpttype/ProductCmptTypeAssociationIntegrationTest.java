@@ -255,6 +255,34 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     /**
+     * Test for FIPS-8562
+     */
+    @Test
+    public void testFindDefaultPolicyCmptTypeAssociation_FindMatchingAssociationForConstrainedAssociation_BothSidesHierarchy()
+            throws Exception {
+        PolicyCmptType superZiel = newPolicyAndProductCmptType(ipsProject, "SuperZiel", "SuperZielKonfiguration");
+        IProductCmptType superZielKonfiguration = superZiel.findProductCmptType(ipsProject);
+        PolicyCmptType ziel = newPolicyAndProductCmptType(ipsProject, "Ziel", "ZielKonfiguration");
+        IProductCmptType zielKonfiguration = ziel.findProductCmptType(ipsProject);
+        ziel.setSupertype(superZiel.getQualifiedName());
+        zielKonfiguration.setSupertype(superZielKonfiguration.getQualifiedName());
+
+        PolicyCmptType quelle = newPolicyAndProductCmptType(ipsProject, "Quelle", "QuellKonfiguration");
+        IProductCmptType quellKonfiguration = quelle.findProductCmptType(ipsProject);
+
+        IPolicyCmptTypeAssociation quelleZuSuperZiel = newPolicyCmptTypeAssociation(quelle, superZiel);
+        IProductCmptTypeAssociation quellKonfigZuSuperZielKonfig = newProductCmptTypeAssociation(quellKonfiguration,
+                superZielKonfiguration);
+        IPolicyCmptTypeAssociation quelleZuZiel = newPolicyCmptTypeAssociation(quelle, ziel);
+        IProductCmptTypeAssociation quellKonfigZuZielKonfig = newProductCmptTypeAssociation(quellKonfiguration,
+                zielKonfiguration);
+
+        assertThat(quellKonfigZuZielKonfig.findDefaultPolicyCmptTypeAssociation(ipsProject), is(quelleZuZiel));
+        assertThat(quellKonfigZuSuperZielKonfig.findDefaultPolicyCmptTypeAssociation(ipsProject),
+                is(quelleZuSuperZiel));
+    }
+
+    /**
      * Validate constrained association with subclasses on product side only (FIPS-4966)
      */
     @Test

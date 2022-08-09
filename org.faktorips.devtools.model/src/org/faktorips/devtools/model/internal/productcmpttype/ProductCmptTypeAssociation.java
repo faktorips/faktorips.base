@@ -231,13 +231,16 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
             return null;
         }
 
+        boolean targetIsProductOnlySubclass = !targetPolicyCmptType.getProductCmptType()
+                .equals(targetType.getQualifiedName());
+
         IPolicyCmptTypeAssociation[] policyAssoc = getAssociationsFor(policyCmptType, targetPolicyCmptType);
         if (policyAssoc.length == 0) {
             return null;
         }
         // Assume that both PolicyCmptTypeAssociations and ProductCmptTypeAssociations are listed in
         // the same order.
-        int index = getAssociationIndex();
+        int index = getAssociationIndex(targetIsProductOnlySubclass);
         if (index >= policyAssoc.length) {
             return null;
         }
@@ -263,13 +266,15 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return result.toArray(new IPolicyCmptTypeAssociation[result.size()]);
     }
 
-    private int getAssociationIndex() {
+    private int getAssociationIndex(boolean targetIsProductOnlySubclass) {
         List<IAssociation> allAssociationsForTheTargetType = new ArrayList<>();
+        IProductCmptType target = getIpsProject().findProductCmptType(getTarget());
         for (IAssociation element : getType().getAssociations()) {
-            IProductCmptType target = getIpsProject().findProductCmptType(getTarget());
             IProductCmptType elementTarget = getIpsProject().findProductCmptType(element.getTarget());
-            if (getTarget().equals(element.getTarget())
-                    || target.isSubtypeOf(elementTarget, getIpsProject())) {
+            if (getTarget().equals(element.getTarget())) {
+                allAssociationsForTheTargetType.add(element);
+            }
+            if (targetIsProductOnlySubclass && target.isSubtypeOf(elementTarget, getIpsProject())) {
                 allAssociationsForTheTargetType.add(element);
             }
         }
