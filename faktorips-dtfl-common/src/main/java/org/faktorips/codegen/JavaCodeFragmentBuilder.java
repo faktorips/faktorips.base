@@ -1083,7 +1083,7 @@ public class JavaCodeFragmentBuilder {
         if (annotations != null) {
             // create an empty line to separate the text (if any) from the custom tags.
             if (IpsStringUtils.isNotEmpty(text)) {
-                fragment.appendln(" * "); //$NON-NLS-1$
+                fragment.appendln(" *"); //$NON-NLS-1$
             }
             for (String annotation : annotations) {
                 fragment.append(" * @"); //$NON-NLS-1$

@@ -21,7 +21,7 @@ import org.faktorips.values.ObjectUtil;
  */
 public class BaseJodaDatatypeHelper extends AbstractTimeHelper {
 
-    public static final String ORG_FAKTORIPS_UTIL_JODA_UTIL = "org.faktorips.util.JodaUtil"; //$NON-NLS-1$
+    public static final String ORG_FAKTORIPS_UTIL_JODA_UTIL = "org.faktorips.valuetypes.joda.util.JodaUtil"; //$NON-NLS-1$
     protected static final String ORG_JODA_TIME_FORMAT_ISO_DATE_TIME_FORMAT = "org.joda.time.format.ISODateTimeFormat"; //$NON-NLS-1$
     private final String parseMethod;
     private final String className;

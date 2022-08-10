@@ -27,7 +27,7 @@ public class DateDatatype extends ValueClassNameDatatype {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
-    private SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+    private static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 
     /**
      * Creates a new DateDatatype where the name is the short class name.

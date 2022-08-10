@@ -11,5 +11,8 @@ Import-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.controller.fields,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.extproperties,
- org.faktorips.devtools.model.ipsobject
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.productcmpt,
+ org.faktorips.devtools.model.type
 Require-Bundle: org.eclipse.swt
