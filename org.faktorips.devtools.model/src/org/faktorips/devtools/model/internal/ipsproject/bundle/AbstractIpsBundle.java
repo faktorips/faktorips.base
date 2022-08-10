@@ -68,7 +68,8 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
 
     @Override
     public String getBasePackageNameForMergableArtefacts(QualifiedNameType qnt) throws CoreException {
-        String objectDir = getRootFolder(qnt.toPath()).toPortableString();
+        IPath rootFolder = getRootFolder(qnt.toPath());
+        String objectDir = rootFolder == null ? null : rootFolder.toPortableString();
         return bundleManifest.getBasePackage(objectDir);
     }
 
