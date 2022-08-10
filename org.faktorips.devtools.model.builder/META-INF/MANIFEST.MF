@@ -6,12 +6,28 @@ Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
 Require-Bundle: 
- org.faktorips.devtools.model;bundle-version="21.6.0";visibility:=reexport,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
  org.eclipse.text,
- org.faktorips.eclipse.emf.codegen
+ org.faktorips.eclipse.emf.codegen;bundle-version="22.12.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.model.builder.java,
  org.faktorips.devtools.model.builder.settings
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional
+Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
+ org.faktorips.codegen,
+ org.faktorips.datatype,
+ org.faktorips.datatype.util,
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.builder,
+ org.faktorips.devtools.model.builder.naming,
+ org.faktorips.devtools.model.builder.organizeimports,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.valueset,
+ org.faktorips.util

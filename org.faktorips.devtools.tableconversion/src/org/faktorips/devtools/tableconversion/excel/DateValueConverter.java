@@ -15,8 +15,8 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
-import org.faktorips.devtools.tableconversion.AbstractValueConverter;
-import org.faktorips.devtools.tableconversion.ExtSystemsMessageUtil;
+import org.faktorips.devtools.core.tableconversion.AbstractValueConverter;
+import org.faktorips.devtools.core.tableconversion.ExtSystemsMessageUtil;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.values.DateUtil;
 

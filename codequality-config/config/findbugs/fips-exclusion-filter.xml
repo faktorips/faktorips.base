@@ -1,0 +1,19 @@
+<FindBugsFilter>
+	<!-- All bugs of rank greater 15 -->
+	<Match>
+    <Rank value="15"/>
+	</Match>
+
+	<!-- All bugs in messages classes -->
+	<Match>
+		<Class name="~.*\.*Messages" />
+	</Match>
+
+	<!-- All bugs in test classes, except for JUnit-specific bugs -->
+	<Match>
+		<Class name="~.*\.*Test" />
+		<Not>
+			<Bug code="IJU" />
+		</Not>
+	</Match>
+</FindBugsFilter>

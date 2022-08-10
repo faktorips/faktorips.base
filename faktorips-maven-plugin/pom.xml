@@ -2,9 +2,14 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.faktorips</groupId>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>base</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+
     <artifactId>faktorips-maven-plugin</artifactId>
-    <version>22.12.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
 
@@ -26,8 +31,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <tycho-version>2.7.3</tycho-version>
-        <tycho-extras-version>2.7.3</tycho-extras-version>
+        <tycho-version>3.0.0-SNAPSHOT</tycho-version>
+        <tycho-maven-plugin-version>3.0.0-SNAPSHOT</tycho-maven-plugin-version>
         <maven-core-version>3.8.1</maven-core-version>
         <maven-shared-utils-version>3.3.4</maven-shared-utils-version>
         <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
@@ -71,7 +76,7 @@
         <dependency>
             <groupId>org.eclipse.tycho.extras</groupId>
             <artifactId>tycho-eclipserun-plugin</artifactId>
-            <version>${tycho-extras-version}</version>
+            <version>${tycho-version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tycho</groupId>
@@ -141,8 +146,8 @@
             </extension>
             <extension>
                 <groupId>org.faktorips</groupId>
-                <artifactId>org.faktorips.build.config</artifactId>
-                <version>1.2.2</version>
+                <artifactId>codequality-config</artifactId>
+                <version>22.12.0-SNAPSHOT</version>
             </extension>
         </extensions>
         <pluginManagement>
@@ -186,6 +191,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.tycho</groupId>
+                    <artifactId>tycho-maven-plugin</artifactId>
+                    <version>${tycho-maven-plugin-version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -324,6 +334,10 @@
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

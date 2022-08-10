@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.DatatypeComparator;
 import org.w3c.dom.Element;
 
 /**

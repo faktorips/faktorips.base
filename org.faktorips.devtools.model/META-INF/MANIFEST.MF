@@ -6,17 +6,10 @@ Bundle-Version: 22.12.0.qualifier
 Bundle-Activator: org.faktorips.devtools.model.plugin.IpsModelActivator
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
-Require-Bundle: org.faktorips.fl;visibility:=reexport,
- org.faktorips.util;visibility:=reexport,
- org.faktorips.dtflcommon;visibility:=reexport,
- org.faktorips.valuetypes;visibility:=reexport,
- org.faktorips.devtools.abstraction;visibility:=reexport,
- com.google.guava;bundle-version="21.0.0",
- com.opencsv;bundle-version="3.3.0",
- org.eclipse.core.runtime;bundle-version="3.15.200";visibility:=reexport,
- org.eclipse.core.resources;bundle-version="3.13.300";visibility:=reexport,
- org.eclipse.jdt.core;bundle-version="3.17.0";visibility:=reexport,
- org.eclipse.core.filesystem;bundle-version="1.7.300";visibility:=reexport
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.15.200",
+ org.eclipse.core.resources;bundle-version="3.13.300",
+ org.eclipse.jdt.core;bundle-version="3.17.0",
+ org.eclipse.core.filesystem;bundle-version="1.7.300"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.faktorips.devtools.model,
  org.faktorips.devtools.model.adapter,
@@ -249,5 +242,33 @@ Export-Package: org.faktorips.devtools.model,
  org.faktorips.devtools.model.versionmanager.options
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
-Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
- org.apache.commons.lang;version="[2.6.0,2.6.0]"
+Import-Package: com.google.common.base;version="21.0.0",
+ com.google.common.collect;version="21.0.0",
+ com.opencsv;version="3.3.0",
+ edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
+ org.apache.commons.lang;version="[2.6.0,2.6.0]",
+ org.faktorips.codegen,
+ org.faktorips.codegen.dthelpers,
+ org.faktorips.codegen.dthelpers.joda,
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.datatype.joda,
+ org.faktorips.datatype.util,
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.eclipse.internal,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.abstraction.mapping,
+ org.faktorips.devtools.abstraction.plainjava.internal;version="22.12.0",
+ org.faktorips.devtools.abstraction.util,
+ org.faktorips.fl,
+ org.faktorips.fl.parser,
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.faktorips.runtime.model.enumtype;version="22.12.0",
+ org.faktorips.runtime.model.type;version="22.12.0",
+ org.faktorips.runtime.util;version="22.12.0",
+ org.faktorips.runtime.validation;version="22.12.0",
+ org.faktorips.util,
+ org.faktorips.util.collections,
+ org.faktorips.util.memento,
+ org.faktorips.values;version="22.12.0"

@@ -3,11 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport
 Bundle-Version: 22.12.0.qualifier
-Require-Bundle: org.faktorips.valuetypes,
- org.faktorips.devtools.model.decorators;visibility:=reexport,
- org.eclipse.jdt.core,
+Require-Bundle: org.eclipse.jdt.core,
  org.eclipse.swt,
- org.eclipse.jface
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.context,
@@ -25,4 +25,29 @@ Export-Package: org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.standard.pages
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-ClassPath: .
-Import-Package: org.apache.commons.lang;version="[2.6,2.6]"
+Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.datatype.util,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.decorators,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.extproperties,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.method,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.preferences,
+ org.faktorips.devtools.model.productcmpt,
+ org.faktorips.devtools.model.productcmpttype,
+ org.faktorips.devtools.model.tablecontents,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.testcase,
+ org.faktorips.devtools.model.testcasetype,
+ org.faktorips.devtools.model.type,
+ org.faktorips.devtools.model.value,
+ org.faktorips.devtools.model.valueset,
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.values;version="22.12.0"

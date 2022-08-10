@@ -345,12 +345,14 @@
         <setEntry value="org.faktorips.abstracttest.core@default:default"/>
         <setEntry value="org.faktorips.abstracttest@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
+        <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui.test@default:false"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
         <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
+        <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>

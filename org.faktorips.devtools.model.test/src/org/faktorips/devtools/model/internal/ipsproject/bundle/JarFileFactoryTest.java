@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.jar.JarFile;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.testsupport.Wait;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,10 +89,7 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         Thread.sleep(1100);
 
         try {
-            int i = 0;
-            while (openJar.entries() != null && i++ < 10) {
-                Thread.sleep(500);
-            }
+            Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null, "JAR should be closed");
             fail("expected an IllegalStateException because the jar should be closed");
         } catch (IllegalStateException e) {
             // is expected
@@ -121,7 +120,12 @@ public class JarFileFactoryTest extends AbstractIpsPluginTest {
         assertThat(sameJarOtherHandle.entries(), is(notNullValue()));
 
         // need to wait until the file is closed
-        Thread.sleep(1000);
+        try {
+            Wait.atMost(Duration.ofSeconds(10)).until(() -> openJar.entries() == null, "JAR should be closed");
+            fail("expected an IllegalStateException because the jar should be closed");
+        } catch (IllegalStateException e) {
+            // is expected
+        }
     }
 
 }

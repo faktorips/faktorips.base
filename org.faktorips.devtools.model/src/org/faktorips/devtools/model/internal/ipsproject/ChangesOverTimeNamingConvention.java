@@ -12,10 +12,10 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.util.Locale;
 
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
 
 /**

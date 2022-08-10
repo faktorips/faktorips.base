@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.devtools.tableconversion.ITableFormat;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;

@@ -12,8 +12,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.faktorips</groupId>
-    <artifactId>org.faktorips.aggregator.targets</artifactId>
+    <artifactId>targets</artifactId>
     <packaging>pom</packaging>
 
     <modules>

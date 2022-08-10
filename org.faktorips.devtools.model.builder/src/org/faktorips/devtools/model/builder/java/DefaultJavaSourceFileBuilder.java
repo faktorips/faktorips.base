@@ -23,12 +23,12 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.builder.TypeSection;
-import org.faktorips.util.LocalizedStringsSet;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 

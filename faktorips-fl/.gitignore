@@ -1,0 +1,6 @@
+bin
+temp.folder
+build.xml
+javaCompiler...args
+/target
+/.flattened-pom.xml

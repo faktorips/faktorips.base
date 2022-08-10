@@ -21,7 +21,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.table.XTable;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.XtendBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.table.template.TableTmpl;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class TableBuilder extends XtendBuilder<XTable> {
 

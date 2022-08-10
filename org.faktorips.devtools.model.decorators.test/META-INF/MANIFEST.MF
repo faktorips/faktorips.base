@@ -4,18 +4,40 @@ Bundle-Name: Faktor-IPS Tests for devtools.model.decorators
 Bundle-SymbolicName: org.faktorips.devtools.model.decorators.test;singleton:=true
 Bundle-Version: 22.12.0.qualifier
 Fragment-Host: org.faktorips.devtools.model.decorators
-Require-Bundle: org.faktorips.abstracttest,
- org.eclipse.core.runtime,
- org.faktorips.fl,
- org.faktorips.valuetypes,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core;bundle-version="3.4.0",
  org.eclipse.jdt.launching,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
- org.hamcrest.core;bundle-version="1.3.0"
+ org.hamcrest.core;bundle-version="1.3.0",
+ org.faktorips.valuetypes;bundle-version="22.12.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
-Import-Package: org.junit;version="4.5.0",
+Import-Package: org.faktorips.abstracttest,
+ org.faktorips.abstracttest.matcher,
+ org.faktorips.datatype,
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.internal,
+ org.faktorips.devtools.model.internal.ipsobject,
+ org.faktorips.devtools.model.internal.ipsproject,
+ org.faktorips.devtools.model.internal.productcmpt,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.method,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.preferences,
+ org.faktorips.devtools.model.productcmpt,
+ org.faktorips.devtools.model.productcmpttype,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.testcase,
+ org.faktorips.devtools.model.testcasetype,
+ org.faktorips.devtools.model.type,
+ org.faktorips.runtime.internal;version="22.12.0",
+ org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
  org.mockito,
  org.mockito.invocation,

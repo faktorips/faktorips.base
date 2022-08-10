@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -58,7 +57,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         }
 
         final IInputFormat<String> inputFormat = getInputFormat();
-        List<String> formattedValues = Lists.transform(Arrays.asList(values), inputFormat::format);
+        List<String> formattedValues = Arrays.stream(values).map(inputFormat::format).collect(Collectors.toList());
 
         return StringUtils.join(formattedValues, EnumValueSet.ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
     }

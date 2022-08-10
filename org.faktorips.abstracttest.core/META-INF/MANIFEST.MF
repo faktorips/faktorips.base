@@ -4,13 +4,33 @@ Bundle-Name: Abstract Tests for Faktor-IPS Core
 Bundle-SymbolicName: org.faktorips.abstracttest.core
 Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Require-Bundle: org.faktorips.abstracttest;bundle-version="21.6.0";visibility:=reexport,
- org.faktorips.devtools.core;bundle-version="21.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.apache.commons.lang;version="2.6.0",
+ org.faktorips.abstracttest,
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.core,
+ org.faktorips.devtools.core.refactor,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.productcmpt,
+ org.faktorips.devtools.model.productcmpttype,
+ org.faktorips.devtools.model.tablecontents,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.testcase,
+ org.faktorips.devtools.model.testcasetype,
+ org.faktorips.devtools.model.type,
+ org.faktorips.devtools.model.value,
  org.hamcrest;version="1.3.0",
  org.hamcrest.core;version="1.3.0",
  org.junit,
  org.mockito;version="1.9.5",
  org.mockito.stubbing;version="1.9.5"
 Export-Package: org.faktorips.abstracttest.core
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.13.300",
+ org.eclipse.core.runtime;bundle-version="3.15.200",
+ org.eclipse.ltk.core.refactoring;bundle-version="3.10.0"

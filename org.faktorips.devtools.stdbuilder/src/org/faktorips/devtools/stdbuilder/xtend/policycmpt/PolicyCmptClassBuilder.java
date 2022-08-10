@@ -26,7 +26,7 @@ import org.faktorips.devtools.stdbuilder.xtend.XtendTypeBuilder;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.policycmpt.template.PolicyCmptTmpl;
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
 

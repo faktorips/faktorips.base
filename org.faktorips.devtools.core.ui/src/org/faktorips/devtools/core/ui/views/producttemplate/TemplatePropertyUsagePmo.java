@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.beans.PropertyChangeEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -22,9 +23,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -234,7 +232,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private List<ITemplatedValue> findTemplatedValuesBasedOnTemplate(Node<ITemplatedValueContainer> node) {
-        List<ITemplatedValue> result = Lists.newArrayList();
+        List<ITemplatedValue> result = new ArrayList<>();
         result.addAll(getContainerNodes(node).stream().map(n -> findTemplatedValue(nonNull(n).getElement()))
                 .filter(Objects::nonNull).collect(Collectors.toList()));
 
@@ -250,7 +248,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         if (templateValue.isConcreteValue()) {
             // Include the template's value as it is a concrete value. Product components using the
             // template do not have to be included as their value depends on the template.
-            return Lists.newArrayList(templateValue);
+            return List.of(templateValue);
         } else {
             // If the template does not define a concrete value, the values of all product
             // components (and templates) based on it have to be included as their values actually
@@ -301,7 +299,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * TemplateValueStatus.
      */
     private Predicate<ITemplatedValue> valueStatus(final TemplateValueStatus... t) {
-        final Set<TemplateValueStatus> states = Sets.newHashSet(t);
+        final Set<TemplateValueStatus> states = Set.of(t);
         return value -> value != null && states.contains(value.getTemplateValueStatus());
     }
 

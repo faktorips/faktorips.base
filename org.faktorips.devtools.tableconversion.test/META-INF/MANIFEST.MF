@@ -7,8 +7,21 @@ Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.faktorips.devtools.tableconversion
-Require-Bundle: org.faktorips.abstracttest
-Import-Package: org.junit;version="4.5.0",
+Import-Package: org.faktorips.abstracttest,
+ org.faktorips.datatype,
+ org.faktorips.datatype.classtypes,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.core,
+ org.faktorips.devtools.core.tableconversion,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.tablecontents,
+ org.faktorips.devtools.model.tablestructure,
+ org.faktorips.devtools.model.value,
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.values;version="22.12.0",
+ org.junit;version="4.5.0",
  org.junit.runner;version="4.5.0",
  org.mockito,
  org.mockito.runners

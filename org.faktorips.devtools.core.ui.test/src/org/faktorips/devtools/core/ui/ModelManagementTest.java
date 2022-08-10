@@ -69,7 +69,7 @@ public class ModelManagementTest extends AbstractIpsPluginTest {
         IIpsSrcFile ipsFile = type.getIpsSrcFile();
         type.setDescriptionText(Locale.US, "Blabla");
         ipsFile.save(null);
-        Thread.sleep(2000); // wait for 2 seconds, so that the file definitly has a
+        Thread.sleep(2000); // wait for 2 seconds, so that the file definitely has a
         // different timestamp, otherwise refreshLocal won't refresh!
         // file timestamps (at least under windows xp) only differ in seconds, not milliseconds!
         String encoding = type.getIpsProject().getXmlFileCharset();

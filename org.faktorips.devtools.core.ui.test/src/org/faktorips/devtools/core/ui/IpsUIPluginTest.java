@@ -45,10 +45,10 @@ import org.faktorips.abstracttest.TestConfigurationElement;
 import org.faktorips.abstracttest.TestExtensionRegistry;
 import org.faktorips.abstracttest.TestMockingUtils;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DefaultDeepCopySmartModeBehavior;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizardPage;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
-import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.junit.After;
@@ -190,7 +190,7 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         GregorianCalendar defaultValidityDate = IpsUIPlugin.getDefault().getDefaultValidityDate();
         Thread.sleep(5);
 
-        assertEquals(defaultValidityDate, defaultValidityDate);
+        assertEquals(IpsUIPlugin.getDefault().getDefaultValidityDate(), defaultValidityDate);
     }
 
     @Test

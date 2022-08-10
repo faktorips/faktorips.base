@@ -144,12 +144,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.dtflcommon</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.dtflcommon.test</artifactId>
+            <artifactId>faktorips-dtfl-common</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -159,12 +154,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.fl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.fl.test</artifactId>
+            <artifactId>faktorips-fl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -209,27 +199,17 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime</artifactId>
+            <artifactId>faktorips-runtime</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.test</artifactId>
+            <artifactId>faktorips-runtime-groovy</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.groovy</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.runtime.groovy.test</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.testsupport</artifactId>
+            <artifactId>faktorips-testsupport</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -249,32 +229,17 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.util</artifactId>
+            <artifactId>faktorips-util</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.util.test</artifactId>
+            <artifactId>faktorips-valuetypes</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes.test</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes.joda</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.valuetypes.joda.test</artifactId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Other -->

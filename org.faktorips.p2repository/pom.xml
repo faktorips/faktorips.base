@@ -226,13 +226,13 @@
                                             destfile="${deploy.zipRuntimeAndValuetypes}">
                                             <fileset
                                                 dir="${project.build.directory}/repository/plugins"
-                                                includes="org.faktorips.runtime*.jar" />
+                                                includes="faktorips-runtime*.jar" />
                                             <fileset
-                                                dir="${project.basedir}/../org.faktorips.runtime/client/target/"
+                                                dir="${project.basedir}/../faktorips-runtime/client/target/"
                                                 includes="faktorips-runtime-client*.jar" />
                                             <fileset
                                                 dir="${project.build.directory}/repository/plugins"
-                                                includes="org.faktorips.valuetypes*.jar" />
+                                                includes="faktorips-valuetypes*.jar" />
                                             <fileset
                                                 dir="${project.build.directory}"
                                                 includes="${deploy.license},${deploy.agpl}" />

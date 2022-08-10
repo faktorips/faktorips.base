@@ -22,7 +22,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerati
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenInterfaceTmpl;
 import org.faktorips.devtools.stdbuilder.xtend.productcmpt.template.ProductComponentGenTmpl;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProductCmptGenerationClass> {
 

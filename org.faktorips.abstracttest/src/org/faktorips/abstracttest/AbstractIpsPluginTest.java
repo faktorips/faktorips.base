@@ -214,14 +214,18 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         }
     }
 
-    private void deleteProject(IProject project) throws IpsException, InterruptedException {
+    private void deleteProject(IProject project) throws IpsException {
         try {
             project.delete(true, true, null);
         } catch (CoreException e) {
             // We are running into some race condition on Windows
             // Wait a little and try to delete one more time when this happens
             if (project.exists() && !SystemUtils.IS_OS_WINDOWS) {
-                Thread.sleep(100);
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    Thread.interrupted();
+                }
                 try {
                     project.delete(true, true, null);
                 } catch (CoreException e1) {
@@ -1197,41 +1201,43 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException {
         IPath location = PathMapping.toEclipsePath(project.getJavaProject().getResource().getLocation());
-        IPath outputLocation = location
-                .append(Path.fromOSString(project.getJavaProject().getOutputLocation().toString())
-                        .removeFirstSegments(1));
-        IPath packagePath = outputLocation.append(adaptedClass.getPackage().getName().replace('.', '/'));
-        File classFileDir = packagePath.toFile();
-        if (!classFileDir.exists()) {
-            classFileDir.mkdirs();
-            IPath classFilePath = outputLocation.append(adaptedClass.getName().replace('.', '/') + ".class");
-            File classFile = classFilePath.toFile();
-            if (!classFile.exists()) {
-                classFile.createNewFile();
-            }
-            FileOutputStream fos = null;
-            InputStream is = null;
-            try {
-                is = adaptedClass.getClassLoader()
-                        .getResourceAsStream(adaptedClass.getName().replace('.', '/') + ".class");
-                fos = new FileOutputStream(classFile);
-                int value = is.read();
-                while (value != -1) {
-                    fos.write(value);
-                    value = is.read();
+        if (location != null) {
+            IPath outputLocation = location
+                    .append(Path.fromOSString(project.getJavaProject().getOutputLocation().toString())
+                            .removeFirstSegments(1));
+            IPath packagePath = outputLocation.append(adaptedClass.getPackage().getName().replace('.', '/'));
+            File classFileDir = packagePath.toFile();
+            if (!classFileDir.exists()) {
+                classFileDir.mkdirs();
+                IPath classFilePath = outputLocation.append(adaptedClass.getName().replace('.', '/') + ".class");
+                File classFile = classFilePath.toFile();
+                if (!classFile.exists()) {
+                    classFile.createNewFile();
                 }
-            } finally {
+                FileOutputStream fos = null;
+                InputStream is = null;
                 try {
-                    if (fos != null) {
-                        fos.close();
+                    is = adaptedClass.getClassLoader()
+                            .getResourceAsStream(adaptedClass.getName().replace('.', '/') + ".class");
+                    fos = new FileOutputStream(classFile);
+                    int value = is.read();
+                    while (value != -1) {
+                        fos.write(value);
+                        value = is.read();
                     }
-                } catch (IOException e) {
-                }
-                try {
-                    if (is != null) {
-                        is.close();
+                } finally {
+                    try {
+                        if (fos != null) {
+                            fos.close();
+                        }
+                    } catch (IOException e) {
                     }
-                } catch (IOException e) {
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                    } catch (IOException e) {
+                    }
                 }
             }
         }

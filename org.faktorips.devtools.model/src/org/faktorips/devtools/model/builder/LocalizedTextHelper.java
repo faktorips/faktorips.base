@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.builder;
 import java.util.Locale;
 
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.util.LocalizedStringsSet;
+import org.faktorips.datatype.util.LocalizedStringsSet;
 
 /**
  * 

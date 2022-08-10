@@ -12,13 +12,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.faktorips</groupId>
     <artifactId>org.faktorips.aggregator.plugins</artifactId>
     <packaging>pom</packaging>
 
     <modules>
         <!-- plugins of feature org.faktorips.feature -->
-        <module>../../org.faktorips.devtools.abstraction</module>
+        <module>../../org.faktorips.devtools.abstraction.eclipse</module>
         <module>../../org.faktorips.devtools.ant</module>
         <module>../../org.faktorips.devtools.core</module>
         <module>../../org.faktorips.devtools.core.refactor</module>
@@ -33,9 +32,7 @@
         <module>../../org.faktorips.devtools.stdbuilder.ui</module>
         <module>../../org.faktorips.devtools.tableconversion</module>
         <module>../../org.faktorips.devtools.tableconversion.nl1</module>
-        <module>../../org.faktorips.dtflcommon</module>
         <module>../../org.faktorips.eclipse.emf.codegen</module>
-        <module>../../org.faktorips.fl</module>
         <module>../../org.faktorips.m2e</module>
         <module>../../org.faktorips.nls.devtools.core.nl1</module>
         <module>../../org.faktorips.nls.devtools.core.ui.nl1</module>
@@ -43,11 +40,54 @@
         <module>../../org.faktorips.nls.devtools.model.decorators.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.nl1</module>
         <module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
-        <module>../../org.faktorips.runtime</module>
-        <module>../../org.faktorips.runtime.groovy</module>
-        <module>../../org.faktorips.testsupport</module>
-        <module>../../org.faktorips.util</module>
-        <module>../../org.faktorips.valuetypes</module>
-        <module>../../org.faktorips.valuetypes.joda</module>
     </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-dtfl-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- TODO: keine Dependency mehr zu plainjava -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-plainjava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 </project>

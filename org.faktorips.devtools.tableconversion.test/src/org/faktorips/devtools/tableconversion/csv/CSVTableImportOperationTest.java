@@ -20,6 +20,7 @@ import java.io.FileWriter;
 import com.opencsv.CSVWriter;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -27,7 +28,6 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;

@@ -8,10 +8,27 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.core.manipulation,
  org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
  org.eclipse.jdt.ui,
- org.faktorips.devtools.core;bundle-version="21.6.0",
- org.eclipse.text;bundle-version="3.8.100"
+ org.eclipse.text;bundle-version="3.8.100",
+ org.eclipse.core.runtime;bundle-version="3.15.200",
+ org.eclipse.core.resources;bundle-version="3.13.300",
+ org.eclipse.jdt.core;bundle-version="3.17.0"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.faktorips.devtools.core.refactor
+Export-Package: org.faktorips.devtools.core.refactor.java
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: org.eclipse.jdt.core.refactoring,
- org.eclipse.jdt.internal.ui.preferences
+ org.eclipse.jdt.internal.ui.preferences,
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.core.model.ipsobject.refactor,
+ org.faktorips.devtools.core.refactor,
+ org.faktorips.devtools.model,
+ org.faktorips.devtools.model.builder,
+ org.faktorips.devtools.model.enums,
+ org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
+ org.faktorips.devtools.model.pctype,
+ org.faktorips.devtools.model.plugin,
+ org.faktorips.devtools.model.type,
+ org.faktorips.devtools.model.util,
+ org.faktorips.runtime;version="22.12.0",
+ org.faktorips.util
