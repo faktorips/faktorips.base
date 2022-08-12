@@ -278,24 +278,6 @@
                                     <toDir>/var/www/doc.faktorzehn.org/faktorips-maven-plugin/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}/</toDir>
                                 </configuration>
                             </execution>
-                            <execution>
-                                <!-- 
-                                Faktor-IPS Documentation gets uploaded with ${project.version} and therefore is always a SNAPSHOT version.
-                                Either we change the version before building, similar to the maven-release-plugin, or we just rename it.
-                                -->
-                                <id>rename-fips-documentation</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>sshexec</goal>
-                                </goals>
-                                <configuration>
-                                    <commands>
-                                        <command>cp -r /var/www/doc.faktorzehn.org/faktor-ips/${project.version} /var/www/doc.faktorzehn.org/faktor-ips/${unqualifiedVersion}${versionQualifier}${snapshotQualifier}</command>
-                                    </commands>
-                                    <serverId>doc.faktorzehn.org</serverId>
-                                    <url>scp://doc@doc.faktorzehn.org:2004</url>
-                                </configuration>
-                            </execution>
                         </executions>
                         <dependencies>
                             <dependency>
