@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-eclipse-plugins</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
+    <packaging>pom</packaging>
+    
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+    
+    <modules>
+        <module>org.faktorips.abstracttest</module>
+        <module>org.faktorips.abstracttest.core</module>
+        <module>org.faktorips.devtools.abstraction.eclipse.test</module>
+        <module>org.faktorips.devtools.ant.test</module>
+        <module>org.faktorips.devtools.core.test</module>
+        <module>org.faktorips.devtools.core.refactor.test</module>
+        <module>org.faktorips.devtools.core.ui.test</module>
+        <module>org.faktorips.devtools.htmlexport.test</module>
+        <module>org.faktorips.devtools.model.test</module>
+        <module>org.faktorips.devtools.model.builder.test</module>
+        <module>org.faktorips.devtools.model.decorators.test</module>
+        <module>org.faktorips.devtools.stdbuilder.test</module>
+        <module>org.faktorips.devtools.stdbuilder.ui.test</module>
+        <module>org.faktorips.devtools.tableconversion.test</module>
+        <module>org.faktorips.m2e.test</module>
+        <module>org.faktorips.testextensions</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-testsetup</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <testSourceDirectory>src</testSourceDirectory>
+        <plugins>
+            <!-- SpotBugs -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <tags combine.children="append">
+                        <tag>
+                            <name>generated</name>
+                            <placement>a</placement>
+                            <head>Generated</head>
+                        </tag>
+                    </tags>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+</project>

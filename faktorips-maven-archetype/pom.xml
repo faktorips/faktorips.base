@@ -27,12 +27,9 @@
     </licenses>
 
     <properties>
-        <!-- Faktor-IPS -->
-        <faktor-ips.version>${project.version}</faktor-ips.version>
         <!-- Maven plugin versions -->
         <maven-archetype-plugin.version>3.2.0</maven-archetype-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
-        <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
         <maven-source-plugin>3.2.1</maven-source-plugin>
         <!-- Encodings -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -75,14 +72,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <!-- currently default deployment is switched off. Deployment is triggered using profiles or custom scripts -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <executions>
@@ -110,11 +99,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>${maven-deploy-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin}</version>
                 </plugin>
@@ -125,19 +109,6 @@
     <scm>
         <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Faktor-IPS Releases</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Faktor-IPS Snapshots</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <profiles>
         <profile>

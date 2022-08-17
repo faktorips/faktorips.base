@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-fl</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Faktor-IPS Formula Language</name>
+    <description>Formula language for the Faktor-IPS design time tools</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <!-- <_nouses>true</_nouses> -->
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            org.faktorips.*,
+                            org.apache.commons.lang;version="[2.6,2.6]"
+                        </Import-Package>
+                        <Export-Package>
+                            org.faktorips.fl,
+                            org.faktorips.fl.*
+                        </Export-Package>
+                        <Bundle-SymbolicName>org.faktorips.fl</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-dtfl-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache-extras.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

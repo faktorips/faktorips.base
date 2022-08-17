@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM
+/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>base</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>faktorips-runtime-bom</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Faktor-IPS Runtime Bill of Materials</name>
+    <description>Defines versions for all Faktor-IPS libraries useable as runtime dependencies and for the dependencies they use.</description>
+
+    <properties>
+        <groovy.version>3.0.9</groovy.version>
+        <hamcrest-core.version>1.3</hamcrest-core.version>
+        <javax.activation.version>1.2.0</javax.activation.version>
+        <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+        <joda.version>2.1</joda.version>
+        <junit.version>4.13.2</junit.version>
+        <junit-jupiter.version>5.8.2</junit-jupiter.version>
+        <opencsv.version>3.3</opencsv.version>
+        <spotbugs-annotations.version>4.2.0</spotbugs-annotations.version>
+        <!-- Test dependencies -->
+        <mockito-core.version>3.12.4</mockito-core.version>
+        <!-- Encoding settings -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-maven-archetype</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-maven-plugin</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-runtime</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-runtime-client</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-runtime-groovy</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-testsupport</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-valuetypes</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-valuetypes-joda</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <!-- Used to document null handling -->
+            <dependency>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-annotations</artifactId>
+                <version>${spotbugs-annotations.version}</version>
+                <type>jar</type>
+            </dependency>
+            <!-- For JAXB-support in value-converters / runtime base classes -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+                <type>jar</type>
+            </dependency>
+            <!-- For JAXB-support in value-converters / runtime base classes -->
+            <dependency>
+                <groupId>com.sun.activation</groupId>
+                <artifactId>javax.activation</artifactId>
+                <version>${javax.activation.version}</version>
+                <type>jar</type>
+            </dependency>
+            <!-- for IPS-Test-Suites with JUnit 4 -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <!-- for IPS-Test-Suites with JUnit 5 -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit-jupiter.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- For table contents saved in CSV format -->
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <!-- For formulas interpreted at runtime -->
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <!-- For Joda Time datatypes -->
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>${joda.version}</version>
+            </dependency>
+            <!-- For matchers in Testsupport -->
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest-core.version}</version>
+            </dependency>
+            <!-- Test dependencies -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>${mockito-core.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

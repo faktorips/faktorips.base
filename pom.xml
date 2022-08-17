@@ -12,11 +12,14 @@
 <!-- ########################################################################### -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+        
     <groupId>org.faktorips</groupId>
-    <artifactId>base</artifactId>
     <version>22.12.0-SNAPSHOT</version>
+    <artifactId>base</artifactId>
     <packaging>pom</packaging>
-    <name>Platform for Developing Insurance Applications</name>
+
+    <name>Faktor-IPS</name>    
+    <description>Platform for Developing Insurance Applications</description>
 
     <licenses>
         <license>
@@ -53,28 +56,25 @@ license terms are available from Faktor Zehn GmbH.</comments>
     </licenses>
 
     <properties>
-        <!-- User properties -->
-        <target-platform>eclipse-2020-03</target-platform>
-        <!-- plugin versions -->
-        <tycho-version>3.0.0-SNAPSHOT</tycho-version>
-        <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
-        <maven-checkstyle-plugin-version>2.17</maven-checkstyle-plugin-version>
-        <maven-surefire-plugin-version>2.22.0</maven-surefire-plugin-version>
-        <maven-compiler-plugin-version>3.10.1</maven-compiler-plugin-version>
-        <maven-jar-plugin-version>2.6</maven-jar-plugin-version>
-        <maven-scm-plugin-version>1.12.2</maven-scm-plugin-version>
-        <xtend-maven-plugin-version>2.27.0</xtend-maven-plugin-version>
-        <maven-javadoc-plugin-version>3.3.1</maven-javadoc-plugin-version>
-        <spotbugs-maven-plugin-version>4.5.3.0</spotbugs-maven-plugin-version>
-        <maven-bundle-plugin-version>5.1.6</maven-bundle-plugin-version>
-        <version.joda>2.1</version.joda>
-        <moditect-maven-plugin-version>1.0.0.RC2</moditect-maven-plugin-version>
-        <flatten-maven-plugin-version>1.2.7</flatten-maven-plugin-version>
-        <!-- java and compiler options -->
-        <java.version>11</java.version>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <faktorips.version>${project.version}</faktorips.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <git.user>${user.name}</git.user>
+        <!-- plugin versions -->
+        <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
+        <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+        <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+        <maven-javadoc-plugin.version>3.3.1</maven-javadoc-plugin.version>
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-scm-plugin.version>1.12.2</maven-scm-plugin.version>
+        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <moditect-maven-plugin.version>1.0.0.RC2</moditect-maven-plugin.version>
+        <!-- Code quality -->
+        <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+        <checkstyle.version>10.3.3</checkstyle.version>
+        <spotbugs-maven-plugin.version>4.7.1.1</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.7.1</spotbugs.version>
     </properties>
 
     <distributionManagement>
@@ -90,66 +90,72 @@ license terms are available from Faktor Zehn GmbH.</comments>
         </snapshotRepository>
     </distributionManagement>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>tycho-snapshots</id>
-            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
-        </pluginRepository>
-    </pluginRepositories>
-
     <modules>
         <module>codequality-config</module>
-        <module>faktorips-valuetypes</module>
-        <module>faktorips-valuetypes-joda</module>
-        <module>faktorips-runtime</module>
-        <module>faktorips-runtime/client</module>
-        <module>faktorips-runtime-groovy</module>
-        <module>faktorips-testsupport</module>
-        <module>faktorips-util</module>
-        <module>faktorips-dtfl-common</module>
-        <module>faktorips-fl</module>
-        <module>faktorips-abstraction</module>
-        <module>faktorips-abstraction-testsetup</module>
-        <module>faktorips-abstraction-plainjava</module>
-        <!-- keep the maven felix bundles above this line -->
-        <module>org.faktorips.aggregator</module>
+        <module>runtime</module>
+        <module>devtools</module>
+        <module>faktorips-maven-archetype</module>
+        <module>faktorips-maven-plugin</module>
+        <module>faktorips-coverage</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-annotations</artifactId>
-                <version>4.2.0</version>
-                <type>jar</type>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13.2</version>
-                <scope>test</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
+    
+    <scm>
+        <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
+        <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
+        <url>https://github.com/faktorips/faktorips.base</url>
+    </scm>
+    
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.faktorips</groupId>
+                <artifactId>codequality-config</artifactId>
+                <version>${project.version}</version>
+            </extension>
+        </extensions>
         <pluginManagement>
             <plugins>
                 <!-- Maven plugins -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven-release-plugin-version}</version>
+                    <version>${maven-release-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${maven-checkstyle-plugin-version}</version>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.puppycrawl.tools</groupId>
+                            <artifactId>checkstyle</artifactId>
+                            <version>${checkstyle.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.faktorips</groupId>
+                            <artifactId>codequality-config</artifactId>
+                            <version>${faktorips.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <!-- currently default deployment is switched off. Deployment is triggered using profiles or custom scripts -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin-version}</version>
+                    <version>${maven-surefire-plugin.version}</version>
                     <configuration>
                         <jdkToolchain>
                             <version>${java.version}</version>
@@ -160,22 +166,22 @@ license terms are available from Faktor Zehn GmbH.</comments>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin-version}</version>
+                    <version>${maven-compiler-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>${maven-jar-plugin-version}</version>
+                    <version>${maven-jar-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-scm-plugin</artifactId>
-                    <version>${maven-scm-plugin-version}</version>
+                    <version>${maven-scm-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven-javadoc-plugin-version}</version>
+                    <version>${maven-javadoc-plugin.version}</version>
                     <configuration>
                         <source>${java.version}</source>
                         <detectJavaApiLink>false</detectJavaApiLink>
@@ -219,147 +225,81 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </tags>
                     </configuration>
                 </plugin>
-                <!-- tycho plugins -->
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-maven-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                    <extensions>true</extensions>
-                </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>target-platform-configuration</artifactId>
-                    <version>${tycho-version}</version>
-                    <configuration>
-                        <target>
-                            <artifact>
-                                <groupId>org.faktorips</groupId>
-                                <artifactId>${target-platform}</artifactId>
-                                <version>${project.version}</version>
-                            </artifact>
-                        </target>
-                        <environments>
-                            <environment>
-                                <os>win32</os>
-                                <ws>win32</ws>
-                                <arch>x86_64</arch>
-                            </environment>
-                            <environment>
-                                <os>linux</os>
-                                <ws>gtk</ws>
-                                <arch>x86_64</arch>
-                            </environment>
-                            <environment>
-                                <os>macosx</os>
-                                <ws>cocoa</ws>
-                                <arch>x86_64</arch>
-                            </environment>
-                        </environments>
-                        <pomDependencies>consider</pomDependencies>
-                        <exclusions>
-                            <exclusion>
-                                <groupId>com.google.code.findbugs</groupId>
-                                <artifactId>jsr305</artifactId>
-                            </exclusion>
-                        </exclusions>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-versions-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-surefire-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                    <configuration>
-                        <useJDK>BREE</useJDK>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.eclipse.tycho.extras</groupId>
-                    <artifactId>tycho-source-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                </plugin>
                 <!-- others -->
-                <plugin>
-                    <groupId>org.eclipse.xtend</groupId>
-                    <artifactId>xtend-maven-plugin</artifactId>
-                    <version>${xtend-maven-plugin-version}</version>
-                </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>${spotbugs-maven-plugin-version}</version>
+                    <version>${spotbugs-maven-plugin.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.spotbugs</groupId>
+                            <artifactId>spotbugs</artifactId>
+                            <version>${spotbugs.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <excludeFilterFile>findbugs/fips-exclusion-filter.xml</excludeFilterFile>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotbugs</id>
+                            <goals>
+                                <goal>spotbugs</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.moditect</groupId>
                     <artifactId>moditect-maven-plugin</artifactId>
-                    <version>${moditect-maven-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <version>${maven-bundle-plugin-version}</version>
-                    <extensions>true</extensions>
-                    <executions>
-                        <execution>
-                            <id>generate-manifest</id>
-                            <phase>process-classes</phase>
-                            <goals>
-                                <goal>manifest</goal>
-                            </goals>
-                            <configuration>
-                                <supportIncrementalBuild>true</supportIncrementalBuild>
-                            </configuration>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <instructions>
-                            <Bundle-Vendor>Faktor Zehn GmbH</Bundle-Vendor>
-                            <Export-Package>org.faktorips.*</Export-Package>
-                        </instructions>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>flatten-maven-plugin</artifactId>
-                    <version>${flatten-maven-plugin-version}</version>
-                    <configuration>
-                        <pomElements>
-                            <build>remove</build>
-                            <name>keep</name>
-                            <description>keep</description>
-                        </pomElements>
-                    </configuration>
-                    <executions>
-                        <!-- enable flattening -->
-                        <execution>
-                            <id>flatten</id>
-                            <phase>process-resources</phase>
-                            <goals>
-                                <goal>flatten</goal>
-                            </goals>
-                        </execution>
-                        <!-- ensure proper cleanup -->
-                        <execution>
-                            <id>flatten.clean</id>
-                            <phase>clean</phase>
-                            <goals>
-                                <goal>clean</goal>
-                            </goals>
-                        </execution>
-                    </executions>
+                    <version>${moditect-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>create-javadoc</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <failOnError>true</failOnError>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
-
-    <scm>
-        <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
-        <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
-        <url>https://github.com/faktorips/faktorips.base</url>
-    </scm>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <configLocation>checkstyle/fips_checks.xml</configLocation>
+                    <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
+                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
+                    <headerLocation>checkstyle/fips.java.header</headerLocation>
+                    <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>    
 
 </project>

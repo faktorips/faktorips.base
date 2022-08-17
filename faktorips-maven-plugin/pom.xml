@@ -4,10 +4,10 @@
 
     <parent>
         <groupId>org.faktorips</groupId>
-        <artifactId>base</artifactId>
+        <artifactId>faktorips-runtime-parent</artifactId>
         <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../runtime/pom.xml</relativePath>
     </parent>
-
 
     <artifactId>faktorips-maven-plugin</artifactId>
     <packaging>maven-plugin</packaging>
@@ -27,89 +27,78 @@
     </licenses>
 
     <properties>
-        <jdk.version>11</jdk.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <tycho-version>3.0.0-SNAPSHOT</tycho-version>
-        <tycho-maven-plugin-version>3.0.0-SNAPSHOT</tycho-maven-plugin-version>
-        <maven-core-version>3.8.1</maven-core-version>
-        <maven-shared-utils-version>3.3.4</maven-shared-utils-version>
-        <maven-plugin-api-version>3.6.3</maven-plugin-api-version>
-        <maven-plugin-annotations-version>3.6.0</maven-plugin-annotations-version>
-        <maven-deploy-plugin-version>2.8.2</maven-deploy-plugin-version>
-        <maven-plugin-plugin-version>3.6.0</maven-plugin-plugin-version>
-        <maven-compiler-plugin-version>3.8.1</maven-compiler-plugin-version>
-        <maven-javadoc-plugin>3.2.0</maven-javadoc-plugin>
-        <maven-source-plugin>3.2.1</maven-source-plugin>
-        <maven-site-plugin-version>3.9.1</maven-site-plugin-version>
-        <wagon-maven-plugin-version>2.0.2</wagon-maven-plugin-version>
-        <maven-surefire-plugin>3.0.0-M5</maven-surefire-plugin>
-        <wagon-ssh-version>3.4.3</wagon-ssh-version>
-        <checkstyle.version>8.36.2</checkstyle.version>
-        <spotbugs.version>4.2.1</spotbugs.version>
+        <java.version>11</java.version>
+        <tycho.version>3.0.0-SNAPSHOT</tycho.version>
+        <!-- dependencies -->
+        <maven-core.version>3.8.1</maven-core.version>
+        <maven-shared-utils.version>3.3.4</maven-shared-utils.version>
+        <maven-plugin-api.version>3.6.3</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
+        <commons-codec.version>1.15</commons-codec.version>
+        <!-- plugins -->
+        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+        <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
+        <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+        <wagon-maven-plugin.version>2.0.2</wagon-maven-plugin.version>
+        <wagon-ssh.version>3.4.3</wagon-ssh.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-shared-utils</artifactId>
-            <version>${maven-shared-utils-version}</version>
+            <version>${maven-shared-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>${maven-core-version}</version>
+            <version>${maven-core.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>${maven-plugin-api-version}</version>
+            <version>${maven-plugin-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
             <artifactId>maven-plugin-annotations</artifactId>
-            <version>${maven-plugin-annotations-version}</version>
+            <version>${maven-plugin-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tycho.extras</groupId>
             <artifactId>tycho-eclipserun-plugin</artifactId>
-            <version>${tycho-version}</version>
+            <version>${tycho.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.tycho</groupId>
             <artifactId>sisu-equinox-launching</artifactId>
-            <version>${tycho-version}</version>
+            <version>${tycho.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
+            <version>${commons-codec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.7.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <version>2.2</version>
+            <artifactId>hamcrest-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.12.4</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -142,12 +131,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-ssh</artifactId>
-                <version>${wagon-ssh-version}</version>
-            </extension>
-            <extension>
-                <groupId>org.faktorips</groupId>
-                <artifactId>codequality-config</artifactId>
-                <version>22.12.0-SNAPSHOT</version>
+                <version>${wagon-ssh.version}</version>
             </extension>
         </extensions>
         <pluginManagement>
@@ -155,72 +139,22 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>wagon-maven-plugin</artifactId>
-                    <version>${wagon-maven-plugin-version}</version>
+                    <version>${wagon-maven-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>${maven-plugin-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>${maven-javadoc-plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>${maven-source-plugin}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>${maven-deploy-plugin-version}</version>
+                    <version>${maven-plugin-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
-                    <version>${maven-site-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin}</version>
+                    <version>${maven-site-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-maven-plugin</artifactId>
-                    <version>${tycho-maven-plugin-version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.2</version>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${checkstyle.version}</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.spotbugs</groupId>
-                    <artifactId>spotbugs-maven-plugin</artifactId>
-                    <version>4.2.0</version>
-                    <dependencies>
-                        <!-- overwrite dependency on spotbugs if you want to specify the version of spotbugs -->
-                        <dependency>
-                            <groupId>com.github.spotbugs</groupId>
-                            <artifactId>spotbugs</artifactId>
-                            <version>${spotbugs.version}</version>
-                        </dependency>
-                    </dependencies>
+                    <version>${tycho-maven-plugin.version}</version>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
                 <plugin>
@@ -260,15 +194,6 @@
                         <phase>process-classes</phase>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <compilerVersion>${jdk.version}</compilerVersion>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -321,24 +246,6 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>checkstyle/fips_checks.xml</configLocation>
-                    <suppressionsLocation>checkstyle/fips_suppressions.xml</suppressionsLocation>
-                    <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
-                    <propertyExpansion>config_loc=/checkstyle/</propertyExpansion>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.spotbugs</groupId>
-                <artifactId>spotbugs-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
 
@@ -362,18 +269,12 @@
         <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
     </scm>
 
-    <distributionManagement>
+    <repositories>
         <repository>
-            <id>releases</id>
-            <name>Faktor-IPS Releases</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+            <id>tycho-snapshots</id>
+            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
         </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Faktor-IPS Snapshots</name>
-            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    </repositories>
 
     <profiles>
         <profile>

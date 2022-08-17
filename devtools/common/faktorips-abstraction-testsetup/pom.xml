@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-abstraction-testsetup</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Faktor-IPS Abstractions Testsetup</name>
+    <description>Test-Setup for Abstractions used in the Faktor-IPS design time tools</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <!-- <_nouses>true</_nouses> -->
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            org.faktorips.*,
+                            org.apache.commons.io;version="2.6.0",
+                            org.hamcrest.*,
+                            org.junit*
+                        </Import-Package>
+                        <Export-Package>
+                            org.faktorips.devtools.abstraction.testsetup
+                        </Export-Package>
+                        <Bundle-SymbolicName>org.faktorips.devtools.abstraction.testsetup</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-runtime-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>faktorips-runtime-client</artifactId>
+
+    <name>Faktor-IPS Runtime Client Library</name>
+    <description>Client Runtime library for Faktor-IPS</description>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <sourceDirectory>target/client-src</sourceDirectory>
+        <plugins>
+            <plugin>
+                <!-- copy client relevant source files first (generate-sources) -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-filtering</artifactId>
+                        <version>3.3.0</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>copy-source-files</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/client-src</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>../src/main/java</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/Message*.java</include>
+                                        <include>**/Severity.java</include>
+                                        <include>**/IMarker.java</include>
+                                        <include>**/IPropertyQualifier.java</include>
+                                        <include>**/MsgReplacementParameter.java</include>
+                                        <include>**/ObjectProperty.java</include>
+                                        <include>**/IEnumValue.java</include>
+                                        <include>**/UtilityClass.java</include>
+                                        <include>**/IPredicate.java</include>
+                                        <include>**/StringBuilderJoiner.java</include>
+                                        <include>**/IpsStringUtils.java</include>
+                                        <include>**/AbstractMessageList.java</include>
+                                        <include>**/IMessage.java</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <configuration>
+                    <pomElements>
+                        <name>keep</name>
+                        <description>keep</description>
+                        <build>remove</build>
+              </pomElements>
+                </configuration>
+                <executions>
+                    <!-- enable flattening -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- ensure proper cleanup -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

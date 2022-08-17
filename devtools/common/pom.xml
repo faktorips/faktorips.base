@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-runtime-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../../runtime/pom.xml</relativePath>
+    </parent>
+    
+    <artifactId>faktorips-devtools-parent</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Faktor-IPS Devtools Parent</name>
+    <description>Defines versions for and configures Maven plugins used to build the Faktor-IPS design-time libraries</description>
+
+    <properties>
+        <java.version>11</java.version>
+    </properties>
+    
+    <modules>
+        <module>bom/eclipse-platform-dependencies</module>
+        <module>bom</module>
+        <module>faktorips-abstraction</module>
+        <module>faktorips-abstraction-plainjava</module>
+        <module>faktorips-abstraction-testsetup</module>
+        <module>faktorips-dtfl-common</module>
+        <module>faktorips-fl</module>
+        <module>faktorips-schemas</module>
+        <module>faktorips-util</module>
+    </modules>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-devtools-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>eclipse-platform-dependencies</artifactId>
+                <version>${faktorips.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>

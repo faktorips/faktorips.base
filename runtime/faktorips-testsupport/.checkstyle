@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileset-config file-format-version="1.2.0" simple-config="true" sync-formatter="false">
+  <local-check-config name="Fips Checkstyle" location="/codequality-config/config/checkstyle/fips_checks.xml" type="project" description="">
+    <additional-data name="protect-config-file" value="false"/>
+    <property name="checkstyle.header.file" value="${project_loc}/../../codequality-config/config/checkstyle/fips.java.header"/>
+    <property name="config_loc" value="checkstyle"/>
+    <property name="checkstyle.cache.file" value="${project_loc}/target/checkstyle-cachefile"/>
+    <property name="checkstyle.suppressions.file" value="${project_loc}/../../codequality-config/config/checkstyle/fips_suppressions.xml"/>
+  </local-check-config>
+  <fileset name="all" enabled="true" check-config-name="Fips Checkstyle" local="true">
+    <file-match-pattern match-pattern="." include-pattern="true"/>
+  </fileset>
+</fileset-config>

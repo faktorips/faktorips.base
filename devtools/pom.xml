@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>base</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-devtools</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Faktor-IPS Development Tools</name>
+    <description>Design-time tools for creating Faktor-IPS objects</description>
+
+    <modules>
+        <module>common</module>
+        <module>eclipse</module>
+    </modules>
+
+</project>

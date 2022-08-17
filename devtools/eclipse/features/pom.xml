@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-eclipse</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-devtools-eclipse-features</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <!-- features org.faktorips.feature -->
+        <module>org.faktorips.license</module>
+        <module>org.faktorips.feature</module>
+        <module>org.faktorips.feature.nls1</module>
+        <module>org.faktorips.testdependencies</module>
+        <module>org.faktorips.groovy.feature</module>
+        <module>org.faktorips.groovy.feature.nls1</module>
+        <module>org.faktorips.m2e.feature</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-dtfl-common</artifactId>
+        </dependency>
+    </dependencies>
+</project>
