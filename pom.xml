@@ -77,6 +77,19 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <pluginRepositories>
         <pluginRepository>
             <id>tycho-snapshots</id>
@@ -348,4 +361,5 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
         <url>https://github.com/faktorips/faktorips.base</url>
     </scm>
+
 </project>

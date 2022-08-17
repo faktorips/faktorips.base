@@ -8,6 +8,19 @@
     <version>22.12.0-SNAPSHOT</version>
     <name>Faktor IPS Build Configurations</name>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Faktor-IPS Releases</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Faktor-IPS Snapshots</name>
+            <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <resources>
             <resource>
