@@ -25,6 +25,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -74,24 +75,30 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     }
 
     @Test
-    public void testImportValid() throws Exception {
+    public void testImportValid_EnumType() throws Exception {
         MessageList ml = new MessageList();
-        executeImport(ml, true);
-        System.out.println(ml.getText());
-        assertTrue(ml.isEmpty());
+        executeImportEnumType(ml, true);
+        assertTrue(ml.toString(), ml.isEmpty());
+    }
+
+    @Test
+    public void testImportValid_EnumContent() throws Exception {
+        MessageList ml = new MessageList();
+        executeImportEnumContent(ml, true);
+        assertTrue(ml.toString(), ml.isEmpty());
     }
 
     @Test
     public void testImportFirstRowContainsNoColumnHeader() throws Exception {
         MessageList ml = new MessageList();
-        IEnumType enumType = executeImport(ml, false);
+        IEnumType enumType = executeImportEnumType(ml, false);
         assertEquals(4, enumType.getEnumValuesCount());
     }
 
     @Test
     public void testImportFirstRowContainsColumnHeader() throws Exception {
         MessageList ml = new MessageList();
-        IEnumType enumType = executeImport(ml, true);
+        IEnumType enumType = executeImportEnumType(ml, true);
         assertEquals(3, enumType.getEnumValuesCount());
     }
 
@@ -120,7 +127,7 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
         return enumType;
     }
 
-    private IEnumType executeImport(MessageList ml, boolean containsHeader) throws Exception, CoreException {
+    private IEnumType executeImportEnumType(MessageList ml, boolean containsHeader) throws Exception, CoreException {
         IEnumType enumType = createExternalEnumType();
 
         // clear the exported file for reimport (keeping the attributes)
@@ -130,6 +137,30 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
                 containsHeader, ml, true);
         op.run(new NullProgressMonitor());
         return enumType;
+    }
+
+    private IEnumContent createExternalEnumContent() throws Exception {
+        // create ips src file
+        IEnumContent enumContent = createValidEnumContentWithValues(ipsProject);
+
+        // create enum.xls
+        ExcelEnumExportOperation excelEnumExportOperation = new ExcelEnumExportOperation(enumContent, file.getName(),
+                format, "NULL", true, new MessageList());
+        excelEnumExportOperation.run(null);
+        return enumContent;
+    }
+
+    private IEnumContent executeImportEnumContent(MessageList ml, boolean containsHeader)
+            throws Exception, CoreException {
+        IEnumContent enumContent = createExternalEnumContent();
+
+        // clear the exported file for reimport (keeping the attributes)
+        enumContent.clear();
+
+        ExcelEnumImportOperation op = new ExcelEnumImportOperation(enumContent, file.getName(), format, "NULL",
+                containsHeader, ml, true);
+        op.run(new NullProgressMonitor());
+        return enumContent;
     }
 
     private void createInvalid() throws Exception {

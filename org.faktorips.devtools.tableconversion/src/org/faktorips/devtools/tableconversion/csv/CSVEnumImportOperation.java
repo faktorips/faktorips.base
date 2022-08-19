@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -55,6 +56,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
     private final boolean ignoreColumnHeaderRow;
     private final MessageList messageList;
     private Datatype[] datatypes;
+    private boolean includeLiteralName;
 
     public CSVEnumImportOperation(IEnumValueContainer valueContainer, String filename,
             AbstractExternalTableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow,
@@ -66,6 +68,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
         this.nullRepresentationString = nullRepresentationString;
         this.ignoreColumnHeaderRow = ignoreColumnHeaderRow;
         this.messageList = messageList;
+        includeLiteralName = valueContainer instanceof IEnumType;
 
         initDatatypes(valueContainer);
     }
@@ -73,7 +76,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
     private void initDatatypes(IEnumValueContainer valueContainer) {
         try {
             List<IEnumAttribute> enumAttributes = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributesIncludeSupertypeCopies(true);
+                    .getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
             datatypes = new Datatype[enumAttributes.size()];
 
             for (int i = 0; i < datatypes.length; i++) {
@@ -126,7 +129,7 @@ public class CSVEnumImportOperation implements ICoreRunnable {
             }
 
             int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject())
-                    .getEnumAttributesCountIncludeSupertypeCopies(true);
+                    .getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
 
             String[] readLine;
             int rowNumber = ignoreColumnHeaderRow ? 2 : 1;

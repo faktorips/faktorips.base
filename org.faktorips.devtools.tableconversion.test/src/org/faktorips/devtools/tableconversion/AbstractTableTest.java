@@ -22,6 +22,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -295,6 +296,70 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         // enumType.getIpsSrcFile().save(true, null);
 
         return enumType;
+    }
+
+    /**
+     * Creates a valid enum content.
+     */
+    protected IEnumContent createValidEnumContentWithValues(IIpsProject ipsProject) {
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
+        enumType.setAbstract(false);
+        enumType.setExtensible(true);
+        enumType.newEnumLiteralNameAttribute();
+        enumType.setEnumContentName("EnumExportContent");
+
+        // create attributes (structure)
+        for (int i = 0; i < datatypes.length; i++) {
+            IEnumAttribute enumAttribute = enumType.newEnumAttribute();
+            enumAttribute.setName("id" + i);
+            enumAttribute.setDatatype(datatypes[i]);
+        }
+        IEnumAttribute idAttribute = enumType.getEnumAttributes(false).get(enumType.getEnumAttributesCount(false) - 1);
+        idAttribute.setUnique(true);
+        idAttribute.setIdentifier(true); // satisfy validation rules
+        idAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+
+        IEnumContent enumContent = (IEnumContent)newIpsObject(ipsProject, IpsObjectType.ENUM_CONTENT,
+                "EnumExportContent");
+        enumContent.setEnumType("EnumExportSource");
+
+        // create values inside the enumeration type
+        IEnumValue enumValueRow1 = enumContent.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues = enumValueRow1.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("true"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("12.3"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("" + 1.79769313486231E308));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("2001-04-26"));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("" + Integer.MAX_VALUE));
+        // As Double tend to cause floating Point problems, Big Decimal is used
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + new BigDecimal(922337203685477000.0)));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("10.23EUR"));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("SimpleText"));
+
+        IEnumValue enumValueRow2 = enumContent.newEnumValue();
+        enumAttributeValues = enumValueRow2.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("false"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("12.3"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("" + Double.MIN_VALUE));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("2001-04-26"));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue("" + Integer.MIN_VALUE));
+        // As Double tend to cause floating Point problems, Big Decimal is used
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue("" + new BigDecimal(-922337203685477000.0)));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue("1 EUR"));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("_ValidJavaIdentifier"));
+
+        IEnumValue enumValueRow3 = enumContent.newEnumValue();
+        enumAttributeValues = enumValueRow3.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(4).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(5).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(6).setValue(ValueFactory.createStringValue(null));
+        enumAttributeValues.get(7).setValue(ValueFactory.createStringValue("_UniqueKey"));
+
+        return enumContent;
     }
 
     /**

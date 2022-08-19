@@ -43,6 +43,8 @@ import org.faktorips.runtime.MessageList;
  */
 public class CSVEnumExportOperation extends AbstractTableExportOperation {
 
+    private boolean includeLiteralName;
+
     /**
      * @param typeToExport An <code>IEnumValueContainer</code> instance.
      * @param filename The name of the file to export to.
@@ -76,6 +78,7 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
         }
 
         IEnumValueContainer enumContainer = getEnum(typeToExport);
+        includeLiteralName = enumContainer instanceof IEnumType;
 
         localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + enumContainer.getEnumValuesCount());
 
@@ -113,7 +116,8 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
                 char fieldSeparatorChar = getFieldSeparatorCSV(format);
                 writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
 
-                exportHeader(writer, structure.getEnumAttributesIncludeSupertypeCopies(true), exportColumnHeaderRow);
+                exportHeader(writer, structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName),
+                        exportColumnHeaderRow);
 
                 localMonitor.worked(1);
 
@@ -178,9 +182,9 @@ public class CSVEnumExportOperation extends AbstractTableExportOperation {
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) {
 
-        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
+        List<IEnumAttribute> enumAttributes = structure.getEnumAttributesIncludeSupertypeCopies(includeLiteralName);
 
-        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(true)];
+        Datatype[] datatypes = new Datatype[structure.getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName)];
         for (int i = 0; i < datatypes.length; i++) {
             datatypes[i] = enumAttributes.get(i).findDatatype(structure.getIpsProject());
         }

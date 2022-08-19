@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumAttributeValue;
+import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.enums.IEnumValueContainer;
@@ -75,7 +76,7 @@ public class ExcelEnumExportOperation extends AbstractExcelExportOperation {
         progressMonitor.worked(1);
 
         IEnumType structure = enumValueContainer.findEnumType(enumValueContainer.getIpsProject());
-        List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(true);
+        List<IEnumAttribute> attributes = structure.getEnumAttributesIncludeSupertypeCopies(enumValueContainer instanceof IEnumType);
         exportHeader(getSheet(), attributes, exportColumnHeaderRow);
         progressMonitor.worked(1);
         if (progressMonitor.isCanceled()) {

@@ -16,6 +16,7 @@ import java.io.File;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
+import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -62,11 +63,21 @@ public class ExcelEnumExportOperationTest extends AbstractTableTest {
     }
 
     @Test
-    public void testExportValid() throws Exception {
+    public void testExportValid_EnumType() throws Exception {
         IEnumType enumType = createValidEnumTypeWithValues(ipsProject);
 
         MessageList ml = new MessageList();
         ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumType, filename, format, "NULL", true, ml);
+        op.run(new NullProgressMonitor());
+        assertTrue(ml.toString(), ml.isEmpty());
+    }
+
+    @Test
+    public void testExportValid_EnumContent() throws Exception {
+        IEnumContent enumContent = createValidEnumContentWithValues(ipsProject);
+
+        MessageList ml = new MessageList();
+        ExcelEnumExportOperation op = new ExcelEnumExportOperation(enumContent, filename, format, "NULL", true, ml);
         op.run(new NullProgressMonitor());
         assertTrue(ml.toString(), ml.isEmpty());
     }
