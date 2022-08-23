@@ -361,15 +361,20 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
             ArrayList<IProductCmptLink> createdCmptLinks = new ArrayList<>();
             for (IProductCmpt draggedCmpt : draggedCmpts) {
-                createdCmptLinks.add(createLink(draggedCmpt.getQualifiedName(), generation, target));
+                createdCmptLinks
+                        .add(createLink(draggedCmpt.getQualifiedName(), generation, target, draggedCmpts.size() == 1));
             }
             return createdCmptLinks;
         }
 
-        private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target) {
+        private IProductCmptLink createLink(String droppedCmptQName,
+                IProductCmptGeneration generation,
+                Object target,
+                boolean singleTarget) {
             IProductCmptTypeAssociation association = getAssociation(target);
             if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
-                IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);
+                IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName,
+                        singleTarget);
                 moveLink(newLink, target);
                 return newLink;
             } else {

@@ -52,7 +52,7 @@ public class AddNewProductCmptOperation extends NewProductCmptOperation {
                 boolean wasDirty = srcFile.isDirty();
 
                 String targetQName = ipsSrcFile.getQualifiedNameType().getName();
-                new LinkCreatorUtil(false).createLink(association, generationToAddTo, targetQName);
+                new LinkCreatorUtil(false).createLink(association, generationToAddTo, targetQName, true);
                 subMonitor.worked(1);
 
                 if (!wasDirty) {

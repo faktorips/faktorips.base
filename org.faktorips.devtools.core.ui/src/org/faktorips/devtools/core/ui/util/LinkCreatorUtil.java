@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -110,14 +111,15 @@ public class LinkCreatorUtil {
             if (createLinks) {
                 if (possibleAssos.size() == 1) {
                     IProductCmptTypeAssociation association = possibleAssos.get(0);
-                    createLink(association, generation, draggedCmpt.getQualifiedName());
+                    createLink(association, generation, draggedCmpt.getQualifiedName(), draggedCmpts.size() == 1);
                 } else if (possibleAssos.size() > 1) {
                     Object[] selectedAssociations = selectAssociation(draggedCmpt.getQualifiedName(), possibleAssos);
                     if (selectedAssociations != null) {
                         for (Object object : selectedAssociations) {
                             if (object instanceof IProductCmptTypeAssociation) {
                                 IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)object;
-                                createLink(association, generation, draggedCmpt.getQualifiedName());
+                                createLink(association, generation, draggedCmpt.getQualifiedName(),
+                                        draggedCmpts.size() == 1);
                             }
                         }
                     }
@@ -181,7 +183,8 @@ public class LinkCreatorUtil {
             if (canCreateValidLink(generation, draggedCmpt, association)) {
                 result = true;
                 if (createLink) {
-                    createLink(association, generation, draggedCmpt.getQualifiedName());
+                    createLink(association, generation, draggedCmpt.getQualifiedName(),
+                            draggedCmpts.size() == 1);
                 }
             } else {
                 return false;
@@ -203,10 +206,11 @@ public class LinkCreatorUtil {
      */
     public IProductCmptLink createLink(IProductCmptTypeAssociation association,
             IProductCmptGeneration generation,
-            String targetQualifiedName) {
+            String targetQualifiedName,
+            boolean singleTarget) {
         if (generation != null && association != null && IpsUIPlugin.getDefault().isGenerationEditable(generation)) {
             IProductCmptLinkContainer container = getLinkContainerFor(generation, association);
-            return createLinkForContainer(targetQualifiedName, container, association);
+            return createLinkForContainer(targetQualifiedName, container, association, singleTarget);
         }
         return null;
     }
@@ -229,14 +233,45 @@ public class LinkCreatorUtil {
         }
     }
 
+    /**
+     * Returns a new {@link IProductCmptLinkContainer container} link. Sets cardinalities of the
+     * link to the corresponding policyAssociation values, if the {@link IProductCmptLink} is the
+     * first in container, has a single target and the association contains a matching
+     * policyAssociation.
+     * 
+     * @param droppedCmptQName the name of the dropped component
+     * @param container contains the newly created link
+     * @param association the association to retrieve a {@link IProductCmptLinkContainer container}
+     *            for
+     * @param singleTarget boolean which is true, if the link contains one target, false if multiple
+     * @return a new {@link IProductCmptLink} container link.
+     */
     private IProductCmptLink createLinkForContainer(String droppedCmptQName,
             IProductCmptLinkContainer container,
-            IAssociation association) {
+            IProductCmptTypeAssociation association,
+            boolean singleTarget) {
         IProductCmptLink newLink = container.newLink(association.getName());
+        IAssociation policyAssociation = association.findMatchingAssociation();
         newLink.setTarget(droppedCmptQName);
-        newLink.setMaxCardinality(1);
-        newLink.setMinCardinality(0);
+        if (singleTarget
+                && policyAssociation != null
+                && isFirstLink(container, newLink)) {
+            newLink.setMaxCardinality(policyAssociation.getMaxCardinality());
+            newLink.setMinCardinality(policyAssociation.getMinCardinality());
+            newLink.setDefaultCardinality(policyAssociation.getMinCardinality());
+        } else {
+            newLink.setMaxCardinality(1);
+            newLink.setMinCardinality(0);
+        }
         return newLink;
+    }
+
+    private boolean isFirstLink(IProductCmptLinkContainer container, IProductCmptLink newLink) {
+        String newLinkAssociation = newLink.getAssociation();
+        return container.getLinksAsList().stream()
+                .map(IProductCmptLink::getAssociation)
+                .filter(Predicate.isEqual(newLinkAssociation))
+                .count() == 1;
     }
 
 }

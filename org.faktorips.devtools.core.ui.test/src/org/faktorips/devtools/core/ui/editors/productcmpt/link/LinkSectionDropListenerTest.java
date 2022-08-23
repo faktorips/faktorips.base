@@ -28,9 +28,12 @@ import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
@@ -43,6 +46,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private ProductCmptType typeA;
     private ProductCmptType typeB;
+    private ProductCmptType typeB2;
     private ProductCmptType typeC;
     private IProductCmptTypeAssociation associationToB1;
     private IProductCmptTypeAssociation associationToB2;
@@ -71,6 +75,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptLink staticLinkToB1;
     private IProductCmptLink staticLinkToB2;
     private IProductCmptLink staticLinkToC1;
+    private IPolicyCmptTypeAssociation policyAssociationToC;
 
     @Override
     @Before
@@ -426,6 +431,188 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         assertFalse(dropListener.performDrop(null));
     }
 
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalitySingleLink() {
+
+        setUpPolicyAssociation();
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToC);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+        assertEquals(1, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(1, links[0].getMinCardinality());
+        assertEquals(1, links[0].getDefaultCardinality());
+        assertEquals(Cardinality.CARDINALITY_MANY, links[0].getMaxCardinality());
+    }
+
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalitySingleLinkTo1() {
+
+        setUpPolicyAssociation();
+        policyAssociationToC.setMaxCardinality(1);
+        treeViewer.setInput(cmptAGeneration);
+
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToC);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1)));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+        assertEquals(1, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(1, links[0].getMinCardinality());
+        assertEquals(1, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+    }
+
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalityMultipleLinks() {
+
+        setUpPolicyAssociation();
+
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToC);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1, cmptC2)));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+
+        assertEquals(2, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(cmptC2.getQualifiedName(), links[1].getTarget());
+        assertEquals(associationToC.getName(), links[1].getAssociation());
+
+        // Link1
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        // Link2
+        assertEquals(0, links[1].getMinCardinality());
+        assertEquals(0, links[1].getDefaultCardinality());
+        assertEquals(1, links[1].getMaxCardinality());
+
+    }
+
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalityMultipleLinksOnTo1() {
+
+        setUpPolicyAssociation();
+        policyAssociationToC.setMaxCardinality(1);
+        treeViewer.setInput(cmptAGeneration);
+
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToC);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptC1, cmptC2)));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+
+        assertEquals(2, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(cmptC2.getQualifiedName(), links[1].getTarget());
+        assertEquals(associationToC.getName(), links[1].getAssociation());
+
+        // Link1
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        // Link2
+        assertEquals(0, links[1].getMinCardinality());
+        assertEquals(0, links[1].getDefaultCardinality());
+        assertEquals(1, links[1].getMaxCardinality());
+
+    }
+
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalityExistingLink() {
+
+        setUpPolicyAssociation();
+
+        var c1Link = cmptAGeneration.newLink(associationToC);
+        c1Link.setTarget(cmptC1.getQualifiedName());
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks(associationToC.getName());
+
+        assertEquals(1, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToC);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptC2)));
+        links = cmptA.getFirstGeneration().getLinks();
+
+        assertEquals(2, links.length);
+        assertEquals(cmptC2.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(cmptC1.getQualifiedName(), links[1].getTarget());
+        assertEquals(associationToC.getName(), links[1].getAssociation());
+
+        // Link1
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        // Link2
+        assertEquals(0, links[1].getMinCardinality());
+        assertEquals(0, links[1].getDefaultCardinality());
+        assertEquals(1, links[1].getMaxCardinality());
+
+    }
+
+    @Test
+    public void testDropLinkWithPolicyAssociationCardinalityMultipleAssociationsToSameTargetClass() {
+
+        setUpPolicyAssociation();
+
+        b1Link1 = cmptAGeneration.newLink(associationToB1);
+        b1Link1.setTarget(cmptB1.getQualifiedName());
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks(associationToB1.getName());
+
+        assertEquals(1, links.length);
+        assertEquals(cmptB1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToB1.getName(), links[0].getAssociation());
+
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        AssociationViewItem associationViewItem = new AssociationViewItem(cmptAGeneration, associationToB2);
+        dropListener.setTarget(associationViewItem);
+        dropListener.setOperation(DND.DROP_LINK);
+        dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
+
+        assertTrue(dropListener.performDrop(getFilenames(cmptB2)));
+        links = cmptA.getFirstGeneration().getLinks(associationToB2.getName());
+
+        assertEquals(1, links.length);
+        assertEquals(cmptB2.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToB2.getName(), links[0].getAssociation());
+
+        assertEquals(1, links[0].getMinCardinality());
+        assertEquals(1, links[0].getDefaultCardinality());
+        assertEquals(Cardinality.CARDINALITY_MANY, links[0].getMaxCardinality());
+    }
+
     private void checkMove(IProductCmptLink... expected) {
         assertTrue(dropListener.performDrop(null));
         IProductCmptLink[] links = cmptAGeneration.getLinks();
@@ -446,6 +633,49 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             filenames[i] = cmpts[i].getIpsSrcFile().getCorrespondingFile().getLocation().toString();
         }
         return filenames;
+    }
+
+    private void setUpPolicyAssociation() {
+        PolicyCmptType policyA = newPolicyCmptType(ipsProject, "testPack.PolicyA");
+        policyA.setProductCmptType(typeA.getQualifiedName());
+        typeA.setPolicyCmptType(policyA.getQualifiedName());
+
+        PolicyCmptType policyB = newPolicyCmptType(ipsProject, "PolicyB");
+        policyB.setProductCmptType(typeB.getQualifiedName());
+        typeB.setPolicyCmptType(policyB.getQualifiedName());
+
+        PolicyCmptType policyC = newPolicyCmptType(ipsProject, "PolicyC");
+        policyC.setProductCmptType(typeC.getQualifiedName());
+        typeC.setPolicyCmptType(policyC.getQualifiedName());
+
+        policyAssociationToC = policyA.newPolicyCmptTypeAssociation();
+        policyAssociationToC.setTargetRoleSingular("associationToC");
+        policyAssociationToC.setTarget(policyC.getQualifiedName());
+        policyAssociationToC.setMinCardinality(1);
+        policyAssociationToC.setMaxCardinality(Cardinality.CARDINALITY_MANY);
+
+        associationToC.setMatchingAssociationName(policyAssociationToC.getName());
+        associationToC.setMatchingAssociationSource(policyA.getQualifiedName());
+
+        IPolicyCmptTypeAssociation policyAssociationToB1 = policyA.newPolicyCmptTypeAssociation();
+        policyAssociationToB1.setTargetRoleSingular("associationToB1");
+        policyAssociationToB1.setTarget(policyB.getQualifiedName());
+        policyAssociationToB1.setMinCardinality(1);
+        policyAssociationToB1.setMaxCardinality(Cardinality.CARDINALITY_MANY);
+
+        associationToB1.setMatchingAssociationName(policyAssociationToB1.getName());
+        associationToB1.setMatchingAssociationSource(policyA.getQualifiedName());
+
+        IPolicyCmptTypeAssociation policyAssociationToB2 = policyA.newPolicyCmptTypeAssociation();
+        policyAssociationToB2.setTargetRoleSingular("associationToB2");
+        policyAssociationToB2.setTarget(policyB.getQualifiedName());
+        policyAssociationToB2.setMinCardinality(1);
+        policyAssociationToB2.setMaxCardinality(Cardinality.CARDINALITY_MANY);
+
+        associationToB2.setMatchingAssociationName(policyAssociationToB2.getName());
+        associationToB2.setMatchingAssociationSource(policyA.getQualifiedName());
+
+        treeViewer.setInput(cmptAGeneration);
     }
 
     public static class TestDropListener extends LinkSectionDropListener {

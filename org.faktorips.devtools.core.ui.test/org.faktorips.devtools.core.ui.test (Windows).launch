@@ -12,10 +12,8 @@
     <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
     <booleanAttribute key="default" value="false"/>
     <setAttribute key="deselected_workspace_bundles">
-        <setEntry value="org.faktorips.devtools.abstraction.test"/>
         <setEntry value="org.faktorips.devtools.ant"/>
         <setEntry value="org.faktorips.devtools.ant.test"/>
-        <setEntry value="org.faktorips.devtools.core.refactor"/>
         <setEntry value="org.faktorips.devtools.core.refactor.test"/>
         <setEntry value="org.faktorips.devtools.core.test"/>
         <setEntry value="org.faktorips.devtools.htmlexport"/>
@@ -29,11 +27,8 @@
         <setEntry value="org.faktorips.devtools.stdbuilder.test"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui.test"/>
-        <setEntry value="org.faktorips.devtools.tableconversion"/>
         <setEntry value="org.faktorips.devtools.tableconversion.nl1"/>
         <setEntry value="org.faktorips.devtools.tableconversion.test"/>
-        <setEntry value="org.faktorips.dtflcommon.test"/>
-        <setEntry value="org.faktorips.fl.test"/>
         <setEntry value="org.faktorips.m2e"/>
         <setEntry value="org.faktorips.m2e.test"/>
         <setEntry value="org.faktorips.nls.devtools.core.nl1"/>
@@ -42,12 +37,7 @@
         <setEntry value="org.faktorips.nls.devtools.model.nl1"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1"/>
-        <setEntry value="org.faktorips.runtime.groovy.test"/>
-        <setEntry value="org.faktorips.runtime.test"/>
         <setEntry value="org.faktorips.testextensions"/>
-        <setEntry value="org.faktorips.util.test"/>
-        <setEntry value="org.faktorips.valuetypes.joda.test"/>
-        <setEntry value="org.faktorips.valuetypes.test"/>
     </setAttribute>
     <booleanAttribute key="includeOptional" value="true"/>
     <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
@@ -72,7 +62,7 @@
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
@@ -93,6 +83,7 @@
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
+        <setEntry value="org.apache.commons.codec*1.13.0.v20200108-0001@default:default"/>
         <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
@@ -100,11 +91,13 @@
         <setEntry value="org.apache.commons.logging*1.2.0.v20180409-1502@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
+        <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
+        <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.log4j@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
-        <setEntry value="org.apache.sshd.core@default:default"/>
+        <setEntry value="org.apache.sshd.osgi@default:default"/>
         <setEntry value="org.apache.sshd.sftp@default:default"/>
         <setEntry value="org.apache.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -151,6 +144,8 @@
         <setEntry value="org.eclipse.e4.ui.css.swt.theme@default:default"/>
         <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.di@default:default"/>
+        <setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
+        <setEntry value="org.eclipse.e4.ui.ide@default:default"/>
         <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
         <setEntry value="org.eclipse.e4.ui.services@default:default"/>
         <setEntry value="org.eclipse.e4.ui.widgets@default:default"/>
@@ -230,6 +225,7 @@
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
         <setEntry value="org.eclipse.jface.text@default:default"/>
         <setEntry value="org.eclipse.jface@default:default"/>
+        <setEntry value="org.eclipse.jgit.http.apache@default:default"/>
         <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
         <setEntry value="org.eclipse.jgit@default:default"/>
         <setEntry value="org.eclipse.jsch.core@default:default"/>
@@ -314,8 +310,6 @@
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest.core*1.3.0.zz-NO-SPLIT_PCK-v201303031735@default:default"/>
-        <setEntry value="org.junit*4.12.0.v201504281640@default:default"/>
-        <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
         <setEntry value="org.junit.jupiter.api@default:default"/>
         <setEntry value="org.junit.jupiter.engine@default:default"/>
         <setEntry value="org.junit.jupiter.migrationsupport@default:default"/>
@@ -326,6 +320,7 @@
         <setEntry value="org.junit.platform.runner@default:default"/>
         <setEntry value="org.junit.platform.suite.api@default:default"/>
         <setEntry value="org.junit.vintage.engine@default:default"/>
+        <setEntry value="org.junit@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
         <setEntry value="org.objenesis*1.4.0@default:default"/>
         <setEntry value="org.objenesis*2.1.0@default:default"/>
@@ -344,6 +339,10 @@
     <setAttribute key="selected_workspace_bundles">
         <setEntry value="org.faktorips.abstracttest.core@default:default"/>
         <setEntry value="org.faktorips.abstracttest@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse.test@default:false"/>
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.testsetup@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui.test@default:false"/>

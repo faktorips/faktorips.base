@@ -155,7 +155,8 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                     IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
                     LinkCreatorUtil util = new LinkCreatorUtil(false);
-                    util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName());
+                    util.createLink(association, activeProductCmptGeneration, targetProductCmpt.getQualifiedName(),
+                            true);
                 }
             }
         });

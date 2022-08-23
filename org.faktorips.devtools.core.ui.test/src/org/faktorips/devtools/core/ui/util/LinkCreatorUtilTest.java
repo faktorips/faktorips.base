@@ -26,13 +26,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.ui.views.productstructureexplorer.ProductStructureContentProvider;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
 import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.model.productcmpt.Cardinality;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
@@ -67,6 +71,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     private MyLinkCreator linkCreator;
     private ProductCmptType typeSubB;
     private ProductCmpt cmptSubB1;
+    private TreeViewer treeViewer;
 
     @Override
     @Before
@@ -104,7 +109,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
         contentProvider = new ProductStructureContentProvider(true);
         structure = cmptA.getStructure(new GregorianCalendar(), ipsProject);
 
-        TreeViewer treeViewer = new TreeViewer(new Shell(Display.getDefault()));
+        treeViewer = new TreeViewer(new Shell(Display.getDefault()));
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(structure);
 
@@ -209,12 +214,78 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCreateLinkWithPolicyAssociationCardinalitySingleLink() throws CycleInProductStructureException {
+        setUpPolicyAssociation();
+
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
+
+        assertTrue(linkCreator.createLinks(getList(cmptC1), references[2]));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+        assertEquals(1, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(1, links[0].getMinCardinality());
+        assertEquals(1, links[0].getDefaultCardinality());
+        assertEquals(Cardinality.CARDINALITY_MANY, links[0].getMaxCardinality());
+    }
+
+    @Test
+    public void testCreateLinkWithPolicyAssociationCardinalityMultipleLinks()
+            throws CycleInProductStructureException {
+        setUpPolicyAssociation();
+
+        IProductCmptTypeAssociationReference[] references = structure
+                .getChildProductCmptTypeAssociationReferences(structure.getRoot());
+        linkCreator.setSelection(1 << 0 | 1 << 1);
+
+        assertTrue(linkCreator.createLinks(getList(cmptC1, cmptC2), references[2]));
+        IProductCmptLink[] links = cmptA.getFirstGeneration().getLinks();
+        assertEquals(2, links.length);
+        assertEquals(cmptC1.getQualifiedName(), links[0].getTarget());
+        assertEquals(associationToC.getName(), links[0].getAssociation());
+        assertEquals(cmptC2.getQualifiedName(), links[1].getTarget());
+        assertEquals(associationToC.getName(), links[1].getAssociation());
+
+        // Link1
+        assertEquals(0, links[0].getMinCardinality());
+        assertEquals(0, links[0].getDefaultCardinality());
+        assertEquals(1, links[0].getMaxCardinality());
+
+        // Link2
+        assertEquals(0, links[1].getMinCardinality());
+        assertEquals(0, links[1].getDefaultCardinality());
+        assertEquals(1, links[1].getMaxCardinality());
+    }
+
+    private void setUpPolicyAssociation() throws CycleInProductStructureException {
+        PolicyCmptType policyA = newPolicyCmptType(ipsProject, "testPack.PolicyA");
+        policyA.setProductCmptType(typeA.getQualifiedName());
+        typeA.setPolicyCmptType(policyA.getQualifiedName());
+        PolicyCmptType policyC = newPolicyCmptType(ipsProject, "PolicyC");
+        policyC.setProductCmptType(typeC.getQualifiedName());
+        typeC.setPolicyCmptType(policyC.getQualifiedName());
+
+        IPolicyCmptTypeAssociation policyAssociationToC = policyA.newPolicyCmptTypeAssociation();
+        policyAssociationToC.setTargetRoleSingular("associationToC");
+        policyAssociationToC.setTarget(policyC.getQualifiedName());
+        policyAssociationToC.setMinCardinality(1);
+        policyAssociationToC.setMaxCardinality(Cardinality.CARDINALITY_MANY);
+
+        associationToC.setMatchingAssociationName(policyAssociationToC.getName());
+        associationToC.setMatchingAssociationSource(policyA.getQualifiedName());
+
+        structure = cmptA.getStructure(new GregorianCalendar(), ipsProject);
+        treeViewer.setInput(structure);
+    }
+
+    @Test
     public void testCreateLinkWithStaticAssociation() {
         cmptA = spy(cmptA);
         IProductCmptGeneration cmptGeneration = spy(cmptA.getFirstGeneration());
         doReturn(cmptA).when(cmptGeneration).getProductCmpt();
         associationToB1.setChangingOverTime(false);
-        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName());
+        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName(), true);
         verify(cmptA).newLink("associationToB1");
     }
 
@@ -222,7 +293,7 @@ public class LinkCreatorUtilTest extends AbstractIpsPluginTest {
     public void testCreateLinkWithChangingAssociation() {
         IProductCmptGeneration cmptGeneration = spy(cmptA.getFirstGeneration());
         associationToB1.setChangingOverTime(true);
-        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName());
+        linkCreator.createLink(associationToB1, cmptGeneration, cmptB1.getQualifiedName(), true);
         verify(cmptGeneration).newLink("associationToB1");
     }
 
