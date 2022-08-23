@@ -964,9 +964,8 @@ public class IpsBuildMojo extends AbstractMojo {
         }
 
         try {
-            File settingsDir = new File(work,
-                    "data/.metadata/.plugins/org.eclipse.core.runtime/.settings")
-                            .getAbsoluteFile();
+            File settingsDir = new File(work, "data/.metadata/.plugins/org.eclipse.core.runtime/.settings")
+                    .getAbsoluteFile();
             FileUtils.forceMkdir(settingsDir);
 
             final String finalUserSettings = userSettingsPath;
@@ -1008,8 +1007,7 @@ public class IpsBuildMojo extends AbstractMojo {
             Properties p = new Properties();
             properties.accept(p);
             p.put("eclipse.preferences.version", "1");
-            try (FileOutputStream settings = new FileOutputStream(
-                    new File(settingsDir, propertyFileName))) {
+            try (FileOutputStream settings = new FileOutputStream(new File(settingsDir, propertyFileName))) {
                 p.store(settings, "IpsBuildMojo");
             }
         } catch (IOException e) {
@@ -1021,17 +1019,14 @@ public class IpsBuildMojo extends AbstractMojo {
     private String writeDebugLogSettings() {
         if (debugLogOptions == null) {
             try {
-                File settingsDir = new File(work,
-                        "data")
-                                .getAbsoluteFile();
+                File settingsDir = new File(work, "data").getAbsoluteFile();
                 FileUtils.forceMkdir(settingsDir);
                 String path = settingsDir.getAbsolutePath() + "/.options";
 
                 List<String> loggingOptions = IOUtils.readLines(getClass().getResourceAsStream("/debug_trace"),
                         StandardCharsets.UTF_8);
 
-                Files.write(Paths.get(path), loggingOptions,
-                        StandardOpenOption.CREATE, StandardOpenOption.WRITE);
+                Files.write(Paths.get(path), loggingOptions, StandardOpenOption.CREATE, StandardOpenOption.WRITE);
 
                 return path;
             } catch (IOException e) {

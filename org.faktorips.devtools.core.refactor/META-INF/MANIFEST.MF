@@ -30,5 +30,5 @@ Import-Package: org.eclipse.jdt.core.refactoring,
  org.faktorips.devtools.model.plugin,
  org.faktorips.devtools.model.type,
  org.faktorips.devtools.model.util,
- org.faktorips.runtime;version="22.12.0",
+ org.faktorips.runtime,
  org.faktorips.util

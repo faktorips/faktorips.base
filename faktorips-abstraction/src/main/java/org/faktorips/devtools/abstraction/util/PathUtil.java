@@ -61,7 +61,7 @@ public class PathUtil {
 
     @CheckForNull
     public static String toPortableString(@CheckForNull Path path) {
-        return FilenameUtils.separatorsToUnix(path.toString());
+        return path == null ? null : FilenameUtils.separatorsToUnix(path.toString());
     }
 
     public static boolean isAbsoluteInWorkspace(Path path) {

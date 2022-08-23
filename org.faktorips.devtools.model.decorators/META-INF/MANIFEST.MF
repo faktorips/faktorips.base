@@ -49,7 +49,7 @@ Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.devtools.model.testcasetype,
  org.faktorips.devtools.model.type,
  org.faktorips.devtools.model.util,
- org.faktorips.runtime.internal;version="22.12.0",
- org.faktorips.runtime.util;version="22.12.0",
+ org.faktorips.runtime.internal,
+ org.faktorips.runtime.util,
  org.faktorips.util
 Bundle-Activator: org.faktorips.devtools.model.decorators.internal.IpsModelDecoratorsPluginActivator

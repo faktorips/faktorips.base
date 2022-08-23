@@ -9,17 +9,11 @@ Export-Package: org.faktorips.devtools.abstraction.eclipse.internal;x-friends:="
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
- java.io,
- java.nio.charset,
- java.nio.file,
- java.text,
- java.util,
- java.util.stream,
- org.faktorips.devtools.abstraction;version="22.12.0",
- org.faktorips.devtools.abstraction.exception;version="22.12.0",
- org.faktorips.runtime;version="22.12.0",
- org.faktorips.runtime.internal;version="22.12.0",
- org.faktorips.util;version="22.12.0",
+ org.faktorips.devtools.abstraction,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.runtime,
+ org.faktorips.runtime.internal,
+ org.faktorips.util,
  org.osgi.service.component.annotations;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.resources,

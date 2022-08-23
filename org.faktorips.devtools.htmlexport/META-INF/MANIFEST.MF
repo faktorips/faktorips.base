@@ -49,5 +49,5 @@ Import-Package: org.apache.commons.lang;version="[2.6,2.6]",
  org.faktorips.devtools.model.type,
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
- org.faktorips.runtime;version="22.12.0",
- org.faktorips.values;version="22.12.0"
+ org.faktorips.runtime,
+ org.faktorips.values
