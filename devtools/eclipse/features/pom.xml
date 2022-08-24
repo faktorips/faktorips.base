@@ -42,5 +42,9 @@
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-dtfl-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-model</artifactId>
+        </dependency>
     </dependencies>
 </project>

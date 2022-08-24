@@ -252,6 +252,13 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          unpack="false"/>
 
    <plugin
+         id="org.faktorips.devtools.model.eclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.faktorips.devtools.core.refactor"
          download-size="0"
          install-size="0"

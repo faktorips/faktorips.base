@@ -61,7 +61,7 @@
     <vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/</vmArgs>
   </launcherArgs>
     <includeBundles>
-        <plugin id="com.google.guava"/>
+        <plugin id="com.google.guava" version="31.1.0.jre"/>
         <plugin id="com.google.inject"/>
         <plugin id="com.google.inject.source"/>
         <plugin id="com.ibm.icu"/>
@@ -695,11 +695,11 @@
         <plugin id="org.eclipse.help.webapp.nl_de"/>
         <plugin id="org.eclipse.help.webapp.source"/>
         <plugin id="org.eclipse.jdt"/>
-        <plugin id="org.eclipse.jdt.annotation" version="2.2.400.v20191120-1313"/>
         <plugin id="org.eclipse.jdt.annotation" version="1.1.400.v20180921-1416"/>
+        <plugin id="org.eclipse.jdt.annotation" version="2.2.400.v20191120-1313"/>
         <plugin id="org.eclipse.jdt.annotation.nl_de"/>
-        <plugin id="org.eclipse.jdt.annotation.source" version="1.1.400.v20180921-1416"/>
         <plugin id="org.eclipse.jdt.annotation.source" version="2.2.400.v20191120-1313"/>
+        <plugin id="org.eclipse.jdt.annotation.source" version="1.1.400.v20180921-1416"/>
         <plugin id="org.eclipse.jdt.annotation_v1.nl_de"/>
         <plugin id="org.eclipse.jdt.apt.core"/>
         <plugin id="org.eclipse.jdt.apt.core.nl_de"/>
@@ -1325,5 +1325,9 @@
         <plugin id="org.apache.poi.poi-ooxml"/>
         <plugin id="org.apache.poi.poi-ooxml-lite.source"/>
         <plugin id="org.apache.poi.poi-ooxml-lite"/>
+        <plugin id="com.google.guava" version="27.1.0.v20190517-1946"/>
+        <plugin id="com.google.guava.source"/>
+        <plugin id="com.google.guava.failureaccess"/>
+        <plugin id="com.google.guava.failureaccess.source"/>
     </includeBundles>
 </target>

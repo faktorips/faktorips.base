@@ -69,4 +69,9 @@ public class EclipseImplementation implements AImplementation {
         return wrap(Platform.getLog(FrameworkUtil.getBundle(EclipseImplementation.class))).as(ALog.class);
     }
 
+    @Override
+    public String getDebugOption(String option) {
+        return Platform.getDebugOption(option);
+    }
+
 }

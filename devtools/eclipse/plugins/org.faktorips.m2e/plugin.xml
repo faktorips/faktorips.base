@@ -14,14 +14,14 @@
          point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
    </extension>
    <extension
-         point="org.faktorips.devtools.model.versionProvider">
+         point="org.faktorips.devtools.model.eclipse.versionProvider">
       <versionProvider
             class="org.faktorips.m2e.version.MavenVersionProviderFactory"
             id="org.faktorips.maven.mavenVersionProvider">
       </versionProvider>
    </extension>
    <extension
-         point="org.faktorips.devtools.model.addIpsNature">
+         point="org.faktorips.devtools.model.eclipse.addIpsNature">
       <ipsProjectConfigurator
             class="org.faktorips.m2e.ipsconfigurator.MavenIpsProjectConfigurator">
       </ipsProjectConfigurator>

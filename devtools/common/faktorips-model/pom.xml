@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-model</artifactId>
+    <packaging>bundle</packaging>
+
+    <name>Faktor-IPS Model</name>
+    <description>Model for the Faktor-IPS design time tools</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-plainjava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.equinox.common</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+        </dependency>
+        <!-- TODO: move -->
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.filesystem</artifactId>
+        </dependency>
+        <!-- TODO braucht's des noch? -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            !java.*,
+                            com.google.common.base;version="31.0.0",
+                            com.google.common.collect;version="31.0.0",
+                            com.opencsv;version="5.6.0",
+                            com.opencsv.exceptions;version="5.6.0",
+                            org.apache.commons.lang3;version="3.12.0",
+                            org.faktorips.*,
+                            *
+                        </Import-Package>
+                        <Export-Package>
+							org.faktorips.devtools.model,
+							org.faktorips.devtools.model.*
+                        </Export-Package>
+                        <Bundle-Activator>org.faktorips.devtools.model.abstractions.OsgiWorkspaceImplementationProvider</Bundle-Activator>
+                        <Bundle-ActivationPolicy>lazy</Bundle-ActivationPolicy>
+                        <Bundle-SymbolicName>org.faktorips.devtools.model</Bundle-SymbolicName>
+                        <Bundle-ClassPath>.</Bundle-ClassPath>
+                        <!--<Include-Resource>
+                            {maven-resources}, plugin.xml, schema=schema
+                        </Include-Resource>-->
+                        <Require-Bundle>
+                             org.eclipse.core.resources;bundle-version="3.13.700",
+                             org.eclipse.jdt.core;bundle-version="3.21.0",
+                             org.eclipse.core.filesystem;bundle-version="1.7.700"
+                        </Require-Bundle>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <!-- copy schemas for offline validation -->
+                    <execution>
+                        <id>copy-xsd-schemas</id>
+                        <phase>compile</phase>
+                        <configuration>
+                            <target>
+                                <copy todir="${basedir}/xsd-schema">
+                                    <fileset dir="${basedir}/../faktorips-schemas/src/main/resources" />
+                                </copy>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-antrun-plugin</artifactId>
+                                        <versionRange>[3.1.0,)</versionRange>
+                                        <goals>
+                                            <goal>run</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

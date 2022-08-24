@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <fragment>
    <extension
-         point="org.faktorips.devtools.model.productReleaseExtension">
+         point="org.faktorips.devtools.model.eclipse.productReleaseExtension">
 	<!--
 	This extension is used to test the deployment wizard
 	-->
@@ -16,7 +16,7 @@
    </extension>
    <extension
          id="org.faktorips.devtools.TestDummyBuilderSet"
-         point="org.faktorips.devtools.model.artefactbuilderset">
+         point="org.faktorips.devtools.model.eclipse.artefactbuilderset">
       <builderSet
             class="org.faktorips.devtools.core.test.TestDummyBuilderSet">
       </builderSet>

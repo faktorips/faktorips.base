@@ -27,7 +27,7 @@
                         <Import-Package>
                             !edu.umd.cs.findbugs.*,
                             org.faktorips.*,
-                            org.apache.commons.lang3;version="[3.12,3.12]"
+                            org.apache.commons.lang3;version="3.12"
                         </Import-Package>
                         <Export-Package>
                             org.faktorips.util.*

@@ -4,7 +4,7 @@
    <extension
          id="TestExtensionForIConfiguredDefault"
          name="TestExtension@IConfiguredDefault"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIConfiguredDefault"
             extendedType="org.faktorips.devtools.model.productcmpt.IConfiguredDefault"
@@ -24,7 +24,7 @@
    <extension
          id="TestExtensionForIAttribute"
          name="TestExtension@IAttribute"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAttribute"
             extendedType="org.faktorips.devtools.model.type.IAttribute"
@@ -44,7 +44,7 @@
    <extension
          id="TestExtensionForIAssociation"
          name="TestExtension@IAssociation"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIAssociation"
             extendedType="org.faktorips.devtools.model.type.IAssociation"
@@ -64,7 +64,7 @@
    <extension
          id="TestExtensionForIPolicyCmptType"
          name="TestExtension@IPolicyCmptType"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.testextensions.TestExtensionPropertyDefinitionForIPolicyCmptType"
             extendedType="org.faktorips.devtools.model.pctype.IPolicyCmptType"
@@ -76,7 +76,7 @@
    <extension
          id="TestExtensionForIProductCmptType"
          name="TestExtension@IProductCmptType"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
             extendedType="org.faktorips.devtools.model.productcmpttype.IProductCmptType"
@@ -88,7 +88,7 @@
    <extension
          id="TestExtensionForIProductCmpt"
          name="TestExtension@IProductCmpt"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
             extendedType="org.faktorips.devtools.model.productcmpt.IProductCmpt"
@@ -100,7 +100,7 @@
    <extension
          id="TestExtensionForIProductCmptLink"
          name="TestExtension@IProductCmptLink"
-         point="org.faktorips.devtools.model.objectExtensionProperty">
+         point="org.faktorips.devtools.model.eclipse.objectExtensionProperty">
       <property
             class="org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition"
             extendedType="org.faktorips.devtools.model.productcmpt.IProductCmptLink"
@@ -109,7 +109,7 @@
       </property>
    </extension>
    <extension
-         point="org.faktorips.devtools.model.preSaveProcessor">
+         point="org.faktorips.devtools.model.eclipse.preSaveProcessor">
       <PreSaveProcessor
             class="org.faktorips.testextensions.TestPreSaveProcessor">
       </PreSaveProcessor>

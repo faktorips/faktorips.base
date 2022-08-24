@@ -11,8 +11,9 @@ package org.faktorips.devtools.abstraction.plainjava.internal;
 
 import java.text.MessageFormat;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.lang.model.SourceVersion;
 
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -45,8 +46,10 @@ public class PlainJavaConventions {
     }
 
     public static MessageList validatePackageName(String name) {
-        Matcher packageNameMatcher = PACKAGE_NAME.matcher(name);
-        if (!packageNameMatcher.matches()) {
+        if (name == null) {
+            return new MessageList(Message.newError(MSG_CODE_INVALID_PACKAGE_NAME, "A package name must not be null")); //$NON-NLS-1$
+        }
+        if (!PACKAGE_NAME.matcher(name).matches()) {
             return new MessageList(Message.newError(MSG_CODE_INVALID_PACKAGE_NAME,
                     MessageFormat.format("''{0}'' is not allowed as a Java package name", name))); //$NON-NLS-1$
         }
@@ -107,5 +110,23 @@ public class PlainJavaConventions {
             }
         });
         return messageList;
+    }
+
+    /**
+     * Validate the given field or method name for the given source level.
+     */
+    public static boolean validateName(String name, Runtime.Version sourceLevel) {
+        return SourceVersion.isName(name, convertToSourceVersion(sourceLevel));
+    }
+
+    /**
+     * Validate the given field or method name.
+     */
+    public static boolean validateName(String name) {
+        return SourceVersion.isName(name);
+    }
+
+    private static SourceVersion convertToSourceVersion(Runtime.Version rv) {
+        return SourceVersion.valueOf("RELEASE_" + rv.feature());
     }
 }

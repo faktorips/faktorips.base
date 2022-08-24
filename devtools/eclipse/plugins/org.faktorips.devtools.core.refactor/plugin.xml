@@ -34,7 +34,7 @@
       </pullUpParticipant>
    </extension>
    <extension
-         point="org.faktorips.devtools.model.addIpsNature">
+         point="org.faktorips.devtools.model.eclipse.addIpsNature">
       <ipsProjectConfigurator
             class="org.faktorips.devtools.core.refactor.modules.ModuleIpsProjectConfigurator">
       </ipsProjectConfigurator>

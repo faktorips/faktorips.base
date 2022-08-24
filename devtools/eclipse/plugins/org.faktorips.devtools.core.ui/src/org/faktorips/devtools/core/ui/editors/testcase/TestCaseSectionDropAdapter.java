@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.eclipse.util.NestedEclipseProjectFileUtil;
 import org.faktorips.devtools.model.internal.testcase.TestCase;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -39,7 +40,6 @@ import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
-import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 /**
  * Provides drop support for {@linkplain TestCaseSection}.

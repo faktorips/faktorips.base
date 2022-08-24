@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <fragment>
-   <extension
+   <!--<extension
          point="org.faktorips.devtools.model.datatypeDefinition">
       <datatypeDefinition
             datatypeClass="org.faktorips.devtools.model.internal.productcmpt.InvalidDatatype"
@@ -10,5 +10,5 @@
    </extension>
    <extension point="org.faktorips.devtools.model.classLoaderProviderFactory">
       <classLoaderProviderFactory class="org.faktorips.devtools.model.test.TestClassLoaderProviderFactory" />
-   </extension>
+   </extension>-->
 </fragment>

@@ -21,10 +21,10 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.eclipse.util.NestedEclipseProjectFileUtil;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.util.NestedEclipseProjectFileUtil;
 
 public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdapter {
 

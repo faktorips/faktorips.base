@@ -40,7 +40,9 @@
     <stringAttribute key="product" value="org.eclipse.equinox.p2.director.app.product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
+        <setEntry value="com.google.guava*31.1.0.jre@default:default"/>
+        <setEntry value="com.google.guava.failureaccess@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
@@ -288,10 +290,12 @@
         <setEntry value="org.faktorips.abstracttest@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.testsetup@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.model.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
+        <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.testsupport@default:default"/>

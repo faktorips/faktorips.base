@@ -17,6 +17,8 @@
 
     <properties>
         <java.version>11</java.version>
+        <!-- version for compiler plugin, should match annotation version from BOM -->
+        <auto-service.version>1.0.1</auto-service.version>
     </properties>
     
     <modules>
@@ -27,6 +29,8 @@
         <module>faktorips-abstraction-testsetup</module>
         <module>faktorips-dtfl-common</module>
         <module>faktorips-fl</module>
+        <module>faktorips-model</module>
+        <module>faktorips-model-plainjava</module>
         <module>faktorips-schemas</module>
         <module>faktorips-util</module>
     </modules>

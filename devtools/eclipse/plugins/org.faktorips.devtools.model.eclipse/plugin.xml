@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+<!-- 
+    Nature and Builders
+  -->
+   <extension
+         id="ipsnature"
+         name="FaktorIPS-Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.faktorips.devtools.model.eclipse.ipsproject.EclipseProjectNature">
+            <parameter
+                  name="installBuilder"
+                  value="true">
+            </parameter>
+         </run>
+      </runtime>
+      <builder
+            id="org.faktorips.devtools.model.eclipse.ipsbuilder">
+      </builder>
+   </extension>
+   <extension
+         id="ipsbuilder"
+         name="FaktorIPS-Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.faktorips.devtools.model.eclipse.builder.EclipseIpsBuilder">
+         </run>
+      </builder>
+   </extension>
+   
+   <extension
+         point="org.faktorips.devtools.model.ipsObjectPathContainerType">
+      <containerType
+            class="org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType"
+            typeId="JDTClasspathContainer">
+      </containerType>
+   </extension>
+   
+</plugin>
