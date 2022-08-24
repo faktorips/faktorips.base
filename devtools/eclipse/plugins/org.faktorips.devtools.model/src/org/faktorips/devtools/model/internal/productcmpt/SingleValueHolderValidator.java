@@ -15,10 +15,11 @@ import static org.faktorips.devtools.model.productcmpt.IAttributeValue.MSGCODE_V
 
 import java.text.MessageFormat;
 
+import org.apache.commons.lang.StringUtils;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.InternationalString;
-import org.faktorips.devtools.model.internal.value.StringValue;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
@@ -88,7 +89,8 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 String nullPresentation = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
                 InternationalString content = (InternationalString)value.getContent();
                 for (LocalizedString localizedString : content.values()) {
-                    if (nullPresentation.equals(localizedString.getValue())) {
+                    if (nullPresentation.equals(localizedString.getValue())
+                            || StringUtils.isBlank(localizedString.getValue())) {
                         String text = MessageFormat.format(Messages.AttributeValue_ValueNotAllowed,
                                 nullPresentation,
                                 parent.getName());
@@ -108,15 +110,18 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
             String text = MessageFormat.format(Messages.AttributeValue_MultiLingual, parent.getAttribute());
             messages.newError(MSGCODE_INVALID_VALUE_TYPE, text, invalidObjectProperties);
         }
-        if (!attribute.getValueSet().containsValue(((StringValue)value).getContentAsString(), ipsProject)) {
+        String contentAsString = value.getContentAsString();
+        String contentValue = StringUtils.isBlank(contentAsString) ? null : contentAsString;
+        if (!attribute.getValueSet().containsValue(contentValue, ipsProject)) {
             String text;
-            String formattedValue = getFormattedValue(value, datatype);
+            String formattedValue = getFormattedValue(contentAsString, datatype);
             if (attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
                 text = MessageFormat.format(Messages.AttributeValue_AllowedValuesAre, formattedValue,
                         attribute.getValueSet().toShortString());
             } else {
-                text = MessageFormat.format(Messages.AttributeValue_ValueNotAllowed, formattedValue,
-                        parent.getName());
+                text = MessageFormat.format(Messages.AttributeValue_ValueEmptyOrNull,
+                        parent.getName(),
+                        formattedValue);
             }
             messages.newError(MSGCODE_VALUE_NOT_IN_SET, text, invalidObjectProperties);
         }
@@ -127,9 +132,12 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 .filter(c -> !AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET.equals(c.getCode())).count() > 0;
     }
 
-    private String getFormattedValue(IValue<?> value, ValueDatatype datatype) {
+    private String getFormattedValue(String value, ValueDatatype datatype) {
+        if (value != null && value.isBlank() && Datatype.STRING.equals(datatype)) {
+            return '"' + value + '"';
+        }
         return IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter().formatValue(datatype,
-                value.getContentAsString());
+                value);
     }
 
 }
