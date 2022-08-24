@@ -40,7 +40,8 @@
     <stringAttribute key="product" value="org.eclipse.equinox.p2.director.app.product"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
+        <setEntry value="com.google.guava*31.1.0.jre@default:default"/>
+        <setEntry value="com.google.guava.failureaccess@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
@@ -204,14 +205,6 @@
         <setEntry value="org.eclipse.jsch.core@default:default"/>
         <setEntry value="org.eclipse.ltk.core.refactoring@default:default"/>
         <setEntry value="org.eclipse.ltk.ui.refactoring@default:default"/>
-        <setEntry value="org.eclipse.m2e.archetype.common@default:default"/>
-        <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
-        <setEntry value="org.eclipse.m2e.core@default:default"/>
-        <setEntry value="org.eclipse.m2e.maven.indexer@default:default"/>
-        <setEntry value="org.eclipse.m2e.maven.runtime.slf4j.simple@default:default"/>
-        <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
-        <setEntry value="org.eclipse.m2e.model.edit@default:default"/>
-        <setEntry value="org.eclipse.m2e.workspace.cli@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
         <setEntry value="org.eclipse.osgi.util@default:default"/>
@@ -261,9 +254,6 @@
         <setEntry value="org.eclipse.wst.xml.core@default:default"/>
         <setEntry value="org.eclipse.wst.xsd.core@default:default"/>
         <setEntry value="org.eclipse.xsd@default:default"/>
-        <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
-        <setEntry value="org.eclipse.xtend.lib@default:default"/>
-        <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest.core@default:default"/>
         <setEntry value="org.hamcrest@default:default"/>
         <setEntry value="org.junit.platform.commons@default:default"/>
@@ -289,6 +279,7 @@
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.model.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
@@ -299,7 +290,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
-    <stringAttribute key="timestamp" value="1662381267440"/>
+    <stringAttribute key="timestamp" value="1663251495453"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

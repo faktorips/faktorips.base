@@ -19,8 +19,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.project.configurator.AbstractProjectConfigurator;
 import org.eclipse.m2e.core.project.configurator.ProjectConfigurationRequest;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.eclipse.util.EclipseProjectUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.EclipseProjectUtil;
 
 /**
  * The {@link IpsProjectConfigurator} checks if there is an existing .ipsproject configuration file.

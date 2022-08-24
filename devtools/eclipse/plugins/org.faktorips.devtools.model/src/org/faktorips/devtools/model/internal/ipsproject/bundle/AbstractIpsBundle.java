@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.util.PathUtil;
@@ -25,7 +24,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
 /**
  * This AbstractIpsBundle is an abstract implementation of a storage, which is included vi this
- * OSGi-mechanism. Therefor it contains a reference to the manifest, which is represented by an
+ * OSGi-mechanism. Therefore it contains a reference to the manifest, which is represented by an
  * {@link IpsBundleManifest}.
  * <p>
  * The information about included objects are read from MANIFEST.MF. A detailed description is
@@ -164,7 +163,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
      * {@inheritDoc}
      * <p>
      * The jar file of an IpsJarBundle normally lies outside of the workspace. Hence we cannot get
-     * an existing {@link IResource} for this jar file. To be compatible to other parts of the
+     * an existing {@link AResource} for this jar file. To be compatible to other parts of the
      * framework we return a virtual resource. The name of the resource is the name of the archive
      * located in the project. Because it is not allowed to have to archive references with the same
      * name this strategy cannot run into conflicts.

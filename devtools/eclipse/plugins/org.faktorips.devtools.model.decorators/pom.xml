@@ -13,7 +13,13 @@
     <artifactId>org.faktorips.devtools.model.decorators</artifactId>
 
     <packaging>eclipse-plugin</packaging>
-
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model</artifactId>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->

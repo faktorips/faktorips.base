@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.text.MessageFormat;
 
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.util.IpsNLS;
 
-public class Messages extends NLS {
+public class Messages extends IpsNLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.model.internal.ipsproject.messages"; //$NON-NLS-1$
 
@@ -81,7 +81,7 @@ public class Messages extends NLS {
     public static String VersionProviderExtensionPoint_error_invalidVersionProvider;
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        IpsNLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {

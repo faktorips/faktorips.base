@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.model.productrelease.ITargetSystem;
+import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
 
 public class UsernamePasswordDialog extends Dialog {
 

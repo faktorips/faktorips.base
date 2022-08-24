@@ -11,19 +11,19 @@ package org.faktorips.devtools.model.plugin;
 
 import java.util.Objects;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
+import org.faktorips.devtools.model.abstractions.AWorkspaceAbstractionsImplementationProvider;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions.AWorkspaceAbstractionsImplementation;
 import org.faktorips.devtools.model.internal.IpsModel;
-import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
-public class IpsModelActivator implements BundleActivator {
+public class IpsModelActivator implements BundleActivator, AWorkspaceAbstractionsImplementationProvider {
 
     public static final String PLUGIN_ID = "org.faktorips.devtools.model"; //$NON-NLS-1$
 
@@ -32,7 +32,7 @@ public class IpsModelActivator implements BundleActivator {
 
     private Bundle bundle;
 
-    private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
+    private ServiceTracker<AWorkspaceAbstractionsImplementation, AWorkspaceAbstractionsImplementation> implementationServiceTracker;
 
     public IpsModelActivator() {
         activator = this;
@@ -55,21 +55,21 @@ public class IpsModelActivator implements BundleActivator {
      */
     @Override
     public void start(BundleContext context) throws Exception {
+        implementationServiceTracker = new ServiceTracker<>(context,
+                AWorkspaceAbstractionsImplementation.class, null);
+        implementationServiceTracker.open();
         bundle = context.getBundle();
 
         // force loading of class before model is created!
         IpsObjectType.POLICY_CMPT_TYPE.getId();
 
-        dependencyGraphPersistenceManager = new DependencyGraphPersistenceManager();
-        IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
-        saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
+        getIpsModel().startListeningToResourceChanges();
 
-        getEclipseIpsModel().startListeningToResourceChanges();
     }
 
-    private EclipseIpsModel getEclipseIpsModel() {
-        return (EclipseIpsModel)IpsModel.get();
+    @SuppressWarnings("deprecation")
+    private IpsModel getIpsModel() {
+        return IpsModel.get();
     }
 
     /**
@@ -77,14 +77,8 @@ public class IpsModelActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        getEclipseIpsModel().stopListeningToResourceChanges();
-    }
-
-    /**
-     * Returns the persistence manager for the dependency graphs.
-     */
-    public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
-        return dependencyGraphPersistenceManager;
+        implementationServiceTracker = null;
+        getIpsModel().stopListeningToResourceChanges();
     }
 
     /**
@@ -111,6 +105,22 @@ public class IpsModelActivator implements BundleActivator {
      */
     public static IPath getStateLocation() throws IllegalStateException {
         return Platform.getStateLocation(get().bundle);
+    }
+
+    @Override
+    public AWorkspaceAbstractionsImplementation getImplementation() {
+        var tracker = implementationServiceTracker;
+        return tracker != null ? tracker.getService() : null;
+    }
+
+    @Override
+    public boolean canRun() {
+        return implementationServiceTracker != null;
+    }
+
+    @Override
+    public int getPriority() {
+        return 1;
     }
 
 }

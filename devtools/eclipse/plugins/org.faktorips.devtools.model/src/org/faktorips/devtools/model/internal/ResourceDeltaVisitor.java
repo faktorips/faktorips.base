@@ -10,18 +10,17 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
+import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
@@ -33,7 +32,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 /**
  * ResourceDeltaVisitor to generate IPS model change events.
  */
-class ResourceDeltaVisitor implements IResourceDeltaVisitor {
+public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
 
     private final IpsModel ipsModel;
     private Set<String> fileExtensionsOfInterest = new HashSet<>(20);
@@ -48,19 +47,19 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
     }
 
     @Override
-    public boolean visit(final IResourceDelta delta) {
-        IResource resource = delta.getResource();
+    public boolean visit(final AResourceDelta delta) {
+        AResource resource = delta.getResource();
         return visitInternal(delta, resource);
     }
 
-    boolean visitInternal(final IResourceDelta delta, IResource resource) {
-        if (resource == null || resource.getType() != IResource.FILE) {
+    boolean visitInternal(final AResourceDelta delta, AResource resource) {
+        if (resource == null || resource.getType() != AResourceType.FILE) {
             return true;
         }
         if (isRelatedFile(resource)) {
             if (ipsProjectPropertiesChanged(resource) || manifestChanged(resource)) {
                 handleUpdateProjectSettings(resource);
-            } else if (delta.getKind() == IResourceDelta.REMOVED) {
+            } else if (delta.getKind() == AResourceDeltaKind.REMOVED) {
                 handleRemoved(resource);
             } else {
                 handleOtherResourceChange(resource);
@@ -69,21 +68,21 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         return false;
     }
 
-    private void handleUpdateProjectSettings(IResource resource) {
-        IIpsProject ipsProject = ipsModel.getIpsProject(wrap(resource.getProject()).as(AProject.class));
+    private void handleUpdateProjectSettings(AResource resource) {
+        IIpsProject ipsProject = ipsModel.getIpsProject(resource.getProject());
         ipsModel.clearProjectSpecificCaches(ipsProject);
         ipsModel.getValidationResultCache().clear();
     }
 
-    private void handleRemoved(IResource resource) {
-        IIpsElement ipsElement = ipsModel.getIpsElement(wrap(resource).as(AResource.class));
+    private void handleRemoved(AResource resource) {
+        IIpsElement ipsElement = ipsModel.getIpsElement(resource);
         if (ipsElement instanceof IIpsSrcFile) {
             ipsModel.removeIpsSrcFileContent((IIpsSrcFile)ipsElement);
         }
     }
 
-    private boolean handleOtherResourceChange(IResource resource) {
-        final IIpsElement element = ipsModel.findIpsElement(wrap(resource).as(AResource.class));
+    private boolean handleOtherResourceChange(AResource resource) {
+        final IIpsElement element = ipsModel.findIpsElement(resource);
         if (element instanceof IIpsSrcFile && ((IIpsSrcFile)element).isContainedInIpsRoot()) {
             IIpsSrcFile srcFile = (IIpsSrcFile)element;
             IpsSrcFileContent content = ipsModel.getIpsSrcFileContent(srcFile);
@@ -98,21 +97,21 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         }
     }
 
-    private boolean ipsProjectPropertiesChanged(IResource resource) {
-        AProject project = wrap(resource).as(AResource.class).getProject();
+    private boolean ipsProjectPropertiesChanged(AResource resource) {
+        AProject project = resource.getProject();
         IIpsProject ipsProject = project == null ? null : ipsModel.getIpsProject(project);
-        return ipsProject != null && resource.equals(ipsProject.getIpsProjectPropertiesFile().unwrap());
+        return ipsProject != null && resource.equals(ipsProject.getIpsProjectPropertiesFile());
     }
 
-    private boolean manifestChanged(IResource resource) {
-        return resource.getProjectRelativePath().equals(new Path(IpsBundleManifest.MANIFEST_NAME));
+    private boolean manifestChanged(AResource resource) {
+        return resource.getProjectRelativePath().equals(Path.of(IpsBundleManifest.MANIFEST_NAME));
     }
 
     private void handleNotSyncResource(IIpsSrcFile srcFile) {
         ipsModel.ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(srcFile));
     }
 
-    private void traceModelResourceVisited(IResource resource, IIpsSrcFile srcFile, boolean isInSync) {
+    private void traceModelResourceVisited(AResource resource, IIpsSrcFile srcFile, boolean isInSync) {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println(
                     "IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
@@ -121,9 +120,9 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
         }
     }
 
-    private boolean isRelatedFile(IResource resource) {
-        IFile file = (IFile)resource;
-        if (getFileExtensionsOfInterest().contains(file.getFileExtension())
+    private boolean isRelatedFile(AResource resource) {
+        AFile file = (AFile)resource;
+        if (getFileExtensionsOfInterest().contains(file.getExtension())
                 || IpsBundleManifest.MANIFEST_NAME.equals(file.getProjectRelativePath().toString())) {
             return true;
         }
@@ -143,7 +142,7 @@ class ResourceDeltaVisitor implements IResourceDeltaVisitor {
                 || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
     }
 
-    Set<String> getFileExtensionsOfInterest() {
+    public Set<String> getFileExtensionsOfInterest() {
         return fileExtensionsOfInterest;
     }
 }

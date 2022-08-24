@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.internal.productcmpttype;
 
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.util.IpsNLS;
 
-public class Messages extends NLS {
+public class Messages extends IpsNLS {
 
     public static final String BUNDLE_NAME = "org.faktorips.devtools.model.internal.productcmpttype.messages"; //$NON-NLS-1$
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        IpsNLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {

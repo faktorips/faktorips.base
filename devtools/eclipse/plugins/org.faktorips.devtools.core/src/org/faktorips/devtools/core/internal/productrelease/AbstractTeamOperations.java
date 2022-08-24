@@ -26,7 +26,7 @@ import org.eclipse.team.core.subscribers.Subscriber;
 import org.eclipse.team.core.synchronize.SyncInfo;
 import org.eclipse.team.core.synchronize.SyncInfoSet;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
-import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.model.eclipse.productrelease.ObservableProgressMessages;
 
 /**
  * Basic implementation of {@link ITeamOperations} that handles everything that can be done with the

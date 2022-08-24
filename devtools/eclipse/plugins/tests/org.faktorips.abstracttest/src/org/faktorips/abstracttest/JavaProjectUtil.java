@@ -34,7 +34,7 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
-import org.faktorips.devtools.model.util.IpsProjectUtil;
+import org.faktorips.devtools.model.eclipse.util.IpsProjectUtil;
 
 public class JavaProjectUtil {
     private static final String MODULE_INFO_JAVA_FILENAME = "module-info.java";

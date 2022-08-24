@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.core.resources.IResourceDelta;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 
 /**
  * This listener is notified if at least one {@link IIpsSrcFile} is modified in a resource change
  * event. For every resource change event you get exactly one {@link IpsSrcFilesChangedEvent}
- * containing every changed {@link IIpsSrcFile} and the corresponding {@link IResourceDelta}.
+ * containing every changed {@link IIpsSrcFile} and the corresponding {@code IResourceDelta}.
  * 
  * @author dirmeier
  */

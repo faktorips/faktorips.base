@@ -43,8 +43,7 @@
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-model</artifactId>
-            <version>${project.version}</version>
+            <artifactId>org.faktorips.devtools.model</artifactId>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
@@ -58,8 +57,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.testsupport</artifactId>
-            <version>${project.version}</version>
+            <artifactId>faktorips-testsupport</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

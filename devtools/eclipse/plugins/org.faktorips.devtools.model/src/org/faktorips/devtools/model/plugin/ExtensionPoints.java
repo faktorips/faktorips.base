@@ -117,6 +117,7 @@ public class ExtensionPoints {
     }
 
     public ExtensionPoints(String nameSpace) {
+        // TODO 8935 get ExtensionRegistry from WorkspaceAbstractions
         this(Platform.getExtensionRegistry(), nameSpace);
     }
 

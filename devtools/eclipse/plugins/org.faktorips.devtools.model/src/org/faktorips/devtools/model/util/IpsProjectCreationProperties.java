@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -168,7 +168,7 @@ public class IpsProjectCreationProperties {
 
     private void missingProperty(MessageList messages, String property) {
         messages.newError(MSG_CODE_MISSING_PROPERTY,
-                Messages.bind(Messages.IpsProjectCreationProperties_MsgText_MissingProperty,
+                MessageFormat.format(Messages.IpsProjectCreationProperties_MsgText_MissingProperty,
                         getPropertyName(property)),
                 this,
                 property);
@@ -199,7 +199,7 @@ public class IpsProjectCreationProperties {
 
     /**
      * Validates whether these {@link IpsProjectCreationProperties} allow the given
-     * {@link IJavaProject} to be turned into an {@link IIpsProject}.
+     * {@link AJavaProject} to be turned into an {@link IIpsProject}.
      * 
      * @return an empty {@link MessageList} if all validation succeeds, one containing at least one
      *             error message otherwise

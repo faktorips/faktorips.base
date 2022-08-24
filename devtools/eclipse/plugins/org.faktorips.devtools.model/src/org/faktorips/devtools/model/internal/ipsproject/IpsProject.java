@@ -26,17 +26,8 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.TransformerException;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IProjectNature;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IJavaModelMarker;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
@@ -48,6 +39,7 @@ import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
+import org.faktorips.devtools.abstraction.AJavaModelMarker;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AMarker;
 import org.faktorips.devtools.abstraction.AProject;
@@ -63,7 +55,6 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
-import org.faktorips.devtools.model.builder.IpsBuilder;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -112,6 +103,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
@@ -130,7 +122,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
     }
 
     /**
@@ -326,7 +318,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (getJavaProjectBuildPathProblemSeverity(javaProject) == Severity.ERROR) {
             return Boolean.FALSE;
         }
-        Set<AMarker> markers = tmpProject.findMarkers(IJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
+        Set<AMarker> markers = tmpProject.findMarkers(AJavaModelMarker.JAVA_MODEL_PROBLEM_MARKER, false,
                 AResourceTreeTraversalDepth.INFINITE);
         if (containsErrorMarker(markers)) {
             return Boolean.FALSE;
@@ -1582,116 +1574,5 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
         return getIpsModel().getMarkerEnums(this);
-    }
-
-    public static class EclipseIpsProject extends IpsProject {
-
-        /** The underlying platform project */
-        private IProject project;
-
-        public EclipseIpsProject(IProject project) {
-            super(IIpsModel.get(), project.getName());
-        }
-
-        public EclipseIpsProject(IIpsModel model, String name) {
-            super(model, name);
-        }
-
-        public IProject getEclipseProject() {
-            if (project == null) {
-                // we don't have a threading problem here, as projects are only handles!
-                project = ResourcesPlugin.getWorkspace().getRoot().getProject(getName());
-            }
-            return project;
-        }
-
-        @Override
-        public boolean exists() {
-            if (!super.exists()) {
-                return false;
-            }
-            try {
-                String[] natures = getEclipseProject().getDescription().getNatureIds();
-                for (String nature : natures) {
-                    if (nature.equals(IIpsProject.NATURE_ID)) {
-                        return true;
-                    }
-                }
-            } catch (CoreException e) {
-                // does not exist
-            }
-            return false;
-        }
-    }
-
-    public static class EclipseProjectNature implements IProjectNature {
-
-        private EclipseIpsProject ipsProject;
-
-        @Override
-        public IProject getProject() {
-            return ipsProject.getEclipseProject();
-        }
-
-        @Override
-        public void setProject(IProject project) {
-            ipsProject = new EclipseIpsProject(project);
-        }
-
-        @Override
-        public void configure() {
-            try {
-                IProjectDescription description = getProject().getDescription();
-                ICommand command = getIpsBuildCommand();
-                if (command == null) {
-                    // Add a product definition build command to the build spec
-                    ICommand newBuildCommand = description.newCommand();
-                    newBuildCommand.setBuilderName(IpsBuilder.BUILDER_ID);
-                    addCommandAtFirstPosition(description, newBuildCommand);
-                }
-            } catch (CoreException e) {
-                throw new IpsException(e);
-            }
-        }
-
-        @Override
-        public void deconfigure() {
-            // Nothing to do
-        }
-
-        /**
-         * Finds the specific command for product definition builder.
-         */
-        private ICommand getIpsBuildCommand() {
-            try {
-                ICommand[] commands = getProject().getDescription().getBuildSpec();
-                for (ICommand command : commands) {
-                    if (command.getBuilderName().equals(IpsBuilder.BUILDER_ID)) {
-                        return command;
-                    }
-                }
-
-                return null;
-            } catch (CoreException e) {
-                throw new IpsException(e);
-            }
-        }
-
-        /**
-         * Adds the command to the build spec
-         */
-        private void addCommandAtFirstPosition(IProjectDescription description, ICommand newCommand) {
-            ICommand[] oldCommands = description.getBuildSpec();
-            ICommand[] newCommands = new ICommand[oldCommands.length + 1];
-            System.arraycopy(oldCommands, 0, newCommands, 1, oldCommands.length);
-            newCommands[0] = newCommand;
-            // Commit the spec change into the project
-            description.setBuildSpec(newCommands);
-            try {
-                getProject().setDescription(description, null);
-            } catch (CoreException e) {
-                throw new IpsException(e);
-            }
-        }
     }
 }

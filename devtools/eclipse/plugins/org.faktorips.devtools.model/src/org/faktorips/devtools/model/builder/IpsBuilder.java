@@ -10,11 +10,7 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
-import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
-
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,16 +23,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
@@ -50,6 +41,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -100,7 +92,7 @@ public class IpsBuilder {
 
     static {
         TRACE_BUILDER_TRACE = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder"));
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/builder"));
     }
 
     /**
@@ -118,7 +110,7 @@ public class IpsBuilder {
         return new MultiStatus(IpsModelActivator.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
     }
 
-    protected Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) {
+    public Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) {
         ABuildKind currentKind = kind;
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
@@ -233,7 +225,7 @@ public class IpsBuilder {
             if (list.containsErrorMsg()) {
                 AMarker marker = markedResource.createMarker(IpsBuilder.PROBLEM_MARKER);
                 String msg = Messages.IpsBuilder_msgInvalidProperties;
-                updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+                updateMarker(marker, msg, AMarker.SEVERITY_ERROR);
                 return false;
             }
         } catch (IpsException e) {
@@ -247,7 +239,7 @@ public class IpsBuilder {
      * creates markers for the messages from the validation of the ipsproject differing between the
      * .ipsproject and manifest.mf as marked resource.
      */
-    void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) {
+    public void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) {
         AResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
         IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
 
@@ -277,7 +269,7 @@ public class IpsBuilder {
 
         AMarker marker = projectPropertiesFile.createMarker(IpsBuilder.PROBLEM_MARKER);
         String msg = MessageFormat.format(Messages.IpsBuilder_missingManifestMf, IpsBundleManifest.MANIFEST_NAME);
-        updateMarker(marker, msg, IMarker.SEVERITY_ERROR);
+        updateMarker(marker, msg, AMarker.SEVERITY_ERROR);
     }
 
     private void createMarkersForIpsProjectPropertiesAndManifest(MessageList messages,
@@ -320,8 +312,8 @@ public class IpsBuilder {
         }
         IIpsProject ipsProject = getIpsProject();
         if ((delta
-                .findMember(toEclipsePath(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())) != null)
-                || (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null)) {
+                .findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath()) != null)
+                || (delta.findMember(Path.of(IpsBundleManifest.MANIFEST_NAME)) != null)) {
             return true;
         }
         IIpsArchiveEntry[] entries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getArchiveEntries();
@@ -501,7 +493,7 @@ public class IpsBuilder {
         return buildStatus;
     }
 
-    protected void clean(IProgressMonitor monitor) {
+    public void clean(IProgressMonitor monitor) {
         getIpsProject().clearCaches();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -733,7 +725,7 @@ public class IpsBuilder {
         // CSON: IllegalCatch
     }
 
-    void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
+    public void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
         Set<AMarker> markers = new LinkedHashSet<>(
                 markedResource.findMarkers(markerType, true, AResourceTreeTraversalDepth.RESOURCE_ONLY));
         for (int i = 0; i < list.size(); i++) {
@@ -741,8 +733,8 @@ public class IpsBuilder {
             boolean foundMarked = false;
             for (Iterator<AMarker> iterator = markers.iterator(); iterator.hasNext();) {
                 AMarker marker = iterator.next();
-                String message = (String)marker.getAttribute(IMarker.MESSAGE);
-                Integer severity = (Integer)marker.getAttribute(IMarker.SEVERITY);
+                String message = (String)marker.getAttribute(AMarker.MESSAGE);
+                Integer severity = (Integer)marker.getAttribute(AMarker.SEVERITY);
                 if (msg.getText().equals(message) && getMarkerSeverity(msg) == severity) {
                     foundMarked = true;
                     iterator.remove();
@@ -760,18 +752,18 @@ public class IpsBuilder {
     }
 
     private void updateMarker(AMarker marker, String text, int severity) {
-        marker.setAttributes(new String[] { IMarker.MESSAGE, IMarker.SEVERITY },
+        marker.setAttributes(new String[] { AMarker.MESSAGE, AMarker.SEVERITY },
                 new Object[] { text, Integer.valueOf(severity) });
     }
 
     private int getMarkerSeverity(Message msg) {
         Severity msgSeverity = msg.getSeverity();
         if (msgSeverity == Severity.ERROR) {
-            return IMarker.SEVERITY_ERROR;
+            return AMarker.SEVERITY_ERROR;
         } else if (msgSeverity == Severity.WARNING) {
-            return IMarker.SEVERITY_WARNING;
+            return AMarker.SEVERITY_WARNING;
         } else if (msgSeverity == Severity.INFO) {
-            return IMarker.SEVERITY_INFO;
+            return AMarker.SEVERITY_INFO;
         }
         throw new RuntimeException("Unknown severity " + msgSeverity); //$NON-NLS-1$
     }
@@ -792,20 +784,20 @@ public class IpsBuilder {
 
             for (String xsdError : file.getXsdValidationErrors()) {
                 AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
-                marker.setAttribute(IMarker.MESSAGE, xsdError);
-                marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+                marker.setAttribute(AMarker.MESSAGE, xsdError);
+                marker.setAttribute(AMarker.SEVERITY, AMarker.SEVERITY_ERROR);
             }
 
             AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, Messages.IpsBuilder_ipsSrcFileNotParsable);
-            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            marker.setAttribute(AMarker.MESSAGE, Messages.IpsBuilder_ipsSrcFileNotParsable);
+            marker.setAttribute(AMarker.SEVERITY, AMarker.SEVERITY_ERROR);
             return null;
         }
 
         for (String xsdWarning : file.getXsdValidationWarnings()) {
             AMarker marker = file.getCorrespondingResource().createMarker(IpsBuilder.PROBLEM_MARKER);
-            marker.setAttribute(IMarker.MESSAGE, xsdWarning);
-            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+            marker.setAttribute(AMarker.MESSAGE, xsdWarning);
+            marker.setAttribute(AMarker.SEVERITY, AMarker.SEVERITY_WARNING);
         }
 
         IIpsObject ipsObject = file.getIpsObject();
@@ -1023,41 +1015,6 @@ public class IpsBuilder {
         @Override
         public String toString() {
             return "Delete file " + toDelete; //$NON-NLS-1$
-        }
-
-    }
-
-    public static class EclipseIpsBuilder extends IncrementalProjectBuilder {
-
-        private final IpsBuilder ipsBuilder = new IpsBuilder(new EclipseBuilder());
-
-        public IpsBuilder getIpsBuilder() {
-            return ipsBuilder;
-        }
-
-        @Override
-        protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
-            return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
-        }
-
-        @Override
-        protected void clean(IProgressMonitor monitor) throws CoreException {
-            ipsBuilder.clean(monitor);
-        }
-
-        public class EclipseBuilder implements ABuilder {
-
-            @Override
-            public AResourceDelta getDelta() {
-                return wrap(EclipseIpsBuilder.this.getDelta(EclipseIpsBuilder.this.getProject()))
-                        .as(AResourceDelta.class);
-            }
-
-            @Override
-            public AProject getProject() {
-                return wrap(EclipseIpsBuilder.this.getProject()).as(AProject.class);
-            }
-
         }
 
     }

@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.CoreException;
+// TODO 8935 mit Hooky besprechen, ob wir die brauchen, ggf. require-bundle für
+// org.eclipse.equinox.registry in felix-config
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -52,7 +54,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     }
 
     /**
-     * Returns the descripton specified in the plugin descriptor.
+     * Returns the description specified in the plugin descriptor.
      */
     @Override
     public String getDescription() {

@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.testcase;
 
-import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.abstraction.util.IpsNLS;
 
 public class Messages {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.model.testcase.messages"; //$NON-NLS-1$
 
     static {
-        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        IpsNLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {

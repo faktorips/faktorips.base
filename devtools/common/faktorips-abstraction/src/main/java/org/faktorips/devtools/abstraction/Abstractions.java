@@ -90,6 +90,13 @@ public final class Abstractions {
         return IMPLEMENTATION.getId();
     }
 
+    /**
+     * Returns the implementation's identified debug option.
+     */
+    public static String getDebugOption(String option) {
+        return IMPLEMENTATION.getDebugOption(option);
+    }
+
     static WrapperBuilder getWrapperBuilder(Object original) {
         return IMPLEMENTATION.getWrapperBuilder(original);
     }
@@ -97,6 +104,8 @@ public final class Abstractions {
     public interface AImplementation {
 
         String getId();
+
+        String getDebugOption(String option);
 
         boolean isEclipse();
 

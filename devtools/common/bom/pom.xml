@@ -21,6 +21,10 @@
         <commons-io.version>2.11.0</commons-io.version>
         <osgi-framework.version>1.9.0</osgi-framework.version>
         <osgi-util-tracker.version>1.5.4</osgi-util-tracker.version>
+        <opencsv.version>5.6</opencsv.version>
+        <!-- version for annotations, should match compiler plugin version in devtools-parent -->
+        <auto-service.version>1.0.1</auto-service.version>
+        <guava.version>31.1-jre</guava.version>
     </properties>
 
     <dependencyManagement>
@@ -52,6 +56,16 @@
             </dependency>
             <dependency>
                 <groupId>org.faktorips</groupId>
+                <artifactId>org.faktorips.devtools.model</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-model-plainjava</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-util</artifactId>
                 <version>${faktorips.version}</version>
             </dependency>
@@ -79,6 +93,21 @@
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.util.tracker</artifactId>
                 <version>${osgi-util-tracker.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.opencsv</groupId>
+                <artifactId>opencsv</artifactId>
+                <version>${opencsv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service-annotations</artifactId>
+                <version>${auto-service.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

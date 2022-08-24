@@ -26,6 +26,47 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 public interface AMarker extends AAbstraction {
 
     /**
+     * Severity marker attribute. A number from the set of error, warning and info severities
+     * defined by the platform.
+     *
+     * @see #SEVERITY_ERROR
+     * @see #SEVERITY_WARNING
+     * @see #SEVERITY_INFO
+     * @see #getAttribute(String, int)
+     */
+    String SEVERITY = "severity"; //$NON-NLS-1$
+
+    /**
+     * Message marker attribute. A localized string describing the nature of the marker (e.g., a
+     * name for a bookmark or task). The content and form of this attribute is not specified or
+     * interpreted by the platform.
+     *
+     * @see #getAttribute(String, String)
+     */
+    String MESSAGE = "message"; //$NON-NLS-1$
+
+    /**
+     * Error severity constant (value 2) indicating an error state.
+     *
+     * @see #getAttribute(String, int)
+     */
+    int SEVERITY_ERROR = 2;
+
+    /**
+     * Warning severity constant (value 1) indicating a warning.
+     *
+     * @see #getAttribute(String, int)
+     */
+    int SEVERITY_WARNING = 1;
+
+    /**
+     * Info severity constant (value 0) indicating information only.
+     *
+     * @see #getAttribute(String, int)
+     */
+    int SEVERITY_INFO = 0;
+
+    /**
      * Returns this marker's unique ID.
      */
     long getId();

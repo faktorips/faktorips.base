@@ -20,6 +20,7 @@ import java.lang.reflect.Field;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.controls.TableContentsRefControl;
 import org.faktorips.devtools.core.ui.wizards.ipsexport.IpsObjectExportPage;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -176,7 +177,7 @@ public class TableExportPageTest {
 
         tableExportPage.validateObjectToExport();
 
-        String msg = org.faktorips.devtools.model.tablecontents.Messages
+        String msg = NLS
                 .bind(org.faktorips.devtools.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
                         new Object[] { 1 + Short.MAX_VALUE, "tableStructure", Short.MAX_VALUE });
         assertThat(tableExportPage.getErrorMessage(), is(msg));
@@ -196,7 +197,7 @@ public class TableExportPageTest {
 
         tableExportPage.validateObjectToExport();
 
-        String msg = org.faktorips.devtools.model.tablecontents.Messages
+        String msg = NLS
                 .bind(org.faktorips.devtools.model.tablecontents.Messages.TableExportOperation_errStructureTooMuchColumns,
                         new Object[] { 1 + Short.MAX_VALUE, "tableStructure", Short.MAX_VALUE });
         assertThat(tableExportPage.getErrorMessage(), is(msg));

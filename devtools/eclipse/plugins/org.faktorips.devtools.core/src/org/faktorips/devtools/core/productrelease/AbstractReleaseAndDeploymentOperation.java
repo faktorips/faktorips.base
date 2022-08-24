@@ -15,10 +15,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.model.eclipse.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
+import org.faktorips.devtools.model.eclipse.productrelease.ObservableProgressMessages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
-import org.faktorips.devtools.model.productrelease.ITargetSystem;
-import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 
 public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseAndDeploymentOperation {
 

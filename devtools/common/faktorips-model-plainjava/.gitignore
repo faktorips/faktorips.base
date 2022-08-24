@@ -1,0 +1,5 @@
+bin
+target
+/.flattened-pom.xml
+/target\generated-sources\annotations/
+/target\generated-test-sources\test-annotations/

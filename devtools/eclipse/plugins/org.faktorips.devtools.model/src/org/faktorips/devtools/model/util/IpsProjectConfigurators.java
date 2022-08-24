@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.util;
 
 import java.util.stream.Stream;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
@@ -30,7 +29,7 @@ public class IpsProjectConfigurators {
     /**
      * Returns all {@link IIpsProjectConfigurator IIpsProjectConfigurators} that
      * {@link IIpsProjectConfigurator#canConfigure(AJavaProject) can configure} the given
-     * {@link IJavaProject}.
+     * {@link AJavaProject}.
      *
      * @see IIpsModelExtensions#getIpsProjectConfigurators()
      */

@@ -30,14 +30,14 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
+import org.faktorips.devtools.model.eclipse.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
+import org.faktorips.devtools.model.eclipse.productrelease.ObservableProgressMessages;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
-import org.faktorips.devtools.model.productrelease.ITargetSystem;
-import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 import org.faktorips.runtime.MessageList;
 
 public class ProductReleaseProcessor {

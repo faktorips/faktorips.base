@@ -26,9 +26,9 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.productrelease.ProductReleaseProcessor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
+import org.faktorips.devtools.model.eclipse.productrelease.ObservableProgressMessages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.productrelease.ITargetSystem;
-import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
 
 /**
  * The deployment wizard provides the basic ui for deployments of product definition projects. On

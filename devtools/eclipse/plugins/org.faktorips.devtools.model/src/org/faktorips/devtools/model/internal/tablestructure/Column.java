@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.tablestructure;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -74,8 +73,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
             list.add(new Message(MSGCODE_DATATYPE_IS_A_PRIMITTVE, text, Message.ERROR, this, PROPERTY_DATATYPE));
         }
 
-        IStatus status = ValidationUtils.validateJavaIdentifier(StringUtils.uncapitalize(name), ipsProject);
-        if (!status.isOK()) {
+        if (!ValidationUtils.validateJavaIdentifier(StringUtils.uncapitalize(name), ipsProject)) {
             String text = Messages.Column_msgInvalidName;
             list.add(new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME));
         }

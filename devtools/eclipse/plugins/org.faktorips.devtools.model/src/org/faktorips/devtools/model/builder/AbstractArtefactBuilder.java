@@ -14,8 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.datatype.util.LocalizedStringsSet;
@@ -215,7 +213,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
     }
 
     /**
-     * This methods calls {@link IWorkspace#validateEdit(IFile[], Object)} before writing to the
+     * This methods calls {@code IWorkspace#validateEdit(IFile[], Object)} before writing to the
      * file if the file is marked as read only. This giving the chance to version control system to
      * checkout the file for writing before calling writing.
      * 
@@ -223,11 +221,11 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * @param file The file to write to
      * @param inputStream the content that should be written to the file
      * @param force writing to the file with force argument @see
-     *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     *            {@link AFile#setContents(InputStream, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      * @param keepHistory setting keeping the history when writing to the file @see
-     *            {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     *            {@link AFile#setContents(InputStream, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      * @throws IpsException in case of an error while setting the new content to the file @see
-     *             {@link IFile#setContents(InputStream, boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
+     *             {@link AFile#setContents(InputStream, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      */
     public void writeToFile(AFile file, InputStream inputStream, boolean force, boolean keepHistory) {
         file.setContents(inputStream, keepHistory, new NullProgressMonitor());

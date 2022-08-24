@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNull;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -44,6 +43,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -132,6 +132,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_invalidAttributeName() throws Exception {
+        productCmptTypeAttribute.setDatatype("String");
         productCmptTypeAttribute.setName("test");
         MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));

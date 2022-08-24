@@ -39,7 +39,7 @@ public interface IIpsArchiveEntry extends IIpsLibraryEntry {
      * children.
      * <p>
      * Note: For changes of files outside the workspace which are referenced from the project in any
-     * kind no IResourceDelta will be created.
+     * kind no AResourceDelta will be created.
      */
     boolean isAffectedBy(AResourceDelta delta);
 
