@@ -54,7 +54,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
 
     <properties>
         <!-- User properties -->
-        <target-platform>eclipse-2022-03</target-platform>
+        <target-platform>eclipse-2020-03</target-platform>
         <!-- plugin versions -->
         <tycho-version>3.0.0-SNAPSHOT</tycho-version>
         <maven-release-plugin-version>2.5.3</maven-release-plugin-version>
