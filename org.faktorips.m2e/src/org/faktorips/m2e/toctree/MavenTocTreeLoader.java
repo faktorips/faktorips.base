@@ -34,6 +34,7 @@ import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
@@ -137,7 +138,7 @@ public class MavenTocTreeLoader implements ITocTreeFromDependencyManagerLoader {
             String tocPath = bundleManifest.getTocPath(manifestElement);
             String internalPackage = QNameUtil.concat(basePackage, INTERNAL_PACKAGE);
             Path path = QNameUtil.toPath(internalPackage);
-            return path == null ? tocPath : path.resolve(tocPath).toString();
+            return path == null ? tocPath : PathUtil.toPortableString(path.resolve(tocPath));
         }
         throw new IpsException("No toc found in the IpsJarBundle " + jarBundle.toString());
     }
