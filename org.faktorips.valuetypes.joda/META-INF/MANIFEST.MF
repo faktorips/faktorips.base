@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Valuetypes for Joda-Time
 Bundle-SymbolicName: org.faktorips.valuetypes.joda
-Bundle-Version: 22.6.4.qualifier
+Bundle-Version: 22.6.5.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Export-Package: org.faktorips.util;uses:="org.joda.time"
 Bundle-ClassPath: .
