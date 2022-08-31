@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -314,13 +314,13 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         if (part instanceof IDescribedElement) {
             String localizedDescription = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(
                     (IDescribedElement)part);
-            if (!(StringUtils.isEmpty(localizedDescription.trim()))) {
+            if (!(IpsStringUtils.isEmpty(localizedDescription.trim()))) {
                 setMessage(localizedDescription, IMessageProvider.INFORMATION);
                 return;
             }
         }
 
-        setMessage(StringUtils.EMPTY);
+        setMessage(IpsStringUtils.EMPTY);
     }
 
     /**

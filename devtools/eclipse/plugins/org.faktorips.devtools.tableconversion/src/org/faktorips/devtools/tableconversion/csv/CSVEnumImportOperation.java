@@ -17,7 +17,10 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Locale;
 
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -120,9 +123,11 @@ public class CSVEnumImportOperation implements ICoreRunnable {
 
     private void fillEnum(IEnumValueContainer valueContainer, FileInputStream fis) throws IOException {
         char fieldSeparator = getFieldSeparator();
-        CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
-
-        try {
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(fis))
+                .withCSVParser(new CSVParserBuilder()
+                        .withSeparator(fieldSeparator)
+                        .build())
+                .build()) {
             // row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0
             // contains data. thus read over header if necessary
             if (ignoreColumnHeaderRow) {
@@ -151,13 +156,9 @@ public class CSVEnumImportOperation implements ICoreRunnable {
                 }
                 ++rowNumber;
             }
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                // this is a serious problem, so report it.
-                IpsPlugin.log(e);
-            }
+        } catch (CsvValidationException e) {
+            // this is a serious problem, so report it.
+            IpsPlugin.log(e);
         }
     }
 

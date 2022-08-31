@@ -12,11 +12,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Formats the value of {@link ITemplatedValue templated values}. It uses the
@@ -27,7 +28,7 @@ public class TemplatedValueFormatter {
 
     public static final Function<IProductCmptLink, String> PRODUCT_CMPT_LINK = link -> link != null
             ? link.getCardinality().format()
-            : StringUtils.EMPTY;
+            : IpsStringUtils.EMPTY;
 
     // Utility class that should not be instantiated
     private TemplatedValueFormatter() {

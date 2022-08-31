@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -72,6 +71,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -640,7 +640,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     private void updateLiteralName(IEnumAttributeValue changedAttributeValue,
             IEnumAttributeValue literalNameAttributeValue) {
         String content = literalNameAttributeValue.getValue().getContentAsString();
-        if (!StringUtils.isEmpty(content) && !lockAndSynchronizeLiteralNames) {
+        if (!IpsStringUtils.isEmpty(content) && !lockAndSynchronizeLiteralNames) {
             return;
         }
         String newValue = changedAttributeValue.getValue().getDefaultLocalizedContent(ipsProject);
@@ -819,7 +819,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             for (IEnumAttributeValue attrValue : enumValue.getEnumAttributeValues()) {
                 if (attrValue.getValue() != null) {
                     final String contentAsString = attrValue.getValue().getContentAsString();
-                    if (!StringUtils.isEmpty(contentAsString)) {
+                    if (!IpsStringUtils.isEmpty(contentAsString)) {
                         return false;
                     }
                 }

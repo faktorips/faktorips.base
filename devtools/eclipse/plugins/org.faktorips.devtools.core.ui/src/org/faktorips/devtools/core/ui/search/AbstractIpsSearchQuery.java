@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.search.ui.text.Match;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Contains the basic logic of the Faktor-IPS searches. It contains a specified
@@ -99,7 +99,7 @@ public abstract class AbstractIpsSearchQuery<T extends IIpsSearchPresentationMod
     protected Set<IIpsSrcFile> getMatchingSrcFiles() {
         Set<IIpsSrcFile> searchedSrcFiles = getSelectedSrcFiles();
 
-        if (StringUtils.isBlank(getSearchModel().getSrcFilePattern())) {
+        if (IpsStringUtils.isBlank(getSearchModel().getSrcFilePattern())) {
             return searchedSrcFiles;
         }
 

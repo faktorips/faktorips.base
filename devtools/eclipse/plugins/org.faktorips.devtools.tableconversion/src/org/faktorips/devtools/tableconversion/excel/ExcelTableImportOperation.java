@@ -12,7 +12,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -120,7 +120,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         for (int j = 0; j < structure.getNumOfColumns(); j++) {
             Cell cell = sheetRow.getCell(j);
             if (cell == null) {
-                if (StringUtils.isNotEmpty(nullRepresentationString)) {
+                if (IpsStringUtils.isNotEmpty(nullRepresentationString)) {
                     String msg = NLS.bind(Messages.ExcelTableImportOperation_msgImportEscapevalue, new Object[] {
                             rowIndex, j, IpsPlugin.getDefault().getIpsPreferences().getNullPresentation() });
                     messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$

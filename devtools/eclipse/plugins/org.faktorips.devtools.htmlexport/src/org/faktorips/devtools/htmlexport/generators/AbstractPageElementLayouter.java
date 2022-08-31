@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 
 /**
@@ -27,7 +27,7 @@ public abstract class AbstractPageElementLayouter<T extends IPageElement> implem
 
     @Override
     public final void layout() {
-        if (StringUtils.isNotBlank(pageElement.getAnchor())) {
+        if (IpsStringUtils.isNotBlank(pageElement.getAnchor())) {
             setAnchor();
         }
         layoutInternal();

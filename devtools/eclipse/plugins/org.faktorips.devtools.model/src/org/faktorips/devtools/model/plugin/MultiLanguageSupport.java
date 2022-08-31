@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.plugin;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -80,7 +81,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             // Exception not too critical, just log it and use the next possible caption.
             IpsLog.log(e);
         }
-        if (StringUtils.isEmpty(localizedCaption)) {
+        if (IpsStringUtils.isEmpty(localizedCaption)) {
             localizedCaption = getDefaultCaption(ipsObjectPartContainer);
         }
         return localizedCaption;
@@ -97,7 +98,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             // Exception not too critical, just log it and use the next possible caption.
             IpsLog.log(e);
         }
-        if (StringUtils.isEmpty(localizedPluralCaption)) {
+        if (IpsStringUtils.isEmpty(localizedPluralCaption)) {
             localizedPluralCaption = getDefaultPluralCaption(ipsObjectPartContainer);
         }
         return localizedPluralCaption;
@@ -117,7 +118,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
                 IpsLog.log(e);
             }
         }
-        if (StringUtils.isEmpty(defaultCaption)) {
+        if (IpsStringUtils.isEmpty(defaultCaption)) {
             defaultCaption = ipsObjectPartContainer.getLastResortCaption();
         }
         return defaultCaption;
@@ -137,7 +138,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
                 IpsLog.log(e);
             }
         }
-        if (StringUtils.isEmpty(defaultPluralCaption)) {
+        if (IpsStringUtils.isEmpty(defaultPluralCaption)) {
             defaultPluralCaption = ipsObjectPartContainer.getLastResortPluralCaption();
         }
         return defaultPluralCaption;
@@ -153,7 +154,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             label = getDefaultLabel(labeledElement);
         } else {
             String value = localizedLabel.getValue();
-            if (StringUtils.isEmpty(value)) {
+            if (IpsStringUtils.isEmpty(value)) {
                 label = getDefaultLabel(labeledElement);
             } else {
                 label = value;
@@ -173,7 +174,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             pluralLabel = getDefaultPluralLabel(labeledElement);
         } else {
             String pluralValue = localizedLabel.getPluralValue();
-            if (StringUtils.isEmpty(pluralValue)) {
+            if (IpsStringUtils.isEmpty(pluralValue)) {
                 pluralLabel = getDefaultPluralLabel(labeledElement);
             } else {
                 pluralLabel = pluralValue;
@@ -199,7 +200,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String value = defaultLabel.getValue();
-            if (!(StringUtils.isEmpty(value))) {
+            if (!(IpsStringUtils.isEmpty(value))) {
                 label = value;
             }
         }
@@ -221,7 +222,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ILabel defaultLabel = getDefaultLabelPart(labeledElement);
         if (defaultLabel != null) {
             String pluralValue = defaultLabel.getPluralValue();
-            if (!(StringUtils.isEmpty(pluralValue))) {
+            if (!(IpsStringUtils.isEmpty(pluralValue))) {
                 pluralLabel = pluralValue;
             }
         }
@@ -288,7 +289,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             description = getDefaultDescription(describedElement);
         } else {
             String text = localizedDescription.getText();
-            if (StringUtils.isEmpty(text)) {
+            if (IpsStringUtils.isEmpty(text)) {
                 description = getDefaultDescription(describedElement);
             } else {
                 description = text;
@@ -377,9 +378,9 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
     @Override
     public String getLocalizedContent(IValue<?> value, IIpsProject ipsProject) {
         String localizedContent = value.getLocalizedContent(getLocalizationLocale());
-        if (StringUtils.isEmpty(localizedContent)) {
+        if (IpsStringUtils.isEmpty(localizedContent)) {
             localizedContent = value.getDefaultLocalizedContent(ipsProject);
-            if (StringUtils.isEmpty(localizedContent)) {
+            if (IpsStringUtils.isEmpty(localizedContent)) {
                 localizedContent = value.getLocalizedContent();
             }
         }

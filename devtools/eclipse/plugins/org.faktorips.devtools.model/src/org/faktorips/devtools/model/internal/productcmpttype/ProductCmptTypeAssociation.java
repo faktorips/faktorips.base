@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.type.Association;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -43,9 +43,9 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeAssociation extends Association implements IProductCmptTypeAssociation {
 
-    private String matchingAssociationSource = StringUtils.EMPTY;
+    private String matchingAssociationSource = IpsStringUtils.EMPTY;
 
-    private String matchingAssociationName = StringUtils.EMPTY;
+    private String matchingAssociationName = IpsStringUtils.EMPTY;
 
     private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
@@ -165,7 +165,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     @Override
     public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(matchingAssociationSource) || StringUtils.isEmpty(matchingAssociationName)) {
+        if (IpsStringUtils.isEmpty(matchingAssociationSource) || IpsStringUtils.isEmpty(matchingAssociationName)) {
             return findDefaultPolicyCmptTypeAssociation(ipsProject);
         }
         IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(matchingAssociationSource);
@@ -400,8 +400,8 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     private boolean isMatchingAssociationSourceAndNameNotEmpty() {
-        return StringUtils.isNotEmpty(matchingAssociationSource)
-                && StringUtils.isNotEmpty(matchingAssociationName);
+        return IpsStringUtils.isNotEmpty(matchingAssociationSource)
+                && IpsStringUtils.isNotEmpty(matchingAssociationName);
     }
 
     private void validateConstrainedChangeOverTime(MessageList list, IIpsProject ipsProject) {
@@ -451,10 +451,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
-        if (StringUtils.isNotEmpty(matchingAssociationName)) {
+        if (IpsStringUtils.isNotEmpty(matchingAssociationName)) {
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
         }
-        if (StringUtils.isNotEmpty(matchingAssociationSource)) {
+        if (IpsStringUtils.isNotEmpty(matchingAssociationSource)) {
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, matchingAssociationSource);
         }
         newElement.setAttribute(PROPERTY_CHANGING_OVER_TIME, Boolean.toString(changingOverTime));

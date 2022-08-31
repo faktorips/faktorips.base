@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.PropertyDatatype;

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
@@ -20,6 +19,7 @@ import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewTableContentsOperation extends NewProductDefinitionOperation<NewTableContentsPMO> {
 
@@ -37,7 +37,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
             ITableStructure structure = getPmo().getSelectedStructure();
             if (structure != null) {
                 for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                    table.newColumn(StringUtils.EMPTY, structure.getColumn(i).getName());
+                    table.newColumn(IpsStringUtils.EMPTY, structure.getColumn(i).getName());
                 }
             }
             if (getPmo().isOpenEditor()) {

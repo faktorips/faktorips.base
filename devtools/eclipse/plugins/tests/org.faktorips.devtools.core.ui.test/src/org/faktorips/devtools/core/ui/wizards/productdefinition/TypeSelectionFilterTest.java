@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,13 +44,20 @@ public class TypeSelectionFilterTest {
     @Mock
     private Object parentObject;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         ILabelProvider labelProvider = mock(ILabelProvider.class);
         when(viewer.getLabelProvider()).thenReturn(labelProvider);
         when(labelProvider.getText(ipsObject)).thenReturn(existingIpsElementName);
         filter = new TypeSelectionFilter();
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -166,7 +166,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
 
     @Override
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(policyCmptType)) {
+        if (IpsStringUtils.isEmpty(policyCmptType)) {
             return null;
         }
         return ipsProject.findPolicyCmptType(policyCmptType);
@@ -187,7 +187,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
     @Override
     public IPolicyCmptTypeAssociation findAssociation(IIpsProject ipsProject) {
         // if this is a root parameter then the association field is not used
-        if (StringUtils.isEmpty(association) || isRoot()) {
+        if (IpsStringUtils.isEmpty(association) || isRoot()) {
             return null;
         }
 

@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.controls;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
@@ -79,7 +79,7 @@ public class MultiValueAttributeHandlerTest {
 
         MultiValueAttributeHandler handler = spy(new MultiValueAttributeHandler(shell, prodAttr, attrValue,
                 ValueDatatype.DECIMAL));
-        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
+        doNothing().when(handler).openMultiValueSubsetDialog(anyList());
 
         handler.editValues();
         verify(handler).openMultiValueSubsetDialog(valueSet);
@@ -149,7 +149,7 @@ public class MultiValueAttributeHandlerTest {
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
         when(enumValueset.getValuesAsList()).thenReturn(valueSetValues);
         when(enumValueset.isContainsNull()).thenReturn(true);
-        doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
+        doNothing().when(handler).openMultiValueSubsetDialog(anyList());
         return handler;
     }
 

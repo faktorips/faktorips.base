@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.model.type.ITypePart;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 
 public class MethodEditDialog extends IpsPartEditDialog2 {
@@ -130,7 +130,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createAbstractCheckbox(Composite propertyPane) {
-        getToolkit().createFormLabel(propertyPane, StringUtils.EMPTY);
+        getToolkit().createFormLabel(propertyPane, IpsStringUtils.EMPTY);
         abstractCheckbox = getToolkit().createButton(propertyPane, Messages.MethodEditDialog_labelAbstract, SWT.CHECK);
         getBindingContext().bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
     }
@@ -146,7 +146,7 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createChangingOverTimeCheckbox(Composite propertyPane) {
-        getToolkit().createFormLabel(propertyPane, StringUtils.EMPTY);
+        getToolkit().createFormLabel(propertyPane, IpsStringUtils.EMPTY);
         changeOverTimeCheckbox = getToolkit().createButton(
                 propertyPane,
                 NLS.bind(Messages.MethodEditDialog_labelChangeOverTimeCheckbox, IpsPlugin.getDefault()

@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.table;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -57,7 +57,7 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
             final LocalizedString localizedString = (LocalizedString)value;
             locale = localizedString.getLocale();
             String textValue = localizedString.getValue();
-            getTextControl().setText(textValue == null ? StringUtils.EMPTY : textValue);
+            getTextControl().setText(textValue == null ? IpsStringUtils.EMPTY : textValue);
         } else {
             throw new IllegalArgumentException(
                     "The value of type " + value.getClass() //$NON-NLS-1$

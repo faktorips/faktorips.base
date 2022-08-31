@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -353,7 +353,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private String getTypeName(IJavaElement javaElement) {
         IType type = getType(javaElement);
-        String typeName = StringUtils.EMPTY;
+        String typeName = IpsStringUtils.EMPTY;
         if (type != null) {
             typeName = type.getElementName();
         }

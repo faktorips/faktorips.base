@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.ipsexport;
 import java.io.File;
 import java.util.Iterator;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaModelException;
@@ -56,6 +55,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -477,7 +477,7 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
             String previousFilename = getFilename();
 
             // if there is no previous filename use the default filename
-            setFilename(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
+            setFilename(IpsStringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
 
             // if no file was selected (e.g. cancel clicked)
             // set the previous filename

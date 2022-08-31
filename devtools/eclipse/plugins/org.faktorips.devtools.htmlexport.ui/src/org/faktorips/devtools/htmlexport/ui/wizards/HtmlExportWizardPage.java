@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
@@ -374,7 +374,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             return;
         }
 
-        if (StringUtils.isNotBlank(getDestinationDirectory())) {
+        if (IpsStringUtils.isNotBlank(getDestinationDirectory())) {
             setPageComplete(true);
             return;
         }

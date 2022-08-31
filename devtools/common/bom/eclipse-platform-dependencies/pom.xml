@@ -15,7 +15,6 @@
     <description>The same dependencies as in the target platform 2020-03</description>
 
     <properties>
-        <commons-io.version>2.6</commons-io.version>
         <apiguardian-api.version>1.1.0</apiguardian-api.version>
         <org-eclipse-core-commands.version>3.9.700</org-eclipse-core-commands.version>
         <org-eclipse-core-contenttype.version>3.7.600</org-eclipse-core-contenttype.version>
@@ -52,11 +51,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>commons-io</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>${commons-io.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apiguardian</groupId>
                 <artifactId>apiguardian-api</artifactId>

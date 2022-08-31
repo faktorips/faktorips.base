@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This {@link EditField} uses String as the underlying data container. That means it could be used
@@ -45,7 +45,7 @@ public abstract class StringValueEditField extends DefaultEditField<String> {
             if (supportsNull) {
                 return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
             } else {
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             }
         }
         return "" + object; //$NON-NLS-1$

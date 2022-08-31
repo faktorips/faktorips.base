@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the elements
@@ -39,7 +39,7 @@ final class ElementLabelProvider extends CellLabelProvider {
      */
     public String getLabelOrName(IIpsElement ipsElement) {
         if (ipsElement == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         } else if (ipsElement instanceof ILabeledElement) {
             return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)ipsElement);
         } else {

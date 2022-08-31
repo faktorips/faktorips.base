@@ -15,7 +15,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -39,6 +39,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.internal.InternationalStringXmlReaderWriter;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
@@ -424,7 +425,7 @@ public class EnumAttributeValue extends AtomicIpsObjectPart implements IEnumAttr
             if (getEnumType() == null) {
                 return false;
             } else {
-                return !StringUtils.isEmpty(getIdentifierBoundary());
+                return !IpsStringUtils.isEmpty(getIdentifierBoundary());
             }
         }
 

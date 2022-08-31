@@ -42,7 +42,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
@@ -50,6 +50,7 @@ import org.faktorips.devtools.model.internal.util.XsdValidatorHolder;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -186,7 +187,7 @@ public class XmlUtil {
 
     public static final String getAttributeConvertEmptyStringToNull(Element el, String attribute) {
         String value = el.getAttribute(attribute);
-        if (StringUtils.isEmpty(value)) {
+        if (IpsStringUtils.isEmpty(value)) {
             return null;
         }
         return value;
@@ -198,12 +199,12 @@ public class XmlUtil {
 
     public static final String getAttributeOrEmptyString(Element el, String attribute) {
         return el.hasAttribute(attribute) ? el.getAttribute(attribute)
-                : StringUtils.EMPTY;
+                : IpsStringUtils.EMPTY;
     }
 
     public static final String dateToXmlDateString(Date date) {
         if (date == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -212,7 +213,7 @@ public class XmlUtil {
 
     public static final String gregorianCalendarToXmlDateString(GregorianCalendar calendar) {
         if (calendar == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         int month = calendar.get(Calendar.MONTH) + 1;
         int date = calendar.get(Calendar.DATE);
@@ -235,7 +236,7 @@ public class XmlUtil {
     }
 
     public static final GregorianCalendar parseGregorianCalendar(String s) throws XmlParseException {
-        if (StringUtils.isEmpty(s)) {
+        if (IpsStringUtils.isEmpty(s)) {
             return null;
         }
         try {

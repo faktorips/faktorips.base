@@ -15,7 +15,6 @@ import java.text.ParsePosition;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Combo;
@@ -23,6 +22,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -92,7 +92,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * number and date datatypes. Override this method if another behavior is required.
      */
     protected boolean isRepresentingNull(String stringToBeParsed) {
-        return getNullString().equals(stringToBeParsed) || StringUtils.EMPTY.equals(stringToBeParsed)
+        return getNullString().equals(stringToBeParsed) || IpsStringUtils.EMPTY.equals(stringToBeParsed)
                 || isPreferencesNullPresentation(stringToBeParsed);
     }
 
@@ -179,7 +179,7 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         } else if (source instanceof Combo) {
             return ((Combo)source).getText();
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

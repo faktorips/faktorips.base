@@ -35,9 +35,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LinksContentProviderTest {
 
     private IProductCmptGeneration gen;
@@ -84,8 +84,6 @@ public class LinksContentProviderTest {
         staticLinks.add(staticLink2);
 
         when(gen.getProductCmpt()).thenReturn(prodCmpt);
-        doReturn(links).when(gen).getLinksAsList("dummyAssociation");
-        doReturn(staticLinks).when(prodCmpt).getLinksAsList("staticDummyAssociation");
     }
 
     @Test
@@ -122,7 +120,6 @@ public class LinksContentProviderTest {
     @Test
     public void testGetParent() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
-        when(asso1.isRelevant()).thenReturn(true);
         when(linkViewItem.getLink()).thenReturn(link1);
         when(link1.getIpsProject()).thenReturn(ipsProject);
         when(link1.findAssociation(ipsProject)).thenReturn(asso1);
@@ -142,12 +139,6 @@ public class LinksContentProviderTest {
     @Test
     public void testGetParent_ParameterIsNotALinkViewItem() {
         IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
-        when(asso1.isRelevant()).thenReturn(true);
-        when(linkViewItem.getLink()).thenReturn(link1);
-        when(link1.getIpsProject()).thenReturn(ipsProject);
-        when(link1.findAssociation(ipsProject)).thenReturn(asso1);
-        IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(gen, asso1);
-        when(link1.getProductCmptLinkContainer()).thenReturn(container);
 
         Object parent = provider.getParent(asso1);
 

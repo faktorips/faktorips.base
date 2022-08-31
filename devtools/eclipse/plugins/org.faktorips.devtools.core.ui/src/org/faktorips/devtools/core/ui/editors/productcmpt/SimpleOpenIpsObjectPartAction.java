@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -22,6 +21,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Opens an editor for an {@link IIpsObjectPartContainer}.
@@ -56,7 +56,7 @@ public class SimpleOpenIpsObjectPartAction<T extends IIpsObjectPartContainer> ex
         if (part != null) {
             return captionGenerator.apply(part);
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

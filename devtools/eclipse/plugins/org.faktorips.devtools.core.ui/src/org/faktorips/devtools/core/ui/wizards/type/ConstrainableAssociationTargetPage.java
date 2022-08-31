@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.type;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.ui.views.ipshierarchy.HierarchyContentProvide
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Second page of <code>ConstrainableAssociationWizard</code>.
@@ -51,7 +51,7 @@ public class ConstrainableAssociationTargetPage extends WizardPage {
      * @param pmo The presentation model object.
      */
     public ConstrainableAssociationTargetPage(ConstrainableAssociationPmo pmo) {
-        super(StringUtils.EMPTY);
+        super(IpsStringUtils.EMPTY);
         bindingContext = new BindingContext();
         this.pmo = pmo;
     }

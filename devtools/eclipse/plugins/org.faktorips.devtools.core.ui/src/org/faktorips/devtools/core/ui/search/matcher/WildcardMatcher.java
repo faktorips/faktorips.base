@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.search.matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Matcher for Strings, which uses ? and * as wildcard for one are many characters
@@ -55,7 +55,7 @@ public class WildcardMatcher implements IMatcher<String> {
 
     @Override
     public boolean isMatching(String text) {
-        if (StringUtils.isEmpty(text) || (pattern == null)) {
+        if (IpsStringUtils.isEmpty(text) || (pattern == null)) {
             return false;
         }
 

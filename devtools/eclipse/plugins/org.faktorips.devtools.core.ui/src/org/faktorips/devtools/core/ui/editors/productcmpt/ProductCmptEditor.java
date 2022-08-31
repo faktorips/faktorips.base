@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -42,6 +41,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Editor to a edit a product component.
@@ -304,7 +304,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
         List<IMessage> filteredList = messages.subList(1, messages.size());
         String headerMessage = super.createHeaderMessage(filteredList, messageType);
-        if (StringUtils.isBlank(headerMessage)) {
+        if (IpsStringUtils.isBlank(headerMessage)) {
             return generationName;
         }
         return generationName + System.lineSeparator() + headerMessage;

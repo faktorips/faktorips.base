@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * THIS IS A UTIL CLASS TO COPY LOCALIZE-PROPERTY FILES. DO NOT USE ANY OF THESE METHODS IN

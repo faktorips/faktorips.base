@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
@@ -86,7 +86,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                     getPmo().getSelectedType(), getPmo().getIpsProject(), result);
         }
 
-        if (StringUtils.isEmpty(getPmo().getKindId())) {
+        if (IpsStringUtils.isEmpty(getPmo().getKindId())) {
             result.add(new Message(MSG_EMPTY_KIND_ID, Messages.NewProdutCmptValidator_msg_emptyKindId, Message.ERROR,
                     getPmo(), NewProductCmptPMO.PROPERTY_KIND_ID));
         }
@@ -108,7 +108,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
 
     private void validateNamingConvention(MessageList result) {
         final IChangesOverTimeNamingConvention convention = getChangeOverTimeNamingConvention();
-        if (getPmo().isNeedVersionId() && StringUtils.isEmpty(getPmo().getVersionId())) {
+        if (getPmo().isNeedVersionId() && IpsStringUtils.isEmpty(getPmo().getVersionId())) {
             result.add(new Message(MSG_EMPTY_VERSION_ID, NLS.bind(Messages.NewProdutCmptValidator_msg_emptyVersionId,
                     convention.getVersionConceptNameSingular()), Message.ERROR, getPmo(),
                     NewProductCmptPMO.PROPERTY_VERSION_ID));

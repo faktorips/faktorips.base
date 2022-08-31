@@ -81,7 +81,7 @@ public class IpsFolderBundle extends AbstractIpsBundle {
         return true;
     }
 
-    protected static class IOFactory {
+    public static class IOFactory {
 
         public FileInputStream createInputStream(File file) throws FileNotFoundException {
             return new FileInputStream(file);

@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.fl.IFlIdentifierFilterExtension;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.fl.IdentifierKind;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,12 +37,19 @@ public class IdentifierFilterTest {
 
     private IdentifierFilter filter;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         List<IFlIdentifierFilterExtension> flIdentifierExtensions = new ArrayList<>();
         flIdentifierExtensions.add(flIdentifierExtension);
         filter = new IdentifierFilter(flIdentifierExtensions);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

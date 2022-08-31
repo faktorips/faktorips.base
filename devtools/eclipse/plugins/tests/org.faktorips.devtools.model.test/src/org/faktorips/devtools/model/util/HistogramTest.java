@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.function.Function;
 
-import com.google.common.collect.Lists;
-
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.internal.util.Histogram.BestValue;
 import org.faktorips.values.Decimal;
@@ -67,7 +65,7 @@ public class HistogramTest {
         Element a1 = element("A");
         Element a2 = element("A");
         Element a3 = element("A");
-        List<Element> elements = Lists.newArrayList(a1, a2, a3);
+        List<Element> elements = List.of(a1, a2, a3);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getDistribution().size(), is(3));
         assertThat(histogram.getDistribution().get("A"), hasItems(a1, a2, a3));
@@ -79,7 +77,7 @@ public class HistogramTest {
         Element null1 = element(null);
         Element null2 = element(null);
         Element a = element("A");
-        List<Element> elements = Lists.newArrayList(null1, null2, a);
+        List<Element> elements = List.of(null1, null2, a);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getDistribution().size(), is(3));
         assertThat(histogram.getDistribution().get(null), hasItems(null1, null2));
@@ -94,7 +92,7 @@ public class HistogramTest {
         Element b1 = element("B");
         Element b2 = element("B");
         Element c = element("C");
-        List<Element> elements = Lists.newArrayList(a1, a2, a3, b1, b2, c);
+        List<Element> elements = List.of(a1, a2, a3, b1, b2, c);
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getDistribution().size(), is(6));
@@ -121,7 +119,7 @@ public class HistogramTest {
 
     @Test
     public void testGetAbsoluteDistribution_SameValue() {
-        List<Element> elements = Lists.newArrayList(element("A"), element("A"), element("A"));
+        List<Element> elements = List.of(element("A"), element("A"), element("A"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getAbsoluteDistribution().size(), is(1));
         assertThat(histogram.getAbsoluteDistribution().get("A"), is(3));
@@ -130,7 +128,7 @@ public class HistogramTest {
 
     @Test
     public void testGetAbsoluteDistribution_NullValue() {
-        List<Element> elements = Lists.newArrayList(element(null), element(null), element("A"));
+        List<Element> elements = List.of(element(null), element(null), element("A"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getAbsoluteDistribution().size(), is(2));
         assertThat(histogram.getAbsoluteDistribution().get(null), is(2));
@@ -142,7 +140,7 @@ public class HistogramTest {
 
     @Test
     public void testGetAbsoluteDistribution_EqualCount() {
-        List<Element> elements = Lists.newArrayList(element("A"), element("B"));
+        List<Element> elements = List.of(element("A"), element("B"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getAbsoluteDistribution().size(), is(2));
         assertThat(histogram.getAbsoluteDistribution().get("A"), is(1));
@@ -151,13 +149,13 @@ public class HistogramTest {
 
     @Test
     public void testGetAbsoluteDistribution() {
-        List<Element> elements = Lists.newArrayList();
-        elements.add(element("A"));
-        elements.add(element("A"));
-        elements.add(element("A"));
-        elements.add(element("B"));
-        elements.add(element("B"));
-        elements.add(element("C"));
+        List<Element> elements = List.of(
+                element("A"),
+                element("A"),
+                element("A"),
+                element("B"),
+                element("B"),
+                element("C"));
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getAbsoluteDistribution().size(), is(3));
@@ -187,7 +185,7 @@ public class HistogramTest {
 
     @Test
     public void testGetRelativeDistribution_SameValue() {
-        List<Element> elements = Lists.newArrayList(element("A"), element("A"), element("A"));
+        List<Element> elements = List.of(element("A"), element("A"), element("A"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
 
         assertThat(histogram.getRelativeDistribution().size(), is(1));
@@ -197,7 +195,7 @@ public class HistogramTest {
 
     @Test
     public void testGetRelativeDistribution_NullValue() {
-        List<Element> elements = Lists.newArrayList(element(null), element(null), element("A"));
+        List<Element> elements = List.of(element(null), element(null), element("A"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
 
         assertThat(histogram.getRelativeDistribution().size(), is(2));
@@ -210,7 +208,7 @@ public class HistogramTest {
 
     @Test
     public void testGetRelativeDistribution_EqualValues() {
-        List<Element> elements = Lists.newArrayList(element("A"), element("B"));
+        List<Element> elements = List.of(element("A"), element("B"));
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getRelativeDistribution().size(), is(2));
         assertThat(histogram.getRelativeDistribution().get("A"), is(Decimal.valueOf(0.5)));
@@ -219,13 +217,13 @@ public class HistogramTest {
 
     @Test
     public void testGetRelativeDistribution() {
-        List<Element> elements = Lists.newArrayList();
-        elements.add(element("A"));
-        elements.add(element("A"));
-        elements.add(element("A"));
-        elements.add(element("B"));
-        elements.add(element("B"));
-        elements.add(element("C"));
+        List<Element> elements = List.of(
+                element("A"),
+                element("A"),
+                element("A"),
+                element("B"),
+                element("B"),
+                element("C"));
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
 
@@ -244,13 +242,13 @@ public class HistogramTest {
     public void testHistogram_CustomComparator() {
         Comparator<String> stringLengthComparator = Comparator.comparing(String::length);
 
-        List<Element> elements = Lists.newArrayList();
-        elements.add(element("3"));
-        elements.add(element("2"));
-        elements.add(element("1"));
-        elements.add(element("11"));
-        elements.add(element("22"));
-        elements.add(element("333"));
+        List<Element> elements = List.of(
+                element("3"),
+                element("2"),
+                element("1"),
+                element("11"),
+                element("22"),
+                element("333"));
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, stringLengthComparator,
                 elements);
@@ -282,7 +280,7 @@ public class HistogramTest {
         Element a2 = new Element("A");
         Element b = new Element("B");
 
-        List<Element> elements = Lists.newArrayList(a1, a2, b);
+        List<Element> elements = List.of(a1, a2, b);
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
         assertThat(histogram.getElements("A").size(), is(2));
@@ -307,7 +305,7 @@ public class HistogramTest {
         Element a2 = new Element("A");
         Element b = new Element("B");
 
-        List<Element> elements = Lists.newArrayList(a1, a2, b);
+        List<Element> elements = List.of(a1, a2, b);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
 
         BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.1));
@@ -321,7 +319,7 @@ public class HistogramTest {
         Element a2 = new Element("A");
         Element b = new Element("B");
 
-        List<Element> elements = Lists.newArrayList(a1, a2, b);
+        List<Element> elements = List.of(a1, a2, b);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
 
         BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.99));

@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class AlphaNumericComparator implements Comparator<String>, Serializable {
 
@@ -97,7 +97,7 @@ public class AlphaNumericComparator implements Comparator<String>, Serializable 
         private int compareNumericPart() {
             String numPart1 = input1Matcher.group();
             String numPart2 = input2Matcher.group();
-            if (StringUtils.isEmpty(numPart1) || StringUtils.isEmpty(numPart2)) {
+            if (IpsStringUtils.isEmpty(numPart1) || IpsStringUtils.isEmpty(numPart2)) {
                 return numPart1.compareTo(numPart2);
             } else {
                 return compareAsNumbers(numPart1, numPart2);

@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumPropertyGeneratorTest {
@@ -59,6 +59,9 @@ public class EnumPropertyGeneratorTest {
     @Mock
     private IEnumAttributeValue enumAttributeValue;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     @Before
     public void initEnumType() {
         List<IEnumAttribute> attributes = new ArrayList<>();
@@ -80,6 +83,8 @@ public class EnumPropertyGeneratorTest {
         when(enumAttributeValue.getEnumValue()).thenReturn(enumValue);
 
         doReturn(ValueFactory.createStringValue("myId")).when(idAttributeValue).getValue();
+
+        when(enumType.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

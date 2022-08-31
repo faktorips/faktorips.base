@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -46,7 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DependencyResolverTest {
@@ -211,7 +211,6 @@ public class DependencyResolverTest {
         when(ipsProject2.getDependencyGraph()).thenReturn(dependencyGraph2);
         when(ipsProject2.canBeBuild()).thenReturn(true);
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
-        when(ipsProject2.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
         when(ipsProject2.isReferencing(ipsProject1)).thenReturn(true);
 
         when(dependencyGraph2.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
@@ -219,7 +218,6 @@ public class DependencyResolverTest {
         when(ipsProject3.getDependencyGraph()).thenReturn(dependencyGraph3);
         when(ipsProject3.canBeBuild()).thenReturn(true);
         when(ipsProject3.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
-        when(ipsProject3.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
         when(ipsProject3.isReferencing(ipsProject1)).thenReturn(true);
         when(ipsProject3.isReferencing(ipsProject2)).thenReturn(true);
 
@@ -229,7 +227,6 @@ public class DependencyResolverTest {
         when(ipsProject4.canBeBuild()).thenReturn(true);
         when(ipsProject4.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
         when(ipsProject4.isReferencing(ipsProject1)).thenReturn(true);
-        when(ipsProject4.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
 
         when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
     }
@@ -261,7 +258,6 @@ public class DependencyResolverTest {
     @Test
     public void testCollectDependencies_DependencyGraphIsNull() {
         when(ipsProject1.getDependencyGraph()).thenReturn(null);
-        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
         dependencyResolver = new DependencyResolver(ipsProject1);
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
@@ -274,7 +270,6 @@ public class DependencyResolverTest {
     @Test
     public void testCollectDependencies_ipsProjectCanNotBeBuild() {
         when(ipsProject1.canBeBuild()).thenReturn(false);
-        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
@@ -441,8 +436,6 @@ public class DependencyResolverTest {
         when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt });
 
-        when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
-
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superPolicyCmptType);
 
         assertEquals(3, collectedDependencies.keySet().size());
@@ -504,8 +497,6 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype2 });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt, depConfiguredBySubPolicyCmptTypeToSubProductCmptType });
-        when(dependencyGraph1.getDependants(subPolicyCmptType)).thenReturn(
-                new IDependency[] { depConfiguresSubProductCmptTypeToSubPolicyCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
@@ -758,8 +749,6 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
-        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, });
         dependencyResolver = new DependencyResolver(ipsProject2);
         when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
         when(enumContentObject.getEnumType()).thenReturn("enumType");
@@ -780,13 +769,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(
                 new IDependency[] { depDatatypeSuperPolicyCmptTypeToEnumType });
         when(dependencyGraph1.getDependants(superPolicyCmptType)).thenReturn(new IDependency[] { refDependency });
-        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
-                new IDependency[] { depSubtype, depReferenceReferencingProductCmptTypeToSuperProductCmptType });
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
-        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceReferencingProductCmptTypeToSubProductCmptType });
-        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt });
         dependencyResolver = new DependencyResolver(ipsProject2);
         when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
         when(enumContentObject.getEnumType()).thenReturn("enumType");

@@ -12,12 +12,11 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -25,10 +24,11 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XAttributeTest {
@@ -50,6 +50,9 @@ public class XAttributeTest {
     @Mock
     private IAnnotationGenerator annotationGenerator;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     private XAttribute xAttribute;
 
     public void setUpMocks() {
@@ -65,7 +68,6 @@ public class XAttributeTest {
     public void testGetAnnotationsForPublishedInterfaceModifierRelevant_Published_GenInterface_HasInterface()
             throws Exception {
         setUpMocks();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLISHED);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(
@@ -78,13 +80,12 @@ public class XAttributeTest {
     public void testGetAnnotationsForPublishedInterfaceModifierRelevant_Public_GenInterface_HasInterface()
             throws Exception {
         setUpMocks();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLIC);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(
                 AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, true);
 
-        assertThat(annotations.trim(), is(StringUtils.EMPTY));
+        assertThat(annotations.trim(), is(IpsStringUtils.EMPTY));
     }
 
     @Test
@@ -93,18 +94,18 @@ public class XAttributeTest {
         setUpMocks();
         when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLISHED);
+        when(attribute.getIpsProject()).thenReturn(ipsProject);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(
                 AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, false);
 
-        assertThat(annotations.trim(), is(StringUtils.EMPTY));
+        assertThat(annotations.trim(), is(IpsStringUtils.EMPTY));
     }
 
     @Test
     public void testGetAnnotationsForPublishedInterfaceModifierRelevant_Public_NotGenInterface_HasInterface()
             throws Exception {
         setUpMocks();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLIC);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(
@@ -117,7 +118,6 @@ public class XAttributeTest {
     public void testGetAnnotationsForPublishedInterfaceModifierRelevant_Published_NotGenInterface_HasNoInterface()
             throws Exception {
         setUpMocks();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLISHED);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(
@@ -130,7 +130,6 @@ public class XAttributeTest {
     public void testGetAnnotationsForPublishedInterfaceModifierRelevant_Public_NotGenInterface_HasNoInterface()
             throws Exception {
         setUpMocks();
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
         when(attribute.getModifier()).thenReturn(Modifier.PUBLIC);
 
         String annotations = xAttribute.getAnnotationsForPublishedInterfaceModifierRelevant(

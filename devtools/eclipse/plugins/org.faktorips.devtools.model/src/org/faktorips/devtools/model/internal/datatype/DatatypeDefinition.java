@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.datatype;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.codegen.DatatypeHelper;

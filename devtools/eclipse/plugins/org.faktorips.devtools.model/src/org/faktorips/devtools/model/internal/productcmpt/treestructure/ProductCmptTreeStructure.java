@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -456,7 +456,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         for (IProductCmptStructureReference element : children) {
             if (element instanceof ProductCmptStructureTblUsageReference) {
                 ProductCmptStructureTblUsageReference tblUsageReference = (ProductCmptStructureTblUsageReference)element;
-                if (StringUtils.isNotEmpty(tblUsageReference.getTableContentUsage().getTableContentName())) {
+                if (IpsStringUtils.isNotEmpty(tblUsageReference.getTableContentUsage().getTableContentName())) {
                     tblUsageReferences.add(tblUsageReference);
                 }
             }
@@ -479,7 +479,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         for (IProductCmptStructureReference element : children) {
             if (element instanceof ProductCmptVRuleReference) {
                 ProductCmptVRuleReference vRuleReference = (ProductCmptVRuleReference)element;
-                if (StringUtils.isNotEmpty(vRuleReference.getValidationRuleConfig().getName())) {
+                if (IpsStringUtils.isNotEmpty(vRuleReference.getValidationRuleConfig().getName())) {
                     vRuleReferences.add(vRuleReference);
                 }
             }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import java.beans.PropertyChangeEvent;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The second page of the {@link NewProductWizard}. In this page you could select the concrete
@@ -213,7 +213,7 @@ public class ProductCmptPage extends WizardPage {
         @Override
         protected void updatePageMessages() {
             super.updatePageMessages();
-            if (StringUtils.isEmpty(getPage().getMessage()) && StringUtils.isNotEmpty(getPmo().getName())) {
+            if (IpsStringUtils.isEmpty(getPage().getMessage()) && IpsStringUtils.isNotEmpty(getPmo().getName())) {
                 getPage().setMessage(NLS.bind(Messages.ProductCmptPage_msg_fullName, getPmo().getName()));
             }
         }
@@ -226,7 +226,7 @@ public class ProductCmptPage extends WizardPage {
                                 pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle : Messages.ProductCmptPage_title,
                                 IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
             } else {
-                getPage().setTitle(StringUtils.EMPTY);
+                getPage().setTitle(IpsStringUtils.EMPTY);
             }
         }
 

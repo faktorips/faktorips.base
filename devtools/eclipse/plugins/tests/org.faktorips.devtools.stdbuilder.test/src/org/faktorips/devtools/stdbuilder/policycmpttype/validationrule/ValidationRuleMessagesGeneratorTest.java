@@ -13,14 +13,15 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
@@ -28,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
@@ -71,7 +71,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(inputStream);
 
         when(propertyFile.exists()).thenReturn(true);
 
@@ -92,7 +92,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(inputStream);
         assertFalse(validationMessages.isModified());
 
         messagesGenerator.generate(pcType);
@@ -113,7 +113,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
 
         reset(propertyFile);
         reset(inputStream);
@@ -121,8 +121,8 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.generate(pcType);
         assertFalse(validationMessages.isModified());
 
-        verifyZeroInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(propertyFile);
+        verifyNoInteractions(inputStream);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
     }
 
     @Test
@@ -176,7 +176,7 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);

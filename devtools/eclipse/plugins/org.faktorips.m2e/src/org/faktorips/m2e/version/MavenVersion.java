@@ -11,8 +11,8 @@
 package org.faktorips.m2e.version;
 
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.codehaus.plexus.util.StringUtils;
 import org.faktorips.devtools.model.IVersion;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A version as defined in <a href=
@@ -54,7 +54,7 @@ public class MavenVersion implements IVersion<MavenVersion> {
     public boolean isEmptyVersion() {
         // CSOFF: BooleanExpressionComplexityCheck
         return version.getMajorVersion() == 0 && version.getMinorVersion() == 0 && version.getIncrementalVersion() == 0
-                && version.getBuildNumber() == 0 && StringUtils.isBlank(version.getQualifier());
+                && version.getBuildNumber() == 0 && IpsStringUtils.isBlank(version.getQualifier());
         // CSON: BooleanExpressionComplexityCheck
     }
 

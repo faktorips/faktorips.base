@@ -32,8 +32,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
-import com.google.common.collect.ImmutableSet;
-
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
@@ -93,7 +91,7 @@ import org.xml.sax.SAXException;
  */
 public class TocFileBuilder extends AbstractArtefactBuilder {
 
-    private static final Set<IpsObjectType> SUPPORTED_TYPES = ImmutableSet.of(PRODUCT_CMPT,
+    private static final Set<IpsObjectType> SUPPORTED_TYPES = Set.of(PRODUCT_CMPT,
             TABLE_CONTENTS, TEST_CASE, ENUM_CONTENT, ENUM_TYPE,
             POLICY_CMPT_TYPE, PRODUCT_CMPT_TYPE);
 

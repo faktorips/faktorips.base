@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -48,7 +47,7 @@ public class HtmlPathFactory {
         if (ipsElement instanceof IIpsObject) {
             return new IpsSrcFileHtmlPath(((IIpsObject)ipsElement).getIpsSrcFile());
         }
-        throw new NotImplementedException(
+        throw new UnsupportedOperationException(
                 "There is no IIpsElementHtmlPath for the IIpsElement of the type " //$NON-NLS-1$
                         + ipsElement.getClass().getCanonicalName());
     }

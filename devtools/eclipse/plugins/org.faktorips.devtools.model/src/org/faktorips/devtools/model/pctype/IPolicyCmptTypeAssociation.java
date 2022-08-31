@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.pctype;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -19,6 +18,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Represents a directed(!) relation between two types. Bidirectional relations are represented in
@@ -434,7 +434,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Setting the source product component of the explicitly specified association that constrains
      * this {@link IPolicyCmptTypeAssociation}. The name of the association is set by
      * {@link #setMatchingAssociationName(String)}. If the matching association should be found
-     * automatically you have to set this field to {@link StringUtils#EMPTY}.
+     * automatically you have to set this field to {@link IpsStringUtils#EMPTY}.
      * 
      * @param matchingAssociationSource The qualified name of the source {@link IProductCmptType}
      */
@@ -444,7 +444,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Getting the qualified name for the source {@link IProductCmptType} of the
      * {@link IProductCmptTypeAssociation} that constrains this association. The name of the
      * association is returned by {@link #getMatchingAssociationName()}. If the matching association
-     * should be found automatically this method returns {@link StringUtils#EMPTY}.
+     * should be found automatically this method returns {@link IpsStringUtils#EMPTY}.
      * 
      * @return The qualified name of the source {@link IProductCmptType} that's association should
      *             constrains this one
@@ -455,7 +455,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Setting the name of the association that constrains this one. The source component of this
      * association is set by {@link #setMatchingAssociationSource(String)}. If the matching
      * association should be found automatically you have to set this field to
-     * {@link StringUtils#EMPTY}.
+     * {@link IpsStringUtils#EMPTY}.
      * 
      * @param matchingAssociationName The name of the association that constrains this one
      */
@@ -465,7 +465,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * Getting the name of the {@link IProductCmptTypeAssociation} that constrains this association.
      * The qualified name of the source {@link IProductCmptType} is returned by
      * {@link #getMatchingAssociationSource()}. If the matching association should be found
-     * automatically this method returns {@link StringUtils#EMPTY}.
+     * automatically this method returns {@link IpsStringUtils#EMPTY}.
      * 
      * @return The name of the association that constrains this one
      */

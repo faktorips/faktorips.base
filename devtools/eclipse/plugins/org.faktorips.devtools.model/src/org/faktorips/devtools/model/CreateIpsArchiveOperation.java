@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -310,7 +309,7 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     private void writeCustomIconIfApplicable(IIpsSrcFile file, JarOutputStream os) {
         if (file.getIpsObjectType() == IpsObjectType.PRODUCT_CMPT_TYPE) {
             String iconPath = file.getPropertyValue(IProductCmptType.PROPERTY_ICON_FOR_INSTANCES);
-            if (StringUtils.isNotEmpty(iconPath)) {
+            if (IpsStringUtils.isNotEmpty(iconPath)) {
                 if (isDuplicateEntry(iconPath)) {
                     return;
                 }

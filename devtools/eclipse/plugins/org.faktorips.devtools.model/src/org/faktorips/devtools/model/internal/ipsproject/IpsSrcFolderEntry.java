@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -32,6 +32,7 @@ import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -72,7 +73,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private AFolder outputFolderMergable;
 
     /** the name of the base package containing the generated but mergeable Java files. */
-    private String basePackageMergable = StringUtils.EMPTY;
+    private String basePackageMergable = IpsStringUtils.EMPTY;
 
     private String tocPath = DEFAULT_TOC_PATH;
 
@@ -85,12 +86,12 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * the name of the base package containing the Java files where the developer adds it's own
      * code.
      */
-    private String basePackageDerived = StringUtils.EMPTY;
+    private String basePackageDerived = IpsStringUtils.EMPTY;
 
     /**
      * The qualifier may be specified if the base package is not unique over all dependent projects
      */
-    private String uniqueQualifier = StringUtils.EMPTY;
+    private String uniqueQualifier = IpsStringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot root;
 
@@ -279,19 +280,19 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         String sourceFolderPath = element.getAttribute(PROPERTY_SOURCE_FOLDER);
         setSourceFolder(project.getFolder(java.nio.file.Path.of(sourceFolderPath)));
         String outputFolderPathMergable = element.getAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE);
-        outputFolderMergable = outputFolderPathMergable.equals(StringUtils.EMPTY) ? null
+        outputFolderMergable = outputFolderPathMergable.equals(IpsStringUtils.EMPTY) ? null
                 : project.getFolder(java.nio.file.Path.of(outputFolderPathMergable));
         basePackageMergable = element.getAttribute(PROPERTY_BASE_PACKAGE_MERGABLE);
         tocPath = element.getAttribute(PROPERTY_TOC_PATH);
-        if (StringUtils.isEmpty(tocPath)) {
+        if (IpsStringUtils.isEmpty(tocPath)) {
             tocPath = DEFAULT_TOC_PATH;
         }
         validationMessagesBundle = element.getAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE);
-        if (StringUtils.isEmpty(validationMessagesBundle)) {
+        if (IpsStringUtils.isEmpty(validationMessagesBundle)) {
             validationMessagesBundle = DEFAUTL_VALIDATION_MESSAGES_BUNDLE;
         }
         String outputFolderPathDerived = element.getAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED);
-        outputFolderDerived = outputFolderPathDerived.equals(StringUtils.EMPTY) ? null
+        outputFolderDerived = outputFolderPathDerived.equals(IpsStringUtils.EMPTY) ? null
                 : project.getFolder(java.nio.file.Path.of(outputFolderPathDerived));
         basePackageDerived = element.getAttribute(PROPERTY_BASE_PACKAGE_DERIVED);
         uniqueQualifier = StringUtils.trimToEmpty(element.getAttribute(PROPERTY_UNIQUE_QUALIFIER));
@@ -302,18 +303,19 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         Element element = super.toXml(doc);
         element.setAttribute(PROPERTY_TYPE, TYPE_SRC_FOLDER);
         element.setAttribute(PROPERTY_SOURCE_FOLDER, PathUtil.toPortableString(sourceFolder.getProjectRelativePath()));
-        element.setAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE, outputFolderMergable == null ? StringUtils.EMPTY
+        element.setAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE, outputFolderMergable == null ? IpsStringUtils.EMPTY
                 : PathUtil.toPortableString(outputFolderMergable.getProjectRelativePath()));
-        element.setAttribute(PROPERTY_BASE_PACKAGE_MERGABLE, basePackageMergable == null ? StringUtils.EMPTY
+        element.setAttribute(PROPERTY_BASE_PACKAGE_MERGABLE, basePackageMergable == null ? IpsStringUtils.EMPTY
                 : basePackageMergable);
         element.setAttribute(PROPERTY_TOC_PATH, tocPath == null ? "" : tocPath); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE, validationMessagesBundle == null ? StringUtils.EMPTY
-                : validationMessagesBundle);
-        element.setAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED, outputFolderDerived == null ? StringUtils.EMPTY
+        element.setAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE,
+                validationMessagesBundle == null ? IpsStringUtils.EMPTY
+                        : validationMessagesBundle);
+        element.setAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED, outputFolderDerived == null ? IpsStringUtils.EMPTY
                 : PathUtil.toPortableString(outputFolderDerived.getProjectRelativePath()));
-        element.setAttribute(PROPERTY_BASE_PACKAGE_DERIVED, basePackageDerived == null ? StringUtils.EMPTY
+        element.setAttribute(PROPERTY_BASE_PACKAGE_DERIVED, basePackageDerived == null ? IpsStringUtils.EMPTY
                 : basePackageDerived);
-        if (StringUtils.isNotEmpty(uniqueQualifier)) {
+        if (IpsStringUtils.isNotEmpty(uniqueQualifier)) {
             element.setAttribute(PROPERTY_UNIQUE_QUALIFIER, uniqueQualifier);
         }
         return element;
@@ -455,7 +457,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     public String getFullTocPath() {
         Path path = QNameUtil.toPath(getBasePackageNameForMergableJavaClasses());
         String pathString = path == null ? null : path.toString();
-        if (StringUtils.isEmpty(pathString)) {
+        if (IpsStringUtils.isEmpty(pathString)) {
             return tocPath;
         }
         return pathString + IPath.SEPARATOR + tocPath;

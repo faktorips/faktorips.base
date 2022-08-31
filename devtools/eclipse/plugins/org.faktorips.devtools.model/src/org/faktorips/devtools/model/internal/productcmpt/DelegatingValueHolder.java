@@ -13,8 +13,6 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.common.base.Preconditions;
-
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
@@ -22,6 +20,7 @@ import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -182,7 +181,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
      *             to the given value holder
      */
     public static <U> DelegatingValueHolder<U> of(IAttributeValue parent, IValueHolder<U> delegate) {
-        Preconditions.checkArgument(delegate instanceof AbstractValueHolder,
+        ArgumentCheck.isInstanceOf(delegate, AbstractValueHolder.class,
                 "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
 
         return new DelegatingValueHolder<>(parent, (AbstractValueHolder<U>)delegate);

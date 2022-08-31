@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -24,6 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
@@ -35,7 +35,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     private ITableStructure selectedStructure;
 
-    private String name = StringUtils.EMPTY;
+    private String name = IpsStringUtils.EMPTY;
 
     private final List<ITableStructure> structuresList = new ArrayList<>();
 

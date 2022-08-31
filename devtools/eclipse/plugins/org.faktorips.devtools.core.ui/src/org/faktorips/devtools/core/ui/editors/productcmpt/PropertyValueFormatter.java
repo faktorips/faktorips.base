@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Formats the value of {@link IPropertyValue PropertyValues}. e.g. formats the value represented by
@@ -35,29 +35,29 @@ public class PropertyValueFormatter {
 
     public static final Function<IAttributeValue, String> ATTRIBUTE_VALUE = attributeValue -> attributeValue != null
             ? AttributeValueFormatter.format(attributeValue)
-            : StringUtils.EMPTY;
+            : IpsStringUtils.EMPTY;
 
     public static final Function<IConfiguredValueSet, String> CONFIGURED_VALUESET = configuredValueSet -> configuredValueSet != null
             ? AnyValueSetFormat.newInstance(configuredValueSet).format(configuredValueSet.getValueSet())
-            : StringUtils.EMPTY;
+            : IpsStringUtils.EMPTY;
 
     public static final Function<IConfiguredDefault, String> CONFIGURED_DEFAULT = configuredDefault -> {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         return configuredDefault != null ? datatypeFormatter.formatValue(
                 configuredDefault.findValueDatatype(configuredDefault.getIpsProject()),
-                configuredDefault.getValue()) : StringUtils.EMPTY;
+                configuredDefault.getValue()) : IpsStringUtils.EMPTY;
     };
 
     public static final Function<ITableContentUsage, String> TABLE_CONTENT_USAGE = tableContentUsage -> tableContentUsage != null
             ? getValueOrNullPresentation(tableContentUsage.getTableContentName())
-            : StringUtils.EMPTY;
+            : IpsStringUtils.EMPTY;
 
     public static final Function<IFormula, String> FORMULA = formula -> formula != null
             ? getValueOrNullPresentation(formula.getExpression())
-            : StringUtils.EMPTY;
+            : IpsStringUtils.EMPTY;
     public static final Function<IValidationRuleConfig, String> VALIDATION_RULE_CONFIG = ruleConfig -> {
         if (ruleConfig == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         if (ruleConfig.isActive()) {
             return Messages.ValidationRuleConfigEditComposite_activated;
@@ -98,7 +98,7 @@ public class PropertyValueFormatter {
     }
 
     private static String getValueOrNullPresentation(String value) {
-        if (StringUtils.isEmpty(value)) {
+        if (IpsStringUtils.isEmpty(value)) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else {
             return value;

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -21,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class InfoLabel extends Composite implements IDataChangeableReadWriteAccess {
 
@@ -42,7 +42,7 @@ public class InfoLabel extends Composite implements IDataChangeableReadWriteAcce
         setLayout(layout);
         setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-        hintImage = uiToolkit.createLabel(this, StringUtils.EMPTY);
+        hintImage = uiToolkit.createLabel(this, IpsStringUtils.EMPTY);
 
         GridData imageGridData = new GridData(SWT.LEFT, SWT.TOP, false, false);
         imageGridData.widthHint = 16;
@@ -56,12 +56,12 @@ public class InfoLabel extends Composite implements IDataChangeableReadWriteAcce
     }
 
     public void setInfoText(String text) {
-        if (StringUtils.isNotEmpty(text)) {
+        if (IpsStringUtils.isNotEmpty(text)) {
             hintImage.setImage(JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO));
             hintText.setText(text);
         } else {
             hintImage.setImage(null);
-            hintText.setText(StringUtils.EMPTY);
+            hintText.setText(IpsStringUtils.EMPTY);
         }
     }
 

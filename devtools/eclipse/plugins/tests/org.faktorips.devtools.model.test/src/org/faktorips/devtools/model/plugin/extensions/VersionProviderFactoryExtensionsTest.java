@@ -30,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class VersionProviderFactoryExtensionsTest {
 
     private static final String MY_VERSION_PROVIDER_ID = "myVersionProviderId";
@@ -63,7 +63,6 @@ public class VersionProviderFactoryExtensionsTest {
         when(extensionRegistry.getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID,
                 VersionProviderFactoryExtensions.EXTENSION_POINT_ID_VERSION_PROVIDER))
                         .thenReturn(new IConfigurationElement[] { configElementDummy, configElementVersionProvider });
-        when(configElementDummy.getAttribute(VersionProviderFactoryExtensions.EXTENSION_ATTRIBUTE_ID)).thenReturn("");
         when(configElementVersionProvider.getAttribute(VersionProviderFactoryExtensions.EXTENSION_ATTRIBUTE_ID))
                 .thenReturn(MY_VERSION_PROVIDER_ID);
         when(configElementVersionProvider.createExecutableExtension(ExtensionPoints.ATTRIBUTE_CLASS))

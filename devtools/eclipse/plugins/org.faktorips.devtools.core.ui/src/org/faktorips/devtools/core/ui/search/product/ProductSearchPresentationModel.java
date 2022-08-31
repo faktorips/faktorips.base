@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
@@ -31,6 +30,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The ProductSearchPresentationModel is the implementation of the {@link PresentationModelObject}
@@ -63,7 +63,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     private IProductCmptType productCmptType;
 
-    private String ipsProjectName = StringUtils.EMPTY;
+    private String ipsProjectName = IpsStringUtils.EMPTY;
 
     public ProductSearchPresentationModel() {
     }
@@ -238,7 +238,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     private boolean settingIsValid(String storedKey, IDialogSettings settings) {
-        return !StringUtils.isEmpty(settings.get(storedKey));
+        return !IpsStringUtils.isEmpty(settings.get(storedKey));
     }
 
     @Override

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.DeprecationValidation;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -91,7 +91,7 @@ public class ProductCmptValidations {
             IIpsProject ipsProject) {
         String templateName = productCmpt.getTemplate();
 
-        if (StringUtils.isNotEmpty(templateName)) {
+        if (IpsStringUtils.isNotEmpty(templateName)) {
             IProductCmpt template = ipsProject.findProductTemplate(templateName);
             if (template != null) {
                 ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);

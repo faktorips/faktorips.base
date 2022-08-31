@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
@@ -59,6 +58,7 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Page to display a generation's properties or product component properties in case that product
@@ -407,7 +407,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private String getValidFromString(IIpsObjectGeneration generation) {
         if (generation.getValidFrom() == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         } else {
             DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
             return dateFormat.format(generation.getValidFrom().getTime());

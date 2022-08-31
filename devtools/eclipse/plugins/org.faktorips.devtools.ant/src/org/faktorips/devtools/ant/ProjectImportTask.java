@@ -98,15 +98,11 @@ public class ProjectImportTask extends AbstractIpsTask {
         IProgressMonitor monitor = new NullProgressMonitor();
 
         // get description provieded in .project File
-        InputStream inputStream = new FileInputStream(getProjectFile());
+
         IProjectDescription description = null;
 
-        try {
+        try (InputStream inputStream = new FileInputStream(getProjectFile())) {
             description = workspace.loadProjectDescription(inputStream);
-        } finally {
-            if (inputStream != null) {
-                inputStream.close();
-            }
         }
 
         if (!copy) {
@@ -137,7 +133,7 @@ public class ProjectImportTask extends AbstractIpsTask {
     /**
      * Does some security checks on the provided directory attribute
      * 
-     * @throws BuildException
+     * @throws BuildException if {@link #getDir() dir} is not a readable directory.
      */
     private void checkDir() {
 

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.controller.fields.ConfiguredValueSetField;
@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * An implementation of {@link AbstractProposalProvider} for {@link ConfiguredValueSetField}s. It
@@ -99,8 +100,8 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     }
 
     private String getLastValue(String s) {
-        if (StringUtils.isEmpty(s)) {
-            return StringUtils.EMPTY;
+        if (IpsStringUtils.isEmpty(s)) {
+            return IpsStringUtils.EMPTY;
         }
         int i = s.length() - 1;
         while (i >= 0) {

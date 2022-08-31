@@ -14,10 +14,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import com.google.common.collect.Lists;
+import java.util.List;
 
 import org.faktorips.devtools.model.internal.productcmpt.template.RemoveTemplateOperation.RemoveTemplateModification;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -29,9 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RemoveTemplateOperationTest {
 
     @Mock
@@ -81,12 +79,12 @@ public class RemoveTemplateOperationTest {
         when(g1l2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
         when(g2l1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
         when(g2l2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
-        ArrayList<IPropertyValue> pList = Lists.newArrayList(p1, p2);
-        ArrayList<IPropertyValue> g1List = Lists.newArrayList(g11, g12);
-        ArrayList<IPropertyValue> g2List = Lists.newArrayList(g21, g22);
-        ArrayList<IProductCmptLink> pLinkList = Lists.newArrayList(pl1, pl2);
-        ArrayList<IProductCmptLink> g1LinkList = Lists.newArrayList(g1l1, g1l2);
-        ArrayList<IProductCmptLink> g2LinkList = Lists.newArrayList(g2l1, g2l2);
+        List<IPropertyValue> pList = List.of(p1, p2);
+        List<IPropertyValue> g1List = List.of(g11, g12);
+        List<IPropertyValue> g2List = List.of(g21, g22);
+        List<IProductCmptLink> pLinkList = List.of(pl1, pl2);
+        List<IProductCmptLink> g1LinkList = List.of(g1l1, g1l2);
+        List<IProductCmptLink> g2LinkList = List.of(g2l1, g2l2);
 
         when(prodCmpt.getAllPropertyValues()).thenReturn(pList);
         when(prodCmpt.getLinksAsList()).thenReturn(pLinkList);

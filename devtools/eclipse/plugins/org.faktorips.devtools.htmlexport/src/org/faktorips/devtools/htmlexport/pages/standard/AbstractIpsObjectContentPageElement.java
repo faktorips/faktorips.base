@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -114,7 +114,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.AbstractObjectContentPageElement_description), TextType.HEADING_2, getContext()));
         addPageElements(new TextPageElement(
-                StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
+                IpsStringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
                         HtmlExportMessages.AbstractObjectContentPageElement_noDescription)
                         : getContext()
                                 .getDescription(getDocumentedIpsObject()),
@@ -156,7 +156,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         String id = getDocumentedIpsObject().getIpsObjectType().getId();
         String messageId = "IpsObjectType_name" + id; //$NON-NLS-1$
         String message = getContext().getMessage(messageId);
-        if (StringUtils.isNotBlank(message) && !messageId.equals(message)) {
+        if (IpsStringUtils.isNotBlank(message) && !messageId.equals(message)) {
             return message;
         }
         return getDocumentedIpsObject().getIpsObjectType().getDisplayName();

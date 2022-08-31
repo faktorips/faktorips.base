@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -29,9 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ValidationRuleCsvImporterTest {
 
     @Mock
@@ -91,9 +94,9 @@ public class ValidationRuleCsvImporterTest {
         validationRuleCsvImporter.setKeyAndValueColumn(0, -1);
 
         IStatus status = validationRuleCsvImporter.loadContent();
-        assertTrue(status instanceof IpsStatus);
+        assertThat(status, is(instanceOf(IpsStatus.class)));
         IpsStatus ipsStatus = (IpsStatus)status;
-        assertTrue(ipsStatus.getException() instanceof ArrayIndexOutOfBoundsException);
+        assertThat(ipsStatus.getException(), is(instanceOf(ArrayIndexOutOfBoundsException.class)));
     }
 
 }

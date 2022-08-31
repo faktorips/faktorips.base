@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Combo;
@@ -20,6 +19,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Wizard page to define a new test attribute - this attribute is not based on a policy cmpt type
@@ -108,11 +108,11 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
      */
     public boolean isValid() {
         setErrorMessage(null);
-        if (StringUtils.isEmpty(testAttributeNameText.getText())) {
+        if (IpsStringUtils.isEmpty(testAttributeNameText.getText())) {
             setErrorMessage(Messages.TestAttributeDefinitionWizardPage_errorMessageEmptyName);
             return false;
         }
-        if (StringUtils.isEmpty(datatypeRefControl.getText())) {
+        if (IpsStringUtils.isEmpty(datatypeRefControl.getText())) {
             setErrorMessage(
                     Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
             return false;

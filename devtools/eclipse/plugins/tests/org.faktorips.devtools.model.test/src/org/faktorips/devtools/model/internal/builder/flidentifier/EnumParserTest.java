@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumParserTest extends AbstractParserTest {
@@ -127,7 +127,6 @@ public class EnumParserTest extends AbstractParserTest {
     @Test
     public void testGetProposalEnumValue() {
         doReturn(new String[] { "notMyEnumValue", "myEnumValue" }).when(enumDatatype).getAllValueIds(false);
-        doReturn(new String[] {}).when(enumDatatypeAdapter).getAllValueIds(false);
         enumParser.setContextType(enumClass);
         when(enumClass.getEnumDatatype()).thenReturn(enumDatatype);
         when(enumDatatype.getValueName(eq(MY_ENUM_VALUE), any(Locale.class))).thenReturn(MY_LABEL);
@@ -141,7 +140,6 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testGetDescription_NoneEnumTypes() {
-        doReturn(enumDatatype).when(enumClass).getEnumDatatype();
         doReturn(NAME).when(enumDatatype).getName();
 
         String description = enumParser.getDescription(enumDatatype);
@@ -153,7 +151,6 @@ public class EnumParserTest extends AbstractParserTest {
     public void testGetDescription_forEnumTypes() {
         doReturn(enumtype).when(enumDatatypeAdapter).getEnumType();
         doReturn(MY_LABEL).when(enumtype).getName();
-        doReturn(enumDatatype).when(enumClass).getEnumDatatype();
 
         String description = enumParser.getDescription(enumDatatypeAdapter);
 

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.builder;
 import java.lang.Runtime.Version;
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IParameter;
 

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -257,7 +257,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
                 return Path.fromOSString(fullPath);
             } catch (IOException e) {
                 IpsLog.log(new IpsStatus("Error initializing classpath container for " //$NON-NLS-1$
-                        + (sources ? "source " : StringUtils.EMPTY) + "source bundle " + pluginId, e)); //$NON-NLS-1$//$NON-NLS-2$
+                        + (sources ? "source " : IpsStringUtils.EMPTY) + "source bundle " + pluginId, e)); //$NON-NLS-1$//$NON-NLS-2$
                 return null;
             }
         }
@@ -292,7 +292,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             if (split.length < 2) {
                 return null;
             }
-            String result = StringUtils.EMPTY;
+            String result = IpsStringUtils.EMPTY;
             for (String string : split) {
                 if (!string.equals(split[split.length - 1])) {
                     result += string + pluginId;

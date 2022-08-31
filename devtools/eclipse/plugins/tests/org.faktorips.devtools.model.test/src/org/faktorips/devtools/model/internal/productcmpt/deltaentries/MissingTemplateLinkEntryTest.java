@@ -19,9 +19,9 @@ import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class MissingTemplateLinkEntryTest {
 
     private static final String TARGET = "Target";

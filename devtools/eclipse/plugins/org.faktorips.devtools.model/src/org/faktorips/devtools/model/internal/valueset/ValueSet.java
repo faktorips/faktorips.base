@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -90,7 +90,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
-        if (StringUtils.isNotEmpty(abstractString)) {
+        if (IpsStringUtils.isNotEmpty(abstractString)) {
             abstractFlag = Boolean.parseBoolean(element.getAttribute(PROPERTY_ABSTRACT));
         } else {
             /*

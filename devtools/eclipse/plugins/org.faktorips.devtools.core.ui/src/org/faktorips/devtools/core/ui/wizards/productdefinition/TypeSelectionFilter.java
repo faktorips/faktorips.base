@@ -10,16 +10,16 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.dialogs.SearchPattern;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TypeSelectionFilter extends ViewerFilter {
 
-    private String searchText = StringUtils.EMPTY;
+    private String searchText = IpsStringUtils.EMPTY;
 
     public void setSearchText(String searchText) {
         this.searchText = searchText;

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -106,7 +106,7 @@ public class TestRule extends TestObject implements ITestRule {
 
     @Override
     public ITestRuleParameter findTestRuleParameter(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testRuleParameter)) {
+        if (IpsStringUtils.isEmpty(testRuleParameter)) {
             return null;
         }
 

@@ -13,17 +13,17 @@ package org.faktorips.devtools.model.internal;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.XmlSupport;
 import org.faktorips.runtime.internal.InternationalStringXmlReaderWriter;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.collections.DistinctElementComparator;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
@@ -50,7 +50,7 @@ import org.w3c.dom.Element;
 public class InternationalString implements IInternationalString {
 
     private static final DistinctElementComparator<LocalizedString> COMPARATOR = DistinctElementComparator
-            .createComparator((o1, o2) -> ObjectUtils.compare(o1.getValue(), o2.getValue()));
+            .createComparator(Comparator.comparing(LocalizedString::getValue));
 
     private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<>();
 
@@ -178,7 +178,7 @@ public class InternationalString implements IInternationalString {
     }
 
     private LocalizedString emptyLocalizedString(Locale locale) {
-        return new LocalizedString(locale, StringUtils.EMPTY);
+        return new LocalizedString(locale, IpsStringUtils.EMPTY);
     }
 
     @Override

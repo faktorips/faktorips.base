@@ -91,8 +91,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <requires>
-      <import plugin="com.google.guava" version="18.0.0" match="greaterOrEqual"/>
-      <import plugin="com.opencsv" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="com.opencsv" version="5.6.0" match="greaterOrEqual"/>
       <import plugin="jaxb-api" version="2.4.0" match="greaterOrEqual"/>
       <import plugin="joda-time" version="2.1.0" match="greaterOrEqual"/>
       <import plugin="org.apache.ant" version="1.10.7" match="greaterOrEqual"/>
@@ -137,7 +136,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.eclipse.xtend.lib" version="2.21.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.13.0" match="greaterOrEqual"/>
       <import plugin="org.objenesis"/>
-      <import plugin="spotbugs-annotations"/>
+      <import plugin="spotbugs-annotations" version="4.7.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin

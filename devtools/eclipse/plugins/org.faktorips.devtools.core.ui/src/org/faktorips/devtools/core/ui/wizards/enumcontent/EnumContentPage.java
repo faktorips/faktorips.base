@@ -12,8 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.enumcontent;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -47,6 +46,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The wizard page for the <code>NewEnumContentWizard</code>.
@@ -155,7 +155,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     @Override
     protected void setDefaultFocus() {
-        if (StringUtils.isEmpty(getSourceFolder())) {
+        if (IpsStringUtils.isEmpty(getSourceFolder())) {
             sourceFolderControl.setFocus();
         }
     }
@@ -218,7 +218,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
 
     private void validatePageInternal() {
         String enumTypeFieldText = enumTypeField.getText();
-        if (StringUtils.isEmpty(enumTypeFieldText)) {
+        if (IpsStringUtils.isEmpty(enumTypeFieldText)) {
             setErrorMessage(Messages.EnumContentPage_msgEnumTypeMissing);
             return;
         }
@@ -227,7 +227,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
             return;
         }
         IEnumType enumType = getEnumType();
-        if (StringUtils.isEmpty(enumType.getEnumContentName())) {
+        if (IpsStringUtils.isEmpty(enumType.getEnumContentName())) {
             setErrorMessage(Messages.EnumContentPage_msgEnumContentNameOfEnumTypeMissing);
             return;
         }

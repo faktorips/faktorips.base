@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -32,15 +31,14 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
-import org.faktorips.devtools.model.pctype.IValidationRuleMessageText;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ValidationRuleMessagesPropertiesImporterTest {
 
     private static final String MSG_CODE = "MyMsgCode";
@@ -145,8 +143,6 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     }
 
     void mockRule() {
-        when(rule.getIpsObject()).thenReturn(policyCmptType);
-        when(rule.getName()).thenReturn("testRule");
         when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
         when(rule.getMessageCode()).thenReturn(MSG_CODE);
         when(rule.getMessageText()).thenReturn(new ValidationRuleMessageText());
@@ -195,11 +191,8 @@ public class ValidationRuleMessagesPropertiesImporterTest {
     }
 
     private void setUpImportMissingMessage() {
-        when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
         when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
-        IValidationRuleMessageText messageText = mock(IValidationRuleMessageText.class);
-        when(rule.getMessageText()).thenReturn(messageText);
         ArrayList<IValidationRule> rules = new ArrayList<>();
         rules.add(rule);
         when(policyCmptType.getValidationRules()).thenReturn(rules);

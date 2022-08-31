@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -289,7 +289,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
         String description = item.getDescription().trim();
 
         // Set faktorips.attribute description
-        if ((!item.hasChildren() && StringUtils.isEmpty(description)) || !StringUtils.isEmpty(description)) {
+        if ((!item.hasChildren() && IpsStringUtils.isEmpty(description)) || !IpsStringUtils.isEmpty(description)) {
             createDescriptionContent(item, excomposite, clientGroup, sb, description);
         }
 

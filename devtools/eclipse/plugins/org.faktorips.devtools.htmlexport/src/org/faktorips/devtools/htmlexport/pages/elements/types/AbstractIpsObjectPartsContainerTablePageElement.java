@@ -15,8 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyAccess;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends IIpsObjectPartContainer> extends
         AbstractStandardTablePageElement {
@@ -108,7 +108,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
             if (sinceVersion != null) {
                 values.add(new TextPageElement(versionControlledElement.getSinceVersion().asString(), getContext()));
             } else {
-                values.add(new TextPageElement(StringUtils.EMPTY, getContext()));
+                values.add(new TextPageElement(IpsStringUtils.EMPTY, getContext()));
             }
         }
         return values;

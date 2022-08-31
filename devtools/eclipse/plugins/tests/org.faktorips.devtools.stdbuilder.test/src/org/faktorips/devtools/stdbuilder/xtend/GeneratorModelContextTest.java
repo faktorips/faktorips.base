@@ -38,9 +38,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class GeneratorModelContextTest {
 
     @Mock
@@ -115,7 +115,6 @@ public class GeneratorModelContextTest {
     public void testGetGeneratorConfig_IpsObject() {
         IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { packageFragmentRoot });
-        when(packageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
                 ipsProject);
         GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();
@@ -160,7 +159,6 @@ public class GeneratorModelContextTest {
     public void testGetGeneratorConfig_IpsSrcFile() {
         IIpsPackageFragmentRoot packageFragmentRoot = mock(IIpsPackageFragmentRoot.class);
         when(ipsProject.getIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { packageFragmentRoot });
-        when(packageFragmentRoot.getIpsProject()).thenReturn(ipsProject);
         generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
                 ipsProject);
         GeneratorConfig baseGeneratorConfig = generatorModelContext.getBaseGeneratorConfig();

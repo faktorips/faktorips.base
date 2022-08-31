@@ -14,10 +14,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.abstraction.AFile;
@@ -179,7 +179,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             Node node = nodeList.item(i);
             if (node instanceof Element) {
                 Element element = (Element)node;
-                if (StringUtils.equals(element.getNodeName(), tagName)) {
+                if (Objects.equals(element.getNodeName(), tagName)) {
                     linkElements.add(element);
                 }
             }

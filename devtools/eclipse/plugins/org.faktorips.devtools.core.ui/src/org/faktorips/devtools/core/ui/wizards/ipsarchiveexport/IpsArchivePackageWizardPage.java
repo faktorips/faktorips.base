@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -62,6 +61,7 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArchiveEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -273,7 +273,7 @@ public class IpsArchivePackageWizardPage extends WizardDataTransferPage implemen
             setDescription(Messages.IpsArchivePackageWizardPage_Description_DefineWhichResource);
         }
 
-        if (canFinish && (StringUtils.isEmpty(target) || !destPath.isValidPath(target))) {
+        if (canFinish && (IpsStringUtils.isEmpty(target) || !destPath.isValidPath(target))) {
             canFinish = false;
             setDescription(Messages.IpsArchivePackageWizardPage_Description_EnterValidDestination);
         }

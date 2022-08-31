@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -43,7 +43,7 @@ public class LocalizedStringEditField extends AbstractTextButtonField<LocalizedS
     @Override
     public void setValue(LocalizedString newValue) {
         if (newValue == null) {
-            setText(StringUtils.EMPTY);
+            setText(IpsStringUtils.EMPTY);
             return;
         }
         localeOfEditField = newValue.getLocale();

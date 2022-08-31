@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -438,7 +437,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         IIpsProject ipsProject = getEnumValueContainer().getIpsProject();
         return Arrays.stream(getAllValueIds(false))
                 .map(this::getValue)
-                .filter(v -> StringUtils.equals(name, getValueName(ipsProject, v)))
+                .filter(v -> Objects.equals(name, getValueName(ipsProject, v)))
                 .findFirst()
                 .orElse(null);
     }

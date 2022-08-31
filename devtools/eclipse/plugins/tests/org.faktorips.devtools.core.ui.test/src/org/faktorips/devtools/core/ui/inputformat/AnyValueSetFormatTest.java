@@ -37,9 +37,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AnyValueSetFormatTest {
 
     @Mock
@@ -78,7 +78,6 @@ public class AnyValueSetFormatTest {
         when(configValueSet.getIpsProject()).thenReturn(ipsProject);
         when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
         when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
         format = new AnyValueSetFormat(configValueSet, uiPlugin);
         rangeValueSet = new RangeValueSet(configValueSet, "ID");

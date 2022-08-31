@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
@@ -431,7 +431,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     @Override
     public String getName() {
         if (archivePath == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         return PathUtil.lastSegment(archivePath);
     }

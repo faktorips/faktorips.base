@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
@@ -182,7 +182,7 @@ public abstract class ExtensionPropertyValue {
         protected void loadValue() {
             IExtensionPropertyDefinition propertyDefinition = getExtensionPropertyDefinition();
             String isNull = valueElement.getAttribute(IpsObjectPartContainer.XML_ATTRIBUTE_ISNULL);
-            if (StringUtils.isEmpty(isNull) || !Boolean.parseBoolean(isNull)) {
+            if (IpsStringUtils.isEmpty(isNull) || !Boolean.parseBoolean(isNull)) {
                 if (propertyDefinition == null) {
                     logMissingPropertyDefinition();
                 } else {

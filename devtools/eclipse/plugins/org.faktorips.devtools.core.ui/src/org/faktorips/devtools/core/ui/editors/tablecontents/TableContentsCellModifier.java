@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.TableItem;
@@ -72,7 +72,7 @@ public class TableContentsCellModifier implements ICellModifier {
                 row = (IRow)element;
             }
             if (row != null) {
-                if (ObjectUtils.notEqual(row.getValue(columnIndex), value)) {
+                if (!Objects.equals(row.getValue(columnIndex), value)) {
                     row.setValue(columnIndex, (String)value);
                 }
                 if (page != null) {

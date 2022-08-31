@@ -11,13 +11,13 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.viewers.IPostSelectionProvider;
@@ -117,7 +117,7 @@ public class SelectionProviderIntermediateTest {
 
         verify(selectionListener).selectionChanged(eventCapture.capture());
         assertEquals(selection, eventCapture.getValue().getSelection());
-        verifyZeroInteractions(postSelectionListener);
+        verifyNoInteractions(postSelectionListener);
 
         reset(selectionListener);
 
@@ -125,6 +125,6 @@ public class SelectionProviderIntermediateTest {
 
         verify(postSelectionListener).selectionChanged(postEventCapture.capture());
         assertEquals(selection, eventCapture.getValue().getSelection());
-        verifyZeroInteractions(selectionListener);
+        verifyNoInteractions(selectionListener);
     }
 }

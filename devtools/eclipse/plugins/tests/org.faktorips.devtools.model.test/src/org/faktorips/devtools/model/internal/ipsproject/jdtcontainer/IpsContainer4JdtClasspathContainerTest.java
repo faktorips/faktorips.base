@@ -36,10 +36,10 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @Category(EclipseImplementation.class)
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsContainer4JdtClasspathContainerTest {
 
     private static final String MY_NAME = "myName";
@@ -223,7 +223,6 @@ public class IpsContainer4JdtClasspathContainerTest {
 
     private void mockProject() throws Exception {
         when(ipsProject.getJavaProject()).thenReturn(Wrappers.wrap(javaProject).as(AJavaProject.class));
-        when(ipsProject.getIpsObjectPath()).thenReturn(ipsObjectPath);
     }
 
 }

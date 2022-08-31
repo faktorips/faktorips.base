@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class MessagesImportPMO extends PresentationModelObject {
 
@@ -64,7 +65,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_TEXT_COLUMN_INDEX = MSGCODE_PREFIX + "noTextColumnIndex"; //$NON-NLS-1$
 
-    private String filename = StringUtils.EMPTY;
+    private String filename = IpsStringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
@@ -331,7 +332,7 @@ public class MessagesImportPMO extends PresentationModelObject {
      * An numeric index is invalid if it is less or equal to 0.
      */
     private boolean isInvalidIndex(String index) {
-        return StringUtils.isEmpty(index) || !StringUtils.isNumeric(index) || Integer.parseInt(index) <= 0;
+        return IpsStringUtils.isEmpty(index) || !StringUtils.isNumeric(index) || Integer.parseInt(index) <= 0;
     }
 
     private void validateTextColumnIndex(MessageList messageList) {

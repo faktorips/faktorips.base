@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.Abstractions;
@@ -573,8 +573,8 @@ public class IpsObjectPath implements IIpsObjectPath {
         for (IIpsObjectPathEntry ipsObjectPathEntry : entries) {
             if (ipsObjectPathEntry.isContainer()) {
                 IIpsContainerEntry containerEntry = (IIpsContainerEntry)ipsObjectPathEntry;
-                if (StringUtils.equals(containerEntry.getContainerTypeId(), containerTypeId)
-                        && StringUtils.equals(containerEntry.getOptionalPath(), optionalPath)) {
+                if (Objects.equals(containerEntry.getContainerTypeId(), containerTypeId)
+                        && Objects.equals(containerEntry.getOptionalPath(), optionalPath)) {
                     return containerEntry;
                 }
             }

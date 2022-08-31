@@ -12,11 +12,12 @@ package org.faktorips.datatype;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.MethodAccess;
 import org.faktorips.util.MethodAccess.MethodAccessException;
 import org.faktorips.util.StringUtil;
@@ -103,7 +104,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     private void checkValueOfMethodName(MessageList list) {
-        if (StringUtils.isBlank(getValueOfMethodName()) && StringUtils.isBlank(getAllValuesMethodName())) {
+        if (IpsStringUtils.isBlank(getValueOfMethodName()) && IpsStringUtils.isBlank(getAllValuesMethodName())) {
             list.add(Message.newError(MSGCODE_VALUE_OF_METHOD_NOT_FOUND,
                     "valueOfMethod must be configured for the datatype " + getName() //$NON-NLS-1$
                             + " if no getAllValuesMethod is configured.")); //$NON-NLS-1$
@@ -251,7 +252,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         if (!nullObjectDefined && value == null) {
             return null;
         }
-        if (StringUtils.isBlank(valueOfMethodName)) {
+        if (IpsStringUtils.isBlank(valueOfMethodName)) {
             return findValueInAllValues(value);
         }
         return getValueOfMethod()
@@ -268,8 +269,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             values = (Object[])result;
         }
         return Arrays.stream(values)
-                .filter(v -> StringUtils.equals(value,
-                        valueToString(v)))
+                .filter(v -> Objects.equals(value, valueToString(v)))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(value + " could not be found in all values.")); //$NON-NLS-1$
     }
@@ -411,7 +411,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     }
 
     private void checkGetAllValues(MessageList ml) {
-        if (StringUtils.isBlank(getAllValuesMethodName())) {
+        if (IpsStringUtils.isBlank(getAllValuesMethodName())) {
             if (this instanceof EnumDatatype) {
                 ml.add(Message.newError(MSGCODE_GET_ALL_VALUES_METHOD_NOT_FOUND,
                         "getAllValuesMethod must be configured for the enum datatype " + getName())); //$NON-NLS-1$

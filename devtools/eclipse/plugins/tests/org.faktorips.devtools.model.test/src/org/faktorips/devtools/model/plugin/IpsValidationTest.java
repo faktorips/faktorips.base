@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -39,10 +40,17 @@ public class IpsValidationTest {
 
     private IpsValidation ipsValidation;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         ipsValidation = new IpsValidation();
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

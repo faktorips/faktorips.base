@@ -22,13 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * This class is merely a String test. Functionality has to be additionally tested in integration
  * tests.
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractAssociationAnnGenTest {
 
     private static final String ASSOCIATION = "association";
@@ -128,7 +128,6 @@ public class AbstractAssociationAnnGenTest {
         when(association.getTargetQualifiedClassName()).thenReturn(ASSOCIATION_TARGET);
         when(association.getMinCardinality()).thenReturn(MIN_CARD);
         when(association.getMaxCardinality()).thenReturn(MAX_CARD);
-        when(association.addImport(AssociationKind.class)).thenReturn("AssociationType");
         return association;
     }
 }

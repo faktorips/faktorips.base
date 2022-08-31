@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -231,12 +231,12 @@ public class IpsArtefactBuilderSetInfo implements IIpsArtefactBuilderSetInfo {
                 if (configElements.length > 0) {
                     IConfigurationElement element = configElements[0];
                     if (element.getName().equals("builderSet")) { //$NON-NLS-1$
-                        if (StringUtils.isEmpty(extension.getUniqueIdentifier())) {
+                        if (IpsStringUtils.isEmpty(extension.getUniqueIdentifier())) {
                             logger.log(new IpsStatus("The identifier of the IpsArtefactBuilderSet extension is empty")); //$NON-NLS-1$
                             continue;
                         }
                         String builderSetClassName = element.getAttribute("class"); //$NON-NLS-1$
-                        if (StringUtils.isEmpty(builderSetClassName)) {
+                        if (IpsStringUtils.isEmpty(builderSetClassName)) {
                             logger.log(new IpsStatus(
                                     "The class attribute of the IpsArtefactBuilderSet extension with the extension id " //$NON-NLS-1$
                                             + extension.getUniqueIdentifier() + " is not specified.")); //$NON-NLS-1$

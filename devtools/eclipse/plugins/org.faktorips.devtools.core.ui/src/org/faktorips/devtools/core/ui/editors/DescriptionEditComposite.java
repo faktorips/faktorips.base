@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A composite that allows to edit the {@link IDescription}s attached to an
@@ -135,7 +135,7 @@ public final class DescriptionEditComposite extends Composite {
     public void setDescribedElement(IDescribedElement describedElement) {
         this.describedElement = describedElement;
         if (this.describedElement == null) {
-            currentDescription.setText(StringUtils.EMPTY);
+            currentDescription.setText(IpsStringUtils.EMPTY);
         }
         updateDescription();
     }

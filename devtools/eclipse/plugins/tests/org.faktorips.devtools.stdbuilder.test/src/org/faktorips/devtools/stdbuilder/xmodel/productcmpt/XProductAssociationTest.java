@@ -15,8 +15,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,9 +36,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XProductAssociationTest {
 
     @Mock
@@ -70,15 +70,11 @@ public class XProductAssociationTest {
     @Before
     public void setUp() throws Exception {
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
-        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(association.getIpsProject()).thenReturn(ipsProject);
         when(association.findTarget(ipsProject)).thenReturn(targetCmptType);
         when(modelService.getModelNode(targetCmptType, XProductCmptGenerationClass.class, modelContext)).thenReturn(
                 xTargetGenerationClass);
         when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
-        when(modelService.getModelNode(targetCmptType, XProductCmptClass.class, modelContext)).thenReturn(
-                xTargetCmptClass);
-        when(xTargetCmptClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetType");
     }
 
     @Before
@@ -88,7 +84,6 @@ public class XProductAssociationTest {
 
     @Test
     public void testGetTargetClassGenerationName() {
-        when(targetCmptType.isChangingOverTime()).thenReturn(true);
         String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
     }
@@ -129,13 +124,11 @@ public class XProductAssociationTest {
     @Test
     public void testGetMethodNameGetLinkFor() throws Exception {
         when(association.getTargetRoleSingular()).thenReturn("testTarget");
-        when(association.getTargetRolePlural()).thenReturn("testTargets");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String methodName = xProductAssociation.getMethodNameGetLinkFor();
 
         assertEquals("getLinkForTestTarget", methodName);
 
-        when(association.is1ToMany()).thenReturn(true);
         methodName = xProductAssociation.getMethodNameGetLinkFor();
         assertEquals("getLinkForTestTarget", methodName);
     }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionFil
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This composite contains two columns. On the left hand you see a list of {@link IDescribedElement
@@ -158,17 +158,17 @@ public class ElementSelectionComposite<E extends IIpsElement & IDescribedElement
 
     private void updateDescription(E element) {
         if (element == null) {
-            description.setText(StringUtils.EMPTY);
+            description.setText(IpsStringUtils.EMPTY);
         } else {
             String deprecationDescription = getDeprecationDescription(element);
             String descriptionString = getDescription(element);
             StyledTextUtil.clear(description);
-            if (StringUtils.isNotEmpty(deprecationDescription)) {
+            if (IpsStringUtils.isNotEmpty(deprecationDescription)) {
                 StyledTextUtil.appendStyled(description, deprecationDescription,
                         SWT.BOLD);
                 description.append(System.lineSeparator());
             }
-            if (StringUtils.isEmpty(descriptionString) && StringUtils.isEmpty(deprecationDescription)) {
+            if (IpsStringUtils.isEmpty(descriptionString) && IpsStringUtils.isEmpty(deprecationDescription)) {
                 StyledTextUtil.appendStyled(description,
                         Messages.TypeSelectionComposite_label_noDescriptionAvailable,
                         SWT.ITALIC);

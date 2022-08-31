@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -38,6 +37,7 @@ import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewProductCmptTypePage extends NewTypePage {
 
@@ -64,7 +64,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         IIpsObject ipsObject = getSelectedIpsObject();
         if (ipsObject instanceof IPolicyCmptType) {
             IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
-            if (StringUtils.isEmpty(selectedPcType.getProductCmptType())) {
+            if (IpsStringUtils.isEmpty(selectedPcType.getProductCmptType())) {
                 policyCmptTypeField.setValue(selectedPcType.getQualifiedName());
                 getAbstractField().setValue(selectedPcType.isAbstract());
             }
@@ -155,7 +155,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     private void setChangingOverTimeAsInSupertype(IProductCmptType productCmptType) {
         String superTypeName = getSuperType();
-        if (!StringUtils.isBlank(superTypeName)) {
+        if (!IpsStringUtils.isBlank(superTypeName)) {
             IProductCmptType superType = getIpsProject().findProductCmptType(superTypeName);
             productCmptType.setChangingOverTime(superType.isChangingOverTime());
         }
@@ -164,7 +164,7 @@ public class NewProductCmptTypePage extends NewTypePage {
     private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType) {
 
         String policyCmptTypeQualifiedName = getPolicyCmptTypeName();
-        if (StringUtils.isEmpty(policyCmptTypeQualifiedName)) {
+        if (IpsStringUtils.isEmpty(policyCmptTypeQualifiedName)) {
             productCmptType.setConfigurationForPolicyCmptType(false);
             return;
         }
@@ -190,7 +190,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
     private String findNextConfiguredSuperTypeQualifiedName() {
         String superTypeQualifiedName = getSuperType();
-        if (StringUtils.isBlank(superTypeQualifiedName)) {
+        if (IpsStringUtils.isBlank(superTypeQualifiedName)) {
             return null;
         }
         IIpsProject ipsProject = getIpsProject();
@@ -218,7 +218,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+            if (IpsStringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
@@ -237,17 +237,17 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+            if (IpsStringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
             String nextConfiguredSuperTypeQualifiedName = findNextConfiguredSuperTypeQualifiedName();
-            if (StringUtils.isNotBlank(nextConfiguredSuperTypeQualifiedName)
+            if (IpsStringUtils.isNotBlank(nextConfiguredSuperTypeQualifiedName)
                     && nextConfiguredSuperTypeQualifiedName.equals(policyCmptTypeField.getValue())) {
                 return new Message("", Messages.NewProductCmptTypePage_msgPcTypeConfiguredBySuperType, Message.INFO); //$NON-NLS-1$
             }
 
             IPolicyCmptType configuredType = ipsProject.findPolicyCmptType(policyCmptTypeField.getValue());
-            if (!StringUtils.isEmpty(configuredType.getProductCmptType())
+            if (!IpsStringUtils.isEmpty(configuredType.getProductCmptType())
                     && !configuredType.getProductCmptType().equals(getQualifiedIpsObjectName())) {
                 return new Message("", Messages.NewProductCmptTypePage_msgPcTypeAlreadyConfigured, Message.ERROR); //$NON-NLS-1$
             }
@@ -262,7 +262,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+            if (IpsStringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
@@ -292,7 +292,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(policyCmptTypeField.getValue())) {
+            if (IpsStringUtils.isEmpty(policyCmptTypeField.getValue())) {
                 return null;
             }
 
@@ -313,7 +313,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         protected boolean visit(IProductCmptType currentType) {
-            if (!StringUtils.isEmpty(currentType.getPolicyCmptType())) {
+            if (!IpsStringUtils.isEmpty(currentType.getPolicyCmptType())) {
                 qualifiedNameOfConfiguredType = currentType.getPolicyCmptType();
                 return false;
             }

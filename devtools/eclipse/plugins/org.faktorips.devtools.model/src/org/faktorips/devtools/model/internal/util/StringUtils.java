@@ -90,7 +90,7 @@ public class StringUtils {
         String nameWithoutCopyOfPrefix;
         if (nameCandidate.startsWith(Messages.StringUtils_copyOfNamePrefix)) {
             // Remove copyOf from the name.
-            nameWithoutCopyOfPrefix = org.apache.commons.lang.StringUtils.substringAfter(nameCandidate,
+            nameWithoutCopyOfPrefix = org.apache.commons.lang3.StringUtils.substringAfter(nameCandidate,
                     Messages.StringUtils_copyOfNamePrefix);
             // Remove copyOf counter prefix e.g. "(2)_" if it exists.
             nameWithoutCopyOfPrefix = nameWithoutCopyOfPrefix.replaceAll("^\\([0-9]*\\)_", ""); //$NON-NLS-1$ //$NON-NLS-2$

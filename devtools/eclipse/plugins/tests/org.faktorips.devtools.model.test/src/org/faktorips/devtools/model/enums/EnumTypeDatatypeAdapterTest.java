@@ -31,7 +31,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumTypeDatatypeAdapterTest {
@@ -194,7 +194,6 @@ public class EnumTypeDatatypeAdapterTest {
 
     public void initEnumContentAndType() {
         when(enumContent.getIpsProject()).thenReturn(ipsProject);
-        when(enumType.getIpsProject()).thenReturn(ipsProject);
         when(enumContent.findEnumValue("testValue", ipsProject)).thenReturn(enumValue);
     }
 

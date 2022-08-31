@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,6 +54,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Wizard page for translated messages for validation rules.
@@ -129,7 +129,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         setWidthHint(targetLabel, 182);
         target = new IpsPckFragmentRootRefControl(targetGroup, true, uiToolkit);
 
-        uiToolkit.createFormLabel(targetGroup, StringUtils.EMPTY);
+        uiToolkit.createFormLabel(targetGroup, IpsStringUtils.EMPTY);
         warningCheckbox = uiToolkit.createCheckbox(targetGroup, Messages.MessagesImportWizard_checkboxEnableWarnings);
         return targetGroup;
     }
@@ -361,7 +361,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private static class DelimiterInputFormat extends AbstractInputFormat<Character> {
 
         public DelimiterInputFormat() {
-            super(StringUtils.EMPTY, Locale.getDefault());
+            super(IpsStringUtils.EMPTY, Locale.getDefault());
         }
 
         @Override

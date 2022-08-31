@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.Description;
@@ -206,7 +206,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     }
 
     private void handleDescription() {
-        if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
+        if (!(IpsStringUtils.isEmpty(currentDescriptionLocale))) {
             Locale locale = new Locale(currentDescriptionLocale);
             Description description = (Description)tableContents.getDescription(locale);
             if (description == null) {
@@ -219,7 +219,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private String getText() {
         return textBuilder == null && nullValue ? null
-                : textBuilder == null ? StringUtils.EMPTY : textBuilder.toString();
+                : textBuilder == null ? IpsStringUtils.EMPTY : textBuilder.toString();
     }
 
     @Override

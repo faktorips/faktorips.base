@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the arguments
@@ -32,7 +32,7 @@ final class ArgumentLabelProvider extends CellLabelProvider {
 
     private String createCellText(ProductSearchConditionPresentationModel model) {
         if (model.getConditionType() == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         if (model.getConditionType().hasValueSet()) {
             ValueDatatype datatype = getValueDatatype(model);
@@ -43,7 +43,7 @@ final class ArgumentLabelProvider extends CellLabelProvider {
         }
 
         if (model.getArgument() == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         return model.getArgument();
     }

@@ -22,11 +22,11 @@ import org.faktorips.devtools.model.pctype.persistence.IPersistentTypeInfo.Persi
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PersistentTypePartInfoTest extends PersistenceIpsTest {
 
     private IPolicyCmptTypeAttribute pcTypePart;

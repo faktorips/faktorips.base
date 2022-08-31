@@ -11,14 +11,13 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.value.ValueTypeMismatch;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Strategy implementation of {@link TabularContentStrategy}
@@ -77,7 +77,8 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
         // Collect all obsolete columnValues to delete.
         List<Integer> notAssignedColumns = assignEnumAttributesPage.getCurrentlyNotAssignedColumns();
         // Needs a reversed List since deleting a Column will alter the column ordering
-        for (Integer columnIndexToDelete : Lists.reverse(notAssignedColumns)) {
+        Collections.reverse(notAssignedColumns);
+        for (Integer columnIndexToDelete : notAssignedColumns) {
             tableContents.deleteColumn(columnIndexToDelete - 1);
         }
     }
@@ -92,7 +93,7 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
             for (int currentPosition = 0; currentPosition < columnOrder.length; currentPosition++) {
                 if (columnOrder[currentPosition] == 0) {
                     String columnName = structure.getColumn(currentPosition).getName();
-                    tableContents.newColumn(StringUtils.EMPTY, columnName);
+                    tableContents.newColumn(IpsStringUtils.EMPTY, columnName);
                 }
             }
         }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -136,7 +135,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
             if (persistenceAssociatonInfo.isOrphanRemoval()) {
                 String attributeOrphanRemoval = persistenceProvider.getRelationshipAnnotationAttributeOrphanRemoval();
-                if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+                if (!IpsStringUtils.isEmpty(attributeOrphanRemoval)) {
                     attributesToAppend.add(attributeOrphanRemoval);
                 }
             }
@@ -155,7 +154,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             persistenceProvider.addAnnotationOrphanRemoval(fragmentBuilder);
         }
 
-        if (StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
+        if (IpsStringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
             appendJoinColumn(persistenceProvider, fragmentBuilder, persistenceAssociatonInfo.getJoinColumnName(),
                     persistenceAssociatonInfo.isJoinColumnNullable());
         }
@@ -166,19 +165,19 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
         if (!persistenceAssociatonInfo.isJoinTableRequired()
-                || StringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
+                || IpsStringUtils.isBlank(persistenceAssociatonInfo.getJoinTableName())) {
             return;
         }
 
         JavaCodeFragmentBuilder params = new JavaCodeFragmentBuilder();
         appendName(params.getFragment(), persistenceAssociatonInfo.getJoinTableName());
 
-        if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())
-                || !StringUtils.isEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
+        if (!IpsStringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())
+                || !IpsStringUtils.isEmpty(persistenceAssociatonInfo.getTargetColumnName())) {
             params.append(", ");
         }
         appendJoinColumns(persistenceProvider, params, persistenceAssociatonInfo.getSourceColumnName(), false);
-        if (!StringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())) {
+        if (!IpsStringUtils.isEmpty(persistenceAssociatonInfo.getSourceColumnName())) {
             params.append(", ");
         }
         appendJoinColumns(persistenceProvider, params, persistenceAssociatonInfo.getTargetColumnName(), true);
@@ -197,7 +196,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             JavaCodeFragmentBuilder fragmentBuilder,
             String columnName,
             boolean inverse) {
-        if (StringUtils.isEmpty(columnName)) {
+        if (IpsStringUtils.isEmpty(columnName)) {
             return false;
         }
         String lhs = inverse ? "inverseJoinColumns = " : "joinColumns = ";
@@ -328,12 +327,12 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         if (isManyToMany) {
             // note that no matter which side is designated as the owner
             // we define here that the side with the join table is the owner
-            return StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinTableName());
+            return IpsStringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinTableName());
         }
 
         // no many-to-many association, the owner is the many-to-one side
         if ((inverseAssociation.getMaxCardinality() > 1)
-                || StringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
+                || IpsStringUtils.isNotEmpty(persistenceAssociatonInfo.getJoinColumnName())) {
             return true;
         }
         return false;

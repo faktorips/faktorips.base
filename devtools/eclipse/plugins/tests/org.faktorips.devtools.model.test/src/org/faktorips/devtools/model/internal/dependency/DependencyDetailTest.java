@@ -21,9 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DependencyDetailTest {
 
     private static final String MY_NEW_NAME = "MyNewName";
@@ -57,7 +57,6 @@ public class DependencyDetailTest {
     @Test(expected = IpsException.class)
     public void testRefactorAfterRename_exception() throws Exception {
         DependencyDetail myDependencyDetail = new DependencyDetail(part, "any");
-        when(targetIpsPackageFragment.getName()).thenReturn(MY_NEW_TARGET);
 
         myDependencyDetail.refactorAfterRename(targetIpsPackageFragment, MY_NEW_NAME);
     }

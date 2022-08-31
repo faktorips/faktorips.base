@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> {
 
@@ -49,7 +49,7 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
             case NEWLY_DEFINED:
                 return Messages.TemplateLinkPmo_Status_NewlyDefined;
             default:
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
         }
     }
 
@@ -57,7 +57,7 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
         if (isLinkAvailable()) {
             return IpsUIPlugin.getLabel(getTemplatedProperty());
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     public boolean isStatusButtonEnabled() {

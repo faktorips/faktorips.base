@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.search.ui.text.Match;
 import org.faktorips.devtools.core.ui.search.AbstractIpsSearchQuery;
 import org.faktorips.devtools.core.ui.search.IpsSearchResult;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.type.IType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Contains the logic of the Faktor-IPS Model Search. It contains a
@@ -138,7 +138,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
 
     @Override
     protected boolean isOnlyTypeNameSearch() {
-        return StringUtils.isEmpty(getSearchModel().getSearchTerm());
+        return IpsStringUtils.isEmpty(getSearchModel().getSearchTerm());
     }
 
     /**
@@ -161,7 +161,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
         } else {
             args.add(getSearchModel().getSearchTerm());
 
-            if (StringUtils.isEmpty(getSearchModel().getSrcFilePattern())) {
+            if (IpsStringUtils.isEmpty(getSearchModel().getSrcFilePattern())) {
                 if (matchingCount == 1) {
                     message = Messages.ModelSearchQuery_labelHitSearchTerm;
                 } else {

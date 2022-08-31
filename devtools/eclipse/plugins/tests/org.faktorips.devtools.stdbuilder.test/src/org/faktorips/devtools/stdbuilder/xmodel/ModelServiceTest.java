@@ -21,6 +21,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptGenerationClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,10 +41,17 @@ public class ModelServiceTest {
     @Mock
     private IProductCmptType productCmptType;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.generators.html;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
@@ -23,7 +23,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
     public void testLeereTabelle() throws Exception {
         TablePageElement table = new TablePageElement(getContext());
 
-        Assert.assertTrue(StringUtils.isEmpty(layout(table)));
+        Assert.assertTrue(IpsStringUtils.isEmpty(layout(table)));
     }
 
     @Test
@@ -34,7 +34,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        Assert.assertFalse(layout, StringUtils.isEmpty(layout));
+        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -53,7 +53,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
         String layout = layout(table);
 
-        Assert.assertFalse(layout, StringUtils.isEmpty(layout));
+        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
 
         assertXpathExists(layout, "/table/tr[1][@class='" + Style.TABLE_HEADLINE.name() + "']");
         for (int row = 1; row < rows; row++) {
@@ -70,14 +70,14 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         table.setBorder(true);
 
         String layout = layout(table);
-        Assert.assertFalse(layout, StringUtils.isEmpty(layout));
+        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
         assertXpathExists(layout, "/table[@class='" + Style.BORDER.name() + "']");
 
         getLayouter().clear();
         table.setBorder(false);
 
         layout = layout(table);
-        Assert.assertFalse(layout, StringUtils.isEmpty(layout));
+        Assert.assertFalse(layout, IpsStringUtils.isEmpty(layout));
         assertXpathExists(layout, "/table[not(@class='" + Style.BORDER.name() + "')]");
 
     }

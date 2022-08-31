@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.tableimport;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.IWizard;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TableContentsPage extends IpsObjectPage {
 
@@ -77,10 +77,10 @@ public class TableContentsPage extends IpsObjectPage {
     @Override
     protected void setDefaultFocus() {
         super.setDefaultFocus();
-        if (StringUtils.isEmpty(getSourceFolder())) {
+        if (IpsStringUtils.isEmpty(getSourceFolder())) {
             return;
         }
-        if (StringUtils.isEmpty(structureField.getText())) {
+        if (IpsStringUtils.isEmpty(structureField.getText())) {
             structureField.getControl().setFocus();
         }
     }
@@ -155,7 +155,7 @@ public class TableContentsPage extends IpsObjectPage {
                 table.getTableStructure());
         if (structure != null) {
             for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                table.newColumn(StringUtils.EMPTY, structure.getColumn(i).getName());
+                table.newColumn(IpsStringUtils.EMPTY, structure.getColumn(i).getName());
             }
         }
     }

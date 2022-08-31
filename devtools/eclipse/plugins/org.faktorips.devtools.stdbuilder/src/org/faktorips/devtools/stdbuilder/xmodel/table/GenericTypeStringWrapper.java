@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A String wrapper for both generic and non generic classes. If the class is not generic,

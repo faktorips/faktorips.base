@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XDerivedUnionAssociationTest {
 
     private static final String DERIVED_UNION_NAME = "derivedUnion";
@@ -53,7 +53,6 @@ public class XDerivedUnionAssociationTest {
 
     @Before
     public void setUp() throws Exception {
-        when(association.isDerivedUnion()).thenReturn(true);
         when(association.getName()).thenReturn(DERIVED_UNION_NAME);
         xDerivedUnionAssociation = new XDerivedUnionAssociation(association, context, modelService);
     }
@@ -117,10 +116,6 @@ public class XDerivedUnionAssociationTest {
         ArrayList<IAssociation> associations = new ArrayList<>();
         associations.add(association2);
 
-        assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
-
-        // derived union subset implemented in subtype should not matter at all
-        when(type.getAssociations()).thenReturn(associations);
         assertFalse(xDerivedUnionAssociation.isImplementedInSuperclass(xType));
 
         when(superType.getAssociations()).thenReturn(associations);

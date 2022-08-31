@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.internal.ipsobject.Messages;
 import org.faktorips.devtools.model.plugin.IpsLog;

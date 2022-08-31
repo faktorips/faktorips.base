@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
@@ -41,7 +41,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         getNameText().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(getMethod().getName())) {
+                if (IpsStringUtils.isEmpty(getMethod().getName())) {
                     getMethod().setName(getProductCmptTypeMethod().getDefaultMethodName());
                 }
             }

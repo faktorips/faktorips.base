@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
@@ -61,12 +61,12 @@ public class ExtensionPropertyDefinitionExtensions extends
         extProperty.setDefaultValue(element.getAttribute("defaultValue")); //$NON-NLS-1$
         extProperty.setPosition(element.getAttribute("position")); //$NON-NLS-1$
         String retentionString = element.getAttribute("retention"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(retentionString)) {
+        if (IpsStringUtils.isEmpty(retentionString)) {
             extProperty.setRetention(RetentionPolicy.RUNTIME);
         } else {
             extProperty.setRetention(RetentionPolicy.valueOf(retentionString));
         }
-        if (StringUtils.isNotEmpty(element.getAttribute("order"))) { //$NON-NLS-1$
+        if (IpsStringUtils.isNotEmpty(element.getAttribute("order"))) { //$NON-NLS-1$
             extProperty.setSortOrder(Integer.parseInt(element.getAttribute("order"))); //$NON-NLS-1$
         }
         String extType = element.getAttribute("extendedType"); //$NON-NLS-1$

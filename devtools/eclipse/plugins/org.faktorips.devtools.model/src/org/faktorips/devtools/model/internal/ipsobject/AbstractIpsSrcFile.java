@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -97,7 +97,7 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
         if (qualifiedNameType == null) {
             StringBuilder sb = new StringBuilder();
             String packageFragmentName = getIpsPackageFragment().getName();
-            if (!StringUtils.isEmpty(packageFragmentName)) {
+            if (!IpsStringUtils.isEmpty(packageFragmentName)) {
                 sb.append(getIpsPackageFragment().getName());
                 sb.append('.');
             }

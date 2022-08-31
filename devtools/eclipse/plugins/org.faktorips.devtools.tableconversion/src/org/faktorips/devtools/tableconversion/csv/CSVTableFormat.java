@@ -18,7 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -133,7 +136,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
         try {
             reader = new CSVReader(new FileReader(file));
             return hasConstantNumberOfFieldsPerLine(reader);
-        } catch (IOException e) {
+        } catch (IOException | CsvValidationException e) {
             return false;
         } finally {
             if (reader != null) {
@@ -151,7 +154,7 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
      * Examines if the number of fields stays the same throughout the whole file. Empty lines are
      * omitted.
      */
-    private boolean hasConstantNumberOfFieldsPerLine(CSVReader reader) throws IOException {
+    private boolean hasConstantNumberOfFieldsPerLine(CSVReader reader) throws IOException, CsvValidationException {
         String[] row = reader.readNext();
         int expectedNumberOfFields = row.length;
         while ((row = reader.readNext()) != null) {
@@ -232,14 +235,16 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
         List<String[]> result = new ArrayList<>();
         MessageList ml = new MessageList();
-        CSVReader reader = null;
-        try {
-            char fieldDelimiter = ',';
-            if (getProperty(PROPERTY_FIELD_DELIMITER).length() == 1) {
-                fieldDelimiter = getProperty(PROPERTY_FIELD_DELIMITER).charAt(0);
-            }
+        char fieldDelimiter = ',';
+        if (getProperty(PROPERTY_FIELD_DELIMITER).length() == 1) {
+            fieldDelimiter = getProperty(PROPERTY_FIELD_DELIMITER).charAt(0);
+        }
+        try (CSVReader reader = new CSVReaderBuilder(new FileReader(filename.toOSString()))
+                .withCSVParser(new CSVParserBuilder()
+                        .withSeparator(fieldDelimiter)
+                        .build())
+                .build()) {
 
-            reader = new CSVReader(new FileReader(filename.toOSString()), fieldDelimiter);
             String[] line = (ignoreColumnHeaderRow) ? reader.readNext() : null;
             int linesLeft = maxNumberOfRows;
             while ((line = reader.readNext()) != null) {
@@ -260,15 +265,9 @@ public class CSVTableFormat extends AbstractExternalTableFormat {
 
                 result.add(convertedLine);
             }
-        } catch (Exception e) {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (Exception ee) {
-                    // serious problem, report
-                    IpsPlugin.log(ee);
-                }
-            }
+        } catch (IOException | CsvValidationException e) {
+            // serious problem, report
+            IpsPlugin.log(e);
         }
         return result;
     }

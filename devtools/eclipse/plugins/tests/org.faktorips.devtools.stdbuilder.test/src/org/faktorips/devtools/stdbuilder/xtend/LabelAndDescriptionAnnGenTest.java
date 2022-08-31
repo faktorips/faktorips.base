@@ -18,9 +18,9 @@ import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LabelAndDescriptionAnnGenTest extends AbstractIpsPluginTest {
 
     private LabelAndDescriptionAnnGen annGen = new LabelAndDescriptionAnnGen();

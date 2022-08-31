@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -58,6 +58,7 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A dialog to edit an association.
@@ -114,7 +115,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     protected void addAdditionalDialogMessages(MessageList messageList) {
         super.addAdditionalDialogMessages(messageList);
         if (messageList.containsErrorMsg()) {
-            messageList.add(new Message(StringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
+            messageList.add(new Message(IpsStringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
                     Message.INFO));
         }
     }
@@ -183,8 +184,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 && association.getName().equals(oldMatchingAssociation.getMatchingAssociationName())) {
 
             boolean needToSave = !oldMatchingAssociation.getProductCmptType().getIpsSrcFile().isDirty();
-            oldMatchingAssociation.setMatchingAssociationName(StringUtils.EMPTY);
-            oldMatchingAssociation.setMatchingAssociationSource(StringUtils.EMPTY);
+            oldMatchingAssociation.setMatchingAssociationName(IpsStringUtils.EMPTY);
+            oldMatchingAssociation.setMatchingAssociationSource(IpsStringUtils.EMPTY);
             if (needToSave) {
                 try {
                     oldMatchingAssociation.getProductCmptType().getIpsSrcFile().save(new NullProgressMonitor());
@@ -272,7 +273,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             targetRoleSingularText.addFocusListener(new FocusAdapter() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+                    if (IpsStringUtils.isEmpty(association.getTargetRoleSingular())) {
                         association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
                     }
                 }
@@ -287,7 +288,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
                 @Override
                 public void focusGained(FocusEvent e) {
-                    if (StringUtils.isEmpty(targetRolePluralText.getText())
+                    if (IpsStringUtils.isEmpty(targetRolePluralText.getText())
                             && association.isTargetRolePluralRequired()) {
                         association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                     }
@@ -371,7 +372,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
             getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundByFaktorIps);
-            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, StringUtils.EMPTY);
+            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite,
+                    IpsStringUtils.EMPTY);
             getBindingContext().bindContent(matchingAssociationInfoLabel, pmoAssociation,
                     PmoPolicyCmptTypeAssociation.PROPERTY_INFO_LABEL);
             getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
@@ -457,8 +459,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public PmoPolicyCmptTypeAssociation(IPolicyCmptTypeAssociation association, IIpsProject ipsProject) {
             super(association);
             this.ipsProject = ipsProject;
-            matchingExplicitly = !StringUtils.isEmpty(association.getMatchingAssociationSource())
-                    && !StringUtils.isEmpty(association.getMatchingAssociationName());
+            matchingExplicitly = !IpsStringUtils.isEmpty(association.getMatchingAssociationSource())
+                    && !IpsStringUtils.isEmpty(association.getMatchingAssociationName());
         }
 
         private IPolicyCmptTypeAssociation getAssociation() {
@@ -474,7 +476,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             try {
                 String productCmptType = QNameUtil
                         .getUnqualifiedName(getAssociation().findQualifierCandidate(ipsProject));
-                if (StringUtils.isNotEmpty(productCmptType)) {
+                if (IpsStringUtils.isNotEmpty(productCmptType)) {
                     label = label + NLS.bind(Messages.AssociationEditDialog_qualifiedByType, productCmptType);
                 }
             } catch (IpsException e) {
@@ -534,7 +536,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                         ? matchingProductCmptTypeAssociation.getName()
                         : null);
             } else {
-                getAssociation().setMatchingAssociationSource(StringUtils.EMPTY);
+                getAssociation().setMatchingAssociationSource(IpsStringUtils.EMPTY);
                 getAssociation().setMatchingAssociationName(null);
             }
             notifyListeners();
@@ -591,7 +593,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (matchingExplicitly) {
                 return getAssociation().getMatchingAssociationSource();
             } else {
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             }
         }
 

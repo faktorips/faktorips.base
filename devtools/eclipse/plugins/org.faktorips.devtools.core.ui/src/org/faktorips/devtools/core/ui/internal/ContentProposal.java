@@ -10,8 +10,9 @@
 
 package org.faktorips.devtools.core.ui.internal;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Prefix-aware implementation of {@link IContentProposal}.
@@ -31,7 +32,7 @@ public class ContentProposal implements IContentProposal {
      * cursor position at {@code content.length()}.
      */
     public ContentProposal(final String content, final String label, final String description) {
-        this(content, label, description, StringUtils.EMPTY);
+        this(content, label, description, IpsStringUtils.EMPTY);
     }
 
     /**

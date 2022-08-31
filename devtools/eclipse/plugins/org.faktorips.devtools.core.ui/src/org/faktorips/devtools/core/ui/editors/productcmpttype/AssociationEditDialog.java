@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -47,6 +46,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A dialog to edit an association.
@@ -88,7 +88,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     protected void addAdditionalDialogMessages(MessageList messageList) {
         super.addAdditionalDialogMessages(messageList);
         if (messageList.containsErrorMsg()) {
-            messageList.add(new Message(StringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
+            messageList.add(new Message(IpsStringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
                     Message.INFO));
         }
     }
@@ -164,7 +164,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         targetRoleSingularText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+                if (IpsStringUtils.isEmpty(association.getTargetRoleSingular())) {
                     association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
                 }
             }
@@ -179,7 +179,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             @Override
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
+                if (IpsStringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
                     association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                 }
             }
@@ -283,8 +283,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                 && association.getName().equals(oldMatchingAssociation.getMatchingAssociationName())) {
 
             boolean needToSave = !oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().isDirty();
-            oldMatchingAssociation.setMatchingAssociationName(StringUtils.EMPTY);
-            oldMatchingAssociation.setMatchingAssociationSource(StringUtils.EMPTY);
+            oldMatchingAssociation.setMatchingAssociationName(IpsStringUtils.EMPTY);
+            oldMatchingAssociation.setMatchingAssociationSource(IpsStringUtils.EMPTY);
             if (needToSave) {
                 try {
                     oldMatchingAssociation.getPolicyCmptType().getIpsSrcFile().save(new NullProgressMonitor());
@@ -329,7 +329,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
             getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
-            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, StringUtils.EMPTY);
+            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, IpsStringUtils.EMPTY);
             getBindingContext().bindContent(matchingAssociationInfoLabel, pmoAssociation,
                     PmoAssociation.PROPERTY_INFO_LABEL);
             getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
@@ -395,8 +395,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             super(association);
             subset = association.isSubsetOfADerivedUnion();
             matchingAssociation = association.findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
-            matchingExplicitly = !StringUtils.isEmpty(association.getMatchingAssociationSource())
-                    && !StringUtils.isEmpty(association.getMatchingAssociationName());
+            matchingExplicitly = !IpsStringUtils.isEmpty(association.getMatchingAssociationSource())
+                    && !IpsStringUtils.isEmpty(association.getMatchingAssociationName());
         }
 
         private IProductCmptTypeAssociation getAssociation() {
@@ -437,8 +437,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                             .setMatchingAssociationSource(matchingAssociation.getPolicyCmptType().getQualifiedName());
                 }
             } else {
-                getAssociation().setMatchingAssociationName(StringUtils.EMPTY);
-                getAssociation().setMatchingAssociationSource(StringUtils.EMPTY);
+                getAssociation().setMatchingAssociationName(IpsStringUtils.EMPTY);
+                getAssociation().setMatchingAssociationSource(IpsStringUtils.EMPTY);
                 matchingAssociation = getAssociation()
                         .findMatchingPolicyCmptTypeAssociation(getAssociation().getIpsProject());
             }
@@ -481,7 +481,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         public boolean isConstrainEnabled() {
-            if (StringUtils.isEmpty(getAssociation().getProductCmptType().getSupertype())) {
+            if (IpsStringUtils.isEmpty(getAssociation().getProductCmptType().getSupertype())) {
                 // only disable the checkbox when it's not checked
                 // because there is no way to remove the mark.
                 if (!getAssociation().isConstrain()) {

@@ -22,9 +22,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DefaultCollectorTest {
     @Mock
     private ContextProductCmptFinder finder;
@@ -50,9 +50,6 @@ public class DefaultCollectorTest {
     @Test
     public void testGetContextProductCmpts_nullNode() throws Exception {
         defaultCollector = new DefaultCollector(null, finder);
-        Set<IProductCmpt> result = new HashSet<>();
-        when(finder.createCollector()).thenReturn(prevCollector);
-        when(prevCollector.getContextProductCmpts()).thenReturn(result);
 
         assertSame(null, defaultCollector.getContextProductCmpts());
     }

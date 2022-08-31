@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
@@ -118,7 +118,7 @@ public class KeyValueRange extends AbstractKeyValue implements Comparable<KeyVal
     }
 
     private boolean isValid(String value1, String value2) {
-        if (StringUtils.isEmpty(value1) || StringUtils.isEmpty(value2)) {
+        if (IpsStringUtils.isEmpty(value1) || IpsStringUtils.isEmpty(value2)) {
             return false;
         }
         return value1.equals(value2);

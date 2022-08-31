@@ -12,8 +12,8 @@ package org.faktorips.devtools.model.internal.datatype;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.DefaultGenericEnumDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.datatype.IDynamicEnumDatatype;
@@ -75,7 +75,7 @@ public class DynamicEnumDatatype extends DynamicValueDatatype implements IDynami
         if (IpsStringUtils.isBlank(getGetValueByNameMethodName())) {
             return Arrays.stream(getAllValueIds(false))
                     .map(this::getValue)
-                    .filter(v -> StringUtils.equals(name, getNameFromValue(v, locale)))
+                    .filter(v -> Objects.equals(name, getNameFromValue(v, locale)))
                     .findFirst()
                     .orElse(null);
         }

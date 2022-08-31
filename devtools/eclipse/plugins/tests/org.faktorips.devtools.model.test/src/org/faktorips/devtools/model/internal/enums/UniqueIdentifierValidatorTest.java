@@ -31,9 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UniqueIdentifierValidatorTest {
 
     @Mock
@@ -85,9 +85,6 @@ public class UniqueIdentifierValidatorTest {
                 .getEnumAttributeValues().get(0);
         StringValue equalValue = new StringValue("equalValue");
         doReturn(equalValue).when(firstEnumAttributeValue).getValue();
-        IEnumAttributeValue secondEnumAttributeValue = container.findAggregatedEnumValues().get(0)
-                .getEnumAttributeValues().get(1);
-        doReturn(equalValue).when(secondEnumAttributeValue).getValue();
 
         List<String> uniqueIdentifierViolations = uniqueIdentifierValidator
                 .getUniqueIdentifierViolations(firstEnumAttributeValue);

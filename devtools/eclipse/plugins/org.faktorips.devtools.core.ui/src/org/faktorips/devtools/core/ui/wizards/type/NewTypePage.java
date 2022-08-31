@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * An abstract superclass that implements common behavior of the policy and product component type
@@ -222,7 +222,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (pageOfAssociatedType != null && !StringUtils.isEmpty(getIpsObjectName())
+            if (pageOfAssociatedType != null && !IpsStringUtils.isEmpty(getIpsObjectName())
                     && getIpsObjectName().equals(pageOfAssociatedType.getIpsObjectName())) {
                 return new Message("", Messages.NewTypePage_msgNameConflicts, Message.ERROR); //$NON-NLS-1$
             }
@@ -238,7 +238,7 @@ public abstract class NewTypePage extends IpsObjectPage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (!StringUtils.isEmpty(getSuperType())) {
+            if (!IpsStringUtils.isEmpty(getSuperType())) {
                 IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(getIpsObjectType(), getSuperType());
                 if (ipsSrcFile == null) {
                     return new Message("", Messages.NewTypePage_msgSupertypeDoesNotExist, Message.ERROR); //$NON-NLS-1$

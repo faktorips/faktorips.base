@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -46,18 +46,21 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
 
     private SingletonMockHelper singletonMockHelper;
 
+    private AutoCloseable openMocks;
+
     @Override
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         ipsProject = newIpsProject();
         singletonMockHelper = new SingletonMockHelper();
     }
 
     @Override
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
         singletonMockHelper.reset();
+        openMocks.close();
     }
 
     @Test

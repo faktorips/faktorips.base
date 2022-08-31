@@ -29,7 +29,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
 /**
@@ -62,7 +62,6 @@ public class TemplateValueSettingsTest {
 
     @Test
     public void testPropertiesToXml_defined() throws Exception {
-        when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
         when(attrValue.findTemplateProperty(ipsProject)).thenReturn(null);
         handler = new TemplateValueSettings(attrValue);
         handler.propertiesToXml(element);
@@ -129,7 +128,6 @@ public class TemplateValueSettingsTest {
 
     @Test
     public void testInitialize_definedTemplateValue() {
-        when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
         handler = new TemplateValueSettings(attrValue);
 
         assertThat(handler.getStatus(), is(TemplateValueStatus.INHERITED));
@@ -181,7 +179,6 @@ public class TemplateValueSettingsTest {
     public void testValidate_DefinedLinkWithoutTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(link.findTemplateProperty(ipsProject)).thenReturn(null);
 
         TemplateValueSettings settings = new TemplateValueSettings(link);
         assertThat(settings.validate(link, ipsProject), lacksMessageCode(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
@@ -190,9 +187,8 @@ public class TemplateValueSettingsTest {
     @Test
     public void testValidate_DefinedLinkWithTemplate() {
         IProductCmptLink link = mock(IProductCmptLink.class);
-        IProductCmptLink templateLink = mock(IProductCmptLink.class);
+        mock(IProductCmptLink.class);
         when(link.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(link.findTemplateProperty(ipsProject)).thenReturn(templateLink);
 
         TemplateValueSettings settings = new TemplateValueSettings(link);
         assertThat(settings.validate(link, ipsProject), lacksMessageCode(MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));

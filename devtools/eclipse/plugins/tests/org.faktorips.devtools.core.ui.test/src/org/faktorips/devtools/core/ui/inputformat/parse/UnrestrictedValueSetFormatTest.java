@@ -17,22 +17,19 @@ import java.util.Arrays;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
-import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.model.valueset.Messages;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UnrestrictedValueSetFormatTest {
 
     @Mock
@@ -55,19 +52,11 @@ public class UnrestrictedValueSetFormatTest {
 
     private UnrestrictedValueSetFormat unrestrictedValueSetFormat;
 
-    private IUnrestrictedValueSet valueSet;
-
     @Before
     public void setUp() throws Exception {
         unrestrictedValueSetFormat = new UnrestrictedValueSetFormat(configValueSet, uiPlugin);
-        valueSet = new UnrestrictedValueSet(configValueSet, "2", true);
 
-        when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(new DefaultInputFormat(null));
-        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configValueSet.getIpsProject()).thenReturn(ipsProject);
-        when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
-        when(configValueSet.getValueSet()).thenReturn(valueSet);
         when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.UNRESTRICTED));
     }
 

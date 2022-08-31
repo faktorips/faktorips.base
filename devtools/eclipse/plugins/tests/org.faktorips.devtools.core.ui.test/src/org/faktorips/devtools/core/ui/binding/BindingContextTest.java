@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.binding;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -54,9 +54,9 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class BindingContextTest extends AbstractIpsPluginTest {
 
     private BindingContext bindingContext;
@@ -66,8 +66,6 @@ public class BindingContextTest extends AbstractIpsPluginTest {
     private EditField<?> editField;
 
     private Control controlMock;
-
-    private Listener listener = mock(BindingContext.Listener.class);
 
     @Mock
     private IIpsSrcFile ipsSrcFile;
@@ -100,7 +98,8 @@ public class BindingContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void applyPropertyChange() {
-        bindingContext = new BindingContext(listener);
+        Listener listener = spy(new SpyableListener(bindingContext));
+        bindingContext.setListener(listener);
         ControlPropertyBinding binding = new TestBinding(controlMock, pmo, TestPMO.PROPERTY_ENABLED, null);
         bindingContext.add(binding);
 
@@ -130,8 +129,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         when(binding.getObject()).thenReturn(pmo);
         bindingContext.add(binding);
 
-        ControlPropertyBinding binding2 = mock(ControlPropertyBinding.class);
-        when(binding2.getObject()).thenReturn(pmo);
+        mock(ControlPropertyBinding.class);
         bindingContext.add(binding);
 
         assertEquals(2, bindingContext.getNumberOfMappingsAndBindings());
@@ -228,6 +226,12 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.removeBindings(pmo);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
         verify(textControl).removeFocusListener(any(FocusListener.class));
+    }
+
+    public static class SpyableListener extends BindingContext.Listener {
+        private SpyableListener(BindingContext bindingContext) {
+            super(bindingContext);
+        }
     }
 
     public static class DummyControlPropertyBinding extends ControlPropertyBinding {
@@ -360,7 +364,6 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         EditField<Object> field = mock(EditField.class);
         Control control = mock(Control.class);
         when(field.getControl()).thenReturn(control);
-        when(field.isTextContentParsable()).thenReturn(true);
         return field;
     }
 
@@ -379,7 +382,6 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         IIpsObjectPartContainer ipsObjectPart = mock(IAttributeValue.class);
         when(ipsObject.getIpsProject()).thenReturn(ipsProject);
         when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
-        when(ipsObjectPart.getIpsProject()).thenReturn(ipsProject);
 
         EditField<?> field = mockField();
         EditField<?> field2 = mockField();
@@ -415,9 +417,7 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         IIpsObjectPartContainer ipsObjectPart2 = mock(IAttributeValue.class);
         when(ipsObject.getIpsProject()).thenReturn(ipsProject);
         when(ipsObjectPart.getIpsObject()).thenReturn(ipsObject);
-        when(ipsObjectPart.getIpsProject()).thenReturn(ipsProject);
         when(ipsObjectPart2.getIpsObject()).thenReturn(ipsObject);
-        when(ipsObjectPart2.getIpsProject()).thenReturn(ipsProject);
 
         EditField<?> field = mockField();
         EditField<?> field2 = mockField();

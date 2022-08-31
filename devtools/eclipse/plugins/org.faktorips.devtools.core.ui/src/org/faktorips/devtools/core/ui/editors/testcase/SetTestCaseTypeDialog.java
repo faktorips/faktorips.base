@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A dialog to edit the test case type of a test case.
@@ -54,7 +54,7 @@ public class SetTestCaseTypeDialog extends EditDialog {
         testCaseType = new TestCaseTypeRefControl(testCase.getIpsProject(), workArea, getToolkit());
         testCaseType.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         testCaseType.getTextControl().addModifyListener($ -> {
-            if (StringUtils.isEmpty(getTestCaseType())
+            if (IpsStringUtils.isEmpty(getTestCaseType())
                     || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
                             getTestCaseType())) {
                 getButton(OK).setEnabled(false);

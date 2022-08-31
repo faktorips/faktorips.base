@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.controls.chooser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -29,14 +29,13 @@ import org.faktorips.devtools.model.internal.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
-import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MultiValueSubsetChooserModelTest {
@@ -69,26 +68,21 @@ public class MultiValueSubsetChooserModelTest {
     protected void setUpMultiValueHolder() {
         List<ISingleValueHolder> holderList = new ArrayList<>();
         multiValueHolder = mock(MultiValueHolder.class);
-        when(multiValueHolder.getValue()).thenReturn(holderList);
+        doReturn(holderList).when(multiValueHolder).getValue();
         holderA = mock(SingleValueHolder.class);
         when(holderA.getStringValue()).thenReturn("A");
-        doReturn(ValueFactory.createStringValue("A")).when(holderA).getValue();
         holderList.add(holderA);
         holderB = mock(SingleValueHolder.class);
         when(holderB.getStringValue()).thenReturn("B");
-        doReturn(ValueFactory.createStringValue("B")).when(holderB).getValue();
         holderList.add(holderB);
         holderC = mock(SingleValueHolder.class);
         when(holderC.getStringValue()).thenReturn("C");
-        doReturn(ValueFactory.createStringValue("C")).when(holderC).getValue();
         holderList.add(holderC);
         holder1 = mock(SingleValueHolder.class);
         when(holder1.getStringValue()).thenReturn("1");
-        doReturn(ValueFactory.createStringValue("1")).when(holder1).getValue();
         holderList.add(holder1);
         holder2 = mock(SingleValueHolder.class);
         when(holder2.getStringValue()).thenReturn("2");
-        doReturn(ValueFactory.createStringValue("2")).when(holder2).getValue();
         holderList.add(holder2);
     }
 
@@ -243,16 +237,15 @@ public class MultiValueSubsetChooserModelTest {
     @Test
     public void testValidateValue_NoError() {
         setUpMultiValueHolder();
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        doReturn(ipsProject).when(multiValueHolder).getIpsProject();
         MessageList messageList = mock(MessageList.class);
         doReturn(messageList).when(multiValueHolder).validate(any(IIpsProject.class));
 
-        setUpMultiValueHolder();
-
         model = spy(new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue));
         doReturn(holderC).when(model).findSingleValueHolderFor(any(ListChooserValue.class));
-        doReturn(messageList).when(multiValueHolder).validate(any(IIpsProject.class));
 
-        model.validateValue(null);
+        model.validateValue(new ListChooserValue("C"));
         verify(messageList, never()).getMessagesFor(holderA);
         verify(messageList, never()).getMessagesFor(holderB);
         verify(messageList).getMessagesFor(holderC);

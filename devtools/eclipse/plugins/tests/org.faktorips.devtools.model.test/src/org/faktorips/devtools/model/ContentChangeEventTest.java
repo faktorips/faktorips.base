@@ -21,9 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ContentChangeEventTest {
 
     @Mock
@@ -47,11 +47,9 @@ public class ContentChangeEventTest {
     public void setUp() throws Exception {
         when(part.getParent()).thenReturn(partContainer);
         when(partContainer.getParent()).thenReturn(ipsObject);
-        when(ipsObject.getParent()).thenReturn(srcFile);
 
         when(part.getIpsObject()).thenReturn(ipsObject);
         when(partContainer.getIpsObject()).thenReturn(ipsObject);
-        when(ipsObject.getIpsObject()).thenReturn(ipsObject);
 
         when(part.getIpsSrcFile()).thenReturn(srcFile);
         when(partContainer.getIpsSrcFile()).thenReturn(srcFile);
@@ -118,7 +116,6 @@ public class ContentChangeEventTest {
 
     @Test
     public void testIsAffected_notWholeContentChanged() throws Exception {
-        when(partContainer.getIpsSrcFile()).thenReturn(srcFile);
 
         event = ContentChangeEvent.newPartChangedEvent(partContainer);
 

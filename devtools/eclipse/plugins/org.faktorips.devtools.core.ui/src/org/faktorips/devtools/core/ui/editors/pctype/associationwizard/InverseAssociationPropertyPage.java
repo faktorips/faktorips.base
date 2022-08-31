@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.editors.DescriptionEditComposite;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Page to specify the inverse association, either define properties for a new association, or
@@ -152,7 +152,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
+                if (IpsStringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
                     association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                 }
             }
@@ -172,7 +172,7 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
     }
 
     private void updateDefaultTargetRoleSingular() {
-        if (association != null && StringUtils.isEmpty(association.getTargetRoleSingular())) {
+        if (association != null && IpsStringUtils.isEmpty(association.getTargetRoleSingular())) {
             association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
     }

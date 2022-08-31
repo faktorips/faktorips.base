@@ -33,7 +33,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.ALogListener;
@@ -134,7 +134,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
 
         versionedContainer.initDefaultVersion();
 
-        assertTrue(StringUtils.isEmpty(versionedContainer.getSinceVersionString()));
+        assertTrue(IpsStringUtils.isEmpty(versionedContainer.getSinceVersionString()));
     }
 
     @Test

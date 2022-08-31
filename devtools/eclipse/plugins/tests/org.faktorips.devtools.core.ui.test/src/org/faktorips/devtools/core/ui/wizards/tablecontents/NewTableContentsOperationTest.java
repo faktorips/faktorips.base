@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -55,15 +55,22 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     private NewTableContentsPMO pmo = new NewTableContentsPMO();
 
+    private AutoCloseable openMocks;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         ipsProject = newIpsProject();
 
         tableContents = newTableContents(ipsProject, "TestTableContent");
         tableContents.getIpsSrcFile().save(null);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Override

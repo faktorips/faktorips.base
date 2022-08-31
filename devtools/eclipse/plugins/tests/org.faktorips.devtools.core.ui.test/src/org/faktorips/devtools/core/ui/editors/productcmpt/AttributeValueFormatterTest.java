@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -96,7 +96,7 @@ public class AttributeValueFormatterTest {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.DECIMAL);
         String convertedString = formatter.convertToString(new ArrayList<String>());
-        assertEquals(StringUtils.EMPTY, convertedString);
+        assertEquals(IpsStringUtils.EMPTY, convertedString);
     }
 
     @Test

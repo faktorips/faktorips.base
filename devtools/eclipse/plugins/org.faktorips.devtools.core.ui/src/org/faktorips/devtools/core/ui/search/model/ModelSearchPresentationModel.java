@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IMethod;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Presentation Model for the Faktor-IPS Model Search
@@ -38,7 +38,7 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
     public static final String SEARCH_TABLE_STRUCTURE_USAGES = "searchTableStructureUsages"; //$NON-NLS-1$
     public static final String SEARCH_VALIDATION_RULES = "searchValidationRules"; //$NON-NLS-1$
 
-    private String searchTerm = StringUtils.EMPTY;
+    private String searchTerm = IpsStringUtils.EMPTY;
     private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<>();
 
     public ModelSearchPresentationModel() {

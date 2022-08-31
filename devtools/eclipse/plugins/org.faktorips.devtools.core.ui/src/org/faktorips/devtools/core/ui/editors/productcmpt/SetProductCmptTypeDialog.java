@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -20,6 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A dialog to edit the product component type (template) of a product compnent.
@@ -51,7 +51,7 @@ public class SetProductCmptTypeDialog extends EditDialog {
         template = new ProductCmptType2RefControl(productCmpt.getIpsProject(), workArea, getToolkit(), true);
         template.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         template.getTextControl().addModifyListener($ -> {
-            if (StringUtils.isEmpty(template.getText())) {
+            if (IpsStringUtils.isEmpty(template.getText())) {
                 getButton(OK).setEnabled(false);
                 String msg = NLS.bind(Messages.SetTemplateDialog_msgTemplateDoesNotExist, template.getText());
                 setMessage(msg, IMessageProvider.ERROR);

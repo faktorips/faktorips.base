@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -149,7 +149,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testPolicyCmptType)) {
+        if (IpsStringUtils.isEmpty(testPolicyCmptType)) {
             return null;
         }
         return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
@@ -187,10 +187,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
          * Regular expression to match product component names with and without a " (<number>)"
          * postfix.
          */
-        if (getName() == null || (StringUtils.isEmpty(oldProdCmptName) && getName().equals(pctParameterName))
+        if (getName() == null || (IpsStringUtils.isEmpty(oldProdCmptName) && getName().equals(pctParameterName))
                 || getName().matches(oldProdCmptName + "( \\([1-9][0-9]*\\))?")) { //$NON-NLS-1$
             String uniqueName = null;
-            if (StringUtils.isEmpty(prodCmptQName)) {
+            if (IpsStringUtils.isEmpty(prodCmptQName)) {
                 uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this, pctParameterName);
             } else {
                 uniqueName = getTestCase().generateUniqueNameForTestPolicyCmpt(this,
@@ -206,7 +206,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public IProductCmpt findProductCmpt(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(productCmpt)) {
+        if (IpsStringUtils.isEmpty(productCmpt)) {
             return null;
         }
         return ipsProject.findProductCmpt(productCmpt);
@@ -214,7 +214,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public boolean isProductRelevant() {
-        return !StringUtils.isEmpty(productCmpt);
+        return !IpsStringUtils.isEmpty(productCmpt);
     }
 
     /**
@@ -409,7 +409,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             final boolean recursivelyAddRequired) {
 
         ArgumentCheck.notNull(typeParam);
-        if (!StringUtils.isEmpty(productCmpt) && !StringUtils.isEmpty(policyCmptType)) {
+        if (!IpsStringUtils.isEmpty(productCmpt) && !IpsStringUtils.isEmpty(policyCmptType)) {
             throw new IpsException(
                     new IpsStatus(Messages.TestPolicyCmpt_Error_ProductCmpAndPolicyCmptTypeGiven));
         }
@@ -559,7 +559,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * component cannot be found.
      */
     public IProductCmptGeneration findProductCmpsCurrentGeneration(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(productCmpt)) {
+        if (IpsStringUtils.isEmpty(productCmpt)) {
             return null;
         }
 
@@ -765,7 +765,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
         }
 
         // check that only one, the product component or the policy cmpt type is given
-        if (StringUtils.isNotEmpty(policyCmptType) && hasProductCmpt()) {
+        if (IpsStringUtils.isNotEmpty(policyCmptType) && hasProductCmpt()) {
             String text = Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_PolicyCmptTypeNotAllowedIfProductCmptIsSet;
             Message msg = new Message(MSGCODE_POLICY_CMPT_TYPE_AND_PRODUCT_CMPT_TYPE_GIVEN, text, Message.ERROR, this,
                     ITestPolicyCmpt.PROPERTY_POLICYCMPTTYPE);
@@ -785,7 +785,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
      * found.
      */
     private String findPolicyCmptTypeQName(IIpsProject ipsProject) {
-        if (StringUtils.isNotEmpty(productCmpt)) {
+        if (IpsStringUtils.isNotEmpty(productCmpt)) {
             // find using the product cmpt
             IProductCmpt productCmptFound = findProductCmpt(ipsProject);
             if (productCmptFound != null) {
@@ -797,7 +797,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             }
         } else {
             // "find" using the given policy cmpt type
-            if (!StringUtils.isEmpty(policyCmptType)) {
+            if (!IpsStringUtils.isEmpty(policyCmptType)) {
                 return policyCmptType;
             }
             ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = findTestPolicyCmptTypeParameter(ipsProject);
@@ -950,7 +950,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
 
     @Override
     public boolean hasProductCmpt() {
-        return !StringUtils.isEmpty(getProductCmpt());
+        return !IpsStringUtils.isEmpty(getProductCmpt());
     }
 
     @Override
@@ -981,7 +981,7 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
             ITestPolicyCmpt newTestPolicyCmpt = result.newTargetTestPolicyCmptChild();
             newTestPolicyCmpt.setTestPolicyCmptTypeParameter(typeParam.getName());
             newTestPolicyCmpt
-                    .setPolicyCmptType(StringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
+                    .setPolicyCmptType(IpsStringUtils.isEmpty(policyCmptType) ? "" : policyCmptType); //$NON-NLS-1$
             newTestPolicyCmpt.setProductCmptAndNameAfterIfApplicable(productCmpt);
 
             // add all test attribute values as specified in the test parameter type

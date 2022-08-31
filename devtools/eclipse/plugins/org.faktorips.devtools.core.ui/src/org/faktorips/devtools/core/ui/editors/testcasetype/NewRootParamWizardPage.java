@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jface.wizard.IWizardPage;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Wizard page to create a new root test policy cmpt type parameter.<br>
@@ -118,7 +118,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      * Datatype or rule has changed.
      */
     private void datatypeChanged(String newDatatypeOrRule) {
-        if (newDatatypeOrRule.equals(prevDatatypeOrRule) || StringUtils.isEmpty(newDatatypeOrRule)) {
+        if (newDatatypeOrRule.equals(prevDatatypeOrRule) || IpsStringUtils.isEmpty(newDatatypeOrRule)) {
             return;
         }
         prevDatatypeOrRule = newDatatypeOrRule;
@@ -147,7 +147,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
         String datatypeOrRule = ""; //$NON-NLS-1$
         if (editFieldDatatypeOrRule != null && !editFieldDatatypeOrRule.getControl().isDisposed()) {
             datatypeOrRule = editFieldDatatypeOrRule.getText();
-            if (StringUtils.isEmpty(datatypeOrRule)) {
+            if (IpsStringUtils.isEmpty(datatypeOrRule)) {
                 return false;
             }
         }

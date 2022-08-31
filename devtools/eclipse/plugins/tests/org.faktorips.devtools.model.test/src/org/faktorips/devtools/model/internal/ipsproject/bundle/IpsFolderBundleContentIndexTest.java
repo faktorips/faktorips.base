@@ -20,15 +20,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsFolderBundleContentIndexTest {
 
     @Mock
@@ -129,7 +129,7 @@ public class IpsFolderBundleContentIndexTest {
         Set<String> nonEmptyPackagePaths = contentIndex.getNonEmptyPackagePaths();
 
         assertEquals(2, nonEmptyPackagePaths.size());
-        assertTrue(nonEmptyPackagePaths.contains(StringUtils.EMPTY));
+        assertTrue(nonEmptyPackagePaths.contains(IpsStringUtils.EMPTY));
         assertTrue(nonEmptyPackagePaths.contains("coverage"));
     }
 

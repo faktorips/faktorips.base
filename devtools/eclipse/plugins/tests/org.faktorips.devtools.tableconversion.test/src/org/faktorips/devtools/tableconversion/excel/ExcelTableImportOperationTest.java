@@ -210,155 +210,151 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
     }
 
     private void createValid() throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
 
-        sheet.createRow(0); // header
-        HSSFRow row1 = sheet.createRow(1);
-        HSSFRow row2 = sheet.createRow(2);
-        HSSFRow row3 = sheet.createRow(3);
+            sheet.createRow(0); // header
+            HSSFRow row1 = sheet.createRow(1);
+            HSSFRow row2 = sheet.createRow(2);
+            HSSFRow row3 = sheet.createRow(3);
 
-        HSSFCellStyle dateStyle = wb.createCellStyle();
-        dateStyle.setDataFormat((short)27);
+            HSSFCellStyle dateStyle = wb.createCellStyle();
+            dateStyle.setDataFormat((short)27);
 
-        row1.createCell(0).setCellValue(true);
-        row1.createCell(1).setCellValue(12.3);
-        row1.createCell(2).setCellValue(1.79769313486231E308);
-        HSSFCell cell = row1.createCell(3);
-        cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
-        cell.setCellStyle(dateStyle);
-        row1.createCell(4).setCellValue(Integer.MAX_VALUE);
-        // In oder to avoid floating Point problems a value of type Big Decimal is used
-        row1.createCell(5).setCellValue(922337203685477000.0);
-        row1.createCell(6).setCellValue("123.45 EUR");
-        row1.createCell(7).setCellValue("einfacher text");
+            row1.createCell(0).setCellValue(true);
+            row1.createCell(1).setCellValue(12.3);
+            row1.createCell(2).setCellValue(1.79769313486231E308);
+            HSSFCell cell = row1.createCell(3);
+            cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
+            cell.setCellStyle(dateStyle);
+            row1.createCell(4).setCellValue(Integer.MAX_VALUE);
+            // In oder to avoid floating Point problems a value of type Big Decimal is used
+            row1.createCell(5).setCellValue(922337203685477000.0);
+            row1.createCell(6).setCellValue("123.45 EUR");
+            row1.createCell(7).setCellValue("einfacher text");
 
-        row2.createCell(0).setCellValue(false);
-        row2.createCell(1).setCellValue(12.3);
-        row2.createCell(2).setCellValue(Double.MIN_VALUE);
-        cell = row2.createCell(3);
-        cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
-        cell.setCellStyle(dateStyle);
-        row2.createCell(4).setCellValue(Integer.MIN_VALUE);
-        // In oder to avoid floating Point problems a value of type Big Decimal is used
-        row2.createCell(5).setCellValue(-922337203685477000.0);
-        row2.createCell(6).setCellValue("1EUR");
-        row2.createCell(7).setCellValue("�������{[]}");
+            row2.createCell(0).setCellValue(false);
+            row2.createCell(1).setCellValue(12.3);
+            row2.createCell(2).setCellValue(Double.MIN_VALUE);
+            cell = row2.createCell(3);
+            cell.setCellValue(new GregorianCalendar(2001, 03, 26).getTime());
+            cell.setCellStyle(dateStyle);
+            row2.createCell(4).setCellValue(Integer.MIN_VALUE);
+            // In oder to avoid floating Point problems a value of type Big Decimal is used
+            row2.createCell(5).setCellValue(-922337203685477000.0);
+            row2.createCell(6).setCellValue("1EUR");
+            row2.createCell(7).setCellValue("�������{[]}");
 
-        row3.createCell(0).setCellValue("NULL");
-        row3.createCell(1).setCellValue("NULL");
-        row3.createCell(2).setCellValue("NULL");
-        cell = row3.createCell(3);
-        cell.setCellValue("NULL");
-        cell.setCellStyle(dateStyle);
-        row3.createCell(4).setCellValue("NULL");
-        row3.createCell(5).setCellValue("NULL");
-        row3.createCell(6).setCellValue("NULL");
-        row3.createCell(7).setCellValue("NULL");
+            row3.createCell(0).setCellValue("NULL");
+            row3.createCell(1).setCellValue("NULL");
+            row3.createCell(2).setCellValue("NULL");
+            cell = row3.createCell(3);
+            cell.setCellValue("NULL");
+            cell.setCellStyle(dateStyle);
+            row3.createCell(4).setCellValue("NULL");
+            row3.createCell(5).setCellValue("NULL");
+            row3.createCell(6).setCellValue("NULL");
+            row3.createCell(7).setCellValue("NULL");
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
     private void createInvalid() throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
 
-        sheet.createRow(0); // header
-        HSSFRow row1 = sheet.createRow(1);
-        HSSFCellStyle dateStyle = wb.createCellStyle();
-        dateStyle.setDataFormat((short)27);
+            sheet.createRow(0); // header
+            HSSFRow row1 = sheet.createRow(1);
+            HSSFCellStyle dateStyle = wb.createCellStyle();
+            dateStyle.setDataFormat((short)27);
 
-        row1.createCell(0).setCellValue("invalid is impossible");
-        row1.createCell(1).setCellValue("INVALID");
-        row1.createCell(2).setCellValue("INVALID");
-        HSSFCell cell = row1.createCell(3);
-        cell.setCellValue("INVALID");
-        cell.setCellStyle(dateStyle);
-        row1.createCell(4).setCellValue("INVALID");
-        row1.createCell(5).setCellValue("INVALID");
-        row1.createCell(6).setCellValue("INVALID");
-        row1.createCell(7).setCellValue("invalid is impossible");
+            row1.createCell(0).setCellValue("invalid is impossible");
+            row1.createCell(1).setCellValue("INVALID");
+            row1.createCell(2).setCellValue("INVALID");
+            HSSFCell cell = row1.createCell(3);
+            cell.setCellValue("INVALID");
+            cell.setCellStyle(dateStyle);
+            row1.createCell(4).setCellValue("INVALID");
+            row1.createCell(5).setCellValue("INVALID");
+            row1.createCell(6).setCellValue("INVALID");
+            row1.createCell(7).setCellValue("invalid is impossible");
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
     private void createEmptyRow() throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
 
-        sheet.createRow(0); // header
-        sheet.createRow(1);
+            sheet.createRow(0); // header
+            sheet.createRow(1);
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
     private void createProblemDate(String applicationName) throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
-        wb.createInformationProperties();
-        wb.getSummaryInformation().setApplicationName(applicationName);
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
+            wb.createInformationProperties();
+            wb.getSummaryInformation().setApplicationName(applicationName);
 
-        HSSFRow row0 = sheet.createRow(0);
-        HSSFRow row1 = sheet.createRow(1);
-        HSSFRow row2 = sheet.createRow(2);
-        HSSFRow row3 = sheet.createRow(3);
+            HSSFRow row0 = sheet.createRow(0);
+            HSSFRow row1 = sheet.createRow(1);
+            HSSFRow row2 = sheet.createRow(2);
+            HSSFRow row3 = sheet.createRow(3);
 
-        HSSFCellStyle dateStyle = wb.createCellStyle();
-        dateStyle.setDataFormat((short)0x15);
+            HSSFCellStyle dateStyle = wb.createCellStyle();
+            dateStyle.setDataFormat((short)0x15);
 
-        row0.createCell(0).setCellValue("NULL");
-        row0.createCell(1).setCellValue("NULL");
-        row0.createCell(2).setCellValue("NULL");
-        HSSFCell cell = row0.createCell(3);
-        cell.setCellValue(2.0);// 2.1.1900 in Excel, 1.1.1900 in OO
-        cell.setCellStyle(dateStyle);
-        row0.createCell(4).setCellValue("NULL");
-        row0.createCell(5).setCellValue("NULL");
-        row0.createCell(6).setCellValue("NULL");
-        row0.createCell(7).setCellValue("NULL");
+            row0.createCell(0).setCellValue("NULL");
+            row0.createCell(1).setCellValue("NULL");
+            row0.createCell(2).setCellValue("NULL");
+            HSSFCell cell = row0.createCell(3);
+            cell.setCellValue(2.0);// 2.1.1900 in Excel, 1.1.1900 in OO
+            cell.setCellStyle(dateStyle);
+            row0.createCell(4).setCellValue("NULL");
+            row0.createCell(5).setCellValue("NULL");
+            row0.createCell(6).setCellValue("NULL");
+            row0.createCell(7).setCellValue("NULL");
 
-        row1.createCell(0).setCellValue("NULL");
-        row1.createCell(1).setCellValue("NULL");
-        row1.createCell(2).setCellValue("NULL");
-        cell = row1.createCell(3);
-        cell.setCellValue(61.0);// 1.3.1900
-        cell.setCellStyle(dateStyle);
-        row1.createCell(4).setCellValue("NULL");
-        row1.createCell(5).setCellValue("NULL");
-        row1.createCell(6).setCellValue("NULL");
-        row1.createCell(7).setCellValue("NULL");
+            row1.createCell(0).setCellValue("NULL");
+            row1.createCell(1).setCellValue("NULL");
+            row1.createCell(2).setCellValue("NULL");
+            cell = row1.createCell(3);
+            cell.setCellValue(61.0);// 1.3.1900
+            cell.setCellStyle(dateStyle);
+            row1.createCell(4).setCellValue("NULL");
+            row1.createCell(5).setCellValue("NULL");
+            row1.createCell(6).setCellValue("NULL");
+            row1.createCell(7).setCellValue("NULL");
 
-        row2.createCell(0).setCellValue("NULL");
-        row2.createCell(1).setCellValue("NULL");
-        row2.createCell(2).setCellValue("NULL");
-        cell = row2.createCell(3);
-        cell.setCellValue(59.0);// 28.2.1900 in Excel, 27.2.1900 in OO
-        cell.setCellStyle(dateStyle);
-        row2.createCell(4).setCellValue("NULL");
-        row2.createCell(5).setCellValue("NULL");
-        row2.createCell(6).setCellValue("NULL");
-        row2.createCell(7).setCellValue("NULL");
+            row2.createCell(0).setCellValue("NULL");
+            row2.createCell(1).setCellValue("NULL");
+            row2.createCell(2).setCellValue("NULL");
+            cell = row2.createCell(3);
+            cell.setCellValue(59.0);// 28.2.1900 in Excel, 27.2.1900 in OO
+            cell.setCellStyle(dateStyle);
+            row2.createCell(4).setCellValue("NULL");
+            row2.createCell(5).setCellValue("NULL");
+            row2.createCell(6).setCellValue("NULL");
+            row2.createCell(7).setCellValue("NULL");
 
-        row3.createCell(0).setCellValue("NULL");
-        row3.createCell(1).setCellValue("NULL");
-        row3.createCell(2).setCellValue("NULL");
-        cell = row3.createCell(3);
-        cell.setCellValue(60.0);// 29.2.1900 in Excel, 28.2.1900 in OO
-        cell.setCellStyle(dateStyle);
-        row3.createCell(4).setCellValue("NULL");
-        row3.createCell(5).setCellValue("NULL");
-        row3.createCell(6).setCellValue("NULL");
-        row3.createCell(7).setCellValue("NULL");
+            row3.createCell(0).setCellValue("NULL");
+            row3.createCell(1).setCellValue("NULL");
+            row3.createCell(2).setCellValue("NULL");
+            cell = row3.createCell(3);
+            cell.setCellValue(60.0);// 29.2.1900 in Excel, 28.2.1900 in OO
+            cell.setCellStyle(dateStyle);
+            row3.createCell(4).setCellValue("NULL");
+            row3.createCell(5).setCellValue("NULL");
+            row3.createCell(6).setCellValue("NULL");
+            row3.createCell(7).setCellValue("NULL");
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
 }

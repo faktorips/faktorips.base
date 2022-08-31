@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
@@ -294,11 +294,11 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
         // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
-            setJoinTableName(StringUtils.EMPTY);
-            setTargetColumnName(StringUtils.EMPTY);
-            setSourceColumnName(StringUtils.EMPTY);
+            setJoinTableName(IpsStringUtils.EMPTY);
+            setTargetColumnName(IpsStringUtils.EMPTY);
+            setSourceColumnName(IpsStringUtils.EMPTY);
         } else {
-            setJoinColumnName(StringUtils.EMPTY);
+            setJoinColumnName(IpsStringUtils.EMPTY);
         }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
@@ -338,7 +338,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
          * side then the foreign key column is not necessary
          */
         if (getPolicyComponentTypeAssociation().isAssoziation() && inverseAssociation.is1To1()
-                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
+                && IpsStringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
             return true;
         }
 
@@ -450,7 +450,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     private boolean isJoinColumnRequiredForOneToOne(IPolicyCmptTypeAssociation inverseAssociation) {
         if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail() || (inverseAssociation != null
                 && getPolicyComponentTypeAssociation().isAssoziation()
-                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName()))) {
+                && IpsStringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName()))) {
             // target join column is defined on the target side
             return false;
         }
@@ -767,7 +767,7 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
             emptyText = MessageFormat.format(Messages.PersistentAssociationInfo_msgMustNotBeEmpty, propertyName);
         }
 
-        if (mustBeEmpty && !StringUtils.isEmpty(value) || !mustBeEmpty && StringUtils.isEmpty(value)) {
+        if (mustBeEmpty && !IpsStringUtils.isEmpty(value) || !mustBeEmpty && IpsStringUtils.isEmpty(value)) {
             msgList.add(new Message(msgCodeEmpty, emptyText, Message.ERROR, this, property));
         } else if (!mustBeEmpty && !PersistenceUtil.isValidDatabaseIdentifier(value)) {
             String invalidText = MessageFormat.format(Messages.PersistentAssociationInfo_msgIsInvalid, propertyName);

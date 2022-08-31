@@ -24,9 +24,9 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnumDatatypeValueSourceTest {
 
     @Mock

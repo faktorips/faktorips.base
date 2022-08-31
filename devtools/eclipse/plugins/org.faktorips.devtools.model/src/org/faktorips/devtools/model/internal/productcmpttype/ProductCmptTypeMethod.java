@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.method.Method;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -27,6 +27,7 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -44,7 +45,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     private boolean formulaMandatory = true;
 
-    private String formulaName = StringUtils.EMPTY;
+    private String formulaName = IpsStringUtils.EMPTY;
 
     /** Flag indicating if this is static */
     private boolean changingOverTime = getProductCmptType().isChangingOverTime();
@@ -68,7 +69,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         boolean oldValue = formulaSignatureDefinition;
         formulaSignatureDefinition = newValue;
         if (!formulaSignatureDefinition) {
-            setFormulaName(StringUtils.EMPTY);
+            setFormulaName(IpsStringUtils.EMPTY);
             overloadsFormula = false;
         } else {
             setAbstract(false);
@@ -103,7 +104,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (isFormulaSignatureDefinition()) {
             return "compute" + StringUtils.capitalize(getFormulaName()); //$NON-NLS-1$
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override
@@ -119,7 +120,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             changingOverTime = Boolean.parseBoolean(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
         }
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
-        formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.parseBoolean(mandatoryXml);
+        formulaMandatory = IpsStringUtils.isEmpty(mandatoryXml) ? true : Boolean.parseBoolean(mandatoryXml);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (overloadsFormula) {
             element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
         }
-        if (StringUtils.isNotEmpty(formulaName)) {
+        if (IpsStringUtils.isNotEmpty(formulaName)) {
             element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
         }
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
@@ -142,7 +143,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (formulaSignatureDefinition) {
             return getFormulaName();
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override
@@ -165,7 +166,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (!isFormulaSignatureDefinition()) {
             return;
         }
-        if (StringUtils.isEmpty(getFormulaName())) {
+        if (IpsStringUtils.isEmpty(getFormulaName())) {
             String text = Messages.ProductCmptTypeMethod_FormulaNameIsMissing;
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_NAME_IS_EMPTY, text, Message.ERROR, this,
                     IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
@@ -188,7 +189,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) {
-        if (isFormulaSignatureDefinition() && isOverloadsFormula() && !StringUtils.isEmpty(getFormulaName())) {
+        if (isFormulaSignatureDefinition() && isOverloadsFormula() && !IpsStringUtils.isEmpty(getFormulaName())) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
             finder.start(getProductCmptType().findSuperProductCmptType(ipsProject));
             if (!finder.isOverloadedMethodAvailable()) {
@@ -210,7 +211,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) {
-        if (!StringUtils.isEmpty(getName())) {
+        if (!IpsStringUtils.isEmpty(getName())) {
             ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
             propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
 
@@ -317,7 +318,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
         @Override
         protected boolean visit(IProductCmptType currentType) {
-            if (StringUtils.isEmpty(getFormulaName()) || currentType == null) {
+            if (IpsStringUtils.isEmpty(getFormulaName()) || currentType == null) {
                 return false;
             }
             method = currentType.getFormulaSignature(getFormulaName());

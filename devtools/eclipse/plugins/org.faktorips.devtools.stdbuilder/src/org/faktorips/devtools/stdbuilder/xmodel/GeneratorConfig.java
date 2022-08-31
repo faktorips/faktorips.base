@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -205,7 +205,7 @@ public class GeneratorConfig {
     public String getBaseClassPolicyCmptType() {
         String baseClass = config
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
-        return StringUtils.isBlank(baseClass)
+        return IpsStringUtils.isBlank(baseClass)
                 ? config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
                         ? AbstractJaxbModelObject.class.getName()
                         : AbstractModelObject.class.getName()
@@ -215,7 +215,7 @@ public class GeneratorConfig {
     public String getBaseClassProductCmptType() {
         String baseClass = config
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_PRODUCT_CMPT_TYPE);
-        return StringUtils.isBlank(baseClass) ? ProductComponent.class.getName() : baseClass;
+        return IpsStringUtils.isBlank(baseClass) ? ProductComponent.class.getName() : baseClass;
     }
 
     public IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
@@ -250,11 +250,11 @@ public class GeneratorConfig {
     }
 
     public String getConfiguredAdditionalAnnotations() {
-        return getStringProperty(StandardBuilderSet.CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS, StringUtils.EMPTY);
+        return getStringProperty(StandardBuilderSet.CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS, IpsStringUtils.EMPTY);
     }
 
     public String getConfiguredRetainedAnnotations() {
-        return getStringProperty(StandardBuilderSet.CONFIG_PROPERTY_RETAIN_ANNOTATIONS, StringUtils.EMPTY);
+        return getStringProperty(StandardBuilderSet.CONFIG_PROPERTY_RETAIN_ANNOTATIONS, IpsStringUtils.EMPTY);
     }
 
     private String getStringProperty(String propertyKey, String defaultValue) {

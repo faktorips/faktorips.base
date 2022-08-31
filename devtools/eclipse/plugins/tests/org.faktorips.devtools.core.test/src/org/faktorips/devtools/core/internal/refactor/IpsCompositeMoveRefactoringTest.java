@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,14 +45,21 @@ public class IpsCompositeMoveRefactoringTest {
 
     private IpsCompositeMoveRefactoring ipsCompositeMoveRefactoring;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
         when(ipsObject2.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
         LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<>(Arrays.asList(ipsObject1, ipsObject2));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

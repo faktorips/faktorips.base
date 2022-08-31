@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStruct
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This contribution factory creates menu contributions for adding new and existing product
@@ -106,7 +106,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             if (child instanceof IProductCmptTypeAssociationReference) {
                 IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)child;
                 CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
-                        StringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
+                        IpsStringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
                 itemParameter.label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         associationReference.getAssociation());
                 HashMap<String, String> parameters = new HashMap<>();
@@ -122,7 +122,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
 
     private void addNewProductCmptCommand(IServiceLocator serviceLocator, IContributionRoot additions, String label) {
         CommandContributionItemParameter parameters = new CommandContributionItemParameter(serviceLocator,
-                StringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
+                IpsStringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
         parameters.icon = getAddNewProductCmptImageDescriptor();
         parameters.label = label;
         CommandContributionItem item = new CommandContributionItem(parameters);
@@ -142,7 +142,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             String label = getLabelForAddExisting(typedSelection.getFirstElement());
 
             CommandContributionItemParameter parameters = new CommandContributionItemParameter(serviceLocator,
-                    StringUtils.EMPTY, AddProductCmptLinkCommand.COMMAND_ID, SWT.PUSH);
+                    IpsStringUtils.EMPTY, AddProductCmptLinkCommand.COMMAND_ID, SWT.PUSH);
             parameters.icon = getAddProductCmptImageDescriptor();
             parameters.label = label;
             CommandContributionItem item = new CommandContributionItem(parameters);
@@ -239,7 +239,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             String label,
             boolean icon) {
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
-                StringUtils.EMPTY, AddNewTableContentsHandler.COMMAND_ID, SWT.PUSH);
+                IpsStringUtils.EMPTY, AddNewTableContentsHandler.COMMAND_ID, SWT.PUSH);
         itemParameter.label = label;
         HashMap<String, String> parameters = new HashMap<>();
         if (tableContentUsage != null) {
@@ -259,7 +259,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             String label,
             boolean icon) {
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
-                StringUtils.EMPTY, SelectExistingTableContentsHandler.COMMAND_ID, SWT.PUSH);
+                IpsStringUtils.EMPTY, SelectExistingTableContentsHandler.COMMAND_ID, SWT.PUSH);
         itemParameter.label = label;
         HashMap<String, String> parameters = new HashMap<>();
         if (tableContentUsage != null) {

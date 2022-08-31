@@ -16,7 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.xml.sax.Attributes;
@@ -131,33 +135,28 @@ public class TableSaxHandler extends DefaultHandler {
     }
 
     private void initFromCsv(String csv) {
-        StringReader stringReader = new StringReader(csv);
-        try {
-            getClass().getClassLoader().loadClass("com.opencsv.CSVReader");
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException("Failed to load OpenCSV", e);
-        }
-        CSVReader csvReader = new CSVReader(stringReader, '|', '"', '\\');
-        try {
-            String[] csvLine;
-            while ((csvLine = csvReader.readNext()) != null) {
-                for (int i = 0; i < csvLine.length; i++) {
-                    if (NULL_VALUE.equals(csvLine[i])) {
-                        csvLine[i] = null;
-                    }
-                }
-                table.addRow(Arrays.asList(csvLine), productRepository);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
+        try (StringReader stringReader = new StringReader(csv)) {
             try {
-                csvReader.close();
-            } catch (IOException e) {
+                getClass().getClassLoader().loadClass("com.opencsv.CSVReader");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Failed to load OpenCSV", e);
+            }
+            CSVParser csvParser = new CSVParserBuilder().withSeparator('|').withQuoteChar('"').withEscapeChar('\\')
+                    .build();
+            try (CSVReader csvReader = new CSVReaderBuilder(stringReader).withCSVParser(csvParser).build()) {
+                String[] csvLine;
+                while ((csvLine = csvReader.readNext()) != null) {
+                    for (int i = 0; i < csvLine.length; i++) {
+                        if (NULL_VALUE.equals(csvLine[i])) {
+                            csvLine[i] = null;
+                        }
+                    }
+                    table.addRow(Arrays.asList(csvLine), productRepository);
+                }
+            } catch (IOException | CsvValidationException e) {
                 throw new RuntimeException(e);
             }
         }
-
     }
 
 }

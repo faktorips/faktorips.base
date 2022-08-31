@@ -32,9 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SingleTableContentsValidatorTest {
 
     @Mock
@@ -56,8 +56,6 @@ public class SingleTableContentsValidatorTest {
     public void setup() {
         validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
         when(tableStructure.getName()).thenReturn("tableStructure");
-        when(contentsSrcFile1.getIpsProject()).thenReturn(ipsProjectBase);
-        when(contentsSrcFile2.getIpsProject()).thenReturn(ipsProjectBase);
     }
 
     @Test
@@ -134,8 +132,6 @@ public class SingleTableContentsValidatorTest {
     @Test
     public void testValidateAndAppendMessages_AssertCorrectErrorMessage() {
         when(tableStructure.getName()).thenReturn("tableStructure");
-        when(contentsSrcFile1.getIpsObjectName()).thenReturn("contentsSrcFile1");
-        when(contentsSrcFile2.getIpsObjectName()).thenReturn("contentsSrcFile2");
         setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
 
         MessageList messageList = new MessageList();

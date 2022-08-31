@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
@@ -35,16 +34,13 @@ public class ExcelHelper {
     /**
      * @param sourceFile A platform-dependent String which denotes the full path to an Excel file.
      * @return A workbook constructed from the given source file.
-     * 
-     * @throws FileNotFoundException if the file provided by sourceFile does not exist
-     * @throws IOException if the file is not readable or accessible
      */
-    public static Workbook getWorkbook(String sourceFile) throws IOException {
+    public static Workbook getWorkbook(String sourceFile) {
         File importFile = new File(sourceFile);
         Workbook workbook = null;
         try (FileInputStream fis = new FileInputStream(importFile)) {
             workbook = WorkbookFactory.create(fis);
-        } catch (InvalidFormatException e) {
+        } catch (IOException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return workbook;

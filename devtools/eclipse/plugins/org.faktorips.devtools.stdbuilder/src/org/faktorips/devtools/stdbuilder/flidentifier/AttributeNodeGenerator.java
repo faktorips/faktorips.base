@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -192,7 +192,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
             XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
             return xProductCmptClass.getMethodNameGetProductCmpt() + "().";
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

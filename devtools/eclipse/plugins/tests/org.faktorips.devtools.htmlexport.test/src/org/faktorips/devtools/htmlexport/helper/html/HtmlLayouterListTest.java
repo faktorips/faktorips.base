@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -51,7 +51,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
         ListPageElement liste = new ListPageElement(getContext());
 
         String xml = layout(liste);
-        Assert.assertTrue("Liste nicht leer: " + xml, StringUtils.isEmpty(xml));
+        Assert.assertTrue("Liste nicht leer: " + xml, IpsStringUtils.isEmpty(xml));
 
     }
 

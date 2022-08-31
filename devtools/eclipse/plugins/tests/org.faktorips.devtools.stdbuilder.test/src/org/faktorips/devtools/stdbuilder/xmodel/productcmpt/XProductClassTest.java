@@ -16,7 +16,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -45,9 +44,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XProductClassTest {
 
     @Mock
@@ -124,10 +123,6 @@ public class XProductClassTest {
     @Before
     public void createTypes() {
         when(type.getIpsProject()).thenReturn(ipsProject);
-        when(superType.getIpsProject()).thenReturn(ipsProject);
-        when(superSuperType.getIpsProject()).thenReturn(ipsProject);
-        when(type.findSupertype(any(IIpsProject.class))).thenReturn(superType);
-        when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
     }
 
     @Before
@@ -240,8 +235,6 @@ public class XProductClassTest {
 
     @Test
     public void testGetPolicyClassName_notConfigured() throws Exception {
-        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
-        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
 
         assertEquals(IConfigurableModelObject.class.getSimpleName(),
@@ -260,8 +253,6 @@ public class XProductClassTest {
 
     @Test
     public void testIsContainsNotDerivedOrConstrainingAssociations_someAssociationDerived() throws Exception {
-        when(assocNode1.isDerived()).thenReturn(true);
-        when(assocNode2.isOneToMany()).thenReturn(true);
 
         HashSet<XProductAssociation> associations = new HashSet<>();
         associations.add(assocNode1);
@@ -272,8 +263,6 @@ public class XProductClassTest {
 
     @Test
     public void testIsContainsNotDerivedOrConstrainingAssociations_someAssociationConstrains() throws Exception {
-        when(assocNode1.isConstrain()).thenReturn(true);
-        when(assocNode2.isOneToMany()).thenReturn(true);
 
         HashSet<XProductAssociation> associations = new HashSet<>();
         associations.add(assocNode1);
@@ -285,7 +274,6 @@ public class XProductClassTest {
     @Test
     public void testGetConfiguredAttributesInternal() throws Exception {
         when(xProductClass.getType()).thenReturn(type);
-        doReturn(true).when(xProductClass).isChangeOverTimeClass();
         doReturn(xPolicyCmpt).when(xProductClass).getPolicyCmptClass();
 
         assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
@@ -406,7 +394,6 @@ public class XProductClassTest {
         when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
         when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
         IIpsProject ipsProject2 = mock(IIpsProject.class);
-        when(policyType.isValid(ipsProject)).thenReturn(false);
         when(policyType.isValid(ipsProject2)).thenReturn(true);
         when(xPolicyCmpt.getType()).thenReturn(policyType);
         when(xPolicyCmpt.getIpsProject()).thenReturn(ipsProject2);

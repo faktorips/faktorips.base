@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
@@ -464,10 +464,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (layerSupertype) {
             element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
         }
-        if (StringUtils.isNotEmpty(policyCmptType)) {
+        if (IpsStringUtils.isNotEmpty(policyCmptType)) {
             element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
         }
-        if (StringUtils.isNotEmpty(instancesIconPath)) {
+        if (IpsStringUtils.isNotEmpty(instancesIconPath)) {
             element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
         }
         element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
@@ -592,7 +592,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptTypeMethod getFormulaSignature(String formulaName) {
-        if (StringUtils.isEmpty(formulaName)) {
+        if (IpsStringUtils.isEmpty(formulaName)) {
             return null;
         }
         for (IProductCmptTypeMethod method : methods) {
@@ -731,7 +731,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private void validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(MessageList msgList,
             IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(getPolicyCmptType())) {
+        if (IpsStringUtils.isEmpty(getPolicyCmptType())) {
             return;
         }
         IPolicyCmptType foundPolicyCmptType = findPolicyCmptType(ipsProject);
@@ -828,7 +828,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencies = new HashSet<>();
-        if (!StringUtils.isEmpty(getPolicyCmptType())) {
+        if (!IpsStringUtils.isEmpty(getPolicyCmptType())) {
             IDependency dependency = IpsObjectDependency.createConfiguresDependency(getQualifiedNameType(),
                     new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
             dependencies.add(dependency);
@@ -922,7 +922,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public boolean isUseCustomInstanceIcon() {
-        return StringUtils.isNotEmpty(instancesIconPath);
+        return IpsStringUtils.isNotEmpty(instancesIconPath);
     }
 
     @Override
@@ -1653,7 +1653,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                         new ObjectProperty(tableStructureUsage, ITableStructureUsage.PROPERTY_ROLENAME));
             }
             for (IProductCmptTypeMethod method : productCmptType.getMethodPartCollection()) {
-                if (method.isFormulaSignatureDefinition() && StringUtils.isNotEmpty(method.getFormulaName())
+                if (method.isFormulaSignatureDefinition() && IpsStringUtils.isNotEmpty(method.getFormulaName())
                         && !method.isOverloadsFormula()) {
                     add(method.getFormulaName(),
                             new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));

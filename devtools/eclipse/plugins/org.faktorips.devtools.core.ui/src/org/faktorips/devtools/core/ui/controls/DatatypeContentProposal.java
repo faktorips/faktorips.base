@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A content proposal for a {@link Datatype}. The label and images for these proposals are provided
@@ -47,7 +47,7 @@ public class DatatypeContentProposal implements IContentProposal {
 
     @Override
     public String getDescription() {
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
 }

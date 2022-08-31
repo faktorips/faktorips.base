@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Composite;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.model.plugin.IpsValidation;
 import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewProductCmptTypePage extends NewTypePage {
 
@@ -53,14 +53,14 @@ public class NewProductCmptTypePage extends NewTypePage {
     @Override
     public void pageEntered() {
         if (!isAlreadyBeenEntered()) {
-            if (StringUtils.isEmpty(getPackage())) {
+            if (IpsStringUtils.isEmpty(getPackage())) {
                 setPackage(getPageOfAssociatedType().getPackage());
             }
-            if (StringUtils.isEmpty(getSourceFolder())) {
+            if (IpsStringUtils.isEmpty(getSourceFolder())) {
                 setSourceFolder(getPageOfAssociatedType().getSourceFolder());
             }
-            if (StringUtils.isEmpty(getSuperType())) {
-                if (!StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
+            if (IpsStringUtils.isEmpty(getSuperType())) {
+                if (!IpsStringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
                     IPolicyCmptType superPcType = getIpsProject().findPolicyCmptType(
                             getPageOfAssociatedType().getSuperType());
                     if (superPcType != null) {
@@ -68,9 +68,9 @@ public class NewProductCmptTypePage extends NewTypePage {
                     }
                 }
             }
-            if (StringUtils.isEmpty(getIpsObjectName())) {
+            if (IpsStringUtils.isEmpty(getIpsObjectName())) {
                 String postfix = IpsPlugin.getDefault().getIpsPreferences().getDefaultProductCmptTypePostfix();
-                if (!StringUtils.isEmpty(postfix)) {
+                if (!IpsStringUtils.isEmpty(postfix)) {
                     setIpsObjectName(getPageOfAssociatedType().getIpsObjectName() + postfix);
                 }
             }
@@ -140,12 +140,12 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
+            if (IpsStringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
                 return null;
             }
 
             IProductCmptType superProductCmptType = null;
-            if (!StringUtils.isEmpty(getSuperType())) {
+            if (!IpsStringUtils.isEmpty(getSuperType())) {
                 superProductCmptType = ipsProject.findProductCmptType(getSuperType());
             }
             return ProductCmptTypeValidations.validateSupertype(null, superProductCmptType, getPageOfAssociatedType()
@@ -170,7 +170,7 @@ public class NewProductCmptTypePage extends NewTypePage {
 
         @Override
         public Message execute(IIpsProject ipsProject) {
-            if (StringUtils.isEmpty(getSuperType())) {
+            if (IpsStringUtils.isEmpty(getSuperType())) {
                 return null;
             }
 
@@ -179,7 +179,7 @@ public class NewProductCmptTypePage extends NewTypePage {
                 String text = NLS.bind(Messages.NewProductCmptTypePage_msgPolicyCmptSuperTypeNeedsToBeX,
                         superType.getPolicyCmptType());
                 Message msg = new Message("", text, Message.ERROR); //$NON-NLS-1$
-                if (StringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
+                if (IpsStringUtils.isEmpty(getPageOfAssociatedType().getSuperType())) {
                     return msg;
                 }
                 IPolicyCmptType policyCmptType = ipsProject

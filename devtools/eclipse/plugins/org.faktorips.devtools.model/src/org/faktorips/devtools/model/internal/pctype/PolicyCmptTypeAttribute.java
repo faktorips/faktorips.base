@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -45,6 +45,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -157,7 +158,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(computationMethodSignature)) {
+        if (IpsStringUtils.isEmpty(computationMethodSignature)) {
             return null;
         }
         IProductCmptType productCmptType = findProductCmptType(ipsProject);
@@ -285,7 +286,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                         this, productRelevantProperties()));
             }
             if (isDerived()) {
-                if (StringUtils.isEmpty(computationMethodSignature)) {
+                if (IpsStringUtils.isEmpty(computationMethodSignature)) {
                     String text = MessageFormat.format(
                             Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
                             getName());
@@ -358,7 +359,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     private void validateValueSetType(MessageList result) {
         if (!isAllowedValueSet(getValueSet())) {
             String messageText = MessageFormat.format(Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
-                    getValueSet() == null ? StringUtils.EMPTY
+                    getValueSet() == null ? IpsStringUtils.EMPTY
                             : org.faktorips.devtools.model.internal.util.StringUtils
                                     .quote(getValueSet().getValueSetType().getName()));
             result.add(
@@ -461,7 +462,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             element.setAttribute(PROPERTY_RELEVANCE_CONFIGURED_BY_PRODUCT, "" + relevanceConfiguredByProduct); //$NON-NLS-1$
         }
         element.setAttribute(PROPERTY_ATTRIBUTE_TYPE, attributeType.getId());
-        if (StringUtils.isNotEmpty(computationMethodSignature)) {
+        if (IpsStringUtils.isNotEmpty(computationMethodSignature)) {
             element.setAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE, "" + computationMethodSignature); //$NON-NLS-1$
         }
         if (genericValidationEnabled) {

@@ -39,15 +39,14 @@ import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
-import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
 
     private PropertyValueCollection valueContainer;
@@ -138,7 +137,6 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testGetPropertyValue() {
         IProductCmptProperty property = mock(IProductCmptProperty.class);
         when(property.getPropertyName()).thenReturn("AV1");
-        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
         IPropertyValue value = valueContainer.getPropertyValue(property, IAttributeValue.class);
         assertNotNull(value);
@@ -147,8 +145,6 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
 
         ProductCmptTypeAttribute illegalTypeAttr = mock(ProductCmptTypeAttribute.class);
         when(illegalTypeAttr.getPropertyName()).thenReturn("AVIllegal");
-        when(illegalTypeAttr.getProductCmptPropertyType()).thenReturn(
-                ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
         value = valueContainer.getPropertyValue(illegalTypeAttr, IAttributeValue.class);
         assertNull(value);
     }
@@ -157,7 +153,6 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testNewPropertyValueAttribute() {
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         when(attribute.getPropertyName()).thenReturn("AV5");
-        when(attribute.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE);
 
         IAttributeValue value = valueContainer.newPropertyValue(attribute, "ID5", IAttributeValue.class);
         assertNotNull(value);
@@ -172,7 +167,6 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     public void testNewPropertyValueFormula() {
         IProductCmptProperty property = mock(IProductCmptProperty.class);
         when(property.getPropertyName()).thenReturn("Method1");
-        when(property.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
 
         assertSize(3);
         IFormula formula = valueContainer.newPropertyValue(property, "MethodID1", IFormula.class);

@@ -45,9 +45,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AttributeNodeGeneratorTest {
 
     @Mock
@@ -130,7 +130,6 @@ public class AttributeNodeGeneratorTest {
         createAttributeNode(false);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
-        when(xProductAttribute.isChangingOverTime()).thenReturn(true);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -143,9 +142,6 @@ public class AttributeNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_ProductCmptTypeAttribute_changingOverTimeFormula() throws Exception {
         attributeNodeGenerator = new AttributeNodeGenerator(factory, formula, builderSet);
-        IPropertyValueContainer container = mock(IPropertyValueContainer.class);
-        when(formula.getPropertyValueContainer()).thenReturn(container);
-        when(container.isChangingOverTimeContainer()).thenReturn(true);
 
         attribute = mock(IProductCmptTypeAttribute.class);
         createAttributeNode(false);
@@ -156,7 +152,6 @@ public class AttributeNodeGeneratorTest {
 
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
-        when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
@@ -179,15 +174,10 @@ public class AttributeNodeGeneratorTest {
         when(formula.findProductCmptType(ipsProject)).thenReturn(type);
         when(container.isChangingOverTimeContainer()).thenReturn(false);
         when(contextCompilationResult.getDatatype()).thenReturn(type);
-        when(attribute.getType()).thenReturn(type);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
-        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
 
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
-        when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
-        when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -238,7 +228,6 @@ public class AttributeNodeGeneratorTest {
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getWohnflaeche");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
         when(builderSet.getJavaClassName(listofTypeDatatype.getBasicDatatype(), true)).thenReturn("Integer");
-        when(builderSet.getJavaClassName(Datatype.PRIMITIVE_INT, true)).thenReturn("int");
         when(builderSet.getJavaClassName(Datatype.INTEGER, true)).thenReturn("Integer");
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -252,7 +241,6 @@ public class AttributeNodeGeneratorTest {
     public void testGetCompilationResult_NoListOfTypeDatatype() throws Exception {
         attribute = mock(IPolicyCmptTypeAttribute.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
-        when(attribute.getDatatype()).thenReturn("Integer");
         attributeNode = createAttributeNode(false, false);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
@@ -295,17 +283,12 @@ public class AttributeNodeGeneratorTest {
         createAttributeNode(false);
 
         IPolicyCmptType datatypePolicy = mock(IPolicyCmptType.class);
-        IType type = mock(IType.class);
         XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
-        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
 
-        when(attribute.getType()).thenReturn(type);
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
-        when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(((IProductCmptProperty)attribute).isChangingOverTime()).thenReturn(isChangingOverTime);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
         when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);
         when(builderSet.getModelNode(datatypePolicy, XPolicyCmptClass.class)).thenReturn(xPolicyCmptClass);
 

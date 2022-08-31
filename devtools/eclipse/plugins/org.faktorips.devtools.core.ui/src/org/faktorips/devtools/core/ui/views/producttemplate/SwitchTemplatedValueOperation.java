@@ -15,8 +15,6 @@ import java.util.Comparator;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.google.common.collect.Iterables;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
@@ -157,7 +155,7 @@ public class SwitchTemplatedValueOperation extends AbstractTemplatedValueOperati
         if (!isValidSelection(selectedValues)) {
             throw new IllegalArgumentException("Illegal selection for switch template value opertation."); //$NON-NLS-1$
         }
-        ITemplatedValue firstValue = Iterables.get(selectedValues, 0);
+        ITemplatedValue firstValue = selectedValues.iterator().next();
         ITemplatedValue templateValue = getTemplateValue(firstValue);
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(templateValue);
         Collection<ITemplatedValue> inheritingValues = pmo.getInheritingTemplatedValues();

@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -40,7 +40,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TableContentsStructureCacheUpdaterTest {
@@ -96,37 +96,23 @@ public class TableContentsStructureCacheUpdaterTest {
 
     @Before
     public void setUp() {
-        when(ipsProjectBase.getIpsModel()).thenReturn(ipsModel);
         when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
-        when(ipsProjectB.getIpsModel()).thenReturn(ipsModel);
         when(ipsProjectC.getIpsModel()).thenReturn(ipsModel);
 
         tableContentsStructureCacheA = new TableContentsStructureCache(ipsProjectA);
         tableContentsStructureCacheC = new TableContentsStructureCache(ipsProjectC);
         tableContentUpdaterA = new TableContentsStructureCacheUpdater(tableContentsStructureCacheA, ipsProjectA);
         tableContentUpdaterC = new TableContentsStructureCacheUpdater(tableContentsStructureCacheC, ipsProjectC);
-        when(ipsProjectBase.findReferencingProjectLeavesOrSelf()).thenReturn(
-                new IIpsProject[] { ipsProjectA, ipsProjectB });
-        when(ipsProjectBase.findReferencingProjects(true)).thenReturn(
-                new IIpsProject[] { ipsProjectA, ipsProjectB, ipsProjectC });
         when(ipsProjectA.findReferencingProjects(true)).thenReturn(new IIpsProject[] { ipsProjectC });
-        when(ipsProjectB.findReferencingProjects(true)).thenReturn(new IIpsProject[] {});
-        when(ipsProjectC.findReferencingProjects(true)).thenReturn(new IIpsProject[] {});
         when(ipsProjectA.isReferencing(ipsProjectBase)).thenReturn(true);
         when(ipsProjectC.isReferencing(ipsProjectBase)).thenReturn(true);
         when(ipsProjectC.isReferencing(ipsProjectA)).thenReturn(true);
 
-        when(ipsModel.getIpsProjects()).thenReturn(
-                new IIpsProject[] { ipsProjectA, ipsProjectB, ipsProjectBase, ipsProjectC });
         when(tableContent1.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
         when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
-        when(tableContent3.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
-        when(tableContent1.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_CONTENTS);
         when(tableContent2.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_CONTENTS);
-        when(tableContent3.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_CONTENTS);
         when(tableContent1.getIpsProject()).thenReturn(ipsProjectA);
         when(tableContent2.getIpsProject()).thenReturn(ipsProjectA);
-        when(tableContent3.getIpsProject()).thenReturn(ipsProjectB);
         when(tableStructure.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_STRUCTURE);
         when(tableStructure.getIpsProject()).thenReturn(ipsProjectBase);
         when(tableStructure.getIpsObjectName()).thenReturn(TABLE_STRUCTURE);
@@ -134,9 +120,7 @@ public class TableContentsStructureCacheUpdaterTest {
                 new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE));
 
         IIpsPackageFragment fragment = mock(IIpsPackageFragment.class);
-        when(tableContent1.getIpsPackageFragment()).thenReturn(fragment);
         when(tableContent2.getIpsPackageFragment()).thenReturn(fragment);
-        when(tableContent3.getIpsPackageFragment()).thenReturn(fragment);
         when(tableStructure.getIpsPackageFragment()).thenReturn(fragment);
 
         IIpsPackageFragmentRoot rootFragment = mock(IIpsPackageFragmentRoot.class);
@@ -149,8 +133,7 @@ public class TableContentsStructureCacheUpdaterTest {
         IIpsObjectPath objectPathA = mock(IIpsObjectPath.class);
         when(ipsProjectA.getIpsObjectPath()).thenReturn(objectPathA);
 
-        IIpsObjectPath objectPathB = mock(IIpsObjectPath.class);
-        when(ipsProjectB.getIpsObjectPath()).thenReturn(objectPathB);
+        mock(IIpsObjectPath.class);
 
         IIpsObjectPath objectPathC = mock(IIpsObjectPath.class);
         when(ipsProjectC.getIpsObjectPath()).thenReturn(objectPathC);
@@ -161,11 +144,7 @@ public class TableContentsStructureCacheUpdaterTest {
         when(objectPathA.getEntry(anyString())).thenReturn(objectPathEntryA);
         when(objectPathEntryA.isReexported()).thenReturn(true);
 
-        when(objectPathB.getEntry(anyString())).thenReturn(objectPathEntryB);
-        when(objectPathEntryB.isReexported()).thenReturn(true);
-
         when(objectPathC.getEntry(anyString())).thenReturn(objectPathEntryC);
-        when(objectPathEntryC.isReexported()).thenReturn(true);
     }
 
     @Test

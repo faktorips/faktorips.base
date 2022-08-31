@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.osgi.util.NLS;
@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RangeValueSetFormatTest {
@@ -76,6 +76,7 @@ public class RangeValueSetFormatTest {
         when(configValueSet.getValueSet()).thenReturn(range);
         when(configValueSet.getIpsModel()).thenReturn(ipsModel);
         when(configValueSet.getIpsObject()).thenReturn(ipsObject);
+        when(configValueSet.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test
@@ -218,7 +219,6 @@ public class RangeValueSetFormatTest {
     public void testFormatInternal_RangeIncludesNull() {
         IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1", "10", "1");
         valueSet.setContainsNull(true);
-        when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[1 ... 10 / 1] " + NULL_PRESENTATION, rangeVSFormat.formatInternal(valueSet));
     }
@@ -227,7 +227,6 @@ public class RangeValueSetFormatTest {
     public void testFormatInternal_RangeExcludesNull() {
         IValueSet valueSet = new RangeValueSet(configValueSet, "partId", "1", "10", "1");
         valueSet.setContainsNull(false);
-        when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[1 ... 10 / 1]", rangeVSFormat.formatInternal(valueSet));
     }
@@ -235,7 +234,6 @@ public class RangeValueSetFormatTest {
     @Test
     public void testFormatInternal_EmptyRange() {
         IValueSet valueSet = RangeValueSet.empty(configValueSet, "partId");
-        when(configValueSet.getValueSet()).thenReturn(valueSet);
 
         assertEquals("[]", rangeVSFormat.formatInternal(valueSet));
     }

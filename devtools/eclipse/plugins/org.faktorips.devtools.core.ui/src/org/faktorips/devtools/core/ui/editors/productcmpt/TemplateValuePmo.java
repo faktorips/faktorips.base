@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplateValuePmo<T> {
 
@@ -60,7 +60,7 @@ public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplate
                     return Messages.TemplateValuePmo_Status_NewlyDefined_withoutParentTemplate;
                 }
             default:
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
         }
     }
 
@@ -73,7 +73,7 @@ public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplate
         if (templateProperty != null) {
             return formatPropertyValue(templateProperty);
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

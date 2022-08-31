@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -299,7 +299,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 // the test policy cmpt type parameter is not product relevant
                 // then the policy cmpt qualified name is stored on the test policy cmpt
                 policyCmptTypeQName = testPolicyCmpt.getPolicyCmptType();
-                if (StringUtils.isEmpty(policyCmptTypeQName)) {
+                if (IpsStringUtils.isEmpty(policyCmptTypeQName)) {
                     // attribute policyCmptType not set, get the policy cmpt type from test
                     // parameter
                     policyCmptTypeQName = getPolicyCmptTypeNameFromParameter(testPolicyCmpt);
@@ -442,7 +442,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
 
                 // the child name is either the attribute name or the extension attribute (=test
                 // attribute name)
-                String childName = StringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName()
+                String childName = IpsStringUtils.isEmpty(testAttribute.getAttribute()) ? testAttribute.getName()
                         : testAttribute.getAttribute();
                 Element attrValueElem = XmlUtil.addNewChild(doc, testPolicyCmpt, childName);
                 addValueElement(doc, attrValueElem, "property", testAttrValue.getValue());

@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -314,7 +314,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
             String localizedLabel = IIpsModel.get().getMultiLanguageSupport()
                     .getLocalizedLabel(structure.getColumn(columnIndex));
             String value = getValue(columnIndex);
-            if (value != null && StringUtils.isEmpty(value.trim()) || value == null) {
+            if (value != null && IpsStringUtils.isEmpty(value.trim()) || value == null) {
                 String text = MessageFormat.format(Messages.Row_MissingValueForUniqueKey, localizedLabel);
                 Message message = new Message(MSGCODE_UNDEFINED_UNIQUEKEY_VALUE, text, Message.ERROR,
                         new ObjectProperty(this, IRow.PROPERTY_VALUE, columnIndex));

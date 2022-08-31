@@ -15,16 +15,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EclipseLink25PersistenceProviderTest {
 
     private EclipseLink25PersistenceProvider provider;
@@ -48,7 +48,7 @@ public class EclipseLink25PersistenceProviderTest {
         JavaCodeFragment indexAnnotations = provider.getIndexAnnotations(persistentAttributeInfo);
 
         assertNotNull(indexAnnotations);
-        assertTrue(StringUtils.isEmpty(indexAnnotations.getSourcecode()));
+        assertTrue(IpsStringUtils.isEmpty(indexAnnotations.getSourcecode()));
     }
 
     @Test

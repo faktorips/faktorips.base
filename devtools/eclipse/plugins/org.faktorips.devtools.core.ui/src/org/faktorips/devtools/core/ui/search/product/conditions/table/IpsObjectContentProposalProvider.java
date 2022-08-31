@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;

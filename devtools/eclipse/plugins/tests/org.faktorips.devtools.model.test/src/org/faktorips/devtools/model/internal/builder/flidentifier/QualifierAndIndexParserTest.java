@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -34,9 +33,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class QualifierAndIndexParserTest extends AbstractParserTest {
 
     private static final String RUNTIME_ID = "RuntimeID";
@@ -142,7 +141,6 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findAssociationQualified1To1FromMany() throws Exception {
-        when(association.is1ToManyIgnoringQualifier()).thenReturn(false);
         initProdCmptAndType();
         initSourceFile();
         getParsingContext().pushNode(createAssociationNode(association, true));
@@ -219,7 +217,6 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAssociation1ToManyIndexedFromList() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
-        when(association.is1ToManyIgnoringQualifier()).thenReturn(true);
         initSourceFileNoRuntimeID();
         getParsingContext().pushNode(createAssociationNode(association, true));
 
@@ -262,11 +259,6 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     private IPolicyCmptType initSourceFile(String runtimeID) throws Exception {
         when(association.findTarget(getIpsProject())).thenReturn(targetType);
         when(targetType.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
-        IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
-        when(getIpsProject().findAllProductCmptSrcFiles(getProductCmptType(), true)).thenReturn(ipsSourceFiles);
-        when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
-        when(sourceFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getRuntimeId()).thenReturn(runtimeID);
         when(productCmpt.findPolicyCmptType(getIpsProject())).thenReturn(targetSubType);
         return targetType;

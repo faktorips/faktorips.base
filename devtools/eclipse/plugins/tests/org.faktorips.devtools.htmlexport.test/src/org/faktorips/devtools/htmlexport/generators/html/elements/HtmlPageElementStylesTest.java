@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.generators.html.elements;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.junit.Assert;
@@ -26,7 +26,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
         String classes = elementLayouter.getClasses();
 
-        Assert.assertTrue(StringUtils.isEmpty(classes));
+        Assert.assertTrue(IpsStringUtils.isEmpty(classes));
 
     }
 

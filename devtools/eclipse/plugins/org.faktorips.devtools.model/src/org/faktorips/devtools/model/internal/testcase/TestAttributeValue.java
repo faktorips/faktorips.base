@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -83,7 +83,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
 
     @Override
     public ITestAttribute findTestAttribute(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testAttribute)) {
+        if (IpsStringUtils.isEmpty(testAttribute)) {
             return null;
         }
         ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
@@ -102,7 +102,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
         }
 
         ITestPolicyCmpt testPolicyCmpt = getTestPolicyCmpt();
-        if (!StringUtils.isEmpty(testPolicyCmpt.getPolicyCmptType())) {
+        if (!IpsStringUtils.isEmpty(testPolicyCmpt.getPolicyCmptType())) {
             IPolicyCmptType policyCmptType = testPolicyCmpt.findPolicyCmptType();
             if (policyCmptType == null) {
                 return null;
@@ -280,7 +280,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
                  * which is defined in the test case type, and the attribute should be only relevant
                  * for other policy cmpts which defines this subclass attribute
                  */
-                if (attribute == null && !StringUtils.isEmpty(value)) {
+                if (attribute == null && !IpsStringUtils.isEmpty(value)) {
                     String text = MessageFormat.format(Messages.TestAttributeValue_ValidateError_AttributeNotFound,
                             testAttr.getAttribute());
                     Message msg = new Message(ITestAttribute.MSGCODE_ATTRIBUTE_NOT_FOUND, text, Message.WARNING, this,

@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -127,7 +127,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     protected String getConfiguredAdditionalAnnotations() {
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override

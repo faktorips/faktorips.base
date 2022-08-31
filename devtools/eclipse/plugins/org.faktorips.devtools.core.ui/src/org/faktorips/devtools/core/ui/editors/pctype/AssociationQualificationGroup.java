@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.pctype;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Group composite to edit the associations qualification.
@@ -141,7 +142,7 @@ public class AssociationQualificationGroup extends Composite {
             String label = Messages.AssociationQualificationGroup_labelIsQualified;
             try {
                 String productCmptType = QNameUtil.getUnqualifiedName(association.findQualifierCandidate(ipsProject));
-                if (StringUtils.isNotEmpty(productCmptType)) {
+                if (IpsStringUtils.isNotEmpty(productCmptType)) {
                     label = label
                             + NLS.bind(Messages.AssociationQualificationGroup_labelIsQualifiedByType, productCmptType);
                 }

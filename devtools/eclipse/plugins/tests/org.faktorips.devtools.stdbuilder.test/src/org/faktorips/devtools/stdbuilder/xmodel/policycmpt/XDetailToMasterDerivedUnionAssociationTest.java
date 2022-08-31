@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,9 +36,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XDetailToMasterDerivedUnionAssociationTest {
 
     @Mock
@@ -115,18 +115,12 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         XDetailToMasterDerivedUnionAssociation detailDUAssoc = new XDetailToMasterDerivedUnionAssociation(policyAssoc,
                 modelContext, modelService);
 
-        when(associationNode1.isCompositionDetailToMaster()).thenReturn(false);
-        when(associationNode2.isCompositionDetailToMaster()).thenReturn(false);
         when(associationNode2.isSubsetOf(any(XDerivedUnionAssociation.class))).thenReturn(false);
         assertEquals(0, detailDUAssoc.getSubsetAssociations(policyCmptClass).size());
 
-        when(associationNode1.isCompositionDetailToMaster()).thenReturn(false);
-        when(associationNode2.isCompositionDetailToMaster()).thenReturn(true);
         when(associationNode2.isSubsetOf(any(XDerivedUnionAssociation.class))).thenReturn(false);
         assertEquals(0, detailDUAssoc.getSubsetAssociations(policyCmptClass).size());
 
-        when(associationNode1.isCompositionDetailToMaster()).thenReturn(false);
-        when(associationNode2.isCompositionDetailToMaster()).thenReturn(true);
         when(associationNode2.isSubsetOf(any(XDerivedUnionAssociation.class))).thenReturn(true);
         assertEquals(1, detailDUAssoc.getSubsetAssociations(policyCmptClass).size());
         assertEquals(associationNode2, detailDUAssoc.getSubsetAssociations(policyCmptClass).iterator().next());
@@ -157,38 +151,21 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         when(xPolicyCmptClass.getType()).thenReturn(type);
         assertFalse(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
 
-        when(derivedUnion.isDerivedUnion()).thenReturn(true);
-
         when(detailToMasterDerivedUnion.getInverseAssociation()).thenReturn("derivedUnion");
-        when(detailToMasterDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
 
         when(subset1.getSubsettedDerivedUnion()).thenReturn("derivedUnion");
 
         when(inverseSubset1.findInverseAssociation(ipsProject)).thenReturn(subset1);
         when(inverseSubset1.isCompositionDetailToMaster()).thenReturn(true);
-        when(inverseSubset2.findInverseAssociation(ipsProject)).thenReturn(subset2);
-        when(inverseSubset2.isCompositionDetailToMaster()).thenReturn(true);
-
-        when(subset2.getSubsettedDerivedUnion()).thenReturn("derivedUnion");
-        when(subset2.findInverseAssociation(ipsProject)).thenReturn(inverseSubset2);
 
         when(subTypeChild.findSupertype(ipsProject)).thenReturn(type);
-        when(subParent.findSupertype(ipsProject)).thenReturn(parent);
 
-        when(parent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(derivedUnion));
         when(type.getPolicyCmptTypeAssociations())
                 .thenReturn(Arrays.asList(detailToMasterDerivedUnion));
-        when(subParent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(subset2));
-        when(subTypeChild.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(inverseSubset2));
 
         when(xPolicyCmptClass.getType()).thenReturn(subTypeChild);
         assertFalse(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
 
-        when(parent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(derivedUnion, subset1));
         when(type.getPolicyCmptTypeAssociations()).thenReturn(
                 Arrays.asList(detailToMasterDerivedUnion, inverseSubset1));
         assertTrue(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
@@ -202,9 +179,6 @@ public class XDetailToMasterDerivedUnionAssociationTest {
                 detailToMasterDerivedUnion, modelContext, modelService);
         when(detailToMasterDerivedUnion.getType()).thenReturn(type);
         when(xPolicyCmptClass.getType()).thenReturn(type);
-        when(derivedUnion.isDerivedUnion()).thenReturn(true);
-        when(detailToMasterDerivedUnion.getInverseAssociation()).thenReturn("derivedUnion");
-        when(detailToMasterDerivedUnion.isCompositionDetailToMaster()).thenReturn(true);
         when(shared1.isCompositionDetailToMaster()).thenReturn(true);
         when(shared1.isSharedAssociation()).thenReturn(true);
         // shared2 is an invalid shared association
@@ -213,30 +187,10 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         when(shared2.isSharedAssociation()).thenReturn(true);
         when(shared2.findSharedAssociationHost(ipsProject)).thenReturn(inverseSubset1);
 
-        when(subset2.getSubsettedDerivedUnion()).thenReturn("derivedUnion");
-        when(subset2.findInverseAssociation(ipsProject)).thenReturn(inverseSubset2);
-        when(inverseSubset2.findInverseAssociation(ipsProject)).thenReturn(subset2);
-        when(inverseSubset2.isCompositionDetailToMaster()).thenReturn(true);
-
-        when(subTypeChild.findSupertype(ipsProject)).thenReturn(type);
         when(subSubTypeChild.findSupertype(ipsProject)).thenReturn(subTypeChild);
-        when(subParent.findSupertype(ipsProject)).thenReturn(parent);
-
-        when(parent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(derivedUnion));
-        when(type.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(detailToMasterDerivedUnion));
-        when(subParent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(subset2));
-        when(subSubTypeChild.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(inverseSubset2));
 
         when(xPolicyCmptClass.getType()).thenReturn(subSubTypeChild);
 
-        when(parent.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(derivedUnion));
-        when(type.getPolicyCmptTypeAssociations())
-                .thenReturn(Arrays.asList(detailToMasterDerivedUnion));
         when(subTypeChild.getPolicyCmptTypeAssociations())
                 .thenReturn(Arrays.asList(shared2, shared1));
         assertTrue(detailDUAssoc.isImplementedInSuperclass(xPolicyCmptClass));
@@ -261,9 +215,7 @@ public class XDetailToMasterDerivedUnionAssociationTest {
                 detailToMasterDerivedUnion, modelContext, modelService);
         XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
         when(associationNode1.isSharedAssociation()).thenReturn(true);
-        when(associationNode1.getInverseAssociation()).thenReturn(null);
         when(associationNode2.isSharedAssociation()).thenReturn(true);
-        when(associationNode2.getInverseAssociation()).thenReturn(null);
         when(associationNode2.getName()).thenReturn("theName");
         when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
 
@@ -280,11 +232,9 @@ public class XDetailToMasterDerivedUnionAssociationTest {
                 detailToMasterDerivedUnion, modelContext, modelService);
         XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
         when(associationNode1.isSharedAssociation()).thenReturn(true);
-        when(associationNode1.getInverseAssociation()).thenReturn(null);
         when(associationNode1.getName()).thenReturn("theName");
         when(associationNode1.isSharedAssociationImplementedInSuperclass()).thenReturn(true);
         when(associationNode2.isSharedAssociation()).thenReturn(true);
-        when(associationNode2.getInverseAssociation()).thenReturn(null);
         when(associationNode2.getName()).thenReturn("theName");
         when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
 
@@ -300,7 +250,6 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         XDetailToMasterDerivedUnionAssociation detailDUAssoc = new XDetailToMasterDerivedUnionAssociation(
                 detailToMasterDerivedUnion, modelContext, modelService);
         XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
-        when(associationNode1.getName()).thenReturn("theName");
         when(associationNode1.getInverseAssociation().isDerived()).thenReturn(true);
         when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
         when(associationNode2.getName()).thenReturn("theName");
@@ -317,19 +266,13 @@ public class XDetailToMasterDerivedUnionAssociationTest {
         XPolicyCmptClass policyCmptClass = setupPolicyClassWithGetAssociations();
         when(associationNode1.getName()).thenReturn("theName");
         when(associationNode1.getInverseAssociation().isDerived()).thenReturn(false);
-        when(associationNode2.getName()).thenReturn("theName");
         when(associationNode2.getInverseAssociation().isDerived()).thenReturn(true);
-        when(detailToMasterDerivedUnion.findInverseAssociation(any(IIpsProject.class))).thenReturn(derivedUnion);
-        XDerivedUnionAssociation xDerivedUnion = mock(XDerivedUnionAssociation.class);
-        when(modelService.getModelNode(derivedUnion, XDerivedUnionAssociation.class, modelContext))
-                .thenReturn(xDerivedUnion);
+        mock(XDerivedUnionAssociation.class);
         XDetailToMasterDerivedUnionAssociation detailDUAssoc = new XDetailToMasterDerivedUnionAssociation(
                 detailToMasterDerivedUnion, modelContext, modelService);
         when(detailToMasterDerivedUnion.getName()).thenReturn("theName");
-        XPolicyAssociation masterToDetail1 = associationNode1.getInverseAssociation();
-        when(masterToDetail1.isRecursiveSubsetOf(xDerivedUnion)).thenReturn(true);
-        XPolicyAssociation masterToDetail2 = associationNode2.getInverseAssociation();
-        when(masterToDetail2.isRecursiveSubsetOf(xDerivedUnion)).thenReturn(true);
+        associationNode1.getInverseAssociation();
+        associationNode2.getInverseAssociation();
 
         Set<XPolicyAssociation> detailToMasterSubsetAssociations = detailDUAssoc
                 .getDetailToMasterSubsetAssociations(policyCmptClass);

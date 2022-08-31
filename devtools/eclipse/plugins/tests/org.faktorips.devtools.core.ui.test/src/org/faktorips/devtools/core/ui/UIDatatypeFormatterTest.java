@@ -41,9 +41,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class UIDatatypeFormatterTest {
 
     @Mock
@@ -171,6 +171,7 @@ public class UIDatatypeFormatterTest {
         when(enumValueSet.getValues()).thenReturn(enumValues);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
         when(enumValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
+        when(valueSetOwner.getIpsProject()).thenReturn(ipsProject);
         when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.STRING);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
@@ -223,6 +224,7 @@ public class UIDatatypeFormatterTest {
         RangeValueSet rangeValueSet = mock(RangeValueSet.class);
         when(rangeValueSet.isRange()).thenReturn(true);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
+        when(valueSetOwner.getIpsProject()).thenReturn(ipsProject);
         when(rangeValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
         when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
         return rangeValueSet;

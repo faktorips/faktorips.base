@@ -12,11 +12,10 @@ package org.faktorips.devtools.model.internal.value;
 
 import java.beans.PropertyChangeListener;
 import java.text.MessageFormat;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.internal.InternationalString;
@@ -28,6 +27,7 @@ import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,7 +78,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     public String getContentAsString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (LocalizedString localizedString : getContent().values()) {
-            if (!StringUtils.isEmpty(stringBuilder.toString())) {
+            if (!IpsStringUtils.isEmpty(stringBuilder.toString())) {
                 stringBuilder.append(CONTENT_STRING_SEPERATOR);
             }
             stringBuilder.append(localizedString.getLocale()).append("=").append(localizedString.getValue()); //$NON-NLS-1$
@@ -136,7 +136,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
             int languagesCount = supportedLanguages.size();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
                 LocalizedString iLocalizedString = getContent().get(supportedLanguage.getLocale());
-                if (StringUtils.isEmpty(iLocalizedString.getValue())) {
+                if (IpsStringUtils.isEmpty(iLocalizedString.getValue())) {
                     newList.add(new Message(AttributeValue.MSGCODE_MULTILINGUAL_NOT_SET, MessageFormat.format(
                             Messages.AttributeValue_MultiLingual_NotSet, supportedLanguage.getLocale()
                                     .getDisplayLanguage()),
@@ -159,11 +159,11 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     public String getLocalizedContent() {
         for (LocalizedString localizedString : getContent().values()) {
             String value = localizedString.getValue();
-            if (!StringUtils.isEmpty(value)) {
+            if (!IpsStringUtils.isEmpty(value)) {
                 return value;
             }
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override
@@ -181,7 +181,7 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
         if (IInternationalString.class.isAssignableFrom(other.getContent().getClass())) {
             return getContent().compareTo((IInternationalString)other.getContent());
         } else {
-            return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
+            return Comparator.<String> naturalOrder().compare(getContentAsString(), other.getContentAsString());
         }
     }
 

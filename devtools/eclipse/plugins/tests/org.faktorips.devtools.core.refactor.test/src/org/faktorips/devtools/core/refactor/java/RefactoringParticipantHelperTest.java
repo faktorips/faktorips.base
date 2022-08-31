@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.refactor.java;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -50,15 +51,22 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
 
     private TestParticipantHelper spyRefactoringHelper;
 
+    private AutoCloseable openMocks;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(
                 new IpsRefactoringModificationSet(null));
         TestParticipantHelper refactoringHelper = new TestParticipantHelper();
         spyRefactoringHelper = spy(refactoringHelper);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

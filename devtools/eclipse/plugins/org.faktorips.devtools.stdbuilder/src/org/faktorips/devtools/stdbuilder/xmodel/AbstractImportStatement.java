@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This class represents an import statement for the Xtend builder.
@@ -49,7 +49,7 @@ public class AbstractImportStatement {
             result[0] = qualifiedName.substring(0, lastIndexOf);
             result[1] = qualifiedName.substring(lastIndexOf + 1);
         } else {
-            result[0] = StringUtils.EMPTY;
+            result[0] = IpsStringUtils.EMPTY;
             result[1] = qualifiedName;
         }
         return result;
@@ -61,7 +61,7 @@ public class AbstractImportStatement {
      * @return Returns the qualifiedName.
      */
     public String getQualifiedName() {
-        if (StringUtils.isEmpty(packageName)) {
+        if (IpsStringUtils.isEmpty(packageName)) {
             return className;
         } else {
             return packageName + SEPERATOR + className;

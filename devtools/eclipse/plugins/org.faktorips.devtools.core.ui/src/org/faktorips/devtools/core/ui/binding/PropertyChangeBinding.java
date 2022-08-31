@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Implement this binding if you need to do anything on property change event. You can register this
@@ -47,7 +47,7 @@ public abstract class PropertyChangeBinding<T> extends ControlPropertyBinding {
 
     @Override
     public void updateUiIfNotDisposed(String propertyName) {
-        if (StringUtils.isEmpty(propertyName) || getPropertyName().equals(propertyName)) {
+        if (IpsStringUtils.isEmpty(propertyName) || getPropertyName().equals(propertyName)) {
             @SuppressWarnings("unchecked")
             T newValue = (T)readProperty();
             if (oldValue != newValue && (oldValue == null || !(oldValue.equals(newValue)))) {

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.util;
 
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -44,7 +44,7 @@ public class PersistenceUtil {
      * @param name The string to check.
      */
     public static boolean isValidDatabaseIdentifier(String name) {
-        if (StringUtils.isEmpty(name)) {
+        if (IpsStringUtils.isEmpty(name)) {
             return false;
         }
         return NAME_PATTERN.matcher(name).matches();

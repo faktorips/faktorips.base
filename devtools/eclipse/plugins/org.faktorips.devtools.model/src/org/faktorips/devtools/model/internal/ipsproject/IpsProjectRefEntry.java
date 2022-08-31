@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -117,7 +117,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         if (isUseNWDITrackPrefix()) {
             projectName = createNWDIProjectName(projectName, project.getName());
         }
-        if (!StringUtils.isEmpty(projectName)) {
+        if (!IpsStringUtils.isEmpty(projectName)) {
             referencedIpsProject = IIpsModel.get().getIpsProject(projectName);
         }
     }

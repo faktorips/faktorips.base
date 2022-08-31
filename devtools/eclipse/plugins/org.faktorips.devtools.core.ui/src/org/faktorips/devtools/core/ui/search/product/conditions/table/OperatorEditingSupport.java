@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the {@link EditingSupport} for the columns of operators. It provides a {@link Combo} for
@@ -66,7 +66,7 @@ final class OperatorEditingSupport extends EnhancedCellTrackingEditingSupport {
     protected Object getValue(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
 
-        return model.getOperatorType() == null ? StringUtils.EMPTY : model.getOperatorType().getLabel();
+        return model.getOperatorType() == null ? IpsStringUtils.EMPTY : model.getOperatorType().getLabel();
     }
 
     @Override

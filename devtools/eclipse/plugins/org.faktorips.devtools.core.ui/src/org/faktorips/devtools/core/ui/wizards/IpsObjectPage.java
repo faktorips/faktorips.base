@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.WordUtils;
+import org.apache.commons.text.WordUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -142,7 +142,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      */
     public String getQualifiedIpsObjectName() {
         StringBuilder sb = new StringBuilder();
-        if (!StringUtils.isEmpty(getPackage())) {
+        if (!IpsStringUtils.isEmpty(getPackage())) {
             sb.append(getPackage());
             sb.append('.');
         }
@@ -489,7 +489,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      */
     @Override
     protected void setDefaultFocus() {
-        if (StringUtils.isEmpty(sourceFolderField.getText())) {
+        if (IpsStringUtils.isEmpty(sourceFolderField.getText())) {
             sourceFolderField.getControl().setFocus();
             return;
         }

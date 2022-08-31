@@ -14,11 +14,10 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import com.google.common.collect.Lists;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -34,7 +33,7 @@ public class InferTemplatePmoTest extends AbstractIpsPluginTest {
         IProductCmptType type = newProductCmptType(ipsProject, "type");
         InferTemplatePmo pmo = new InferTemplatePmo();
         pmo.setIpsProject(ipsProject);
-        List<IProductCmpt> cmpts = Lists.newArrayList();
+        List<IProductCmpt> cmpts = new ArrayList<>();
         pmo.setProductCmptsToInferTemplateFrom(cmpts);
 
         assertThat(pmo.getEarliestValidFrom(), is(nullValue()));

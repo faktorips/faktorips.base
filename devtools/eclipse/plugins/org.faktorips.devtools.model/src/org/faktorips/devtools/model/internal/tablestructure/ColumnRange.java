@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -97,7 +96,7 @@ public class ColumnRange extends AtomicIpsObjectPart implements IColumnRange {
     protected void validateThis(MessageList list, IIpsProject ipsProject) {
         super.validateThis(list, ipsProject);
 
-        if (StringUtils.isEmpty(parameterName)) {
+        if (IpsStringUtils.isEmpty(parameterName)) {
             String text = Messages.ColumnRange_msgParameterEmpty;
             list.add(new Message("", text, Message.ERROR, this, PROPERTY_PARAMETER_NAME)); //$NON-NLS-1$
         } else if (!JavaConventions.validateIdentifier(parameterName, "1.5", "1.5").isOK()) { //$NON-NLS-1$ //$NON-NLS-2$

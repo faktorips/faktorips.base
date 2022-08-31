@@ -13,12 +13,12 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
 
@@ -27,7 +27,7 @@ public class NamedDatatypeInputFormat extends AbstractInputFormat<String> {
     private final IpsPreferences ipsPreferences;
 
     public NamedDatatypeInputFormat(NamedDatatype namedDatatype, IpsPreferences ipsPreferences) {
-        super(StringUtils.EMPTY, ipsPreferences.getDatatypeFormattingLocale());
+        super(IpsStringUtils.EMPTY, ipsPreferences.getDatatypeFormattingLocale());
         this.namedDatatype = namedDatatype;
         this.ipsPreferences = ipsPreferences;
     }

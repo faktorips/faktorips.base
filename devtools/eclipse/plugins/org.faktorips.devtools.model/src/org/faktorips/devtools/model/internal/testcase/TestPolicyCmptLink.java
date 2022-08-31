@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
@@ -63,7 +63,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
 
     @Override
     public ITestPolicyCmptTypeParameter findTestPolicyCmptTypeParameter(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testPolicyCmptTypeParameter)) {
+        if (IpsStringUtils.isEmpty(testPolicyCmptTypeParameter)) {
             return null;
         }
         return ((TestCase)getTestCase()).findTestPolicyCmptTypeParameter(this, ipsProject);
@@ -86,7 +86,7 @@ public class TestPolicyCmptLink extends IpsObjectPart implements ITestPolicyCmpt
         if (targetChild != null) {
             return targetChild;
         }
-        if (StringUtils.isEmpty(target)) {
+        if (IpsStringUtils.isEmpty(target)) {
             return null;
         }
 

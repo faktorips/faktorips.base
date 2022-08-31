@@ -30,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsFolderBundleTest {
 
     @Mock
@@ -97,7 +97,6 @@ public class IpsFolderBundleTest {
     private void mockManifestFile() throws FileNotFoundException {
         when(folder.resolve(IpsBundleManifest.MANIFEST_NAME)).thenReturn(manifestPath);
         when(manifestPath.toFile()).thenReturn(manifestFile);
-        when(manifestFile.getPath()).thenReturn("myManifestPath");
         when(ioFactory.createInputStream(manifestFile)).thenReturn(expectedInputStream);
     }
 

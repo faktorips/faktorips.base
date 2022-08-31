@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A factory to create controls and edit fields that allow to edit values for one or more value
@@ -190,7 +190,7 @@ public abstract class ValueDatatypeControlFactory {
      * 
      */
     protected Button createArrowDownButton(UIToolkit toolkit, Composite parent) {
-        Button button = toolkit.createButton(parent, StringUtils.EMPTY);
+        Button button = toolkit.createButton(parent, IpsStringUtils.EMPTY);
         GridData buttonData = new GridData();
         // Matches height of the text field in Win7
         buttonData.heightHint = 28;

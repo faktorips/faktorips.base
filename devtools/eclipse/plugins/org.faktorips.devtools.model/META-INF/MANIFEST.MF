@@ -244,9 +244,10 @@ Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.google.common.base;version="21.0.0",
  com.google.common.collect;version="21.0.0",
- com.opencsv;version="3.3.0",
- edu.umd.cs.findbugs.annotations;bundle-version="3.1.12";resolution:=optional,
- org.apache.commons.lang;version="[2.6.0,2.6.0]",
+ com.opencsv;version="5.6.0",
+ com.opencsv.exceptions;version="5.6.0",
+ edu.umd.cs.findbugs.annotations;bundle-version="4.7.1";resolution:=optional,
+ org.apache.commons.lang3;version="3.12.0",
  org.faktorips.codegen,
  org.faktorips.codegen.dthelpers,
  org.faktorips.codegen.dthelpers.joda,

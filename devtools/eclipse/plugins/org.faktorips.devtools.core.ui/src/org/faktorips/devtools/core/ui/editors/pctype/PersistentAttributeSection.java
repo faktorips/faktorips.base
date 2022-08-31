@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -46,6 +45,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
 import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
@@ -238,7 +238,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 } else if (!isUseSqlDefinition(attributeInfo)) {
                     return getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
                 }
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             }
 
             private String getColumnTextNoSqlDefinition(ValueDatatype valueDatatype,
@@ -252,24 +252,24 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                     if (PersistenceUtil.isSupportingLenght(valueDatatype)) {
                         return String.valueOf(attributeInfo.getTableColumnSize());
                     } else {
-                        return StringUtils.EMPTY;
+                        return IpsStringUtils.EMPTY;
                     }
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION.equals(property)) {
                     if (PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
                         return String.valueOf(attributeInfo.getTableColumnPrecision());
                     } else {
-                        return StringUtils.EMPTY;
+                        return IpsStringUtils.EMPTY;
                     }
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE.equals(property)
                         && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
                     return String.valueOf(attributeInfo.getTableColumnScale());
                 } else {
-                    return StringUtils.EMPTY;
+                    return IpsStringUtils.EMPTY;
                 }
             }
 
             private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {
-                return StringUtils.isNotEmpty(attributeInfo.getSqlColumnDefinition());
+                return IpsStringUtils.isNotEmpty(attributeInfo.getSqlColumnDefinition());
             }
         }
     }

@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
@@ -33,6 +33,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A collection of helper methods for validating model objects.
@@ -336,7 +337,7 @@ public class ValidationUtils {
             String msgCode,
             MessageList list) {
 
-        if (StringUtils.isEmpty(propertyValue)) {
+        if (IpsStringUtils.isEmpty(propertyValue)) {
             String text = MessageFormat.format(Messages.ValidationUtils_msgPropertyMissing,
                     StringUtils.capitalize(propertyDisplayName));
             list.add(new Message(msgCode, text, Message.ERROR, object, propertyName));

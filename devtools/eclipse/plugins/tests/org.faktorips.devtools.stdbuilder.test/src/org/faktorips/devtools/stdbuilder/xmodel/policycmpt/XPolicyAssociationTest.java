@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,7 +24,6 @@ import static org.mockito.Mockito.withSettings;
 
 import java.util.Set;
 
-import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -38,7 +37,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -61,7 +60,6 @@ public class XPolicyAssociationTest {
     @Before
     public void setUp() {
         assoc = spy(new XPolicyAssociation(typeAssoc, context, modelService));
-        doReturn(new JavaNamingConvention()).when(assoc).getJavaNamingConvention();
     }
 
     @Test
@@ -71,11 +69,9 @@ public class XPolicyAssociationTest {
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
         doReturn(false).when(assoc).isMasterToDetail();
-        doReturn(true).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
         doReturn(false).when(assoc).isMasterToDetail();
-        doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
 
         doReturn(true).when(assoc).isMasterToDetail();
@@ -85,26 +81,17 @@ public class XPolicyAssociationTest {
 
     @Test
     public void testGenerateSynchronizeForRemove() {
-        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(false).when(assoc).isMasterToDetail();
-        doReturn(true).when(assoc).hasInverseAssociation();
         // TODO fix with FIPS-1141
         // assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(false).when(assoc).isMasterToDetail();
         doReturn(false).when(assoc).hasInverseAssociation();
         assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
 
-        doReturn(true).when(assoc).isMasterToDetail();
         doReturn(true).when(assoc).hasInverseAssociation();
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
-    }
-
-    @Test
-    public void testIsCompositionMasterToDetail() throws Exception {
     }
 
     public static <T> T myMock(Class<T> classToMock, String name, Answer<?> defaultAnswer) {
@@ -132,37 +119,30 @@ public class XPolicyAssociationTest {
 
         XPolicyAssociation xPolicyAssociation = myMock(XPolicyAssociation.class, name, myAnswer);
         XPolicyAssociation xInversePolicyAssociation = myMock(XPolicyAssociation.class, inverseName, myAnswer);
+        doReturn(ipsProject).when(xInversePolicyAssociation).getIpsProject();
         IPolicyCmptTypeAssociation policyAssociation = mock(IPolicyCmptTypeAssociation.class, name);
         IPolicyCmptTypeAssociation inverseAssociation = mock(IPolicyCmptTypeAssociation.class, inverseName);
 
-        when(xPolicyAssociation.getName()).thenReturn(name);
         when(xInversePolicyAssociation.getName()).thenReturn(inverseName);
 
-        when(xPolicyAssociation.isComposition()).thenReturn(true);
-        when(xPolicyAssociation.isMasterToDetail()).thenReturn(true);
         when(xInversePolicyAssociation.isCompositionDetailToMaster()).thenReturn(true);
 
         when(xPolicyAssociation.getInverseAssociation()).thenReturn(xInversePolicyAssociation);
         when(xInversePolicyAssociation.getInverseAssociation()).thenReturn(xPolicyAssociation);
         when(xPolicyAssociation.hasInverseAssociation()).thenReturn(true);
-        when(xInversePolicyAssociation.hasInverseAssociation()).thenReturn(true);
 
         if (isDerivedUnion) {
             when(xPolicyAssociation.isDerived()).thenReturn(isDerivedUnion);
-            when(xInversePolicyAssociation.isDerived()).thenReturn(isDerivedUnion);
 
             XDerivedUnionAssociation xDerivedUnionAssociation = myMock(XDerivedUnionAssociation.class, name, myAnswer);
             when(xDerivedUnionAssociation.getAssociation()).thenReturn(policyAssociation);
             when(modelService.getModelNode(policyAssociation, XDerivedUnionAssociation.class, context)).thenReturn(
                     xDerivedUnionAssociation);
-            when(xDerivedUnionAssociation.getName()).thenReturn(name);
 
             XDetailToMasterDerivedUnionAssociation xDetailToMasterDerivedUnionAssociation = myMock(
                     XDetailToMasterDerivedUnionAssociation.class, inverseName, myAnswer);
-            when(xDetailToMasterDerivedUnionAssociation.getAssociation()).thenReturn(inverseAssociation);
             when(modelService.getModelNode(inverseAssociation, XDetailToMasterDerivedUnionAssociation.class, context))
                     .thenReturn(xDetailToMasterDerivedUnionAssociation);
-            when(xDetailToMasterDerivedUnionAssociation.getName()).thenReturn(inverseName);
         }
 
         if (subsettedDU != null) {
@@ -174,8 +154,6 @@ public class XPolicyAssociationTest {
         when(xInversePolicyAssociation.getAssociation()).thenReturn(inverseAssociation);
         when(modelService.getModelNode(policyAssociation, XPolicyAssociation.class, context)).thenReturn(
                 xPolicyAssociation);
-        when(modelService.getModelNode(inverseAssociation, XPolicyAssociation.class, context)).thenReturn(
-                xInversePolicyAssociation);
 
         return new XPolicyAssociation[] { xPolicyAssociation, xInversePolicyAssociation };
     }
@@ -272,11 +250,7 @@ public class XPolicyAssociationTest {
 
     @Test
     public void testIsGenerateGetter_getterForConstrainedDetailToMaster() throws Exception {
-        IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
-
         doReturn(false).when(assoc).isDerived();
-        doReturn(true).when(assoc).hasSuperAssociationWithSameName();
-        when(typeAssoc.findInverseAssociation(ipsProject)).thenReturn(inverseAssoc);
         when(typeAssoc.isConstrain()).thenReturn(true);
         when(typeAssoc.isCompositionDetailToMaster()).thenReturn(true);
 
@@ -286,19 +260,13 @@ public class XPolicyAssociationTest {
     @Test
     public void testIsGenerateGetterIsDerivedAndSharedAssocuation() {
         doReturn(true).when(assoc).isDerived();
-        when(typeAssoc.isSharedAssociation()).thenReturn(true);
 
         assertFalse(assoc.isGenerateGetter());
     }
 
     @Test
     public void testIsGenerateGetterTrue() {
-        IPolicyCmptTypeAssociation inverseAssoc = mock(IPolicyCmptTypeAssociation.class);
-
         doReturn(false).when(assoc).isDerived();
-        doReturn(true).when(assoc).hasSuperAssociationWithSameName();
-        when(typeAssoc.findInverseAssociation(ipsProject)).thenReturn(inverseAssoc);
-        when(typeAssoc.isConstrain()).thenReturn(false);
 
         assertTrue(assoc.isGenerateGetter());
 

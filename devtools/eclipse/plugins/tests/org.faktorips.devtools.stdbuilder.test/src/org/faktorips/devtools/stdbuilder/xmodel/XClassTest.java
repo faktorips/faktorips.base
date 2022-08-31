@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
-import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.type.IType;
@@ -32,9 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XClassTest {
 
     @Mock
@@ -53,9 +52,6 @@ public class XClassTest {
         xClass = mock(XClass.class, CALLS_REAL_METHODS);
         when(xClass.getIpsObjectPartContainer()).thenReturn(type);
         when(xClass.getContext()).thenReturn(modelContext);
-
-        when(type.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
     }
 
     @Test
@@ -128,7 +124,6 @@ public class XClassTest {
         when(startType.findSupertype(any(IIpsProject.class))).thenReturn(superType);
         when(superType.findSupertype(any(IIpsProject.class))).thenReturn(superSuperType);
         when(superSuperType.findSupertype(any(IIpsProject.class))).thenReturn(null);
-        when(startType.isAbstract()).thenReturn(false);
         when(superType.isAbstract()).thenReturn(superIsAbstract);
         when(superSuperType.isAbstract()).thenReturn(superSuperIsAbstract);
 

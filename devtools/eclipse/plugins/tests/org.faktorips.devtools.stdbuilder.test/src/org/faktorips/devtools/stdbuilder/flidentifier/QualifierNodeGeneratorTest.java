@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +21,6 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
-import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -36,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class QualifierNodeGeneratorTest {
 
     @Mock
@@ -82,13 +80,6 @@ public class QualifierNodeGeneratorTest {
             String packageName,
             IPolicyCmptType targetType,
             boolean isListOfDatatype) throws Exception {
-        when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
-        when(association.getTarget()).thenReturn("Deckung");
-        IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
-        when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
-        when(sourceFile.getIpsObjectName()).thenReturn(qualifier);
-        when(sourceFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getRuntimeId()).thenReturn(packageName + "." + qualifier);
         when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(targetType);
         return (QualifierNode)nodeFactory.createQualifierNode(productCmpt, qualifier, isListOfDatatype);
@@ -97,13 +88,10 @@ public class QualifierNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_SingleSameTargetDatatype() throws Exception {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
-        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         when(contextCompilationResult.getDatatype()).thenReturn(target);
-        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
-        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
-        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 false);
 
@@ -122,14 +110,11 @@ public class QualifierNodeGeneratorTest {
     public void testGetCompilationResult_SingleDifferentTargetDatatype() throws Exception {
         IPolicyCmptType type = mock(IPolicyCmptType.class);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
-        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         when(contextCompilationResult.getDatatype()).thenReturn(target);
-        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(type, true)).thenReturn("SubPolicyCmptType");
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
-        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckung");
-        when(type.getQualifiedName()).thenReturn("zusatzdeckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", type,
                 false);
 
@@ -147,13 +132,10 @@ public class QualifierNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_List() throws Exception {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
-        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         when(contextCompilationResult.getDatatype()).thenReturn(target);
-        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
-        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
-        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 true);
 
@@ -171,14 +153,11 @@ public class QualifierNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_ListAndContextList() throws Exception {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
-        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         ListOfTypeDatatype listOfTypeDatatype = new ListOfTypeDatatype(target);
         when(contextCompilationResult.getDatatype()).thenReturn(listOfTypeDatatype);
-        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
-        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
-        when(target.getQualifiedName()).thenReturn("Deckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 true);
 
@@ -196,14 +175,11 @@ public class QualifierNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_ListAndContextListDifferentTarget() throws Exception {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("vertrag");
-        XPolicyAssociation xPolicyAssociation = mock(XPolicyAssociation.class);
+        mock(XPolicyAssociation.class);
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
         ListOfTypeDatatype listOfTypeDatatype = new ListOfTypeDatatype(target);
         when(contextCompilationResult.getDatatype()).thenReturn(listOfTypeDatatype);
-        when(builderSet.getModelNode(association, XPolicyAssociation.class)).thenReturn(xPolicyAssociation);
         when(builderSet.getJavaClassName(target, true)).thenReturn("PolicyCmptType");
-        when(xPolicyAssociation.getMethodNameGetter()).thenReturn("getHausratZusatzdeckungen");
-        when(target.getQualifiedName()).thenReturn("Zusatzdeckung");
         qualifiedAssociationNode = createQualifiedAssociationNode("HRD-Fahrraddiebstahl 2012-03", "hausrat", target,
                 true);
 

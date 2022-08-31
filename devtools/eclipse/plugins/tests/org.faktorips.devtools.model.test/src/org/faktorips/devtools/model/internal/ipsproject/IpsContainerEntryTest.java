@@ -33,9 +33,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsContainerEntryTest {
 
     private static final String MY_ID = "myId";
@@ -157,7 +157,6 @@ public class IpsContainerEntryTest {
         String myRootName = "myRootName";
         IIpsObjectPathContainer container = mockContainer();
         IpsObjectPathEntry entry = mockEntry(container);
-        when(entry.isContainer()).thenReturn(true);
         when(entry.getIpsPackageFragmentRootName()).thenReturn(null);
 
         IIpsObjectPathEntry resolvedEntry = ipsContainerEntry.getResolvedEntry(myRootName);

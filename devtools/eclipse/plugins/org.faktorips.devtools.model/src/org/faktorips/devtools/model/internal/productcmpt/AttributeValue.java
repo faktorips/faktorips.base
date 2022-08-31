@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;

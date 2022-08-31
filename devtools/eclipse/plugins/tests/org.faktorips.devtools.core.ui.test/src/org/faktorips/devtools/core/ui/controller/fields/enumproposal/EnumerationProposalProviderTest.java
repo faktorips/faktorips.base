@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnumerationProposalProviderTest {
 
     private static final String DEFAULT_VALUE_REPRESENTATION = Messages.DefaultValueRepresentation_EditField;
@@ -57,7 +57,6 @@ public class EnumerationProposalProviderTest {
         enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
 
         when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(enumValueSet.getValueSetOwner()).thenReturn(owner);
         when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(enumValueSet.getValuesAsList())
                 .thenReturn(Arrays.asList("aaaaa", "bbbbb", "ccccc", null));
@@ -250,7 +249,6 @@ public class EnumerationProposalProviderTest {
     private void initEnumerationPPWithConfigElement() {
         owner = mock(IConfiguredValueSet.class);
         when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(enumValueSet.getValueSetOwner()).thenReturn(owner);
 
         enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
     }

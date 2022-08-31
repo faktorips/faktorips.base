@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt.template;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -20,7 +21,6 @@ import java.util.SortedMap;
 import java.util.function.Function;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
@@ -86,7 +86,7 @@ public class ProductCmptLinkHistograms {
      * {@link IProductCmptGeneration generations} are <em>not</em> considered in the histograms.
      */
     public static ProductCmptLinkHistograms createFor(Collection<? extends IProductCmptLinkContainer> containers) {
-        Set<LinkIdentifier> links = Sets.newLinkedHashSet();
+        Set<LinkIdentifier> links = new LinkedHashSet<>();
         for (IProductCmptLinkContainer container : containers) {
             for (IProductCmptLink link : container.getLinksAsList()) {
                 links.add(new LinkIdentifier(link));

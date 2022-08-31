@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.binding;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class ViewerRefreshBinding extends ControlPropertyBinding {
 
@@ -43,7 +43,7 @@ public class ViewerRefreshBinding extends ControlPropertyBinding {
 
     @Override
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-        if (StringUtils.isEmpty(nameOfChangedProperty) || getProperty() == null
+        if (IpsStringUtils.isEmpty(nameOfChangedProperty) || getProperty() == null
                 || getPropertyName().equals(nameOfChangedProperty)) {
             viewer.refresh();
             if (expandAll && viewer instanceof AbstractTreeViewer) {

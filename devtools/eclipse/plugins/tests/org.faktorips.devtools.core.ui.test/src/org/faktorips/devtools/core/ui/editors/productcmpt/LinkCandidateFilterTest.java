@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,9 +38,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LinkCandidateFilterTest {
     private static final String TYPE_NAME = "bla.bla.bla.Type";
     @Mock
@@ -61,14 +61,9 @@ public class LinkCandidateFilterTest {
 
     @Before
     public void setUp() {
-        when(prodCmpt.getIpsProject()).thenReturn(ipsProject);
-
         when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);
 
-        when(srcFile.isMutable()).thenReturn(true);
-
         when(association.getName()).thenReturn("association");
-        when(association.getIpsProject()).thenReturn(ipsProject);
         when(association.findTargetProductCmptType(ipsProject)).thenReturn(type);
         when(association.getMaxCardinality()).thenReturn(3);
 
@@ -191,11 +186,7 @@ public class LinkCandidateFilterTest {
 
     @Test
     public void testAssociationAlreadyFull() {
-
-        String linkedName = "de.linked.PC";
-
         IProductCmptLink link = mock(IProductCmptLink.class);
-        when(link.getTarget()).thenReturn(linkedName);
 
         IProductCmptLink[] links = { link };
 
@@ -205,10 +196,6 @@ public class LinkCandidateFilterTest {
         createFilter();
 
         IIpsSrcFile srcFileNotLinked = createSourceFile(ipsProject, type);
-        when(srcFileNotLinked.getName()).thenReturn("de.not.linked.PC");
-
-        IIpsSrcFile srcFileAlreadyLinked = createSourceFile(ipsProject, type);
-        when(srcFileAlreadyLinked.getName()).thenReturn(linkedName);
 
         assertFalse(filter.filter(srcFileNotLinked));
     }
@@ -218,8 +205,6 @@ public class LinkCandidateFilterTest {
     }
 
     private void createFilter(boolean workingModeBrowse) {
-        when(association.getProductCmptType()).thenReturn(type);
-
         IProductCmptTypeAssociationReference structureReference = mock(IProductCmptTypeAssociationReference.class);
         when(structureReference.getAssociation()).thenReturn(association);
 

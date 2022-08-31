@@ -15,8 +15,7 @@ Require-Bundle: org.eclipse.jdt.core;bundle-version="3.4.0",
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
-Import-Package: org.apache.commons.lang,
- org.faktorips.devtools.core,
+Import-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.commands,
  org.faktorips.devtools.core.ui.util,
@@ -24,4 +23,5 @@ Import-Package: org.apache.commons.lang,
  org.faktorips.devtools.model.internal.builder,
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,
- org.faktorips.devtools.stdbuilder
+ org.faktorips.devtools.stdbuilder,
+ org.faktorips.runtime.internal;version="22.12.0"

@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 
 import static org.junit.Assert.assertEquals;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;

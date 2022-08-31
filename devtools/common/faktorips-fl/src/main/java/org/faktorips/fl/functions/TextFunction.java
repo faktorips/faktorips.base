@@ -10,7 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -43,7 +43,7 @@ public class TextFunction extends AbstractFlFunction {
     }
 
     private JavaCodeFragment getToStringFragment(JavaCodeFragment argumentFragment, DatatypeHelper datatypeHelper) {
-        JavaCodeFragment fragment = new JavaCodeFragment(StringUtils.EMPTY, argumentFragment.getImportDeclaration());
+        JavaCodeFragment fragment = new JavaCodeFragment(IpsStringUtils.EMPTY, argumentFragment.getImportDeclaration());
         fragment.append("(").append(datatypeHelper.getToStringExpression(argumentFragment.getSourcecode())).append(")");
         return fragment;
     }

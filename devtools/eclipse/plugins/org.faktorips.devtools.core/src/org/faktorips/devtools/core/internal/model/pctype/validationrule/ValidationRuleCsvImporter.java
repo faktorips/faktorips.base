@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -18,7 +19,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
 
@@ -43,7 +46,7 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
 
     private int valueColumnIndex;
 
-    private char delimiter;
+    private char delimiter = ',';
 
     public ValidationRuleCsvImporter(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         super(contents, root, locale);
@@ -53,16 +56,16 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
      * This method set the column indices for the key and value column. The indices are 0 based,
      * that means 0 is the first column.
      * 
-     * @param keyColumnInex The index of the key column
+     * @param keyColumnIndex The index of the key column
      * @param valueColumnIndex the index of the value column, containing the message
      */
-    public void setKeyAndValueColumn(int keyColumnInex, int valueColumnIndex) {
-        keyColumnIndex = keyColumnInex;
+    public void setKeyAndValueColumn(int keyColumnIndex, int valueColumnIndex) {
+        this.keyColumnIndex = keyColumnIndex;
         this.valueColumnIndex = valueColumnIndex;
     }
 
     /**
-     * This method set the column delimiter used in the given CSV file.
+     * This method sets the column delimiter used in the given CSV file.
      * 
      * @param delimiter The column delimiter of the CSV file
      */
@@ -72,16 +75,21 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
 
     @Override
     protected IStatus loadContent() {
-        ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<>();
-        String[] columns = new String[Math.max(keyColumnIndex, valueColumnIndex) + 1];
-        try {
+        try (InputStreamReader reader = new InputStreamReader(getContents());
+                CSVReader csvReader = new CSVReaderBuilder(reader)
+                        .withCSVParser(new CSVParserBuilder()
+                                .withSeparator(delimiter)
+                                .build())
+                        .build()) {
+            ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<>();
+            String[] columns = new String[Math.max(keyColumnIndex, valueColumnIndex) + 1];
             columns[keyColumnIndex] = CsvTableBean.PROPERTY_KEY;
             columns[valueColumnIndex] = CsvTableBean.PROPERTY_VALUE;
             strat.setColumnMapping(columns);
-
             CsvToBean<CsvTableBean> csvToBean = new CsvToBean<>();
-            InputStreamReader reader = new InputStreamReader(getContents());
-            List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter));
+            csvToBean.setCsvReader(csvReader);
+            csvToBean.setMappingStrategy(strat);
+            List<CsvTableBean> list = csvToBean.parse();
             MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
                     Messages.ValidationRuleMessagesPropertiesImporter_status_problemsDuringImport, null);
             Map<String, String> indexMap = indexTableEntries(list, multipleMessages);
@@ -89,7 +97,7 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
             return multipleMessages;
             // CSOFF: IllegalCatch
             // The opencsv API throws RuntimeException
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | IOException e) {
             return new IpsStatus(e);
         }
         // CSON: IllegalCatch

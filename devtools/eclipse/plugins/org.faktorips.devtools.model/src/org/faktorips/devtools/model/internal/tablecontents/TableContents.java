@@ -24,7 +24,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -205,7 +205,7 @@ public class TableContents extends BaseIpsObject implements ITableContents {
 
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
-        if (StringUtils.isEmpty(getTableStructure())) {
+        if (IpsStringUtils.isEmpty(getTableStructure())) {
             return new IDependency[0];
         }
         return createDependencies(details);

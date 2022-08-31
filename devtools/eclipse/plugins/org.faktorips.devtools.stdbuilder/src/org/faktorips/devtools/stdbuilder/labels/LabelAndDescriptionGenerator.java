@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.labels;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractPropertiesGenerator;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.DocumentationKind;
 
 public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
@@ -52,19 +52,19 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
         if (ipsObjectPart instanceof ILabeledElement) {
             ILabeledElement labeledElement = (ILabeledElement)ipsObjectPart;
             String label = labeledElement.getLabelValue(getLocale());
-            if (StringUtils.isNotBlank(label)) {
+            if (IpsStringUtils.isNotBlank(label)) {
                 labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.LABEL, label);
             }
             if (labeledElement.isPluralLabelSupported()) {
                 String pluralLabelValue = labeledElement.getPluralLabelValue(getLocale());
-                if (StringUtils.isNotBlank(pluralLabelValue)) {
+                if (IpsStringUtils.isNotBlank(pluralLabelValue)) {
                     labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.PLURAL_LABEL, pluralLabelValue);
                 }
             }
         }
         if (ipsObjectPart instanceof IDescribedElement) {
             IDescription description = ((IDescribedElement)ipsObjectPart).getDescription(getLocale());
-            if (description != null && StringUtils.isNotBlank(description.getText())) {
+            if (description != null && IpsStringUtils.isNotBlank(description.getText())) {
                 labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.DESCRIPTION, description.getText());
             }
         }

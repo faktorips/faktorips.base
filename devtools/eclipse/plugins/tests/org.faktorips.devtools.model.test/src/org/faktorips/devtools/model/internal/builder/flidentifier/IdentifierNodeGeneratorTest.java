@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,13 +27,14 @@ import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IdentifierNodeGeneratorTest {
 
-    @Mock
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     IdentifierNodeGenerator<JavaCodeFragment> generator;
 
     @Mock
@@ -53,10 +53,6 @@ public class IdentifierNodeGeneratorTest {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0, 17),
                 ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", Severity.NONE));
-        @SuppressWarnings("unchecked")
-        CompilationResult<JavaCodeFragment> anyCompilationResult = any(CompilationResult.class);
-        when(generator.generateNode(any(IdentifierNode.class), anyCompilationResult)).thenCallRealMethod();
-        when(generator.getGeneratorFor(any(IdentifierNode.class))).thenCallRealMethod();
     }
 
     @Test

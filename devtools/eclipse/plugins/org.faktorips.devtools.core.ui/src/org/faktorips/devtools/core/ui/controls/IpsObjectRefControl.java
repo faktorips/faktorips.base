@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -126,7 +126,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
         deleteButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                setText(StringUtils.EMPTY);
+                setText(IpsStringUtils.EMPTY);
             }
         });
     }
@@ -319,7 +319,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             setText(qualifiedNameType.getName());
         } else {
             objectType = null;
-            setText(StringUtils.EMPTY);
+            setText(IpsStringUtils.EMPTY);
         }
     }
 

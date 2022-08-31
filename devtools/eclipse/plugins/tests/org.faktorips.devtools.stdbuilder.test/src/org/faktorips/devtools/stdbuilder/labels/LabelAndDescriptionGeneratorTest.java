@@ -17,21 +17,20 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
@@ -50,6 +49,7 @@ import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionProperties.MessageKey;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedPropertiesBuilder;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.junit.Test;
 
@@ -85,7 +85,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(inputStream);
 
         when(propertyFile.exists()).thenReturn(true);
 
@@ -107,7 +107,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(inputStream);
         assertFalse(labelsAndDescriptions.isModified());
 
         messagesGenerator.generate(pcType);
@@ -129,7 +129,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
 
         messagesGenerator.saveIfModified();
 
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
 
         reset(propertyFile);
         reset(inputStream);
@@ -139,8 +139,8 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.generate(enumContent);
         assertFalse(labelsAndDescriptions.isModified());
 
-        verifyZeroInteractions(propertyFile);
-        verifyZeroInteractions(inputStream);
+        verifyNoInteractions(propertyFile);
+        verifyNoInteractions(inputStream);
     }
 
     @Test
@@ -164,7 +164,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
     }
 
     @Test
@@ -188,7 +188,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
         messagesGenerator.saveIfModified();
 
         verify(propertyFile).exists();
-        verify(propertyFile).create(any(InputStream.class), any(IProgressMonitor.class));
+        verify(propertyFile).create(any(InputStream.class), isNull());
 
         messagesGenerator.loadMessages();
         messagesGenerator.generate(pcType);
@@ -266,7 +266,7 @@ public class LabelAndDescriptionGeneratorTest extends AbstractIpsPluginTest {
             label.setLocale(Locale.GERMAN);
         }
         label.setValue(value);
-        if (StringUtils.isNotEmpty(pluralValue)) {
+        if (IpsStringUtils.isNotEmpty(pluralValue)) {
             label.setPluralValue(pluralValue);
         }
     }

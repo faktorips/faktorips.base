@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -44,6 +44,7 @@ import org.faktorips.fl.IdentifierResolver;
 import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -137,7 +138,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
 
     @Override
     public boolean isEmpty() {
-        return StringUtils.isEmpty(getExpression());
+        return IpsStringUtils.isEmpty(getExpression());
     }
 
     @Override
@@ -208,7 +209,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_NAME, formulaSignature);
-        ValueToXmlHelper.addValueToElement(getExpression() == null ? StringUtils.EMPTY : getExpression().trim(),
+        ValueToXmlHelper.addValueToElement(getExpression() == null ? IpsStringUtils.EMPTY : getExpression().trim(),
                 element, TAG_NAME_FOR_EXPRESSION);
     }
 
@@ -226,7 +227,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         // getExpression returns the expression from the template if applicable
         String expressionToValidate = getExpression();
 
-        if (StringUtils.isEmpty(expressionToValidate)) {
+        if (IpsStringUtils.isEmpty(expressionToValidate)) {
             if (!isFormulaMandatory()) {
                 return;
             }

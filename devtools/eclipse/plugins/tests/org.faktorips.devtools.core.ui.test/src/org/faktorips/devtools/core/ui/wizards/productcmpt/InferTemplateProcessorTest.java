@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -86,7 +84,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         templateTableContentUsage.setStructureUsage(TABLE_ROLE_1);
         templateTableContentUsage.setTableContentName("should be overwritten");
 
-        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Lists.newArrayList(product));
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, List.of(product));
         processor.run(new NullProgressMonitor());
 
         assertThat(templateTableContentUsage.getTableContentName(), is((String)null));
@@ -136,7 +134,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         templateGeneration.newValidationRuleConfig(rule3);
 
         InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
-                Lists.newArrayList(product1, product2, product3));
+                List.of(product1, product2, product3));
         processor.run(new NullProgressMonitor());
 
         IValidationRuleConfig ruleConfig1 = templateGeneration.getValidationRuleConfig(RULE_1_NAME);
@@ -196,7 +194,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         templateGeneration.newValidationRuleConfig(rule3);
 
         InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
-                Lists.newArrayList(product1, product2, product3));
+                List.of(product1, product2, product3));
         processor.run(new NullProgressMonitor());
 
         assertThat(gen1.getValidationRuleConfig(RULE_1_NAME).getTemplateValueStatus(), is(INHERITED));
@@ -253,7 +251,7 @@ public class InferTemplateProcessorTest extends AbstractIpsPluginTest {
         IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
 
         InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration,
-                Lists.newArrayList(product1, product2));
+                List.of(product1, product2));
         processor.run(new NullProgressMonitor());
 
         // Assert that links are added in the template

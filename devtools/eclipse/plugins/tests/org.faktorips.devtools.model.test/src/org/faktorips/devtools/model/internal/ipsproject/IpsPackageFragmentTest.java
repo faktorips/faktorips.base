@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -185,7 +185,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     public void testCreateProductComponent() throws Exception {
         IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
         IProductCmpt product = (IProductCmpt)file.getIpsObject();
-        assertFalse(StringUtils.isEmpty(product.getRuntimeId()));
+        assertFalse(IpsStringUtils.isEmpty(product.getRuntimeId()));
     }
 
     @Test

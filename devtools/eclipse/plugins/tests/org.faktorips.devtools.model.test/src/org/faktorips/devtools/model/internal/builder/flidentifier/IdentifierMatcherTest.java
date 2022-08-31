@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser.IdentifierMatcher;
 import org.junit.Test;
 
@@ -94,7 +94,7 @@ public class IdentifierMatcherTest {
 
     @Test
     public void testIdentifierMatcherEmptyIdentifier() {
-        identifierMatcher = new IdentifierMatcher(StringUtils.EMPTY);
+        identifierMatcher = new IdentifierMatcher(IpsStringUtils.EMPTY);
 
         assertEquals(identifierMatcher.getTextRegion().getStart(), identifierMatcher.getTextRegion().getEnd());
         assertFalse(identifierMatcher.hasNextIdentifierPart());

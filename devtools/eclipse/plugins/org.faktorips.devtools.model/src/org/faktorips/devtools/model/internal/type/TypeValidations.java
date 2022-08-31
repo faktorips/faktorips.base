@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -195,7 +195,7 @@ public class TypeValidations {
      * @param ipsProject the project that is used as reference to find other objects
      */
     public static Message validateTypeHierachy(IType type, IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(type.getSupertype())) {
+        if (IpsStringUtils.isEmpty(type.getSupertype())) {
             return null;
         }
         IType superType = type.findSupertype(ipsProject);
@@ -232,7 +232,7 @@ public class TypeValidations {
 
         @Override
         protected boolean visit(IType currentType) {
-            if (StringUtils.isEmpty(currentType.getSupertype())) {
+            if (IpsStringUtils.isEmpty(currentType.getSupertype())) {
                 // there should be no more super type
                 result = true;
                 return false;

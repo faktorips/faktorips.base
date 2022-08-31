@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
@@ -31,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XProductAttributeTest {
 
     private static final String DATATYPE = "Datatype";
@@ -64,10 +63,7 @@ public class XProductAttributeTest {
 
     @Before
     public void setUp() throws Exception {
-        when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
-        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getIpsProject()).thenReturn(ipsProject);
-        when(attribute.getProductCmptType()).thenReturn(productCmptType);
         when(superAttribute.getIpsProject()).thenReturn(ipsProject);
     }
 
@@ -127,7 +123,6 @@ public class XProductAttributeTest {
     @Test
     public void testIsGenerateContentCode_abstractNoOverwrite() throws Exception {
         mockDatatype(attribute, ABSTRACT_DATATYPE, true);
-        when(attribute.isOverwrite()).thenReturn(false);
 
         assertFalse(xProductAttribute.isGenerateContentCode());
     }
@@ -190,8 +185,6 @@ public class XProductAttributeTest {
         mockDatatype(attribute, DATATYPE, false);
         when(attribute.getDefaultValue()).thenReturn("asdsa");
         mockDatatype(superAttribute, ABSTRACT_DATATYPE, true);
-        when(attribute.isOverwrite()).thenReturn(true);
-        when(attribute.findOverwrittenAttribute(ipsProject)).thenReturn(superAttribute);
 
         assertTrue(xProductAttribute.isCallSetDefaultValue());
     }

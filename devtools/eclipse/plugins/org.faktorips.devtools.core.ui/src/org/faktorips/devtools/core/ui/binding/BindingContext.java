@@ -96,10 +96,10 @@ import org.faktorips.util.ArgumentCheck;
 public class BindingContext {
 
     /**
-     * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
-     * this class' interface.
+     * Listener for changes and focus lost events. Instance of an inner class is used to avoid
+     * polluting this class' interface.
      */
-    private final Listener listener;
+    private Listener listener;
 
     /** list of mappings between edit fields and properties of model objects. */
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<>();
@@ -117,13 +117,20 @@ public class BindingContext {
     private final Set<String> ignoredMessageCodes = new HashSet<>(2);
 
     public BindingContext() {
-        listener = new Listener();
+        listener = new Listener(this);
     }
 
     /**
-     * Constructor for tests
+     * Getter for tests
      */
-    protected BindingContext(Listener listener) {
+    protected Listener getListener() {
+        return listener;
+    }
+
+    /**
+     * Setter for tests
+     */
+    protected void setListener(Listener listener) {
         this.listener = listener;
     }
 
@@ -789,12 +796,18 @@ public class BindingContext {
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
-    protected class Listener
+    protected static class Listener
             implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
+
+        private final BindingContext bindingContext;
+
+        public Listener(BindingContext bindingContext) {
+            this.bindingContext = bindingContext;
+        }
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
-            for (FieldPropertyMapping<?> mapping : mappings) {
+            for (FieldPropertyMapping<?> mapping : bindingContext.mappings) {
                 if (e.field == mapping.getField()) {
                     try {
                         mapping.setPropertyValue();
@@ -820,8 +833,8 @@ public class BindingContext {
         @Override
         public void contentsChanged(final ContentChangeEvent event) {
             // No need of running in Display Thread because the IpsModel already handles it
-            for (FieldPropertyMapping<?> mapping : mappings) {
-                IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
+            for (FieldPropertyMapping<?> mapping : bindingContext.mappings) {
+                IIpsObjectPartContainer mappedPart = bindingContext.getMappedPart(mapping.getObject());
                 if (mappedPart != null) {
                     try {
                         // FIPS-4837: Don't check if mappedPart is actually affected by the event.
@@ -838,13 +851,13 @@ public class BindingContext {
                 }
             }
 
-            showValidationStatus(mappings);
-            applyControlBindings();
+            bindingContext.showValidationStatus(bindingContext.mappings);
+            bindingContext.applyControlBindings();
         }
 
         @Override
         public void propertyChange(PropertyChangeEvent evt) {
-            for (FieldPropertyMapping<?> mapping : mappings) {
+            for (FieldPropertyMapping<?> mapping : bindingContext.mappings) {
                 if (mapping.getObject() == evt.getSource()) {
                     try {
                         mapping.setControlValue();
@@ -855,8 +868,8 @@ public class BindingContext {
                 }
             }
 
-            showValidationStatus(mappings);
-            applyControlBindings(evt.getPropertyName());
+            bindingContext.showValidationStatus(bindingContext.mappings);
+            bindingContext.applyControlBindings(evt.getPropertyName());
         }
     }
 

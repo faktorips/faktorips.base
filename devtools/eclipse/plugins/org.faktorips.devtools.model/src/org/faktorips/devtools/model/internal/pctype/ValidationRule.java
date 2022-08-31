@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -106,7 +106,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         super.validateThis(list, ipsProject);
         ValidationUtils.checkStringPropertyNotEmpty(name, "name", this, //$NON-NLS-1$
                 PROPERTY_NAME, "", list); //$NON-NLS-1$
-        if (StringUtils.isEmpty(msgCode)) {
+        if (IpsStringUtils.isEmpty(msgCode)) {
             String text = Messages.ValidationRule_msgCodeShouldBeProvided;
             Message msg = new Message(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY, text, Message.ERROR, this,
                     PROPERTY_MESSAGE_CODE);
@@ -212,7 +212,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private void validateNoLineSeperators(MessageList list) {
         for (LocalizedString localizedString : msgText.values()) {
             String message = localizedString.getValue();
-            if (StringUtils.isNotEmpty(System.lineSeparator())
+            if (IpsStringUtils.isNotEmpty(System.lineSeparator())
                     && message.indexOf(System.lineSeparator()) != -1) {
                 String text = MessageFormat.format(Messages.ValidationRule_msgNoNewlineAllowed,
                         localizedString.getLocale().getDisplayLanguage());

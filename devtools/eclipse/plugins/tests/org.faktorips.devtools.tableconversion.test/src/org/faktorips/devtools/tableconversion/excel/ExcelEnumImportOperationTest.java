@@ -164,28 +164,27 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     }
 
     private void createInvalid() throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
 
-        sheet.createRow(0); // header
-        HSSFRow row1 = sheet.createRow(1);
-        HSSFCellStyle dateStyle = wb.createCellStyle();
-        dateStyle.setDataFormat((short)27);
+            sheet.createRow(0); // header
+            HSSFRow row1 = sheet.createRow(1);
+            HSSFCellStyle dateStyle = wb.createCellStyle();
+            dateStyle.setDataFormat((short)27);
 
-        row1.createCell(0).setCellValue("INVALID BOOLEAN");
-        row1.createCell(1).setCellValue("INVALID");
-        row1.createCell(2).setCellValue("INVALID");
-        HSSFCell cell = row1.createCell(3);
-        cell.setCellValue("INVALID");
-        cell.setCellStyle(dateStyle);
-        row1.createCell(4).setCellValue("INVALID");
-        row1.createCell(5).setCellValue("INVALID");
-        row1.createCell(6).setCellValue("INVALID");
-        row1.createCell(7).setCellValue("INVALID not a legal java identifier");
+            row1.createCell(0).setCellValue("INVALID BOOLEAN");
+            row1.createCell(1).setCellValue("INVALID");
+            row1.createCell(2).setCellValue("INVALID");
+            HSSFCell cell = row1.createCell(3);
+            cell.setCellValue("INVALID");
+            cell.setCellStyle(dateStyle);
+            row1.createCell(4).setCellValue("INVALID");
+            row1.createCell(5).setCellValue("INVALID");
+            row1.createCell(6).setCellValue("INVALID");
+            row1.createCell(7).setCellValue("INVALID not a legal java identifier");
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
     @Test
@@ -217,15 +216,14 @@ public class ExcelEnumImportOperationTest extends AbstractTableTest {
     }
 
     private void createEmpty() throws Exception {
-        HSSFWorkbook wb = new HSSFWorkbook();
-        HSSFSheet sheet = wb.createSheet();
+        try (HSSFWorkbook wb = new HSSFWorkbook(); FileOutputStream fos = new FileOutputStream(file)) {
+            HSSFSheet sheet = wb.createSheet();
 
-        sheet.createRow(0); // header
-        sheet.createRow(1);
+            sheet.createRow(0); // header
+            sheet.createRow(1);
 
-        FileOutputStream fos = new FileOutputStream(file);
-        wb.write(fos);
-        fos.close();
+            wb.write(fos);
+        }
     }
 
 }

@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -44,7 +44,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
@@ -54,7 +53,6 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragment.Defin
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -78,14 +76,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * Tests for product component structure.
  * 
  * @author Thorsten Guenther
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     private static final String TABLE_STRUCTURE = "TableStructure";
@@ -550,7 +548,6 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCopySortOrder_empty() throws Exception {
-        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(mock(AFolder.class));
         when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(new IIpsPackageFragment[] {});
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
 
@@ -562,12 +559,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testCopySortOrder_defaultPackage() throws Exception {
-        when(targetPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
-        when(targetPackageFragment.isDefaultPackage()).thenReturn(true);
         IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
         when(subPackage.getLastSegmentName()).thenReturn("abc");
         mockSourcePackage(subPackage);
-        mockTargetPackage(subPackage);
         when(targetPackageFragment.getSubPackage("abc")).thenReturn(subPackage);
 
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
@@ -582,21 +576,16 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         verify(targetPackageFragment, never()).setChildOrderComparator(any(Comparator.class));
     }
 
-    private DefinedOrderComparator mockDefinedOrderComparator(IIpsElement... elements) {
-        DefinedOrderComparator definedOrderComparator = mock(DefinedOrderComparator.class);
-        when(definedOrderComparator.getElements()).thenReturn(elements);
-        return definedOrderComparator;
+    private DefinedOrderComparator mockDefinedOrderComparator() {
+        return mock(DefinedOrderComparator.class);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testCopySortOrder_targetAlreadyHasSortOrder() throws Exception {
-        when(targetPackageFragment.getName()).thenReturn(IIpsPackageFragment.NAME_OF_THE_DEFAULT_PACKAGE);
-        when(targetPackageFragment.isDefaultPackage()).thenReturn(true);
         IIpsPackageFragment subPackage = mock(IIpsPackageFragment.class);
         when(subPackage.getLastSegmentName()).thenReturn("abc");
         mockSourcePackage(subPackage);
-        mockTargetPackage(subPackage);
         when(targetPackageFragment.getSubPackage("abc")).thenReturn(subPackage);
 
         DeepCopyOperation deepCopyOperation = mockSortOrderDependencies();
@@ -801,20 +790,8 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     }
 
     private void mockSourcePackage(IIpsPackageFragment... childPackages) throws Exception {
-        AFolder sourceFolder = mock(AFolder.class);
-        when(sourceFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(sortOrderFile);
-        when(sourcePackageFragment.getCorrespondingResource()).thenReturn(sourceFolder);
         when(sourcePackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
 
-    }
-
-    private void mockTargetPackage(IIpsPackageFragment... childPackages) throws Exception {
-        AFolder targetFolder = mock(AFolder.class);
-        when(targetFolder.getFile(IIpsPackageFragment.SORT_ORDER_FILE_NAME)).thenReturn(targetSortOrderFile);
-        when(targetPackageFragment.getCorrespondingResource()).thenReturn(targetFolder);
-        when(targetPackageFragment.getChildIpsPackageFragments()).thenReturn(childPackages);
-        IIpsPackageFragmentRoot parent = mock(IIpsPackageFragmentRoot.class);
-        when(targetPackageFragment.getRoot()).thenReturn(parent);
     }
 
 }

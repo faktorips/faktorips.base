@@ -18,20 +18,19 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.Date;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.tableconversion.AbstractTableImportOperation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * 
@@ -65,14 +64,14 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
     private void checkForOpenOfficeFormat(Workbook workbook) {
         if (workbook instanceof POIDocument) {
             if (((POIDocument)workbook).getSummaryInformation() == null
-                    || StringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
+                    || IpsStringUtils.isBlank(((POIDocument)workbook).getSummaryInformation().getApplicationName())) {
                 mightBeOpenOffice = true;
             }
         }
     }
 
     protected String readCell(Cell cell, Datatype datatype) {
-        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+        if (cell.getCellType() == CellType.NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell) || isReserved(cell.getCellStyle().getDataFormat())) {
                 Date dateCellValue = cell.getDateCellValue();
                 if (mightBeOpenOffice) {
@@ -83,7 +82,7 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
             double numericCellValue = cell.getNumericCellValue();
             BigDecimal roundedResult = roundNumericCellValue(numericCellValue);
             return format.getIpsValue(roundedResult, datatype, messageList);
-        } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+        } else if (cell.getCellType() == CellType.BOOLEAN) {
             return format.getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
             String value = cell.getStringCellValue();
@@ -149,8 +148,6 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
         try (FileInputStream fis = new FileInputStream(importFile)) {
             workbook = WorkbookFactory.create(fis);
             checkForOpenOfficeFormat(workbook);
-        } catch (InvalidFormatException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
         }
         return workbook;
     }

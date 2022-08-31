@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -147,7 +147,7 @@ public class TableContentsStructureCache {
     public void newTableStructure(IIpsSrcFile tableStructure) {
         for (IIpsSrcFile tableContent : tableStructureMap.contentWithInvlidStructure) {
             String tableStructureName = getTableStructureName(tableContent);
-            if (StringUtils.equals(tableStructure.getIpsObjectName(), tableStructureName)) {
+            if (Objects.equals(tableStructure.getIpsObjectName(), tableStructureName)) {
                 // call putTableContent without the structure to search the structure again. The
                 // current structure may not be correct in case of not referencing projects.
                 putTableContent(tableContent);
@@ -176,7 +176,7 @@ public class TableContentsStructureCache {
     private boolean isOutdated(IIpsSrcFile tableContent) {
         IIpsSrcFile tableStructure = tableStructureMap.getTableStructure(tableContent);
         return tableStructure == null
-                || !StringUtils.equals(tableStructure.getName(), getTableStructureName(tableContent));
+                || !Objects.equals(tableStructure.getName(), getTableStructureName(tableContent));
     }
 
     private String getTableStructureName(IIpsSrcFile tableContent) {

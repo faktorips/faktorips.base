@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
@@ -83,7 +82,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
         String categoryName = ((ProductCmptType)contextType).getCategoryNameFor(property);
         // The name of this category must not be empty and must equal the property's category
-        if (StringUtils.isNotEmpty(categoryName) && categoryName.equals(name)) {
+        if (IpsStringUtils.isNotEmpty(categoryName) && categoryName.equals(name)) {
             return true;
         }
 
@@ -94,7 +93,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
              * category. In this case, if the property has no category or the property's category
              * cannot be found, the property belongs to this category.
              */
-            return StringUtils.isEmpty(categoryName) || !contextType.findHasCategory(categoryName, ipsProject);
+            return IpsStringUtils.isEmpty(categoryName) || !contextType.findHasCategory(categoryName, ipsProject);
         }
 
         return false;
@@ -337,7 +336,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
     }
 
     private boolean validateNameIsEmpty(MessageList list) {
-        if (StringUtils.isEmpty(name)) {
+        if (IpsStringUtils.isEmpty(name)) {
             list.newError(MSGCODE_NAME_IS_EMPTY, Messages.ProductCmptCategory_msgNameIsEmpty, this, PROPERTY_NAME);
             return false;
         }

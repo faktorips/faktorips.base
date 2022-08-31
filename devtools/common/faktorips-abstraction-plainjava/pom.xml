@@ -58,7 +58,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -75,7 +75,7 @@
                         <Import-Package>
                             !edu.umd.cs.findbugs.*,
                             org.faktorips.*,
-                            org.apache.commons.io;version="2.6.0"
+                            org.apache.commons.io;version="2.11.0"
                         </Import-Package>
                         <Export-Package>
                             org.faktorips.devtools.abstraction.plainjava,

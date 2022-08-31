@@ -16,7 +16,6 @@ import java.util.Locale.Category;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NamedDatatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -33,7 +32,7 @@ public class CurrencyDatatype extends ValueClassNameDatatype implements NamedDat
 
     @Override
     public Object getValue(String currencyCode) {
-        if (StringUtils.isNotBlank(currencyCode)) {
+        if (IpsStringUtils.isNotBlank(currencyCode)) {
             return Currency.getInstance(currencyCode);
         }
         return null;
@@ -80,12 +79,12 @@ public class CurrencyDatatype extends ValueClassNameDatatype implements NamedDat
         int i = name.indexOf(SYMBOL_SEPARATOR);
         String usedName = i > 0 ? name.substring(0, i) : name;
         Optional<Currency> currency = Currency.getAvailableCurrencies().stream()
-                .filter(c -> StringUtils.equals(c.getDisplayName(usedLocale), usedName))
+                .filter(c -> Objects.equals(c.getDisplayName(usedLocale), usedName))
                 .findFirst();
         if (currency.isEmpty()) {
             String symbol = i > 0 ? name.substring(i + 2) : name;
             currency = Currency.getAvailableCurrencies().stream()
-                    .filter(c -> StringUtils.equals(c.getSymbol(usedLocale), symbol))
+                    .filter(c -> Objects.equals(c.getSymbol(usedLocale), symbol))
                     .findFirst();
         }
         return currency

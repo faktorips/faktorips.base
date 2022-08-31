@@ -15,16 +15,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-
-import com.google.common.collect.Lists;
+import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -161,7 +159,7 @@ public class MultiValueHolderTest {
     public void testGetValue() {
         IAttributeValue parent = mock(IAttributeValue.class);
         MultiValueHolder multiValueHolder = spy(new MultiValueHolder(parent));
-        doNothing().when(multiValueHolder).objectHasChanged(anyObject(), anyObject());
+        doNothing().when(multiValueHolder).objectHasChanged(any(), any());
 
         multiValueHolder.setValue(null);
         assertThat(multiValueHolder.getValue(), is(notNullValue()));
@@ -173,7 +171,7 @@ public class MultiValueHolderTest {
 
         SingleValueHolder valueHolder1 = new SingleValueHolder(parent);
         SingleValueHolder valueHolder2 = new SingleValueHolder(parent);
-        multiValueHolder.setValue(Lists.newArrayList(valueHolder1, valueHolder2));
+        multiValueHolder.setValue(List.of(valueHolder1, valueHolder2));
         assertThat(multiValueHolder.getValue().size(), is(2));
         assertThat(multiValueHolder.getValue(), hasItems(valueHolder1, valueHolder2));
     }
@@ -181,9 +179,11 @@ public class MultiValueHolderTest {
     @Test
     public void testCompareTo_String() {
         IAttributeValue attributeValue = mock(AttributeValue.class);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(attributeValue.getIpsProject()).thenReturn(ipsProject);
         IProductCmptTypeAttribute attribue = mock(IProductCmptTypeAttribute.class);
-        when(attributeValue.findAttribute(any(IIpsProject.class))).thenReturn(attribue);
-        when(attribue.findValueDatatype(any(IIpsProject.class))).thenReturn(ValueDatatype.STRING);
+        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribue);
+        when(attribue.findValueDatatype(ipsProject)).thenReturn(ValueDatatype.STRING);
         SingleValueHolder a = new SingleValueHolder(attributeValue, "a");
         SingleValueHolder b = new SingleValueHolder(attributeValue, "b");
         SingleValueHolder c = new SingleValueHolder(attributeValue, "c");
@@ -191,11 +191,11 @@ public class MultiValueHolderTest {
 
         MultiValueHolder empty = new MultiValueHolder(attributeValue, new ArrayList<>());
 
-        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
-        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, List.of(a, b, c));
+        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, List.of(a, b, c));
 
-        MultiValueHolder cba = new MultiValueHolder(attributeValue, Lists.newArrayList(c, b, a));
-        MultiValueHolder abcd = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c, d));
+        MultiValueHolder cba = new MultiValueHolder(attributeValue, List.of(c, b, a));
+        MultiValueHolder abcd = new MultiValueHolder(attributeValue, List.of(a, b, c, d));
 
         assertThat(empty.compareTo(empty), is(0));
         assertThat(empty.compareTo(null), is(1));
@@ -219,9 +219,11 @@ public class MultiValueHolderTest {
     @Test
     public void testCompareTo_Integer() {
         IAttributeValue attributeValue = mock(AttributeValue.class);
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        when(attributeValue.getIpsProject()).thenReturn(ipsProject);
         IProductCmptTypeAttribute attribue = mock(IProductCmptTypeAttribute.class);
-        when(attributeValue.findAttribute(any(IIpsProject.class))).thenReturn(attribue);
-        when(attribue.findValueDatatype(any(IIpsProject.class))).thenReturn(ValueDatatype.INTEGER);
+        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribue);
+        when(attribue.findValueDatatype(ipsProject)).thenReturn(ValueDatatype.INTEGER);
         SingleValueHolder a = new SingleValueHolder(attributeValue, "1");
         SingleValueHolder b = new SingleValueHolder(attributeValue, "12");
         SingleValueHolder c = new SingleValueHolder(attributeValue, "33");
@@ -229,11 +231,11 @@ public class MultiValueHolderTest {
 
         MultiValueHolder empty = new MultiValueHolder(attributeValue, new ArrayList<>());
 
-        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
-        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, List.of(a, b, c));
+        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, List.of(a, b, c));
 
-        MultiValueHolder cba = new MultiValueHolder(attributeValue, Lists.newArrayList(c, b, a));
-        MultiValueHolder abcd = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c, d));
+        MultiValueHolder cba = new MultiValueHolder(attributeValue, List.of(c, b, a));
+        MultiValueHolder abcd = new MultiValueHolder(attributeValue, List.of(a, b, c, d));
 
         assertThat(empty.compareTo(empty), is(0));
         assertThat(empty.compareTo(null), is(1));

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AddProductCmptLinkCommandTest {
@@ -47,14 +47,13 @@ public class AddProductCmptLinkCommandTest {
 
         when(editor.getActiveGeneration()).thenReturn(gen);
         when(gen.getProductCmpt()).thenReturn(prodCmpt);
-        when(association.isChangingOverTime()).thenReturn(true);
-        when(staticAssociation.isChangingOverTime()).thenReturn(false);
+        when(association.getName()).thenReturn("foo");
+        when(gen.isContainerFor(association)).thenReturn(true);
+        when(staticAssociation.getName()).thenReturn("bar");
     }
 
     @Test
     public void testGetExistingLinksFromGeneration() {
-        when(gen.isContainerFor(association)).thenReturn(true);
-
         command.getExistingLinks(editor, association);
 
         verify(gen).getLinksAsList(anyString());
@@ -63,8 +62,6 @@ public class AddProductCmptLinkCommandTest {
 
     @Test
     public void testGetExistingLinksFromProdCmpt() {
-        when(prodCmpt.isContainerFor(association)).thenReturn(true);
-
         command.getExistingLinks(editor, staticAssociation);
 
         verify(prodCmpt).getLinksAsList(anyString());

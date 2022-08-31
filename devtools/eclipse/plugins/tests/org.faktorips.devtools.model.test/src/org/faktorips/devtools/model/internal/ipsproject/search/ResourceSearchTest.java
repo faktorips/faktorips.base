@@ -19,14 +19,13 @@ import static org.mockito.Mockito.when;
 import java.io.InputStream;
 
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
-import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ResourceSearchTest {
 
     private static final String MY_PATH = "myPath";
@@ -43,7 +42,6 @@ public class ResourceSearchTest {
     @Before
     public void setUp() {
         resourceSearch = new ResourceSearch(MY_PATH);
-        when(srcFolderEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
     }
 
     @Test

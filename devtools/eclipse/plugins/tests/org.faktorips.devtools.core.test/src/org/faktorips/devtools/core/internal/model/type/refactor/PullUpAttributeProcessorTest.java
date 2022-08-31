@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -46,15 +47,22 @@ public class PullUpAttributeProcessorTest {
 
     private PullUpAttributeProcessor pullUpAttributeProcessor;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getType()).thenReturn(type);
         when(attribute.getName()).thenReturn(ATTRIBUTE_NAME);
         when(type.isSubtypeOf(superType, ipsProject)).thenReturn(true);
 
         pullUpAttributeProcessor = new PullUpAttributeProcessor(attribute);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

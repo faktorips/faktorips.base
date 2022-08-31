@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.StyledString;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 public class LinkViewItemLabelStyler {
@@ -104,7 +104,7 @@ public class LinkViewItemLabelStyler {
         if (templateLink != null) {
             return formattedCardinality(templateLink);
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

@@ -134,7 +134,7 @@ public class JdtClasspathEntryCreator {
         }
     }
 
-    protected static class ReferenceFactory {
+    public static class ReferenceFactory {
 
         private final IpsObjectPath ipsObjectPath;
 

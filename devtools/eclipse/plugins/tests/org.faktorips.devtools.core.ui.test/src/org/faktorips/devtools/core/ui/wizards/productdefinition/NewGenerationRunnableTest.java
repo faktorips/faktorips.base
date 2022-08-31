@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -61,16 +61,23 @@ public class NewGenerationRunnableTest extends AbstractIpsPluginTest {
 
     private NewGenerationRunnable runnable;
 
+    private AutoCloseable openMocks;
+
     @Override
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(timedIpsObject1.getIpsSrcFile()).thenReturn(ipsSrcFile1);
         when(timedIpsObject2.getIpsSrcFile()).thenReturn(ipsSrcFile2);
         timedIpsObjects = Arrays.asList(timedIpsObject1, timedIpsObject2);
 
         pmo = new NewGenerationPMO();
         runnable = new NewGenerationRunnable(pmo, timedIpsObjects);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Override

@@ -179,7 +179,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         return result;
     }
 
-    protected static class JdtClasspathResolver {
+    public static class JdtClasspathResolver {
 
         protected IClasspathContainer getClasspathContainer(IJavaProject javaProject, IPath classpathContainerPath)
                 throws JavaModelException {

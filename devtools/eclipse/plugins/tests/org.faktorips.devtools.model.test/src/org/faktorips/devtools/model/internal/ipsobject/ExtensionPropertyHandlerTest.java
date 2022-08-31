@@ -15,7 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -110,21 +110,17 @@ public class ExtensionPropertyHandlerTest {
         doReturn(Arrays.asList(extPropDef, extPropDef2)).when(ipsObjectPartContainer).getExtensionPropertyDefinitions();
 
         when(extPropDef.getPropertyId()).thenReturn(MY_ID);
-        when(extPropDef.getDefaultValue()).thenReturn(MY_DEFAULT_VALUE);
         when(extPropDef.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE);
         when(extPropDef.beforeSetValue(any(IIpsObjectPartContainer.class), any())).thenReturn(true);
 
         when(extPropDef2.getPropertyId()).thenReturn(MY_ID2);
-        when(extPropDef2.getDefaultValue()).thenReturn(MY_DEFAULT_VALUE);
         when(extPropDef2.getDefaultValue(ipsObjectPartContainer)).thenReturn(MY_DEFAULT_VALUE2);
-        when(extPropDef2.beforeSetValue(any(IIpsObjectPartContainer.class), any())).thenReturn(true);
     }
 
     @Before
     public void setUpXmlElementAndDocument() {
         when(xmlRootElement.getOwnerDocument()).thenReturn(xmlDocument);
         when(xmlExtPropElement.getOwnerDocument()).thenReturn(xmlDocument);
-        when(xmlValueElement.getOwnerDocument()).thenReturn(xmlDocument);
         when(xmlDocument.createElement(IpsObjectPartContainer.XML_EXT_PROPERTIES_ELEMENT))
                 .thenReturn(xmlExtPropElement);
         when(xmlDocument.createElement(IpsObjectPartContainer.XML_VALUE_ELEMENT)).thenReturn(xmlValueElement);
@@ -461,9 +457,6 @@ public class ExtensionPropertyHandlerTest {
     public void testToXML_saveInvalidPropertiesToXML() {
         doReturn(new ArrayList<IExtensionPropertyDefinition>()).when(ipsObjectPartContainer)
                 .getExtensionPropertyDefinitions();
-        when(extensionProperty.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
-        when(extensionProperty2.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
-        when(extensionProperty3.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
         initMaps(MY_ID);
 
         extensionPropertyHandler.toXml(xmlRootElement);
@@ -522,9 +515,6 @@ public class ExtensionPropertyHandlerTest {
 
     @Test
     public void testRemoveObsoleteExtensionProperties_noNPE() {
-        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
-        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID + 2);
-
         extensionPropertyHandler.removeObsoleteExtensionProperties();
         ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
 

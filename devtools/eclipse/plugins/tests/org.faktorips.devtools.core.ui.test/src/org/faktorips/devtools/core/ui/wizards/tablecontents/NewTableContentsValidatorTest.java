@@ -16,8 +16,8 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +47,7 @@ public class NewTableContentsValidatorTest {
 
     @Test
     public void testValidateTableContents_ValidProject() throws Exception {
-        NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
+        NewTableContentsPMO pmo = mockPmo();
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
         IIpsProject ipsProject = mockStructureSelection(pmo);
         when(ipsProject.isProductDefinitionProject()).thenReturn(true);
@@ -61,7 +61,7 @@ public class NewTableContentsValidatorTest {
     // FIPS-5387
     @Test
     public void testValidateTableContents_ValidProject_NoProductDefinition() throws Exception {
-        NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
+        NewTableContentsPMO pmo = mockPmo();
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
         IIpsProject ipsProject = mockStructureSelection(pmo);
         mockNamingConventions(ipsProject);
@@ -73,12 +73,20 @@ public class NewTableContentsValidatorTest {
         assertFalse(msgList.containsErrorMsg());
     }
 
+    private NewTableContentsPMO mockPmo() {
+        NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
+        when(pmo.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_STRUCTURE);
+        when(pmo.getName()).thenReturn("foo");
+        return pmo;
+    }
+
     private IIpsProject mockStructureSelection(NewTableContentsPMO pmo) {
         ITableStructure structure = mock(ITableStructure.class);
         when(structure.getNumOfColumns()).thenReturn(42);
         when(pmo.getSelectedStructure()).thenReturn(structure);
         IIpsProject ipsProject = mock(IIpsProject.class);
         when(pmo.getIpsProject()).thenReturn(ipsProject);
+        when(structure.getIpsProject()).thenReturn(ipsProject);
         return ipsProject;
     }
 
@@ -91,7 +99,7 @@ public class NewTableContentsValidatorTest {
 
     @Test
     public void testValidateTableContents_DeprecatedTableStructure() throws Exception {
-        NewTableContentsPMO pmo = mock(NewTableContentsPMO.class);
+        NewTableContentsPMO pmo = mockPmo();
         NewTableContentsValidator newProdutCmptValidator = new NewTableContentsValidator(pmo);
         IIpsProject ipsProject = mockStructureSelection(pmo);
         when(ipsProject.isProductDefinitionProject()).thenReturn(true);

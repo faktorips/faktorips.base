@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.productcmpttype;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 
 /**
@@ -153,7 +153,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
     /**
      * Setting the name of the explicitly specified matching association. If the matching
      * association should be found automatically this field should be set to
-     * {@link StringUtils#EMPTY}
+     * {@link IpsStringUtils#EMPTY}
      * <p>
      * The policy component type of the explicitly matching association is set by
      * {@link #setMatchingAssociationSource(String)}
@@ -176,7 +176,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
     /**
      * Setting the qualified name of the explicitly specified matching association source. If the
      * matching association should be found automatically, this field should be set to
-     * {@link StringUtils#EMPTY}.
+     * {@link IpsStringUtils#EMPTY}.
      * <p>
      * The name of the explicitly matching association is set by
      * {@link #setMatchingAssociationName(String)}

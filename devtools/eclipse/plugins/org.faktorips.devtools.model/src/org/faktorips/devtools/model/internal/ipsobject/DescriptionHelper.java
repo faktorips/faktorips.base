@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -38,7 +38,7 @@ public class DescriptionHelper {
             descEl = parentElement.getOwnerDocument().createElement(XML_ELEMENT_NAME);
             parentElement.appendChild(descEl);
         }
-        if (StringUtils.isNotEmpty(description)) {
+        if (IpsStringUtils.isNotEmpty(description)) {
             Text text = XmlUtil.getTextNode(descEl);
             if (text == null) {
                 text = descEl.getOwnerDocument().createTextNode(description);

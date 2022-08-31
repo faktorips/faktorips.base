@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -51,7 +51,7 @@ public class ExpressionBuilderHelper {
             IBaseMethod formulaSignature,
             MultiStatus buildStatus) {
         String expression = formula.getExpression();
-        if (StringUtils.isEmpty(expression)) {
+        if (IpsStringUtils.isEmpty(expression)) {
             JavaCodeFragment fragment = new JavaCodeFragment();
             fragment.append("null"); //$NON-NLS-1$
             return fragment;

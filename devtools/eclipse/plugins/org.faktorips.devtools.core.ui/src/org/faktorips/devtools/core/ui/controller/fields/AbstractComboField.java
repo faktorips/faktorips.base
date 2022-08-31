@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -74,7 +74,7 @@ public abstract class AbstractComboField<T> extends DefaultEditField<T> {
         if (supportsNullStringRepresentation()) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -39,7 +38,6 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.ParameterN
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
@@ -52,13 +50,14 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IdentifierParserTest {
 
     private static final String MY_PARAMETER = "anyParameter";
@@ -143,11 +142,6 @@ public class IdentifierParserTest {
     public void createIdentifierParser() throws Exception {
         mockEnum();
         identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
-        when(type.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        when(type1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        when(type2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        when(type3.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        when(productCmptType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
 
     private void mockEnum() throws Exception {
@@ -163,31 +157,16 @@ public class IdentifierParserTest {
         when(formulaMethod.getParameters()).thenReturn(new IParameter[] { parameter });
         when(parameter.getName()).thenReturn(MY_PARAMETER);
         when(parameter.findDatatype(ipsProject)).thenReturn(type);
-        when(parameter.getIpsProject()).thenReturn(ipsProject);
         when(type.findAssociation(MY_ASSOCIATION, ipsProject)).thenReturn(association);
         when(type.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
-        when(type.findAllAssociations(ipsProject)).thenReturn(Arrays.asList(association, associationQualified));
         when(type.getIpsProject()).thenReturn(ipsProject);
         when(association.findTarget(ipsProject)).thenReturn(type1);
         when(association.is1ToMany()).thenReturn(true);
-        when(association.getIpsProject()).thenReturn(ipsProject);
-        when(association.getTarget()).thenReturn("target");
-        when(association.getIpsProject()).thenReturn(ipsProject);
-        when(association.getName()).thenReturn(MY_ASSOCIATION);
-        when(associationQualified.getTarget()).thenReturn("target1");
-        when(associationQualified.getIpsProject()).thenReturn(ipsProject);
-        when(associationQualified.getName()).thenReturn(MY_ASSOCIATION + "1");
         when(type1.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
-        when(type1.findAllAssociations(ipsProject)).thenReturn(Arrays.asList(associationQualified));
         when(type1.findProductCmptType(ipsProject)).thenReturn(productCmptType);
-        when(type1.getIpsProject()).thenReturn(ipsProject);
         when(associationQualified.findTarget(ipsProject)).thenReturn(type2);
         when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
-        when(type2.getIpsProject()).thenReturn(ipsProject);
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
-        IIpsSrcFile[] ipsSourceFiles = { sourceFile };
-        when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
-        when(sourceFile.getIpsObjectName()).thenReturn(MY_QUALIFIER);
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getRuntimeId()).thenReturn("runtimeId." + MY_QUALIFIER);
         when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(type2);
@@ -196,7 +175,6 @@ public class IdentifierParserTest {
         when(productCmptType.searchProductComponents(true)).thenReturn(Arrays.asList(sourceFile));
         when(associationIndexed.findTarget(ipsProject)).thenReturn(type3);
         when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
-        when(type3.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
@@ -288,7 +266,7 @@ public class IdentifierParserTest {
 
     @Test
     public void testValidTextRegionInIdentifierNodeEmptyString() {
-        IdentifierNode node = identifierParser.parse(StringUtils.EMPTY);
+        IdentifierNode node = identifierParser.parse(IpsStringUtils.EMPTY);
 
         assertEquals(node.getTextRegion().getStart(), node.getTextRegion().getEnd());
     }

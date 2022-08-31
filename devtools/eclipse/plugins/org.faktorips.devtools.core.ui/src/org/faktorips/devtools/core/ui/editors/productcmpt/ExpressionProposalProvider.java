@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -32,6 +31,7 @@ import org.faktorips.fl.parser.FlParserConstants;
 import org.faktorips.fl.parser.FlParserTokenManager;
 import org.faktorips.fl.parser.JavaCharStream;
 import org.faktorips.fl.parser.Token;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -123,7 +123,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         if (token.kind == FlParserConstants.IDENTIFIER) {
             return token.image;
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

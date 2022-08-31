@@ -21,7 +21,7 @@ import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -53,6 +53,7 @@ import org.faktorips.runtime.DefaultReferenceResolver;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlCallback;
 import org.faktorips.runtime.internal.XmlUtil;
@@ -841,7 +842,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
         ITestAttribute[] testAttributes = parameter.getTestAttributes();
         boolean valueDeclAvailable = false;
         for (ITestAttribute testAttribute2 : testAttributes) {
-            if (StringUtils.isEmpty(testAttribute2.getAttribute())) {
+            if (IpsStringUtils.isEmpty(testAttribute2.getAttribute())) {
                 extensionAttrExists = true;
 
                 if (!valueDeclAvailable) {

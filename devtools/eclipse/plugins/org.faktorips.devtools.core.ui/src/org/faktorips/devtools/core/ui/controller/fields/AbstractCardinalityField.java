@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Base-class to represent and edit cardinality values (which means int-values and the asterisk
@@ -33,7 +33,7 @@ public abstract class AbstractCardinalityField extends DefaultEditField<Integer>
     @Override
     public void setValue(Integer newValue) {
         if (newValue == null) {
-            setText(StringUtils.EMPTY);
+            setText(IpsStringUtils.EMPTY);
         } else if (newValue.intValue() == Integer.MAX_VALUE) {
             setText("*"); //$NON-NLS-1$
         } else {

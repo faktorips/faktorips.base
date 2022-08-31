@@ -19,7 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
@@ -332,7 +332,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         if (generateValidatorClass) {
             newElement.setAttribute(PROPERTY_GENERATE_VALIDATOR_CLASS, "" + generateValidatorClass); //$NON-NLS-1$
         }
-        if (StringUtils.isNotEmpty(productCmptType)) {
+        if (IpsStringUtils.isNotEmpty(productCmptType)) {
             newElement.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         }
         if (forceExtensionCompilationUnitGeneration) {
@@ -365,7 +365,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     private void validateProductSide(MessageList list, IIpsProject ipsProject) {
         if (isConfigurableByProductCmptType()) {
-            if (StringUtils.isEmpty(productCmptType)) {
+            if (IpsStringUtils.isEmpty(productCmptType)) {
                 String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;
                 list.add(new Message(MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING, text, Message.ERROR, this,
                         IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
@@ -427,7 +427,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     @Override
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencies = new HashSet<>();
-        if (!StringUtils.isEmpty(getProductCmptType())) {
+        if (!IpsStringUtils.isEmpty(getProductCmptType())) {
             IDependency dependency = IpsObjectDependency.createConfiguredByDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencies.add(dependency);

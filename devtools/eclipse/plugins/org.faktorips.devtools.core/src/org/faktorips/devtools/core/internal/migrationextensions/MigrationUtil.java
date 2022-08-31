@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -57,7 +57,7 @@ public class MigrationUtil {
             IIpsArtefactBuilderSetConfigModel builderSetConfig) {
         for (String property : builderSetConfig.getPropertyNames()) {
             String propertyDescription = builderSetConfig.getPropertyDescription(property);
-            if (StringUtils.isBlank(propertyDescription)) {
+            if (IpsStringUtils.isBlank(propertyDescription)) {
                 String newDescription = builderSetInfo.getPropertyDefinition(property).getDescription();
                 builderSetConfig.setPropertyValue(property, builderSetConfig.getPropertyValue(property),
                         newDescription);

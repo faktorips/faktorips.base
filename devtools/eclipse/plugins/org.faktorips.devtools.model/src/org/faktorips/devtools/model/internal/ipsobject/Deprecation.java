@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersion;
@@ -42,7 +42,7 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
 
     @Override
     public IVersion<?> getSinceVersion() {
-        if (StringUtils.isBlank(getSinceVersionString())) {
+        if (IpsStringUtils.isBlank(getSinceVersionString())) {
             return null;
         }
         IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
@@ -51,7 +51,7 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
 
     @Override
     public boolean isValidSinceVersion() {
-        if (StringUtils.isNotBlank(getSinceVersionString())) {
+        if (IpsStringUtils.isNotBlank(getSinceVersionString())) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             return versionProvider.isCorrectVersionFormat(getSinceVersionString());
         } else {

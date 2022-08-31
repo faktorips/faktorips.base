@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.type;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.ui.editors.type.AssociationsLabelProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.type.IType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The first page of the ConstrainableAssociationWizard. This Page makes it possible to select an
@@ -41,7 +41,7 @@ public class ConstrainableAssociationSelectionPage extends WizardPage {
     private CandidatesContentProvider contentProvider;
 
     protected ConstrainableAssociationSelectionPage(ConstrainableAssociationPmo pmo) {
-        super(StringUtils.EMPTY);
+        super(IpsStringUtils.EMPTY);
         setTitle(Messages.ConstrainableAssociationWizard_labelSelectAssociation);
         bindingContext = new BindingContext();
         this.pmo = pmo;

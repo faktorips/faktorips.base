@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Class to parse and format an {@link IEnumValueSet}.
@@ -46,7 +47,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isEnum()) {
             return formatEnumValueSet((IEnumValueSet)valueSet);
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 

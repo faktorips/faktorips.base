@@ -18,6 +18,7 @@ import org.faktorips.devtools.model.builder.DefaultBuilderSet;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,15 +40,22 @@ public class JavaPackageStructureTest {
     @Mock
     private IIpsPackageFragment packageFragment;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         packageStructure = new JavaPackageStructure();
 
         when(ipsSrcFile.getBasePackageNameForMergableArtefacts()).thenReturn("mergable");
         when(ipsSrcFile.getBasePackageNameForDerivedArtefacts()).thenReturn("derived");
         when(ipsSrcFile.getIpsPackageFragment()).thenReturn(packageFragment);
         when(packageFragment.getName()).thenReturn("ubx");
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

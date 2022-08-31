@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -1441,7 +1441,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private void validateVersionProvider(MessageList result) {
         String versionProviderId = getReadOnlyProperties().getVersionProviderId();
-        if (StringUtils.isNotEmpty(versionProviderId)
+        if (IpsStringUtils.isNotEmpty(versionProviderId)
                 && !IIpsModelExtensions.get().getVersionProviderFactories().containsKey(versionProviderId)) {
             String text = MessageFormat.format(Messages.VersionProviderExtensionPoint_error_invalidVersionProvider,
                     getReadOnlyProperties().getVersionProviderId());

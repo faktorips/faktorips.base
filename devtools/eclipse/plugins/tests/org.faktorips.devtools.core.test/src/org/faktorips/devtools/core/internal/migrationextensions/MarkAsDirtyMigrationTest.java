@@ -14,7 +14,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -35,7 +35,7 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
 
     private void setUpMigration() {
         ipsProject = newIpsProject();
-        migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", ImmutableSet.of(IpsObjectType.POLICY_CMPT_TYPE,
+        migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", Set.of(IpsObjectType.POLICY_CMPT_TYPE,
                 IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.ENUM_TYPE), "47.11", "Lorem Ipsum");
     }
 

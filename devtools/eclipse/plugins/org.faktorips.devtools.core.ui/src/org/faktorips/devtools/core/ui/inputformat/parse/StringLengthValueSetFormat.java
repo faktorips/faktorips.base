@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Formats and parses the contents of a {@link StringLengthValueSet}
@@ -53,7 +53,7 @@ public class StringLengthValueSetFormat extends AbstractValueSetFormat {
     private IValueSet parseNonEmpty(String stringToBeParsed) {
         boolean containsNull = stringToBeParsed.endsWith(getNullSuffix());
         String max = stringToBeParsed.contains(UNLIMITED) ? null
-                : stringToBeParsed.replaceAll(REGEX_NON_NUMERIC, StringUtils.EMPTY);
+                : stringToBeParsed.replaceAll(REGEX_NON_NUMERIC, IpsStringUtils.EMPTY);
         return new StringLengthValueSet(getValueSetOwner(), getNextPartId(), max, containsNull);
     }
 
@@ -67,7 +67,7 @@ public class StringLengthValueSetFormat extends AbstractValueSetFormat {
         if (value.isStringLength()) {
             return value.toShortString();
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
 }

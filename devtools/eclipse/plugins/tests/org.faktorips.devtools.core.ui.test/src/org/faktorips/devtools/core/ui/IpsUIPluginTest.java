@@ -27,7 +27,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -240,11 +240,11 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     @Test
     public void testGetSharedOverlayImage_Empty() throws Exception {
         ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
-                StringUtils.EMPTY,
-                StringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
+                IpsStringUtils.EMPTY,
+                IpsStringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);
-        assertSame(IpsUIPlugin.getImageHandling().getSharedImageDescriptor(StringUtils.EMPTY, true),
+        assertSame(IpsUIPlugin.getImageHandling().getSharedImageDescriptor(IpsStringUtils.EMPTY, true),
                 sharedOverlayImage);
     }
 

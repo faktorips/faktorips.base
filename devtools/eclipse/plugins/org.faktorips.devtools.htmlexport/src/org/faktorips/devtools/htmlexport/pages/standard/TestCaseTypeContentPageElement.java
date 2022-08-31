@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -268,7 +268,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
         private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData) {
             String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
 
-            if (StringUtils.isEmpty(correspondingPolicyCmptType)) {
+            if (IpsStringUtils.isEmpty(correspondingPolicyCmptType)) {
                 attributeData.add(new TextPageElement("-", getContext())); //$NON-NLS-1$
                 attributeData.add(new TextPageElement(attribute.getDatatype(), getContext()));
                 return;

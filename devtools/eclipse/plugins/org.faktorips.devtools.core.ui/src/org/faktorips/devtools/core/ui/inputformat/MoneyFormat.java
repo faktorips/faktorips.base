@@ -17,11 +17,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.ICurrencyHolder;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 
@@ -49,7 +49,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     private Locale locale;
 
     protected MoneyFormat(Currency defaultCurrency) {
-        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        super(IpsStringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         currentCurrency = defaultCurrency;
     }
 
@@ -111,7 +111,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
 
         String amount;
         String[] splittedString = splitStringToBeParsed(stringToBeParsed);
-        if (!StringUtils.isEmpty(splittedString[0]) && !StringUtils.isEmpty(splittedString[1])) {
+        if (!IpsStringUtils.isEmpty(splittedString[0]) && !IpsStringUtils.isEmpty(splittedString[1])) {
             amount = amountFormat.parse(splittedString[0]);
             try {
                 updateCurrentCurrency(splittedString[1]);
@@ -135,9 +135,9 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     }
 
     protected String[] splitStringToBeParsed(String value) {
-        String currency = value.replaceAll(VALID_AMOUNT_CHARS, StringUtils.EMPTY).trim();
+        String currency = value.replaceAll(VALID_AMOUNT_CHARS, IpsStringUtils.EMPTY).trim();
         String[] splittedString = new String[2];
-        splittedString[0] = value.replace(currency, StringUtils.EMPTY).trim();
+        splittedString[0] = value.replace(currency, IpsStringUtils.EMPTY).trim();
         splittedString[1] = currency;
         return splittedString;
     }

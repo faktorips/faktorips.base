@@ -7,7 +7,7 @@ Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Fragment-Host: org.faktorips.devtools.ant
 Require-Bundle: org.apache.ant,
- org.hamcrest.core;bundle-version="1.3.0"
+ org.hamcrest;bundle-version="2.2"
 Bundle-ClassPath: .
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.abstraction,

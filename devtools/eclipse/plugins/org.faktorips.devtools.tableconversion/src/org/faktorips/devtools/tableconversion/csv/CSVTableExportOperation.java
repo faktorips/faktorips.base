@@ -18,7 +18,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.opencsv.CSVWriter;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -105,38 +106,22 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         // if we have reached here, the environment is valid, so try to export the data
         localMonitor.worked(1);
 
-        FileOutputStream out = null;
-        CSVWriter writer = null;
-        try {
+        char fieldSeparatorChar = getFieldSeparatorCSV(format);
+        try (FileOutputStream out = new FileOutputStream(new File(filename));
+                ICSVWriter writer = new CSVWriterBuilder(new BufferedWriter(new OutputStreamWriter(out)))
+                        .withSeparator(fieldSeparatorChar).build()) {
             if (!localMonitor.isCanceled()) {
                 // FS#1188 Tabelleninhalte exportieren: Checkbox "mit Spaltenueberschrift" und
                 // Zielordner
-                out = new FileOutputStream(new File(filename));
-
-                char fieldSeparatorChar = getFieldSeparatorCSV(format);
-                writer = new CSVWriter(new BufferedWriter(new OutputStreamWriter(out)), fieldSeparatorChar);
-
                 exportHeader(writer, structure.getColumns(), exportColumnHeaderRow);
 
                 localMonitor.worked(1);
 
                 exportDataCells(writer, contents, currentTableRows, structure, localMonitor, exportColumnHeaderRow);
-                writer.close();
             }
         } catch (IOException e) {
             IpsPlugin.log(e);
             messageList.add(new Message("", Messages.TableExportOperation_errWrite, Message.ERROR)); //$NON-NLS-1$
-        } finally {
-            if (out != null) {
-                try {
-
-                    out.close();
-                    // CSOFF: Empty Statement
-                } catch (IOException ee) {
-                    // ignore
-                }
-                // CSON: Empty Statement
-            }
         }
     }
 
@@ -153,7 +138,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      * @throws IpsException thrown if an error occurs during the search for the datatypes of the
      *             structure.
      */
-    private void exportDataCells(CSVWriter writer,
+    private void exportDataCells(ICSVWriter writer,
             ITableContents contents,
             ITableRows tableRows,
             ITableStructure structure,
@@ -212,7 +197,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      * @param columns The table content's columns
      * @param exportColumnHeaderRow Flag to indicate whether to export the header
      */
-    private void exportHeader(CSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) {
+    private void exportHeader(ICSVWriter writer, IColumn[] columns, boolean exportColumnHeaderRow) {
         if (exportColumnHeaderRow) {
             String[] header = new String[columns.length];
             for (int i = 0; i < header.length; i++) {

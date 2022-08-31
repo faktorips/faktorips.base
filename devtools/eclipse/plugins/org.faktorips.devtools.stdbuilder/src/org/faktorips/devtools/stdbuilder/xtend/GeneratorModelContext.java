@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
@@ -237,7 +237,7 @@ public class GeneratorModelContext {
         if (importHandler != null) {
             return importHandler;
         } else {
-            return new ImportHandler(StringUtils.EMPTY, Collections.emptySet());
+            return new ImportHandler(IpsStringUtils.EMPTY, Collections.emptySet());
         }
     }
 

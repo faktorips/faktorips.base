@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -402,7 +402,7 @@ public class TableStructure extends IpsObject implements ITableStructure {
 
         String typeId = element.getAttribute(PROPERTY_TYPE);
 
-        if (StringUtils.isNotEmpty(typeId)) {
+        if (IpsStringUtils.isNotEmpty(typeId)) {
             type = TableStructureType.getTypeForId(typeId);
         }
     }

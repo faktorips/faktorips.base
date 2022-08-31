@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -31,11 +31,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DelegatingValueSetTest {
 
     private static final String ANY_VALUE = "anyValue";
@@ -73,7 +73,7 @@ public class DelegatingValueSetTest {
         delegatingValueSet.initPropertiesFromXml(element, ANY_VALUE);
 
         // nothing expected - no exception just nothing
-        verifyZeroInteractions(element);
+        verifyNoInteractions(element);
     }
 
     @Test(expected = IllegalStateException.class)

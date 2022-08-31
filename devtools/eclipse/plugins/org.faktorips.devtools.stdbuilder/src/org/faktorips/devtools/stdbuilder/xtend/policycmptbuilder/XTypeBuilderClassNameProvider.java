@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.policycmptbuilder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

@@ -29,7 +29,7 @@ import org.mockito.junit.MockitoJUnitRunner;
  * 
  * @author Peter Erzberger
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;

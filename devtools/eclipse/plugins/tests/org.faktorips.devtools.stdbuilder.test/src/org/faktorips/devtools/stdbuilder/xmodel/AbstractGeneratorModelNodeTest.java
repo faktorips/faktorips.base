@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -36,9 +36,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractGeneratorModelNodeTest {
 
     @Mock
@@ -119,7 +119,6 @@ public class AbstractGeneratorModelNodeTest {
     @Test
     public void testHasSinceVersion_true() throws Exception {
         IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
-        doReturn(new DefaultVersion("1.2.3")).when(versionControlledElement).getSinceVersion();
         when(versionControlledElement.isValidSinceVersion()).thenReturn(true);
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
 
@@ -141,7 +140,6 @@ public class AbstractGeneratorModelNodeTest {
     @Test
     public void testHasSinceVersion_blankVersion() throws Exception {
         IVersionControlledElement versionControlledElement = mock(IVersionControlledElement.class);
-        doReturn(new DefaultVersion(" ")).when(versionControlledElement).getSinceVersion();
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(versionControlledElement, null, null);
         boolean hasSinceVersion = modelNode.hasSinceVersion();
 
@@ -151,7 +149,6 @@ public class AbstractGeneratorModelNodeTest {
     @Test
     public void testHasSinceVersion_noVersionControlledElement() throws Exception {
         IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        doReturn(new DefaultVersion("1.2.3")).when(part).getSinceVersion();
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, null, null);
 
         boolean hasSinceVersion = modelNode.hasSinceVersion();
@@ -184,7 +181,6 @@ public class AbstractGeneratorModelNodeTest {
     @Test
     public void testGetSinceVersion_noVersionControlledElement() throws Exception {
         IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
-        doReturn(new DefaultVersion("1.2.3")).when(part).getSinceVersion();
         AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, null, null);
 
         String sinceVersion = modelNode.getSinceVersion();
@@ -193,6 +189,7 @@ public class AbstractGeneratorModelNodeTest {
     }
 
     public static class Inner {
+        // plain empty class without annotations
     }
 
 }

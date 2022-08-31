@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -53,6 +52,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Dialog showing a list of IpsObjects to select a single or multiple objects. This object is used
@@ -216,7 +216,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
         public IpsSrcFileFilter() {
             super();
             // empty string should match all columns
-            if (StringUtils.isEmpty(patternMatcher.getPattern())) {
+            if (IpsStringUtils.isEmpty(patternMatcher.getPattern())) {
                 patternMatcher.setPattern(ALL_PATTERN);
             }
         }

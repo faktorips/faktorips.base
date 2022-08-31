@@ -30,7 +30,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SumListTest {
     private SumList sumList = new SumList("sum", "");
     private JavaCodeFragment argumentFragment = new JavaCodeFragment("valueList");

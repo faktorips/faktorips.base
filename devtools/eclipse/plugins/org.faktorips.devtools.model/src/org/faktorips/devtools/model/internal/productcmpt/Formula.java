@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
@@ -161,7 +161,7 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public IProductCmptTypeMethod findFormulaSignature(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(getFormulaSignature())) {
+        if (IpsStringUtils.isEmpty(getFormulaSignature())) {
             return null;
         }
         IProductCmptType type = findProductCmptType(ipsProject);

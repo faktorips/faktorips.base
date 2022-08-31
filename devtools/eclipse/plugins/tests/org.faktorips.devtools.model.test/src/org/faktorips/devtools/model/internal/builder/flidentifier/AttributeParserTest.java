@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -34,7 +33,6 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
@@ -43,13 +41,14 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AttributeParserTest extends AbstractParserTest {
 
     private static final String MY_ATTRIBUTE = "myAttribute";
@@ -98,12 +97,6 @@ public class AttributeParserTest extends AbstractParserTest {
         when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
                 .thenReturn(true);
-        when(getProductCmptType().getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
-        when(otherType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
-        when(prodType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
-        when(policyType.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-        when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
-        when(method.isChangingOverTime()).thenReturn(true);
     }
 
     @Test
@@ -119,8 +112,6 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testParse_findAttributeInExpressionType() throws Exception {
         when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
         getParsingContext().pushNode(new TestNode(getProductCmptType()));
-        when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
-        when(method.isChangingOverTime()).thenReturn(true);
 
         AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
                 .length()));
@@ -215,8 +206,6 @@ public class AttributeParserTest extends AbstractParserTest {
         List<IAttribute> arrayList = new ArrayList<>();
         arrayList.add(attribute4);
         doReturn(true).when(spy).isContextTypeFormulaType();
-        doReturn(false).when(attribute4).isChangingOverTime();
-        when(method.isChangingOverTime()).thenReturn(false);
         when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(arrayList);
 
         List<IAttribute> attributeList = spy.findAttributes();
@@ -230,7 +219,6 @@ public class AttributeParserTest extends AbstractParserTest {
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
-        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
 
         List<IAttribute> attributeList = spy.findAttributes();
         assertEquals(1, attributeList.size());
@@ -247,7 +235,7 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testGetProposals() throws Exception {
         AbstractIdentifierNodeParser parser = mockAttributesForProposal();
 
-        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parser.getProposals(IpsStringUtils.EMPTY);
 
         assertEquals(4, proposals.size());
         assertEquals(attribute.getName(), proposals.get(0).getText());
@@ -276,7 +264,7 @@ public class AttributeParserTest extends AbstractParserTest {
         when(identifierFilter.isIdentifierAllowed(attribute2, IdentifierKind.ATTRIBUTE)).thenReturn(true);
         when(identifierFilter.isIdentifierAllowed(attribute3, IdentifierKind.ATTRIBUTE)).thenReturn(false);
 
-        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parser.getProposals(IpsStringUtils.EMPTY);
 
         assertEquals(2, proposals.size());
         assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(0).getText());
@@ -291,9 +279,7 @@ public class AttributeParserTest extends AbstractParserTest {
         when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
         when(policyType.findProductCmptType(getIpsProject())).thenReturn(prodType);
         when(attribute2.getName()).thenReturn("xyz");
-        when(attribute2.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         when(attribute3.getName()).thenReturn("myProd");
-        when(attribute3.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         return spy;
     }
 

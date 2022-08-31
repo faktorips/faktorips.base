@@ -33,7 +33,7 @@ import java.util.jar.Manifest;
 
 import javax.xml.XMLConstants;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
@@ -75,6 +75,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -365,7 +366,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void validateVersion(MessageList list) {
-        if (StringUtils.isNotEmpty(getVersion()) && StringUtils.isNotEmpty(getVersionProviderId())) {
+        if (IpsStringUtils.isNotEmpty(getVersion()) && IpsStringUtils.isNotEmpty(getVersionProviderId())) {
             list.newError(MSGCODE_INVALID_VERSION_SETTING, Messages.IpsProjectProperties_err_versionOrVersionProvider,
                     new ObjectProperty(this, PROPERTY_VERSION), new ObjectProperty(this, PROPERTY_VERSION_PROVIDER_ID));
         }
@@ -675,7 +676,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void toXmlProductRelease(Document doc, Element projectEl) {
         createProductReleaseComment(projectEl);
-        if (StringUtils.isNotEmpty(releaseExtensionId)) {
+        if (IpsStringUtils.isNotEmpty(releaseExtensionId)) {
             Element release = doc.createElement(PRODUCT_RELEASE);
             release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
             projectEl.appendChild(release);
@@ -684,12 +685,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void toXmlVersion(Document doc, Element projectEl) {
         createVersionComment(projectEl);
-        if (StringUtils.isNotEmpty(versionProviderId) || StringUtils.isNotEmpty(version)) {
+        if (IpsStringUtils.isNotEmpty(versionProviderId) || IpsStringUtils.isNotEmpty(version)) {
             Element release = doc.createElement(VERSION_TAG_NAME);
-            if (StringUtils.isNotEmpty(versionProviderId)) {
+            if (IpsStringUtils.isNotEmpty(versionProviderId)) {
                 release.setAttribute(VERSION_PROVIDER_ATTRIBUTE, versionProviderId);
             }
-            if (StringUtils.isNotEmpty(version)) {
+            if (IpsStringUtils.isNotEmpty(version)) {
                 release.setAttribute(VERSION_ATTRIBUTE, version);
             }
             projectEl.appendChild(release);
@@ -846,7 +847,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         persistentProject = ValueToXmlHelper.isAttributeTrue(element, ATTRIBUTE_PERSISTENT_PROJECT);
         runtimeIdPrefix = element.getAttribute("runtimeIdPrefix"); //$NON-NLS-1$
         changesInTimeConventionIdForGeneratedCode = element.getAttribute(ATTRIBUTE_CHANGES_IN_TIME_NAMING_CONVENTION);
-        changesInTimeConventionIdForGeneratedCode = StringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
+        changesInTimeConventionIdForGeneratedCode = IpsStringUtils.isEmpty(changesInTimeConventionIdForGeneratedCode)
                 ? IChangesOverTimeNamingConvention.VAA
                 : changesInTimeConventionIdForGeneratedCode;
 
@@ -902,10 +903,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void initCompatibilityModelProductRelease(Element productReleaseDeprecated) {
         if (productReleaseDeprecated != null) {
-            if (StringUtils.isEmpty(version)) {
+            if (IpsStringUtils.isEmpty(version)) {
                 version = productReleaseDeprecated.getAttribute(VERSION_ATTRIBUTE);
             }
-            if (StringUtils.isEmpty(releaseExtensionId)) {
+            if (IpsStringUtils.isEmpty(releaseExtensionId)) {
                 releaseExtensionId = productReleaseDeprecated.getAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE);
             }
         }
@@ -960,7 +961,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 .newProductCmptNamingStrategy(ipsProject);
         if (el != null) {
             productCmptNamingStrategyId = el.getAttribute("id"); //$NON-NLS-1$
-            if (StringUtils.isEmpty(productCmptNamingStrategyId)) {
+            if (IpsStringUtils.isEmpty(productCmptNamingStrategyId)) {
                 return;
             }
             IProductCmptNamingStrategyFactory factory = ipsProject.getIpsModel().getCustomModelExtensions()
@@ -1017,7 +1018,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         for (int i = 0; i < length; i++) {
             Element child = (Element)nl.item(i);
             Attr resourcePath = child.getAttributeNode("path"); //$NON-NLS-1$
-            if (resourcePath != null && StringUtils.isNotEmpty(resourcePath.getValue())) {
+            if (resourcePath != null && IpsStringUtils.isNotEmpty(resourcePath.getValue())) {
                 resourcesPathExcludedFromTheProductDefiniton.add(resourcePath.getValue());
             }
         }
@@ -1106,7 +1107,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private boolean isEnabledSetting(Element child) {
         String enabledAttributeValue = child.getAttribute(SETTING_ATTRIBUTE_ENABLED);
-        if (StringUtils.isEmpty(enabledAttributeValue)) {
+        if (IpsStringUtils.isEmpty(enabledAttributeValue)) {
             String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
             // only if the value is 'false' we assume it is disabled. This is useful
             // for example for marker enums where you could skip the enabled attribute

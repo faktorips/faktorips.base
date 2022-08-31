@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartContainer;
@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 
@@ -92,7 +93,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                 return createTextForDiffIpsObjPartContainer(invalidObjProperty1, invalidObjProperty2);
             }
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     private boolean isDifferentIpsObject(IpsObjectPartContainer ipsObjectContainer2,

@@ -12,8 +12,6 @@ package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.NotImplementedException;
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.model.internal.pctype.Messages;
@@ -32,6 +30,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Element;
@@ -109,7 +108,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
 
     @Override
     public void setTableColumnConverter(IPersistableTypeConverter newConverter) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -233,7 +232,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     // CSOFF: CyclomaticComplexity
     @Override
     protected void validateThis(MessageList msgList, IIpsProject ipsProject) {
-        if (!StringUtils.isBlank(tableColumnName)
+        if (!IpsStringUtils.isBlank(tableColumnName)
                 && AttributeType.DERIVED_ON_THE_FLY.equals(getPolicyComponentTypeAttribute().getAttributeType())) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY,
                     Messages.PersistentAttributeInfo_msgColumnNameMustBeEmpty, Message.ERROR, this,
@@ -248,7 +247,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
             return;
         }
 
-        if (StringUtils.isBlank(tableColumnName) && !getPolicyComponentTypeAttribute().isOverwrite()) {
+        if (IpsStringUtils.isBlank(tableColumnName) && !getPolicyComponentTypeAttribute().isOverwrite()) {
             msgList.add(new Message(MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME,
                     Messages.PersistentAttributeInfo_msgEmptyColumnName, Message.ERROR, this,
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
@@ -265,7 +264,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
          */
         int maxColumnNameLenght = getIpsProject().getReadOnlyProperties().getPersistenceOptions()
                 .getMaxColumnNameLenght();
-        if (StringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
+        if (IpsStringUtils.isNotBlank(tableColumnName) && tableColumnName.length() > maxColumnNameLenght) {
             msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH,
                     MessageFormat.format(Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength,
                             tableColumnName.length(), maxColumnNameLenght),

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -41,12 +41,15 @@ public class ExtensionFunctionResolversCacheTest {
     private FunctionResolver<JavaCodeFragment> resolver;
     private FunctionResolver<JavaCodeFragment> projectRelatedResolver;
     private IIpsProject ipsProject;
+    private Locale locale;
 
     @Before
     public void setUp() {
         ipsProject = mock(IIpsProject.class);
         IIpsModel ipsModel = mock(IIpsModel.class);
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
+        locale = Locale.forLanguageTag("foo");
+        doReturn(locale).when(ipsProject).getFormulaLanguageLocale();
         compiler = mock(ExtendedExprCompiler.class);
 
         setUpResolverFactories();
@@ -81,7 +84,7 @@ public class ExtensionFunctionResolversCacheTest {
         FunctionResolver<JavaCodeFragment> mockProjectRelatedResolver = mock(FunctionResolver.class);
         projectRelatedResolver = mockProjectRelatedResolver;
         when(resolverFactory.newFunctionResolver(any(Locale.class))).thenReturn(resolver);
-        when(projectRelatedResolverFactory.newFunctionResolver(eq(ipsProject), any(Locale.class))).thenReturn(
+        when(projectRelatedResolverFactory.newFunctionResolver(ipsProject, locale)).thenReturn(
                 projectRelatedResolver);
     }
 
@@ -97,8 +100,8 @@ public class ExtensionFunctionResolversCacheTest {
         extensionFunctionResolversCache.addExtensionFunctionResolversToCompiler(compiler);
         extensionFunctionResolversCache.addExtensionFunctionResolversToCompiler(compiler);
 
-        verify(resolverFactory).newFunctionResolver(any(Locale.class));
-        verify(projectRelatedResolverFactory).newFunctionResolver(eq(ipsProject), any(Locale.class));
+        verify(resolverFactory).newFunctionResolver(locale);
+        verify(projectRelatedResolverFactory).newFunctionResolver(ipsProject, locale);
     }
 
     @Test
@@ -107,8 +110,8 @@ public class ExtensionFunctionResolversCacheTest {
         extensionFunctionResolversCache.clearCache();
         extensionFunctionResolversCache.addExtensionFunctionResolversToCompiler(compiler);
 
-        verify(resolverFactory, times(2)).newFunctionResolver(any(Locale.class));
-        verify(projectRelatedResolverFactory, times(2)).newFunctionResolver(eq(ipsProject), any(Locale.class));
+        verify(resolverFactory, times(2)).newFunctionResolver(locale);
+        verify(projectRelatedResolverFactory, times(2)).newFunctionResolver(ipsProject, locale);
     }
 
 }

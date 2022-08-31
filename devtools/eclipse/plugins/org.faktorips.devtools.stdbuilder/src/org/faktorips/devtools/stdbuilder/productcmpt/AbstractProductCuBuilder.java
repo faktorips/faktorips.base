@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;

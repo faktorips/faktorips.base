@@ -163,7 +163,7 @@ public class IpsBundleEntry extends IpsLibraryEntry implements IIpsBundleEntry {
         return "BundleEntry[" + getXmlPathRepresentation() + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
-    protected class IpsStorageFactory {
+    public static class IpsStorageFactory {
 
         public IpsFolderBundle createFolderBundle(IIpsProject ipsProject, Path bundlePath) {
             return new IpsFolderBundle(ipsProject, bundlePath);

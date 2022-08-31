@@ -15,19 +15,19 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Locale;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -139,13 +139,13 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
 
         // should not throw any exception
         builderSpy.build(ipsSrcFile);
-        verifyZeroInteractions(generatorMock);
+        verifyNoInteractions(generatorMock);
 
         IIpsObject anyIpsObject = mock(IIpsObject.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(anyIpsObject);
         // should not throw any exception
         builderSpy.build(ipsSrcFile);
-        verifyZeroInteractions(generatorMock);
+        verifyNoInteractions(generatorMock);
     }
 
     @Test
@@ -264,7 +264,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] {});
 
         builderSpy.afterBuildProcess(ipsProject, null);
-        verifyZeroInteractions(generatorMock);
+        verifyNoInteractions(generatorMock);
 
         when(ipsProject.getSourceIpsPackageFragmentRoots()).thenReturn(new IIpsPackageFragmentRoot[] { root });
         builderSpy.afterBuildProcess(ipsProject, null);
@@ -291,7 +291,7 @@ public class ValidationRuleMessagesPropertiesBuilderTest extends AbstractValidat
         when(propertyFile.getParent()).thenReturn(folder);
 
         validationMessagesBuilder.beforeBuildProcess(ipsProject, ABuildKind.INCREMENTAL);
-        verify(folder).create(any(IProgressMonitor.class));
+        verify(folder).create(isNull());
     }
 
     protected IIpsSrcFile mockIpsSrcFile() {

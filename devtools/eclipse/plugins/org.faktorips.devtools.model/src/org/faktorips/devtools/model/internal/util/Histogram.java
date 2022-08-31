@@ -28,7 +28,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.TreeMultimap;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -199,7 +199,7 @@ public class Histogram<V, E> {
         if (o1 instanceof Comparable && o2 instanceof Comparable) {
             Comparable<?> c1 = (Comparable<?>)o1;
             Comparable<?> c2 = (Comparable<?>)o2;
-            return ObjectUtils.compare(c1, c2);
+            return compare(c1, c2);
         } else {
             int idCompare = Integer.compare(System.identityHashCode(o1), System.identityHashCode(o2));
             if (idCompare == 0) {
@@ -211,6 +211,11 @@ public class Histogram<V, E> {
             }
             return idCompare;
         }
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static <T> int compare(Comparable o1, Comparable o2) {
+        return ObjectUtils.compare(o1, o2);
     }
 
     /**
@@ -310,7 +315,7 @@ public class Histogram<V, E> {
     /**
      * A {@link Comparator} that uses object identity to compare objects. This comparator returns
      * <ul>
-     * <li>0 when tow objects are the same instance</li>
+     * <li>0 when two objects are the same instance</li>
      * <li>1 or -1 by comparing the objects' {@link System#identityHashCode(Object)} if they are not
      * the same instance according to their equals method</li>
      * </ul>

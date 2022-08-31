@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.type;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
@@ -136,7 +135,7 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_MODIFIER, modifier.getId());
-        if (StringUtils.isNotEmpty(category)) {
+        if (IpsStringUtils.isNotEmpty(category)) {
             element.setAttribute(PROPERTY_CATEGORY, category);
         }
         if (categoryPosition > 0) {

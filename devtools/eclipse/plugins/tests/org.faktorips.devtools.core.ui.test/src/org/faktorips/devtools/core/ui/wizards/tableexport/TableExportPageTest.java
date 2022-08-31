@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.tableexport;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TableExportPageTest {
@@ -45,6 +45,8 @@ public class TableExportPageTest {
     private ITableContents tableContents;
     @Mock
     private ITableStructure tableStructure;
+    @Mock
+    private IIpsProject ipsProject;
 
     @InjectMocks
     private TableExportPage tableExportPage;
@@ -54,6 +56,8 @@ public class TableExportPageTest {
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);
         exportedIpsObjectControlField.set(tableExportPage, exportedIpsObjectControl);
+        when(tableContents.getIpsProject()).thenReturn(ipsProject);
+        when(tableStructure.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test
@@ -132,9 +136,9 @@ public class TableExportPageTest {
         when(exportedIpsObjectControl.getText()).thenReturn("MyTable");
         when(exportedIpsObjectControl.findTableContents()).thenReturn(tableContents);
         when(tableContents.exists()).thenReturn(true);
-        when(tableContents.findTableStructure(any(IIpsProject.class))).thenReturn(tableStructure);
+        when(tableContents.findTableStructure(ipsProject)).thenReturn(tableStructure);
         when(tableStructure.exists()).thenReturn(true);
-        when(tableStructure.validate(any(IIpsProject.class))).thenReturn(
+        when(tableStructure.validate(ipsProject)).thenReturn(
                 new MessageList(Message.newError("foo", "bar")));
 
         tableExportPage.validateObjectToExport();

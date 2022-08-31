@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.inputformat;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Base class or number formats.
@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 public abstract class AbstractNumberFormat extends AbstractInputFormat<String> {
 
     public AbstractNumberFormat() {
-        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        super(IpsStringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
     }
 
     @Override

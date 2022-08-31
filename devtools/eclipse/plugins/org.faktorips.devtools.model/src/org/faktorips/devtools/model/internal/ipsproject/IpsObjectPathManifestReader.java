@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
@@ -89,11 +89,11 @@ public class IpsObjectPathManifestReader {
         ipsSrcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(bundleManifest.getBasePackage(objectDir));
         ipsSrcFolderEntry.setUniqueQualifier(bundleManifest.getUniqueQualifier(objectDir));
         String tocPath = bundleManifest.getTocPath(manifestElement);
-        if (StringUtils.isNotEmpty(tocPath)) {
+        if (IpsStringUtils.isNotEmpty(tocPath)) {
             ipsSrcFolderEntry.setBasePackageRelativeTocPath(tocPath);
         }
         String validationMessagesBundle = bundleManifest.getValidationMessagesBundle(manifestElement);
-        if (StringUtils.isNotEmpty(validationMessagesBundle)) {
+        if (IpsStringUtils.isNotEmpty(validationMessagesBundle)) {
             ipsSrcFolderEntry.setValidationMessagesBundle(validationMessagesBundle);
         }
         return ipsSrcFolderEntry;

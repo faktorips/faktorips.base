@@ -21,7 +21,7 @@ import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -176,13 +176,13 @@ public class ProductCmptCategoryTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attribute = policyType.newPolicyCmptTypeAttribute();
         attribute.setValueSetConfiguredByProduct(true);
 
-        assertTrue(StringUtils.isEmpty(attribute.getCategory()));
+        assertTrue(IpsStringUtils.isEmpty(attribute.getCategory()));
 
         assertFalse(category.findIsContainingProperty(attribute, productType, ipsProject));
         assertTrue(defCategory.findIsContainingProperty(attribute, productType, ipsProject));
 
         category.insertProductCmptProperty(attribute, null, true);
-        assertTrue(StringUtils.isEmpty(attribute.getCategory()));
+        assertTrue(IpsStringUtils.isEmpty(attribute.getCategory()));
 
         assertTrue(category.findIsContainingProperty(attribute, productType, ipsProject));
         assertFalse(defCategory.findIsContainingProperty(attribute, productType, ipsProject));

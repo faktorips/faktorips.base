@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.actions;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -69,7 +69,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     }
 
     protected String getSelectedText(IWorkbenchWindow activeWorkbenchWindow) {
-        String selectedText = StringUtils.EMPTY;
+        String selectedText = IpsStringUtils.EMPTY;
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
         if (selection instanceof ITextSelection) {
             ITextSelection textSelection = (ITextSelection)selection;

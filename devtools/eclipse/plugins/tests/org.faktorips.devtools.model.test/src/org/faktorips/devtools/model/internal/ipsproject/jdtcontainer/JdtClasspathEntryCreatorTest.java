@@ -36,9 +36,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class JdtClasspathEntryCreatorTest {
 
     @Mock
@@ -119,7 +119,6 @@ public class JdtClasspathEntryCreatorTest {
     @Test
     public void testCreateLibraryEntry_invalidPath() throws Exception {
         mockEntryAndPath();
-        mockProject();
         mockReferences();
         when(archiveMessageList.containsErrorMsg()).thenReturn(true);
         when(bundleMessageList.containsErrorMsg()).thenReturn(true);
@@ -132,7 +131,6 @@ public class JdtClasspathEntryCreatorTest {
     @Test
     public void testCreateLibraryEntry_archive() throws Exception {
         mockEntryAndPath();
-        mockProject();
         mockReferences();
 
         IpsObjectPathEntry libraryEntry = entryCreator.createLibraryEntry();
@@ -143,7 +141,6 @@ public class JdtClasspathEntryCreatorTest {
     @Test
     public void testCreateLibraryEntry_library() throws Exception {
         mockEntryAndPath();
-        mockProject();
         mockReferences();
         when(archiveMessageList.containsErrorMsg()).thenReturn(true);
 
@@ -166,13 +163,7 @@ public class JdtClasspathEntryCreatorTest {
         when(path.toFile()).thenReturn(file);
         Path filePath = mock(Path.class);
         when(file.toPath()).thenReturn(filePath);
-        when(path.lastSegment()).thenReturn("myProjectName");
         when(referenceFactory.getIpsProject(path)).thenReturn(refProject);
-    }
-
-    private void mockProject() {
-        when(ipsObjectPath.getIpsProject()).thenReturn(ipsProject);
-        when(ipsProject.getProject()).thenReturn(project);
     }
 
 }

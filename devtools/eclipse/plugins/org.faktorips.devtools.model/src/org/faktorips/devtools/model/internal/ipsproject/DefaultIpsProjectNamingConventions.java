@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.devtools.abstraction.Abstractions;
@@ -103,7 +102,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
         MessageList result = new MessageList();
 
         // common check for all IPS object types
-        if (StringUtils.isEmpty(name)) {
+        if (IpsStringUtils.isEmpty(name)) {
             String text = getNameIsEmptyErrorText(type);
             result.add(new Message(NAME_IS_MISSING, text, Message.ERROR));
             return result;

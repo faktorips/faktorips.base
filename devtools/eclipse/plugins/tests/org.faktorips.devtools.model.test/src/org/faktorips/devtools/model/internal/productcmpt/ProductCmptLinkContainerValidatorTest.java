@@ -12,9 +12,9 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -41,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.verification.VerificationMode;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -80,7 +80,7 @@ public class ProductCmptLinkContainerValidatorTest {
         messageList.add(Message.newError("code1", "errorText"));
         messageList.add(Message.newWarning("code2", "warningText"));
         messageList.add(Message.newError("code3", "errorText2"));
-        when(association.validate(any(IIpsProject.class))).thenReturn(messageList);
+        when(association.validate(ipsProject)).thenReturn(messageList);
 
         List<IProductCmptTypeAssociation> associations = new ArrayList<>();
         associations.add(association);
@@ -89,12 +89,13 @@ public class ProductCmptLinkContainerValidatorTest {
         when(association.getTargetRoleSingular()).thenReturn("targetRole");
         when(association.isDerivedUnion()).thenReturn(false);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
+        when(linkContainer.getIpsProject()).thenReturn(ipsProject);
 
-        when(prodCmptLink.findTarget(any(IIpsProject.class))).thenReturn(prodCmpt);
+        when(prodCmptLink.findTarget(ipsProject)).thenReturn(prodCmpt);
         when(linkContainer.getValidFrom()).thenReturn(validFromDate);
         when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(null);
         when(prodCmpt.getQualifiedName()).thenReturn(productCmptQualifiedName);
-        when(prodCmpt.findProductCmptType(any(IIpsProject.class))).thenReturn(prodCmptType);
+        when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
 
         validator = new ProductCmptLinkContainerValidator(ipsProject, linkContainer);
     }
@@ -108,11 +109,11 @@ public class ProductCmptLinkContainerValidatorTest {
     private void verifyAddMessagesCalled(IProductCmptTypeAssociation assoc, VerificationMode mode) {
         verify(validator, mode).validateAssociation(eq(assoc));
         verify(validator, mode).addMessageIfAssociationHasValidationMessages(eq(assoc), any(MessageList.class));
-        verify(validator, mode).addMessageIfDuplicateTargetPresent(eq(assoc), anyListOf(IProductCmptLink.class),
+        verify(validator, mode).addMessageIfDuplicateTargetPresent(eq(assoc), anyList(),
                 any(MessageList.class));
-        verify(validator, mode).addMessageIfLessLinksThanMinCard(eq(assoc), anyListOf(IProductCmptLink.class),
+        verify(validator, mode).addMessageIfLessLinksThanMinCard(eq(assoc), anyList(),
                 any(MessageList.class));
-        verify(validator, mode).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyListOf(IProductCmptLink.class),
+        verify(validator, mode).addMessageIfMoreLinksThanMaxCard(eq(assoc), anyList(),
                 any(MessageList.class));
     }
 
@@ -165,7 +166,7 @@ public class ProductCmptLinkContainerValidatorTest {
         validator = spy(validator);
         callValidator();
         verify(validator, never()).addMessageIfTargetNotValidOnValidFromDate(eq(association),
-                anyListOf(IProductCmptLink.class), any(MessageList.class));
+                anyList(), any(MessageList.class));
     }
 
     @Test
@@ -174,7 +175,7 @@ public class ProductCmptLinkContainerValidatorTest {
         validator = spy(validator);
         callValidator();
         verify(validator, times(1)).addMessageIfTargetNotValidOnValidFromDate(eq(association),
-                anyListOf(IProductCmptLink.class), any(MessageList.class));
+                anyList(), any(MessageList.class));
     }
 
     @Test

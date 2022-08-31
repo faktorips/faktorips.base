@@ -26,9 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnumValueSetSourceTest {
 
     @Mock
@@ -58,7 +58,6 @@ public class EnumValueSetSourceTest {
     @Test
     public void testIsApplicable_false() {
         when(valueSetOwner.getValueSet()).thenReturn(valueSet);
-        when(valueSet.isEnum()).thenReturn(false);
 
         boolean isApplicable = valueSource.isApplicable();
 
@@ -77,7 +76,6 @@ public class EnumValueSetSourceTest {
     @Test
     public void testGetValues_EmptyList() {
         when(valueSetOwner.getValueSet()).thenReturn(valueSet);
-        when(valueSet.isEnum()).thenReturn(false);
 
         List<String> values = valueSource.getValues();
 

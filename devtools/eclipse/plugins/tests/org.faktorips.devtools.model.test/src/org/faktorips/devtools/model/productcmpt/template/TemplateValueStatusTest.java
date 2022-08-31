@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.productcmpt.template;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -21,12 +20,13 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class TemplateValueStatusTest {
 
     @Mock
@@ -34,6 +34,15 @@ public class TemplateValueStatusTest {
 
     @Mock
     private IProductCmptLink link;
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Before
+    public void setUp() {
+        doReturn(ipsProject).when(attributeValue).getIpsProject();
+        doReturn(ipsProject).when(link).getIpsProject();
+    }
 
     @Test
     public void testGetNextStatus_INHERITED() throws Exception {
@@ -96,7 +105,7 @@ public class TemplateValueStatusTest {
 
         ITemplatedValue templateLink = mock(IProductCmptLink.class);
         makeTemplate(templateLink);
-        doReturn(templateLink).when(link).findTemplateProperty(any(IIpsProject.class));
+        doReturn(templateLink).when(link).findTemplateProperty(ipsProject);
 
         assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(link), is(true));
         assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(templateLink), is(false));
@@ -117,7 +126,7 @@ public class TemplateValueStatusTest {
 
     private void addTemplateValue(IAttributeValue value) {
         IAttributeValue templateValue = mock(IAttributeValue.class);
-        when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
+        when(value.findTemplateProperty(ipsProject)).thenReturn(templateValue);
     }
 
     private void makeTemplate(ITemplatedValue value) {

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.QualifierNode;
@@ -45,9 +44,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ExpressionDependencyCollectorTest {
 
     private static final String MY_EXPRESSION = "1 + 2";
@@ -98,7 +97,6 @@ public class ExpressionDependencyCollectorTest {
     @Before
     public void setUpExpression() {
         when(expression.getIpsObject()).thenReturn(ipsObject);
-        when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] {});
         when(ipsObject.getQualifiedNameType()).thenReturn(new QualifiedNameType(MY_NAME, IpsObjectType.PRODUCT_CMPT));
     }
 

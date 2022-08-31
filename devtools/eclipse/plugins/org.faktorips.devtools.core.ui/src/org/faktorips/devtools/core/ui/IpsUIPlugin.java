@@ -29,7 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableFuture;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -133,6 +133,7 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsCompositeSaveParticipant;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -328,7 +329,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configElements) {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
-                if (StringUtils.isEmpty(configElClass)) {
+                if (IpsStringUtils.isEmpty(configElClass)) {
                     throw new RuntimeException("A problem occured while trying to load the extension: " //$NON-NLS-1$
                             + extension.getExtensionPointUniqueIdentifier() + ". The attribute \"" //$NON-NLS-1$
                             + CONFIG_PROPERTY_CLASS + "\" is not specified."); //$NON-NLS-1$
@@ -374,7 +375,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configElements) {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
-                if (StringUtils.isEmpty(configElClass)) {
+                if (IpsStringUtils.isEmpty(configElClass)) {
                     throw new IpsException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                     + extension.getExtensionPointUniqueIdentifier() + ". The attribute \"" //$NON-NLS-1$
@@ -566,7 +567,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             for (IConfigurationElement configElement : configElements) {
                 String configElClass = configElement.getAttribute(CONFIG_PROPERTY_CLASS);
-                if (StringUtils.isEmpty(configElClass)) {
+                if (IpsStringUtils.isEmpty(configElClass)) {
                     throw new IpsException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                     + extension.getExtensionPointUniqueIdentifier()
@@ -575,7 +576,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (tableFormat.getClass().getName().equals(configElClass)) {
                     // the current configuration element corresponds to the given table format
                     String configElGuiClass = configElement.getAttribute("guiClass"); //$NON-NLS-1$
-                    if (!StringUtils.isEmpty(configElGuiClass)) {
+                    if (!IpsStringUtils.isEmpty(configElGuiClass)) {
                         TableFormatConfigurationCompositeFactory factory = ExtensionPoints.createExecutableExtension(
                                 extension, configElement, "guiClass", //$NON-NLS-1$
                                 TableFormatConfigurationCompositeFactory.class);
@@ -799,7 +800,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 IConfigurationElement[] configElements = extension.getConfigurationElements();
                 if (configElements.length > 0) {
                     String configElPropertyId = configElements[0].getAttribute("propertyId"); //$NON-NLS-1$
-                    if (StringUtils.isEmpty(configElPropertyId)) {
+                    if (IpsStringUtils.isEmpty(configElPropertyId)) {
                         throw new IpsException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extension.getExtensionPointUniqueIdentifier()
@@ -836,7 +837,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             for (IExtension extension : extensions) {
                 for (IConfigurationElement configElement : extension.getConfigurationElements()) {
                     String configElPropertyId = configElement.getAttribute("propertyId"); //$NON-NLS-1$
-                    if (StringUtils.isBlank(configElPropertyId)) {
+                    if (IpsStringUtils.isBlank(configElPropertyId)) {
                         throw new IpsException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
                                         + extension.getExtensionPointUniqueIdentifier()

@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.enums;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
@@ -109,7 +108,7 @@ public class EnumLiteralNameAttribute extends EnumAttribute implements IEnumLite
     /** Validates the <code>defaultValueProviderAttribute</code> property. */
     private void validateDefaultValueProviderAttribute(MessageList list) {
         // Pass validation if no provider is specified.
-        if (StringUtils.isEmpty(defaultValueProviderAttribute)) {
+        if (IpsStringUtils.isEmpty(defaultValueProviderAttribute)) {
             return;
         }
         validateValueProviderAttributeExists(list);

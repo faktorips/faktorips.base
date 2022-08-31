@@ -32,9 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ProductSearchQueryTest {
 
     private static final String PRODUCT_CMPT_TYPE_NAME = "ProductCmptType";
@@ -123,15 +123,6 @@ public class ProductSearchQueryTest {
     @Test
     public void testGetSelectedSrcFilesNoSelectedFiles() {
         query = new ProductSearchQuery(model, ipsModel);
-
-        IIpsSrcFile wrongObjectType = mock(IIpsSrcFile.class);
-        when(wrongObjectType.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
-
-        IIpsSrcFile wrongProductCmptType = mock(IIpsSrcFile.class);
-        when(wrongProductCmptType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
-
-        IIpsSrcFile selectedSrcFile = mock(IIpsSrcFile.class);
-        when(selectedSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
 
         when(scope.getSelectedIpsSrcFiles()).thenReturn(new HashSet<IIpsSrcFile>());
 

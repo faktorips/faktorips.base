@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.tablestructure;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -20,6 +20,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -27,7 +28,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     static final String TAG_NAME = "Column"; //$NON-NLS-1$
 
-    private String datatype = StringUtils.EMPTY;
+    private String datatype = IpsStringUtils.EMPTY;
 
     Column(TableStructure table, String id) {
         super(table, id);

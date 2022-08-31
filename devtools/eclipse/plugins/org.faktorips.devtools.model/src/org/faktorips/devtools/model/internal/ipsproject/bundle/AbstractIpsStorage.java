@@ -13,7 +13,8 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.util.ArgumentCheck;
@@ -50,7 +51,7 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
         if (packageName == null) {
             return false;
         }
-        if (StringUtils.EMPTY.equals(packageName)) {
+        if (IpsStringUtils.EMPTY.equals(packageName)) {
             return true;
         }
         String prefix = getPackagePrefix(packageName);
@@ -64,8 +65,8 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
     }
 
     private String getPackagePrefix(String pack) {
-        if (StringUtils.isEmpty(pack)) {
-            return StringUtils.EMPTY;
+        if (IpsStringUtils.isEmpty(pack)) {
+            return IpsStringUtils.EMPTY;
         } else {
             return pack + '.';
         }
@@ -82,7 +83,7 @@ public abstract class AbstractIpsStorage implements IIpsStorage {
         for (String nonEmptyPackageName : getNonEmptyPackages()) {
 
             String nameAfterParent = StringUtils.substringAfter(nonEmptyPackageName, parentPrefix);
-            if (StringUtils.EMPTY.equals(nameAfterParent)) {
+            if (IpsStringUtils.EMPTY.equals(nameAfterParent)) {
                 continue;
             }
             result.add(parentPrefix + StringUtils.substringBefore(nameAfterParent, SEPARATOR));

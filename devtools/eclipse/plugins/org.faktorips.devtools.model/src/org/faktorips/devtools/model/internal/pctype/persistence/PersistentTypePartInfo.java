@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -33,7 +33,7 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
 
     private boolean transientPart = false;
 
-    private String indexName = StringUtils.EMPTY;
+    private String indexName = IpsStringUtils.EMPTY;
 
     public PersistentTypePartInfo(IIpsObjectPart parent, String id) {
         super(parent, id);
@@ -65,7 +65,7 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
 
     @Override
     public boolean isIndexNameDefined() {
-        return StringUtils.isNotEmpty(indexName);
+        return IpsStringUtils.isNotEmpty(indexName);
     }
 
     @Override

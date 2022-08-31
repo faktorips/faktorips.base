@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.fieldassist.ContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -91,6 +91,7 @@ import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -529,7 +530,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             method = attribute.findComputationMethod(ipsProject);
             if (method == null) {
                 String signature = attribute.getComputationMethodSignature();
-                if (StringUtils.isEmpty(signature)) {
+                if (IpsStringUtils.isEmpty(signature)) {
                     signature = Messages.AttributeEditDialog_emptyString;
                 }
                 String text = NLS.bind(Messages.AttributeEditDialog_questionCreateMethod,
@@ -996,7 +997,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         // if a column definition is given, then all properties are specified using the sql
         // definition
-        if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
+        if (IpsStringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
             hasDecimalPlaces = false;
             hasLength = false;
             needsTemporalType = false;

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.util;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -69,10 +69,10 @@ public class QNameUtil {
      * is <code>null</code> or the empty string the <code>packOrUnqualifiedName</code> is returned.
      */
     public static final String concat(String packagePrefix, String packOrUnqualifiedName) {
-        if (StringUtils.isEmpty(packagePrefix)) {
+        if (IpsStringUtils.isEmpty(packagePrefix)) {
             return packOrUnqualifiedName;
         }
-        if (StringUtils.isEmpty(packOrUnqualifiedName)) {
+        if (IpsStringUtils.isEmpty(packOrUnqualifiedName)) {
             return packagePrefix;
         }
         return packagePrefix + "." + packOrUnqualifiedName; //$NON-NLS-1$

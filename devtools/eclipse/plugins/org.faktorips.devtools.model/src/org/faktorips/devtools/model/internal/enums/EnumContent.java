@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -74,7 +74,7 @@ public class EnumContent extends EnumValueContainer implements IEnumContent {
     public EnumContent(IIpsSrcFile file) {
         super(file);
 
-        enumType = StringUtils.EMPTY;
+        enumType = IpsStringUtils.EMPTY;
         enumAttributeReferences = new IpsObjectPartCollection<>(this, EnumAttributeReference.class,
                 IPartReference.class, EnumAttributeReference.XML_TAG);
     }

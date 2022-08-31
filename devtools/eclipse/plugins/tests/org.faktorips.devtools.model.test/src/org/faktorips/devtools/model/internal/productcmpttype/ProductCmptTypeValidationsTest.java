@@ -25,9 +25,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ProductCmptTypeValidationsTest {
 
     private String policyCmptType = "pcType1";
@@ -65,8 +65,6 @@ public class ProductCmptTypeValidationsTest {
     @Test
     public void testIsConsistentHierarchy_configuredSuperPolicyType() throws Exception {
         String policyCmptTypeOfProductCmptSupertype = superPolicyCmptType;
-        when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(true);
-        when(foundSuperPolicyCmptType.isConfigurableByProductCmptType()).thenReturn(true);
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
                 policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
@@ -77,8 +75,6 @@ public class ProductCmptTypeValidationsTest {
     @Test
     public void testIsConsistentHierarchy_configuredPolicyType() throws Exception {
         String policyCmptTypeOfProductCmptSupertype = policyCmptType;
-        when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(true);
-        when(foundSuperPolicyCmptType.isConfigurableByProductCmptType()).thenReturn(true);
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
                 policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
@@ -90,7 +86,6 @@ public class ProductCmptTypeValidationsTest {
     public void testIsConsistentHierarchy_superTypesDontConfigureEachOther() throws Exception {
         String policyCmptTypeOfProductCmptSupertype = "";
         superPolicyCmptType = "";
-        when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(false);
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
                 policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);

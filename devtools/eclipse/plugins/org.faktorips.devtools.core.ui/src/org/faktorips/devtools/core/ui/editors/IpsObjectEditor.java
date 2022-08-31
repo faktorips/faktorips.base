@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -69,6 +68,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Base class for all editors that want to edit IPS objects.
@@ -848,7 +848,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     private void setHeaderMessage(List<IMessage> messages, int messageType) {
         ScrolledForm form = getActiveIpsObjectEditorPage().getManagedForm().getForm();
         if (messageType == IMessageProvider.NONE) {
-            form.setMessage(StringUtils.EMPTY, IMessageProvider.NONE);
+            form.setMessage(IpsStringUtils.EMPTY, IMessageProvider.NONE);
             return;
         }
         form.setMessage(createHeaderMessage(messages, messageType), messageType,
@@ -857,7 +857,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     protected String createHeaderMessage(List<IMessage> messages, int messageType) {
         if (messages.isEmpty() || messageType == IMessageProvider.NONE) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         if (messages.size() > 1) {
             return getTextForMultipleMessages(messageType);
@@ -876,7 +876,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 return Messages.IpsObjectEditor_multipleInformationMessages;
             default:
                 // should not happen
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
         }
     }
 
@@ -890,7 +890,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 return Messages.IpsObjectEditor_singleInformationMessage;
             default:
                 // should not happen
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
         }
     }
 

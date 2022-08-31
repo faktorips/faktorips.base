@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
@@ -39,7 +39,7 @@ public class JavaDocTagGeneratorUtil {
         if (element != null) {
             GenericGeneratorModelNode modelNode = builderSet.getModelNode(element, GenericGeneratorModelNode.class);
             String annotation = modelNode.getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC);
-            if (StringUtils.isNotEmpty(annotation)) {
+            if (IpsStringUtils.isNotEmpty(annotation)) {
                 /*
                  * Remove "@" from the beginning of the annotation string, as callers expect to add
                  * their own. Works even if there are multiple annotations in the annotation string,

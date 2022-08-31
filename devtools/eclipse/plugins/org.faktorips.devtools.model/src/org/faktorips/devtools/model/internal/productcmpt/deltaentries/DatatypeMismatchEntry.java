@@ -19,8 +19,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
@@ -81,8 +79,9 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
     }
 
     private List<String> convertedValues() {
-        return Lists.transform(oldValues,
-                input -> converter.convert(input, getPropertyValue().getIpsProject()));
+        return oldValues.stream().map(
+                input -> converter.convert(input, getPropertyValue().getIpsProject()))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -170,13 +169,13 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         @Override
         public List<String> getValues() {
             List<IValue<?>> valueList = getPropertyValue().getValueHolder().getValueList();
-            return Lists.transform(valueList, IValue::getContentAsString);
+            return valueList.stream().map(IValue::getContentAsString).collect(Collectors.toList());
         }
 
         @Override
         public Consumer<List<String>> getValueConsumer() {
             return t -> {
-                List<IValue<?>> newValueList = Lists.transform(t, StringValue::new);
+                List<IValue<?>> newValueList = t.stream().map(StringValue::new).collect(Collectors.toList());
                 getPropertyValue().getValueHolder().setValueList(newValueList);
             };
         }

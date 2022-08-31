@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Supported variants of helpers for local date datatypes (

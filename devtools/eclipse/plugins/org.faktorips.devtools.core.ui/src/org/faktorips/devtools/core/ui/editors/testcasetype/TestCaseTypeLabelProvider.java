@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -18,6 +17,7 @@ import org.faktorips.devtools.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -52,7 +52,8 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
             String targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
                     : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
 
-            if (StringUtils.isNotEmpty(targetExtension) && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
+            if (IpsStringUtils.isNotEmpty(targetExtension)
+                    && !targetExtension.equals(testPolicyCmptTypeParam.getName())) {
                 targetExtension = " : " + targetExtension; //$NON-NLS-1$
             } else {
                 // no association or association is equal test param name
@@ -69,7 +70,7 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
             String text = super.getText(element);
             ITestAttribute testAttribute = (ITestAttribute)element;
             String extension = ""; //$NON-NLS-1$
-            if (StringUtils.isNotEmpty(testAttribute.getAttribute())
+            if (IpsStringUtils.isNotEmpty(testAttribute.getAttribute())
                     && !testAttribute.getAttribute().equals(testAttribute.getName())) {
                 extension = " : " + testAttribute.getAttribute(); //$NON-NLS-1$
             }
@@ -86,7 +87,7 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      */
     private String getTypeExtension(TestParameterType type) {
         if (type == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         return " - " + type.getName(); //$NON-NLS-1$
     }

@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 
 import java.util.Arrays;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -35,6 +35,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.template.ClassNames;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.StringLengthValueSet;
@@ -756,7 +757,7 @@ public class XPolicyAttribute extends XAttribute {
 
     private JavaCodeFragment createCastExpression(String bound) {
         JavaCodeFragment frag = new JavaCodeFragment();
-        if (StringUtils.isEmpty(bound) && !getValuesetDatatypeHelper().getDatatype().hasNullObject()) {
+        if (IpsStringUtils.isEmpty(bound) && !getValuesetDatatypeHelper().getDatatype().hasNullObject()) {
             frag.append('(');
             frag.appendClassName(getValuesetDatatypeHelper().getJavaClassName());
             frag.append(')');

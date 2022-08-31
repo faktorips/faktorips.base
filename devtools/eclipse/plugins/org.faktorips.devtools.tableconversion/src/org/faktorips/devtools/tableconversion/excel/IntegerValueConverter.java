@@ -12,7 +12,7 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.math.BigDecimal;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.tableconversion.AbstractValueConverter;
 import org.faktorips.devtools.core.tableconversion.ExtSystemsMessageUtil;

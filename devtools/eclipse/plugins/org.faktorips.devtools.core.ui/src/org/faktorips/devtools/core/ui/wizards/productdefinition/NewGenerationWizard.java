@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Allows creation of new {@linkplain IIpsObjectGeneration IPS Object Generations} to one or many
@@ -132,7 +132,7 @@ public class NewGenerationWizard extends Wizard {
                     GregorianCalendarFormat.newInstance()), pmo, NewGenerationPMO.PROPERTY_VALID_FROM);
 
             // Skip existing generations
-            toolkit.createLabel(pageControl, StringUtils.EMPTY);
+            toolkit.createLabel(pageControl, IpsStringUtils.EMPTY);
             Checkbox skipExistingGenerationsCheckbox = toolkit.createCheckbox(pageControl, NLS.bind(
                     Messages.ChooseValidityDatePage_labelSkipExistingGenerations,
                     getGenerationConceptNameSingular(true)));

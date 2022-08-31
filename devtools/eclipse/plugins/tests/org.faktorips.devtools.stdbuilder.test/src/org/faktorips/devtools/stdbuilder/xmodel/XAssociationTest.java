@@ -13,14 +13,13 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
-import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
@@ -33,9 +32,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XAssociationTest {
 
     @Mock
@@ -58,7 +57,6 @@ public class XAssociationTest {
 
     @Before
     public void initMocks() {
-        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
         when(association.getTargetRoleSingular()).thenReturn("singular");
         when(association.getTargetRolePlural()).thenReturn("plural");
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
@@ -100,8 +98,6 @@ public class XAssociationTest {
     public void testIsSubsetOf_noMatch() throws Exception {
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
-        when(xAssociation2.getName()).thenReturn("abc123");
-        when(association.getSubsettedDerivedUnion()).thenReturn("other");
 
         assertFalse(xAssociation.isSubsetOf(xAssociation2));
     }
@@ -110,8 +106,6 @@ public class XAssociationTest {
     public void testIsSubsetOf_sameNameButNoSubset() throws Exception {
         when(xAssociation.getIpsObjectPartContainer()).thenReturn(association);
         XDerivedUnionAssociation xAssociation2 = mock(XDerivedUnionAssociation.class);
-        when(xAssociation2.getName()).thenReturn("abc123");
-        when(association.getSubsettedDerivedUnion()).thenReturn("abc123");
 
         assertFalse(xAssociation.isSubsetOf(xAssociation2));
     }
@@ -150,7 +144,6 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceName() throws Exception {
         initMocksForGetNameTests();
-        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(true);
 
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
@@ -159,7 +152,6 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceName_differingPublishedInterfaceSettings() throws Exception {
         initMocksForGetNameTests();
-        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(false);
 
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
@@ -168,7 +160,7 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceNameBase_constrainedAssociation_differingPublishedInterfaceSettings()
             throws Exception {
-        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+        initMocksForGetNameTests();
 
         XAssociation xConstrainedAssociation = mock(XAssociation.class, CALLS_REAL_METHODS);
         XProductCmptClass xSuperProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
@@ -178,12 +170,6 @@ public class XAssociationTest {
         when(xAssociation.isConstrain()).thenReturn(true);
         when(xAssociation.getConstrainedAssociation()).thenReturn(xConstrainedAssociation);
 
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
-
-        doReturn(generatorConfig).when(xSuperProductCmptClass).getGeneratorConfig();
-        doReturn(generatorConfig).when(xProductCmptClass).getGeneratorConfig();
-        doReturn(generatorConfig).when(xAssociation).getGeneratorConfig();
-
         String targetClassName = xAssociation.getTargetInterfaceNameBase();
         assertEquals("ITargetSuperType", targetClassName);
     }
@@ -192,7 +178,6 @@ public class XAssociationTest {
     public void testGetTargetInterfaceNameBase_differingPublishedInterfaceSettings() throws Exception {
         initMocksForGetNameTests();
         when(xAssociation.isConstrain()).thenReturn(false);
-        when(generatorConfig.isGeneratePublishedInterfaces(xAssociation.getIpsProject())).thenReturn(false);
 
         String targetClassName = xAssociation.getTargetInterfaceNameBase();
         assertEquals("ITargetType", targetClassName);
@@ -201,12 +186,7 @@ public class XAssociationTest {
     private XProductCmptClass initMocksForGetNameTests() {
         XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
         doReturn(xProductCmptClass).when(xAssociation).getTargetModelNode();
-
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
-        doReturn(generatorConfig).when(xProductCmptClass).getGeneratorConfig();
-
         doReturn("ITargetType").when(xProductCmptClass).getPublishedInterfaceName();
-        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);
         return xProductCmptClass;
     }
 
@@ -233,7 +213,6 @@ public class XAssociationTest {
         assertTrue(xAssociation.isRecursiveSubsetOf(du));
 
         doReturn(true).when(xAssociation).isSubsetOf(du);
-        when(otherDu.isRecursiveSubsetOf(du)).thenReturn(true);
         assertTrue(xAssociation.isRecursiveSubsetOf(du));
 
     }

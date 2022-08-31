@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.builder.naming;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
@@ -43,7 +43,7 @@ public class JavaPackageStructure implements IJavaPackageStructure {
         String basePackName = mergableArtifacts ? entry.getBasePackageNameForMergableJavaClasses()
                 : entry
                         .getBasePackageNameForDerivedJavaClasses();
-        return getPackageName(internalArtifacts, basePackName, StringUtils.EMPTY);
+        return getPackageName(internalArtifacts, basePackName, IpsStringUtils.EMPTY);
     }
 
     /**

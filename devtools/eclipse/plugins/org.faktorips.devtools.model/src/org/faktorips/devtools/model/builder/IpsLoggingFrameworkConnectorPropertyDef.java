@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -77,7 +77,7 @@ public class IpsLoggingFrameworkConnectorPropertyDef extends IpsBuilderSetProper
 
     @Override
     public Message validateValue(IIpsProject ipsProject, String value) {
-        if (StringUtils.isEmpty(value)) {
+        if (IpsStringUtils.isEmpty(value)) {
             return null;
         }
         try {

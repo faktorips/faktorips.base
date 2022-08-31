@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.swt.layout.GridData;
@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -35,10 +36,17 @@ public class PropertyVisibleControllerTest {
 
     private PropertyVisibleController controller;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         controller = new PropertyVisibleController();
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test
@@ -138,7 +146,7 @@ public class PropertyVisibleControllerTest {
         control1 = mockControl(null, new GridData());
 
         controller.addPropertyControlMapping(outerControl, property, control2);
-        verifyZeroInteractions(control1);
+        verifyNoInteractions(control1);
         verify(control2).setVisible(false);
 
         control2 = mockControl(null, new GridData());

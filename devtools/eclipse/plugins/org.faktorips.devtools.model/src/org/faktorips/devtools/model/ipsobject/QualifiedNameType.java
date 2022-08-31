@@ -17,7 +17,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
@@ -90,7 +90,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
             return false;
         }
         String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
-        if (qName.equals(StringUtils.EMPTY)) {
+        if (qName.equals(IpsStringUtils.EMPTY)) {
             return false;
         }
 

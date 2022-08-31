@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,7 +54,7 @@ public class SingleValueHolderValidatorTest {
         when(valueSet.containsValue(anyString(), eq(project))).thenReturn(true);
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue);
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "foo");
         SingleValueHolderValidator validator = new SingleValueHolderValidator(valueHolder, attributeValue, project);
         assertThat(validator.validate().size(), is(0));
     }
@@ -76,7 +76,7 @@ public class SingleValueHolderValidatorTest {
         when(valueSet.containsValue("abc", project)).thenReturn(true);
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue);
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "foo");
         SingleValueHolderValidator validator = new SingleValueHolderValidator(valueHolder, attributeValue, project);
         MessageList messages = validator.validate();
         assertThat(messages.size(), is(1));

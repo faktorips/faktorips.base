@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelection;
@@ -403,7 +401,7 @@ public class TypedSelectionTest {
         IProductCmpt prodCmpt = mock(IProductCmpt.class);
         when(ipsSrcFile.getAdapter(IProductCmpt.class)).thenReturn(prodCmpt);
 
-        StructuredSelection selection = new StructuredSelection(Lists.newArrayList(ipsSrcFile));
+        StructuredSelection selection = new StructuredSelection(List.of(ipsSrcFile));
         TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> create(IProductCmpt.class,
                 selection);
         assertThat(typedSelection.getElement(), is(prodCmpt));
@@ -417,7 +415,7 @@ public class TypedSelectionTest {
     public void testAdaptation_withInvalidAdaptable() {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, withSettings().extraInterfaces(IAdaptable.class));
 
-        StructuredSelection selection = new StructuredSelection(Lists.newArrayList(ipsSrcFile));
+        StructuredSelection selection = new StructuredSelection(List.of(ipsSrcFile));
         TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> create(IProductCmpt.class,
                 selection);
         assertThat(typedSelection.isValid(), is(false));

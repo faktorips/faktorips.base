@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -144,7 +144,7 @@ public class TestCase extends IpsObject implements ITestCase {
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IpsObjectDependency> dependencies = new HashSet<>();
         // the test case depends on the test case type
-        if (StringUtils.isNotEmpty(testCaseTypeName)) {
+        if (IpsStringUtils.isNotEmpty(testCaseTypeName)) {
             IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
                     new QualifiedNameType(testCaseTypeName, IpsObjectType.TEST_CASE_TYPE));
             dependencies.add(dependency);
@@ -247,7 +247,7 @@ public class TestCase extends IpsObject implements ITestCase {
 
     @Override
     public ITestCaseType findTestCaseType(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testCaseTypeName) || ipsProject == null) {
+        if (IpsStringUtils.isEmpty(testCaseTypeName) || ipsProject == null) {
             return null;
         }
         return (ITestCaseType)ipsProject.findIpsObject(IpsObjectType.TEST_CASE_TYPE, testCaseTypeName);

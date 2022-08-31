@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.type;
 import java.text.MessageFormat;
 import java.util.EnumSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -171,7 +171,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         super.validateThis(result, ipsProject);
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
-            String invalidName = (StringUtils.isNotEmpty(name)) ? " " + name : ""; //$NON-NLS-1$ //$NON-NLS-2$
+            String invalidName = (IpsStringUtils.isNotEmpty(name)) ? " " + name : ""; //$NON-NLS-1$ //$NON-NLS-2$
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, MessageFormat.format(
                     Messages.Attribute_msg_InvalidAttributeName, invalidName), Message.ERROR, this, PROPERTY_NAME)); // $NON-NLS-1$
         }
@@ -180,7 +180,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         if (datatypeObject != null) {
             validateDefaultValue(datatypeObject, result, ipsProject);
         } else {
-            if (!StringUtils.isEmpty(defaultValue)) {
+            if (!IpsStringUtils.isEmpty(defaultValue)) {
                 String text = MessageFormat.format(Messages.Attribute_msg_DefaultNotParsable_UnknownDatatype,
                         defaultValue);
                 result.add(new Message(MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
@@ -287,7 +287,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private boolean isValueInValueSet(String defaultValueToValidate, IIpsProject ipsProject) {
         IValueSet valueSet = getValueSet();
-        return valueSet == null || StringUtils.isBlank(defaultValueToValidate)
+        return valueSet == null || IpsStringUtils.isBlank(defaultValueToValidate)
                 || valueSet.containsValue(defaultValueToValidate, ipsProject);
     }
 
@@ -295,7 +295,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         String defaultValueInMsg = defaultValueToValidate;
         if (defaultValueToValidate == null) {
             defaultValueInMsg = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
-        } else if (StringUtils.isEmpty(defaultValueToValidate)) {
+        } else if (IpsStringUtils.isEmpty(defaultValueToValidate)) {
             defaultValueInMsg = Messages.Attribute_msg_DefaultValueIsEmptyString;
         }
         String text = MessageFormat.format(Messages.Attribute_msg_ValueTypeMismatch, defaultValueInMsg, getDatatype());

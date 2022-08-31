@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -53,6 +52,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This type selection composite contains of two columns. On the left hand you see a list of types
@@ -112,7 +112,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     }
 
     private void createControls() {
-        title = toolkit.createLabel(this, StringUtils.EMPTY);
+        title = toolkit.createLabel(this, IpsStringUtils.EMPTY);
         title.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
         // empty composites to fill layout next to title label
@@ -159,7 +159,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     private void updateDescription() {
         IIpsObject typeValue = typeListField.getValue();
         if (typeValue == null) {
-            compositeDescription.setText(StringUtils.EMPTY);
+            compositeDescription.setText(IpsStringUtils.EMPTY);
             compositeDescription.setEnabled(false);
             return;
         }
@@ -187,7 +187,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         String typeName = ipsObject.getName();
         StyledTextUtil.appendLineStyled(compositeDescription, typeName, SWT.BOLD);
         String typeDescriptionString = getDescription(ipsObject);
-        if (StringUtils.isEmpty(typeDescriptionString)) {
+        if (IpsStringUtils.isEmpty(typeDescriptionString)) {
             StyledTextUtil.appendLineStyled(compositeDescription,
                     Messages.TypeSelectionComposite_label_noDescriptionAvailable, SWT.ITALIC);
         } else {
@@ -305,7 +305,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
             } else {
                 text = super.getToolTipText(element);
             }
-            if (StringUtils.isEmpty(text)) {
+            if (IpsStringUtils.isEmpty(text)) {
                 return null;
             } else {
                 return text;
@@ -390,7 +390,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // String typeName = ipsObject.getName();
     // appendLineStyled(typeName, SWT.BOLD);
     // String typeDescriptionString = getDescription(ipsObject);
-    // if (StringUtils.isEmpty(typeDescriptionString)) {
+    // if (IpsStringUtils.isEmpty(typeDescriptionString)) {
     // appendLineStyled(Messages.TypeSelectionComposite_label_noDescriptionAvailable, SWT.ITALIC);
     // } else {
     // appendLinePlain(typeDescriptionString);
@@ -401,7 +401,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // * Set the widget's content to empty.
     // */
     // public void clear() {
-    // textWidget.setText(StringUtils.EMPTY);
+    // textWidget.setText(IpsStringUtils.EMPTY);
     // }
     //
     // /**
@@ -426,7 +426,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
     // }
     //
     // public void appendNewLine() {
-    // appendLinePlain(StringUtils.EMPTY);
+    // appendLinePlain(IpsStringUtils.EMPTY);
     // }
     //
     // /**

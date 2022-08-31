@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.enumtype;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.InternationalStringDatatypeHelper;

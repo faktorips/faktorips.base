@@ -14,8 +14,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -35,7 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumExportPageTest {
@@ -47,6 +47,8 @@ public class EnumExportPageTest {
     private IEnumContent enumContent;
     @Mock
     private IEnumType enumType;
+    @Mock
+    private IIpsProject ipsProject;
 
     @InjectMocks
     private EnumExportPage enumExportPage;
@@ -56,6 +58,8 @@ public class EnumExportPageTest {
         Field exportedIpsObjectControlField = IpsObjectExportPage.class.getDeclaredField("exportedIpsObjectControl");
         exportedIpsObjectControlField.setAccessible(true);
         exportedIpsObjectControlField.set(enumExportPage, exportedIpsObjectControl);
+        when(enumContent.getIpsProject()).thenReturn(ipsProject);
+        when(enumType.getIpsProject()).thenReturn(ipsProject);
     }
 
     @Test

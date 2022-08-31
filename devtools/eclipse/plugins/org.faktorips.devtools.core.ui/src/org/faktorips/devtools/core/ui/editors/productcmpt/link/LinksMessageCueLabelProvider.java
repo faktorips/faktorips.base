@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -99,7 +99,7 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             IPolicyCmptTypeAssociation policyAssociation = association
                     .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
             if (policyAssociation == null) {
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             } else {
                 return StringUtil.BLANK
                         + StringUtil.getRangeString(policyAssociation.getMinCardinality(),

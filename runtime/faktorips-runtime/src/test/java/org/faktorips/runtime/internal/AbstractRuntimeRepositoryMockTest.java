@@ -59,7 +59,7 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AbstractRuntimeRepositoryMockTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)

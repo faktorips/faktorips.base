@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -43,11 +44,18 @@ public class IpsProcessorBasedRefactoringTest {
 
     private IpsProcessorBasedRefactoring ipsProcessorBasedRefactoring;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         ipsRefactoringProcessor = new TestRefactoringProcessor(ipsElement);
         ipsProcessorBasedRefactoring = new IpsProcessorBasedRefactoring(ipsRefactoringProcessor);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

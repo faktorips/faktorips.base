@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -33,6 +33,7 @@ import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -261,7 +262,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] properties = { property1, property2 };
 
         Message message = validatorTest.createMessage(ID, properties);
-        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID, StringUtils.EMPTY);
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID, IpsStringUtils.EMPTY);
         assertTrue(message.getText().contains(text));
     }
 

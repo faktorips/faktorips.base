@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ICondition
 import org.faktorips.devtools.core.ui.search.product.conditions.types.ISearchOperatorType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -82,7 +82,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     public void setOperatorType(ISearchOperatorType newValue) {
         operatorType = newValue;
 
-        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, IpsStringUtils.EMPTY, null, null));
     }
 
     public ISearchOperatorType getOperatorType() {
@@ -121,7 +121,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
             updateAllowedAttributeValues();
             updateArgument();
         }
-        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, IpsStringUtils.EMPTY, null, null));
     }
 
     /**
@@ -190,7 +190,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         updateAllowedAttributeValues();
         updateArgument();
 
-        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, IpsStringUtils.EMPTY, null, null));
     }
 
     /**
@@ -211,7 +211,7 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
     public void setArgument(String newValue) {
         argument = newValue;
 
-        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
+        parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, IpsStringUtils.EMPTY, null, null));
     }
 
     public String getArgument() {

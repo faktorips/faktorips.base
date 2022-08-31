@@ -17,12 +17,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TemplateUsageViewItem {
 
@@ -63,7 +63,7 @@ public class TemplateUsageViewItem {
             return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue,
                     distribution);
         } else {
-            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, StringUtils.EMPTY,
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, IpsStringUtils.EMPTY,
                     distribution).trim();
         }
     }

@@ -16,8 +16,13 @@ import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
-import com.opencsv.CSVWriter;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVWriterBuilder;
+import com.opencsv.ICSVWriter;
+import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -55,7 +60,10 @@ class TableRowsCsvHelper {
     public void partsToCsv(Document doc, Element element) {
         String nullRepresentationString = getNullRepresentationString();
         try (StringWriter stringWriter = new StringWriter();
-                CSVWriter csvWriter = new CSVWriter(stringWriter, '|', '"', '\\')) {
+                ICSVWriter csvWriter = new CSVWriterBuilder(stringWriter)
+                        .withSeparator('|')
+                        .withQuoteChar('"')
+                        .withEscapeChar('\\').build()) {
             int numOfColumns = getTableContents().getNumOfColumns();
             String[] nextLine = new String[numOfColumns];
             tableRows.getRowsAsList().forEach(r -> writeRowToCsv(csvWriter, nextLine, r, nullRepresentationString));
@@ -68,14 +76,14 @@ class TableRowsCsvHelper {
     }
 
     /**
-     * This is the string that represents a null value in the csv file. This does not need to be the
+     * This is the string that represents a null value in the CSV file. This does not need to be the
      * same as null presentation in preferences which is only a UI setting!
      */
     private String getNullRepresentationString() {
         return NULL_VALUE;
     }
 
-    private void writeRowToCsv(CSVWriter csvWriter, String[] nextLine, Row row, String nullRepresentationString) {
+    private void writeRowToCsv(ICSVWriter csvWriter, String[] nextLine, Row row, String nullRepresentationString) {
         for (int i = 0; i < nextLine.length; i++) {
             String value = row.getValue(i);
             if (value == null) {
@@ -94,22 +102,24 @@ class TableRowsCsvHelper {
 
     public void initFromCsv(String csv) {
         String nullRepresentationString = getNullRepresentationString();
-        try (StringReader stringReader = new StringReader(csv);
-                CSVReader csvReader = new CSVReader(stringReader, '|', '"', '\\');) {
-            ITableStructure structure = getTableContents().findTableStructure(getIpsProject());
-            String[] csvLine;
-            while ((csvLine = csvReader.readNext()) != null) {
-                for (int i = 0; i < csvLine.length; i++) {
-                    if (nullRepresentationString.equals(csvLine[i])) {
-                        csvLine[i] = null;
+        try (StringReader stringReader = new StringReader(csv);) {
+            CSVParser csvParser = new CSVParserBuilder().withSeparator('|').withQuoteChar('"').withEscapeChar('\\')
+                    .build();
+            try (CSVReader csvReader = new CSVReaderBuilder(stringReader).withCSVParser(csvParser).build();) {
+                ITableStructure structure = getTableContents().findTableStructure(getIpsProject());
+                String[] csvLine;
+                while ((csvLine = csvReader.readNext()) != null) {
+                    for (int i = 0; i < csvLine.length; i++) {
+                        if (nullRepresentationString.equals(csvLine[i])) {
+                            csvLine[i] = null;
+                        }
                     }
+                    tableRows.newRow(structure, Optional.empty(), Arrays.asList(csvLine));
                 }
-                tableRows.newRow(structure, Optional.empty(), Arrays.asList(csvLine));
+            } catch (IOException | CsvValidationException e) {
+                throw asIpsException(e);
             }
-        } catch (IOException e) {
-            throw asIpsException(e);
         }
-
     }
 
 }

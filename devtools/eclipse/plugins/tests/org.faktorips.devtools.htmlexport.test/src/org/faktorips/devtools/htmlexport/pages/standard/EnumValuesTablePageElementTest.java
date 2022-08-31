@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumValuesTablePageElementTest {
@@ -76,7 +76,6 @@ public class EnumValuesTablePageElementTest {
         valuelist.add(enumValue1);
         attributeList.add(enumAttribute1);
 
-        doReturn(valuelist).when(enumType).getEnumValues();
         doReturn(ipsProject).when(enumType).getIpsProject();
         doReturn(ipsProject).when(enumAttribute1).getIpsProject();
         doReturn(ipsProject).when(doc).getIpsProject();
@@ -130,8 +129,6 @@ public class EnumValuesTablePageElementTest {
 
     @Test
     public void testCreateRowWithIpsObjectPart_filledResultNoEnumAttributeValue() {
-        doReturn(enumAttributeValue1).when(enumValue1).getEnumAttributeValue(null);
-
         pageElement = new EnumValuesTablePageElement(enumType, doc);
         List<IPageElement> resultList = pageElement.createRowWithIpsObjectPart(enumValue1);
 

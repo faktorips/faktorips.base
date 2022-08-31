@@ -11,9 +11,8 @@
 package org.faktorips.devtools.model.internal.value;
 
 import java.beans.PropertyChangeListener;
+import java.util.Comparator;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -59,7 +59,7 @@ public class StringValue extends AbstractValue<String> {
         if (getContent() != null) {
             return doc.createTextNode(getContent());
         } else {
-            return doc.createTextNode(StringUtils.EMPTY);
+            return doc.createTextNode(IpsStringUtils.EMPTY);
         }
     }
 
@@ -128,7 +128,7 @@ public class StringValue extends AbstractValue<String> {
         if (other == null) {
             return 1;
         } else {
-            return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
+            return Comparator.<String> naturalOrder().compare(getContentAsString(), other.getContentAsString());
         }
     }
 

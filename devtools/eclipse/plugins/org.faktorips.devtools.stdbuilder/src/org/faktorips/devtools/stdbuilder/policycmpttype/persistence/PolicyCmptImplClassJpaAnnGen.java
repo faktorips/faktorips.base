@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
@@ -74,13 +74,13 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         InheritanceStrategy inhStrategy = persistenceTypeInfo.getInheritanceStrategy();
         String tableName = persistenceTypeInfo.getTableName();
 
-        if (StringUtils.isEmpty(tableName) && persistenceTypeInfo.isUseTableDefinedInSupertype()) {
+        if (IpsStringUtils.isEmpty(tableName) && persistenceTypeInfo.isUseTableDefinedInSupertype()) {
             // note that we must always add the table name annotation, otherwise a default table
             // may be generated!
             tableName = getTableNameFromSupertype(persistenceTypeInfo);
         }
 
-        if (StringUtils.isNotEmpty(tableName) && !persistenceTypeInfo.isUseTableDefinedInSupertype()) {
+        if (IpsStringUtils.isNotEmpty(tableName) && !persistenceTypeInfo.isUseTableDefinedInSupertype()) {
             fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Table), "name",
                     tableName);
         }
@@ -123,7 +123,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
             JavaCodeFragmentBuilder fragmentBuilder,
             IPersistentTypeInfo persistenceTypeInfo) {
         String discriminatorValue = persistenceTypeInfo.getDiscriminatorValue();
-        if (!StringUtils.isEmpty(discriminatorValue)) {
+        if (!IpsStringUtils.isEmpty(discriminatorValue)) {
             JavaCodeFragment param = new JavaCodeFragment();
             param.appendQuoted(discriminatorValue);
             fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.DiscriminatorValue),
@@ -171,7 +171,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
         @Override
         protected boolean visit(IPolicyCmptType currentType) {
             String tableNameTemp = currentType.getPersistenceTypeInfo().getTableName();
-            if (StringUtils.isNotEmpty(tableNameTemp)) {
+            if (IpsStringUtils.isNotEmpty(tableNameTemp)) {
                 tableName = tableNameTemp;
                 return false;
             }

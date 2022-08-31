@@ -17,7 +17,10 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Optional;
 
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.exceptions.CsvValidationException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -104,17 +107,17 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
 
             monitor.done();
-        } catch (IOException e) {
+        } catch (IOException | CsvValidationException e) {
             throw new IpsException(new IpsStatus(
                     NLS.bind(Messages.getString("CSVImportOperation_errRead"), sourceFile), e)); //$NON-NLS-1$
         }
     }
 
-    private MessageList fillGeneration(FileInputStream fis) throws IOException {
+    private MessageList fillGeneration(FileInputStream fis) throws IOException, CsvValidationException {
         char fieldSeparator = getFieldSeparator();
-        CSVReader reader = new CSVReader(new InputStreamReader(fis), fieldSeparator);
 
-        try {
+        try (CSVReader reader = new CSVReaderBuilder(new InputStreamReader(fis))
+                .withCSVParser(new CSVParserBuilder().withSeparator(fieldSeparator).build()).build()) {
             // row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0
             // contains data. thus read over header if necessary
             if (ignoreColumnHeaderRow) {
@@ -122,13 +125,6 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
             }
 
             return readFromCsv(reader);
-        } finally {
-            try {
-                reader.close();
-            } catch (IOException e) {
-                // this is a serious problem, so report it.
-                IpsPlugin.log(e);
-            }
         }
     }
 
@@ -151,7 +147,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
      *
      * @param reader the CVS reader
      */
-    private MessageList readFromCsv(CSVReader reader) throws IOException {
+    private MessageList readFromCsv(CSVReader reader) throws IOException, CsvValidationException {
         MessageList msgList = new MessageList();
         int expectedFields = structure.getNumOfColumns();
         Datatype[] datatypes = new Datatype[expectedFields];

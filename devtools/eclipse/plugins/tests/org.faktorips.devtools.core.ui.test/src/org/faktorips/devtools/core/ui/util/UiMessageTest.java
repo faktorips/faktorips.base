@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -27,11 +26,12 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UiMessageTest {
@@ -71,7 +71,7 @@ public class UiMessageTest {
     public void testGetCaptionName_noCaption() throws Exception {
         String captionName = uiMessage.getCaptionName(part1);
 
-        assertTrue(StringUtils.isEmpty(captionName));
+        assertTrue(IpsStringUtils.isEmpty(captionName));
     }
 
     @Test
@@ -115,7 +115,6 @@ public class UiMessageTest {
         IIpsObject ipsObject = mock(IIpsObject.class);
         message = new Message("ABC", "text", Message.INFO, ipsObject);
         uiMessage = new UiMessage(message);
-        when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
 
         String prefix = uiMessage.getPrefix();
 

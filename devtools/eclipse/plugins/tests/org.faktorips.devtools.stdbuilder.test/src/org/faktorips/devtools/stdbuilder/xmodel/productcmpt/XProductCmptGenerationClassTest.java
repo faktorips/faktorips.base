@@ -38,7 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XProductCmptGenerationClassTest {
@@ -95,7 +95,6 @@ public class XProductCmptGenerationClassTest {
     public void testOptionalFormulas() {
         final IProductCmptTypeMethod superMandatoryMethod = mock(IProductCmptTypeMethod.class);
         when(superMandatoryMethod.isFormulaMandatory()).thenReturn(true);
-        when(superMandatoryMethod.isOverloadsFormula()).thenReturn(false);
 
         final IProductCmptTypeMethod superOptionalMethod = mock(IProductCmptTypeMethod.class);
         when(superOptionalMethod.isFormulaMandatory()).thenReturn(false);

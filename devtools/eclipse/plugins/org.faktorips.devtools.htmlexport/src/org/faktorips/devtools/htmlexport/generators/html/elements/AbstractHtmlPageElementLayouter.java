@@ -12,7 +12,7 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.htmlexport.generators.AbstractPageElementLayouter;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;

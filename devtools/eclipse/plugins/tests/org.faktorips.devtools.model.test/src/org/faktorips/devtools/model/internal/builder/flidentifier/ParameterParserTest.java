@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ParameterParserTest extends AbstractParserTest {
 
     private static final String ANY_PARAMETER = "noParameter";
@@ -119,7 +119,7 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testGetProposals_noPrefix() throws Exception {
         parameterParser.parse(new TextRegion("any", 0, 0));
 
-        List<IdentifierProposal> proposals = parameterParser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parameterParser.getProposals(IpsStringUtils.EMPTY);
 
         assertEquals(1, proposals.size());
         assertEquals(parameter.getName(), proposals.get(0).getText());

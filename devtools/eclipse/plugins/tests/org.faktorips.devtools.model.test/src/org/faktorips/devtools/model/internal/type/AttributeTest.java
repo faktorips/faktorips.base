@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -232,7 +232,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         MessageList list = new MessageList();
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
-        ((Attribute)productCmptTypeAttribute).validateDefaultValue(StringUtils.EMPTY, adapter, list, ipsProject);
+        ((Attribute)productCmptTypeAttribute).validateDefaultValue(IpsStringUtils.EMPTY, adapter, list, ipsProject);
 
         assertFalse(list.isEmpty());
         assertNotNull(list.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));

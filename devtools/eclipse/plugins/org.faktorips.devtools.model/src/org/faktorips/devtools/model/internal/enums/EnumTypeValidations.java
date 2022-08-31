@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -65,7 +65,7 @@ public class EnumTypeValidations {
             IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, superEnumTypeQualifiedName, ipsProject });
-        ArgumentCheck.isTrue(StringUtils.isNotEmpty(superEnumTypeQualifiedName));
+        ArgumentCheck.isTrue(IpsStringUtils.isNotEmpty(superEnumTypeQualifiedName));
 
         // Super EnumType exists?
         IEnumType superEnumType = ipsProject.findEnumType(superEnumTypeQualifiedName);

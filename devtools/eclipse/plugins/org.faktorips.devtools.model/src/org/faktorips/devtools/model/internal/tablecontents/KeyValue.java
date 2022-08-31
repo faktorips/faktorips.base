@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.tablecontents;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
@@ -52,7 +52,7 @@ public class KeyValue extends AbstractKeyValue {
     @Override
     public boolean isValid(Row row) {
         String valueNew = evalValue(row);
-        if (StringUtils.isEmpty(valueNew) || StringUtils.isEmpty(getValue())) {
+        if (IpsStringUtils.isEmpty(valueNew) || IpsStringUtils.isEmpty(getValue())) {
             return false;
         }
         return getValue().equals(valueNew);

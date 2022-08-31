@@ -11,7 +11,7 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AssociationNodeGeneratorTest {
     @Mock
     IAssociation association;
@@ -111,8 +111,6 @@ public class AssociationNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_singleContext_1to1() {
-        when(association.is1To1()).thenReturn(true);
-
         gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         verify(gen).compileSingleObjectContext(contextCompilationResult.getCodeFragment(), node);
@@ -120,8 +118,6 @@ public class AssociationNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_singleContext_1toMany() {
-        when(association.is1To1()).thenReturn(false);
-
         gen.getCompilationResultForCurrentNode(node, contextCompilationResult);
 
         verify(gen).compileSingleObjectContext(contextCompilationResult.getCodeFragment(), node);
@@ -195,7 +191,6 @@ public class AssociationNodeGeneratorTest {
     }
 
     private void setUpAssociation(boolean oneToOne) {
-        when(association.is1To1()).thenReturn(oneToOne);
         when(association.is1ToManyIgnoringQualifier()).thenReturn(!oneToOne);
     }
 }

@@ -15,7 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -62,13 +62,13 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 /**
  * 
  * @author Jan Ortmann
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -603,9 +603,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testCheckForHiddenAttributeMismatch_noEntryAdded() {
-        doReturn(new SingleValueHolder(value)).when(value).getValueHolder();
         when(attribute.isVisible()).thenReturn(true);
-        when(attribute.getDefaultValue()).thenReturn("newDefaultValue");
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
 

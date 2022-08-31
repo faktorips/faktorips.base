@@ -18,8 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -38,9 +38,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsBundleEntryTest {
 
     @Mock
@@ -66,7 +66,6 @@ public class IpsBundleEntryTest {
     @Before
     public void createIpsJarBundleEntry() throws Exception {
         ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
-        when(ipsProject.getName()).thenReturn("ipsProject");
     }
 
     @Test
@@ -99,7 +98,6 @@ public class IpsBundleEntryTest {
     @Test
     public void testGetResourceAsStream() throws Exception {
         initStorage();
-        when(ipsProject.getName()).thenReturn("ipsProject");
         ipsBundleEntry.getResourceAsStream("testAnyPath");
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");

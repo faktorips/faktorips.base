@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
@@ -71,7 +70,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         properties = new LinkedHashMap<>();
         propertiesDescription = new LinkedHashMap<>();
         NodeList nl = el.getChildNodes();
-        String commentBeforeElement = StringUtils.EMPTY;
+        String commentBeforeElement = IpsStringUtils.EMPTY;
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
             if (node instanceof Comment) {
@@ -82,7 +81,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
                 String value = propertyEl.getAttribute(VALUE_XML_ATTR);
                 if (!commentBeforeElement.isEmpty()) {
                     propertiesDescription.put(key, commentBeforeElement);
-                    commentBeforeElement = StringUtils.EMPTY;
+                    commentBeforeElement = IpsStringUtils.EMPTY;
                 } else {
                     readOldStyleComment(propertyEl, key);
                 }

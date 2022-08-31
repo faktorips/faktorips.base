@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -124,6 +123,7 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -1535,7 +1535,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
 
     @Override
     public void testErrorOccured(String qualifiedTestName, String[] errorDetails) {
-        if (StringUtils.isNotEmpty(qualifiedTestName) && !canListenToTestRun(qualifiedTestName)) {
+        if (IpsStringUtils.isNotEmpty(qualifiedTestName) && !canListenToTestRun(qualifiedTestName)) {
             return;
         }
         isTestRunError = true;
@@ -1612,7 +1612,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
      * Returns the unique key to indicate the edit field
      */
     private String getUniqueEditFieldKey(String objectName, String attributeName) {
-        if (StringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)) { //$NON-NLS-1$
+        if (IpsStringUtils.isEmpty(attributeName) || "<null>".equals(attributeName)) { //$NON-NLS-1$
             // no attribute given expect that the failure was in an value object
             return objectName;
         } else {

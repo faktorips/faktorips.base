@@ -13,14 +13,11 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Ordering;
-
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -36,6 +33,10 @@ import org.faktorips.devtools.model.productcmpt.template.ITemplatedValue;
  */
 public class DefinedValuesContentProvider implements ITreeContentProvider {
 
+    private static final Comparator<TemplateUsageViewItem> BY_TEMPLATE_STATUS = Comparator
+            .comparing(TemplateUsageViewItem::isSameValueAsTemplateValue).reversed()
+            .thenComparing(Comparator.comparing(TemplateUsageViewItem::isDeletedValue).reversed());
+
     private TemplatePropertyUsagePmo pmo;
 
     @Override
@@ -48,34 +49,15 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(Object inputElement) {
         if (pmo.hasData()) {
-
             Histogram<Object, ITemplatedValue> histogram = pmo.getDefinedValuesHistogram();
             SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-            ImmutableList<TemplateUsageViewItem> elements = definedAbsoluteDistribution.keySet().stream()
+            return definedAbsoluteDistribution.keySet().stream()
                     .map(toViewItem(histogram))
-                    .collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
-            return getOrdering(elements).sortedCopy(elements).toArray();
+                    .sorted(BY_TEMPLATE_STATUS)
+                    .toArray(TemplateUsageViewItem[]::new);
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
         }
-    }
-
-    protected Ordering<TemplateUsageViewItem> getOrdering(ImmutableList<TemplateUsageViewItem> elements) {
-        final Ordering<TemplateUsageViewItem> secOrder = Ordering.explicit(elements);
-
-        return Ordering.from((o1, o2) -> {
-            if (o1.isSameValueAsTemplateValue()) {
-                return -1;
-            } else if (o2.isSameValueAsTemplateValue()) {
-                return 1;
-            } else if (o1.isDeletedValue()) {
-                return -1;
-            } else if (o2.isDeletedValue()) {
-                return 1;
-            } else {
-                return secOrder.compare(o1, o2);
-            }
-        });
     }
 
     @Override
@@ -109,7 +91,8 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         // nothing to do
     }
 
-    private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, ITemplatedValue> histogram) {
+    private Function<Object, TemplateUsageViewItem> toViewItem(
+            final Histogram<Object, ITemplatedValue> histogram) {
         return value -> value == null ? null : new TemplateUsageViewItem(value, pmo, histogram);
     }
 

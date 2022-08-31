@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.decorators.internal.ProductCmptDecorator;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This type selection composite contains two columns. On the left hand you see a list of types you
@@ -59,7 +59,7 @@ public class TypeSelectionComposite extends ElementSelectionComposite<IIpsObject
 
     @Override
     protected void createControls() {
-        title = getToolkit().createLabel(this, StringUtils.EMPTY);
+        title = getToolkit().createLabel(this, IpsStringUtils.EMPTY);
         title.setLayoutData(new GridData(SWT.BEGINNING, SWT.END, false, false));
 
         getToolkit().createVerticalSpacer(this, 0);

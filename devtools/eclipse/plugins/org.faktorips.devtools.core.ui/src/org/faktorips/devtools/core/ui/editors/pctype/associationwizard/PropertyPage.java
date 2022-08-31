@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.editors.pctype.AssociationQualificationGroup;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Page to specify the properties of the association.
@@ -136,13 +136,13 @@ public class PropertyPage extends WizardPage implements IBlockedValidationWizard
     }
 
     private void updateDefaultTargetRolePlural() {
-        if (StringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
+        if (IpsStringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
             association.setTargetRolePlural(association.getDefaultTargetRolePlural());
         }
     }
 
     private void updateDefaultTargetRoleSingular() {
-        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+        if (IpsStringUtils.isEmpty(association.getTargetRoleSingular())) {
             association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
     }

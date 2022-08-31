@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -313,7 +313,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     @Override
     public String getPropertyDatatype() {
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override
@@ -333,7 +333,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     public static class TableStructureReference extends AtomicIpsObjectPart {
 
-        private String tableStructure = StringUtils.EMPTY;
+        private String tableStructure = IpsStringUtils.EMPTY;
 
         public TableStructureReference(ITableStructureUsage tableStructureUsage, String id) {
             super(tableStructureUsage, id);

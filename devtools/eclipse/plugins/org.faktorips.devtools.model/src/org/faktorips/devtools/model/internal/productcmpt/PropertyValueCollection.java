@@ -15,8 +15,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Ordering;
-
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
@@ -259,7 +257,7 @@ public class PropertyValueCollection {
      * @return all property values this container manages.
      */
     public List<IPropertyValue> getAllPropertyValues() {
-        return Ordering.from(COMPARATOR).sortedCopy(classToInstancesMap.values());
+        return classToInstancesMap.values().stream().sorted(COMPARATOR).collect(Collectors.toList());
     }
 
     /**

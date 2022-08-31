@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAssociationInfo;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Section to display the persistence properties of the associations specific to an
@@ -251,7 +251,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (!joinTableReq && foreignKeyColumnReq) {
                     return getColumnTextForeignKeyColReq(jpaAssociationInfo, property);
                 } else {
-                    return StringUtils.EMPTY;
+                    return IpsStringUtils.EMPTY;
                 }
             }
 
@@ -262,7 +262,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {
                     return Boolean.toString(jpaAssociationInfo.isJoinColumnNullable());
                 } else {
-                    return StringUtils.EMPTY;
+                    return IpsStringUtils.EMPTY;
                 }
             }
 
@@ -274,7 +274,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 } else if (IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME.equals(property)) {
                     return jpaAssociationInfo.getTargetColumnName();
                 } else {
-                    return StringUtils.EMPTY;
+                    return IpsStringUtils.EMPTY;
                 }
             }
         }

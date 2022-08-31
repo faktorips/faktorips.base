@@ -15,8 +15,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -29,9 +29,9 @@ import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
-import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.internal.valueset.RangeValueSet;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -46,7 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class XPolicyAttributeTest {
@@ -82,6 +82,7 @@ public class XPolicyAttributeTest {
     public void createXPolicyAttribute() {
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(attribute.getIpsProject()).thenReturn(ipsProject);
+        when(attribute.getDatatype()).thenReturn(ValueDatatype.BOOLEAN.getQualifiedName());
         datatypeHelper = mock(DatatypeHelper.class);
         when(ipsProject.findDatatypeHelper(anyString())).thenReturn(datatypeHelper);
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.BOOLEAN);
@@ -97,7 +98,7 @@ public class XPolicyAttributeTest {
         policyClass = mock(XPolicyCmptClass.class);
         when(modelService.getModelNode(polType, XPolicyCmptClass.class, modelContext)).thenReturn(policyClass);
 
-        when(modelContext.getGeneratorConfig(any(IpsObject.class))).thenReturn(generatorConfig);
+        when(modelContext.getGeneratorConfig(any(IIpsObject.class))).thenReturn(generatorConfig);
         when(modelContext.getBaseGeneratorConfig()).thenReturn(generatorConfig);
 
         when(generatorConfig.getValueSetMethods()).thenReturn(ValueSetMethods.ByValueSetType);
@@ -115,7 +116,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateAllowedValuesFor() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(new UnrestrictedValueSet(attribute, "unrestrictedSet")).when(attribute).getValueSet();
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
@@ -124,7 +124,6 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesForAndGetDefaultValue_ContentSeperatedEnum() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
@@ -134,11 +133,8 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesForAndGetDefaultValue_UnrestrictedAndNonProductRelevant() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isChangeable();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
         doReturn(valueSet).when(attribute).getValueSet();
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
@@ -147,11 +143,8 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesForAndGetDefaultValue_UnrestrictedWithoutNullAndNonProductRelevant() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isChangeable();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
         doReturn(valueSet).when(attribute).getValueSet();
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
@@ -160,13 +153,9 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesForAndGetDefaultValue_UnrestrictedPrimitiveAndNonProductRelevant() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isChangeable();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
         doReturn(valueSet).when(attribute).getValueSet();
-        when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
@@ -174,9 +163,7 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesForAndGetDefaultValue_EnumAndNonProductRelevant() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isChangeable();
         IValueSet valueSet = mock(IValueSet.class);
         doReturn(valueSet).when(attribute).getValueSet();
 
@@ -186,12 +173,9 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesAndGetDefaultValue_ProductRelevantAndUnrestricted() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-        IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
-        doReturn(valueSet).when(attribute).getValueSet();
+        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
@@ -199,12 +183,9 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesAndGetDefaultValue_ProductRelevantAndUnrestrictedWithNull() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-        IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
-        doReturn(valueSet).when(attribute).getValueSet();
+        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
@@ -212,7 +193,6 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesAndGetDefaultValue_ProductRelevantAndRestricted() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
@@ -222,11 +202,8 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateAllowedValuesAndGetDefaultValue_ProductRelevantAndEnumButNotContentSeperated() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
-        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
-        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
@@ -235,7 +212,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateAllowedValuesAndGetDefaultValue_Derived() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(new RangeValueSet(attribute, "rangeSet")).when(attribute).getValueSet();
-        doReturn(true).when(xPolicyAttribute).isDerived();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
 
@@ -256,7 +232,6 @@ public class XPolicyAttributeTest {
 
     @Test
     public void testIsOverrideGetAllowedValuesFor_NoOverride() {
-        when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(false);
 
         assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
@@ -265,13 +240,10 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsOverrideGetAllowedValuesFor_SuperConstant() {
         XPolicyAttribute superXPolicyAttribute = new XPolicyAttribute(superAttribute, modelContext, modelService);
-        when(attribute.getName()).thenReturn("testAttribute");
         when(attribute.isOverwrite()).thenReturn(true);
         when(attribute.findOverwrittenAttribute(any(IIpsProject.class))).thenReturn(superAttribute);
-        when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
         when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext))
                 .thenReturn(superXPolicyAttribute);
-        when(superAttribute.getIpsProject()).thenReturn(ipsProject);
         when(superAttribute.getAttributeType()).thenReturn(AttributeType.CONSTANT);
 
         assertFalse(xPolicyAttribute.isOverrideGetAllowedValuesFor());
@@ -286,6 +258,8 @@ public class XPolicyAttributeTest {
         when(attribute.getValueSet()).thenReturn(new RangeValueSet(attribute, "abc123"));
         when(modelService.getModelNode(superAttribute, XPolicyAttribute.class, modelContext))
                 .thenReturn(superXPolicyAttribute);
+        IPolicyCmptType superPolType = mock(IPolicyCmptType.class);
+        when(superAttribute.getIpsObject()).thenReturn(superPolType);
         when(superAttribute.getIpsProject()).thenReturn(ipsProject);
         when(superAttribute.getAttributeType()).thenReturn(AttributeType.CHANGEABLE);
         when(superAttribute.getValueSet()).thenReturn(new RangeValueSet(superAttribute, "abc123"));
@@ -297,8 +271,6 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateInitWithProductData_NotProductRelevant() {
         when(attribute.isProductRelevant()).thenReturn(false);
-        when(attribute.isChangeable()).thenReturn(true);
-        when(attribute.isOverwrite()).thenReturn(false);
 
         boolean generateInitWithProductData = xPolicyAttribute.isGenerateInitWithProductData();
 
@@ -309,7 +281,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateInitWithProductData_NotCangeable() {
         when(attribute.isProductRelevant()).thenReturn(true);
         when(attribute.isChangeable()).thenReturn(false);
-        when(attribute.isOverwrite()).thenReturn(false);
 
         boolean generateInitWithProductData = xPolicyAttribute.isGenerateInitWithProductData();
 
@@ -368,7 +339,6 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_DoNotGenerateChangeSupportNorSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(false).when(generatorConfig).isGenerateChangeSupport();
         doReturn(false).when(xPolicyAttribute).isGenerateSetter();
 
         assertFalse(xPolicyAttribute.isGenerateSetterInternal());
@@ -377,7 +347,6 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateSetterInternal_GenerateChangeSupportButDoNotGenerateSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(true).when(generatorConfig).isGenerateChangeSupport();
         doReturn(false).when(xPolicyAttribute).isGenerateSetter();
 
         assertFalse(xPolicyAttribute.isGenerateSetterInternal());
@@ -396,7 +365,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateInitWithoutProductData_ProductRelevant_Changeable() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isChangeable();
 
         assertFalse(xPolicyAttribute.isGenerateInitWithoutProductData());
     }
@@ -405,7 +373,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateInitWithoutProductData_ProductRelevant_NotChangeable() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
-        doReturn(false).when(xPolicyAttribute).isChangeable();
 
         assertFalse(xPolicyAttribute.isGenerateInitWithoutProductData());
     }
@@ -461,11 +428,8 @@ public class XPolicyAttributeTest {
     public void testIsProductRelevantInHierarchy_Self() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isOverwrite();
 
-        XPolicyAttribute superXPolicyAttribute = mock(XPolicyAttribute.class);
-        doReturn(false).when(superXPolicyAttribute).isProductRelevant();
-        doReturn(superXPolicyAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
+        mock(XPolicyAttribute.class);
 
         assertTrue(xPolicyAttribute.isProductRelevantInHierarchy());
     }
@@ -525,12 +489,9 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetEnumNonExtensible() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isValueSetRange();
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
-        IValueSet valueSet = mock(IValueSet.class);
-        doReturn(ValueSetType.ENUM).when(valueSet).getValueSetType();
-        doReturn(valueSet).when(attribute).getValueSet();
+        mock(IValueSet.class);
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -539,12 +500,9 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetEnumExtensible() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isValueSetRange();
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
-        IValueSet valueSet = mock(IValueSet.class);
-        doReturn(ValueSetType.ENUM).when(valueSet).getValueSetType();
-        doReturn(valueSet).when(attribute).getValueSet();
+        mock(IValueSet.class);
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
@@ -553,8 +511,6 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetRange() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isValueSetRange();
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
@@ -565,7 +521,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isValueSetRange();
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
@@ -576,7 +531,6 @@ public class XPolicyAttributeTest {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isAbstractValueSet();
         doReturn(true).when(xPolicyAttribute).isProductRelevant();
-        doReturn(true).when(xPolicyAttribute).isValueSetRange();
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
 
         assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
@@ -586,10 +540,7 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetUnrestrictedWithoutNull() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(false).when(xPolicyAttribute).isValueSetRange();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         doReturn(valueSet).when(attribute).getValueSet();
 
@@ -600,10 +551,7 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetUnrestrictedPrimitive() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(false).when(xPolicyAttribute).isValueSetRange();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         doReturn(valueSet).when(attribute).getValueSet();
         when(datatypeHelper.getDatatype()).thenReturn(ValueDatatype.PRIMITIVE_INT);
@@ -615,10 +563,7 @@ public class XPolicyAttributeTest {
     public void testIsGenerateConstantForValueSetUnrestrictedWithNull() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
-        doReturn(false).when(xPolicyAttribute).isProductRelevant();
-        doReturn(false).when(xPolicyAttribute).isValueSetRange();
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         doReturn(valueSet).when(attribute).getValueSet();
 
@@ -628,25 +573,11 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateGetAllowedValuesForAndGetDefaultValue_isNotProductConfiguredButSuperTypeIs() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
-        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
-
-        doReturn(false).when(xPolicyAttribute).isValueSetConfiguredByProduct();
-        doReturn(true).when(xPolicyAttribute).isOverwrite();
-
-        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
-        doReturn(false).when(xSuperAttribute).isOverwrite();
-        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
 
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        IValueSet superValueSet = mock(IValueSet.class);
-        doReturn(false).when(superValueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
-        doReturn(superValueSet).when(superAttribute).getValueSet();
+        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
@@ -654,25 +585,11 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateGetAllowedValuesForAndGetDefaultValue_isProductConfigured() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
-        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
-
-        doReturn(true).when(xPolicyAttribute).isValueSetConfiguredByProduct();
-        doReturn(true).when(xPolicyAttribute).isOverwrite();
-
-        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
-        doReturn(false).when(xSuperAttribute).isOverwrite();
-        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
 
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        IValueSet superValueSet = mock(IValueSet.class);
-        doReturn(false).when(superValueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
-        doReturn(superValueSet).when(superAttribute).getValueSet();
+        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue(), is(true));
     }
@@ -680,25 +597,12 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateConstantForValueSet_isNotProductConfiguredButSuperTypeIs() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
-        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
-
-        doReturn(false).when(xPolicyAttribute).isValueSetConfiguredByProduct();
-        doReturn(true).when(xPolicyAttribute).isOverwrite();
-
-        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
-        doReturn(false).when(xSuperAttribute).isOverwrite();
-        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
 
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(false).when(valueSet).isContainsNull();
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        IValueSet superValueSet = mock(IValueSet.class);
-        doReturn(false).when(superValueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
-        doReturn(superValueSet).when(superAttribute).getValueSet();
+        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
 
@@ -707,25 +611,12 @@ public class XPolicyAttributeTest {
     @Test
     public void testIsGenerateConstantForValueSet_isProductConfigured() {
         xPolicyAttribute = spy(xPolicyAttribute);
-        doReturn(xSuperAttribute).when(xPolicyAttribute).getOverwrittenAttribute();
-        doReturn(superAttribute).when(xSuperAttribute).getAttribute();
-
-        doReturn(true).when(xPolicyAttribute).isValueSetConfiguredByProduct();
-        doReturn(true).when(xPolicyAttribute).isOverwrite();
-
-        doReturn(true).when(xSuperAttribute).isValueSetConfiguredByProduct();
-        doReturn(false).when(xSuperAttribute).isOverwrite();
-        doReturn(true).when(xSuperAttribute).isOverrideGetAllowedValuesFor();
 
         IValueSet valueSet = mock(IValueSet.class);
-        doReturn(true).when(valueSet).isContainsNull();
         doReturn(ValueSetType.UNRESTRICTED).when(valueSet).getValueSetType();
         when(attribute.getValueSet()).thenReturn(valueSet);
 
-        IValueSet superValueSet = mock(IValueSet.class);
-        doReturn(false).when(superValueSet).isContainsNull();
-        doReturn(ValueSetType.UNRESTRICTED).when(superValueSet).getValueSetType();
-        doReturn(superValueSet).when(superAttribute).getValueSet();
+        mock(IValueSet.class);
 
         assertThat(xPolicyAttribute.isGenerateConstantForValueSet(), is(true));
     }
@@ -770,7 +661,6 @@ public class XPolicyAttributeTest {
         var abstractDatatype = mock(ValueDatatype.class);
         when(abstractDatatype.isAbstract()).thenReturn(false);
         when(datatypeHelper.getDatatype()).thenReturn(abstractDatatype);
-        doReturn(true).when(xPolicyAttribute).isProductRelevant();
 
         assertThat(xPolicyAttribute.isAbstract(), is(false));
     }

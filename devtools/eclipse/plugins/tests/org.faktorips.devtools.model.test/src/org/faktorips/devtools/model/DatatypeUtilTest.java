@@ -27,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DatatypeUtilTest {
@@ -59,8 +59,6 @@ public class DatatypeUtilTest {
         superenumDatatype = new EnumTypeDatatypeAdapter(superEnumType, enumContent);
         when(enumType.getIpsProject()).thenReturn(ipsProject);
         when(superEnumType.getIpsProject()).thenReturn(ipsProject);
-        when(enumType.isSubEnumTypeOrSelf(enumType, ipsProject)).thenReturn(true);
-        when(superEnumType.isSubEnumTypeOrSelf(superEnumType, ipsProject)).thenReturn(true);
         when(enumType.isSubEnumTypeOrSelf(superEnumType, ipsProject)).thenReturn(true);
     }
 

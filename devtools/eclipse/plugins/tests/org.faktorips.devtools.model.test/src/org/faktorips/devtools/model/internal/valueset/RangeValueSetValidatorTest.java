@@ -30,9 +30,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class RangeValueSetValidatorTest {
 
     private static final String ANY_VALUE = "anyValue";
@@ -57,7 +57,6 @@ public class RangeValueSetValidatorTest {
 
     @Test
     public void testValidate_useCorrectDatatype() throws Exception {
-        doReturn(owner).when(range).getValueSetOwner();
         when(datatype.isParsable(ANY_VALUE)).thenReturn(true);
         doReturn(ANY_VALUE).when(range).getLowerBound();
         doReturn(ANY_VALUE).when(range).getUpperBound();
@@ -70,7 +69,6 @@ public class RangeValueSetValidatorTest {
 
     @Test
     public void testValidate_onlyNumerictDatatype() throws Exception {
-        doReturn(owner).when(range).getValueSetOwner();
         when(nonNumericDatatype.isParsable(ANY_VALUE)).thenReturn(true);
         doReturn(ANY_VALUE).when(range).getLowerBound();
         doReturn(ANY_VALUE).when(range).getUpperBound();
@@ -83,9 +81,6 @@ public class RangeValueSetValidatorTest {
 
     @Test
     public void testValidate_useCorrectOwner() throws Exception {
-        doReturn(ANY_VALUE).when(range).getLowerBound();
-        doReturn(ANY_VALUE).when(range).getUpperBound();
-        doReturn(ANY_VALUE).when(range).getStep();
 
         MessageList validatotList = new RangeValueSetValidator(range, owner, null).validate();
         Message messageByCode = validatotList.getMessageByCode(IRangeValueSet.MSGCODE_UNKNOWN_DATATYPE);

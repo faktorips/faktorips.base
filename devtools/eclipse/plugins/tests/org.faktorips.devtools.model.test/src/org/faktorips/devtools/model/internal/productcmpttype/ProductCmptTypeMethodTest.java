@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.ipsobject.Modifier;
@@ -190,8 +190,8 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method.initFromXml(XmlUtil.getElement(docElement, "Method", 1));
         assertEquals("43", method.getId());
         assertTrue(method.isFormulaSignatureDefinition());
-        assertEquals(StringUtils.EMPTY, method.getFormulaName());
-        assertEquals(StringUtils.EMPTY, method.getDatatype());
+        assertEquals(IpsStringUtils.EMPTY, method.getFormulaName());
+        assertEquals(IpsStringUtils.EMPTY, method.getDatatype());
         assertEquals(Modifier.PUBLISHED, method.getModifier());
         assertFalse(method.isAbstract());
         assertFalse(method.isOverloadsFormula());

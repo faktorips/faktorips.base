@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A control factory for the {@link IEnumType} which implements the {@link EnumDatatype} interface.
@@ -92,7 +92,7 @@ public class EnumerationControlFactory extends DefaultControlFactory {
     private String[] getProposals(ValueDatatype datatype, IInputFormat<String> inputFormat) {
         EnumerationProposalProvider enumerationProposalProvider = new EnumerationProposalProvider(datatype, null,
                 inputFormat);
-        IContentProposal[] proposals = enumerationProposalProvider.getProposals(StringUtils.EMPTY, 0);
+        IContentProposal[] proposals = enumerationProposalProvider.getProposals(IpsStringUtils.EMPTY, 0);
         String[] proposalsAsString = new String[proposals.length];
         for (int i = 0; i < proposals.length; i++) {
             proposalsAsString[i] = proposals[i].getLabel();

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.productcmpt.deltaentries;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class LinkChangingOverTimeMismatchEntryTest {
 
     @Mock
@@ -88,38 +87,25 @@ public class LinkChangingOverTimeMismatchEntryTest {
 
         setUpGenerationOrder();
 
-        when(type.findAssociation("assoc1", ipsProject)).thenReturn(assoc1);
-        when(type.findAssociation("assoc2", ipsProject)).thenReturn(assoc2);
-        when(type.findAssociation("staticAssoc1", ipsProject)).thenReturn(staticAssoc1);
-        when(type.findAssociation("staticAssoc2", ipsProject)).thenReturn(staticAssoc2);
+        setUpLink(link1);
+        setUpLink(link2);
+        setUpLink(linkA);
+        setUpLink(linkB);
+        setUpLink(linkLatest1);
+        setUpLink(linkLatest2);
+        setUpLink(linkLatest3);
+        setUpLink(staticLink1);
+        setUpLink(staticLink2);
+        setUpLink(staticLink3);
 
-        setUpLink(link1, "assoc1");
-        setUpLink(link2, "assoc2");
-        setUpLink(linkA, "assoc1");
-        setUpLink(linkB, "assoc2");
-        setUpLink(linkLatest1, "assoc1");
-        setUpLink(linkLatest2, "assoc2");
-        setUpLink(linkLatest3, "assoc2");
-        setUpLink(staticLink1, "staticAssoc1");
-        setUpLink(staticLink2, "staticAssoc1");
-        setUpLink(staticLink3, "staticAssoc2");
-
-        when(gen1.getProductCmpt()).thenReturn(prodCmpt);
-        when(gen2.getProductCmpt()).thenReturn(prodCmpt);
-        when(genLatest.getProductCmpt()).thenReturn(prodCmpt);
         when(prodCmpt.getProductCmpt()).thenReturn(prodCmpt);
-        when(prodCmpt.getLatestGeneration()).thenReturn(genLatest);
 
-        when(assoc1.isChangingOverTime()).thenReturn(true);
         when(assoc2.isChangingOverTime()).thenReturn(true);
         when(staticAssoc1.isChangingOverTime()).thenReturn(false);
-        when(staticAssoc2.isChangingOverTime()).thenReturn(false);
     }
 
-    private void setUpLink(IProductCmptLink link, String association) {
-        when(link.getAssociation()).thenReturn(association);
+    private void setUpLink(IProductCmptLink link) {
         when(link.getTarget()).thenReturn("targetName");
-        when(link.findTarget(any(IIpsProject.class))).thenReturn(target);
     }
 
     private void setUpGenerationOrder() {
@@ -134,7 +120,6 @@ public class LinkChangingOverTimeMismatchEntryTest {
     private void setUpLinksForLinkContainer(IProductCmptLinkContainer container, IProductCmptLink... links) {
         List<IProductCmptLink> genLinks = new ArrayList<>();
         genLinks.addAll(Arrays.asList(links));
-        when(container.getLinksAsList()).thenReturn(genLinks);
         for (IProductCmptLink link : links) {
             when(link.getProductCmptLinkContainer()).thenReturn(container);
             when(link.getProductCmpt()).thenReturn(prodCmpt);
@@ -160,7 +145,6 @@ public class LinkChangingOverTimeMismatchEntryTest {
         when(assoc2.isChangingOverTime()).thenReturn(false);
         LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(assoc2, link2);
         IProductCmptLink newLink = mock(IProductCmptLink.class);
-        when(prodCmpt.newLink(assoc2)).thenReturn(newLink);
 
         entry.fix();
 

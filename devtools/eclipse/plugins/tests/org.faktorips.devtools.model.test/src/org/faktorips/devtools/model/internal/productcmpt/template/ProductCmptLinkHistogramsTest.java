@@ -15,15 +15,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.Function;
-
-import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.model.internal.productcmpt.template.ProductCmptLinkHistograms.LinkContainerHistogram;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
@@ -45,7 +44,7 @@ public class ProductCmptLinkHistogramsTest {
     public void testCreateFor_NoLinks() {
         IProductCmpt prod = mockProductCmpt(NO_LINKS);
         mockProductCmptGeneration(prod, NO_LINKS);
-        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(Lists.newArrayList(prod));
+        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(List.of(prod));
         assertThat(p.size(), is(0));
     }
 
@@ -60,7 +59,7 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmpt prod = mockProductCmpt(aToT, bToU);
         mockProductCmptGeneration(prod, aToT, bToU);
 
-        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(Lists.newArrayList(prod));
+        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(List.of(prod));
         assertThat(p.size(), is(2));
 
         assertThat(p.getHistogram(aToTId), is(notNullValue()));
@@ -90,7 +89,7 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmpt prod1 = mockProductCmpt(aToT);
         IProductCmpt prod2 = mockProductCmpt(bToU);
 
-        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(Lists.newArrayList(prod1, prod2));
+        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(List.of(prod1, prod2));
         assertThat(p.size(), is(2));
 
         assertThat(p.getHistogram(aToTId), is(notNullValue()));
@@ -120,7 +119,7 @@ public class ProductCmptLinkHistogramsTest {
         // Add a link to the generation. The link should be ignored
         mockProductCmptGeneration(prod2, mockLink("x", "y", c111));
 
-        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(Lists.newArrayList(prod1, prod2));
+        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(List.of(prod1, prod2));
 
         assertThat(p.size(), is(2));
         assertThat(p.getHistogram(pToTId).countElements(), is(2));
@@ -144,7 +143,7 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmptGeneration gen1 = mockProductCmptGeneration(mockProductCmpt(NO_LINKS), gToT1);
         IProductCmptGeneration gen2 = mockProductCmptGeneration(mockProductCmpt(NO_LINKS), gToT2);
 
-        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(Lists.newArrayList(gen1, gen2));
+        ProductCmptLinkHistograms p = ProductCmptLinkHistograms.createFor(List.of(gen1, gen2));
 
         assertThat(p.size(), is(1));
         assertThat(p.getHistogram(gToTId), is(notNullValue()));
@@ -160,7 +159,7 @@ public class ProductCmptLinkHistogramsTest {
         final IProductCmptLinkContainer c2 = mockProductCmpt(NO_LINKS);
         final IProductCmptLinkContainer c3 = mockProductCmpt(NO_LINKS);
 
-        Collection<IProductCmptLinkContainer> elements = Lists.newArrayList(c1, c2, c3);
+        Collection<IProductCmptLinkContainer> elements = List.of(c1, c2, c3);
         Function<IProductCmptLinkContainer, Cardinality> elementToValueFunction = c -> (c == c1 || c == c2)
                 ? Cardinality.UNDEFINED
                 : c111;

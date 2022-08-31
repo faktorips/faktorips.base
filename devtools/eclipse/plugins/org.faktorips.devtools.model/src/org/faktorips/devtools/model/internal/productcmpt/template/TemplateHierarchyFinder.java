@@ -19,7 +19,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -67,7 +67,7 @@ public class TemplateHierarchyFinder {
         Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
         for (IIpsSrcFile srcFile : ipsProject.findAllIpsSrcFiles(PRODUCT_CMPT, PRODUCT_TEMPLATE)) {
             String template = srcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
-            if (StringUtils.isNotBlank(template)) {
+            if (IpsStringUtils.isNotBlank(template)) {
                 templateMap.put(template, srcFile);
             }
         }

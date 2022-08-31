@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.htmlexport.helper.path;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
@@ -40,6 +39,6 @@ public class IpsProjectHtmlPath extends AbstractIpsElementHtmlPath<IIpsProject> 
 
     @Override
     protected IIpsPackageFragment getIpsPackageFragment() {
-        throw new NotImplementedException("An IpsProject has no IpsPackageFragment"); //$NON-NLS-1$
+        throw new UnsupportedOperationException("An IpsProject has no IpsPackageFragment"); //$NON-NLS-1$
     }
 }

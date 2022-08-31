@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -49,7 +49,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
 
     private IProgressMonitor monitor = new NullProgressMonitor();
 
-    private IStatus resultStatus = new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, StringUtils.EMPTY);
+    private IStatus resultStatus = new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, IpsStringUtils.EMPTY);
 
     private ValidationRuleIdentification identification = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
@@ -237,7 +237,7 @@ public abstract class ValidationRuleMessagesImportOperation implements ICoreRunn
             result.add(multipleUsedMessageCodes);
         }
         if (result.isOK()) {
-            return new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, StringUtils.EMPTY);
+            return new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, IpsStringUtils.EMPTY);
         } else {
             return result;
         }

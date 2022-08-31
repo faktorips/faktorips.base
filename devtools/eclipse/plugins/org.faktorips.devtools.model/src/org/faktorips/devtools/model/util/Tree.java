@@ -10,11 +10,10 @@
 
 package org.faktorips.devtools.model.util;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-
-import com.google.common.collect.Lists;
 
 /**
  * A tree whose nodes enclose an element.
@@ -84,7 +83,7 @@ public class Tree<T> {
     public static class Node<T> {
 
         private final Node<T> parent;
-        private final List<Node<T>> children = Lists.newArrayList();
+        private final List<Node<T>> children = new ArrayList<>();
         private final T element;
 
         private Node(Node<T> parent, T element) {
@@ -143,7 +142,7 @@ public class Tree<T> {
         }
 
         private List<T> getAllElements() {
-            List<T> allIpsSrcFiles = Lists.newArrayList();
+            List<T> allIpsSrcFiles = new ArrayList<>();
             allIpsSrcFiles.add(element);
             for (Node<T> child : children) {
                 allIpsSrcFiles.addAll(child.getAllElements());

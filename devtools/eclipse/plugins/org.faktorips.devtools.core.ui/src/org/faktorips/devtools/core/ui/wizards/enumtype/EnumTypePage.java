@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The wizard page for the <code>NewEnumTypeWizard</code>.
@@ -107,7 +107,7 @@ public class EnumTypePage extends IpsObjectPage {
         supertypeField.addChangeListener(this);
 
         // Create abstract field.
-        toolkit.createLabel(nameComposite, StringUtils.EMPTY);
+        toolkit.createLabel(nameComposite, IpsStringUtils.EMPTY);
         isAbstractField = new CheckboxField(toolkit.createCheckbox(nameComposite, Messages.Fields_Abstract));
         isAbstractField.addChangeListener(this);
         isAbstractField.addChangeListener($ -> enableEnumContentControls());
@@ -120,7 +120,7 @@ public class EnumTypePage extends IpsObjectPage {
      * and a name attribute.
      */
     private void createIdAndNameGenerationFields(Composite nameComposite, UIToolkit uiToolkit) {
-        uiToolkit.createLabel(nameComposite, StringUtils.EMPTY);
+        uiToolkit.createLabel(nameComposite, IpsStringUtils.EMPTY);
         Composite createFieldsContainer = uiToolkit.createGridComposite(nameComposite, 2, false, false);
 
         // Create id attribute.
@@ -143,7 +143,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Disable id and name generation fields if a supertype is specified.
         supertypeField.addChangeListener($ -> {
-            boolean enabled = StringUtils.isEmpty(supertypeField.getText());
+            boolean enabled = IpsStringUtils.isEmpty(supertypeField.getText());
             createIdAttributeField.getCheckbox().setEnabled(enabled);
             createNameAttributeField.getCheckbox().setEnabled(enabled);
             idAttributeNameField.setEnabled(enabled);
@@ -219,11 +219,11 @@ public class EnumTypePage extends IpsObjectPage {
 
         String pack = getPackage();
         String name = getIpsObjectName();
-        String point = StringUtils.EMPTY;
+        String point = IpsStringUtils.EMPTY;
         if (pack.length() > 0 && name.length() > 0) {
             point = "."; //$NON-NLS-1$
         } else {
-            pack = StringUtils.EMPTY;
+            pack = IpsStringUtils.EMPTY;
         }
         enumContentQualifiedNameField.setText(pack + point + name);
     }
@@ -257,7 +257,7 @@ public class EnumTypePage extends IpsObjectPage {
          * Create id attribute and name attribute if checked and possible (no supertype must be
          * specified).
          */
-        if (StringUtils.isEmpty(supertypeField.getText())) {
+        if (IpsStringUtils.isEmpty(supertypeField.getText())) {
             if (createIdAttributeField.getCheckbox().isChecked()) {
                 IEnumAttribute idAttribute = newEnumType.newEnumAttribute();
                 idAttribute.setName(idAttributeNameField.getText());
@@ -294,7 +294,7 @@ public class EnumTypePage extends IpsObjectPage {
 
         // Validate super enumeration type.
         String superTypeFieldText = supertypeField.getText();
-        if (StringUtils.isNotEmpty(superTypeFieldText) && ipsProject != null) {
+        if (IpsStringUtils.isNotEmpty(superTypeFieldText) && ipsProject != null) {
             EnumTypeValidations.validateSuperEnumType(validationMessages, null, superTypeFieldText, ipsProject);
         }
 

@@ -21,6 +21,7 @@ import org.eclipse.jface.window.Window;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.memento.Memento;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -43,9 +44,11 @@ public class DialogMementoHelperTest {
 
     private DialogMementoHelper dialogMementoHelper;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
 
         when(ipsObjectPartContainer.getIpsSrcFile()).thenReturn(ipsSrcFile);
         when(ipsSrcFile.isMutable()).thenReturn(true);
@@ -57,6 +60,11 @@ public class DialogMementoHelperTest {
                 return dialog;
             }
         };
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

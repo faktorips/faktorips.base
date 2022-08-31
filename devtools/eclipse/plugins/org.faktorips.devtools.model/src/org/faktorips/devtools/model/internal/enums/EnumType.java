@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -94,10 +94,10 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      */
     public EnumType(IIpsSrcFile file) {
         super(file);
-        superEnumType = StringUtils.EMPTY;
+        superEnumType = IpsStringUtils.EMPTY;
         extensible = false;
         isAbstract = false;
-        enumContentPackageFragment = StringUtils.EMPTY;
+        enumContentPackageFragment = IpsStringUtils.EMPTY;
         enumAttributes = new IpsObjectPartCollection<>(this, EnumAttribute.class, IEnumAttribute.class,
                 IEnumAttribute.XML_TAG);
     }
@@ -326,7 +326,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     private void initDeprecatedProperties(Element element) {
         String containsValuesAttribute = element.getAttribute("containingValues"); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(containsValuesAttribute)) {
+        if (IpsStringUtils.isNotEmpty(containsValuesAttribute)) {
             extensible = !Boolean.parseBoolean(containsValuesAttribute);
         }
     }
@@ -334,7 +334,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        if (StringUtils.isNotEmpty(superEnumType)) {
+        if (IpsStringUtils.isNotEmpty(superEnumType)) {
             element.setAttribute(PROPERTY_SUPERTYPE, superEnumType);
         }
         if (isAbstract) {
@@ -346,7 +346,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         if (identifierBoundary != null) {
             element.setAttribute(PROPERTY_IDENTIFIER_BOUNDARY, identifierBoundary);
         }
-        if (StringUtils.isNotEmpty(enumContentPackageFragment)) {
+        if (IpsStringUtils.isNotEmpty(enumContentPackageFragment)) {
             element.setAttribute(PROPERTY_ENUM_CONTENT_NAME, enumContentPackageFragment);
         }
     }
@@ -826,7 +826,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     public boolean hasSuperEnumType() {
-        return StringUtils.isNotEmpty(superEnumType);
+        return IpsStringUtils.isNotEmpty(superEnumType);
     }
 
     @Override

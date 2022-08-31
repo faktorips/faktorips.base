@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -101,7 +101,7 @@ public class TestValue extends TestObject implements ITestValue {
 
     @Override
     public ITestValueParameter findTestValueParameter(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(testValueParameter)) {
+        if (IpsStringUtils.isEmpty(testValueParameter)) {
             return null;
         }
 

@@ -17,12 +17,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.helper.path.IHtmlPath;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Utility for generating html
@@ -72,7 +73,7 @@ public class HtmlUtil {
         builder.append("</title>"); //$NON-NLS-1$
         builder.append("<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />"); //$NON-NLS-1$
         builder.append("<meta name=\"date\" content=\"" + metaDateFormat.format(new Date()) + "\" />"); //$NON-NLS-1$ //$NON-NLS-2$
-        if (!StringUtils.isBlank(stylePath)) {
+        if (!IpsStringUtils.isBlank(stylePath)) {
             builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\""); //$NON-NLS-1$
             builder.append(stylePath);
             builder.append("\" />"); //$NON-NLS-1$
@@ -137,11 +138,11 @@ public class HtmlUtil {
     public String createHtmlElementOpenTag(String element, String id, String classes) {
         List<HtmlAttribute> attributes = new ArrayList<>();
 
-        if (StringUtils.isNotBlank(classes)) {
+        if (IpsStringUtils.isNotBlank(classes)) {
             attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
         }
 
-        if (StringUtils.isNotBlank(id)) {
+        if (IpsStringUtils.isNotBlank(id)) {
             attributes.add(new HtmlAttribute("id", id)); //$NON-NLS-1$
         }
 
@@ -196,21 +197,21 @@ public class HtmlUtil {
     public String createLinkOpenTag(String href, String anchor, String target, String classes, String title) {
         List<HtmlAttribute> attributes = new ArrayList<>();
 
-        if (StringUtils.isBlank(anchor)) {
+        if (IpsStringUtils.isBlank(anchor)) {
             attributes.add(new HtmlAttribute("href", href)); //$NON-NLS-1$
         } else {
             attributes.add(new HtmlAttribute("href", href + "#" + anchor)); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        if (StringUtils.isNotBlank(target)) {
+        if (IpsStringUtils.isNotBlank(target)) {
             attributes.add(new HtmlAttribute("target", target)); //$NON-NLS-1$
         }
 
-        if (StringUtils.isNotBlank(title)) {
+        if (IpsStringUtils.isNotBlank(title)) {
             attributes.add(new HtmlAttribute("title", title)); //$NON-NLS-1$
         }
 
-        if (StringUtils.isNotBlank(classes)) {
+        if (IpsStringUtils.isNotBlank(classes)) {
             attributes.add(new HtmlAttribute("class", classes)); //$NON-NLS-1$
         }
 

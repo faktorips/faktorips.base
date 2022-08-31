@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -28,13 +27,14 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
 import org.faktorips.devtools.model.util.TextRegion;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AssociationParserTest extends AbstractParserTest {
 
     private static final String TARGET = "target";
@@ -66,10 +66,8 @@ public class AssociationParserTest extends AbstractParserTest {
         when(association.getName()).thenReturn(MY_ASSOCIATION);
         when(association.getTarget()).thenReturn(TARGET);
         when(association.findTarget(getIpsProject())).thenReturn(targetType);
-        when(policyCmptType.findAssociation(MY_SECOND_ASSOCIATION, getIpsProject())).thenReturn(association2);
         when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
         when(association2.getTarget()).thenReturn(TARGET);
-        when(association2.findTarget(getIpsProject())).thenReturn(targetType);
 
         List<IAssociation> assocList = new ArrayList<>();
         assocList.add(association);
@@ -178,12 +176,12 @@ public class AssociationParserTest extends AbstractParserTest {
         List<IdentifierProposal> proposals = associationParser.getProposals("");
 
         assertEquals(6, proposals.size());
-        assertEquals(getDisplayText(MY_ASSOCIATION, StringUtils.EMPTY, false), proposals.get(0).getLabel());
+        assertEquals(getDisplayText(MY_ASSOCIATION, IpsStringUtils.EMPTY, false), proposals.get(0).getLabel());
         assertEquals(getDisplayText(MY_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(1)
                 .getLabel());
         assertEquals(getDisplayText(MY_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, true), proposals.get(2)
                 .getLabel());
-        assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, StringUtils.EMPTY, true), proposals.get(3).getLabel());
+        assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, IpsStringUtils.EMPTY, true), proposals.get(3).getLabel());
         assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(4)
                 .getLabel());
         assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, false),
@@ -212,12 +210,13 @@ public class AssociationParserTest extends AbstractParserTest {
         List<IdentifierProposal> proposals = associationParser.getProposals("");
 
         assertEquals(6, proposals.size());
-        assertEquals(getDescriptionText(MY_ASSOCIATION, StringUtils.EMPTY, false), proposals.get(0).getDescription());
+        assertEquals(getDescriptionText(MY_ASSOCIATION, IpsStringUtils.EMPTY, false),
+                proposals.get(0).getDescription());
         assertEquals(getDescriptionText(MY_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(1)
                 .getDescription());
         assertEquals(getDescriptionText(MY_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, true), proposals
                 .get(2).getDescription());
-        assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, StringUtils.EMPTY, true), proposals.get(3)
+        assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, IpsStringUtils.EMPTY, true), proposals.get(3)
                 .getDescription());
         assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false),
                 proposals.get(4).getDescription());
@@ -228,7 +227,7 @@ public class AssociationParserTest extends AbstractParserTest {
     private String getDescriptionText(String associationName, String suffix, boolean listTarget) {
         String result = getDisplayText(associationName, suffix, listTarget);
         result += "\n\n";
-        if (suffix.equals(StringUtils.EMPTY)) {
+        if (suffix.equals(IpsStringUtils.EMPTY)) {
             result += LOCALIZED_DESCRIPTION;
         } else if (suffix.equals(AssociationParser.INDEX_PROPOSAL)) {
             result += Messages.QualifierAndIndexParser_descriptionIndex + "\n\n" + LOCALIZED_DESCRIPTION;

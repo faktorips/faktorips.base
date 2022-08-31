@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -36,10 +36,10 @@ import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrate
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -76,10 +76,11 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
     }
 
     private String createManifest() {
-        return "Fips-BasePackage: org.test.basepackage\n" + "Fips-SrcOutput: src\n" + "Fips-ResourceOutput: resource\n"
+        return "Fips-BasePackage: org.test.basepackage\n" + "Fips-SourcecodeOutput: src\n"
+                + "Fips-ResourceOutput: resource\n"
                 + "Fips-ObjectDir: model;toc=\"fips-toc.xml\";messages=\"validation-messages.properties\",\n"
                 + " test;toc=\"fips-toc-test.xml\";messages=\"validation-messages-test.properties\"\n\n"
-                + "Name: test\n" + "Fips-SrcOutput: test\n" + "Fips-ResourceOutput: testResource\n";
+                + "Name: test\n" + "Fips-SourcecodeOutput: test\n" + "Fips-ResourceOutput: testResource\n";
     }
 
     @Test

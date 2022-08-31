@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -30,7 +31,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ConfigElementProposalProviderTest {
@@ -63,14 +64,6 @@ public class ConfigElementProposalProviderTest {
     public void setUp() throws Exception {
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
-        when(enumValueDatatype.isEnum()).thenReturn(true);
-        when(enumValueDatatype.isParsable("aaaaa")).thenReturn(true);
-        when(enumValueDatatype.isParsable("bbbbb")).thenReturn(true);
-        when(enumValueDatatype.isParsable("ccccc")).thenReturn(true);
-        when(enumValueDatatype.areValuesEqual("aaaaa", "aaaaa")).thenReturn(true);
-        when(enumValueDatatype.areValuesEqual("bbbbb", "bbbbb")).thenReturn(true);
-        when(enumValueDatatype.areValuesEqual("ccccc", "ccccc")).thenReturn(true);
-        when(enumValueDatatype.getAllValueIds(true)).thenReturn(new String[] { "aaaaa", "bbbbb", "ccccc" });
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
         when(propertyValue.getIpsObject()).thenReturn(ipsObject);
         when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
@@ -79,16 +72,14 @@ public class ConfigElementProposalProviderTest {
         when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
-        when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
-        when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
-        when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
+        doReturn("enumA aaaaa").when(inputFormat).format("aaaaa");
+        doReturn("enumB bbbbb").when(inputFormat).format("bbbbb");
+        doReturn("en um C ccccc").when(inputFormat).format("ccccc");
         valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
     }
 
     @Test
     public void testGetProposalsUnrestricted() throws Exception {
-        when(propertyValue.getValueSet()).thenReturn(unrestrictedValueSet);
-
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("", 0);
 
         assertNotNull(proposals);

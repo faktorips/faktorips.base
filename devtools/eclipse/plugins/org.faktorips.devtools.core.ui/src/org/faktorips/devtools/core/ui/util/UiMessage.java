@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.util;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IMessage;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public final class UiMessage implements IMessage {
 
@@ -47,7 +47,7 @@ public final class UiMessage implements IMessage {
         messageType = IMessageProvider.INFORMATION;
         messageText = text;
         messageCode = text;
-        prefix = StringUtils.EMPTY;
+        prefix = IpsStringUtils.EMPTY;
     }
 
     /**
@@ -71,7 +71,7 @@ public final class UiMessage implements IMessage {
 
     private Object getFirstObject(List<ObjectProperty> objectProperties) {
         if (objectProperties.size() == 0 || objectProperties.get(0) == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
 
         ObjectProperty invalidObjectProperty = objectProperties.get(0);
@@ -80,7 +80,7 @@ public final class UiMessage implements IMessage {
 
     private String getPrefix(Object contextObject) {
         if (contextObject instanceof IIpsObject) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         if (contextObject instanceof IValueHolder<?>) {
             IValueHolder<?> holder = (IValueHolder<?>)contextObject;
@@ -92,17 +92,17 @@ public final class UiMessage implements IMessage {
     }
 
     private String getObjectName(Object contextObject) {
-        String objectName = StringUtils.EMPTY;
+        String objectName = IpsStringUtils.EMPTY;
         if (contextObject instanceof ILabeledElement) {
             objectName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
         } else if (contextObject instanceof IIpsObjectPartContainer) {
             objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
         }
-        if (StringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
+        if (IpsStringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
             objectName = ((IIpsElement)contextObject).getName();
         }
-        if (StringUtils.isEmpty(objectName)) {
-            return StringUtils.EMPTY;
+        if (IpsStringUtils.isEmpty(objectName)) {
+            return IpsStringUtils.EMPTY;
         } else {
             return objectName + SEPERATOR;
         }
@@ -110,7 +110,7 @@ public final class UiMessage implements IMessage {
 
     String getCaptionName(IIpsObjectPartContainer contextObject) {
         String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(contextObject);
-        if (StringUtils.isEmpty(caption)) {
+        if (IpsStringUtils.isEmpty(caption)) {
             IIpsElement parent = contextObject.getParent();
             if (parent instanceof IIpsObjectPartContainer) {
                 IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;

@@ -15,8 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -48,7 +46,7 @@ public class SetTemplateValueStatusOperationTest extends AbstractIpsPluginTest {
         IPropertyValue p1Value = p1.newPropertyValue(attribute, IAttributeValue.class);
         IPropertyValue p2Value = p2.newPropertyValue(attribute, IAttributeValue.class);
 
-        List<IPropertyValue> propertyValues = Lists.newArrayList(p1Value, p2Value);
+        List<IPropertyValue> propertyValues = List.of(p1Value, p2Value);
         IProgressMonitor monitor = new NullProgressMonitor();
 
         new SetTemplateValueStatusOperation(propertyValues, TemplateValueStatus.INHERITED).run(monitor);

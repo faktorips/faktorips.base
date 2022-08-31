@@ -24,9 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class XMethodTest {
 
     @Mock
@@ -70,7 +70,6 @@ public class XMethodTest {
     @Test
     public void testGetModifier_abstractInInInterface() throws Exception {
         when(method.getJavaModifier()).thenReturn(Modifier.PUBLIC | Modifier.ABSTRACT);
-        when(method.isAbstract()).thenReturn(true);
 
         String resultModifier = xMethod.getModifier(true);
 

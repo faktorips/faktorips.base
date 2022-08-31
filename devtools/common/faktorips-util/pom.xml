@@ -27,7 +27,7 @@
                         <Import-Package>
                             !edu.umd.cs.findbugs.*,
                             org.faktorips.*,
-                            org.apache.commons.lang;version="[2.6,2.6]"
+                            org.apache.commons.lang3;version="[3.12,3.12]"
                         </Import-Package>
                         <Export-Package>
                             org.faktorips.util.*
@@ -45,8 +45,8 @@
             <artifactId>faktorips-runtime</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.spotbugs</groupId>

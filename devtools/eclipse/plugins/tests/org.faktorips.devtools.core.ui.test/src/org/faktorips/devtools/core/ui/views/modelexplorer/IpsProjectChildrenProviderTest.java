@@ -34,9 +34,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
     @Mock
@@ -75,10 +75,8 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
         IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
         when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
-        when(root2.exists()).thenReturn(true);
         IIpsObjectPathEntry entry2 = mock(IIpsObjectPathEntry.class);
         when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
-        when(root3.exists()).thenReturn(true);
         List<IIpsObjectPathEntry> ipsObjectPathEntries = Arrays.asList(entry, entry2);
         when(containerEntry.resolveEntries()).thenReturn(ipsObjectPathEntries);
 

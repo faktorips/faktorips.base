@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 import java.util.function.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -24,6 +23,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Provides controls that allow the user to edit an {@link IValidationRuleConfig}.
@@ -65,7 +65,7 @@ public class ValidationRuleConfigEditComposite
         if (validationRule != null) {
             return IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(validationRule);
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override

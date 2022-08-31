@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.builder;
 
 import java.lang.reflect.Modifier;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;

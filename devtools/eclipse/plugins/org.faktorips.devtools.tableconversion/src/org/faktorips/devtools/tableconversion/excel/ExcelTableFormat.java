@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -120,7 +120,7 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
             fis = new FileInputStream(file);
             WorkbookFactory.create(file);
             return true;
-        } catch (IOException | InvalidFormatException e) {
+        } catch (IOException e) {
             return false;
         } finally {
             if (fis != null) {
@@ -221,12 +221,12 @@ public class ExcelTableFormat extends AbstractExternalTableFormat {
 
     // TODO FIPS-7992: code duplication in AbstractExcelImportOperation
     private String readCell(Cell cell, Datatype datatype, MessageList messageList, String nullRepresentation) {
-        if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+        if (cell.getCellType() == CellType.NUMERIC) {
             if (DateUtil.isCellDateFormatted(cell)) {
                 return getIpsValue(cell.getDateCellValue(), datatype, messageList);
             }
             return getIpsValue(Double.valueOf(cell.getNumericCellValue()), datatype, messageList);
-        } else if (cell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+        } else if (cell.getCellType() == CellType.BOOLEAN) {
             return getIpsValue(Boolean.valueOf(cell.getBooleanCellValue()), datatype, messageList);
         } else {
             String value = cell.getStringCellValue();

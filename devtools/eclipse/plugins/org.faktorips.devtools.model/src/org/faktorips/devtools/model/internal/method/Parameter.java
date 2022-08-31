@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.method;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -89,7 +89,7 @@ public class Parameter extends AtomicIpsObjectPart implements IParameter {
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
-        if (StringUtils.isEmpty(name)) {
+        if (IpsStringUtils.isEmpty(name)) {
             result.add(new Message("", Messages.Parameter_msg_NameEmpty, Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         } else {
             Message msg = ipsProject.getNamingConventions().validateIfValidJavaIdentifier(getName(),

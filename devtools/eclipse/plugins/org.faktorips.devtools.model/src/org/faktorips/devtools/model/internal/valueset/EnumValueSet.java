@@ -22,11 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.Lists;
-
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -338,7 +336,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
             IDatatypeFormatter datatypeFormatter = IIpsModelExtensions.get().getModelPreferences()
                     .getDatatypeFormatter();
-            List<String> formattedValues = Lists.transform(values, value -> datatypeFormatter.formatValue(type, value));
+            List<String> formattedValues = values.stream()
+                    .map(value -> datatypeFormatter.formatValue(type, value))
+                    .collect(Collectors.toList());
 
             return ENUM_VALUESET_START + StringUtils.join(formattedValues, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
                     + ENUM_VALUESET_END;
@@ -479,7 +479,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
                 return datatype.compare(value, otherValue);
             } else {
-                return ObjectUtils.compare(value, otherValue);
+                return Comparator.nullsFirst(Comparator.<String> naturalOrder()).compare(value, otherValue);
             }
         }
 

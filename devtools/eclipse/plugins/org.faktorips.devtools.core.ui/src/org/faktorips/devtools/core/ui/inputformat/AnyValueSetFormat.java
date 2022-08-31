@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.inputformat;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.core.ui.inputformat.parse.StringLengthValueSetForm
 import org.faktorips.devtools.core.ui.inputformat.parse.UnrestrictedValueSetFormat;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
 
@@ -37,7 +37,7 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
     private StringLengthValueSetFormat stringLengthValueSetFormat;
 
     public AnyValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
-        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        super(IpsStringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         this.valueSetOwner = valueSetOwner;
         rangeValueSetFormat = new RangeValueSetFormat(valueSetOwner, uiPlugin);
         enumValueSetFormat = new EnumValueSetFormat(valueSetOwner, uiPlugin);
@@ -62,7 +62,7 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
         } else if (valueSet.isStringLength()) {
             return stringLengthValueSetFormat.formatInternal(valueSet);
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
             return stringLengthValueSetFormat;
         } else if (enumValueSetFormat.isResponsibleFor(stringToBeParsed)) {
             return enumValueSetFormat;
-        } else if (StringUtils.isEmpty(stringToBeParsed)) {
+        } else if (IpsStringUtils.isEmpty(stringToBeParsed)) {
             return unrestrictedValueSetFormat;
         } else {
             return null;

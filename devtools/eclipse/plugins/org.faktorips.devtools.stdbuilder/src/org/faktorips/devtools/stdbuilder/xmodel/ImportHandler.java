@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Handles the imports for generated java files. Imports can be added using {@link #add(String)}.
@@ -234,7 +234,7 @@ public class ImportHandler {
      * @param packageName the package name to test
      */
     private boolean isImplicitPackage(String packageName) {
-        return packageName.equals(JAVA_LANG_PACKAGE) || StringUtils.isEmpty(packageName) || isHomePackage(packageName);
+        return packageName.equals(JAVA_LANG_PACKAGE) || IpsStringUtils.isEmpty(packageName) || isHomePackage(packageName);
     }
 
     private boolean isHomePackage(String packageName) {

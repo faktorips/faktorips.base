@@ -14,8 +14,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.devtools.core.tableconversion.AbstractValueConverter;
@@ -64,7 +64,7 @@ public class GregorianCalendarValueConverter extends AbstractValueConverter {
             }
             try {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
-                Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
+                Date parseDate = DateUtils.parseDate((String)externalDataValue, dateFormat);
                 return DateUtil.dateToIsoDateString(parseDate);
             } catch (ParseException ignored) {
                 // generic error message is created outside of this block

@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
@@ -37,7 +37,7 @@ public abstract class XmlAbstractTestCase {
      * name as the test case class concatenated with suffix and the ending "+.xml".
      */
     public Document getTestDocument() {
-        return getTestDocument(StringUtils.EMPTY);
+        return getTestDocument(IpsStringUtils.EMPTY);
     }
 
     /**
@@ -63,7 +63,7 @@ public abstract class XmlAbstractTestCase {
     }
 
     public String getXmlResourceName() {
-        return getXmlResourceName(StringUtils.EMPTY);
+        return getXmlResourceName(IpsStringUtils.EMPTY);
     }
 
     /**

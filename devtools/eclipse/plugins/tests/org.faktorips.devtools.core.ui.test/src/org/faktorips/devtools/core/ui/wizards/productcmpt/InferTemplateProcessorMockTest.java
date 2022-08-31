@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -54,9 +54,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class InferTemplateProcessorMockTest {
 
     private static final String TEMPLATE_NAME = "templateName";
@@ -138,7 +138,6 @@ public class InferTemplateProcessorMockTest {
 
         when(templateGeneration.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getProperties()).thenReturn(ipsProjectProperties);
-        when(ipsProjectProperties.getInferredTemplateLinkThreshold()).thenReturn(Decimal.valueOf(1));
         when(ipsProjectProperties.getInferredTemplatePropertyValueThreshold()).thenReturn(Decimal.valueOf(8, 1));
 
         when(productCmpt1.getLatestProductCmptGeneration()).thenReturn(gen1);
@@ -321,7 +320,6 @@ public class InferTemplateProcessorMockTest {
                     return valueSet;
                 } else {
                     IValueSet mockValueSet = mock(IValueSet.class);
-                    when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
                     when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
                     return mockValueSet;
                 }

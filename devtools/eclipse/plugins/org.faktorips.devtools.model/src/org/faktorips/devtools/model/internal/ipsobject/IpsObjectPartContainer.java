@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsElement;
@@ -161,7 +160,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
                 return version.getUnqualifiedVersion();
             }
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
 
     }
 
@@ -378,7 +377,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Writes the version to an element
      */
     public void versionToXML(Element element) {
-        if (this instanceof IVersionControlledElement && StringUtils.isNotEmpty(sinceVersion)) {
+        if (this instanceof IVersionControlledElement && IpsStringUtils.isNotEmpty(sinceVersion)) {
             element.setAttribute(XML_ATTRIBUTE_VERSION, sinceVersion);
         }
     }
@@ -736,7 +735,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     }
 
     private void validateSinceVersionFormat(MessageList result) {
-        if (getIpsProject() != null && StringUtils.isNotEmpty(sinceVersion)) {
+        if (getIpsProject() != null && IpsStringUtils.isNotEmpty(sinceVersion)) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             boolean isCorrectFormat = versionProvider.isCorrectVersionFormat(sinceVersion);
             if (!isCorrectFormat) {
@@ -1216,7 +1215,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#isValidSinceVersion()
      */
     public boolean isValidSinceVersion() {
-        if (this instanceof IVersionControlledElement && StringUtils.isNotBlank(sinceVersion)) {
+        if (this instanceof IVersionControlledElement && IpsStringUtils.isNotBlank(sinceVersion)) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             return versionProvider.isCorrectVersionFormat(sinceVersion);
         } else {
@@ -1236,7 +1235,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * @see IVersionControlledElement#getSinceVersion()
      */
     public IVersion<?> getSinceVersion() {
-        if (StringUtils.isBlank(sinceVersion)) {
+        if (IpsStringUtils.isBlank(sinceVersion)) {
             return null;
         }
         IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();

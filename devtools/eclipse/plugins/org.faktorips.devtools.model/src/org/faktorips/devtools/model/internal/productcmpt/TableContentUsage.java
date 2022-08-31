@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -189,7 +190,7 @@ public class TableContentUsage extends AbstractSimplePropertyValue implements IT
         if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return true;
         } else {
-            return StringUtils.isEmpty(getTableContentName()) && !tsu.isMandatoryTableContent();
+            return IpsStringUtils.isEmpty(getTableContentName()) && !tsu.isMandatoryTableContent();
         }
     }
 

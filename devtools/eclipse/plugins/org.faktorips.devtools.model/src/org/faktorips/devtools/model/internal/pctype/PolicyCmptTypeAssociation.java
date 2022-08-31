@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
@@ -61,9 +61,9 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
      */
     private boolean sharedAssociation;
 
-    private String matchingAssociationSource = StringUtils.EMPTY;
+    private String matchingAssociationSource = IpsStringUtils.EMPTY;
 
-    private String matchingAssociationName = StringUtils.EMPTY;
+    private String matchingAssociationName = IpsStringUtils.EMPTY;
 
     private IPersistentAssociationInfo persistenceAssociationInfo;
 
@@ -134,7 +134,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     @Override
     public void setAssociationType(AssociationType newType) {
         if (newType.isCompositionDetailToMaster()) {
-            setSubsettedDerivedUnion(StringUtils.EMPTY);
+            setSubsettedDerivedUnion(IpsStringUtils.EMPTY);
             setDerivedUnionInternal(false);
             qualified = false;
             setMinCardinalityInternal(0);
@@ -155,7 +155,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IProductCmptTypeAssociation findMatchingProductCmptTypeAssociation(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(matchingAssociationName) || StringUtils.isEmpty(getMatchingAssociationSource())) {
+        if (IpsStringUtils.isEmpty(matchingAssociationName) || IpsStringUtils.isEmpty(getMatchingAssociationSource())) {
             return findDefaultMatchingProductCmptTypeAssociation(ipsProject);
         }
         IProductCmptType productCmptType = ipsProject.findProductCmptType(getMatchingAssociationSource());
@@ -252,7 +252,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public boolean hasInverseAssociation() {
-        return StringUtils.isNotEmpty(inverseAssociation);
+        return IpsStringUtils.isNotEmpty(inverseAssociation);
     }
 
     @Override
@@ -280,7 +280,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             return null;
         }
         List<IAssociation> associations = target.getAssociations();
-        if (StringUtils.isEmpty(searchedAssociation)) {
+        if (IpsStringUtils.isEmpty(searchedAssociation)) {
             return null;
         }
         for (IAssociation association : associations) {
@@ -494,7 +494,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     private boolean validateEmptyInverseAssociation(MessageList list, IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(inverseAssociation)) {
+        if (IpsStringUtils.isEmpty(inverseAssociation)) {
             // special check in case of subsetted derived union the inverse must be set if the
             // derived union has specified an inverse association
             if (isSubsetOfADerivedUnion()) {
@@ -504,7 +504,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                     // different validation error
                     return false;
                 }
-                if (StringUtils.isNotEmpty(subsettedDerivedUnion.getInverseAssociation())) {
+                if (IpsStringUtils.isNotEmpty(subsettedDerivedUnion.getInverseAssociation())) {
                     String text = Messages.PolicyCmptTypeAssociation_Association_msg_InverseAssociationMustNotBeEmptyIfDerivedUnionHasInverse;
                     list.add(new Message(
                             MSGCODE_SUBSETTED_DERIVED_UNION_INVERSE_MUST_BE_EXISTS_IF_INVERSE_DERIVED_UNION_EXISTS,
@@ -575,7 +575,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
                 // FIPS-85: shared associations does not have a inverse association so we do not
                 // have to validate further
                 return false;
-            } else if (StringUtils.isEmpty(inverseAssociation)) {
+            } else if (IpsStringUtils.isEmpty(inverseAssociation)) {
                 // inverse must always be set if type is detail to master (expect for shared
                 // inverse associations)
                 list.add(errorMessage);
@@ -619,7 +619,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private void validateMatchingAssociation(MessageList list, IIpsProject ipsProject) {
         if (!getPolicyCmptType().isConfigurableByProductCmptType()) {
-            if (StringUtils.isNotEmpty(getMatchingAssociationSource())) {
+            if (IpsStringUtils.isNotEmpty(getMatchingAssociationSource())) {
                 IProductCmptType matchingProdCmptType = ipsProject.findProductCmptType(getMatchingAssociationSource());
                 if (matchingProdCmptType == null) {
                     list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_INVALID_SOURCE,
@@ -640,7 +640,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             }
         }
         IProductCmptTypeAssociation matchingAssociation = findMatchingProductCmptTypeAssociation(ipsProject);
-        if (StringUtils.isNotEmpty(matchingAssociationSource) && StringUtils.isNotEmpty(matchingAssociationName)
+        if (IpsStringUtils.isNotEmpty(matchingAssociationSource) && IpsStringUtils.isNotEmpty(matchingAssociationName)
                 && matchingAssociation == null) {
             list.add(new Message(MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND,
                     MessageFormat.format(Messages.PolicyCmptTypeAssociation_error_matchingAssociatonNotFound,
@@ -715,16 +715,16 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         if (qualified) {
             newElement.setAttribute(PROPERTY_QUALIFIED, "" + qualified); //$NON-NLS-1$
         }
-        if (StringUtils.isNotEmpty(inverseAssociation)) {
+        if (IpsStringUtils.isNotEmpty(inverseAssociation)) {
             newElement.setAttribute(PROPERTY_INVERSE_ASSOCIATION, inverseAssociation);
         }
         if (sharedAssociation) {
             newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
         }
-        if (StringUtils.isNotEmpty(matchingAssociationName)) {
+        if (IpsStringUtils.isNotEmpty(matchingAssociationName)) {
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
         }
-        if (StringUtils.isNotEmpty(matchingAssociationSource)) {
+        if (IpsStringUtils.isNotEmpty(matchingAssociationSource)) {
             newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, getMatchingAssociationSource());
         }
         newElement.setAttribute(PROPERTY_CONFIGURABLE, Boolean.toString(isConfigurable()));

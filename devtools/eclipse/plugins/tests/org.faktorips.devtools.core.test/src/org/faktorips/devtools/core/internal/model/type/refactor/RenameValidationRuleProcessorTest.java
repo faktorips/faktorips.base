@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -104,7 +104,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
 
     @Test
     public void testValidateUserInputInvalid() {
-        validationRule.setMessageCode(StringUtils.EMPTY);
+        validationRule.setMessageCode(IpsStringUtils.EMPTY);
         ipsRenameProcessor.setNewName("noMsgCode");
         RefactoringStatus status = ipsRenameProcessor.validateUserInput(new NullProgressMonitor());
         assertFalse(status.isOK());

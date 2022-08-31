@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public abstract class NewProductDefinitionWizard extends ResizableWizard implements INewWizard {
 
@@ -185,7 +185,7 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
      */
     protected void loadDialogSettings(IDialogSettings settings) {
         String openEditorSetting = settings.get(NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
-        if (StringUtils.isNotEmpty(openEditorSetting)) {
+        if (IpsStringUtils.isNotEmpty(openEditorSetting)) {
             boolean openEditor = Boolean.parseBoolean(openEditorSetting);
             getPmo().setOpenEditor(openEditor);
         } else {

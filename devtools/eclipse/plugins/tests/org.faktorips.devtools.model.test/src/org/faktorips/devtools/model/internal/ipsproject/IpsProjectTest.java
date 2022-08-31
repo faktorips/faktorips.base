@@ -42,7 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -120,9 +120,9 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private static final String ROOT_NAME = "myRootName";
@@ -1678,7 +1678,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
             @Override
             protected String getConfiguredAdditionalAnnotations() {
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             }
 
             @Override
@@ -1741,7 +1741,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
             @Override
             protected String getConfiguredAdditionalAnnotations() {
-                return StringUtils.EMPTY;
+                return IpsStringUtils.EMPTY;
             }
 
             @Override

@@ -13,11 +13,11 @@ package org.faktorips.devtools.core.ui.editors;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * An abstract editor for timed objects.
@@ -35,7 +35,7 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
     @Override
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         super.init(site, input);
-        setContentDescription(StringUtils.EMPTY);
+        setContentDescription(IpsStringUtils.EMPTY);
     }
 
     /**

@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.extproperties;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.Element;
 
@@ -50,7 +50,7 @@ public abstract class EnumExtensionPropertyDefinition2<E extends Enum<E>> extend
             return defaultValue;
         }
         int qualifiedNameDelimiterPos = content.lastIndexOf('.');
-        String id = StringUtils.EMPTY;
+        String id = IpsStringUtils.EMPTY;
         if (qualifiedNameDelimiterPos < 0) {
             id = content;
         } else {

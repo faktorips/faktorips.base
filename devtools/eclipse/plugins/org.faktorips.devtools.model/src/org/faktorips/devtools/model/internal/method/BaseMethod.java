@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
@@ -143,7 +143,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
-        if (StringUtils.isEmpty(getName())) {
+        if (IpsStringUtils.isEmpty(getName())) {
             result.add(new Message(IBaseMethod.MSGCODE_NO_NAME, Messages.Method_msg_NameEmpty, Message.ERROR, this,
                     PROPERTY_NAME));
         } else {

@@ -15,7 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;
@@ -684,7 +685,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
     public void testGetLocalizedContentForEnvironmentLocale() {
         LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "foo");
         LocalizedString expectedUs = new LocalizedString(Locale.US, "jee"); // environment locale
-        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY);
 
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(expectedEn);
@@ -709,7 +710,7 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedContentFirstNonEmptyValue() {
-        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY);
         LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, "foo");
 
         InternationalStringValue internationalStringValue = new InternationalStringValue();
@@ -721,14 +722,14 @@ public class MultiLanguageSupportTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetLocalizedContentNoValueDefined() {
-        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
-        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
+        LocalizedString expectedDe = new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY);
+        LocalizedString expectedEn = new LocalizedString(Locale.ENGLISH, IpsStringUtils.EMPTY);
 
         InternationalStringValue internationalStringValue = new InternationalStringValue();
         internationalStringValue.getContent().add(expectedDe);
         internationalStringValue.getContent().add(expectedEn);
 
-        assertEquals(StringUtils.EMPTY, support.getLocalizedContent(internationalStringValue, ipsProject));
+        assertEquals(IpsStringUtils.EMPTY, support.getLocalizedContent(internationalStringValue, ipsProject));
     }
 
     private void deleteLocalizedLabel() {

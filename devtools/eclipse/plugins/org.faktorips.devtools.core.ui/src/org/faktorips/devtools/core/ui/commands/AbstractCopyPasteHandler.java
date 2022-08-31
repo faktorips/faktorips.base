@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IResource;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 public abstract class AbstractCopyPasteHandler extends AbstractHandler {
@@ -84,7 +84,7 @@ public abstract class AbstractCopyPasteHandler extends AbstractHandler {
             for (String element : copiedResourceLinks) {
                 strReferences += strReferences.length() > 0 ? "," + element : element; //$NON-NLS-1$
             }
-            if (StringUtils.isNotEmpty(strReferences)) {
+            if (IpsStringUtils.isNotEmpty(strReferences)) {
                 result.add(ARCHIVE_LINK + strReferences);
             }
         }

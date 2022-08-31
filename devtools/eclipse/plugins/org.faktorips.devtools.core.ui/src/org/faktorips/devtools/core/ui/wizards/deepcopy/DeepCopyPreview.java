@@ -18,7 +18,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
@@ -37,6 +36,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class DeepCopyPreview {
 
@@ -237,7 +237,7 @@ public class DeepCopyPreview {
      */
     String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
         if (targetBase == null || !targetBase.getRoot().exists()) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
         String toAppend = subPath.toString().replace('/', IIpsPackageFragment.SEPARATOR);
@@ -321,7 +321,7 @@ public class DeepCopyPreview {
         String searchPattern = presentationModel.getSearchInput();
         String replaceText = presentationModel.getReplaceInput();
         String newNameReplace = newName;
-        if (!StringUtils.EMPTY.equals(replaceText) && !StringUtils.EMPTY.equals(searchPattern)) {
+        if (!IpsStringUtils.EMPTY.equals(replaceText) && !IpsStringUtils.EMPTY.equals(searchPattern)) {
 
             Pattern pattern = presentationModel.getSearchPattern();
             try {

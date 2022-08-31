@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -186,11 +186,11 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     private static final void retrieveEnumValues(String type,
             List<String> discreteValues,
             IConfigurationElement element) {
-        if (!StringUtils.isEmpty(type) && "enum".equals(type) && "discreteValues".equals(element.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!IpsStringUtils.isEmpty(type) && "enum".equals(type) && "discreteValues".equals(element.getName())) { //$NON-NLS-1$ //$NON-NLS-2$
             IConfigurationElement[] values = element.getChildren();
             for (IConfigurationElement value2 : values) {
                 String value = value2.getAttribute("value"); //$NON-NLS-1$
-                if (!StringUtils.isEmpty(value)) {
+                if (!IpsStringUtils.isEmpty(value)) {
                     discreteValues.add(value);
                 }
             }
@@ -208,7 +208,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
         if ("extensionPoint".equals(type)) { //$NON-NLS-1$
 
             String extensionPointId = element.getAttribute("extensionPointId"); //$NON-NLS-1$
-            if (StringUtils.isEmpty(extensionPointId)) {
+            if (IpsStringUtils.isEmpty(extensionPointId)) {
                 logger.log(new IpsStatus("If the type attribute of the builder set property " + element.getName() //$NON-NLS-1$
                         + " of the builder set " //$NON-NLS-1$
                         + builderSetId
@@ -231,7 +231,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             IConfigurationElement[] values = element.getChildren();
             for (IConfigurationElement value : values) {
                 String level = value.getAttribute("value"); //$NON-NLS-1$
-                if (!StringUtils.isEmpty(level)) {
+                if (!IpsStringUtils.isEmpty(level)) {
                     jdkComplianceLevelList.add(level);
                 }
             }
@@ -246,24 +246,24 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
             List<String> discreteValues) {
 
         String classValue = element.getAttribute("class"); //$NON-NLS-1$
-        boolean classValueSpecified = !StringUtils.isEmpty(classValue);
+        boolean classValueSpecified = !IpsStringUtils.isEmpty(classValue);
 
         String name = element.getAttribute("name"); //$NON-NLS-1$
-        if (!classValueSpecified && StringUtils.isEmpty(name)) {
+        if (!classValueSpecified && IpsStringUtils.isEmpty(name)) {
             logger.log(new IpsStatus("The required attribute \"name\" of the builder set property " + element.getName() //$NON-NLS-1$
                     + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         properties.put("name", name); //$NON-NLS-1$
         String label = element.getAttribute("label"); //$NON-NLS-1$
-        if (!classValueSpecified && StringUtils.isEmpty(label)) {
+        if (!classValueSpecified && IpsStringUtils.isEmpty(label)) {
             logger.log(new IpsStatus("The required attribute \"label\" of the builder set property " + element.getName() //$NON-NLS-1$
                     + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;
         }
         properties.put("label", label); //$NON-NLS-1$
         String type = element.getAttribute("type"); //$NON-NLS-1$
-        if (!classValueSpecified && StringUtils.isEmpty(type)) {
+        if (!classValueSpecified && IpsStringUtils.isEmpty(type)) {
             logger.log(new IpsStatus("The required attribute \"type\" of the builder set property " + element.getName() //$NON-NLS-1$
                     + " of the builder set " + builderSetId + " is missing.")); //$NON-NLS-1$ //$NON-NLS-2$
             return false;

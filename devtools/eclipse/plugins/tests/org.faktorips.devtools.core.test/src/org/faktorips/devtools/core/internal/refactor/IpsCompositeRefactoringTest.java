@@ -13,7 +13,7 @@ package org.faktorips.devtools.core.internal.refactor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -38,6 +38,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -72,15 +73,22 @@ public class IpsCompositeRefactoringTest {
 
     private IpsCompositeRefactoring ipsCompositeRefactoring;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(ipsElement1.getIpsProject()).thenReturn(ipsProject);
         when(ipsElement2.getIpsProject()).thenReturn(ipsProject);
         when(refactoring1.toLtkRefactoring()).thenReturn(ltkRefactoring1);
         when(refactoring2.toLtkRefactoring()).thenReturn(ltkRefactoring2);
         ipsCompositeRefactoring = new TestIpsCompositeRefactoring(new LinkedHashSet<>(Arrays.asList(
                 ipsElement1, ipsElement2)));
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test(expected = IllegalArgumentException.class)

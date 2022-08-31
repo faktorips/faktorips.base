@@ -24,9 +24,9 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ProductCmptLinkContainerUtilTest {
     @Mock
     private IProductCmptLinkContainer linkContainer;
@@ -63,7 +63,6 @@ public class ProductCmptLinkContainerUtilTest {
         setUpSrcFileMutable(true);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
         IProductCmptType prodCmptType = mock(IProductCmptType.class);
-        when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
         when(prodCmptType.isSubtypeOrSameType(prodCmptType, ipsProject)).thenReturn(true);
         when(target.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
         when(association.findTarget(ipsProject)).thenReturn(prodCmptType);
@@ -80,7 +79,6 @@ public class ProductCmptLinkContainerUtilTest {
         setUpSrcFileMutable(true);
         when(linkContainer.isContainerFor(association)).thenReturn(true);
         IProductCmptType prodCmptType = mock(IProductCmptType.class);
-        when(prodCmpt.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
         when(prodCmptType.isSubtypeOrSameType(prodCmptType, ipsProject)).thenReturn(true);
         when(target.findProductCmptType(ipsProject)).thenReturn(prodCmptType);
         when(association.findTarget(ipsProject)).thenReturn(prodCmptType);
@@ -98,7 +96,6 @@ public class ProductCmptLinkContainerUtilTest {
     @Test
     public void testChangingOverTimeMismatch() {
         setUpSrcFileMutable(true);
-        when(linkContainer.isContainerFor(association)).thenReturn(false);
         assertCannotCreateLink();
     }
 

@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -173,7 +173,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isUsingTemplate() {
-        return StringUtils.isNotEmpty(getTemplate());
+        return IpsStringUtils.isNotEmpty(getTemplate());
     }
 
     @Override
@@ -183,7 +183,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public void setTemplate(String newTemplate) {
-        if (StringUtils.isEmpty(newTemplate)) {
+        if (IpsStringUtils.isEmpty(newTemplate)) {
             resetTemplateStatus();
         }
         String oldTemplate = template;
@@ -314,7 +314,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) {
         Set<IDependency> dependencySet = new HashSet<>();
 
-        if (!StringUtils.isEmpty(productCmptType)) {
+        if (!IpsStringUtils.isEmpty(productCmptType)) {
             IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
                     new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencySet.add(dependency);
@@ -379,7 +379,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
-        if (StringUtils.isNotEmpty(template)) {
+        if (IpsStringUtils.isNotEmpty(template)) {
             element.setAttribute(PROPERTY_TEMPLATE, template);
         }
     }

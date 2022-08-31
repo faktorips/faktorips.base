@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.pctype;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Group composite to edit the association derived union properties.
@@ -185,7 +185,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         public void setSubset(boolean newValue) {
             subset = newValue;
             if (!subset || derivedUnionCombo.getItemCount() == 0) {
-                association.setSubsettedDerivedUnion(StringUtils.EMPTY);
+                association.setSubsettedDerivedUnion(IpsStringUtils.EMPTY);
             } else {
                 association.setSubsettedDerivedUnion(derivedUnionCombo.getItem(0));
                 if (association instanceof IProductCmptTypeAssociation) {
@@ -216,7 +216,7 @@ public class AssociationDerivedUnionGroup extends Composite {
 
             // set derived union candidates
             String currentTarget = association.getTarget();
-            if (StringUtils.isEmpty(currentTarget)) {
+            if (IpsStringUtils.isEmpty(currentTarget)) {
                 setDerivedUnions(derivedUnions.toArray(new String[derivedUnions.size()]));
                 derivedUnionsInitialized = true;
                 return;
@@ -254,7 +254,7 @@ public class AssociationDerivedUnionGroup extends Composite {
         }
 
         public boolean isConstrainEnabled() {
-            if (StringUtils.isEmpty(association.getType().getSupertype())) {
+            if (IpsStringUtils.isEmpty(association.getType().getSupertype())) {
                 // only disable the checkbox when it's not checked
                 // because there is no way to remove the mark.
                 if (!association.isConstrain()) {

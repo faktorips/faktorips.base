@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.testcasetype;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -119,7 +119,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public ValueDatatype findDatatype(IIpsProject project) {
-        if (StringUtils.isEmpty(attribute)) {
+        if (IpsStringUtils.isEmpty(attribute)) {
             return project.findValueDatatype(datatype);
         }
         IPolicyCmptTypeAttribute attr = findAttribute(project);
@@ -159,7 +159,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public IPolicyCmptTypeAttribute findAttribute(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(attribute)) {
+        if (IpsStringUtils.isEmpty(attribute)) {
             return null;
         }
         // select the policy cmpt type the searching of the attribute will be started (lowest type
@@ -170,7 +170,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         // because maybe the test parameter points to a abstract (general)
         // policy cmpt type and this attribute is a attribute of a subclass.
         IPolicyCmptType pcType = null;
-        if (StringUtils.isEmpty(policyCmptType)) {
+        if (IpsStringUtils.isEmpty(policyCmptType)) {
             pcType = ((TestPolicyCmptTypeParameter)getParent()).findPolicyCmptType(ipsProject);
         } else {
             pcType = ipsProject.findPolicyCmptType(policyCmptType);
@@ -246,7 +246,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
 
     @Override
     public boolean isBasedOnModelAttribute() {
-        return !StringUtils.isEmpty(attribute) && StringUtils.isEmpty(datatype);
+        return !IpsStringUtils.isEmpty(attribute) && IpsStringUtils.isEmpty(datatype);
     }
 
     @Override
@@ -254,7 +254,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         super.validateThis(messageList, ipsProject);
 
         // check if the name is not empty
-        if (StringUtils.isEmpty(getName())) {
+        if (IpsStringUtils.isEmpty(getName())) {
             String text = Messages.TestAttribute_TestAttribute_Error_NameIsEmpty;
             Message msg = new Message(MSGCODE_ATTRIBUTE_NAME_IS_EMPTY, text, Message.ERROR, this,
                     IIpsElement.PROPERTY_NAME);
@@ -271,7 +271,7 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
         }
 
         // check if the attribute and the datatype are set together
-        if (StringUtils.isNotEmpty(attribute) && StringUtils.isNotEmpty(datatype)) {
+        if (IpsStringUtils.isNotEmpty(attribute) && IpsStringUtils.isNotEmpty(datatype)) {
             String text = Messages.TestAttribute_Error_AttributeAndDatatypeGiven;
             Message msg = new Message(MSGCODE_DATATYPE_AND_ATTRIBUTE_GIVEN, text, Message.ERROR, this,
                     ITestAttribute.PROPERTY_DATATYPE);

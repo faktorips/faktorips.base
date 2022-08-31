@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.productcmpt;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -297,7 +296,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
             ArgumentCheck.isInstanceOf(container, IProductCmptLinkContainer.class);
             IProductCmptLinkContainer linkContainer = (IProductCmptLinkContainer)container;
             for (IProductCmptLink link : linkContainer.getLinksAsList(association)) {
-                if (StringUtils.equals(target, link.getTarget())) {
+                if (Objects.equals(target, link.getTarget())) {
                     return link;
                 }
             }

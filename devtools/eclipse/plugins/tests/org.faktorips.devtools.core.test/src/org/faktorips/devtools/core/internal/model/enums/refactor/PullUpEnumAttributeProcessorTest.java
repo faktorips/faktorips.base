@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,9 +49,11 @@ public class PullUpEnumAttributeProcessorTest {
     @Mock
     private IEnumAttribute enumAttribute;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
         when(enumAttribute.getEnumType()).thenReturn(enumType);
         when(enumAttribute.getName()).thenReturn(ENUM_ATTRIBUTE_NAME);
@@ -60,6 +63,11 @@ public class PullUpEnumAttributeProcessorTest {
 
         pullUpEnumAttributeProcessor = new PullUpEnumAttributeProcessor(enumAttribute);
         pullUpEnumAttributeProcessor.setTarget(superEnumType);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

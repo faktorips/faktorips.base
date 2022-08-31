@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Class to parse and format an {@link IRangeValueSet}.
@@ -48,7 +49,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         if (value.isRange()) {
             return formatRangeValueSet(value);
         } else {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
     }
 
@@ -77,7 +78,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     protected IValueSet parseInternal(String stringToBeParsed) {
-        if (StringUtils.isEmpty(stringToBeParsed)) {
+        if (IpsStringUtils.isEmpty(stringToBeParsed)) {
             return getUnlimitedRangeSet();
         } else {
             return parseNonEmptyString(stringToBeParsed);
@@ -96,8 +97,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private IValueSet parseValueSet(String stringToBeParsed, boolean containsNull) {
-        String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
-        if (StringUtils.isBlank(stringWithoutBrackets)) {
+        String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, IpsStringUtils.EMPTY);
+        if (IpsStringUtils.isBlank(stringWithoutBrackets)) {
             return RangeValueSet.empty(getValueSetOwner(), getNextPartId());
         }
         String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
@@ -123,7 +124,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     protected String parseValue(String value) {
-        if (StringUtils.isEmpty(value)) {
+        if (IpsStringUtils.isEmpty(value)) {
             return null;
         } else {
             return super.parseValue(value);

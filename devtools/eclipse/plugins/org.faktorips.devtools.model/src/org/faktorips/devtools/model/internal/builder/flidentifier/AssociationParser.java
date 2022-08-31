@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
@@ -81,7 +81,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     private void addAssociationProposals(IAssociation association,
             String prefix,
             IdentifierProposalCollector collector) {
-        collector.addMatchingNode(getText(association, StringUtils.EMPTY), getDisplayText(association),
+        collector.addMatchingNode(getText(association, IpsStringUtils.EMPTY), getDisplayText(association),
                 getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
         collector.addMatchingNode(getText(association, INDEX_PROPOSAL), getIndexDisplayText(association),
                 getIndexDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
@@ -107,7 +107,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     String getDisplayText(IAssociation association) {
-        return getText(association, StringUtils.EMPTY) + getAssociationTarget(association, association.is1ToMany());
+        return getText(association, IpsStringUtils.EMPTY) + getAssociationTarget(association, association.is1ToMany());
 
     }
 

@@ -11,8 +11,7 @@
 package org.faktorips.datatype;
 
 import java.util.Arrays;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 
 public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
 
@@ -37,7 +36,7 @@ public class DefaultGenericEnumDatatype extends GenericEnumDatatype {
     public Object getValueByName(String name) {
         return Arrays.stream(getAllValueIds(false))
                 .map(this::getValue)
-                .filter(v -> StringUtils.equals(name, getNameFromValue(v)))
+                .filter(v -> Objects.equals(name, getNameFromValue(v)))
                 .findFirst()
                 .orElse(null);
     }

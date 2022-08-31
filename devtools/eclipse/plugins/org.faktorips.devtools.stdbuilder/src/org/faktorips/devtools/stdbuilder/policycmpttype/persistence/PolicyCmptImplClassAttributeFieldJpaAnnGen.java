@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
@@ -53,7 +53,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             List<String> attributesToAppend = new ArrayList<>();
             attributesToAppend.add("name=\"" + tableColumnName + "\"");
 
-            if (StringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
+            if (IpsStringUtils.isEmpty(jpaAttributeInfo.getSqlColumnDefinition())) {
                 attributesToAppend.add("nullable = " + isNullable);
                 attributesToAppend.add("unique = " + isUnique);
                 addDatatypeDendingJpaAttributes(attributesToAppend, jpaAttributeInfo, datatype);
@@ -97,7 +97,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
      * <code> Converter(name = "gender", converterClass = example.Gender) Convert("gender") </code>
      */
     private void createConverterAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
-        if (StringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
+        if (IpsStringUtils.isEmpty(jpaAttributeInfo.getConverterQualifiedClassName())) {
             return;
         }
         IPersistenceProvider persistenceProviderImpl = getPersistenceProvider(jpaAttributeInfo.getIpsProject());

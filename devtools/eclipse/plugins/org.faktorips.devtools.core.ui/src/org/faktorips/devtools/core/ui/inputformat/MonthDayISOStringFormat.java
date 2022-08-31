@@ -15,9 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Format for time input. Maps a {@link Locale} specific time string to the ISO time format (also
@@ -34,7 +34,7 @@ public class MonthDayISOStringFormat extends AbstractInputFormat<String> {
     }
 
     public static MonthDayISOStringFormat newInstance() {
-        return new MonthDayISOStringFormat(StringUtils.EMPTY, IpsPlugin.getDefault()
+        return new MonthDayISOStringFormat(IpsStringUtils.EMPTY, IpsPlugin.getDefault()
                 .getIpsPreferences().getDatatypeFormattingLocale());
     }
 
@@ -67,7 +67,7 @@ public class MonthDayISOStringFormat extends AbstractInputFormat<String> {
     protected void initFormat(Locale locale) {
         String pattern = ((SimpleDateFormat)SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, locale))
                 .toPattern();
-        String monthDayPattern = pattern.replaceAll("[yY]*", StringUtils.EMPTY); //$NON-NLS-1$
+        String monthDayPattern = pattern.replaceAll("[yY]*", IpsStringUtils.EMPTY); //$NON-NLS-1$
         localFormat = new SimpleDateFormat(monthDayPattern, locale);
     }
 }

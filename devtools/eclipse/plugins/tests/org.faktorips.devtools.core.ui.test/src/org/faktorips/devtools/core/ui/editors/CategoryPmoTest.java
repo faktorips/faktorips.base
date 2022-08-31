@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -51,20 +52,32 @@ public class CategoryPmoTest {
     @Mock
     private IpsModel ipsModel;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     private List<IProductCmptCategory> categories;
+
+    private AutoCloseable openMocks;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         categories = Arrays.asList(category1, category2, category3);
 
         when(category1.getName()).thenReturn("category1");
         when(category2.getName()).thenReturn("category2");
         when(category3.getName()).thenReturn("category3");
 
+        when(property.getIpsProject()).thenReturn(ipsProject);
         when(property.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
         when(property.getIpsModel()).thenReturn(ipsModel);
+        when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(productCmptType.findCategories(any(IIpsProject.class))).thenReturn(categories);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test

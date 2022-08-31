@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.deepcopy;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStruct
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
@@ -160,7 +160,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
             } else {
                 packageName = productCmptReference.getProductCmpt().getIpsPackageFragment().getName();
             }
-            if (StringUtils.isEmpty(packageName)) {
+            if (IpsStringUtils.isEmpty(packageName)) {
                 packageName = ""; //$NON-NLS-1$
             }
             return " - " + packageName; //$NON-NLS-1$

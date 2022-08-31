@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.policycmpttype;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.plugin.IpsValidation;
 import org.faktorips.devtools.model.plugin.IpsValidationTask;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class NewPcTypePage extends NewTypePage {
 
@@ -168,7 +168,7 @@ public class NewPcTypePage extends NewTypePage {
         @Override
         public Message execute(IIpsProject ipsProject) {
             // Super-type may not be set after all
-            if (StringUtils.isEmpty(getSuperType())) {
+            if (IpsStringUtils.isEmpty(getSuperType())) {
                 return null;
             }
 

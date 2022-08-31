@@ -11,8 +11,7 @@
 package org.faktorips.datatype;
 
 import java.util.Arrays;
-
-import org.apache.commons.lang.StringUtils;
+import java.util.Objects;
 
 /**
  * A value datatype representing an enumeration of values.
@@ -32,7 +31,7 @@ public interface EnumDatatype extends NamedDatatype {
     default Object getValueByName(String name) {
         return Arrays.stream(getAllValueIds(false))
                 .map(this::getValue)
-                .filter(v -> StringUtils.equals(getValueName(valueToString(v)), name))
+                .filter(v -> Objects.equals(getValueName(valueToString(v)), name))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }

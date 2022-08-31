@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 import org.faktorips.devtools.model.IIpsModel;
@@ -39,6 +38,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The presentation model object for the {@link NewProductWizard}.
@@ -79,9 +79,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private final Set<IProductCmptType> baseTypes = new TreeSet<>(new BaseTypeComparator());
 
-    private String kindId = StringUtils.EMPTY;
+    private String kindId = IpsStringUtils.EMPTY;
 
-    private String versionId = StringUtils.EMPTY;
+    private String versionId = IpsStringUtils.EMPTY;
 
     private IProductCmpt contextProductCmpt = null;
 
@@ -97,7 +97,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private IProductCmptTypeAssociation addToAssociation;
 
-    private String runtimeId = StringUtils.EMPTY;
+    private String runtimeId = IpsStringUtils.EMPTY;
 
     private boolean template = false;
 
@@ -181,7 +181,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             }
             String superType = ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_SUPERTYPE);
             IIpsSrcFile superTypeIpsSrcFile = null;
-            if (StringUtils.isNotEmpty(superType)) {
+            if (IpsStringUtils.isNotEmpty(superType)) {
                 superTypeIpsSrcFile = ipsProject
                         .findIpsSrcFile(new QualifiedNameType(superType, IpsObjectType.PRODUCT_CMPT_TYPE));
             }
@@ -396,14 +396,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
                 setRuntimeId(ipsProject.getProductCmptNamingStrategy().getUniqueRuntimeId(ipsProject, getName()));
             }
         } catch (IllegalArgumentException e) {
-            setRuntimeId(StringUtils.EMPTY);
+            setRuntimeId(IpsStringUtils.EMPTY);
         }
     }
 
     @Override
     public String getName() {
-        if (StringUtils.isEmpty(kindId)) {
-            return StringUtils.EMPTY;
+        if (IpsStringUtils.isEmpty(kindId)) {
+            return IpsStringUtils.EMPTY;
         } else {
             return getIpsProject().getProductCmptNamingStrategy().getProductCmptName(kindId, versionId);
         }

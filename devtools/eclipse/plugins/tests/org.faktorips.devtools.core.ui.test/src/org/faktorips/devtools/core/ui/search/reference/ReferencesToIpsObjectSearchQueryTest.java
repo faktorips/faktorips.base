@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.ui.search.reference;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anySet;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -37,6 +37,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -113,9 +114,11 @@ public class ReferencesToIpsObjectSearchQueryTest {
     @Mock
     private IDependencyDetail detail2;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void initSrcFilesSetUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
 
         when(prodCmpt.getIpsProject()).thenReturn(proj);
         when(prodCmpt.getQualifiedNameType()).thenReturn(prodCmptQualifiedNameType);
@@ -136,7 +139,11 @@ public class ReferencesToIpsObjectSearchQueryTest {
 
         when(prodCmptGeneration1.getIpsObject()).thenReturn(object1);
         when(prodCmptGeneration2.getIpsObject()).thenReturn(object1);
+    }
 
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     private void initProjectSetUp() {
@@ -224,7 +231,6 @@ public class ReferencesToIpsObjectSearchQueryTest {
         assertTrue(resultFindReferencingIpsObjTypes.contains(object1));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testFindReferencingIpsObjTypes_OtherMethods() {
         List<IIpsSrcFile> ipsScrFiles = new ArrayList<>();

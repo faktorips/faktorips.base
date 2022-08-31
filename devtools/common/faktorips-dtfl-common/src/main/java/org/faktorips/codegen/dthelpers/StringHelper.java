@@ -10,7 +10,7 @@
 
 package org.faktorips.codegen.dthelpers;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.StringDatatype;

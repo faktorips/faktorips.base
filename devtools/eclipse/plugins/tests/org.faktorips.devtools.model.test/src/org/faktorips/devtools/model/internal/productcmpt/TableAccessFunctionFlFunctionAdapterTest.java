@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class TableAccessFunctionFlFunctionAdapterTest {
 
     private static final String MY_DATATYPE = "myDatatype";
@@ -64,13 +64,11 @@ public class TableAccessFunctionFlFunctionAdapterTest {
     @Before
     public void setUp() {
         ITableStructure tableStructure = mock(ITableStructure.class);
-        when(tableStructure.getIpsProject()).thenReturn(ipsProject2);
         when(key.getTableStructure()).thenReturn(tableStructure);
         IKeyItem keyItem = mock(IKeyItem.class);
         when(key.getKeyItems()).thenReturn(new IKeyItem[] { keyItem });
         when(keyItem.getDatatype()).thenReturn(MY_DATATYPE);
         when(ipsProject1.findValueDatatype(MY_DATATYPE)).thenReturn(datatype1);
-        when(ipsProject2.findValueDatatype(MY_DATATYPE)).thenReturn(datatype2);
 
         fct = new TableAccessFunction(key, column);
         tableAccessFunctionFlFunctionAdapter = new TableAccessFunctionFlFunctionAdapter(TABLE_CONTENTS_NAME, fct,

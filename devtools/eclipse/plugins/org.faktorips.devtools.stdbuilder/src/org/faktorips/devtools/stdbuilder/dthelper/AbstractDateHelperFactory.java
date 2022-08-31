@@ -10,12 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.dthelper;
 
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.datatype.Datatype;
@@ -27,31 +24,22 @@ public abstract class AbstractDateHelperFactory<T extends ValueDatatype> impleme
 
     private final Class<T> datatypeClass;
 
-    private final LoadingCache<CacheKey<T>, DatatypeHelper> datatypeHelperCache;
+    private final Map<CacheKey<T>, DatatypeHelper> datatypeHelperCache;
 
     public AbstractDateHelperFactory(Class<T> datatypeClass) {
         super();
         this.datatypeClass = datatypeClass;
-        datatypeHelperCache = CacheBuilder.newBuilder().build(new CacheLoader<CacheKey<T>, DatatypeHelper>() {
-
-            @Override
-            public DatatypeHelper load(CacheKey<T> key) throws Exception {
-                return createDatatypeHelper(key.datatype, key.variant);
-            }
-
-        });
+        datatypeHelperCache = new ConcurrentHashMap<>();
     }
 
     @Override
     public DatatypeHelper createDatatypeHelper(Datatype datatype, StandardBuilderSet builderSet) {
         ArgumentCheck.isInstanceOf(datatype, datatypeClass);
-        try {
-            @SuppressWarnings("unchecked")
-            T castedDatatype = (T)datatype;
-            return datatypeHelperCache.get(new CacheKey<>(castedDatatype, builderSet.getLocalDateHelperVariant()));
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        @SuppressWarnings("unchecked")
+        T castedDatatype = (T)datatype;
+        return datatypeHelperCache.computeIfAbsent(
+                new CacheKey<>(castedDatatype, builderSet.getLocalDateHelperVariant()),
+                key -> createDatatypeHelper(key.datatype, key.variant));
     }
 
     abstract DatatypeHelper createDatatypeHelper(T datatype, LocalDateHelperVariant variant);

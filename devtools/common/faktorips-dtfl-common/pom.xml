@@ -28,7 +28,7 @@
                             !edu.umd.cs.findbugs.*,
                             org.faktorips.*,
                             javax.xml.*,
-                            org.apache.commons.lang;version="[2.6,2.6]"
+                            org.apache.commons.text;version="[1.9,1.9]"
                         </Import-Package>
                         <Export-Package>
                         	org.faktorips.codegen,
@@ -53,6 +53,10 @@
             <artifactId>faktorips-util</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
             <scope>provided</scope>
@@ -74,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
+            <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

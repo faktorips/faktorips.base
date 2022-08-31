@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.internal.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.Messages;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Class to parse and format an {@link UnrestrictedValueSet}.
@@ -30,7 +30,7 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     protected String getNullPresentationInValueSet() {
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     @Override

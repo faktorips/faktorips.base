@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -35,9 +34,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ProductCmptGenerationToTypeDeltaTest {
 
     @Mock
@@ -86,11 +85,11 @@ public class ProductCmptGenerationToTypeDeltaTest {
         cmptLinks.add(staticLink2);
         when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);
 
-        setUpLink(link1, "assoc1", gen, target1);
-        setUpLink(link2, "assoc2", gen, target2);
-        setUpLink(link3, "assoc2", gen, target3);
-        setUpLink(staticLink1, "staticAssociation", prodCmpt, target1);
-        setUpLink(staticLink2, "staticAssociation", prodCmpt, target2);
+        setUpLink(link1, "assoc1", gen);
+        setUpLink(link2, "assoc2", gen);
+        setUpLink(link3, "assoc2", gen);
+        setUpLink(staticLink1, "staticAssociation", prodCmpt);
+        setUpLink(staticLink2, "staticAssociation", prodCmpt);
 
         doReturn(type).when(delta).getProductCmptType();
         doReturn(ipsProject).when(delta).getIpsProject();
@@ -105,11 +104,9 @@ public class ProductCmptGenerationToTypeDeltaTest {
 
     private void setUpLink(IProductCmptLink link,
             String association,
-            IProductCmptLinkContainer container,
-            IProductCmpt target) {
+            IProductCmptLinkContainer container) {
         when(link.getAssociation()).thenReturn(association);
         when(link.getProductCmptLinkContainer()).thenReturn(container);
-        when(link.findTarget(any(IIpsProject.class))).thenReturn(target);
         when(link.getTarget()).thenReturn("anyTargetName");
     }
 
@@ -126,7 +123,6 @@ public class ProductCmptGenerationToTypeDeltaTest {
     @Test
     public void testChangingOverTimeMismatch() {
         when(gen.isContainerFor(assoc1)).thenReturn(false);
-        when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
                 .forClass(LinkChangingOverTimeMismatchEntry.class);
 
@@ -139,7 +135,6 @@ public class ProductCmptGenerationToTypeDeltaTest {
     @Test
     public void testChangingOverTimeMismatch2() {
         when(gen.isContainerFor(assoc2)).thenReturn(false);
-        when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
                 .forClass(LinkChangingOverTimeMismatchEntry.class);
 
@@ -152,7 +147,6 @@ public class ProductCmptGenerationToTypeDeltaTest {
 
     @Test
     public void testChangingOverTimeMismatchStaticAssociation() {
-        when(gen.isContainerFor(staticAssociation)).thenReturn(true);
         when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(false);
         ArgumentCaptor<LinkChangingOverTimeMismatchEntry> captor = ArgumentCaptor
                 .forClass(LinkChangingOverTimeMismatchEntry.class);

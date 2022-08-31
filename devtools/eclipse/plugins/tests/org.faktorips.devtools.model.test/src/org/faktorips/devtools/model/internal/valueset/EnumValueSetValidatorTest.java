@@ -13,21 +13,19 @@ package org.faktorips.devtools.model.internal.valueset;
 import static org.faktorips.testsupport.IpsMatchers.hasInvalidObject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
-import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnumValueSetValidatorTest {
 
     private static final String ANY_VALUE = "anyValue";
@@ -56,9 +54,6 @@ public class EnumValueSetValidatorTest {
 
     @Test
     public void testValidate_MSGCODE_UNKNOWN_DATATYPE() throws Exception {
-        when(enumValueSet.findValueDatatype(any(IIpsProject.class))).thenReturn(datatype);
-        when(datatype.isPrimitive()).thenReturn(true);
-        when(enumValueSet.isContainsNull()).thenReturn(true);
 
         EnumValueSetValidator enumValueSetValidator = new EnumValueSetValidator(enumValueSet, owner, null);
         MessageList messageList = enumValueSetValidator.validate();

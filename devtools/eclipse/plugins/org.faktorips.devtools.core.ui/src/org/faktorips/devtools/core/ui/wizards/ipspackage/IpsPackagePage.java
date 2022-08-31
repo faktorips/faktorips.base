@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.ipspackage;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -54,6 +53,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The page of the NewIpsPackageWizard.
@@ -220,7 +220,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
                 return path.substring(index + 1);
             }
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     /**

@@ -11,10 +11,10 @@ package org.faktorips.codegen.dthelpers;
 
 import java.util.Currency;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.CurrencyDatatype;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * {@link DatatypeHelper} for {@link CurrencyDatatype}.
@@ -27,7 +27,7 @@ public class CurrencyHelper extends AbstractDatatypeHelper {
 
     @Override
     public JavaCodeFragment newInstance(String value) {
-        if (StringUtils.isEmpty(value)) {
+        if (IpsStringUtils.isEmpty(value)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -45,7 +45,7 @@ public class CurrencyHelper extends AbstractDatatypeHelper {
 
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
-        if (StringUtils.isEmpty(expression)) {
+        if (IpsStringUtils.isEmpty(expression)) {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();

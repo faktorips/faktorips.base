@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
@@ -55,7 +55,7 @@ public class ChangingOverTimePropertyValidator {
      *            possibly new validation message
      */
     public void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
-        if (productCmptType != null && !StringUtils.isEmpty(property.getName())) {
+        if (productCmptType != null && !IpsStringUtils.isEmpty(property.getName())) {
             if (!productCmptType.isChangingOverTime() && property.isChangingOverTime()) {
                 String changingOverTimePluralName = IIpsModelExtensions.get().getModelPreferences()
                         .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();

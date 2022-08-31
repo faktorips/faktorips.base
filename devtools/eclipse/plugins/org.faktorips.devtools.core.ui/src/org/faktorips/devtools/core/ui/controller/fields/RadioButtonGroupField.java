@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
@@ -18,6 +17,7 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * {@link EditField} that can be used to bind a {@link RadioButtonGroup} to a model property, using
@@ -66,7 +66,7 @@ public class RadioButtonGroupField<T> extends DefaultEditField<T> {
     @Override
     public String getText() {
         Button selectedButton = radioButtonGroup.getSelectedButton();
-        return selectedButton == null ? StringUtils.EMPTY : selectedButton.getText();
+        return selectedButton == null ? IpsStringUtils.EMPTY : selectedButton.getText();
     }
 
     @Override

@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.internal.InternationalString;
@@ -187,7 +187,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
 
         assertEquals(GERMAN_FOO, internationalStringValue.getLocalizedContent(Locale.GERMAN));
         assertEquals(ENGLISCH_BAR, internationalStringValue.getLocalizedContent(Locale.ENGLISH));
-        assertEquals(StringUtils.EMPTY, internationalStringValue.getLocalizedContent(Locale.US));
+        assertEquals(IpsStringUtils.EMPTY, internationalStringValue.getLocalizedContent(Locale.US));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     @Test
     public void testLocalizedContent() {
         internationalStringValue = new InternationalStringValue();
-        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, IpsStringUtils.EMPTY));
         internationalStringValue.getContent().add(expectedDe);
 
         assertEquals(GERMAN_FOO, internationalStringValue.getLocalizedContent());
@@ -212,9 +212,9 @@ public class InternationalStringValueTest extends AbstractIpsPluginTest {
     @Test
     public void testLocalizedContentEmpty() {
         internationalStringValue = new InternationalStringValue();
-        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY));
-        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.ENGLISH, IpsStringUtils.EMPTY));
+        internationalStringValue.getContent().add(new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY));
 
-        assertEquals(StringUtils.EMPTY, internationalStringValue.getLocalizedContent());
+        assertEquals(IpsStringUtils.EMPTY, internationalStringValue.getLocalizedContent());
     }
 }

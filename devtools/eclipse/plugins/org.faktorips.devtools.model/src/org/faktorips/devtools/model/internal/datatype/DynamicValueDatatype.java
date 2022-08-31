@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.datatype;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AJavaProject;
@@ -156,7 +156,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         DynamicValueDatatype datatype = createDynamicValueOrEnumDatatype(ipsProject, element);
         // note: up to version 2.1 it was valueClass, since then it is javaClass
         String javaClass = element.getAttribute("valueClass"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(javaClass)) {
+        if (IpsStringUtils.isEmpty(javaClass)) {
             javaClass = element.getAttribute("javaClass"); //$NON-NLS-1$
         }
         datatype.setAdaptedClassName(javaClass);
@@ -192,7 +192,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
             datatype.setAllValuesMethodName(null);
         }
         String isSupporting = element.getAttribute("isSupportingNames"); //$NON-NLS-1$
-        datatype.setIsSupportingNames(StringUtils.isEmpty(isSupporting) ? false
+        datatype.setIsSupportingNames(IpsStringUtils.isEmpty(isSupporting) ? false
                 : Boolean.parseBoolean(isSupporting));
 
         Element nullObjectEl = XmlUtil.getFirstElement(element, "NullObjectId"); //$NON-NLS-1$
@@ -209,7 +209,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     private static DynamicValueDatatype createDynamicValueOrEnumDatatype(IIpsProject ipsProject, Element element) {
         DynamicValueDatatype datatype;
         String isEnumTypeString = element.getAttribute("isEnumType"); //$NON-NLS-1$
-        if (StringUtils.isEmpty(isEnumTypeString) || !Boolean.parseBoolean(isEnumTypeString)) {
+        if (IpsStringUtils.isEmpty(isEnumTypeString) || !Boolean.parseBoolean(isEnumTypeString)) {
             datatype = new DynamicValueDatatype(ipsProject);
         } else {
             datatype = new DynamicEnumDatatype(ipsProject);
@@ -244,7 +244,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
 
     @Override
     public String getValueName(String id, Locale locale) {
-        if (StringUtils.isBlank(getNameMethodName)) {
+        if (IpsStringUtils.isBlank(getNameMethodName)) {
             throw new UnsupportedOperationException(
                     "This value type does not support a getName() method, value type class: " //$NON-NLS-1$
                             + getAdaptedClass());
@@ -275,7 +275,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
             values = (Object[])result;
         }
         return Arrays.stream(values)
-                .filter(v -> StringUtils.equals(valueName,
+                .filter(v -> Objects.equals(valueName,
                         getNameFromValue(v,
                                 IIpsModelExtensions.get().getModelPreferences().getDatatypeFormattingLocale())))
                 .findFirst()
@@ -307,8 +307,8 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     }
 
     private void checkGetValueByName(MessageList ml) {
-        if (StringUtils.isBlank(getGetValueByNameMethodName())) {
-            if (StringUtils.isBlank(getAllValuesMethodName())) {
+        if (IpsStringUtils.isBlank(getGetValueByNameMethodName())) {
+            if (IpsStringUtils.isBlank(getAllValuesMethodName())) {
                 if (NamedDataTypeDisplay.NAME
                         .equals(IIpsModelExtensions.get().getModelPreferences().getNamedDataTypeDisplay())) {
                     ml.add(Message.newError(MSGCODE_GET_VALUE_BY_NAME_METHOD_IS_BLANK,
@@ -348,7 +348,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
     }
 
     private void checkGetName(MessageList ml) {
-        if (StringUtils.isBlank(getGetNameMethodName())) {
+        if (IpsStringUtils.isBlank(getGetNameMethodName())) {
             ml.add(Message.newError(MSGCODE_GET_NAME_METHOD_IS_BLANK,
                     "SupportingNames is true but no getNameMethod is configured.")); //$NON-NLS-1$
             return;

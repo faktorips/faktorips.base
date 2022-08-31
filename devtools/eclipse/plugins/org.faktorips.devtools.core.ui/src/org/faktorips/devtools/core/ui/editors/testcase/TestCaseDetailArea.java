@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.SWTException;
@@ -64,6 +64,7 @@ import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.valueset.IValueSet;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Detail section class of the test case editor. Supports dynamic creation of detail edit controls.
@@ -340,7 +341,7 @@ public class TestCaseDetailArea {
         IAttribute attribute = attributeValue.findAttribute(ipsProject);
 
         if (testAttribute == null || testAttribute.isBasedOnModelAttribute()) {
-            if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())) {
+            if (attribute == null && IpsStringUtils.isEmpty(attributeValue.getValue())) {
                 return null;
             }
         }
@@ -375,7 +376,7 @@ public class TestCaseDetailArea {
             if (attribute != null) {
                 return attribute.findDatatype(ipsProject);
             } else {
-                if (StringUtils.isNotEmpty(attributeValue.getValue())) {
+                if (IpsStringUtils.isNotEmpty(attributeValue.getValue())) {
                     return Datatype.STRING;
                 }
             }

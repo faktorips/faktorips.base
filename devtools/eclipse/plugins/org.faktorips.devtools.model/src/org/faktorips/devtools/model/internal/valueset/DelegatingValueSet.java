@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -46,7 +46,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IDelegati
      * @param parent The parent this valueset belongs to. Must implement IValueDatatypeProvider.
      */
     public DelegatingValueSet(ValueSet delegate, IValueSetOwner parent) {
-        super(parent, StringUtils.EMPTY);
+        super(parent, IpsStringUtils.EMPTY);
         this.delegate = delegate;
     }
 

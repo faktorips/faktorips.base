@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
@@ -133,7 +133,7 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
             this.id = id;
         } else {
             String s = element.getAttribute(PROPERTY_ID);
-            if (StringUtils.isNotEmpty(s)) {
+            if (IpsStringUtils.isNotEmpty(s)) {
                 this.id = s;
             } // else keep the id set in the constructor. migration for old files without id!
         }

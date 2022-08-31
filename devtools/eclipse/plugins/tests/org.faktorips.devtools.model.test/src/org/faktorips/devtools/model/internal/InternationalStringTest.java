@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
@@ -61,18 +61,18 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         internationalString.add(localizedString);
 
         Collection<LocalizedString> values = internationalString.values();
-        assertThat(values, hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
+        assertThat(values, hasItem(new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY)));
     }
 
     @Test
     public void testValues() throws Exception {
         InternationalString internationalString = new InternationalString();
 
-        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
+        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, IpsStringUtils.EMPTY);
 
-        LocalizedString localizedStringDe = new LocalizedString(Locale.GERMAN, StringUtils.EMPTY);
+        LocalizedString localizedStringDe = new LocalizedString(Locale.GERMAN, IpsStringUtils.EMPTY);
 
-        LocalizedString localizedStringFr = new LocalizedString(Locale.FRENCH, StringUtils.EMPTY);
+        LocalizedString localizedStringFr = new LocalizedString(Locale.FRENCH, IpsStringUtils.EMPTY);
 
         internationalString.add(localizedStringEn);
         internationalString.add(localizedStringDe);
@@ -89,7 +89,7 @@ public class InternationalStringTest extends XmlAbstractTestCase {
     public void testHasValueFor() throws Exception {
         InternationalString internationalString = new InternationalString();
 
-        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, StringUtils.EMPTY);
+        LocalizedString localizedStringEn = new LocalizedString(Locale.ENGLISH, IpsStringUtils.EMPTY);
 
         LocalizedString localizedStringDe = new LocalizedString(Locale.GERMAN, "content");
 

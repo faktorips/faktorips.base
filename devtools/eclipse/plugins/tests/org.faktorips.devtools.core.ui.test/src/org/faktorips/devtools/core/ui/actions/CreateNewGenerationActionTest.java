@@ -44,11 +44,18 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
 
     private CreateNewGenerationAction action;
 
+    private AutoCloseable openMocks;
+
     @Override
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         action = new CreateNewGenerationAction(shell, selectionProvider);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Override

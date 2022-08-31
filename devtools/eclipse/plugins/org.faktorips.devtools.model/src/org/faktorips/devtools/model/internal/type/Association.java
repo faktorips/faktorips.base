@@ -14,7 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -233,7 +234,7 @@ public abstract class Association extends TypePart implements IAssociation {
 
     @Override
     public boolean isSubsetOfADerivedUnion() {
-        return StringUtils.isNotEmpty(subsettedDerivedUnion);
+        return IpsStringUtils.isNotEmpty(subsettedDerivedUnion);
     }
 
     @Override
@@ -336,7 +337,7 @@ public abstract class Association extends TypePart implements IAssociation {
         newElement.setAttribute(PROPERTY_ASSOCIATION_TYPE, type.getId());
         newElement.setAttribute(PROPERTY_TARGET, target);
         newElement.setAttribute(PROPERTY_TARGET_ROLE_SINGULAR, targetRoleSingular);
-        if (StringUtils.isNotEmpty(targetRolePlural)) {
+        if (IpsStringUtils.isNotEmpty(targetRolePlural)) {
             newElement.setAttribute(PROPERTY_TARGET_ROLE_PLURAL, targetRolePlural);
         }
         newElement.setAttribute(PROPERTY_MIN_CARDINALITY, "" + minCardinality); //$NON-NLS-1$
@@ -349,7 +350,7 @@ public abstract class Association extends TypePart implements IAssociation {
         if (derivedUnion) {
             newElement.setAttribute(PROPERTY_DERIVED_UNION, "" + derivedUnion); //$NON-NLS-1$
         }
-        if (StringUtils.isNotEmpty(subsettedDerivedUnion)) {
+        if (IpsStringUtils.isNotEmpty(subsettedDerivedUnion)) {
             newElement.setAttribute(PROPERTY_SUBSETTED_DERIVED_UNION, subsettedDerivedUnion);
         }
         if (isConstrain()) {
@@ -391,7 +392,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateTargetRolePlural(MessageList list, IIpsProject ipsProject) {
-        if (StringUtils.isNotEmpty(targetRolePlural)) {
+        if (IpsStringUtils.isNotEmpty(targetRolePlural)) {
             IStatus javaStatus = ValidationUtils.validateFieldName(targetRolePlural, ipsProject);
             if (!javaStatus.isOK()) {
                 String text = MessageFormat.format(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
@@ -429,7 +430,7 @@ public abstract class Association extends TypePart implements IAssociation {
     }
 
     private void validateDerivedUnion(MessageList list, IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(subsettedDerivedUnion)) {
+        if (IpsStringUtils.isEmpty(subsettedDerivedUnion)) {
             return;
         }
         if (subsettedDerivedUnion.equals(getName())) {

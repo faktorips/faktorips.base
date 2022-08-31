@@ -10,12 +10,13 @@
 
 package org.faktorips.devtools.model.pctype.persistence;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -360,11 +361,11 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
         public boolean isParsableToDiscriminatorDatatype(String value) {
             switch (this) {
                 case STRING:
-                    return (!StringUtils.isEmpty(value));
+                    return (!IpsStringUtils.isEmpty(value));
                 case CHAR:
-                    return (!StringUtils.isEmpty(value) && value.length() == 1);
+                    return (!IpsStringUtils.isEmpty(value) && value.length() == 1);
                 case INTEGER:
-                    return (!StringUtils.isEmpty(value)) && StringUtils.isNumeric(value);
+                    return (!IpsStringUtils.isEmpty(value)) && StringUtils.isNumeric(value);
 
                 default:
                     return false;

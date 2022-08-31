@@ -45,9 +45,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IpsJarBundleTest {
 
     private static final String ROOT_PATH = "root";
@@ -114,8 +114,6 @@ public class IpsJarBundleTest {
 
     @Test
     public void testIsValid_ioException() throws Exception {
-        when(jarFile.getManifest()).thenThrow(new IOException());
-
         assertFalse(ipsJarBundle.isValid());
     }
 
@@ -241,9 +239,6 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContainsPackage_defaultPackage() throws Exception {
-        Set<String> packagePaths = new HashSet<>();
-        packagePaths.add("org.test.one");
-        when(bundleContentIndex.getNonEmptyPackagePaths()).thenReturn(packagePaths);
 
         boolean result = ipsJarBundle.containsPackage("");
 
@@ -332,8 +327,6 @@ public class IpsJarBundleTest {
 
     @Test
     public void testContains_notFound() throws Exception {
-        HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
-        when(bundleContentIndex.getQualifiedNameTypes("anyPackageName")).thenReturn(qnameTypes);
 
         boolean contained = ipsJarBundle.contains(qualifiedNameType.toPath());
 
@@ -353,13 +346,7 @@ public class IpsJarBundleTest {
         when(qualifiedNameType.toPath()).thenReturn(Path.of(ANY_PATH));
         HashSet<QualifiedNameType> qnameTypes = new HashSet<>();
         qnameTypes.add(qualifiedNameType);
-        when(bundleContentIndex.getQualifiedNameTypes()).thenReturn(qnameTypes);
         when(bundleContentIndex.getModelPath(qualifiedNameType.toPath())).thenReturn(Path.of("modelPath"));
-    }
-
-    @Test
-    public void testGetRoot() throws Exception {
-
     }
 
 }

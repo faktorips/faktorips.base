@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.internal.enums;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -31,10 +31,11 @@ import org.faktorips.runtime.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnumAttributeValueUnitTest {
 
     private IdentifierBoundaryValidator validator;
@@ -45,7 +46,7 @@ public class EnumAttributeValueUnitTest {
     private IEnumValue enumValue;
     @Mock
     private IIpsProject ipsProject;
-    @Mock
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     private IntegerDatatype datatype;
     @Mock
     private IEnumAttribute identifierAttribute;
@@ -58,17 +59,10 @@ public class EnumAttributeValueUnitTest {
     public void setUp() throws Exception {
         validator = new IdentifierBoundaryValidator(attribute, enumType, datatype, ipsProject);
         when(attribute.findEnumAttribute(ipsProject)).thenReturn(identifierAttribute);
-        when(enumType.getIdentifierBoundary()).thenReturn("10");
-        when(enumType.isValidateIdentifierBoundaryOnDatatypeNecessary(enumType.getIdentifierBoundary())).thenReturn(
-                true);
-
-        when(datatype.compare(anyString(), anyString())).thenCallRealMethod();
-        when(datatype.supportsCompare()).thenCallRealMethod();
-        when(datatype.getValue(anyString())).thenCallRealMethod();
-        when(datatype.isParsable(anyString())).thenCallRealMethod();
+        doReturn("10").when(enumType).getIdentifierBoundary();
+        doReturn(true).when(enumType).isValidateIdentifierBoundaryOnDatatypeNecessary(any());
 
         when(enumType.findIdentiferAttribute(ipsProject)).thenReturn(identifierAttribute);
-        when(identifierAttribute.findDatatype(ipsProject)).thenReturn(datatype);
 
         when(enumType.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
         when(enumContent.isIdentifierNamespaceBelowBoundary()).thenCallRealMethod();
@@ -107,7 +101,7 @@ public class EnumAttributeValueUnitTest {
 
     @Test
     public void testIdentifierBoundaryValidation_canValidate_noBoundary() {
-        when(enumType.getIdentifierBoundary()).thenReturn(null);
+        doReturn(null).when(enumType).getIdentifierBoundary();
         assertFalse(validator.canValidate());
     }
 
@@ -187,7 +181,7 @@ public class EnumAttributeValueUnitTest {
 
     @Test
     public void testBoundaryValueNotParsable() {
-        when(enumType.getIdentifierBoundary()).thenReturn("AAABBBB");
+        doReturn("AAABBBB").when(enumType).getIdentifierBoundary();
         assertFalse(validator.canValidate());
     }
 

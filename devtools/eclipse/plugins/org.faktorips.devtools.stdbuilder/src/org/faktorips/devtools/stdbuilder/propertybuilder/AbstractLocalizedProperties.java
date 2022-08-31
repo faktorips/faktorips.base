@@ -14,9 +14,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.stdbuilder.MessagesProperties;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.MultiMap;
 
 public abstract class AbstractLocalizedProperties {
@@ -73,7 +73,7 @@ public abstract class AbstractLocalizedProperties {
     protected abstract PropertyKey createPropertyEntry(String key);
 
     public void put(PropertyKey propertyKey, String messageText) {
-        if (defaultLang || StringUtils.isNotBlank(messageText)) {
+        if (defaultLang || IpsStringUtils.isNotBlank(messageText)) {
             propertyKeysForIpsObject.put(propertyKey.getIpsObjectQNameType(), propertyKey);
             messagesProperties.put(propertyKey.getKey(), messageText);
         } else {

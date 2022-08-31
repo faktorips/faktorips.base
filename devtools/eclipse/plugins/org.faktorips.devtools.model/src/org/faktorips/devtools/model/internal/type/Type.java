@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -87,7 +87,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public boolean hasSupertype() {
-        return StringUtils.isNotEmpty(supertype);
+        return IpsStringUtils.isNotEmpty(supertype);
     }
 
     @Override
@@ -496,7 +496,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        if (StringUtils.isNotEmpty(supertype)) {
+        if (IpsStringUtils.isNotEmpty(supertype)) {
             element.setAttribute(PROPERTY_SUPERTYPE, supertype);
         }
         if (abstractFlag) {

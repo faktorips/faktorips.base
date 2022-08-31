@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.value;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
@@ -85,7 +85,7 @@ public abstract class ValueUtil {
             Set<ISupportedLanguage> supportedLanguages = ipsProject.getReadOnlyProperties().getSupportedLanguages();
             for (ISupportedLanguage supportedLanguage : supportedLanguages) {
                 LocalizedString localizedString = value.getContent().get(supportedLanguage.getLocale());
-                if (StringUtils.isEmpty(localizedString.getValue())) {
+                if (IpsStringUtils.isEmpty(localizedString.getValue())) {
                     return true;
                 }
             }
@@ -111,7 +111,7 @@ public abstract class ValueUtil {
 
         @Override
         public boolean isPartlyEmpty(IIpsProject ipsProject) {
-            return StringUtils.isEmpty(value.getContent());
+            return IpsStringUtils.isEmpty(value.getContent());
         }
 
     }

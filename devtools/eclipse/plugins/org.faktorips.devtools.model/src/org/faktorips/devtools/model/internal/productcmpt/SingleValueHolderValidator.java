@@ -15,7 +15,6 @@ import static org.faktorips.devtools.model.productcmpt.IAttributeValue.MSGCODE_V
 
 import java.text.MessageFormat;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 
 /** {@code IValueHolderValidator} implementation for {@link SingleValueHolder}s. */
@@ -90,7 +90,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 InternationalString content = (InternationalString)value.getContent();
                 for (LocalizedString localizedString : content.values()) {
                     if (nullPresentation.equals(localizedString.getValue())
-                            || StringUtils.isBlank(localizedString.getValue())) {
+                            || IpsStringUtils.isBlank(localizedString.getValue())) {
                         String text = MessageFormat.format(Messages.AttributeValue_ValueNotAllowed,
                                 nullPresentation,
                                 parent.getName());
@@ -111,7 +111,7 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
             messages.newError(MSGCODE_INVALID_VALUE_TYPE, text, invalidObjectProperties);
         }
         String contentAsString = value.getContentAsString();
-        String contentValue = StringUtils.isBlank(contentAsString) ? null : contentAsString;
+        String contentValue = IpsStringUtils.isBlank(contentAsString) ? null : contentAsString;
         if (!attribute.getValueSet().containsValue(contentValue, ipsProject)) {
             String text;
             String formattedValue = getFormattedValue(contentAsString, datatype);

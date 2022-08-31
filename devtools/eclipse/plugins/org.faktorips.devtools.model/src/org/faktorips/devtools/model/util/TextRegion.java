@@ -12,8 +12,6 @@ package org.faktorips.devtools.model.util;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
-
 /**
  * The TextRegion describes a certain range in a String. The TextRegion is defined by the start and
  * end variables. The variables don't change over time.
@@ -159,7 +157,7 @@ public class TextRegion implements Comparable<TextRegion> {
 
     @Override
     public int compareTo(TextRegion o) {
-        if (!StringUtils.equals(text, o.text)) {
+        if (!Objects.equals(text, o.text)) {
             return text.compareTo(o.text);
         }
         int compareStart = getStart() - o.getStart();

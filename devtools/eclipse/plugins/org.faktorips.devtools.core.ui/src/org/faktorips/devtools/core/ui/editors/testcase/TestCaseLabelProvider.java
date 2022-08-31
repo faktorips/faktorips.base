@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.testcase;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.core.databinding.observable.value.WritableValue;
@@ -44,6 +44,7 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcase.ITestRule;
 import org.faktorips.devtools.model.testcase.ITestValue;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -204,23 +205,23 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
         } else if (object instanceof ITestRule) {
             return getLabelExtensionForTestRule((ITestRule)object);
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     private String getLabelExtensionForTestPolicyCmpt(ITestPolicyCmpt object) {
         if (hideExtension()) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         ITestPolicyCmpt tstPolicyCmpt = object;
         String name = tstPolicyCmpt.getName();
         IPolicyCmptType policyCmptType = tstPolicyCmpt.findPolicyCmptType();
         if (policyCmptType == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
 
         String unqualifiedPolicyCmptTypeName = StringUtil.unqualifiedName(policyCmptType.getQualifiedName());
         if (name.equals(unqualifiedPolicyCmptTypeName)) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         return " : " + unqualifiedPolicyCmptTypeName; //$NON-NLS-1$
     }

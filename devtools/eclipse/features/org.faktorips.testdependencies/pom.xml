@@ -17,7 +17,7 @@
                 <groupId>org.eclipse.tycho</groupId>
                 <artifactId>tycho-source-plugin</artifactId>
                 <configuration>
-                    <!-- skip source generation because we want to package mockito but do not have the source in oure target platform -->
+                    <!-- skip source generation because we want to package mockito but do not have the source in our target platform -->
                     <skip>true</skip>
                 </configuration>
             </plugin>

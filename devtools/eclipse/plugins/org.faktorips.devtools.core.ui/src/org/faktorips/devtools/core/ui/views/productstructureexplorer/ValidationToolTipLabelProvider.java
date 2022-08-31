@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.IDecorationContext;
 import org.eclipse.jface.viewers.ILabelDecorator;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptRefere
 import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Extend the {@link DecoratingStyledCellLabelProvider} to add the possibility to get a ToolTip of
@@ -54,7 +54,7 @@ public class ValidationToolTipLabelProvider extends DecoratingStyledCellLabelPro
     private String validateAndReturnErrorMessages(Validatable validatable) {
         MessageList msgList = validatable.validate(validatable.getIpsProject());
         String text = msgList.getMessagesBySeverity(Severity.ERROR).getText();
-        if (!StringUtils.isEmpty(text)) {
+        if (!IpsStringUtils.isEmpty(text)) {
             return text;
         }
         return super.getToolTipText(validatable);

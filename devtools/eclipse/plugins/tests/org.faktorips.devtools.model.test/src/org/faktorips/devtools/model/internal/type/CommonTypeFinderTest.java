@@ -15,8 +15,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
-
-import com.google.common.collect.Lists;
+import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -59,9 +58,9 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
         IProductCmpt cmptA = newProductCmpt(a, "cmptA");
         IProductCmpt cmptB = newProductCmpt(b, "cmptB");
 
-        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptB, cmptB)), is(b));
-        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptA, cmptB)), is(a));
-        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptB, cmptA)), is(a));
+        assertThat(CommonTypeFinder.commonTypeOf(List.of(cmptB, cmptB)), is(b));
+        assertThat(CommonTypeFinder.commonTypeOf(List.of(cmptA, cmptB)), is(a));
+        assertThat(CommonTypeFinder.commonTypeOf(List.of(cmptB, cmptA)), is(a));
     }
 
     /**
@@ -92,14 +91,14 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
         IProductCmpt d = newProductCmpt(dType, "d");
         IProductCmpt e = newProductCmpt(eType, "e");
 
-        assertThat(finder.findCommonType(Lists.newArrayList(a)), is(aType));
-        assertThat(finder.findCommonType(Lists.newArrayList(e)), is(eType));
-        assertThat(finder.findCommonType(Lists.newArrayList(e, e)), is(eType));
-        assertThat(finder.findCommonType(Lists.newArrayList(d, e)), is(dType));
-        assertThat(finder.findCommonType(Lists.newArrayList(c, d, e)), is(bType));
-        assertThat(finder.findCommonType(Lists.newArrayList(e, d, c)), is(bType));
-        assertThat(finder.findCommonType(Lists.newArrayList(b, d, e)), is(bType));
-        assertThat(finder.findCommonType(Lists.newArrayList(a, b, c)), is(aType));
+        assertThat(finder.findCommonType(List.of(a)), is(aType));
+        assertThat(finder.findCommonType(List.of(e)), is(eType));
+        assertThat(finder.findCommonType(List.of(e, e)), is(eType));
+        assertThat(finder.findCommonType(List.of(d, e)), is(dType));
+        assertThat(finder.findCommonType(List.of(c, d, e)), is(bType));
+        assertThat(finder.findCommonType(List.of(e, d, c)), is(bType));
+        assertThat(finder.findCommonType(List.of(b, d, e)), is(bType));
+        assertThat(finder.findCommonType(List.of(a, b, c)), is(aType));
     }
 
     /**
@@ -122,9 +121,9 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
         IProductCmpt x = newProductCmpt(xType, "x");
         IProductCmpt y = newProductCmpt(yType, "y");
 
-        assertThat(finder.findCommonType(Lists.newArrayList(b, y)), is(nullValue()));
-        assertThat(finder.findCommonType(Lists.newArrayList(a, b, x)), is(nullValue()));
-        assertThat(finder.findCommonType(Lists.newArrayList(y, x, a)), is(nullValue()));
+        assertThat(finder.findCommonType(List.of(b, y)), is(nullValue()));
+        assertThat(finder.findCommonType(List.of(a, b, x)), is(nullValue()));
+        assertThat(finder.findCommonType(List.of(y, x, a)), is(nullValue()));
     }
 
 }

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -60,7 +60,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
         super.initFromXml(element, project);
         String path = element.getAttribute(getXmlAttributePathName());
         try {
-            if (StringUtils.isEmpty(path)) {
+            if (IpsStringUtils.isEmpty(path)) {
                 initStorage(null);
             } else {
                 initStorage(Path.of(path));

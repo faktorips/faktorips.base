@@ -28,9 +28,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class EnsureContainsNullForConfigElementValueSourceTest {
     @Mock
     private IValueSource valueSource;
@@ -62,8 +62,6 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
 
     @Test
     public void testGetValues_doNotAddNull_forNonConfigElement() {
-        when(valueDatatype.isPrimitive()).thenReturn(false);
-
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
                 owner, valueDatatype, valueSource);
         List<String> values = ensureContainsNullValueSource.getValues();

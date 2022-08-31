@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
@@ -75,6 +75,7 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.testcase.IIpsTestRunListener;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.test.AbstractIpsTestRunner;
 import org.faktorips.runtime.test.SocketIpsTestRunner;
 import org.faktorips.util.StringUtil;
@@ -314,7 +315,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         vmConfig.setEnvironment(envp);
 
         // sets the max heap size of the test runner virtual machine
-        if (StringUtils.isEmpty(testRunnerMaxHeapSize)) {
+        if (IpsStringUtils.isEmpty(testRunnerMaxHeapSize)) {
             // set the default size to 64
             testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
         }
@@ -325,7 +326,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         ILaunchConfiguration launchConfiguration = this.launch.getLaunchConfiguration();
         // overwrite default max heap size if specified in the current launch
         String maxHeapSizeInConfiguration = launchConfiguration.getAttribute(ATTR_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(maxHeapSizeInConfiguration)) {
+        if (IpsStringUtils.isNotEmpty(maxHeapSizeInConfiguration)) {
             setVmConfigMaxHeapSize(vmConfig, maxHeapSizeInConfiguration);
         }
         setDefaultSourceLocatorInternal(this.launch, launchConfiguration);
@@ -386,7 +387,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         String vmArgsInConfig = launchConfiguration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
                 (String)null);
-        if (StringUtils.isNotEmpty(vmArgsInConfig)) {
+        if (IpsStringUtils.isNotEmpty(vmArgsInConfig)) {
             String[] vmArguments = vmConfig.getVMArguments();
             String[] vmArgumentsFromLaunchConfig = {};
             if (vmArgsInConfig != null) {
@@ -449,7 +450,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         List<String> tests = AbstractIpsTestRunner.extractListFromString(testsuites);
         if (tests.size() == 1) {
             String testName = tests.get(0);
-            if (StringUtils.isNotEmpty(testName)) {
+            if (IpsStringUtils.isNotEmpty(testName)) {
                 confName = StringUtil.unqualifiedName(testName);
             }
         }

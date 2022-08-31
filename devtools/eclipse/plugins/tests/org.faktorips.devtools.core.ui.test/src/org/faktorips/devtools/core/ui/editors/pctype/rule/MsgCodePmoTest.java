@@ -14,13 +14,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI.MsgCodePMO;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.pctype.MessageSeverity;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -36,7 +37,7 @@ public class MsgCodePmoTest {
 
     private String nameOfRule = "name";
 
-    private String generatedMsgCode = StringUtils.EMPTY;
+    private String generatedMsgCode = IpsStringUtils.EMPTY;
 
     private MsgCodePMO msgCodePmo;
 
@@ -54,10 +55,11 @@ public class MsgCodePmoTest {
     @Mock
     private IIpsModel model;
 
+    private AutoCloseable openMocks;
+
     @Before
     public void setUp() throws Exception {
-
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
 
         when(rule.getIpsModel()).thenReturn(model);
         when(rule.getMessageSeverity()).thenReturn(msgSeverity);
@@ -70,12 +72,16 @@ public class MsgCodePmoTest {
         msgCodePmo = new MsgCodePMO(rule);
 
         generatedMsgCode = severity + DELIMITER + pcType + DELIMITER + nameOfRule;
+    }
 
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test
     public void updateMsgCodeEntry_Empty() throws Exception {
-        when(rule.getMessageCode()).thenReturn(StringUtils.EMPTY);
+        when(rule.getMessageCode()).thenReturn(IpsStringUtils.EMPTY);
 
         msgCodePmo.partHasChanged();
 

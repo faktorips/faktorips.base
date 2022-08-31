@@ -14,10 +14,10 @@ import static org.faktorips.devtools.model.util.DatatypeUtil.isNonNull;
 import static org.faktorips.devtools.model.util.DatatypeUtil.isNullValue;
 
 import java.text.MessageFormat;
+import java.util.Comparator;
 import java.util.Objects;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -384,15 +384,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * using datatype compare.
      */
     private int compareDifferentRanges(IRangeValueSet otherRangeValueSet) {
-        int compareLow = ObjectUtils.compare(getLowerBound(), otherRangeValueSet.getLowerBound());
-        if (compareLow != 0) {
-            return compareLow;
-        }
-        int compareUp = ObjectUtils.compare(getUpperBound(), otherRangeValueSet.getUpperBound());
-        if (compareUp != 0) {
-            return compareUp;
-        }
-        return ObjectUtils.compare(getStep(), otherRangeValueSet.getStep());
+        return Comparator.comparing(IRangeValueSet::getLowerBound)
+                .thenComparing(IRangeValueSet::getUpperBound)
+                .thenComparing(IRangeValueSet::getStep)
+                .compare(this, otherRangeValueSet);
     }
 
     @Override

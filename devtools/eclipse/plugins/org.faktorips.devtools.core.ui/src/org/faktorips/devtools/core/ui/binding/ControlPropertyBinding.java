@@ -13,9 +13,9 @@ package org.faktorips.devtools.core.ui.binding;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.model.util.BeanUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Abstract base class for a binding between a property of a SWT control and a property of an
@@ -47,7 +47,7 @@ public abstract class ControlPropertyBinding {
         super();
         this.control = control;
         this.object = object;
-        if (StringUtils.isNotEmpty(propertyName)) {
+        if (IpsStringUtils.isNotEmpty(propertyName)) {
             property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
             if (expectedType != null && !expectedType.isAssignableFrom(property.getPropertyType())) {
                 throw new IllegalArgumentException(

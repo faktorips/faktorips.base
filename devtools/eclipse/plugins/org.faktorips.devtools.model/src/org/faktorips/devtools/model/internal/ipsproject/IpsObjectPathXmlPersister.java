@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -57,12 +57,12 @@ public class IpsObjectPathXmlPersister {
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_DEFINED_PER_SRC_FOLDER,
                 Boolean.toString(path.isOutputDefinedPerSrcFolder()));
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES,
-                path.getOutputFolderForMergableSources() == null ? StringUtils.EMPTY
+                path.getOutputFolderForMergableSources() == null ? IpsStringUtils.EMPTY
                         : PathUtil.toPortableString(path
                                 .getOutputFolderForMergableSources().getProjectRelativePath()));
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE, path.getBasePackageNameForMergableJavaClasses());
         element.setAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES,
-                path.getOutputFolderForDerivedSources() == null ? StringUtils.EMPTY
+                path.getOutputFolderForDerivedSources() == null ? IpsStringUtils.EMPTY
                         : PathUtil.toPortableString(path
                                 .getOutputFolderForDerivedSources().getProjectRelativePath()));
         element.setAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED, path.getBasePackageNameForDerivedJavaClasses());
@@ -97,14 +97,14 @@ public class IpsObjectPathXmlPersister {
         path.setBasePackageNameForMergableJavaClasses(element.getAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_MERGABLE));
         path.setBasePackageNameForDerivedJavaClasses(element.getAttribute(ATTRIBUTE_NAME_BASE_PACKAGE_DERIVED));
         String outputFolderMergedSourcesString = element.getAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_MERGABLE_SOURCES);
-        if (outputFolderMergedSourcesString.equals(StringUtils.EMPTY)) {
+        if (outputFolderMergedSourcesString.equals(IpsStringUtils.EMPTY)) {
             path.setOutputFolderForMergableSources(null);
         } else {
             path.setOutputFolderForMergableSources(ipsProject.getProject().getFolder(
                     java.nio.file.Path.of(outputFolderMergedSourcesString)));
         }
         String outputFolderDerivedSourcesString = element.getAttribute(ATTRIBUTE_NAME_OUTPUT_FOLDER_DERIVED_SOURCES);
-        if (outputFolderDerivedSourcesString.equals(StringUtils.EMPTY)) {
+        if (outputFolderDerivedSourcesString.equals(IpsStringUtils.EMPTY)) {
             path.setOutputFolderForDerivedSources(null);
         } else {
             path.setOutputFolderForDerivedSources(ipsProject.getProject().getFolder(

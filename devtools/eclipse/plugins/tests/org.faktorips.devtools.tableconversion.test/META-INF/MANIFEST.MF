@@ -24,7 +24,7 @@ Import-Package: org.faktorips.abstracttest,
  org.faktorips.testsupport.matchers;version="22.12.0",
  org.faktorips.values,
  org.hamcrest;version="1.3.0",
- org.junit;version="4.5.0",
- org.junit.runner;version="4.5.0",
+ org.junit;version="4.13.0",
+ org.junit.runner;version="4.13.0",
  org.mockito,
- org.mockito.runners
+ org.mockito.junit

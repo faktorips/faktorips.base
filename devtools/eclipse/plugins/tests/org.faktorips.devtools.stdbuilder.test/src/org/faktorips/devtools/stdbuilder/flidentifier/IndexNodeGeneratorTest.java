@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -30,9 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class IndexNodeGeneratorTest {
 
     @Mock
@@ -67,7 +66,6 @@ public class IndexNodeGeneratorTest {
     }
 
     private IndexNode createIndexNode(int index) throws Exception {
-        when(association.findTarget(any(IIpsProject.class))).thenReturn(target);
         return (IndexNode)nodeFactory.createIndexBasedAssociationNode(index, target);
     }
 

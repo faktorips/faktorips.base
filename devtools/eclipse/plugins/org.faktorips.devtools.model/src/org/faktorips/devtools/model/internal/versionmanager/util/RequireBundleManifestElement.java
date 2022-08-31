@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.versionmanager.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.util.ArgumentCheck;
@@ -109,7 +109,7 @@ public class RequireBundleManifestElement {
         if (hasDirective(key)) {
             return getDirectiveString(key);
         }
-        return StringUtils.EMPTY;
+        return IpsStringUtils.EMPTY;
     }
 
     /**

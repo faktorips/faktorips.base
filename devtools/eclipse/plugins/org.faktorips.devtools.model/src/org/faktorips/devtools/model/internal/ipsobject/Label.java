@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.ipsobject;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.ILabel;
@@ -112,10 +111,10 @@ public class Label extends AtomicIpsObjectPart implements ILabel {
         super.propertiesToXml(element);
 
         element.setAttribute(PROPERTY_LOCALE, (locale == null) ? "" : locale.getLanguage()); //$NON-NLS-1$
-        if (StringUtils.isNotEmpty(value)) {
+        if (IpsStringUtils.isNotEmpty(value)) {
             element.setAttribute(PROPERTY_VALUE, value);
         }
-        if (StringUtils.isNotEmpty(pluralValue)) {
+        if (IpsStringUtils.isNotEmpty(pluralValue)) {
             element.setAttribute(PROPERTY_PLURAL_VALUE, pluralValue);
         }
     }

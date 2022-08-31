@@ -14,7 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
@@ -39,7 +39,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
     private final TemplateValueSettings templateValueSettings;
 
-    private String policyAttribute = StringUtils.EMPTY;
+    private String policyAttribute = IpsStringUtils.EMPTY;
 
     public ConfigElement(IPropertyValueContainer parent, String policyAttribute, String id) {
         super(parent, id);
@@ -173,7 +173,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         policyAttribute = element.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
-        if (StringUtils.isEmpty(policyAttribute) && element.getParentNode() instanceof Element) {
+        if (IpsStringUtils.isEmpty(policyAttribute) && element.getParentNode() instanceof Element) {
             policyAttribute = ((Element)element.getParentNode()).getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
         }
         templateValueSettings.initPropertiesFromXml(element);
@@ -204,7 +204,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         IAttribute attribute = findPcTypeAttribute(getIpsProject());
         if (attribute != null && locale != null) {
             String labelValue = attribute.getLabelValue(locale);
-            if (StringUtils.isNotEmpty(labelValue)) {
+            if (IpsStringUtils.isNotEmpty(labelValue)) {
                 return labelValue;
             }
         }

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.pctype.associationwizard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.events.FocusAdapter;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Page to specify the product new product component type association.
@@ -239,7 +239,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
     }
 
     private void updateDefaultTargetRolePlural() {
-        if (StringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
+        if (IpsStringUtils.isEmpty(association.getTargetRolePlural()) && association.isTargetRolePluralRequired()) {
             association.setTargetRolePlural(association.getDefaultTargetRolePlural());
         }
     }
@@ -249,7 +249,7 @@ public class ConfProdCmptTypePropertyPage extends WizardPage implements IBlocked
             return;
         }
 
-        if (StringUtils.isEmpty(association.getTargetRoleSingular())) {
+        if (IpsStringUtils.isEmpty(association.getTargetRoleSingular())) {
             association.setTargetRoleSingular(association.getDefaultTargetRoleSingular());
         }
     }

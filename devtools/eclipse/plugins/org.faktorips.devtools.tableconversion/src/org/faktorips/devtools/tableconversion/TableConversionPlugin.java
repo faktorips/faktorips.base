@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.tableconversion;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbookFactory;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.usermodel.WorkbookProvider;
+import org.apache.poi.xssf.usermodel.XSSFWorkbookFactory;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -30,6 +34,21 @@ public class TableConversionPlugin extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
+        addMissingPoiProviders();
+    }
+
+    /**
+     * POI uses the java {@link java.util.ServiceLoader} to provide its two {@link WorkbookProvider
+     * WorkbookProviders}. Unfortunately this does not work in an OSGi environment and we have to
+     * provide the {@link WorkbookProvider WorkbookProviders} manually.
+     */
+    private void addMissingPoiProviders() {
+        // in the unlikely event the java.util.ServiceLoader worked in an OSGi environment, remove
+        // the providers before we add them twice
+        WorkbookFactory.removeProvider(XSSFWorkbookFactory.class);
+        WorkbookFactory.removeProvider(HSSFWorkbookFactory.class);
+        WorkbookFactory.addProvider(new XSSFWorkbookFactory());
+        WorkbookFactory.addProvider(new HSSFWorkbookFactory());
     }
 
     @Override

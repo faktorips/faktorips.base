@@ -25,9 +25,9 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PropertyValueTypeTest {
 
     private static final String ANY_VALUE = "anyValue";
@@ -163,9 +163,6 @@ public class PropertyValueTypeTest {
 
     @Test
     public void testGetValueSetter_ConfiguredDefault() throws Exception {
-        IIpsModel ipsModel = mock(IIpsModel.class);
-        when(configuredDefault.getIpsModel()).thenReturn(ipsModel);
-        when(ipsModel.getNextPartId(configuredDefault)).thenReturn(ANY_VALUE);
 
         PropertyValueType.CONFIGURED_DEFAULT.getValueSetter().accept(configuredDefault, "10");
         verify(configuredDefault).setValue("10");

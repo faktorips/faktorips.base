@@ -14,7 +14,7 @@ import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -149,7 +149,7 @@ public class MultiValueHolderValidatorTest {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         MultiValueHolder multiValueHolder = spy(new MultiValueHolder(attributeValue));
 
-        doNothing().when(multiValueHolder).objectHasChanged(anyObject(), anyObject());
+        doNothing().when(multiValueHolder).objectHasChanged(any(), any());
         List<ISingleValueHolder> singleValues = new ArrayList<>();
         singleValues.add(new SingleValueHolder(attributeValue, "A"));
         singleValues.add(new SingleValueHolder(attributeValue, "B"));

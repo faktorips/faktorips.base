@@ -19,7 +19,6 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -99,7 +98,8 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_CoreExceptionWhenFindigTarget() {
         link = mock(IProductCmptLink.class);
-        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
+        when(link.getIpsProject()).thenReturn(ipsProject);
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(ipsProject);
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(link);
 
@@ -159,7 +159,8 @@ public class ProductCmptLinkDecoratorTest extends AbstractIpsPluginTest {
     public void testGetLabel_CoreExceptionWhenFindigTarget() {
         link = mock(IProductCmptLink.class);
         when(link.getName()).thenReturn("foo");
-        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(any(IIpsProject.class));
+        when(link.getIpsProject()).thenReturn(ipsProject);
+        doThrow(new IpsException(new IpsStatus("CAN'T FIND IT"))).when(link).findTarget(ipsProject);
 
         String label = decorator.getLabel(link);
 

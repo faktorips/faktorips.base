@@ -14,8 +14,8 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -30,7 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,19 +51,21 @@ public class XTypeTest {
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private XType xSuperType;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     @Before
     public void mockContext() {
         // addImport should always return the input parameter
         Answer<String> inputAnswer = invocation -> invocation.getArguments()[0].toString();
         when(context.addImport(anyString())).thenAnswer(inputAnswer);
         doReturn(generatorConfig).when(xType).getGeneratorConfig();
-        doReturn(generatorConfig).when(xSuperType).getGeneratorConfig();
     }
 
     @Before
     public void createXType() {
-        when(xType.getContext()).thenReturn(context);
         when(xType.getIpsObjectPartContainer()).thenReturn(type);
+        doReturn(ipsProject).when(xType).getIpsProject();
         when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(true);
         doReturn("myInterface").when(xType).getInterfaceName();
     }
@@ -82,9 +84,6 @@ public class XTypeTest {
 
     @Test
     public void testGetImplementedInterfaces_withSuperclass() throws Exception {
-        when(xType.hasSupertype()).thenReturn(true);
-        doReturn(xSuperType).when(xType).getSupertype();
-        doReturn("superInterfaceName").when(xSuperType).getQualifiedName(BuilderAspect.INTERFACE);
 
         LinkedHashSet<String> implementedInterfaces = xType.getImplementedInterfaces();
 
@@ -94,9 +93,6 @@ public class XTypeTest {
     @Test
     public void testGetImplementedInterfaces_withSuperclassNoPublishedInterfaces() throws Exception {
         when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
-        when(xType.hasSupertype()).thenReturn(true);
-        doReturn(xSuperType).when(xType).getSupertype();
-        doReturn("superInterfaceName").when(xSuperType).getQualifiedName(BuilderAspect.INTERFACE);
 
         LinkedHashSet<String> implementedInterfaces = xType.getImplementedInterfaces();
 
@@ -105,8 +101,7 @@ public class XTypeTest {
 
     @Test
     public void testGetSuperclassName_withSuperclassNoPublishedInterfaces() throws Exception {
-        when(generatorConfig.isGeneratePublishedInterfaces(any(IIpsProject.class))).thenReturn(false);
-        when(xType.hasSupertype()).thenReturn(true);
+        doReturn(true).when(type).hasSupertype();
         doReturn(xSuperType).when(xType).getSupertype();
         doReturn("superClassName").when(xSuperType).getQualifiedName(BuilderAspect.IMPLEMENTATION);
 

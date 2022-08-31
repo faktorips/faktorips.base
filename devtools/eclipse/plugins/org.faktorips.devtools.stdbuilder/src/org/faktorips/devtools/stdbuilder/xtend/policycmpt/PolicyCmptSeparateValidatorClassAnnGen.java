@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xtend.policycmpt;
 import java.util.ArrayList;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;

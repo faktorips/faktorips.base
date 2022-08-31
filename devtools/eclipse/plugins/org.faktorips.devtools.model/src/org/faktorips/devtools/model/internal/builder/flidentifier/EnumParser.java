@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -128,7 +128,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumDatatype.getAllValueIds(false);
         for (String enumValueId : valueIds) {
-            collector.addMatchingNode(enumValueId, getLabel(enumValueId, enumDatatype), StringUtils.EMPTY, prefix,
+            collector.addMatchingNode(enumValueId, getLabel(enumValueId, enumDatatype), IpsStringUtils.EMPTY, prefix,
                     IdentifierNodeType.ENUM_VALUE);
         }
     }

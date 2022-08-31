@@ -12,22 +12,22 @@ package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.model.plugin.NamedDataTypeDisplay;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class NamedDatatypeInputFormatTest {
@@ -48,27 +48,18 @@ public class NamedDatatypeInputFormatTest {
 
     @Before
     public void setUpEnumDatatype() {
-        when(enumDatatype.isSupportingNames()).thenReturn(true);
 
-        when(enumDatatype.getValueName(eq("a"), any(Locale.class))).thenReturn("nameA");
         when(enumDatatype.getValueByName(eq("nameA"), any(Locale.class))).thenReturn("a");
         when(enumDatatype.valueToString("a")).thenReturn("a");
-        when(enumDatatype.getValueName(eq("b"), any(Locale.class))).thenReturn("nameB");
-        when(enumDatatype.getValueByName(eq("nameB"), any(Locale.class))).thenReturn("b");
-        when(enumDatatype.valueToString("b")).thenReturn("b");
-        when(enumDatatype.getValueName(eq("c"), any(Locale.class))).thenReturn("c (c)");
         when(enumDatatype.getValueByName(eq("c (c)"), any(Locale.class))).thenReturn("c");
         when(enumDatatype.valueToString("c")).thenReturn("c");
 
         when(enumDatatype.isParsable("a")).thenReturn(true);
-        when(enumDatatype.isParsable("b")).thenReturn(true);
         when(enumDatatype.isParsable("c")).thenReturn(true);
     }
 
     @Test
     public void testParseInternal_idConfigured_parseId() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
@@ -76,8 +67,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_parseName() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
@@ -85,8 +74,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_idConfigured_parseNameSpecial() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.ID);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("c (c)");
 
         assertEquals("c", parsed);
@@ -112,8 +99,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_parseName() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
@@ -121,8 +106,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameConfigured_parseId() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
@@ -166,8 +149,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_parseId() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("a");
 
         assertEquals("a", parsed);
@@ -175,8 +156,6 @@ public class NamedDatatypeInputFormatTest {
 
     @Test
     public void testParseInternal_nameIdConfigured_parseName() throws Exception {
-        when(ipsPreferences.getNamedDataTypeDisplay()).thenReturn(NamedDataTypeDisplay.NAME_AND_ID);
-
         String parsed = NamedDatatypeInputFormat.parseInternal("nameA");
 
         assertEquals("a", parsed);
@@ -261,7 +240,7 @@ public class NamedDatatypeInputFormatTest {
     public void testFormatNullIsEmptyString() throws Exception {
         String nullString = NamedDatatypeInputFormat.format(null);
 
-        assertEquals(StringUtils.EMPTY, nullString);
+        assertEquals(IpsStringUtils.EMPTY, nullString);
     }
 
 }

@@ -11,9 +11,9 @@ Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.abstraction.util,
  org.hamcrest,
- org.junit;version="4.5.0",
+ org.junit;version="4.13.0",
  org.junit.matchers;version="4.5.0",
- org.junit.runner;version="4.5.0",
- org.mockito;version="1.9.5",
- org.mockito.runners;version="1.9.5",
- org.mockito.stubbing;version="1.9.5"
+ org.junit.runner;version="4.13.0",
+ org.mockito;version="4.7.0",
+ org.mockito.junit;version="4.7.0",
+ org.mockito.stubbing;version="4.7.0"

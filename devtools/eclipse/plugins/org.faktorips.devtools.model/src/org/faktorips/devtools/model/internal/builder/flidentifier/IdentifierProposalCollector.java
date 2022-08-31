@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 
 import java.util.ArrayList;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 
 /**

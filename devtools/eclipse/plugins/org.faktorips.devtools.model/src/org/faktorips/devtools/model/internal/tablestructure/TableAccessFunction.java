@@ -14,8 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import com.google.common.base.Objects;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.tablestructure.IColumn;
@@ -113,11 +112,11 @@ public class TableAccessFunction implements ITableAccessFunction {
             return false;
         }
         TableAccessFunction other = (TableAccessFunction)obj;
-        return Objects.equal(argTypeNames, other.argTypeNames)
-                && Objects.equal(column, other.column)
-                && Objects.equal(description, other.description)
-                && Objects.equal(tableStructure, other.tableStructure)
-                && Objects.equal(type, other.type);
+        return Objects.equals(argTypeNames, other.argTypeNames)
+                && Objects.equals(column, other.column)
+                && Objects.equals(description, other.description)
+                && Objects.equals(tableStructure, other.tableStructure)
+                && Objects.equals(type, other.type);
     }
 
 }

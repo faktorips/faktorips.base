@@ -15,28 +15,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.inputformat.DefaultInputFormat;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.productcmpt.ConfiguredValueSet;
 import org.faktorips.devtools.model.internal.valueset.StringLengthValueSet;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
-import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class StringLengthValueSetFormatTest {
 
     @Mock
@@ -70,13 +65,7 @@ public class StringLengthValueSetFormatTest {
     public void setUp() throws Exception {
         format = new StringLengthValueSetFormat(configValueSet, uiPlugin);
 
-        when(uiPlugin.getInputFormat(Mockito.any(ValueDatatype.class), Mockito.any(IIpsProject.class)))
-                .thenReturn(new DefaultInputFormat(null));
-        when(configValueSet.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.STRINGLENGTH));
-        when(configValueSet.findValueDatatype(ipsProject)).thenReturn(datatype);
-        when(configValueSet.getValueSet()).thenReturn(slvs);
         when(configValueSet.getIpsModel()).thenReturn(ipsModel);
-        when(configValueSet.getIpsObject()).thenReturn(ipsObject);
     }
 
     @Test

@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -202,7 +202,7 @@ public abstract class AbstractIdentifierNodeParser {
     protected String getNameAndDescription(String name, String description) {
         StringBuilder result = new StringBuilder();
         result.append(name);
-        if (StringUtils.isNotBlank(description)) {
+        if (IpsStringUtils.isNotBlank(description)) {
             result.append(NAME_DESCRIPTION_SEPERATOR).append(description);
         }
         return result.toString();

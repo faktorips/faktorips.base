@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.faktorips.devtools.core.ui.search.product.conditions.types.IConditionType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the condition types.
@@ -25,7 +25,7 @@ final class ConditionTypeLabelProvider extends ColumnLabelProvider {
     public String getText(Object element) {
         IConditionType conditionType = ((ProductSearchConditionPresentationModel)element).getConditionType();
         if (conditionType == null) {
-            return StringUtils.EMPTY;
+            return IpsStringUtils.EMPTY;
         }
         return conditionType.getName();
     }

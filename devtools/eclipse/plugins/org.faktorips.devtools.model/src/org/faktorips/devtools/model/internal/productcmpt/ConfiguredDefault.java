@@ -13,7 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -112,7 +112,7 @@ public class ConfiguredDefault extends ConfigElement implements IConfiguredDefau
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list) {
         String valueToValidate = getValue();
         IValueSet valueSetToValidate = getValueSet();
-        if (StringUtils.isNotBlank(valueToValidate) && valueSetToValidate != null) {
+        if (IpsStringUtils.isNotBlank(valueToValidate) && valueSetToValidate != null) {
             if (!valueSetToValidate.containsValue(valueToValidate, ipsProject)) {
                 String formattedValue = IIpsModelExtensions.get().getModelPreferences().getDatatypeFormatter()
                         .formatValue(valueDatatype, valueToValidate);

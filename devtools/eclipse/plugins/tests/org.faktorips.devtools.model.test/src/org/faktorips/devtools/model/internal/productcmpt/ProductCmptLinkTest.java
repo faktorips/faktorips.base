@@ -28,7 +28,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.ILabel;
@@ -335,6 +335,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
             link.getCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
@@ -350,6 +351,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
             link.getPluralCaption(null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 

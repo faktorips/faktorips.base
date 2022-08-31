@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
@@ -119,6 +118,7 @@ import org.faktorips.devtools.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 
@@ -621,7 +621,7 @@ public class TestCaseTypeSection extends IpsSection {
         public boolean canModify(Object element, String property) {
             ITestAttribute testAttributeFromObject = getTestAttributeFromObject(element);
             if (property.equals(ITestAttribute.PROPERTY_DATATYPE)) {
-                if (!StringUtils.isEmpty(testAttributeFromObject.getAttribute())) {
+                if (!IpsStringUtils.isEmpty(testAttributeFromObject.getAttribute())) {
                     return false;
                 }
 
@@ -711,7 +711,7 @@ public class TestCaseTypeSection extends IpsSection {
                         break;
                     case 2:
                         // attribute
-                        if (StringUtils.isEmpty(testAttribute.getAttribute())) {
+                        if (IpsStringUtils.isEmpty(testAttribute.getAttribute())) {
                             return null;
                         }
                         baseImage = getImageForAttribute(element);
@@ -947,7 +947,7 @@ public class TestCaseTypeSection extends IpsSection {
             Object firstElement = selection.getFirstElement();
             if (firstElement instanceof ITestPolicyCmptTypeParameter) {
                 ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)firstElement;
-                if (StringUtils.isNotEmpty(param.getPolicyCmptType())) {
+                if (IpsStringUtils.isNotEmpty(param.getPolicyCmptType())) {
                     IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(cmptType);
                 }

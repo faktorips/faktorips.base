@@ -20,12 +20,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ExtensionPropertyValueTest {
 
     private String ID = "myId";
@@ -98,7 +98,6 @@ public class ExtensionPropertyValueTest {
         ExtensionPropertyValue extensionPropertyValue = ExtensionPropertyValue.createExtensionPropertyValue(ID,
                 (Element)null, part);
         extensionPropertyValue.setValue(defaultObject);
-        when(document.importNode(null, true)).thenThrow(new NullPointerException());
 
         extensionPropertyValue.appendToXml(extPropertiesEl);
 

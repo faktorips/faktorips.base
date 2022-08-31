@@ -31,9 +31,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class AssociationDecoratorTest extends AbstractIpsPluginTest {
 
     private AssociationDecorator decorator;
@@ -133,7 +133,6 @@ public class AssociationDecoratorTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_DoesNotOverlayChangeOverTime() {
         when(aProductAssociation.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
-        when(aProductAssociation.isChangingOverTime()).thenReturn(false);
 
         decorator = new AssociationDecorator(false);
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor(aProductAssociation);

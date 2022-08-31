@@ -14,11 +14,11 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.function.Function;
-
-import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.model.internal.util.Histogram;
@@ -30,9 +30,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class DefinedValuesContentProviderTest {
 
     @Mock
@@ -65,10 +65,9 @@ public class DefinedValuesContentProviderTest {
         when(valueC.getPropertyValue()).thenReturn("C");
 
         histogram = new Histogram<>(getValueFunction(),
-                Lists.<ITemplatedValue> newArrayList(valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
+                List.<ITemplatedValue> of(valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
-        when(pmo.getCount()).thenReturn(6);
         when(pmo.getValueComparator()).thenReturn(PropertyValueType.FORMULA.getValueComparator());
 
         definedValuesContentProvider = new DefinedValuesContentProvider();
@@ -139,8 +138,10 @@ public class DefinedValuesContentProviderTest {
         when(pmo.getActualTemplateValue()).thenReturn("C");
         // valueB1 and valueB2 are UNDEFINED and should be sorted at the top below the items with
         // the same value as the template
-        when(valueB1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
-        when(valueB2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        // use lenient() to stub both because it depends on their hash code, which valueB is
+        // compared
+        lenient().when(valueB1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        lenient().when(valueB2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
 
         Object[] elements = definedValuesContentProvider.getElements(null);
         assertThat(elements.length, is(3));

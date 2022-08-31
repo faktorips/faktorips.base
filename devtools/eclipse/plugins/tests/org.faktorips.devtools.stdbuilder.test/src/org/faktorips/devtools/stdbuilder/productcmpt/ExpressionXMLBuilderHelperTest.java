@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -52,8 +52,8 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
         ipsProject = mock(IIpsProject.class);
         when(builderSet.getIpsProject()).thenReturn(ipsProject);
         helper = spy(new ExpressionXMLBuilderHelper(builderSet));
-        doReturn("TestReturn").when(helper).generateJavaCode((IFormula)anyObject(),
-                (IProductCmptTypeMethod)anyObject(), eq(buildStatus));
+        doReturn("TestReturn").when(helper).generateJavaCode((IFormula)any(),
+                (IProductCmptTypeMethod)any(), eq(buildStatus));
 
         node1 = mock(Element.class);
         when(node1.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME)).thenReturn("NormaleFormel1");
@@ -80,10 +80,10 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
 
         helper.addCompiledFormulaExpressions(getTestDocument(), formulas, formulaElements, buildStatus);
 
-        verify(node1, never()).appendChild((Node)anyObject());
-        verify(node2, never()).appendChild((Node)anyObject());
-        verify(node3).appendChild((Node)anyObject());
-        verify(node4).appendChild((Node)anyObject());
+        verify(node1, never()).appendChild((Node)any());
+        verify(node2, never()).appendChild((Node)any());
+        verify(node3).appendChild((Node)any());
+        verify(node4).appendChild((Node)any());
     }
 
     @Test
@@ -100,9 +100,9 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
 
         helper.addCompiledFormulaExpressions(getTestDocument(), formulas, formulaElements, buildStatus);
 
-        verify(node1).appendChild((Node)anyObject());
-        verify(node2).appendChild((Node)anyObject());
-        verify(node3, never()).appendChild((Node)anyObject());
-        verify(node4, never()).appendChild((Node)anyObject());
+        verify(node1).appendChild((Node)any());
+        verify(node2).appendChild((Node)any());
+        verify(node3, never()).appendChild((Node)any());
+        verify(node4, never()).appendChild((Node)any());
     }
 }

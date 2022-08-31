@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.NullArgumentException;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
@@ -123,7 +122,7 @@ public class ProductCmptLinkCollection {
 
     private void throwExceptionIfLinkCannotBeAdded(IProductCmptLink link) {
         if (link == null) {
-            throw new NullArgumentException("Cannot add \"null\" to a ProductCmptLinkCollection"); //$NON-NLS-1$
+            throw new IllegalArgumentException("Cannot add \"null\" to a ProductCmptLinkCollection"); //$NON-NLS-1$
         }
     }
 

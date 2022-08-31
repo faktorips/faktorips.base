@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jface.action.Action;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * 
@@ -118,7 +118,7 @@ public class TestRunPane {
 
     private void startSelectedTest(String mode) {
         String selectedTestQualifiedName = getSelectedTestQualifiedName();
-        if (StringUtils.isEmpty(selectedTestQualifiedName)) {
+        if (IpsStringUtils.isEmpty(selectedTestQualifiedName)) {
             return;
         }
 

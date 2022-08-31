@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorSite;
 import org.faktorips.devtools.core.ui.editors.tablecontents.Messages;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Writes Messages about the Selection in the Eclipse Status Bar. The Row if a single Row is
@@ -65,7 +65,7 @@ public class SelectionStatusBarPublisher {
     private void updateMarkedRowsLabel() {
         String labelContent;
         if (selectedRows.isEmpty()) {
-            labelContent = StringUtils.EMPTY;
+            labelContent = IpsStringUtils.EMPTY;
 
         } else {
             if (selectedRows.size() == 1) {

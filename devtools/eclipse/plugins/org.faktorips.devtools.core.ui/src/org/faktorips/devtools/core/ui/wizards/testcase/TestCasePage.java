@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.testcase;
 
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.testcase.ITestValue;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.testcasetype.ITestParameter;
 import org.faktorips.devtools.model.testcasetype.ITestValueParameter;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * @author Joerg Ortmann
@@ -122,7 +122,7 @@ public class TestCasePage extends IpsObjectPage {
     @Override
     protected void setDefaultFocus() {
         super.setDefaultFocus();
-        if (StringUtils.isEmpty(superTypeControl.getText())) {
+        if (IpsStringUtils.isEmpty(superTypeControl.getText())) {
             superTypeControl.setFocus();
             return;
         }

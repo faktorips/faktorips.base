@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.IFilter;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -72,9 +72,9 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
     @Override
     protected Control createSecondControl(UIToolkit toolkit) {
         buttonComposite = toolkit.createGridComposite(this, 2, false, false);
-        browseButton = toolkit.createButton(buttonComposite, StringUtils.EMPTY);
+        browseButton = toolkit.createButton(buttonComposite, IpsStringUtils.EMPTY);
         browseButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("browse.gif", true)); //$NON-NLS-1$
-        newButton = toolkit.createButton(buttonComposite, StringUtils.EMPTY);
+        newButton = toolkit.createButton(buttonComposite, IpsStringUtils.EMPTY);
         newButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("NewTableContentsWizard.gif", true)); //$NON-NLS-1$
         return buttonComposite;
     }

@@ -18,8 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.codegen.DatatypeHelper;
@@ -192,12 +191,12 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     public boolean isDescribed() {
-        return StringUtils.isNotBlank(getDescription());
+        return IpsStringUtils.isNotBlank(getDescription());
     }
 
     public String getDescriptionForJDoc() {
         String description = getDescription();
-        return StringUtils.isEmpty(description) ? "" : "<p>\n" + description;
+        return IpsStringUtils.isEmpty(description) ? "" : "<p>\n" + description;
     }
 
     /**

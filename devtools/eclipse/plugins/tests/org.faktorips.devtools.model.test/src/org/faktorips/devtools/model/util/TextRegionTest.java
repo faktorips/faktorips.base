@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Test;
 
 public class TextRegionTest {
@@ -34,7 +34,7 @@ public class TextRegionTest {
     @Test
     public void testReplaceTextRegionEmptyString() {
         region = new TextRegion(completeIdentifierString, 10, 17);
-        String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+        String refactoredString = region.replaceTextRegion(completeIdentifierString, IpsStringUtils.EMPTY);
 
         assertEquals("oldString.OfString", refactoredString);
     }
@@ -42,7 +42,7 @@ public class TextRegionTest {
     @Test
     public void testReplaceTextRegionInvalidStartEndPoints() {
         region = new TextRegion(completeIdentifierString, -1, -8);
-        String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
+        String refactoredString = region.replaceTextRegion(completeIdentifierString, IpsStringUtils.EMPTY);
 
         assertEquals(completeIdentifierString, refactoredString);
     }

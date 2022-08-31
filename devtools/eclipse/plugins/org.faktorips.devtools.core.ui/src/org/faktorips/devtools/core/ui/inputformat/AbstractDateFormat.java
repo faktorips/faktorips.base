@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Base class for data type format date/gregorian calendar.
@@ -40,7 +40,7 @@ public abstract class AbstractDateFormat<T> extends AbstractInputFormat<T> {
     private String exampleString;
 
     protected AbstractDateFormat() {
-        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        super(IpsStringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
     }
 
     @Override

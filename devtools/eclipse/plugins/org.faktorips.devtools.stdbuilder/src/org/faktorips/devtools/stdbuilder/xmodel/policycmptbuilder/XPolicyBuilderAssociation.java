@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.policycmptbuilder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAssociation;

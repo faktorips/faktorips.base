@@ -14,8 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -32,8 +31,6 @@ import java.util.jar.Manifest;
 
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFile;
-import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -42,7 +39,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class IpsBundleManifestTest {
@@ -88,7 +85,6 @@ public class IpsBundleManifestTest {
     @Before
     public void createIpsBundleManifest() {
         mockManifest();
-        mockProject();
         ipsBundleManifest = new IpsBundleManifest(manifest);
     }
 
@@ -113,13 +109,6 @@ public class IpsBundleManifestTest {
                 .thenReturn(MY_UNIQUE_QUALIFIER2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_SRC_OUT)).thenReturn(MY_SRC_OUT2);
         when(attributesForObjectDir.getValue(IpsBundleManifest.HEADER_RESOURCE_OUT)).thenReturn(MY_RESOURCE_OUT2);
-    }
-
-    public void mockProject() {
-        AProject project = mock(AProject.class);
-        when(ipsProject.getProject()).thenReturn(project);
-        AFolder folder = mock(AFolder.class);
-        when(project.getFolder(anyString())).thenReturn(folder);
     }
 
     @Test
@@ -172,8 +161,6 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetUniqueQualifier_trim() {
-        when(manifest.getMainAttributes().getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
-                .thenReturn(" " + MY_UNIQUE_QUALIFIER + " ");
 
         String uniqueQualifier = ipsBundleManifest.getUniqueQualifier();
 
@@ -189,8 +176,6 @@ public class IpsBundleManifestTest {
 
     @Test
     public void testGetUniqueQualifier_forObjectDirTrim() {
-        when(manifest.getAttributes(MY_OBJECT_DIR).getValue(IpsBundleManifest.HEADER_BASE_PACKAGE))
-                .thenReturn(" " + MY_UNIQUE_QUALIFIER2 + " ");
 
         String uniqueQualifier = ipsBundleManifest.getUniqueQualifier(MY_OBJECT_DIR);
 
@@ -398,7 +383,6 @@ public class IpsBundleManifestTest {
         when(builderSetConfig.getPropertyValue("booleanAttr")).thenReturn(Boolean.TRUE);
         when(builderSetConfig.getPropertyValue("intAttr")).thenReturn(42);
         AFile eclipseManifestFile = mock(AFile.class);
-        when(ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME)).thenReturn(eclipseManifestFile);
         Path eclipseManifestPath = mock(Path.class);
         when(eclipseManifestFile.getLocation()).thenReturn(eclipseManifestPath);
         File manifestFile = Files.createTempFile("MANIFEST", "MF").toFile();

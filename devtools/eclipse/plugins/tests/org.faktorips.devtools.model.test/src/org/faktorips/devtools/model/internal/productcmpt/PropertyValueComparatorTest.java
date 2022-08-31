@@ -14,7 +14,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -22,9 +21,9 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class PropertyValueComparatorTest {
 
     @Mock
@@ -59,10 +58,8 @@ public class PropertyValueComparatorTest {
     public void testCompare_SameType_SameName_DifferentValueType() {
         when(value1.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
         when(value1.getPropertyName()).thenReturn("a1");
-        when(value1.getPropertyValueType()).thenReturn(PropertyValueType.CONFIGURED_VALUESET);
         when(value2.getProductCmptPropertyType()).thenReturn(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE);
         when(value2.getPropertyName()).thenReturn("a2");
-        when(value2.getPropertyValueType()).thenReturn(PropertyValueType.CONFIGURED_DEFAULT);
 
         assertThat(propertyValueComparator.compare(value1, value2), lt(0));
         assertThat(propertyValueComparator.compare(value2, value1), gt(0));

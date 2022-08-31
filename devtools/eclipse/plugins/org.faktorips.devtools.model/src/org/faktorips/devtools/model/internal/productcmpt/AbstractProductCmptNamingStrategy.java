@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -189,7 +190,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     @Override
     public MessageList validateKindId(String kindId) {
         MessageList list = new MessageList();
-        if (StringUtils.isEmpty(kindId)) {
+        if (IpsStringUtils.isEmpty(kindId)) {
             Message msg = Message.newError(MSGCODE_KIND_ID_IS_EMPTY,
                     Messages.AbstractProductCmptNamingStrategy_emptyKindId);
             list.add(msg);
@@ -318,7 +319,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
     @Override
     public MessageList validateRuntimeId(String runtimeId) {
         MessageList result = new MessageList();
-        if (StringUtils.isEmpty(runtimeId)) {
+        if (IpsStringUtils.isEmpty(runtimeId)) {
             String text = MessageFormat.format(Messages.DefaultRuntimeIdStrategy_msgRuntimeIdNotValid, runtimeId);
             result.add(new Message(MSGCODE_INVALID_RUNTIME_ID_FORMAT, text, Message.ERROR, this));
         }

@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.ui;
 
 import java.util.Objects;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Convenience wrapper for {@link StyledText}. Allows to easily add formatted text blocks to a
@@ -36,7 +36,7 @@ public class StyledTextUtil {
      */
     public static void clear(StyledText targetWidget) {
         Objects.requireNonNull(targetWidget, WIDGET_NULL_WARNING);
-        targetWidget.setText(StringUtils.EMPTY);
+        targetWidget.setText(IpsStringUtils.EMPTY);
     }
 
     /**
@@ -64,7 +64,7 @@ public class StyledTextUtil {
 
     public static void appendNewLine(StyledText targetWidget) {
         Objects.requireNonNull(targetWidget, WIDGET_NULL_WARNING);
-        appendLinePlain(targetWidget, StringUtils.EMPTY);
+        appendLinePlain(targetWidget, IpsStringUtils.EMPTY);
     }
 
     /**

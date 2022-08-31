@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -128,7 +128,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             ITestPolicyCmptTypeParameter[] parameters) {
 
         for (ITestPolicyCmptTypeParameter parameter : parameters) {
-            if (StringUtils.isNotEmpty(parameter.getPolicyCmptType())) {
+            if (IpsStringUtils.isNotEmpty(parameter.getPolicyCmptType())) {
                 IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
                         new QualifiedNameType(parameter.getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
                 dependencies.add(dependency);
@@ -146,7 +146,7 @@ public class TestCaseType extends IpsObject implements ITestCaseType {
             Set<IDependency> dependencies) {
 
         for (ITestAttribute attribute : attributes) {
-            if (!StringUtils.isEmpty(attribute.getPolicyCmptType())) {
+            if (!IpsStringUtils.isEmpty(attribute.getPolicyCmptType())) {
                 IDependency dependency = new DatatypeDependency(getQualifiedNameType(), attribute.getPolicyCmptType());
                 dependencies.add(dependency);
                 addDetails(details, dependency, attribute, ITestAttribute.PROPERTY_POLICYCMPTTYPE_OF_ATTRIBUTE);

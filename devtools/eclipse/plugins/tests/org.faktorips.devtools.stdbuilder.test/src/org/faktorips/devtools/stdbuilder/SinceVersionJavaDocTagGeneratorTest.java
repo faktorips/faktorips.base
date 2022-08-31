@@ -20,9 +20,9 @@ import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class SinceVersionJavaDocTagGeneratorTest {
 
     @Mock
@@ -32,7 +32,6 @@ public class SinceVersionJavaDocTagGeneratorTest {
 
     @Test
     public void testCreateAnnotation_withSinceVersion() throws Exception {
-        when(modelNode.hasSinceVersion()).thenReturn(true);
         when(modelNode.getSinceVersion()).thenReturn("1.2.3");
         JavaCodeFragment expected = new JavaCodeFragment("@since 1.2.3" + System.lineSeparator());
 
@@ -50,7 +49,6 @@ public class SinceVersionJavaDocTagGeneratorTest {
      */
     @Test
     public void testCreateAnnotation_noSinceVersion() throws Exception {
-        when(modelNode.hasSinceVersion()).thenReturn(false);
         JavaCodeFragment expected = new JavaCodeFragment("@since null" + System.lineSeparator());
 
         JavaCodeFragment annotation = generator.createAnnotation(modelNode);

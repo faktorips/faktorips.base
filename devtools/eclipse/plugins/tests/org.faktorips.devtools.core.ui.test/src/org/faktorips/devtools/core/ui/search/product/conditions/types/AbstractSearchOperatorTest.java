@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -33,7 +32,7 @@ public class AbstractSearchOperatorTest extends AbstractIpsPluginTest {
 
         searchOperator.check(productPartsContainer);
 
-        verify(searchOperator, never()).check(anyObject(), any(IProductPartsContainer.class));
+        verify(searchOperator, never()).check(any(), any(IProductPartsContainer.class));
     }
 
     @Test

@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.versionmanager.util;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,16 +25,17 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.model.internal.versionmanager.util.ManifestUtil.ManifestFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.StrictStubs.class)
 public class ManifestUtilTest {
 
     @Mock
@@ -68,11 +69,18 @@ public class ManifestUtilTest {
     private static final VersionRange RANGE1 = new VersionRange(VERSION_3_10, true, VERSION_3_11, true);
     private static final VersionRange RANGE2 = new VersionRange(VERSION_3_10, true, VERSION_3_11, false);
 
+    private AutoCloseable openMocks;
+
     @Before
     public void mockManifest() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        openMocks = MockitoAnnotations.openMocks(this);
         when(manifest.getMainAttributes()).thenReturn(attributes);
         when(manifestFactory.loadManifest(file)).thenReturn(manifest);
+    }
+
+    @After
+    public void releaseMocks() throws Exception {
+        openMocks.close();
     }
 
     @Test(expected = NullPointerException.class)

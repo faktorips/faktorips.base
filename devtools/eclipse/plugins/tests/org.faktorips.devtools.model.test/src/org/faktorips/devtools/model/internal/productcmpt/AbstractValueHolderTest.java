@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.internal.productcmpt;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -70,13 +70,13 @@ public class AbstractValueHolderTest {
         when(abstractValueHolder.getParent()).thenReturn(parentMock);
 
         abstractValueHolder.objectHasChanged(null, null);
-        verifyZeroInteractions(mockContent);
+        verifyNoInteractions(mockContent);
 
         abstractValueHolder.objectHasChanged("", "");
-        verifyZeroInteractions(mockContent);
+        verifyNoInteractions(mockContent);
 
         abstractValueHolder.objectHasChanged(new ArrayList<>(), new ArrayList<>());
-        verifyZeroInteractions(mockContent);
+        verifyNoInteractions(mockContent);
 
         abstractValueHolder.objectHasChanged("", "abc");
         verify(mockContent).ipsObjectChanged(any(ContentChangeEvent.class));
