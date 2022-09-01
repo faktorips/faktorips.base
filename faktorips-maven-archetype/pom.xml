@@ -6,9 +6,14 @@
         <maven>3.5.0</maven>
     </prerequisites>
 
-    <groupId>org.faktorips</groupId>
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-runtime-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../runtime/pom.xml</relativePath>
+    </parent>
+
     <artifactId>faktorips-maven-archetype</artifactId>
-    <version>22.12.0-SNAPSHOT</version>
     <name>Faktor-IPS Archetype</name>
 
     <packaging>maven-archetype</packaging>
@@ -27,13 +32,11 @@
     </licenses>
 
     <properties>
+        <java.version>11</java.version>
         <!-- Maven plugin versions -->
         <maven-archetype-plugin.version>3.2.0</maven-archetype-plugin.version>
         <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
         <maven-source-plugin>3.2.1</maven-source-plugin>
-        <!-- Encodings -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <build>
@@ -106,9 +109,6 @@
         </pluginManagement>
     </build>
 
-    <scm>
-        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-    </scm>
 
     <profiles>
         <profile>

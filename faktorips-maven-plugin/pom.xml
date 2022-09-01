@@ -265,10 +265,6 @@
         </plugins>
     </reporting>
 
-    <scm>
-        <connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-    </scm>
-
     <repositories>
         <repository>
             <id>tycho-snapshots</id>
