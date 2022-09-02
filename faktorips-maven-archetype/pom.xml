@@ -18,19 +18,6 @@
 
     <packaging>maven-archetype</packaging>
 
-    <organization>
-        <name>Faktor Zehn GmbH</name>
-        <url>https://faktorzehn.org/</url>
-    </organization>
-
-    <licenses>
-        <license>
-            <name>GNU Affero General Public License Version 3 with additional permissions</name>
-            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
     <properties>
         <java.version>11</java.version>
         <!-- Maven plugin versions -->

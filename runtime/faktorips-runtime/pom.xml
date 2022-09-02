@@ -31,31 +31,31 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.runtime {
-	                                    requires transitive org.faktorips.valuetypes;
-	                                    requires transitive opencsv;
-	                                    requires transitive junit;
-	                                    requires transitive java.desktop;
-	                                    requires transitive java.xml;
-	                                    requires transitive java.xml.bind;
-	                                    exports org.faktorips.runtime;
-	                                    exports org.faktorips.runtime.annotation;
-	                                    exports org.faktorips.runtime.caching;
-	                                    exports org.faktorips.runtime.formula;
-	                                    exports org.faktorips.runtime.internal;
-	                                    exports org.faktorips.runtime.internal.tableindex;
-	                                    exports org.faktorips.runtime.internal.toc;
-	                                    exports org.faktorips.runtime.jaxb;
-	                                    exports org.faktorips.runtime.model;
-	                                    exports org.faktorips.runtime.model.annotation;
-	                                    exports org.faktorips.runtime.model.enumtype;
-	                                    exports org.faktorips.runtime.model.table;
-	                                    exports org.faktorips.runtime.model.type;
-	                                    exports org.faktorips.runtime.model.type.read;
-	                                    exports org.faktorips.runtime.productdataprovider;
-	                                    exports org.faktorips.runtime.test;
-	                                    exports org.faktorips.runtime.util;
-	                                    exports org.faktorips.runtime.util.function;
-	                                    exports org.faktorips.runtime.validation;
+                                    requires transitive org.faktorips.valuetypes;
+                                    requires transitive opencsv;
+                                    requires transitive junit;
+                                    requires transitive java.desktop;
+                                    requires transitive java.xml;
+                                    requires transitive java.xml.bind;
+                                    exports org.faktorips.runtime;
+                                    exports org.faktorips.runtime.annotation;
+                                    exports org.faktorips.runtime.caching;
+                                    exports org.faktorips.runtime.formula;
+                                    exports org.faktorips.runtime.internal;
+                                    exports org.faktorips.runtime.internal.tableindex;
+                                    exports org.faktorips.runtime.internal.toc;
+                                    exports org.faktorips.runtime.jaxb;
+                                    exports org.faktorips.runtime.model;
+                                    exports org.faktorips.runtime.model.annotation;
+                                    exports org.faktorips.runtime.model.enumtype;
+                                    exports org.faktorips.runtime.model.table;
+                                    exports org.faktorips.runtime.model.type;
+                                    exports org.faktorips.runtime.model.type.read;
+                                    exports org.faktorips.runtime.productdataprovider;
+                                    exports org.faktorips.runtime.test;
+                                    exports org.faktorips.runtime.util;
+                                    exports org.faktorips.runtime.util.function;
+                                    exports org.faktorips.runtime.validation;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -79,9 +79,9 @@
                             org.faktorips.*
                         </Import-Package>
                         <Export-Package>
-                        	org.faktorips.runtime,
-                        	org.faktorips.runtime.*,
-                        	org.faktorips.runtime.internal
+                            org.faktorips.runtime,
+                            org.faktorips.runtime.*,
+                            org.faktorips.runtime.internal
                         </Export-Package>
                         <Bundle-SymbolicName>org.faktorips.runtime</Bundle-SymbolicName>
                     </instructions>
@@ -100,12 +100,12 @@
             <artifactId>junit</artifactId>
             <scope>compile</scope>
             <optional>true</optional>
-        </dependency> 
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <optional>true</optional>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

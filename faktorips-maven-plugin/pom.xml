@@ -156,7 +156,7 @@
                     <artifactId>tycho-maven-plugin</artifactId>
                     <version>${tycho-maven-plugin.version}</version>
                 </plugin>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -292,9 +292,15 @@
                                 <id>upload-documentation</id>
                                 <phase>deploy</phase>
                                 <goals>
+                                    <goal>sshexec</goal>
                                     <goal>upload</goal>
                                 </goals>
                                 <configuration>
+                                    <commands>
+                                        <command>rm -rf \
+                                            /var/www/doc.faktorzehn.org/faktorips-maven-plugin/${project.version}/*</command>
+                                    </commands>
+                                    <serverId>doc.faktorzehn.org</serverId>
                                     <fromDir>target/site</fromDir>
                                     <includes>**/*</includes>
                                     <url>scp://doc@doc.faktorzehn.org:2004</url>

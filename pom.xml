@@ -10,7 +10,7 @@
 <!-- restrictions as well as the possibility of alternative license terms. -->
 <!-- -->
 <!-- ########################################################################### -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" child.project.url.inherit.append.path="false">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -20,6 +20,20 @@
 
     <name>Faktor-IPS</name>
     <description>Platform for Developing Insurance Applications</description>
+    <url>http://faktorzehn.org</url>
+
+    <organization>
+        <name>Faktor Zehn GmbH</name>
+        <url>http://faktorzehn.org</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>fips</id>
+            <name>Faktor-IPS-Team</name>
+            <email>fips@faktorzehn.de</email>
+        </developer>
+    </developers>
 
     <licenses>
         <license>
@@ -99,7 +113,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>faktorips-coverage</module>
     </modules>
 
-    <scm>
+    <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false" child.scm.url.inherit.append.path="false">
         <connection>scm:git:git@github.com:faktorips/faktorips.base.git</connection>
         <developerConnection>scm:git:git@github.com:faktorips/faktorips.base.git</developerConnection>
         <url>https://github.com/faktorips/faktorips.base</url>
@@ -151,6 +165,14 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>${maven-source-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar-no-fork</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
