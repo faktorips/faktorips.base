@@ -39,5 +39,6 @@ Import-Package: com.opencsv;version="3.3.0",
  org.faktorips.devtools.model.tablestructure,
  org.faktorips.devtools.model.value,
  org.faktorips.runtime,
+ org.faktorips.runtime.internal,
  org.faktorips.runtime.util,
  org.faktorips.values

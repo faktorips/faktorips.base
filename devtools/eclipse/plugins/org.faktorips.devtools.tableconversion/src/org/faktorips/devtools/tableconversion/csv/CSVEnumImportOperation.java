@@ -40,6 +40,7 @@ import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.value.ValueType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -127,7 +128,6 @@ public class CSVEnumImportOperation implements ICoreRunnable {
             if (ignoreColumnHeaderRow) {
                 reader.readNext();
             }
-
             int expectedFields = valueContainer.findEnumType(valueContainer.getIpsProject())
                     .getEnumAttributesCountIncludeSupertypeCopies(includeLiteralName);
 
@@ -146,34 +146,8 @@ public class CSVEnumImportOperation implements ICoreRunnable {
 
                 IEnumValue genRow = valueContainer.newEnumValue();
                 for (short j = 0; j < Math.min(expectedFields, readLine.length); j++) {
-                    String ipsValue;
-
-                    IEnumAttributeValue column = genRow.getEnumAttributeValues().get(j);
-
                     String enumField = readLine[j];
-                    if (nullRepresentationString.equals(enumField)) {
-                        ipsValue = null;
-                    } else {
-                        ipsValue = getIpsValue(enumField, datatypes[j]);
-                    }
-
-                    if (enumField == null) {
-                        Object[] objects = new Object[3];
-                        objects[0] = Integer.valueOf(rowNumber);
-                        objects[1] = Integer.valueOf(j);
-                        objects[2] = nullRepresentationString;
-                        String msg = NLS
-                                .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
-                        messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
-
-                    }
-                    if (column.getValueType().equals(ValueType.STRING)) {
-                        column.setValue(ValueFactory.createStringValue(ipsValue));
-                    } else if (column.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
-                        IValue<?> value = column.getValue();
-                        IInternationalString content = (IInternationalString)value.getContent();
-                        content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
-                    }
+                    fillField(genRow, enumField, rowNumber, j);
                 }
                 ++rowNumber;
             }
@@ -184,6 +158,36 @@ public class CSVEnumImportOperation implements ICoreRunnable {
                 // this is a serious problem, so report it.
                 IpsPlugin.log(e);
             }
+        }
+    }
+
+    private void fillField(IEnumValue genRow, String enumField, int rowNumber, short fieldIndex) {
+        String ipsValue;
+
+        IEnumAttributeValue column = genRow.getEnumAttributeValues().get(fieldIndex);
+
+        if (nullRepresentationString.equals(enumField)) {
+            ipsValue = null;
+        } else {
+            ipsValue = getIpsValue(enumField, datatypes[fieldIndex]);
+        }
+
+        if (IpsStringUtils.isBlank(enumField)) {
+            Object[] objects = new Object[3];
+            objects[0] = rowNumber;
+            objects[1] = fieldIndex;
+            objects[2] = nullRepresentationString;
+            String msg = NLS
+                    .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
+            messageList.add(new Message("", msg, Message.WARNING)); //$NON-NLS-1$
+
+        }
+        if (column.getValueType().equals(ValueType.STRING)) {
+            column.setValue(ValueFactory.createStringValue(ipsValue));
+        } else if (column.getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
+            IValue<?> value = column.getValue();
+            IInternationalString content = (IInternationalString)value.getContent();
+            content.add(new LocalizedString(getDefaultLanguage(column.getIpsProject()), ipsValue));
         }
     }
 

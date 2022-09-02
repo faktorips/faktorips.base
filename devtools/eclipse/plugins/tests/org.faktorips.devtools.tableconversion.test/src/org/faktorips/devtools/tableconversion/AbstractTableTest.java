@@ -50,6 +50,9 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
             Datatype.GREGORIAN_CALENDAR.getQualifiedName(), Datatype.INTEGER.getQualifiedName(),
             Datatype.LONG.getQualifiedName(), Datatype.MONEY.getQualifiedName(), Datatype.STRING.getQualifiedName() };
 
+    private final String[] stringDatatypes = { Datatype.STRING.getQualifiedName(), Datatype.STRING.getQualifiedName(),
+            Datatype.STRING.getQualifiedName() };
+
     public ITableStructure getStructure() {
         return structure;
     }
@@ -256,6 +259,44 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         enumAttributeValues.get(8).setValue(ValueFactory.createStringValue("_UniqueKey"));
 
         // enumType.getIpsSrcFile().save(true, null);
+
+        return enumType;
+    }
+
+    /**
+     * Creates valid table String contents with String values
+     */
+    protected IEnumType createValidEnumTypeWithStringValues(IIpsProject ipsProject) {
+        IEnumType enumType = (IEnumType)newIpsObject(ipsProject, IpsObjectType.ENUM_TYPE, "EnumExportSource");
+        enumType.setAbstract(false);
+        enumType.setExtensible(false);
+        enumType.newEnumLiteralNameAttribute();
+
+        // create attributes (structure)
+        for (int i = 0; i < stringDatatypes.length; i++) {
+            IEnumAttribute enumAttribute = enumType.newEnumAttribute();
+            enumAttribute.setName("id" + i);
+            enumAttribute.setDatatype(stringDatatypes[i]);
+        }
+        IEnumAttribute idAttribute = enumType.getEnumAttributes(false).get(enumType.getEnumAttributesCount(false) - 1);
+        idAttribute.setUnique(true);
+        idAttribute.setIdentifier(true); // satisfy validation rules
+        idAttribute.setUsedAsNameInFaktorIpsUi(true); // satisfy validation rules
+
+        // create String values inside the enumeration type
+        IEnumValue enumValueRow1 = enumType.newEnumValue();
+        List<IEnumAttributeValue> enumAttributeValues = enumValueRow1.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("SIMPLE_TEXT"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("SimpleText1"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("SimpleText2"));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("SimpleText3"));
+
+        IEnumValue enumValueRow2 = enumType.newEnumValue();
+        enumAttributeValues = enumValueRow2.getEnumAttributeValues();
+        enumAttributeValues.get(0).setValue(ValueFactory.createStringValue("SIMPLE_TEXT"));
+        enumAttributeValues.get(1).setValue(ValueFactory.createStringValue("SimpleText1"));
+        enumAttributeValues.get(2).setValue(ValueFactory.createStringValue("SimpleText2"));
+        enumAttributeValues.get(3).setValue(ValueFactory.createStringValue("SimpleText3"));
 
         return enumType;
     }
