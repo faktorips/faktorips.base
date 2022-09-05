@@ -100,7 +100,8 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * Checks if the parameter equals the NullPresentation of the {@link IpsPreferences}
      */
     protected boolean isPreferencesNullPresentation(String stringToBeParsed) {
-        return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
+        return IpsStringUtils.trimEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(),
+                stringToBeParsed);
     }
 
     @Override

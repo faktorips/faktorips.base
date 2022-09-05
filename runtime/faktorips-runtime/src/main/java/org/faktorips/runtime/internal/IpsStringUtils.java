@@ -64,6 +64,20 @@ public final class IpsStringUtils {
     }
 
     /**
+     * Trims the parameters, if the are not {@code null} and checks for equality using
+     * {@link Objects#equals(Object, Object)}.
+     * 
+     * @param s1 an string
+     * @param s2 an string to be compared with a for equality
+     * @return {@code true} if the arguments are equal to each other and {@code false} otherwise
+     */
+    public static boolean trimEquals(String s1, String s2) {
+        return Objects.equals(
+                s1 != null ? s1.trim() : s1,
+                s2 != null ? s2.trim() : s2);
+    }
+
+    /**
      * Joins the elements of the provided {@link Collection} into a single String containing the
      * provided elements with the given separator. No delimiter is added before or after the list.
      * 

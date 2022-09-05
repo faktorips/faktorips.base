@@ -16,6 +16,7 @@ import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.DatatypeFormatter;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Fallback input format.
@@ -48,7 +49,8 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
      */
     @Override
     protected boolean isRepresentingNull(String stringToBeParsed) {
-        return getNullString().equals(stringToBeParsed) || isPreferencesNullPresentation(stringToBeParsed);
+        return IpsStringUtils.trimEquals(getNullString(), stringToBeParsed)
+                || isPreferencesNullPresentation(stringToBeParsed);
     }
 
     @Override

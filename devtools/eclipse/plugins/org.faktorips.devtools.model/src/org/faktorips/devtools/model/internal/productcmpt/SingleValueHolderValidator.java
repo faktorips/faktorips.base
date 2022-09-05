@@ -89,11 +89,11 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 String nullPresentation = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
                 InternationalString content = (InternationalString)value.getContent();
                 for (LocalizedString localizedString : content.values()) {
-                    if (nullPresentation.equals(localizedString.getValue())
+                    if (IpsStringUtils.trimEquals(nullPresentation, localizedString.getValue())
                             || IpsStringUtils.isBlank(localizedString.getValue())) {
-                        String text = MessageFormat.format(Messages.AttributeValue_ValueNotAllowed,
-                                nullPresentation,
-                                parent.getName());
+                        String text = MessageFormat.format(Messages.AttributeValue_ValueEmptyOrNull,
+                                parent.getName(),
+                                getFormattedValue(localizedString.getValue()));
                         messages.newError(MSGCODE_VALUE_NOT_IN_SET, text, invalidObjectProperties);
                         break;
                     }
@@ -140,4 +140,9 @@ public class SingleValueHolderValidator implements IValueHolderValidator {
                 value);
     }
 
+    private String getFormattedValue(String value) {
+        return value != null && value.isBlank()
+                ? '"' + value + '"'
+                : value;
+    }
 }
