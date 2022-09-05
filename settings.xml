@@ -109,6 +109,13 @@
             <layout>p2</layout>
             <mirrorOfLayouts>p2</mirrorOfLayouts>
         </mirror>
+        <mirror>
+            <id>faktorzehn-2022-06</id>
+            <mirrorOf>https://update.faktorzehn.org/p2repositories/2022-06</mirrorOf>
+            <url>http://download.eclipse.org/releases/2022-06</url>
+            <layout>p2</layout>
+            <mirrorOfLayouts>p2</mirrorOfLayouts>
+        </mirror>
         
         <!-- Babel -->
         <mirror>
