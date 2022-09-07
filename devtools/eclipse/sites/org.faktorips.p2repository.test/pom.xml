@@ -6,11 +6,9 @@
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-sites</artifactId>
         <version>22.12.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>org.faktorips.p2repository.test</artifactId>
-
     <packaging>eclipse-repository</packaging>
 
     <profiles>

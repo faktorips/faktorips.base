@@ -18,8 +18,7 @@
     <modules>
         <!-- p2 Repository and product -->
         <module>org.faktorips.p2repository</module>
-        <module>org.faktorips.p2repository/test</module>
-        <!--<module>org.faktorips.p2repository/product</module>-->
+        <module>org.faktorips.p2repository.test</module>
     </modules>
 
 </project>
