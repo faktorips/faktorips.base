@@ -1,0 +1,1 @@
+Launch configs need to be in the root or Eclipse displays them multiple times (once from their project, and once from every parent in the hierarchy that is also a workspace project)
