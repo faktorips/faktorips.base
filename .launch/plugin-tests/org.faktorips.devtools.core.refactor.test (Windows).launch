@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
     <booleanAttribute key="append.args" value="true"/>
-    <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
     <booleanAttribute key="askclear" value="false"/>
-    <booleanAttribute key="automaticAdd" value="false"/>
+    <booleanAttribute key="automaticAdd" value="true"/>
     <booleanAttribute key="automaticValidate" value="true"/>
     <stringAttribute key="bootstrap" value=""/>
     <stringAttribute key="checked" value="[NONE]"/>
@@ -12,20 +11,53 @@
     <booleanAttribute key="clearwslog" value="false"/>
     <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/pde-junit"/>
     <booleanAttribute key="default" value="false"/>
-    <setAttribute key="deselected_target_bundles"/>
-    <setAttribute key="deselected_workspace_bundles"/>
+    <setAttribute key="deselected_workspace_bundles">
+        <setEntry value="org.faktorips.devtools.abstraction.test"/>
+        <setEntry value="org.faktorips.devtools.ant"/>
+        <setEntry value="org.faktorips.devtools.ant.test"/>
+        <setEntry value="org.faktorips.devtools.core.test"/>
+        <setEntry value="org.faktorips.devtools.core.ui"/>
+        <setEntry value="org.faktorips.devtools.core.ui.test"/>
+        <setEntry value="org.faktorips.devtools.htmlexport"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.nl1"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.test"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.ui"/>
+        <setEntry value="org.faktorips.devtools.model.builder.test"/>
+        <setEntry value="org.faktorips.devtools.model.decorators"/>
+        <setEntry value="org.faktorips.devtools.model.decorators.test"/>
+        <setEntry value="org.faktorips.devtools.model.test"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder.test"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder.ui"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder.ui.test"/>
+        <setEntry value="org.faktorips.devtools.tableconversion"/>
+        <setEntry value="org.faktorips.devtools.tableconversion.nl1"/>
+        <setEntry value="org.faktorips.devtools.tableconversion.test"/>
+        <setEntry value="org.faktorips.dtflcommon.test"/>
+        <setEntry value="org.faktorips.fl.test"/>
+        <setEntry value="org.faktorips.m2e"/>
+        <setEntry value="org.faktorips.m2e.test"/>
+        <setEntry value="org.faktorips.nls.devtools.core.nl1"/>
+        <setEntry value="org.faktorips.nls.devtools.core.ui.nl1"/>
+        <setEntry value="org.faktorips.nls.devtools.model.decorators.nl1"/>
+        <setEntry value="org.faktorips.nls.devtools.model.nl1"/>
+        <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1"/>
+        <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1"/>
+        <setEntry value="org.faktorips.runtime.groovy.test"/>
+        <setEntry value="org.faktorips.runtime.test"/>
+        <setEntry value="org.faktorips.testextensions"/>
+        <setEntry value="org.faktorips.util.test"/>
+        <setEntry value="org.faktorips.valuetypes.joda.test"/>
+        <setEntry value="org.faktorips.valuetypes.test"/>
+    </setAttribute>
     <booleanAttribute key="includeOptional" value="true"/>
     <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-        <listEntry value="/org.faktorips.m2e.test/src"/>
+        <listEntry value="/org.faktorips.devtools.core.refactor.test/src"/>
     </listAttribute>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="2"/>
     </listAttribute>
-    <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-        <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
-    </listAttribute>
-    <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.faktorips.m2e.test/src=/test=/true=/"/>
+    <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.faktorips.devtools.core.refactor.test/src"/>
     <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
     <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
@@ -33,11 +65,11 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.faktorips.m2e.test"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.faktorips.devtools.core.refactor.test"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/"/>
+    <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -Dorg.eclipse.swt.graphics.Resource.reportNonDisposed=true"/>
     <stringAttribute key="pde.version" value="3.3"/>
-    <stringAttribute key="product" value="org.eclipse.equinox.p2.director.app.product"/>
+    <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
         <setEntry value="com.google.guava@default:default"/>
@@ -47,6 +79,7 @@
         <setEntry value="com.opencsv@default:default"/>
         <setEntry value="com.sun.activation.javax.activation@default:default"/>
         <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
+        <setEntry value="groovy@default:default"/>
         <setEntry value="javaewah@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.inject@default:default"/>
@@ -62,26 +95,17 @@
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
-        <setEntry value="org.apache.commons.codec@default:default"/>
-        <setEntry value="org.apache.commons.collections@default:default"/>
-        <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
-        <setEntry value="org.apache.commons.commons-collections4@default:default"/>
-        <setEntry value="org.apache.commons.commons-compress@default:default"/>
-        <setEntry value="org.apache.commons.commons-io@default:default"/>
-        <setEntry value="org.apache.commons.commons-text@default:default"/>
-        <setEntry value="org.apache.commons.io@default:default"/>
+        <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
         <setEntry value="org.apache.felix.gogo.runtime@default:default"/>
         <setEntry value="org.apache.felix.scr@1:true"/>
-        <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
-        <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.log4j@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
-        <setEntry value="org.apache.sshd.osgi@default:default"/>
+        <setEntry value="org.apache.sshd.core@default:default"/>
         <setEntry value="org.apache.sshd.sftp@default:default"/>
         <setEntry value="org.apache.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
@@ -103,11 +127,12 @@
         <setEntry value="org.eclipse.core.expressions@default:default"/>
         <setEntry value="org.eclipse.core.externaltools@default:default"/>
         <setEntry value="org.eclipse.core.filebuffers@default:default"/>
-        <setEntry value="org.eclipse.core.filesystem.linux.x86_64@default:false"/>
+        <setEntry value="org.eclipse.core.filesystem.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.core.filesystem@default:default"/>
         <setEntry value="org.eclipse.core.jobs@default:default"/>
-        <setEntry value="org.eclipse.core.net.linux.x86_64@default:false"/>
+        <setEntry value="org.eclipse.core.net.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.core.net@default:default"/>
+        <setEntry value="org.eclipse.core.resources.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.core.resources@default:default"/>
         <setEntry value="org.eclipse.core.runtime@default:true"/>
         <setEntry value="org.eclipse.core.variables@default:default"/>
@@ -127,17 +152,18 @@
         <setEntry value="org.eclipse.e4.ui.css.swt.theme@default:default"/>
         <setEntry value="org.eclipse.e4.ui.css.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.di@default:default"/>
-        <setEntry value="org.eclipse.e4.ui.dialogs@default:default"/>
-        <setEntry value="org.eclipse.e4.ui.ide@default:default"/>
         <setEntry value="org.eclipse.e4.ui.model.workbench@default:default"/>
         <setEntry value="org.eclipse.e4.ui.services@default:default"/>
-        <setEntry value="org.eclipse.e4.ui.swt.gtk@default:false"/>
         <setEntry value="org.eclipse.e4.ui.widgets@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.addons.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.renderers.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench.swt@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench3@default:default"/>
         <setEntry value="org.eclipse.e4.ui.workbench@default:default"/>
+        <setEntry value="org.eclipse.ecf.filetransfer@default:default"/>
+        <setEntry value="org.eclipse.ecf.identity@default:default"/>
+        <setEntry value="org.eclipse.ecf.provider.filetransfer@default:default"/>
+        <setEntry value="org.eclipse.ecf@default:default"/>
         <setEntry value="org.eclipse.egit.core@default:default"/>
         <setEntry value="org.eclipse.egit.doc@default:default"/>
         <setEntry value="org.eclipse.egit.ui@default:default"/>
@@ -152,6 +178,7 @@
         <setEntry value="org.eclipse.equinox.app@default:default"/>
         <setEntry value="org.eclipse.equinox.bidi@default:default"/>
         <setEntry value="org.eclipse.equinox.common@2:true"/>
+        <setEntry value="org.eclipse.equinox.concurrent@default:default"/>
         <setEntry value="org.eclipse.equinox.event@default:default"/>
         <setEntry value="org.eclipse.equinox.frameworkadmin.equinox@default:default"/>
         <setEntry value="org.eclipse.equinox.frameworkadmin@default:default"/>
@@ -159,6 +186,8 @@
         <setEntry value="org.eclipse.equinox.p2.core@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.director.app@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.director@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.discovery.compatibility@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.discovery@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.engine@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.garbagecollector@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.jarprocessor@default:default"/>
@@ -170,12 +199,14 @@
         <setEntry value="org.eclipse.equinox.p2.repository.tools@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.repository@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.touchpoint.eclipse@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.transport.ecf@default:default"/>
+        <setEntry value="org.eclipse.equinox.p2.ui.discovery@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.ui@default:default"/>
         <setEntry value="org.eclipse.equinox.p2.updatesite@default:default"/>
         <setEntry value="org.eclipse.equinox.preferences@default:default"/>
         <setEntry value="org.eclipse.equinox.registry@default:default"/>
-        <setEntry value="org.eclipse.equinox.security.linux.x86_64@default:false"/>
         <setEntry value="org.eclipse.equinox.security.ui@default:default"/>
+        <setEntry value="org.eclipse.equinox.security.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.equinox.security@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator.manipulator@default:default"/>
         <setEntry value="org.eclipse.equinox.simpleconfigurator@1:true"/>
@@ -192,6 +223,7 @@
         <setEntry value="org.eclipse.jdt.junit.core@default:default"/>
         <setEntry value="org.eclipse.jdt.junit.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit4.runtime@default:default"/>
+        <setEntry value="org.eclipse.jdt.junit5.runtime@default:default"/>
         <setEntry value="org.eclipse.jdt.junit@default:default"/>
         <setEntry value="org.eclipse.jdt.launching@default:default"/>
         <setEntry value="org.eclipse.jdt.ui@default:default"/>
@@ -199,7 +231,6 @@
         <setEntry value="org.eclipse.jface.databinding@default:default"/>
         <setEntry value="org.eclipse.jface.text@default:default"/>
         <setEntry value="org.eclipse.jface@default:default"/>
-        <setEntry value="org.eclipse.jgit.http.apache@default:default"/>
         <setEntry value="org.eclipse.jgit.ssh.apache@default:default"/>
         <setEntry value="org.eclipse.jgit@default:default"/>
         <setEntry value="org.eclipse.jsch.core@default:default"/>
@@ -208,12 +239,20 @@
         <setEntry value="org.eclipse.m2e.archetype.common@default:default"/>
         <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.core@default:default"/>
+        <setEntry value="org.eclipse.m2e.discovery@default:default"/>
+        <setEntry value="org.eclipse.m2e.editor.xml@default:default"/>
+        <setEntry value="org.eclipse.m2e.editor@default:default"/>
+        <setEntry value="org.eclipse.m2e.importer@default:default"/>
+        <setEntry value="org.eclipse.m2e.jdt.ui@default:false"/>
         <setEntry value="org.eclipse.m2e.jdt@default:default"/>
+        <setEntry value="org.eclipse.m2e.launching@default:default"/>
         <setEntry value="org.eclipse.m2e.lifecyclemapping.defaults@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.indexer@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.runtime.slf4j.simple@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
         <setEntry value="org.eclipse.m2e.model.edit@default:default"/>
+        <setEntry value="org.eclipse.m2e.profiles.core@default:default"/>
+        <setEntry value="org.eclipse.m2e.profiles.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.workspace.cli@default:default"/>
         <setEntry value="org.eclipse.osgi.compatibility.state@default:false"/>
         <setEntry value="org.eclipse.osgi.services@default:default"/>
@@ -228,11 +267,12 @@
         <setEntry value="org.eclipse.pde@default:default"/>
         <setEntry value="org.eclipse.platform@default:default"/>
         <setEntry value="org.eclipse.search@default:default"/>
-        <setEntry value="org.eclipse.swt.gtk.linux.x86_64@default:false"/>
+        <setEntry value="org.eclipse.swt.win32.win32.x86_64@default:false"/>
         <setEntry value="org.eclipse.swt@default:default"/>
         <setEntry value="org.eclipse.team.core@default:default"/>
         <setEntry value="org.eclipse.team.ui@default:default"/>
         <setEntry value="org.eclipse.text@default:default"/>
+        <setEntry value="org.eclipse.ui.browser@default:default"/>
         <setEntry value="org.eclipse.ui.cheatsheets@default:default"/>
         <setEntry value="org.eclipse.ui.console@default:default"/>
         <setEntry value="org.eclipse.ui.editors@default:default"/>
@@ -244,10 +284,12 @@
         <setEntry value="org.eclipse.ui.intro@default:default"/>
         <setEntry value="org.eclipse.ui.navigator.resources@default:default"/>
         <setEntry value="org.eclipse.ui.navigator@default:default"/>
+        <setEntry value="org.eclipse.ui.themes@default:default"/>
         <setEntry value="org.eclipse.ui.trace@default:default"/>
         <setEntry value="org.eclipse.ui.views.log@default:default"/>
         <setEntry value="org.eclipse.ui.views.properties.tabbed@default:default"/>
         <setEntry value="org.eclipse.ui.views@default:default"/>
+        <setEntry value="org.eclipse.ui.win32@default:false"/>
         <setEntry value="org.eclipse.ui.workbench.texteditor@default:default"/>
         <setEntry value="org.eclipse.ui.workbench@default:default"/>
         <setEntry value="org.eclipse.ui@default:default"/>
@@ -256,23 +298,35 @@
         <setEntry value="org.eclipse.wst.common.core@default:default"/>
         <setEntry value="org.eclipse.wst.common.emf@default:default"/>
         <setEntry value="org.eclipse.wst.common.environment@default:default"/>
+        <setEntry value="org.eclipse.wst.common.frameworks.ui@default:default"/>
         <setEntry value="org.eclipse.wst.common.frameworks@default:default"/>
         <setEntry value="org.eclipse.wst.common.project.facet.core@default:default"/>
+        <setEntry value="org.eclipse.wst.common.ui@default:default"/>
         <setEntry value="org.eclipse.wst.common.uriresolver@default:default"/>
         <setEntry value="org.eclipse.wst.sse.core@default:default"/>
+        <setEntry value="org.eclipse.wst.sse.ui@default:default"/>
+        <setEntry value="org.eclipse.wst.validation.ui@default:default"/>
         <setEntry value="org.eclipse.wst.validation@default:default"/>
         <setEntry value="org.eclipse.wst.xml.core@default:default"/>
+        <setEntry value="org.eclipse.wst.xml.ui@default:default"/>
         <setEntry value="org.eclipse.wst.xsd.core@default:default"/>
         <setEntry value="org.eclipse.xsd@default:default"/>
         <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
         <setEntry value="org.hamcrest.core@default:default"/>
-        <setEntry value="org.hamcrest@default:default"/>
+        <setEntry value="org.junit*4.12.0.v201504281640@default:default"/>
+        <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
+        <setEntry value="org.junit.jupiter.api@default:default"/>
+        <setEntry value="org.junit.jupiter.engine@default:default"/>
+        <setEntry value="org.junit.jupiter.migrationsupport@default:default"/>
+        <setEntry value="org.junit.jupiter.params@default:default"/>
         <setEntry value="org.junit.platform.commons@default:default"/>
         <setEntry value="org.junit.platform.engine@default:default"/>
         <setEntry value="org.junit.platform.launcher@default:default"/>
-        <setEntry value="org.junit@default:default"/>
+        <setEntry value="org.junit.platform.runner@default:default"/>
+        <setEntry value="org.junit.platform.suite.api@default:default"/>
+        <setEntry value="org.junit.vintage.engine@default:default"/>
         <setEntry value="org.mockito.mockito-core@default:default"/>
         <setEntry value="org.objenesis@default:default"/>
         <setEntry value="org.opentest4j@default:default"/>
@@ -288,22 +342,23 @@
         <setEntry value="spotbugs-annotations@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.abstracttest.core@default:default"/>
         <setEntry value="org.faktorips.abstracttest@default:default"/>
-        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
-        <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
+        <setEntry value="org.faktorips.devtools.core.refactor.test@default:false"/>
+        <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.test@default:false"/>
-        <setEntry value="org.faktorips.devtools.model@default:true"/>
+        <setEntry value="org.faktorips.devtools.model@default:default"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>
-        <setEntry value="org.faktorips.m2e.test@default:false"/>
-        <setEntry value="org.faktorips.m2e@default:default"/>
+        <setEntry value="org.faktorips.runtime.groovy@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.testsupport@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>
+        <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
@@ -311,5 +366,5 @@
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>
     <booleanAttribute key="useDefaultConfigArea" value="false"/>
-    <booleanAttribute key="useProduct" value="false"/>
+    <booleanAttribute key="useProduct" value="true"/>
 </launchConfiguration>

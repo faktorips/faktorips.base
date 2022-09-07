@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
     <booleanAttribute key="append.args" value="true"/>
-    <stringAttribute key="application" value="org.eclipse.pde.junit.runtime.coretestapplication"/>
     <booleanAttribute key="askclear" value="false"/>
     <booleanAttribute key="automaticAdd" value="false"/>
     <booleanAttribute key="automaticValidate" value="true"/>
@@ -17,7 +16,7 @@
     <booleanAttribute key="includeOptional" value="true"/>
     <stringAttribute key="location" value="${workspace_loc}/../junit-workspace"/>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-        <listEntry value="/org.faktorips.m2e.test/src"/>
+        <listEntry value="/org.faktorips.devtools.stdbuilder.ui.test/src"/>
     </listAttribute>
     <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
         <listEntry value="2"/>
@@ -25,7 +24,7 @@
     <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
         <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
     </listAttribute>
-    <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.faktorips.m2e.test/src=/test=/true=/"/>
+    <stringAttribute key="org.eclipse.jdt.junit.CONTAINER" value="=org.faktorips.devtools.stdbuilder.ui.test/src"/>
     <booleanAttribute key="org.eclipse.jdt.junit.KEEPRUNNING_ATTR" value="false"/>
     <stringAttribute key="org.eclipse.jdt.junit.TESTNAME" value=""/>
     <stringAttribute key="org.eclipse.jdt.junit.TEST_KIND" value="org.eclipse.jdt.junit.loader.junit4"/>
@@ -33,7 +32,7 @@
     <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11"/>
     <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value=""/>
     <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.faktorips.m2e.test"/>
+    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="org.faktorips.devtools.stdbuilder.ui.test"/>
     <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
     <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/"/>
     <stringAttribute key="pde.version" value="3.3"/>
@@ -66,7 +65,6 @@
         <setEntry value="org.apache.commons.collections@default:default"/>
         <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
         <setEntry value="org.apache.commons.commons-collections4@default:default"/>
-        <setEntry value="org.apache.commons.commons-compress@default:default"/>
         <setEntry value="org.apache.commons.commons-io@default:default"/>
         <setEntry value="org.apache.commons.commons-text@default:default"/>
         <setEntry value="org.apache.commons.io@default:default"/>
@@ -78,14 +76,19 @@
         <setEntry value="org.apache.httpcomponents.httpclient@default:default"/>
         <setEntry value="org.apache.httpcomponents.httpcore@default:default"/>
         <setEntry value="org.apache.log4j@default:default"/>
+        <setEntry value="org.apache.logging.log4j.api@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-common@default:default"/>
         <setEntry value="org.apache.lucene.analyzers-smartcn@default:default"/>
         <setEntry value="org.apache.lucene.core@default:default"/>
+        <setEntry value="org.apache.poi.poi-ooxml-lite@default:default"/>
+        <setEntry value="org.apache.poi.poi-ooxml@default:default"/>
+        <setEntry value="org.apache.poi.poi@default:default"/>
         <setEntry value="org.apache.sshd.osgi@default:default"/>
         <setEntry value="org.apache.sshd.sftp@default:default"/>
         <setEntry value="org.apache.xerces@default:default"/>
         <setEntry value="org.apache.xml.resolver@default:default"/>
         <setEntry value="org.apache.xml.serializer@default:default"/>
+        <setEntry value="org.apache.xmlbeans.xmlbeans@default:default"/>
         <setEntry value="org.apache.xmlgraphics@default:default"/>
         <setEntry value="org.apiguardian@default:default"/>
         <setEntry value="org.bouncycastle.bcpg@default:default"/>
@@ -208,8 +211,6 @@
         <setEntry value="org.eclipse.m2e.archetype.common@default:default"/>
         <setEntry value="org.eclipse.m2e.core.ui@default:default"/>
         <setEntry value="org.eclipse.m2e.core@default:default"/>
-        <setEntry value="org.eclipse.m2e.jdt@default:default"/>
-        <setEntry value="org.eclipse.m2e.lifecyclemapping.defaults@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.indexer@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.runtime.slf4j.simple@default:default"/>
         <setEntry value="org.eclipse.m2e.maven.runtime@default:default"/>
@@ -292,21 +293,25 @@
         <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
+        <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
+        <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.test@default:false"/>
+        <setEntry value="org.faktorips.devtools.model.decorators@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder.ui.test@default:false"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
+        <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>
-        <setEntry value="org.faktorips.m2e.test@default:false"/>
-        <setEntry value="org.faktorips.m2e@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.testsupport@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
+    <stringAttribute key="timestamp" value="1649765849218"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>
