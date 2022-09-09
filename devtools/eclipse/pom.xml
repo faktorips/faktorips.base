@@ -21,6 +21,7 @@
         <xtend-maven-plugin-version>2.27.0</xtend-maven-plugin-version>
         <maven-scm-plugin-version>1.12.2</maven-scm-plugin-version>
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+        <version.kind></version.kind>
     </properties>
 
     <modules>
@@ -92,6 +93,11 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>${exec-maven-plugin.version}</version>
             </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+                <version>${tycho.version}</version>
+            </plugin>
         </plugins>
     </pluginManagement>
         <plugins>
@@ -152,45 +158,17 @@
                     </exclusions>
                 </configuration>
             </plugin>
+            <!-- 
+                This will prefix the OSGi qualifier with either ci, rcXX, mXX or rfinal.
+                Only affects the version in manifest files e.g.: 22.12.0.rfinal_20220830-0659
+            -->
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-packaging-plugin</artifactId>
+                <configuration>
+                    <format>'${version.kind}_'yyyyMMdd-HHmm</format>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>tagScm</id>
-            <activation>
-                <!-- This profile should be active by default, also if there 
-                    is a next version set -->
-                <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>nextVersion</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-scm-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <inherited>false</inherited>
-                                <id>tag</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>tag</goal>
-                                </goals>
-                                <configuration>
-                                    <tag>v${unqualifiedVersion}_${version.kind}</tag>
-                                    <message>Release Version
-                                        ${unqualifiedVersion}.${buildQualifier}</message>
-                                    <connectionType>connection</connectionType>
-                                    <pushChanges>${scm.pushChanges}</pushChanges>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

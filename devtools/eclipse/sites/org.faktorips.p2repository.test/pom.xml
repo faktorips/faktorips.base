@@ -11,27 +11,4 @@
     <artifactId>org.faktorips.p2repository.test</artifactId>
     <packaging>eclipse-repository</packaging>
 
-    <profiles>
-        <profile>
-            <id>CI</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>pdrone.faktor-ips_3_snapshots</id>
-                    <url>http://drone.faktorzehn.de:8080/maven/faktor-ips_3_snapshots</url>
-                </snapshotRepository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                            <repositoryId>pdrone.faktor-ips_3_snapshots</repositoryId>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
 </project>

@@ -13,19 +13,6 @@
     <packaging>maven-plugin</packaging>
     <name>Faktor-IPS Maven Plugin</name>
 
-    <organization>
-        <name>Faktor Zehn GmbH</name>
-        <url>https://faktorzehn.org/</url>
-    </organization>
-
-    <licenses>
-        <license>
-            <name>GNU Affero General Public License Version 3 with additional permissions</name>
-            <url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
     <properties>
         <java.version>11</java.version>
         <tycho.version>3.0.0-SNAPSHOT</tycho.version>
@@ -40,8 +27,6 @@
         <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
         <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
         <tycho-maven-plugin.version>3.0.0-SNAPSHOT</tycho-maven-plugin.version>
-        <wagon-maven-plugin.version>2.0.2</wagon-maven-plugin.version>
-        <wagon-ssh.version>3.4.3</wagon-ssh.version>
     </properties>
 
     <dependencies>
@@ -128,20 +113,8 @@
                 </includes>
             </testResource>
         </testResources>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh</artifactId>
-                <version>${wagon-ssh.version}</version>
-            </extension>
-        </extensions>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>wagon-maven-plugin</artifactId>
-                    <version>${wagon-maven-plugin.version}</version>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
@@ -239,14 +212,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <!-- currently default deployment is switched off. Deployment is triggered using profiles or custom scripts -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
@@ -272,46 +237,4 @@
             <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
         </repository>
     </repositories>
-
-    <profiles>
-        <profile>
-            <id>CI</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>wagon-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>upload-documentation</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>sshexec</goal>
-                                    <goal>upload</goal>
-                                </goals>
-                                <configuration>
-                                    <commands>
-                                        <command>rm -rf \
-                                            /var/www/doc.faktorzehn.org/faktorips-maven-plugin/${project.version}/*</command>
-                                    </commands>
-                                    <serverId>doc.faktorzehn.org</serverId>
-                                    <fromDir>target/site</fromDir>
-                                    <includes>**/*</includes>
-                                    <url>scp://doc@doc.faktorzehn.org:2004</url>
-                                    <toDir>/var/www/doc.faktorzehn.org/faktorips-maven-plugin/${project.version}/</toDir>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

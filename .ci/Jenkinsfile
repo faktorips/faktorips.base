@@ -1,0 +1,86 @@
+import java.text.MessageFormat
+
+def mavenDocFolder = './faktorips-maven-plugin/target/site'
+def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
+def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
+def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
+
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_NAME = 'FaktorIPS'
+        PROJECT_ID = "${PROJECT_NAME}"
+    }
+
+    stages {
+        stage('Build and Test') {
+
+            environment {
+                MAVEN_OPTS = '-Xmx4g'
+            }
+
+            steps {
+                script {
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}"
+                    sh 'rm -f $HOME/.m2/repository/.meta/p2-artifacts.properties'
+                }
+
+                withMaven(maven: 'maven 3.8.3', jdk: 'JDK11', publisherStrategy: 'EXPLICIT') {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh 'mvn -U -V -fae -e clean deploy -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dtycho.localArtifacts=ignore'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Additional Artifacts') {
+            steps {
+                script {
+                    def fipsVersion = sh script: "/usr/bin/xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -m '/x:project/x:version' -v . pom.xml", returnStdout: true
+                    def (_,major,minor,patch,kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
+                    sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
+                        // deploy maven plugin doc
+                        def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenDocFolder, "${mavenDocDeployFolder}/${fipsVersion}")
+                        // deploy xsd
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', xsdFolder, xsdDeployFolder)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
+            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+            jacoco sourceInclusionPattern: '**/*.java'
+            archiveArtifacts '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip'
+            archiveArtifacts '**/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip'
+            archiveArtifacts '**/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar'
+            archiveArtifacts '**/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
+        }
+
+        regression {
+            emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
+                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
+                <br>
+                $BUILD_URL
+            '''
+        }
+    }
+
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '10'))
+    }
+}
+
+// upload a local folder to a tmp folder on the server
+// mv existing remoteFolder before swaping it with the tmp one
+// remove the old folder
+def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
+    sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
+    // a non existing folder would stop the script therefore make it or ignore it (-p)
+    sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
+}

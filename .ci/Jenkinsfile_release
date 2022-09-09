@@ -1,0 +1,173 @@
+import java.text.MessageFormat
+
+def mavenVersion = 'maven 3.8.3'
+def jdkVersion = 'JDK11'
+
+def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
+def mavenDocFolder = './faktorips-maven-plugin/target/site'
+def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
+def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
+
+def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
+def archiveZipFileTmpl = $p2RepositoryFolder + '/target/org.faktorips.p2repository-{0}.zip'
+def archiveDeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}/downloads/faktorips-{0}.{1}'
+def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
+
+def docServer = 'doc@doc.faktorzehn.org'
+def p2Server = 'hudson@update.faktorzehn.org'
+
+pipeline {
+    agent any
+
+    environment {
+        PROJECT_NAME = 'FaktorIPS'
+        PROJECT_ID = "${PROJECT_NAME}-${params.RELEASE_VERSION}"
+    }
+
+    options {
+        skipDefaultCheckout true
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '10'))
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    currentBuild.displayName = "Release ${params.RELEASE_VERSION} (${params.BRANCH})"
+
+                    assert params.RELEASE_VERSION ==~ /(\d+\.)+\d+(-rc\d\d|-m\d\d|-rfinal)?/
+                    assert params.DEVELOPMENT_VERSION ==~ /(\d+\.)+\d+/
+
+                    def scmVars = checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "${params.BRANCH}"]],
+                        extensions: [[$class: 'WipeWorkspace'], [$class: 'LocalBranch']],
+                        userRemoteConfigs: scm.userRemoteConfigs
+                    ])
+
+                    LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
+
+                    // parse the version
+                    // for an rfinal version, only the OSGi qualifier gets altered by mvn ... -Dversion.kind (therefore only seen in the eclipse update site)
+                    // for other versions, append the kind to the maven and OSGi qualifiers (gets a special visual mark on maven central)
+                    // an empty kind is considered an rfinal version
+                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
+                    kind = kind == null ? "rfinal" : kind
+                    mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal')
+                }
+            }
+        }
+
+        stage('Set versions') {
+            steps {
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${mavenRelaseVersion} -DgenerateBackupPoms=false -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                    }
+                }
+                sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
+
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                    }
+                }
+                sh "git add . && git commit -m '[release] prepare for next development iteration'"
+
+                sh "git checkout ${LOCAL_BRANCH}~1"
+            }
+        }
+
+        stage('Build and Test') {
+
+            environment {
+                MAVEN_OPTS = '-Xmx4g'
+            }
+
+            steps {
+                script {
+                    sh 'rm -f $HOME/.m2/repository/.meta/p2-artifacts.properties'
+                }
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn -U -V -P release clean install -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                    }
+                }
+
+                junit '**/target/surefire-reports/*.xml'
+                recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+                jacoco sourceInclusionPattern: '**/*.java'
+            }
+
+            post {
+                unsuccessful {
+                    script {
+                        // Stop even if build is unstable
+                        error 'Build failure'
+                    }
+                }
+            }
+        }
+
+        stage('Deployment of Artifacts') {
+            steps {
+                // deploys plain maven artifacts
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn deploy -P release -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                    }
+                }
+                // deploy p2 repository
+                script {
+                    def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, mavenRelaseVersion)
+                    def archiveDeployDir = MessageFormat.format(archiveDeployDirTmpl, major, minor)
+                    def ps2DeployDir = MessageFormat.format(ps2DeployDirTmpl, major, minor)
+                    // add license to ziped repository (archive download) using zip from the shell
+                    sh "/usr/bin/zip ${archiveZipFile} ${p2RepositoryFolder}/LICENSE.txt ${p2RepositoryFolder}/agpl-3.0.txt"
+                    // copy results to server
+                    sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
+                        // copy to archive download
+                        sh "scp ${archiveZipFile} ${p2Server}:${archiveDeployDir}"
+                        // copy repository to eclipse update site
+                        sh "scp -r ${p2RepositoryFolder}/target/repository ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}"
+                        // create a composite, let eclipse see all versions in a sub dir e.g.: In v22_12 there could be 22.12.0-m01, 22.12.0-rc01 & 22.12.0-rfinal
+                        // execute local script with stdin of ssh command
+                        sh "bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${mavenRelaseVersion}"
+                    }
+                    // deploy maven plugin doc
+                    sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
+                        replaceOnServer(docServer, '2004', mavenDocFolder, "${mavenDocDeployFolder}/${mavenRelaseVersion}")
+                        // deploy xsd schemas
+                        def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
+                        replaceOnServer(docServer, '2004', xsdFolder, xsdDeployFolder)
+                    }
+                }
+            }
+        }
+
+        stage('git push') {
+            steps {
+                sh "git push origin ${LOCAL_BRANCH} --follow-tags"
+            }
+        }
+    }
+
+    post {
+        unsuccessful {
+            emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Release Failure - $JOB_NAME', body: '''
+                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
+                <br>
+                $BUILD_URL
+            '''
+        }
+    }
+}
+
+// upload a local folder to a tmp folder on the server
+// mv existing remoteFolder before swaping it with the tmp one
+// remove the old folder
+def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
+    sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
+    // a non existing folder would stop the script therefore make it or ignore it (-p)
+    sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
+}
