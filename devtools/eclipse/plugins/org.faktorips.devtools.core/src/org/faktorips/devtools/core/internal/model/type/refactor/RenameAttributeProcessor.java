@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
@@ -173,10 +174,10 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <code>IAttribute</code> in <code>IAttributeValue</code>s of
-     * referencing <code>IProductCmpt</code>s.
-     * <p>
-     * Only applicable to <code>IProductCmptTypeAttribute</code>s.
+     * Updates all references to the {@link IAttribute} in {@link IAttributeValue} of referencing
+     * {@link IProductCmpt}s.
+     * 
+     * Only applicable to {@link IProductCmptTypeAttribute IProductCmptTypeAttributes}.
      */
     private void updateProductCmptAttributeValueReferences() {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
@@ -207,10 +208,13 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates the reference to the <code>IAttribute</code> in the corresponding
-     * <code>IValidationRule</code> if any exists.
-     * <p>
-     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
+     * Updates the reference to the {@link IAttribute} in the corresponding {@link IValidationRule}
+     * if any exists.
+     * 
+     * Also adapts/updates the rule name to the renamed {@link IAttribute} if
+     * {@link IValidationRule} is a generated valueSetRule.
+     * 
+     * Only applicable to {@link IPolicyCmptTypeAttribute IPolicyCmptTypeAttributes}.
      */
     private void updateValidationRule() {
         IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)getAttribute();
@@ -220,17 +224,35 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
                 String attributeName = validationRule.getValidatedAttributes()[i];
                 if (attributeName.equals(getOriginalName())) {
                     validationRule.setValidatedAttributeAt(i, getNewName());
+                    String generatedRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(attributeName);
+                    if (validationRule.isCheckValueAgainstValueSetRule()
+                            && validationRule.getName().equals(generatedRuleName)) {
+                        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(getNewName());
+                        String newMessageCode = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(getNewName());
+                        validationRule.setName(newRuleName);
+                        validationRule.setMessageCode(newMessageCode);
+                    }
                     break;
                 }
             }
         }
+        List<IValidationRule> rulesList = policyCmptTypeAttribute.getPolicyCmptType().getValidationRules();
+        for (IValidationRule iValidationRule : rulesList) {
+            for (int i = 0; i < iValidationRule.getValidatedAttributes().length; i++) {
+                String attributeName = iValidationRule.getValidatedAttributes()[i];
+                if (attributeName.equals(getOriginalName())) {
+                    iValidationRule.setValidatedAttributeAt(i, getNewName());
+                }
+            }
+        }
+
     }
 
     /**
-     * Updates all references to the <code>IPolicyCmptTypeAttribute</code> in
-     * <code>IConfigElement</code>s of referencing <code>IProductCmpt</code>s.
+     * Updates all references to the {@link IPolicyCmptTypeAttribute} in {@link IConfigElement}s of
+     * referencing {@link IProductCmpt}s.
      * <p>
-     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
+     * Only applicable to {@link IPolicyCmptTypeAttribute IPolicyCmptTypeAttributes}.
      */
     private void updateProductCmptConfigElementReferences() {
         if (!((IPolicyCmptTypeAttribute)getAttribute()).isProductRelevant()) {
@@ -264,10 +286,9 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Updates all references to the <code>IAttribute</code> in referencing
-     * <code>ITestCaseType</code>s.
-     * <p>
-     * Only applicable to <code>IPolicyCmptTypeAttribute</code>s.
+     * Updates all references to the {@link IAttribute} in referencing {@link ITestCaseType}s.
+     * 
+     * Only applicable to {@link IPolicyCmptTypeAttribute IPolicyCmptTypeAttributes}.
      */
     private void updateTestCaseTypeReferences() {
         for (IIpsSrcFile ipsSrcFile : testCaseTypeCmptSrcFiles) {
@@ -289,8 +310,8 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
     }
 
     /**
-     * Changes the name of the <code>IAttribute</code> to be refactored to the new name provided by
-     * the user.
+     * Changes the name of the {@link IAttribute} to be refactored to the new name provided by the
+     * user.
      */
     private void updateAttributeName() {
         getAttribute().setName(getNewName());

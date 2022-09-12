@@ -34,6 +34,7 @@ import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.type.IAttribute;
 
 /**
@@ -145,6 +146,13 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
             while (currentAttribute.isOverwrite()) {
                 currentAttribute = currentAttribute.findOverwrittenAttribute(attribute.getIpsProject());
                 result.addAll(builderSet.getGeneratedJavaElements(currentAttribute));
+            }
+            if (attribute instanceof IPolicyCmptTypeAttribute) {
+                IValidationRule valueSetRule = ((IPolicyCmptTypeAttribute)attribute)
+                        .findValueSetRule(attribute.getIpsProject());
+                if (valueSetRule != null) {
+                    result.addAll(builderSet.getGeneratedJavaElements(valueSetRule));
+                }
             }
             return result;
         }

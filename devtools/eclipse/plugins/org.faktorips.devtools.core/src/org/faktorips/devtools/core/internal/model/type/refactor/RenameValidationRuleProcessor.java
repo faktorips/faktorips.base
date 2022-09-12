@@ -63,14 +63,14 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         return modificationSet;
     }
 
-    private void updateValidationRuleInProductCmpts() {
+    protected void updateValidationRuleInProductCmpts() {
         if (getValidationRule().isConfigurableByProductComponent()) {
             updateValidationRuleInGenerations();
         }
 
     }
 
-    private void updateValidationRuleInGenerations() {
+    protected void updateValidationRuleInGenerations() {
         List<IProductCmptGeneration> productCmptGenerations = getProductCmptGenerations();
         for (IProductCmptGeneration productCmptGeneration : productCmptGenerations) {
             IValidationRuleConfig propertyValue = productCmptGeneration.getPropertyValue(getOriginalName(),
@@ -86,7 +86,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         return affectedProductCmptsGenerations;
     }
 
-    private void updateValidationRuleInTestCases() {
+    protected void updateValidationRuleInTestCases() {
         List<ITestCase> testCases = getAffectedTestCases();
         for (ITestCase testCase : testCases) {
             ITestRule[] allTestRules = testCase.getTestRuleObjects();
@@ -106,7 +106,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         return affectedTestCases;
     }
 
-    private void updateValidationRuleName() {
+    protected void updateValidationRuleName() {
         getValidationRule().setName(getNewName());
     }
 

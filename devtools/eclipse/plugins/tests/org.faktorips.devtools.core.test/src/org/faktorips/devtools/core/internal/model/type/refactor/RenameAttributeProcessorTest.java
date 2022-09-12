@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,10 +25,12 @@ import org.faktorips.abstracttest.core.AbstractIpsRefactoringTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
+import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.model.productcmpt.IConfiguredDefault;
@@ -93,7 +97,7 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     @Test
-    public void testRenamePolicyCmptTypeAttributeWithValidationRule() {
+    public void testRenamePolicyCmptTypeAttributeWithValueSetValidationRule() {
         policyCmptTypeAttribute.createValueSetRule();
         policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
         String newAttributeName = "test";
@@ -105,21 +109,109 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
         assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
 
         // Check for validation rule update.
-        assertNotNull(policyCmptTypeAttribute.findValueSetRule(ipsProject));
+        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName);
+        String newMessageCodeName = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(newAttributeName);
+        IValidationRule rule = policyCmptTypeAttribute.findValueSetRule(ipsProject);
+        assertNotNull(rule);
+        assertThat(rule.getName(), is(newRuleName));
+        assertThat(rule.getMessageCode(), is(newMessageCodeName));
     }
 
     /**
-     * Creates another attribute in the second <code>IPolicyCmptType</code> that that corresponds
-     * exactly to the attribute of the already existing <code>IPolicyCmptType</code>.
-     * <p>
-     * This other <code>IPolicyCmptType</code> is configured by a new <code>IProductCmptType</code>.
-     * Based on that <code>IProductCmptType</code> exists an <code>IProductCmpt</code>. The
-     * refactoring of the original <code>IPolicyCmptTypeAttribute</code> may not cause modifications
-     * to this new <code>IProductCmpt</code>'s <code>IConfigElement</code>s.
-     * <p>
-     * Also creates another <code>ITestCaseType</code> based on the new <code>IPolicyCmptType</code>
-     * / <code>IPolicyCmptTypeAttribute</code>. The new <code>ITestCaseType</code> may not be
-     * modified by the refactoring, too.
+     * Creates one generated valueSet{@link IValidationRule} and one manually set
+     * {@link IValidationRule}, both referencing the same {@link IPolicyCmptTypeAttribute}.
+     * 
+     * Tests if the references of the {@link IPolicyCmptTypeAttribute} inside the
+     * {@link IValidationRule}s are correctly updated after a rename Attribute refactoring. Also
+     * checks if the {@link IValidationRule} names and message codes are properly updated.
+     * 
+     * Generated value Set {@link IValidationRule}s names with a generated ruleName should be
+     * adjusted to renamed {@link IPolicyCmptTypeAttribute}.
+     * 
+     * Manually set {@link IValidationRule} names and message codes should not be renamed.
+     */
+    @Test
+    public void testRenamePolicyCmptTypeAttributeWithMultipleValidationRules() {
+        String oldRuleName = "oldRuleName";
+        String oldAttributeName = "oldAttributeName";
+        String newAttributeName = "NewAttributeName";
+
+        // Generated Rule
+        policyCmptTypeAttribute.setName(oldAttributeName);
+        policyCmptTypeAttribute.createValueSetRule();
+        policyCmptTypeAttribute.setValueSetType(ValueSetType.ENUM);
+
+        // Manual Rule
+        IValidationRule validationRule;
+        validationRule = policyCmptType.newRule();
+        validationRule.setMessageCode(oldRuleName);
+        new RenameValidationRuleProcessor(validationRule);
+        validationRule.setName(oldRuleName);
+        validationRule.addValidatedAttribute(oldAttributeName);
+
+        performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
+
+        // Check for changed attribute name.
+        assertNull(policyCmptType.getAttribute(oldAttributeName));
+        assertNotNull(policyCmptType.getAttribute(newAttributeName));
+        assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
+
+        // Check for generated Rule
+        String newRuleName = PolicyCmptTypeAttribute.getProposalValueSetRuleName(newAttributeName);
+        String newMessageCodeName = PolicyCmptTypeAttribute.getProposalMsgCodeForValueSetRule(newAttributeName);
+        IValidationRule generatedRule = policyCmptTypeAttribute.findValueSetRule(ipsProject);
+        assertNotNull(generatedRule);
+        assertThat(generatedRule.getName(), is(newRuleName));
+        assertThat(generatedRule.getMessageCode(), is(newMessageCodeName));
+
+        // Check for manual Rule
+        IValidationRule manualRule = policyCmptTypeAttribute.getPolicyCmptType().getValidationRules().get(1);
+        assertNotNull(manualRule);
+        assertThat(manualRule.getName(), is(oldRuleName));
+        assertThat(manualRule.getValidatedAttributeAt(0), is(newAttributeName));
+    }
+
+    @Test
+    public void testRenamePolicyCmptTypeAttributeWithManualValidationRule() {
+
+        IValidationRule validationRule;
+        String oldRuleName = "oldRuleName";
+        String oldAttributeName = "oldAttributeName";
+        String newAttributeName = "NewAttributeName";
+
+        validationRule = policyCmptType.newRule();
+        validationRule.setMessageCode(oldRuleName);
+        new RenameValidationRuleProcessor(validationRule);
+        validationRule.setName(oldRuleName);
+        validationRule.addValidatedAttribute(oldAttributeName);
+        policyCmptTypeAttribute.setName(oldAttributeName);
+
+        performRenameRefactoring(policyCmptTypeAttribute, newAttributeName);
+
+        // Check for changed attribute name.
+        assertNull(policyCmptType.getAttribute(POLICY_CMPT_TYPE_ATTRIBUTE_NAME));
+        assertNotNull(policyCmptType.getAttribute(newAttributeName));
+        assertTrue(policyCmptTypeAttribute.getName().equals(newAttributeName));
+
+        // Check for validation rule update.
+        IValidationRule rule = policyCmptTypeAttribute.getPolicyCmptType().getValidationRules().get(0);
+        assertNotNull(rule);
+        assertThat(rule.getName(), is(oldRuleName));
+        assertThat(rule.getValidatedAttributeAt(0), is(newAttributeName));
+    }
+
+    /**
+     * Creates another attribute in the second {@link IPolicyCmptType} that that corresponds exactly
+     * to the attribute of the already existing {@link IPolicyCmptType}.
+     * 
+     * This other {@link IPolicyCmptType} is configured by a new {@link IProductCmptType}. Based on
+     * that {@link IProductCmptType} exists an {@link IProductCmptType}. The refactoring of the
+     * original {@link IPolicyCmptTypeAttribute} may not cause modifications to this new
+     * {@link IProductCmpt}s {@link IConfigElement}s.
+     * 
+     * Also creates another {@link ITestCaseType} based on the new {@link IPolicyCmptType}
+     * {@link IPolicyCmptTypeAttribute}. The new {@link ITestCaseType} may not be modified by the
+     * refactoring, too.
      */
     @Test
     public void testRenamePolicyCmptTypeAttributeSameNames() {
@@ -167,8 +259,8 @@ public class RenameAttributeProcessorTest extends AbstractIpsRefactoringTest {
     }
 
     /**
-     * Test to rename an <code>IPolicyCmptTypeAttribute</code> from an <code>IPolicyCmptType</code>
-     * that is a super type of another <code>IPolicyCmptType</code>.
+     * Test to rename an {@link IPolicyCmptTypeAttribute} from an {@link IPolicyCmptType} that is a
+     * super type of another {@link IPolicyCmptType}.
      */
     @Test
     public void testRenamePolicyCmptTypeAttributeInheritance() {

@@ -555,12 +555,20 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public String getProposalValueSetRuleName() {
-        return MessageFormat.format(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(getName()));
+        return getProposalValueSetRuleName(getName());
+    }
+
+    public static String getProposalValueSetRuleName(String attributeName) {
+        return MessageFormat.format(Messages.Attribute_proposalForRuleName, StringUtils.capitalize(attributeName));
     }
 
     @Override
     public String getProposalMsgCodeForValueSetRule() {
-        return MessageFormat.format(Messages.Attribute_proposalForMsgCode, getName().toUpperCase());
+        return getProposalMsgCodeForValueSetRule(getName());
+    }
+
+    public static String getProposalMsgCodeForValueSetRule(String attributeName) {
+        return MessageFormat.format(Messages.Attribute_proposalForMsgCode, attributeName.toUpperCase());
     }
 
     @Override
