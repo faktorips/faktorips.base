@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.5.3'
+    id 'org.jetbrains.intellij' version '1.9.0'
     id 'java'
 }
 
@@ -10,20 +10,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2022.1'
+    version = '2021.3' // the minimal supported version
 }
 patchPluginXml {
     changeNotes = """
       Alpha Version
       """
     sinceBuild = "213"
-    untilBuild = "221.*"
+    untilBuild = "222.*"
 }
 test {
     useJUnitPlatform()
