@@ -22,7 +22,7 @@ pipeline {
 
                 withMaven(maven: 'maven 3.8.3', jdk: 'JDK11', publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh 'mvn -U -V -T1C -fae -e clean verify -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dtycho.localArtifacts=ignore'
+                        sh 'mvn -U -V -fae -e clean verify -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dtycho.localArtifacts=ignore'
                     }
                 }
             }
@@ -76,7 +76,7 @@ pipeline {
             '''
         }
     }
-    
+
     options {
         buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '10'))
     }
