@@ -10,6 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
     </properties>
 
     <build>
@@ -22,5 +23,14 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>            
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 </project>

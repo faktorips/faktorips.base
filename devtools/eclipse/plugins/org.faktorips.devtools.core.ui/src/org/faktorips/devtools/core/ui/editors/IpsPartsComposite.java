@@ -724,13 +724,12 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     /**
      * Sets the newPart as active generation.The part was created by calling {@link #newIpsPart()}.
-     * The method will be called if the ok button in new dialog was pressed.
+     * The method will be called if the OK button in new dialog was pressed.
      * 
      * <p>
      * 
-     * By default this method delegates to {@link #editPartConfirmed()}. Othervise only override
+     * By default this method delegates to {@link #editPartConfirmed()}. Otherwise only override
      * {@link #editPartConfirmed()}.
-     * <p>
      * 
      * @param newPart The part was created by calling {@link #newIpsPart()}.
      * 
@@ -829,9 +828,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
      * <p>
      * By default this method delegates to {@link #createEditDialog(IIpsObjectPart, Shell)}. If you
      * want to create different dialogs or settings depending on new button or edit button was
-     * clicked, override this method. Othervise only override
+     * clicked, override this method. Otherwise only override
      * {@link #createEditDialog(IIpsObjectPart, Shell)}.
-     * <p>
      * 
      * @since 3.7
      */

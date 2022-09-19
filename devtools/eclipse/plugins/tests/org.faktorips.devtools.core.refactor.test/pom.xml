@@ -11,5 +11,18 @@
     <artifactId>org.faktorips.devtools.core.refactor.test</artifactId>
 
     <packaging>eclipse-test-plugin</packaging>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-surefire-plugin</artifactId>
+                <configuration>
+                    <useJDK>BREE</useJDK>
+                    <reactorConcurrencyLevel>1</reactorConcurrencyLevel>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

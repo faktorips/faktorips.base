@@ -259,7 +259,6 @@ public class XPolicyCmptClass extends XType {
     /**
      * Returns the expected {@link GenerateValueSetType} if the super-type has a different
      * unify-value-set settings.
-     * <p>
      * <table>
      * <caption>Project settings versus method name generation</caption>
      * <tr>

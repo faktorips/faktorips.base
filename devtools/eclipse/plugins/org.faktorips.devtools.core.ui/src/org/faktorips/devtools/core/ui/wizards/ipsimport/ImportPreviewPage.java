@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -44,8 +45,8 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Wizard Page to show a preview of a file to be imported into an IPS object (e.g. an
- * <code>ITableContents</code> or an <code>IEnumtType</code>). The page consists of a configuration
- * area which is specific to a certain <code>ITableFormat</code> and a preview area.
+ * {@link ITableContents} or an {@link IEnumType}). The page consists of a configuration area which
+ * is specific to a certain {@link ITableFormat} and a preview area.
  * 
  * @author Roman Grutza
  */
@@ -79,19 +80,18 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
     /**
      * Displays a preview of the external file which optionally can be adjusted with custom
      * controls.
-     * <p>
      * 
      * @param filename The name of the file to show the preview for.
-     * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
-     *            they are created using this table format by looking up the <code>guiClass</code>
-     *            extension element of the
-     *            <code>org.faktorips.devtools.core.externalTableFormat</code> extension point.
-     * @param structure The structure against which to validate the file. Is an
-     *            <code>IEnumType</code> instance when previewing an enum, or an
-     *            <code>ITableStructure</code> instance for table previews.
-     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
-     *            should be ignored <code>false</code> if the to be imported content contains no
-     *            column header row.
+     * @param tableFormat An {@link ITableFormat} instance. If custom controls are available, they
+     *            are created using this table format by looking up the {@code guiClass} extension
+     *            element of the {@code org.faktorips.devtools.core.externalTableFormat} extension
+     *            point.
+     * @param structure The structure against which to validate the file. Is an {@link IEnumType}
+     *            instance when previewing an enum, or an {@link ITableStructure} instance for table
+     *            previews.
+     * @param ignoreColumnHeaderRow {@code true} if the first row contains column header and should
+     *            be ignored {@code false} if the to be imported content contains no column header
+     *            row.
      */
     public ImportPreviewPage(String filename, ITableFormat tableFormat, IIpsObject structure,
             boolean ignoreColumnHeaderRow) {
@@ -297,19 +297,18 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
     /**
      * Reinitializes the contents of this page.
-     * <p>
      * 
      * @param filename The name of the file to show the preview for.
-     * @param tableFormat An <code>ITableFormat</code> instance. If custom controls are available,
-     *            they are created using this table format by looking up the <code>guiClass</code>
-     *            extension element of the
-     *            <code>org.faktorips.devtools.core.externalTableFormat</code> extension point.
-     * @param structure The structure against which to validate the file. Is an
-     *            <code>IEnumType</code> instance when previewing an enum, or an
-     *            <code>ITableStructure</code> instance for table previews.
-     * @param ignoreColumnHeaderRow <code>true</code> if the first row contains column header and
-     *            should be ignored <code>false</code> if the to be imported content contains no
-     *            column header row.
+     * @param tableFormat An {@link ITableFormat} instance. If custom controls are available, they
+     *            are created using this table format by looking up the {@code guiClass} extension
+     *            element of the {@code org.faktorips.devtools.core.externalTableFormat} extension
+     *            point.
+     * @param structure The structure against which to validate the file. Is an {@link IEnumType}
+     *            instance when previewing an enum, or an {@link ITableStructure} instance for table
+     *            previews.
+     * @param ignoreColumnHeaderRow {@code true} if the first row contains column header and should
+     *            be ignored {@code false} if the to be imported content contains no column header
+     *            row.
      */
     public void reinit(String filename, ITableFormat tableFormat, IIpsObject structure, boolean ignoreColumnHeaderRow) {
         ArgumentCheck.notNull(filename);

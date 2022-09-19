@@ -17,15 +17,14 @@
         <java.version>11</java.version>
         <tycho.version>3.0.0-SNAPSHOT</tycho.version>
         <!-- dependencies -->
-        <maven-core.version>3.8.1</maven-core.version>
+        <maven-core.version>3.8.6</maven-core.version>
         <maven-shared-utils.version>3.3.4</maven-shared-utils.version>
-        <maven-plugin-api.version>3.6.3</maven-plugin-api.version>
-        <maven-plugin-annotations.version>3.6.0</maven-plugin-annotations.version>
+        <maven-plugin-api.version>3.8.6</maven-plugin-api.version>
+        <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
         <commons-codec.version>1.15</commons-codec.version>
         <!-- plugins -->
-        <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-        <maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
-        <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+        <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+        <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
         <tycho-maven-plugin.version>3.0.0-SNAPSHOT</tycho-maven-plugin.version>
     </properties>
 
@@ -45,6 +44,7 @@
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>${maven-plugin-api.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven.plugin-tools</groupId>
@@ -119,11 +119,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
                     <version>${maven-plugin-plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>${maven-site-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>

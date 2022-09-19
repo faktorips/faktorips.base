@@ -13,6 +13,7 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
     </properties>
 
     <dependencies>
@@ -288,6 +289,15 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>            
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

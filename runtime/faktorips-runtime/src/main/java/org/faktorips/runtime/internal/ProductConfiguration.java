@@ -27,7 +27,6 @@ import org.w3c.dom.Element;
 /**
  * Manages a product component and the corresponding generation for use with configurable model
  * objects. Used by all configurable policy component classes to manage their product configuration.
- * <p>
  * 
  * @serial This class is serialized using by writing/reading the product component runtime ID and
  *             the effective date of the current generation. To deserialize the product product

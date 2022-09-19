@@ -164,7 +164,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     boolean isVisible();
 
     /**
-     * Setting the property <code>visible</code> for this attribute.
+     * Setting the property {@code visible} for this attribute.
      * <p>
      * If this attribute is marked as visible, the attribute will be displayed in the component
      * editor. If not marked as visible, the attribute will not be displayed in the component
@@ -178,22 +178,21 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     void setVisible(boolean visible);
 
     /**
-     * Returns whether this attribute support multi Lingual.
+     * Returns whether this attribute support multilingual.
      * 
-     * @return true if this attribute is a multi Lingual attribute, false if not
+     * @return true if this attribute is a multilingual attribute, false if not
      */
     boolean isMultilingual();
 
     /**
-     * Setting the property <code>Multi Lingual</code> for this attribute.
+     * Setting the property {@code multilingual} for this attribute.
      * <p>
-     * If this attribute is marked as multi Lingual, the text of this attribute can be entered in
-     * different languages. If it is not marked as multi Lingual, the text of this attribute can
-     * only be entered in one language in the Product-Component editor.
-     * <p>
+     * If this attribute is marked as multilingual, the text of this attribute can be entered in
+     * different languages. If it is not marked as multilingual, the text of this attribute can only
+     * be entered in one language in the Product-Component editor.
      * 
-     * @param multiLingual to mark this attribute as multi lingual attribute, false to mark it as
-     *            not supporting multi-lingual
+     * @param multiLingual to mark this attribute as multilingual attribute, false to mark it as not
+     *            supporting multilingual
      */
     void setMultilingual(boolean multiLingual);
 
@@ -201,7 +200,7 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * Returns true if the property multilingual is supported by this attribute. Currently
      * multilingual is only supported for data type string.
      * 
-     * @return <code>True</code> if the property multilingual is support, othervise false
+     * @return {@code True} if the property multilingual is support, otherwise false
      */
     boolean isMultilingualSupported();
 }

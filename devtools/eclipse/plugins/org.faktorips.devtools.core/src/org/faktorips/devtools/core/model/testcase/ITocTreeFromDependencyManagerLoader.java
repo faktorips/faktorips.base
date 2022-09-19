@@ -50,7 +50,6 @@ public interface ITocTreeFromDependencyManagerLoader {
      * <li>Sparte-toc.xml[&lt;Base-toc.xml&gt;]</li>
      * <li>VO-toc.xml[&lt;Base-toc.xml&gt;]</li>
      * </ul>
-     * <p>
      *
      * @param ipsProject the project to load the dependencies from
      * @param repositoryPackages the result as serialized tree a described above

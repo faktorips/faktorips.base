@@ -14,21 +14,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>create-javadoc</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <failOnError>true</failOnError>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- Update the product Build ID and version in the about text -->
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>

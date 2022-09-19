@@ -56,10 +56,6 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-maven-plugin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.feature</artifactId>
             <version>${faktorips.version}</version>
         </dependency>

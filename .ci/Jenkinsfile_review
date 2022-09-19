@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'AdoptiumJDK17'
+    }
+
+
     environment {
         PROJECT_NAME = 'FaktorIPS'
         BUILD_NAME = "${env.GERRIT_CHANGE_NUMBER}"
@@ -20,9 +25,9 @@ pipeline {
                     sh 'rm -f $HOME/.m2/repository/.meta/p2-artifacts.properties'
                 }
 
-                withMaven(maven: 'maven 3.8.3', jdk: 'JDK11', publisherStrategy: 'EXPLICIT') {
+                withMaven(maven: 'maven 3.8.6', jdk: 'AdoptiumJDK17', publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh 'mvn -U -V -fae -e clean verify -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dtycho.localArtifacts=ignore'
+                        sh 'mvn -U -V -T1C -fae -e clean verify site -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dtycho.localArtifacts=ignore'
                     }
                 }
             }

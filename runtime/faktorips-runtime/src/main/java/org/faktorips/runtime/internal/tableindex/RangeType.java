@@ -32,7 +32,6 @@ public enum RangeType {
 
     /**
      * Indicates that the keys are meant to be the lower bound of a range (not included).
-     * <p>
      * 
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
      *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and
@@ -81,7 +80,6 @@ public enum RangeType {
 
     /**
      * Indicates that the keys are meant to be the upper bound of a range (not included).
-     * <p>
      * 
      * @deprecated Because using this type in a {@link RangeStructure} results in asymmetrical
      *                 behavior of the {@link RangeStructure#put(Object, SearchStructure)} and

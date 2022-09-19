@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IType;
@@ -619,7 +620,6 @@ public abstract class AbstractGeneratorModelNode {
      * <p>
      * Use to register a method that should be included in the refactoring support and the
      * jump-to-source-code feature.
-     * <p>
      * 
      * @param methodName the name of the generated method
      * @param parameterTypesAndNames The types and names for the parameters of the generated method.
