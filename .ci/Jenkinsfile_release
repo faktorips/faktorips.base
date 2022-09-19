@@ -9,7 +9,7 @@ def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
-def archiveZipFileTmpl = ${p2RepositoryFolder} + '/target/org.faktorips.p2repository-{0}.zip'
+def archiveZipFileTmpl = p2RepositoryFolder + '/target/org.faktorips.p2repository-{0}.zip'
 def archiveDeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}/downloads/faktorips-{0}.{1}'
 def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
 
