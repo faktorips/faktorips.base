@@ -54,6 +54,7 @@ pipeline {
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
                     kind = kind == null ? "rfinal" : kind
                     mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','')
+                    eclipseRelaseVersion = mavenRelaseVersion.replaceAll('-','.')
                 }
             }
         }
@@ -62,7 +63,7 @@ pipeline {
             steps {
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${mavenRelaseVersion} -DgenerateBackupPoms=false -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${eclipseRelaseVersion} -DgenerateBackupPoms=false -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
                 sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
