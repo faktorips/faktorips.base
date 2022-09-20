@@ -53,7 +53,7 @@ pipeline {
                     // an empty kind is considered an rfinal version
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
                     kind = kind == null ? "rfinal" : kind
-                    mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal')
+                    mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','')
                 }
             }
         }
