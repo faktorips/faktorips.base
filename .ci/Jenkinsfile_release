@@ -68,6 +68,12 @@ pipeline {
                 }
                 sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
 
+                // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                    }
+                }
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -s $MAVEN_SETTINGS -t $TOOLCHAINS"
