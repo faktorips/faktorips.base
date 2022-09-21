@@ -28,6 +28,7 @@
                         </goals>
                         <configuration>
                             <jvmVersion>11</jvmVersion>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.runtime {
