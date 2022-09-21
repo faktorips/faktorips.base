@@ -134,6 +134,7 @@ pipeline {
                     // copy results to server
                     sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
                         // copy to archive download
+                        sh "ssh ${p2Server} 'mkdir -p ${archiveDeployDir}'"
                         sh "scp ${archiveZipFile} ${p2Server}:${archiveDeployDir}"
                         // copy repository to eclipse update site
                         sh "ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${mavenRelaseVersion}'"
