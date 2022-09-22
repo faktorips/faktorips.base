@@ -49,8 +49,15 @@
         <setEntry value="org.apache.batik.css@default:default"/>
         <setEntry value="org.apache.batik.i18n@default:default"/>
         <setEntry value="org.apache.batik.util@default:default"/>
-        <setEntry value="org.apache.commons.codec*1.13.0.v20200108-0001@default:default"/>
-        <setEntry value="org.apache.commons.io*2.6.0.v20190123-2029@default:default"/>
+        <setEntry value="org.apache.commons.codec@default:default"/>
+        <setEntry value="org.apache.commons.collections@default:default"/>
+        <setEntry value="org.apache.commons.commons-beanutils@default:default"/>
+        <setEntry value="org.apache.commons.commons-collections4@default:default"/>
+        <setEntry value="org.apache.commons.commons-compress@default:default"/>
+        <setEntry value="org.apache.commons.commons-io@default:default"/>
+        <setEntry value="org.apache.commons.commons-text@default:default"/>
+        <setEntry value="org.apache.commons.compress@default:default"/>
+        <setEntry value="org.apache.commons.io@default:default"/>
         <setEntry value="org.apache.commons.jxpath@default:default"/>
         <setEntry value="org.apache.commons.lang3@default:default"/>
         <setEntry value="org.apache.commons.logging@default:default"/>
@@ -281,7 +288,7 @@
         <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
-        <setEntry value="org.hamcrest.core@default:default"/>
+        <setEntry value="org.hamcrest.core*1.3.0.zz-NO-SPLIT_PCK-v201303031735@default:default"/>
         <setEntry value="org.junit*4.13.0.v20200204-1500@default:default"/>
         <setEntry value="org.junit*4.13.2.v20211018-1956@default:default"/>
         <setEntry value="org.junit.jupiter.api@default:default"/>
@@ -307,6 +314,8 @@
         <setEntry value="org.w3c.dom.svg@default:default"/>
     </setAttribute>
     <setAttribute key="selected_workspace_bundles">
+        <setEntry value="org.faktorips.devtools.abstraction.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.ant@default:default"/>
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
