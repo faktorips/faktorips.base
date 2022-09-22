@@ -91,52 +91,61 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
    </license>
 
    <requires>
-      <import plugin="com.opencsv" version="5.6.0" match="greaterOrEqual"/>
-      <import plugin="jaxb-api" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="joda-time" version="2.1.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.ant" version="1.10.7" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.io" version="2.4.0" match="greaterOrEqual"/>
-      <import plugin="org.apache.commons.lang" version="2.6" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ant.core" version="3.5.700" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.commands" version="3.9.700" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.filesystem" version="1.7.300" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.resources" version="3.13.300" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.core.runtime" version="3.15.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.emf.common" version="2.15.0" match="compatible"/>
-      <import plugin="org.eclipse.equinox.common" version="3.11.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.core.manipulation"/>
-      <import plugin="org.eclipse.jdt.core" version="3.17.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.apache.ant" version="1.10.7" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ant.core" version="3.5.700" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.launching" version="3.13.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.jface" version="3.15.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi.services" version="3.8.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.osgi" version="3.15.200" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.swt" version="3.114.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.text" version="3.8.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.forms" version="3.7.500" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.14.100" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.workbench" version="3.118.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui" version="3.112.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.xtend.lib" version="2.21.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.15.200" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.13.0" match="greaterOrEqual"/>
-      <import plugin="org.objenesis"/>
+      <import plugin="org.eclipse.ui" version="3.112.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.ide" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.core.refactoring" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.debug.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.core" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core" version="3.17.0" match="greaterOrEqual"/>
+      <import plugin="com.opencsv" version="5.6.0" match="greaterOrEqual"/>
       <import plugin="spotbugs-annotations" version="4.7.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.xtend.lib" version="2.21.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.13.300" match="greaterOrEqual"/>
+      <import plugin="jaxb-api" version="2.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.15.200" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.forms" version="3.7.500" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.debug.ui" version="3.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.search" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.compare" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.team.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.databinding" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.security" version="1.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.swt" version="3.114.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jface" version="3.15.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.commands" version="3.9.700" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.118.0" match="greaterOrEqual"/>
+      <import plugin="joda-time" version="2.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem" version="1.7.300" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.text" version="3.8.100" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.common" version="3.11.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi.services" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.objenesis"/>
+      <import plugin="org.apache.commons.commons-text"/>
+      <import plugin="org.apache.commons.lang3"/>
+      <import plugin="org.apache.commons.commons-collections4"/>
+      <import plugin="com.google.guava"/>
+      <import plugin="org.mockito.mockito-core"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.hamcrest"/>
+      <import plugin="org.apache.poi.poi-ooxml-lite" version="5.2.2" match="greaterOrEqual"/>
+      <import plugin="org.apache.logging.log4j.api"/>
+      <import plugin="org.apache.poi.poi"/>
+      <import plugin="org.apache.poi.poi-ooxml"/>
+      <import plugin="org.apache.commons.commons-io"/>
    </requires>
 
    <plugin
@@ -145,7 +154,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.faktorips.dtflcommon"
          download-size="0"
@@ -232,13 +241,6 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
 
    <plugin
          id="org.faktorips.valuetypes.joda"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.faktorips.eclipse.emf.codegen"
          download-size="0"
          install-size="0"
          version="0.0.0"
