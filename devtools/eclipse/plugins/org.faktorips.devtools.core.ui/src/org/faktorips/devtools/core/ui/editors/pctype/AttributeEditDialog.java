@@ -59,6 +59,7 @@ import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.LabelEditComposite;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerUI;
@@ -71,6 +72,7 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.SingleEventModification;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.AttributeType;
@@ -174,6 +176,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private MessageDecoration validationRuleAddedDecoration;
 
     private Composite ruleComposite;
+
+    private LabelEditComposite ruleLabelGroup;
 
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
@@ -732,7 +736,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
         }
         if (currentValueSetType != null) {
-            // if the previous selction was a valid selection use this one as new selection in drop
+            // if the previous selection was a valid selection use this one as new selection in drop
             // down, otherwise the default (first one) is selected
             valueSetSpecificationControl.setValueSetType(currentValueSetType);
         }
@@ -759,11 +763,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 rebindTo(newRule);
             }
         });
-
         if (ruleMarkerUI.isMarkerEnumsEnabled(ipsProject)) {
             ruleMarkerUI.setTableVisibleLines(5);
             ruleMarkerUI.createUI(ruleComposite, ruleMarkerPMO);
         }
+        ILabeledElement validationRule = ruleModel.getValidationRule();
+        if (validationRule == null) {
+            validationRule = createDummyRule();
+        }
+        ruleLabelGroup = createLabelGroup(ruleComposite, validationRule,
+                getToolkit());
+        ruleLabelGroup.setToolTipText(Messages.AttributeEditDialog_labelName);
         bindEnablement();
 
         // initialize ruleDefintionUI state.
@@ -789,8 +799,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 ruleMarkerUI.getMarkerTable().setInput(ruleMarkerPMO.getItems());
             }
             ruleDefinitionUI.bindFields(newRule, getBindingContext());
+            ruleLabelGroup.setLabeledElement(newRule);
+        } else {
+            ruleLabelGroup.setLabeledElement(createDummyRule());
         }
         getBindingContext().updateUI();
+    }
+
+    private IValidationRule createDummyRule() {
+        IValidationRule dummyRule = attribute.createValueSetRule();
+        attribute.deleteValueSetRule();
+        return dummyRule;
     }
 
     private boolean allowMarkerEditing() {
@@ -800,6 +819,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void bindEnablement() {
         if (validationRuleAdded != null) {
             getBindingContext().bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
+            getBindingContext().bindEnabled(ruleLabelGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
         if (genericValidation != null) {
             getBindingContext().bindContent(genericValidation.getButton(), ruleModel, RuleUIModel.PROPERTY_GENERIC);

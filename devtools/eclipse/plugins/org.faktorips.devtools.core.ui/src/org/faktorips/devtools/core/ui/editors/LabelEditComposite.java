@@ -48,7 +48,7 @@ import org.faktorips.runtime.MessageList;
  */
 public final class LabelEditComposite extends Composite {
 
-    private final ILabeledElement labeledElement;
+    private ILabeledElement labeledElement;
 
     private final TableViewer tableViewer;
 
@@ -63,6 +63,20 @@ public final class LabelEditComposite extends Composite {
         createLayout();
         tableViewer = createTableViewer();
         configureTable();
+    }
+
+    /**
+     * Sets the labeled Element to the given value and updates the table.
+     * <p>
+     * <strong>The labeled element must be of the same kind as the one originally used to create
+     * this {@link LabelEditComposite}, as the table's structure (e.g. whether it has a column for a
+     * plural value) will not be changed.</strong>
+     * </p>
+     */
+    public void setLabeledElement(ILabeledElement labeledElement) {
+        this.labeledElement = labeledElement;
+        tableViewer.setInput(labeledElement);
+        refresh();
     }
 
     public void refresh() {

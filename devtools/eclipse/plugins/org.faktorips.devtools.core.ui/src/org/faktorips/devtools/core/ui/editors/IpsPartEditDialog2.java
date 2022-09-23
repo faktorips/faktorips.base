@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
@@ -205,10 +206,14 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
 
     private void createLabelGroupIfRequired(Composite composite) {
         if (part instanceof ILabeledElement) {
-            Group labelGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
-            labelGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-            labelEditComposite = new LabelEditComposite(labelGroup, (ILabeledElement)part, getToolkit());
+            labelEditComposite = createLabelGroup(composite, (ILabeledElement)part, getToolkit());
         }
+    }
+
+    protected LabelEditComposite createLabelGroup(Composite composite, ILabeledElement part, UIToolkit toolkit) {
+        Group labelGroup = toolkit.createGroup(composite, Messages.IpsPartEditDialog_groupLabel);
+        labelGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+        return new LabelEditComposite(labelGroup, part, toolkit);
     }
 
     private void createDescriptionGroupIfRequired(Composite composite) {
