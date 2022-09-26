@@ -345,7 +345,7 @@ public final class FacadeFlags {
      * 
      * <pre>
      * IMethod method = ...
-     * int flags = method.getFlags() & ~Flags.AccVarargs;
+     * int flags = method.getFlags() &amp; ~Flags.AccVarargs;
      * return Flags.toString(flags);
      * </pre>
      * 

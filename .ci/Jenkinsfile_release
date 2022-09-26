@@ -106,14 +106,14 @@ pipeline {
                 jacoco sourceInclusionPattern: '**/*.java'
             }
 
-            post {
+            /*post {
                 unsuccessful {
                     script {
                         // Stop even if build is unstable
                         error 'Build failure'
                     }
                 }
-            }
+            }*/
         }
 
         stage('Deployment of Artifacts') {

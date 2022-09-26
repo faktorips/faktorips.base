@@ -99,7 +99,7 @@ public interface JType extends JAbstractType {
      * no formal type parameters.
      * <p>
      * Formal type parameters are as they appear in the source code; for example:
-     * <code>"X extends List&lt;String&gt; & Serializable"</code>.
+     * <code>"X extends List&lt;String&gt; &amp; Serializable"</code>.
      * </p>
      *
      * @return the formal type parameters of this type, in the order declared in the source, or an
@@ -111,7 +111,7 @@ public interface JType extends JAbstractType {
      * Sets the formal type parameters for this type.
      * <p>
      * Formal type parameters are given as they appear in the source code; for example:
-     * <code>"X extends List&lt;String&gt; & Serializable"</code>.
+     * <code>"X extends List&lt;String&gt; &amp; Serializable"</code>.
      * </p>
      *
      * @param typeParameters the formal type parameters of this type, in the order to appear in the

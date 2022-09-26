@@ -13,7 +13,6 @@ package org.faktorips.runtime.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -942,7 +941,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * loader is not aware of OSGi and thus doesn't see any of the classes imported in the bundle.
      * 
      * If a {@link SecurityManager} is used the {@link ClassLoader} is loaded with
-     * {@link AccessController#doPrivileged(java.security.PrivilegedAction)}.
+     * {@link java.security.AccessController#doPrivileged(java.security.PrivilegedAction)}.
      * 
      * @return the context {@code ClassLoader} for this thread, or {@code null}
      */

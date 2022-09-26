@@ -53,7 +53,7 @@ public interface JMethod extends JMember {
      * no formal type parameters.
      * <p>
      * Formal type parameters are as they appear in the source code; for example:
-     * <code>"X extends List&lt;String&gt; & Serializable"</code>.
+     * <code>"X extends List&lt;String&gt; &amp; Serializable"</code>.
      * </p>
      *
      * @return the formal type parameters of this method, in the order declared in the source, or an
