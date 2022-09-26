@@ -37,7 +37,8 @@ pipeline {
         stage('Deploy Additional Artifacts') {
             steps {
                 script {
-                    def fipsVersion = sh script: "/usr/bin/xmlstarlet sel -N x=http://maven.apache.org/POM/4.0.0 -t -m '/x:project/x:version' -v . pom.xml", returnStdout: true
+                    def xmlfile = readFile 'pom.xml'
+                    def fipsVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
                     def (_,major,minor,patch,kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
@@ -83,4 +84,9 @@ def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
     sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
     // a non existing folder would stop the script therefore make it or ignore it (-p)
     sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
+}
+
+def String extractVersionFromPom(String xml, Closure closure) {
+    def node = new XmlSlurper().parseText(xml)
+    return closure.call(node)?.text()
 }
