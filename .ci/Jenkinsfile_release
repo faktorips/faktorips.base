@@ -138,7 +138,7 @@ pipeline {
                         sh "scp ${archiveZipFile} ${p2Server}:${archiveDeployDir}"
                         // copy repository to eclipse update site
                         sh "ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${mavenRelaseVersion}'"
-                        sh "scp -r ${p2RepositoryFolder}/target/repository/ ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}"
+                        sh "scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}"
                         // create a composite, let eclipse see all versions in a sub dir e.g.: In v22_12 there could be 22.12.0-m01, 22.12.0-rc01 & 22.12.0-rfinal
                         // execute local script with stdin of ssh command
                         sh "bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${mavenRelaseVersion}"
