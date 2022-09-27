@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-runtime-parent</artifactId>
-        <version>22.12.0-SNAPSHOT</version>
+        <version>22.12.0.m04</version>
     </parent>
 
     <artifactId>faktorips-valuetypes</artifactId>
