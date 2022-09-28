@@ -213,9 +213,6 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      * {@link #sizeForDiscreteValuesExcludingNull()} which is called by this method for discrete
      * ranges. By default {@link #sizeForDiscreteValuesExcludingNull()} throws a
      * {@link RuntimeException} indicating that it needs to be overridden.
-     * 
-     * @throws RuntimeException if the number of values in this range is larger than
-     *             {@link Integer#MAX_VALUE}
      */
     @Override
     public int size() {
