@@ -113,6 +113,10 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
 
     }
 
+    public Object[] getFoundIpsElements() {
+        return ((IpsSearchResult)searchResult).getIpsElements();
+    }
+
     @Override
     public Object[] getChildren(Object parentElement) {
         if (ipsElementTree.containsKey(parentElement)) {

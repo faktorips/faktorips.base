@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The ProductComponentTypeField is a field to choose a {@link IProductCmptType}.
@@ -49,7 +50,9 @@ public class ProductComponentTypeField extends AbstractTextField<IProductCmptTyp
     @Override
     public void setValue(IProductCmptType newValue) {
         productCmptType = newValue;
-        setText(IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(newValue));
+        String localizedLabel = (newValue == null) ? IpsStringUtils.EMPTY
+                : IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(newValue);
+        setText(localizedLabel);
     }
 
     @Override

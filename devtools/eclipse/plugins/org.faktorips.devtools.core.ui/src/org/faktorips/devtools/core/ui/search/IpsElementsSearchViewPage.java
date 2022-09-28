@@ -56,7 +56,11 @@ public class IpsElementsSearchViewPage extends AbstractTextSearchViewPage {
 
     @Override
     protected synchronized void elementsChanged(Object[] objects) {
-        contentProvider.elementsChanged(objects);
+        if (objects.length == 0) {
+            contentProvider.elementsChanged(contentProvider.getFoundIpsElements());
+        } else {
+            contentProvider.elementsChanged(objects);
+        }
     }
 
     @Override
