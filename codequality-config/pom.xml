@@ -4,7 +4,7 @@
     <groupId>org.faktorips</groupId>
     <artifactId>codequality-config</artifactId>
     <version>22.12.0-SNAPSHOT</version>
-    
+
     <name>Faktor-IPS Code-Quality-Tool-Configurations</name>
 
     <properties>
@@ -14,6 +14,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
+        <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
     </properties>
 
     <distributionManagement>
@@ -36,14 +37,33 @@
             </resource>
         </resources>
         <pluginManagement>
-            <plugins>            
+            <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${maven-site-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

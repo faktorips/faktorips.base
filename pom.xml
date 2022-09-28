@@ -290,7 +290,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                     <artifactId>moditect-maven-plugin</artifactId>
                     <version>${moditect-maven-plugin.version}</version>
                 </plugin>
-            <!-- Tycho for Eclipse projects -->
+                <!-- Tycho for Eclipse projects -->
                 <plugin>
                     <groupId>org.eclipse.tycho</groupId>
                     <artifactId>tycho-maven-plugin</artifactId>
@@ -358,6 +358,17 @@ license terms are available from Faktor Zehn GmbH.</comments>
     </build>
     <reporting>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
