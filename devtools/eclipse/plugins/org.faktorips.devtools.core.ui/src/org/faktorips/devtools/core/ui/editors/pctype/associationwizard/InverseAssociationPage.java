@@ -99,6 +99,18 @@ public class InverseAssociationPage extends WizardPage {
         }
     }
 
+    public void setVisibleStateForTargetIsNotInWorkspace(boolean targetIsInWorkspace) {
+        newInverseAssociation.setVisible(targetIsInWorkspace);
+        useExistingAssociation.setVisible(targetIsInWorkspace);
+        noInverseAssociation.setVisible(true);
+
+        if (!targetIsInWorkspace) {
+            newInverseAssociation.setSelection(false);
+            noInverseAssociation.setSelection(true);
+            wizard.setInverseAssociationManipulation(NewPcTypeAssociationWizard.NONE_INVERSE_ASSOCIATION);
+        }
+    }
+
     /**
      * Listener for the radio buttons.
      */

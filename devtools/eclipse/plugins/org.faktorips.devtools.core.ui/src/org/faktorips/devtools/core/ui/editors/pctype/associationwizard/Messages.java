@@ -80,6 +80,8 @@ public class Messages extends NLS {
 
     public static String InverseAssociationPage_labelUseExistiongAssociation;
 
+    public static String InverseAssociationPage_labelOnlyNoInverseAssociationAllowed;
+
     public static String InverseAssociationPage_pageDescription;
 
     public static String InverseAssociationPage_pageName;
