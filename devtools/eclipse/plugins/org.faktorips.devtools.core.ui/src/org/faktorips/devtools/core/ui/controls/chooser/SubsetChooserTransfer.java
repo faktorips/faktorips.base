@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.ui.controls.chooser;
 
-import org.eclipse.gef.dnd.SimpleObjectTransfer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.faktorips.devtools.core.ui.dnd.SimpleObjectTransfer;
 
 public class SubsetChooserTransfer extends SimpleObjectTransfer {
 

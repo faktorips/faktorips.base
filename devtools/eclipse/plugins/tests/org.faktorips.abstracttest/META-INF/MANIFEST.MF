@@ -6,7 +6,6 @@ Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.13.300",
  org.eclipse.core.runtime;bundle-version="3.15.200",
- org.eclipse.draw2d,
  org.eclipse.ltk.core.refactoring,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.core;bundle-version="3.17.0"
