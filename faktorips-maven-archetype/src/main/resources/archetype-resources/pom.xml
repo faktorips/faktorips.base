@@ -12,7 +12,7 @@
 
     <properties>
         <!-- Faktor-IPS -->
-        <faktor-ips.version>${faktor-ips.version}</faktor-ips.version>
+        <faktor-ips.version>${faktorips.version}</faktor-ips.version>
         <!-- Maven plugin versions -->
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
