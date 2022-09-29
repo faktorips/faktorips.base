@@ -27,6 +27,7 @@
         <!-- plugins -->
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
+        <tycho.version>2.7.5</tycho.version>
         <tycho-maven-plugin.version>3.0.0-SNAPSHOT</tycho-maven-plugin.version>
     </properties>
 

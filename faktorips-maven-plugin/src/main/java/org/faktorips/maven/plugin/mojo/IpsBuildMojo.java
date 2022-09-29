@@ -60,7 +60,6 @@ import org.eclipse.tycho.ReactorProject;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
 import org.eclipse.tycho.extras.eclipserun.EclipseRunMojo;
 import org.eclipse.tycho.extras.eclipserun.LoggingEclipseRunMojo;
-import org.eclipse.tycho.osgi.TychoServiceFactory;
 import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.GitStatusPorcelain;
 import org.faktorips.maven.plugin.mojo.internal.LoggingMode;
@@ -469,7 +468,7 @@ public class IpsBuildMojo extends AbstractMojo {
     @Component
     private ToolchainProvider toolchainProvider;
 
-    @Component(hint = TychoServiceFactory.HINT)
+    @Component
     private EquinoxServiceFactory equinox;
 
     @Component

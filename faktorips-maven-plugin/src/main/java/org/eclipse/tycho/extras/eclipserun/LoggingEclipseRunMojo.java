@@ -30,8 +30,8 @@ import org.eclipse.sisu.equinox.EquinoxServiceFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallation;
 import org.eclipse.sisu.equinox.launching.EquinoxInstallationFactory;
 import org.eclipse.sisu.equinox.launching.EquinoxLauncher;
-import org.eclipse.sisu.equinox.launching.LaunchConfiguration;
 import org.eclipse.tycho.core.maven.ToolchainProvider;
+import org.eclipse.tycho.launching.LaunchConfiguration;
 import org.eclipse.tycho.plugins.p2.extras.Repository;
 import org.faktorips.maven.plugin.mojo.internal.BuildLogPrintStream;
 
