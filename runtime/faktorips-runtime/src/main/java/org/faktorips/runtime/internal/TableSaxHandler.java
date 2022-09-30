@@ -10,17 +10,9 @@
 
 package org.faktorips.runtime.internal;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
-import com.opencsv.exceptions.CsvValidationException;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.xml.sax.Attributes;
@@ -34,7 +26,6 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class TableSaxHandler extends DefaultHandler {
 
-    private static final String NULL_VALUE = "\\N";
     private static final String CSV_FORMAT = "CSV";
 
     private static final String VALUE = "Value";
@@ -141,21 +132,7 @@ public class TableSaxHandler extends DefaultHandler {
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException("Failed to load OpenCSV", e);
             }
-            CSVParser csvParser = new CSVParserBuilder().withSeparator('|').withQuoteChar('"').withEscapeChar('\\')
-                    .build();
-            try (CSVReader csvReader = new CSVReaderBuilder(stringReader).withCSVParser(csvParser).build()) {
-                String[] csvLine;
-                while ((csvLine = csvReader.readNext()) != null) {
-                    for (int i = 0; i < csvLine.length; i++) {
-                        if (NULL_VALUE.equals(csvLine[i])) {
-                            csvLine[i] = null;
-                        }
-                    }
-                    table.addRow(Arrays.asList(csvLine), productRepository);
-                }
-            } catch (IOException | CsvValidationException e) {
-                throw new RuntimeException(e);
-            }
+            CsvTableReader.readCsv(stringReader, table, productRepository);
         }
     }
 

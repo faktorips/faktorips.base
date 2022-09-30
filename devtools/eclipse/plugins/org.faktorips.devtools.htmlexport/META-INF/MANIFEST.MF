@@ -50,4 +50,5 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.devtools.model.value,
  org.faktorips.devtools.model.valueset,
  org.faktorips.runtime,
+ org.faktorips.runtime.internal,
  org.faktorips.values

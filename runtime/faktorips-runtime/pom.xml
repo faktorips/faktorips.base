@@ -33,7 +33,7 @@
                                 <moduleInfoSource>
                                     module org.faktorips.runtime {
                                     requires transitive org.faktorips.valuetypes;
-                                    requires transitive opencsv;
+                                    requires transitive com.opencsv;
                                     requires transitive junit;
                                     requires transitive java.desktop;
                                     requires transitive java.xml;
@@ -72,7 +72,8 @@
                         <!-- <_nouses>true</_nouses> -->
                         <Import-Package>
                             !edu.umd.cs.findbugs.*,
-                            com.opencsv;version="3.3.0";resolution:=optional,
+                            com.opencsv;version="5.6.0";resolution:=optional,
+                            com.opencsv.exceptions;version="5.6.0";resolution:=optional,
                             javax.xml.bind.*;resolution:=optional,
                             junit.framework;resolution:=optional,
                             org.w3c.dom,
@@ -126,11 +127,22 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <!-- Needed only when table contents are saved as CSV -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <!-- Needed only when table contents are saved as CSV -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.0.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
