@@ -9,7 +9,7 @@ def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
-def archiveZipFileTmpl = p2RepositoryFolder + '/target/org.faktorips.p2repository-{0}.zip'
+def archiveZipFileTmpl = 'org.faktorips.p2repository-{0}.zip'
 def archiveDeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}/downloads/faktorips-{0}.{1}'
 def ps2DeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}'
 
@@ -35,7 +35,7 @@ pipeline {
                 script {
                     currentBuild.displayName = "Release ${params.RELEASE_VERSION} (${params.BRANCH})"
 
-                    assert params.RELEASE_VERSION ==~ /(\d+\.)+\d+(-rc\d\d|-m\d\d|-rfinal)?/
+                    assert params.RELEASE_VERSION ==~ /(\d+\.)+\d+(-rc\d\d|-m\d\d|-a\d{8}-\d\d|-rfinal)?/
                     assert params.DEVELOPMENT_VERSION ==~ /(\d+\.)+\d+/
 
                     def scmVars = checkout([
@@ -129,19 +129,32 @@ pipeline {
                     def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, mavenRelaseVersion)
                     def archiveDeployDir = MessageFormat.format(archiveDeployDirTmpl, major, minor)
                     def ps2DeployDir = MessageFormat.format(ps2DeployDirTmpl, major, minor)
-                    // add license to ziped repository (archive download) using zip from the shell
-                    sh "/usr/bin/zip ${archiveZipFile} ${p2RepositoryFolder}/LICENSE.txt ${p2RepositoryFolder}/agpl-3.0.txt"
+                    // add license to zipped repository (archive download) using zip from the shell 
+                    // create zip at root of repository
+                    // each sh starts at root of git checkout, so no need to cd back
+                    sh """
+                        cd ${p2RepositoryFolder}/target/repository
+                        cp -v ../../LICENSE.txt ../../agpl-3.0.txt .
+                        zip -r ../${archiveZipFile} *
+                    """
                     // copy results to server
                     sshagent(credentials: ['hudson.jenkins-f10org'], ignoreMissing: true) {
-                        // copy to archive download
-                        sh "ssh ${p2Server} 'mkdir -p ${archiveDeployDir}'"
-                        sh "scp ${archiveZipFile} ${p2Server}:${archiveDeployDir}"
-                        // copy repository to eclipse update site
-                        sh "ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${mavenRelaseVersion}'"
-                        sh "scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}"
+                        sh """
+                            echo "copy to archive download"
+                            ssh ${p2Server} 'mkdir -p ${archiveDeployDir}'
+                            scp ${p2RepositoryFolder}/target/${archiveZipFile} ${p2Server}:${archiveDeployDir}
+                        """
+                        sh """
+                            echo "copy repository to eclipse update site"
+                            ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${mavenRelaseVersion}'
+                            scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}
+                        """
                         // create a composite, let eclipse see all versions in a sub dir e.g.: In v22_12 there could be 22.12.0-m01, 22.12.0-rc01 & 22.12.0-rfinal
                         // execute local script with stdin of ssh command
-                        sh "bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${mavenRelaseVersion}"
+                        sh """
+                            echo "create update site composite"
+                            bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${mavenRelaseVersion}
+                        """
                     }
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
@@ -176,7 +189,9 @@ pipeline {
 // mv existing remoteFolder before swaping it with the tmp one
 // remove the old folder
 def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
-    sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
-    // a non existing folder would stop the script therefore make it or ignore it (-p)
-    sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
+    sh """
+        echo "save replace files on server"
+        scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy
+        ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'
+    """
 }
