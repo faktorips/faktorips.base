@@ -31,12 +31,12 @@ public class IpsProjectConfigurator extends AbstractProjectConfigurator {
     @Override
     public void configure(ProjectConfigurationRequest request, IProgressMonitor progressMonitor) {
         progressMonitor.beginTask("Adding Faktor IPS nature and builder", 2); //$NON-NLS-1$
-        IFile file = request.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT);
+        IProject project = request.mavenProjectFacade().getProject();
+        IFile file = project.getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT);
         if (!file.exists()) {
             progressMonitor.done();
             return;
         }
-        IProject project = request.getProject();
         IJavaProject javaProject = JavaCore.create(project);
         if (javaProject == null) {
             progressMonitor.done();

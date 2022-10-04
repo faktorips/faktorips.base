@@ -10,9 +10,6 @@
 
 package org.faktorips.devtools.ant;
 
-import java.util.Arrays;
-
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
@@ -90,8 +87,6 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
 
     /**
      * Clean projects.
-     *
-     * @return
      */
     public boolean isCleanProjects() {
         return cleanProjects;
@@ -105,10 +100,11 @@ public class MavenProjectRefreshTask extends AbstractIpsTask {
     @SuppressWarnings("restriction")
     protected void executeInternal() throws Exception {
         MavenUpdateRequest mavenUpdateRequest = new MavenUpdateRequest(
-                Arrays.stream(MavenPlugin.getMavenProjectRegistry().getProjects())
+                MavenPlugin.getMavenProjectRegistry()
+                        .getProjects().stream()
                         .map(IMavenProjectFacade::getProject)
                         .peek(p -> System.out.println("refreshing: " + p.getName()))
-                        .toArray(IProject[]::new),
+                        .toList(),
                 isOffline(),
                 isUpdateSnapshots());
 
