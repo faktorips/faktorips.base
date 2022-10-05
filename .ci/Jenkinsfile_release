@@ -54,7 +54,7 @@ pipeline {
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
                     kind = kind == null ? "rfinal" : kind
                     mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','')
-                    eclipseRelaseVersion = mavenRelaseVersion.replaceAll('-','.')
+                    eclipseRelaseVersion = mavenRelaseVersion.replaceFirst('-','.')
                 }
             }
         }
