@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.abstraction.eclipse
 Bundle-SymbolicName: org.faktorips.devtools.abstraction.eclipse.test;singleton:=true
-Bundle-Version: 22.12.0.qualifier
+Bundle-Version: 22.12.0.a20221005-01
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Fragment-Host: org.faktorips.devtools.abstraction.eclipse
