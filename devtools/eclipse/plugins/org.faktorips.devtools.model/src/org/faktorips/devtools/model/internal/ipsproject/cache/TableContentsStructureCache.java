@@ -68,10 +68,6 @@ public class TableContentsStructureCache {
     public TableContentsStructureCache(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
         this.ipsProject = ipsProject;
-        // TODO 8935
-        // ipsProject(.getImplementations().)createTableContentsStructureCacheUpdater(this); in
-        // EclipseIpsProject
-        // implementieren, in PlainJava/Default eine leere Implementierung
         updater = new TableContentsStructureCacheUpdater(this, ipsProject);
         ipsProject.getIpsModel().addIpsSrcFilesChangedListener(updater);
     }

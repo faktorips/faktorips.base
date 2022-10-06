@@ -41,7 +41,6 @@
         <org-eclipse-osgi.version>3.15.200</org-eclipse-osgi.version>
         <org-eclipse-swt-win32-win32-x86_64.version>3.114.0</org-eclipse-swt-win32-win32-x86_64.version>
         <org-eclipse-text.version>3.10.100</org-eclipse-text.version>
-        <icu.version>64.2</icu.version>
         <junit.version>4.13</junit.version>
         <junit-jupiter-api.version>5.6.0</junit-jupiter-api.version>
         <junit-jupiter-engine.version>5.6.0</junit-jupiter-engine.version>
@@ -141,11 +140,6 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.text</artifactId>
                 <version>${org-eclipse-text.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.ibm.icu</groupId>
-                <artifactId>icu4j</artifactId>
-                <version>${icu.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

@@ -10,11 +10,13 @@
 
 package org.faktorips.devtools.model;
 
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
+import org.faktorips.devtools.model.util.StandardJavaProjectConfigurator;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -35,7 +37,7 @@ public interface IIpsProjectConfigurator {
      *               example the existence of a file for a different kind of dependency management.
      * 
      * @implNote If no extension is responsible for a project, the standard configurator
-     *               {@code StandardJavaProjectConfigurator} will be used.
+     *               {@link StandardJavaProjectConfigurator} will be used.
      * 
      * @param javaProject the project to be configured
      * @return whether this configurator can configure the project
@@ -51,12 +53,12 @@ public interface IIpsProjectConfigurator {
 
     /**
      * Validates whether the given {@link IpsProjectCreationProperties} are set to values this
-     * configurator can use to configure the given {@link AJavaProject}.
+     * configurator can use to configure the given {@link IJavaProject}.
      * <p>
      * This method will only be called if {@link #canConfigure(AJavaProject)} returns {@code true}
-     * for the given {@link AJavaProject}.
+     * for the given {@link IJavaProject}.
      * 
-     * @param javaProject the {@link AJavaProject} to be configured
+     * @param javaProject the {@link IJavaProject} to be configured
      * @param creationProperties the properties defining how the project should be configured
      * @return an empty {@link MessageList} if this configurator can configure the project with the
      *             given properties, otherwise a {@link MessageList} that

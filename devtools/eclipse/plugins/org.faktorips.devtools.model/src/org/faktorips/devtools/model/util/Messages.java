@@ -10,14 +10,14 @@
 
 package org.faktorips.devtools.model.util;
 
-import org.faktorips.devtools.abstraction.util.IpsNLS;
+import org.eclipse.osgi.util.NLS;
 
-public class Messages extends IpsNLS {
+public class Messages extends NLS {
 
     private static final String BUNDLE_NAME = "org.faktorips.devtools.model.util.messages"; //$NON-NLS-1$
 
     static {
-        IpsNLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
     private Messages() {
@@ -33,4 +33,6 @@ public class Messages extends IpsNLS {
     public static String IpsProjectCreationProperties_persistenceSupport;
     public static String IpsProjectCreationProperties_runtimeIdPrefix;
     public static String IpsProjectCreationProperties_sourceFolderName;
+
+    public static String ProjectUtil_msgSourceInProjectImpossible;
 }

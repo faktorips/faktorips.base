@@ -58,7 +58,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * The id of the Faktor-IPS project nature.
      */
-    String NATURE_ID = IpsModelActivator.PLUGIN_ID + ".eclipse.ipsnature"; //$NON-NLS-1$
+    String NATURE_ID = IpsModelActivator.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.

@@ -14,8 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.abstraction.AResourceDelta;
-import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
+import org.eclipse.core.resources.IResourceDelta;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -39,7 +38,7 @@ public abstract class ProductCmptCache {
     private final IIpsProject ipsProject;
     private final MultiMap<String, IIpsSrcFile> prodCmptIpsSrcFilesMap = new MultiMap<>();
 
-    private final IIpsSrcFilesChangeListener addRemovelistener;
+    private final AddRemoveUpdater addRemovelistener;
 
     private State state = State.NEW;
 
@@ -125,6 +124,7 @@ public abstract class ProductCmptCache {
     }
 
     private static final class AddRemoveUpdater implements IIpsSrcFilesChangeListener {
+
         private ProductCmptCache cache;
 
         public AddRemoveUpdater(ProductCmptCache cache) {
@@ -155,16 +155,16 @@ public abstract class ProductCmptCache {
             return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
         }
 
-        private AResourceDelta getDelta(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
+        private IResourceDelta getDelta(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
             return event.getResourceDelta(ipsSrcFile);
         }
 
-        private boolean isAdd(AResourceDelta delta) {
-            return delta.getKind() == AResourceDeltaKind.ADDED;
+        private boolean isAdd(IResourceDelta delta) {
+            return (delta.getKind() & IResourceDelta.ADDED) != 0;
         }
 
-        private boolean isRemove(AResourceDelta delta) {
-            return delta.getKind() == AResourceDeltaKind.REMOVED;
+        private boolean isRemove(IResourceDelta delta) {
+            return (delta.getKind() & IResourceDelta.REMOVED) != 0;
         }
     }
 }

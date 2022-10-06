@@ -68,9 +68,7 @@
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <booleanAttribute key="run_in_ui_thread" value="true"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava*27.1.0.v20190517-1946@default:default"/>
-        <setEntry value="com.google.guava*31.1.0.jre@default:default"/>
-        <setEntry value="com.google.guava.failureaccess@default:default"/>
+        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.jcraft.jzlib@default:default"/>
@@ -323,8 +321,6 @@
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model.eclipse.test@default:false"/>
-        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>

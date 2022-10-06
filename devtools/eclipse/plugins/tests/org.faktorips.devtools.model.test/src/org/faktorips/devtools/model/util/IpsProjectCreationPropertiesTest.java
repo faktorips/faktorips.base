@@ -250,13 +250,13 @@ public class IpsProjectCreationPropertiesTest extends AbstractIpsPluginTest {
         try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
             AProject project = newPlatformProject(UUID.randomUUID().toString());
             AJavaProject javaProject = addJavaCapabilities(project);
-            TestIpsProjectConfigurator testJavaProjectConfigurator = new TestIpsProjectConfigurator();
+            StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             ValidationErrorIpsProjectConfigurator validationErrorIpsProjectConfigurator = new ValidationErrorIpsProjectConfigurator();
 
-            when(configuratorsAre(nonApplicableIpsProjectConfigurator, testJavaProjectConfigurator))
+            when(configuratorsAre(nonApplicableIpsProjectConfigurator, standardJavaProjectConfigurator))
                     .assertThat(properties.validate(javaProject), isEmpty());
-            when(configuratorsAre(testJavaProjectConfigurator, validationErrorIpsProjectConfigurator))
+            when(configuratorsAre(standardJavaProjectConfigurator, validationErrorIpsProjectConfigurator))
                     .assertThat(properties.validate(javaProject), containsErrorMessage());
         }
     }

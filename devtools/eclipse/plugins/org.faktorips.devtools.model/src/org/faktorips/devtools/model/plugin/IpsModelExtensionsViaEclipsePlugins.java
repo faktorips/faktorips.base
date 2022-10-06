@@ -27,7 +27,7 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
-import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
+import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
@@ -35,7 +35,6 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
-import org.faktorips.devtools.model.plugin.extensions.DependencyGraphPersistenceManagerExtension;
 import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitionExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
@@ -90,9 +89,6 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     /** @since 22.6 */
     private final Supplier<Map<String, Datatype>> predefinedDatatypes;
 
-    /** @since 22.12 */
-    private final Supplier<IDependencyGraphPersistenceManager> dependencyGraphPersistenceManager;
-
     private IpsModelExtensionsViaEclipsePlugins() {
         this(Platform.getExtensionRegistry());
     }
@@ -124,7 +120,6 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
         ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
         preSaveProcessors = new PreSaveProcessorExtensions(extensionPoints);
         predefinedDatatypes = new PredefinedDatatypesExtensions(extensionPoints);
-        dependencyGraphPersistenceManager = new DependencyGraphPersistenceManagerExtension(extensionPoints);
     }
 
     /**
@@ -182,8 +177,8 @@ public class IpsModelExtensionsViaEclipsePlugins implements IIpsModelExtensions 
     }
 
     @Override
-    public IDependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
-        return dependencyGraphPersistenceManager.get();
+    public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
+        return IpsModelActivator.get().getDependencyGraphPersistenceManager();
     }
 
     @Override

@@ -12,8 +12,7 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import java.util.Set;
 
-import org.faktorips.devtools.abstraction.AResourceDelta;
-import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
+import org.eclipse.core.resources.IResourceDelta;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -30,7 +29,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * structure map.
  * 
  */
-// TODO 8935 move to new plugin org.faktorips.devtools.model.eclipse
 class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
 
     private final TableContentsStructureCache cache;
@@ -131,10 +129,10 @@ class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
             }
         };
 
-        public static OperationKind getKind(AResourceDelta resourceDelta) {
-            if (resourceDelta.getKind() == AResourceDeltaKind.ADDED) {
+        public static OperationKind getKind(IResourceDelta resourceDelta) {
+            if ((resourceDelta.getKind() & IResourceDelta.ADDED) != 0) {
                 return ADDED;
-            } else if (resourceDelta.getKind() == AResourceDeltaKind.REMOVED) {
+            } else if ((resourceDelta.getKind() & IResourceDelta.REMOVED) != 0) {
                 return REMOVED;
             } else {
                 return CHANGED;

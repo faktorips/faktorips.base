@@ -20,10 +20,13 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -35,6 +38,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -50,15 +54,20 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
+import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
+import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptType;
@@ -78,6 +87,8 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
+import org.mockito.stubbing.Answer;
 
 public class IpsModelTest extends AbstractIpsPluginTest {
 
@@ -381,6 +392,47 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(2, object.getPolicyCmptTypeAttributes().size());
         assertNotNull(object.getPolicyCmptTypeAttributes().get(1));
         assertTrue(sourceFile.isDirty());
+    }
+
+    @Category(EclipseImplementation.class)
+    @Test
+    public void testForceReloadOfCachedIpsSrcFileContents_forExternalResources() throws Exception {
+        if (Abstractions.isEclipseRunning()) {
+            IIpsProject ipsProject = newIpsProject();
+            IpsModel ipsModel = (IpsModel)ipsProject.getIpsModel();
+
+            // Resource does not exist in workspace, therefore will always return -1 as modification
+            // stamp
+            AResource externalResource = ipsProject.getProject().getFile("foo.bar");
+            IpsObjectType ipsObjectType = mock(IpsObjectType.class);
+            IpsSrcFile ipsSrcFile = mock(IpsSrcFile.class);
+            when(ipsSrcFile.exists()).thenReturn(true);
+            when(ipsSrcFile.getIpsObjectType()).thenReturn(ipsObjectType);
+            when(ipsSrcFile.getEnclosingResource()).thenReturn(externalResource);
+            when(ipsSrcFile.getContentFromEnclosingResource()).thenAnswer(withNewXmlInputStream());
+
+            IpsObject ipsObject = mock(IpsObject.class);
+            when(ipsObjectType.newObject(ipsSrcFile)).thenReturn(ipsObject);
+            when(ipsObject.getIpsSrcFile()).thenReturn(ipsSrcFile);
+
+            when(ipsObject.getIpsProject()).thenReturn(ipsProject);
+
+            // prime the cache
+            ipsModel.getIpsSrcFileContent(ipsSrcFile);
+
+            // clear the cache
+            IResourceChangeEvent event = mock(IResourceChangeEvent.class);
+            when(event.getType()).thenReturn(IResourceChangeEvent.PRE_REFRESH);
+            ((EclipseIpsModel)ipsModel).resourceChanged(event);
+
+            // reload, as cache entry should be marked invalid
+            ipsModel.getIpsSrcFileContent(ipsSrcFile);
+            verify(ipsSrcFile, times(2)).getContentFromEnclosingResource();
+        }
+    }
+
+    private Answer<InputStream> withNewXmlInputStream() {
+        return $ -> new ByteArrayInputStream("<Foo/>".getBytes());
     }
 
     @Test

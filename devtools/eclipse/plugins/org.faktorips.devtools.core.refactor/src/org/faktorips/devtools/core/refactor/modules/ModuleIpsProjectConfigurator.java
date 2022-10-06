@@ -19,11 +19,11 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
-import org.faktorips.devtools.model.eclipse.util.StandardJavaProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
+import org.faktorips.devtools.model.util.StandardJavaProjectConfigurator;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 

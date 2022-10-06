@@ -13,6 +13,8 @@ package org.faktorips.devtools.model.internal.type;
 import java.text.MessageFormat;
 import java.util.EnumSet;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -27,7 +29,6 @@ import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -168,7 +169,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) {
         super.validateThis(result, ipsProject);
-        if (!ValidationUtils.validateFieldName(name, ipsProject)) {
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
+        if (!status.isOK()) {
             String invalidName = (IpsStringUtils.isNotEmpty(name)) ? " " + name : ""; //$NON-NLS-1$ //$NON-NLS-2$
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, MessageFormat.format(
                     Messages.Attribute_msg_InvalidAttributeName, invalidName), Message.ERROR, this, PROPERTY_NAME)); // $NON-NLS-1$

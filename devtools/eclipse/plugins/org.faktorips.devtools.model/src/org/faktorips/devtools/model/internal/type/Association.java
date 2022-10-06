@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.HierarchyVisitor;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -381,7 +382,8 @@ public abstract class Association extends TypePart implements IAssociation {
         ValidationUtils.checkStringPropertyNotEmpty(targetRoleSingular, Messages.Association_msg_TargetRoleSingular,
                 this, PROPERTY_TARGET_ROLE_SINGULAR, MSGCODE_TARGET_ROLE_SINGULAR_MUST_BE_SET, list);
 
-        if (!ValidationUtils.validateFieldName(targetRoleSingular, ipsProject)) {
+        IStatus javaStatus = ValidationUtils.validateFieldName(targetRoleSingular, ipsProject);
+        if (!javaStatus.isOK()) {
             String text = MessageFormat.format(Messages.Association_msg_TargetRoleSingularNotAValidJavaFieldName,
                     targetRoleSingular);
             list.newError(MSGCODE_TARGET_ROLE_SINGULAR_NOT_A_VALID_JAVA_FIELD_NAME, text, this,
@@ -391,7 +393,8 @@ public abstract class Association extends TypePart implements IAssociation {
 
     private void validateTargetRolePlural(MessageList list, IIpsProject ipsProject) {
         if (IpsStringUtils.isNotEmpty(targetRolePlural)) {
-            if (!ValidationUtils.validateFieldName(targetRolePlural, ipsProject)) {
+            IStatus javaStatus = ValidationUtils.validateFieldName(targetRolePlural, ipsProject);
+            if (!javaStatus.isOK()) {
                 String text = MessageFormat.format(Messages.Association_msg_TargetRolePluralNotAValidJavaFieldName,
                         targetRolePlural);
                 list.newError(MSGCODE_TARGET_ROLE_PLURAL_NOT_A_VALID_JAVA_FIELD_NAME, text, this,

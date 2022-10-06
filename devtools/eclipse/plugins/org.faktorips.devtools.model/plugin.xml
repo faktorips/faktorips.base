@@ -25,7 +25,62 @@
    <extension-point id="workspaceInteractions" name="Workspace Interactions" schema="schema/workspaceInteractions.exsd"/>
    <extension-point id="addIpsNature" name="Add IPS-Nature" schema="schema/addIpsNature.exsd"/>
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
-   <extension-point id="dependencyGraphPersistenceManager" name="Dependency Graph Persistence Manager" schema="schema/dependencyGraphPersistenceManager.exsd"/>
+   
+<!-- 
+    Extensions to the Java perspective
+  -->
+   <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5_SRC"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5_SRC"/>                           
+   </extension>
+  
+
+<!-- 
+    Nature and Builders
+  -->
+   <extension
+         id="ipsnature"
+         name="FaktorIPS-Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.faktorips.devtools.model.internal.ipsproject.IpsProject$EclipseProjectNature">
+            <parameter
+                  name="installBuilder"
+                  value="true">
+            </parameter>
+         </run>
+      </runtime>
+      <builder
+            id="org.faktorips.devtools.model.ipsbuilder">
+      </builder>
+   </extension>
+   <extension
+         id="ipsbuilder"
+         name="FaktorIPS-Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.faktorips.devtools.model.builder.IpsBuilder$EclipseIpsBuilder">
+         </run>
+      </builder>
+   </extension>
+   
     
 <!-- 
     Default Datatypes
@@ -226,6 +281,22 @@
       <productComponentNamingStrategy
             factoryClass="org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory">
       </productComponentNamingStrategy>
+   </extension>
+   
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer"
+            id="org.faktorips.devtools.model.ipsClasspathContainer">
+      </classpathContainerInitializer>
+   </extension>
+   
+   <extension
+         point="org.faktorips.devtools.model.ipsObjectPathContainerType">
+      <containerType
+            class="org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType"
+            typeId="JDTClasspathContainer">
+      </containerType>
    </extension>
    
    <extension

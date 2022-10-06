@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.ipsproject;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -289,7 +290,7 @@ public interface IIpsArtefactBuilderSet {
      * Called by the {@link IpsBuilder} when {@link IpsBuilder#clean(IProgressMonitor)} is called
      * giving the builder set the opportunity to do additional clearing.
      * 
-     * See {@code IncrementalProjectBuilder#clean(IProgressMonitor)}
+     * @see IncrementalProjectBuilder#clean(IProgressMonitor)
      * 
      */
     @SuppressWarnings("javadoc")

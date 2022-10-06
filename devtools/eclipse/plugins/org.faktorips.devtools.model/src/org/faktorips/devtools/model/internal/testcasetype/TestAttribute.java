@@ -12,6 +12,8 @@ package org.faktorips.devtools.model.internal.testcasetype;
 
 import java.text.MessageFormat;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -27,7 +29,6 @@ import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -357,7 +358,8 @@ public class TestAttribute extends AtomicIpsObjectPart implements ITestAttribute
          * the name of extension attributes must be a valid java name, because for this type of
          * attributes a constant will be generated inside the test case java class
          */
-        if (name == null || !ValidationUtils.validateFieldName(name, ipsProject)) {
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
+        if (!status.isOK()) {
             messageList.add(new Message(MSGCODE_INVALID_TEST_ATTRIBUTE_NAME,
                     MessageFormat.format(Messages.TestAttribute_TestAttribute_Error_InvalidTestAttributeName, name),
                     Message.ERROR,

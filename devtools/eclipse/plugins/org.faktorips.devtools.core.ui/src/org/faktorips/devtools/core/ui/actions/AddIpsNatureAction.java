@@ -32,8 +32,8 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.dialogs.AddIpsNatureDialog;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.eclipse.util.EclipseProjectUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 
 /**
  * An action that adds the ips nature to a project.

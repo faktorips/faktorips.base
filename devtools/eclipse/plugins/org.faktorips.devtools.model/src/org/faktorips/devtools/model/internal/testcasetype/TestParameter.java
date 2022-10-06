@@ -14,6 +14,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
@@ -127,7 +128,8 @@ public abstract class TestParameter extends IpsObjectPart implements ITestParame
         }
 
         // check the correct name format
-        if (!ValidationUtils.validateFieldName(name, ipsProject)) {
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
+        if (!status.isOK()) {
             String text = MessageFormat.format(Messages.TestParameter_ValidateError_InvalidTestParamName, name);
             Message msg = new Message(MSGCODE_INVALID_NAME, text, Message.ERROR, this, PROPERTY_NAME);
             list.add(msg);

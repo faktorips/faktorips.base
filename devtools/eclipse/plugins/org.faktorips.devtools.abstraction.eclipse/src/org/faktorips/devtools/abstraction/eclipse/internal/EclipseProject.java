@@ -26,7 +26,6 @@ import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 
 public class EclipseProject extends EclipseContainer implements AProject {
-    private static final String ECLIPSE_NATURE_ID = "org.faktorips.devtools.model.eclipse.ipsnature"; //$NON-NLS-1$
     private static final String NATURE_ID = "org.faktorips.devtools.model.ipsnature"; //$NON-NLS-1$
     private static final String OLD_NATURE_ID = "org.faktorips.devtools.core.ipsnature"; //$NON-NLS-1$
 
@@ -67,8 +66,7 @@ public class EclipseProject extends EclipseContainer implements AProject {
     @Override
     public boolean isIpsProject() {
         return get(() -> project().isOpen()
-                && (project().hasNature(NATURE_ID) || project().hasNature(OLD_NATURE_ID)
-                        || project().hasNature(ECLIPSE_NATURE_ID)));
+                && (project().hasNature(NATURE_ID) || project().hasNature(OLD_NATURE_ID)));
     }
 
     @Override

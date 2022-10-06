@@ -23,4 +23,4 @@ Import-Package: org.apache.commons.io;version="2.11.0",
  org.mockito.verification,
  org.objenesis,
  org.osgi.framework
-Require-Bundle: org.eclipse.jdt.junit4.runtime;bundle-version="1.1.1200"
+Require-Bundle: org.eclipse.jdt.junit4.runtime;bundle-version="1.1.900"

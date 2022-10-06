@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
+import static org.faktorips.devtools.abstraction.mapping.PathMapping.toJavaPath;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -32,7 +33,9 @@ import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AContainer;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -65,20 +68,20 @@ import org.w3c.dom.Element;
  */
 public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
-    private final Path path;
+    private final IPath path;
     private AFolder correspondingResourceFolder;
     private final ChildOrderComparatorCache childOrderComparatorCache = new ChildOrderComparatorCache();
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
-        path = Path.of(name.replace(SEPARATOR, IPath.SEPARATOR));
+        path = new Path(name.replace(SEPARATOR, IPath.SEPARATOR));
     }
 
     @Override
     public AResource getCorrespondingResource() {
         if (correspondingResourceFolder == null) {
             AFolder folder = (AFolder)getParent().getCorrespondingResource();
-            correspondingResourceFolder = folder.getFolder(path);
+            correspondingResourceFolder = folder.getFolder(toJavaPath(path));
         }
         return correspondingResourceFolder;
     }
@@ -92,7 +95,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
      * {@inheritDoc}
      * 
      * {@link IIpsPackageFragment IIpsPackageFragments} are always returned, whether they are output
-     * locations of the {@code IJavaProject} corresponding to this package fragment's
+     * locations of the {@link IJavaProject} corresponding to this package fragment's
      * {@link IpsProject} or not.
      */
     @Override

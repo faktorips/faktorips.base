@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Platform;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -63,7 +63,7 @@ public class UniqueKeyValidator {
 
     static {
         TRACE_VALIDATION_CACHE = Boolean
-                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/tablecontentvalidation")); //$NON-NLS-1$
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/tablecontentvalidation")); //$NON-NLS-1$
     }
 
     /** cache to validate simple column unique keys */

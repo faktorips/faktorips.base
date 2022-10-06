@@ -22,7 +22,6 @@ public class Messages extends NLS {
     public static String Migration_21_12_0_AddSchemas;
     public static String Migration_22_6_0_description;
     public static String Migration_22_6_0_unifyValueSet;
-    public static String Migration_22_12_0_description;
     public static String Migration_Option_Unify_Value_Set_Description;
 
     static {

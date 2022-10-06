@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.faktorips.devtools.abstraction.Abstractions;
+import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -45,8 +45,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
 
     static {
         TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean
-                .parseBoolean(
-                        Abstractions.getDebugOption("org.faktorips.devtools.model/trace/dependencygraphmanagement"));
+                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/dependencygraphmanagement"));
     }
 
     private final MultiMap<Object, IDependency> dependantsForMap = MultiMap.createWithSetsAsValues();

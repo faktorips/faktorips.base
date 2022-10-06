@@ -13,6 +13,7 @@ package org.faktorips.devtools.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.ValueDatatype;
@@ -49,7 +50,6 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns the {@link IIpsModel} singleton instance.
      */
-    @SuppressWarnings("deprecation")
     static IIpsModel get() {
         return IpsModel.get();
     }
@@ -71,8 +71,8 @@ public interface IIpsModel extends IIpsElement {
      * Note: To get a busy indicator and progress dialog better call
      * IpsUIPlugin#runWorkspaceModification
      * 
-     * See {@code IWorkspace#run(org.eclipse.core.runtime.ICoreRunnable,
-     *          org.eclipse.core.runtime.IProgressMonitor)}
+     * @see IWorkspace#run(org.eclipse.core.runtime.ICoreRunnable,
+     *          org.eclipse.core.runtime.IProgressMonitor)
      */
     void runAndQueueChangeEvents(ICoreRunnable action, IProgressMonitor monitor);
 

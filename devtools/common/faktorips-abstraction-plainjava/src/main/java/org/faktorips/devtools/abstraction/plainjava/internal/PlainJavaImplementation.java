@@ -107,12 +107,6 @@ public enum PlainJavaImplementation implements AImplementation {
         return log;
     }
 
-    @Override
-    public String getDebugOption(String option) {
-        // TODO später anpassen
-        return "false";
-    }
-
     public static ResourceChanges getResourceChanges() {
         return get().resourceChanges;
     }

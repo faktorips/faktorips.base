@@ -46,15 +46,15 @@ public class IpsProjectConfiguratorsTest extends AbstractIpsPluginTest {
     @Test
     public void testApplicableTo() throws Exception {
         try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
-            TestIpsProjectConfigurator testJavaProjectConfigurator = new TestIpsProjectConfigurator();
+            StandardJavaProjectConfigurator standardJavaProjectConfigurator = new StandardJavaProjectConfigurator();
             NonApplicableIpsProjectConfigurator nonApplicableIpsProjectConfigurator = new NonApplicableIpsProjectConfigurator();
             testIpsModelExtensions.setIpsProjectConfigurators(
-                    Arrays.asList(testJavaProjectConfigurator, nonApplicableIpsProjectConfigurator));
+                    Arrays.asList(standardJavaProjectConfigurator, nonApplicableIpsProjectConfigurator));
 
             List<IIpsProjectConfigurator> applicableConfigurators = IpsProjectConfigurators.applicableTo(javaProject)
                     .collect(Collectors.toList());
 
-            assertThat(applicableConfigurators, hasItem(testJavaProjectConfigurator));
+            assertThat(applicableConfigurators, hasItem(standardJavaProjectConfigurator));
             assertThat(applicableConfigurators, not(hasItem(nonApplicableIpsProjectConfigurator)));
         }
     }

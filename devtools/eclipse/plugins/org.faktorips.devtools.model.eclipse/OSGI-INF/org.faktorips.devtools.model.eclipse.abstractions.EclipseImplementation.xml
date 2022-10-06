@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.faktorips.devtools.model.eclipse.abstractions.EclipseImplementation">
-   <property name="type" value="eclipse"/>
-   <service>
-      <provide interface="AWorkspaceAbstractionsImplementation"/>
-   </service>
-   <implementation class="org.faktorips.devtools.model.eclipse.abstractions.EclipseImplementation"/>
-</scr:component>

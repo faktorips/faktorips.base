@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.internal.productrelease;
 
 import java.net.PasswordAuthentication;
 
-import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
+import org.faktorips.devtools.model.productrelease.ITargetSystem;
 
 /**
  * Default implementation for {@link ITargetSystem} only provides the name of the target system

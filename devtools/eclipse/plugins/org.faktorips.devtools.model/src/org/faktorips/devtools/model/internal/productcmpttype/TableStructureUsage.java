@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -31,7 +33,6 @@ import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -246,7 +247,8 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         super.validateThis(list, ipsProject);
 
         // check the correct name format
-        if (!ValidationUtils.validateFieldName(name, ipsProject)) {
+        IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
+        if (!status.isOK()) {
             String text = MessageFormat.format(Messages.TableStructureUsage_msgInvalidRoleName, name);
             Message msg = new Message(MSGCODE_INVALID_ROLE_NAME, text, Message.ERROR, this, PROPERTY_ROLENAME);
             list.add(msg);

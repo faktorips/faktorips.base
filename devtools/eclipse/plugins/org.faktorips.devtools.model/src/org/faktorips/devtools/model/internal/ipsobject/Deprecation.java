@@ -9,13 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import java.text.MessageFormat;
-
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -88,7 +87,7 @@ public class Deprecation extends AtomicIpsObjectPart implements IDeprecation {
         }
         if (isValidSinceVersion()) {
             sb.append(" "); //$NON-NLS-1$
-            sb.append(MessageFormat.format(Messages.Deprecation_since, getSinceVersionString()));
+            sb.append(NLS.bind(Messages.Deprecation_since, getSinceVersionString()));
         }
         sb.append(". "); //$NON-NLS-1$
         sb.append(IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(this));

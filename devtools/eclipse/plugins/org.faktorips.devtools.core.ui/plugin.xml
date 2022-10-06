@@ -1259,7 +1259,7 @@
       <image
             icon="icons/IpsProjectNatureOverlay.gif"
             id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
-            natureId="org.faktorips.devtools.model.eclipse.ipsnature"/>
+            natureId="org.faktorips.devtools.model.ipsnature"/>
    </extension>
    <extension
          id="org.faktorips.devtools.core.productCmptMergeViewer"

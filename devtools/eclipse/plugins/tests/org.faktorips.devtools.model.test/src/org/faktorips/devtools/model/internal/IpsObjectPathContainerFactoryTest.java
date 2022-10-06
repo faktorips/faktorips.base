@@ -12,6 +12,7 @@ package org.faktorips.devtools.model.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -23,12 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
+import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
 
@@ -122,6 +127,18 @@ public class IpsObjectPathContainerFactoryTest extends AbstractIpsPluginTest {
         factory.registerContainerType(type);
 
         assertNull(factory.newContainer(new IpsProject(), "SOMETHING", "optionalPath"));
+    }
+
+    @Category(EclipseImplementation.class)
+    @Test
+    public void testGetContainerType_createNewFactoryBasedOnExtensions() {
+        if (Abstractions.isEclipseRunning()) {
+            factory = IpsObjectPathContainerFactory.newFactoryBasedOnExtensions();
+
+            // this is a dependency to the fact, that the container for JDT containers is defined in
+            // plugin.xml, (but better this test then no test)
+            assertNotNull(factory.getContainerType(IpsContainer4JdtClasspathContainerType.ID));
+        }
     }
 
     @Test

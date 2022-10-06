@@ -15,8 +15,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.productrelease.DefaultTargetSystem;
-import org.faktorips.devtools.model.eclipse.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.productrelease.ITargetSystem;
 
 public class TestDeploymentOperation extends AbstractReleaseAndDeploymentOperation {
 

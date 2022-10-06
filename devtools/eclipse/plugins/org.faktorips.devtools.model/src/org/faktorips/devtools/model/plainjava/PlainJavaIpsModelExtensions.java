@@ -18,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.CurrencyDatatype;
@@ -66,7 +67,7 @@ public class PlainJavaIpsModelExtensions implements IIpsModelExtensions {
     }
 
     /**
-     * <em><strong>For testing with a custom {@code IExtensionRegistry} only.</strong></em>
+     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      * 
      * @param testInstance an PlainJavaIpsModelExtensions with test data
      */

@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
@@ -702,10 +703,10 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
                     // parameter
                     if (policyCmptTypeDefinedInTestType != null) {
                         if (!policyCmptTypeUsed.isSubtypeOrSameType(policyCmptTypeDefinedInTestType, ipsProject)) {
-                            String text = MessageFormat.format(
-                                    Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam,
-                                    policyCmptTypeUsed.getQualifiedName(),
-                                    policyCmptTypeDefinedInTestType.getQualifiedName());
+                            String text = NLS
+                                    .bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationErrorPolicyCmptTypeNoSubtypeOrSameTypeParam,
+                                            policyCmptTypeUsed.getQualifiedName(),
+                                            policyCmptTypeDefinedInTestType.getQualifiedName());
                             Message msg = new Message(ITestPolicyCmpt.MSGCODE_POLICY_CMPT_TYPE_NOT_ASSIGNABLE, text,
                                     Message.ERROR, this, PROPERTY_POLICYCMPTTYPE);
                             list.add(msg);
@@ -876,9 +877,9 @@ public class TestPolicyCmpt extends TestObject implements ITestPolicyCmpt {
              */
             IProductCmpt productCmptOfParent = parentTestPolicyCmpt.findProductCmpt(ipsProject);
             if (productCmptOfParent == null) {
-                String text = MessageFormat.format(
-                        Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound,
-                        productCmptCandidateObj.getName());
+                String text = NLS
+                        .bind(Messages.TestPolicyCmpt_TestPolicyCmpt_ValidationError_ProductCmpCouldNotValidatedParentNotFound,
+                                productCmptCandidateObj.getName());
                 Message msg = new Message(MSGCODE_PARENT_PRODUCT_CMPT_OF_LINK_NOT_SPECIFIED, text, Message.WARNING,
                         this, ITestPolicyCmpt.PROPERTY_PRODUCTCMPT);
                 list.add(msg);

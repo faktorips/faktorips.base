@@ -27,7 +27,6 @@
         <module>org.faktorips.devtools.model</module>
         <module>org.faktorips.devtools.model.builder</module>
         <module>org.faktorips.devtools.model.decorators</module>
-        <module>org.faktorips.devtools.model.eclipse</module>
         <module>org.faktorips.devtools.stdbuilder</module>
         <module>org.faktorips.devtools.stdbuilder.ui</module>
         <module>org.faktorips.devtools.tableconversion</module>

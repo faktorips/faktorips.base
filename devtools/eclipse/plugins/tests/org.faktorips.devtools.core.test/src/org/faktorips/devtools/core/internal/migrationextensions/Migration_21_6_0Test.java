@@ -29,12 +29,12 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.eclipse.util.EclipseProjectUtil;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.model.util.EclipseProjectUtil;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 

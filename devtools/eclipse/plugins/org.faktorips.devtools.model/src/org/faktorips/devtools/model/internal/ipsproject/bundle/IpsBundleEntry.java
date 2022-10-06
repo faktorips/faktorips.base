@@ -21,6 +21,7 @@ import org.faktorips.devtools.model.internal.ipsproject.IpsLibraryEntry;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPathEntry;
 import org.faktorips.devtools.model.internal.ipsproject.LibraryIpsPackageFragmentRoot;
+import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -36,7 +37,7 @@ import org.faktorips.runtime.MessageList;
  * MANIFEST.MF is explained in detail in {@link IpsBundleManifest}.
  * <p>
  * Normally an {@link IpsBundleEntry} is resolved by using a classpath container like
- * {@code IpsContainer4JdtClasspathContainer}. Mostly for testing purposes this entry has also the
+ * {@link IpsContainer4JdtClasspathContainer}. Mostly for testing purposes this entry has also the
  * ability to be initialized by the {@link IpsObjectPath} in the {@link IIpsProjectProperties}. To
  * use this approach you have to setup the following entry:
  * <p>
