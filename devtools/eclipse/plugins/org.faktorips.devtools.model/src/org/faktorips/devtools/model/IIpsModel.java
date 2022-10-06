@@ -40,7 +40,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 /**
  * The IPS model is the top of the IPS element hierarchy (like the Java model is the top of the Java
  * element hierarchy). One model instance exists per workspace. The model instance can be retrieved
- * via the plugin's <code>getIpsModel()</code> method.
+ * via the static {@link #get} method.
  */
 public interface IIpsModel extends IIpsElement {
 
@@ -50,6 +50,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns the {@link IIpsModel} singleton instance.
      */
+    @SuppressWarnings("deprecation")
     static IIpsModel get() {
         return IpsModel.get();
     }

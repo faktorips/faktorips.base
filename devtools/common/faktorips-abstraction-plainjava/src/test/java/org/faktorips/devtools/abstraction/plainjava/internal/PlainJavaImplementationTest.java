@@ -98,7 +98,7 @@ public class PlainJavaImplementationTest {
 
     @Test
     public void testGetVersion() {
-        assertThat(PlainJavaImplementation.get().getVersion(), is(AVersion.parse("21.12"))); //$NON-NLS-1$
+        assertThat(PlainJavaImplementation.get().getVersion(), is(AVersion.parse("22.12"))); //$NON-NLS-1$
     }
 
     @Test
