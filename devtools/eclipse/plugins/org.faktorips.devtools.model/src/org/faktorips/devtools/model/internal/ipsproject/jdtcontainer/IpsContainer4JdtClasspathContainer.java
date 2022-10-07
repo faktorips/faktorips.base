@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -25,6 +26,8 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsObjectPathContainer;
+import org.faktorips.devtools.model.internal.ipsproject.IpsContainerEntry;
+import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
@@ -44,6 +47,8 @@ import org.faktorips.runtime.MessageList;
  * 
  */
 public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
+
+    public static final String REQUIRED_PLUGIN_CONTAINER = "org.eclipse.pde.core.requiredPlugins"; //$NON-NLS-1$
 
     private static final String MSG_CODE_INVALID_CLASSPATH_CONTAINER_PATH = "Invalid-ClasspathContainer-Path"; //$NON-NLS-1$
 
@@ -177,6 +182,14 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
                 Message.ERROR, this);
         result.add(msg);
         return result;
+    }
+
+    public static void addRequiredEntriesToIpsObjectPath(IpsObjectPath ipsObjectPath,
+            Consumer<IIpsObjectPathEntry> entryAdder) {
+        IpsContainerEntry ipsContainerEntry = new IpsContainerEntry(ipsObjectPath);
+        ipsContainerEntry.setContainerTypeId(IpsContainer4JdtClasspathContainerType.ID);
+        ipsContainerEntry.setOptionalPath(REQUIRED_PLUGIN_CONTAINER);
+        entryAdder.accept(ipsContainerEntry);
     }
 
     public static class JdtClasspathResolver {

@@ -13,13 +13,9 @@ package org.faktorips.devtools.model.internal;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang3.StringUtils;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.mapping.StatusMessageListMapping;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaConventions;
+import org.faktorips.devtools.abstraction.util.JavaConventions;
 import org.faktorips.devtools.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.model.Validatable;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
@@ -347,32 +343,29 @@ public class ValidationUtils {
     }
 
     /**
-     * Validate the given field name using the source and compliance levels used by the given
+     * Validate the given field name using the source level used by the given
      * IpsProject/JavaProject.
      * 
      * @param name the name of a field
-     * @param ipsProject the project which source and compliance level should be used
+     * @param ipsProject the project which source level should be used
      * 
-     * @see JavaConventions#validateFieldName(String, String, String)
+     * @see JavaConventions#validateName(String, Runtime.Version)
      */
-    public static IStatus validateFieldName(String name, IIpsProject ipsProject) {
+    public static boolean validateFieldName(String name, IIpsProject ipsProject) {
         Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        IStatus validateFieldName = JavaConventions.validateFieldName(StringUtils.capitalize(name),
-                sourceVersion.toString(),
-                sourceVersion.toString());
-        if (validateFieldName.isOK()) {
-            return JavaConventions.validateFieldName(StringUtils.uncapitalize(name),
-                    sourceVersion.toString(),
-                    sourceVersion.toString());
+        boolean isValidFieldName = JavaConventions.validateName(StringUtils.capitalize(name),
+                sourceVersion);
+        if (isValidFieldName) {
+            return JavaConventions.validateName(StringUtils.uncapitalize(name),
+                    sourceVersion);
         } else {
-            return validateFieldName;
+            return isValidFieldName;
         }
     }
 
     /**
      * Validate the given Java type name, either simple or qualified. For example,
-     * <code>"java.lang.Object"</code>, or <code>"Object"</code> using the source and compliance
-     * levels used by the given IpsProject/JavaProject.
+     * <code>"java.lang.Object"</code>, or <code>"Object"</code>.
      * <p>
      * Returns an empty {@link MessageList} if the given name is valid as a Java type name, one
      * containing a {@link Message} with {@link Severity#WARNING} if the given name is discouraged,
@@ -380,18 +373,11 @@ public class ValidationUtils {
      * name.
      * 
      * @param name the name of a type
-     * @param ipsProject the project which source and compliance level should be used
      * 
-     * @see JavaConventions#validateJavaTypeName(String, String, String)
+     * @see JavaConventions#validateTypeName(String)
      */
-    public static MessageList validateJavaTypeName(String name, IIpsProject ipsProject) {
-        Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        if (Abstractions.isEclipseRunning()) {
-            return StatusMessageListMapping.toMessageList(
-                    JavaConventions.validateJavaTypeName(name, sourceVersion.toString(), sourceVersion.toString()));
-        } else {
-            return PlainJavaConventions.validateTypeName(name);
-        }
+    public static MessageList validateJavaTypeName(String name) {
+        return JavaConventions.validateTypeName(name);
     }
 
     /**
@@ -406,12 +392,12 @@ public class ValidationUtils {
      * Java identifier, otherwise a status object indicating what is wrong with the identifier.
      * 
      * @param ipsProject the project which source and compliance level should be used
-     * 
-     * @see JavaConventions#validateIdentifier(String, String, String)
+     *
+     * @see JavaConventions#validateName(String, Runtime.Version)
      */
-    public static IStatus validateJavaIdentifier(String name, IIpsProject ipsProject) {
+    public static boolean validateJavaIdentifier(String name, IIpsProject ipsProject) {
         Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        return JavaConventions.validateIdentifier(name, sourceVersion.toString(), sourceVersion.toString());
+        return JavaConventions.validateName(name, sourceVersion);
     }
 
 }

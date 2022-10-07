@@ -41,7 +41,6 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -235,10 +234,9 @@ public class CreateIpsArchiveOperation implements ICoreRunnable {
     }
 
     private void addToArchive(IIpsSrcFile file, JarOutputStream os, Properties ipsObjectsProperties) {
-
         InputStream content = file.getContentFromEnclosingResource();
-        IPath eclipsePath = PathMapping.toEclipsePath(file.getQualifiedNameType().toPath());
-        String path = eclipsePath == null ? IpsStringUtils.EMPTY : eclipsePath.toPortableString();
+        Path qualifiedNamePath = file.getQualifiedNameType().toPath();
+        String path = qualifiedNamePath == null ? IpsStringUtils.EMPTY : PathUtil.toPortableString(qualifiedNamePath);
         String entryName = IIpsArchive.IPSOBJECTS_FOLDER + IPath.SEPARATOR
                 + path;
         if (isDuplicateEntry(entryName)) {

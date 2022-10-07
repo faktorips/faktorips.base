@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -53,12 +52,12 @@ public interface IIpsProjectConfigurator {
 
     /**
      * Validates whether the given {@link IpsProjectCreationProperties} are set to values this
-     * configurator can use to configure the given {@link IJavaProject}.
+     * configurator can use to configure the given {@link AJavaProject}.
      * <p>
      * This method will only be called if {@link #canConfigure(AJavaProject)} returns {@code true}
-     * for the given {@link IJavaProject}.
+     * for the given {@link AJavaProject}.
      * 
-     * @param javaProject the {@link IJavaProject} to be configured
+     * @param javaProject the {@link AJavaProject} to be configured
      * @param creationProperties the properties defining how the project should be configured
      * @return an empty {@link MessageList} if this configurator can configure the project with the
      *             given properties, otherwise a {@link MessageList} that

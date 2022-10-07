@@ -101,7 +101,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
             createFolderIfNotThere((AFolder)file.getParent());
             createFileIfNotThere(file);
             InputStream inputStream = enumPropertyGenerator.getStream();
-            writeToFile(file, inputStream, true, true);
+            writeToFile(file, inputStream, true);
         }
     }
 

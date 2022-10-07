@@ -45,6 +45,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.DummyDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.plugin.DummyIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
@@ -126,8 +127,7 @@ public class PlainJavaIpsModelExtensions implements IIpsModelExtensions {
 
     @Override
     public IDependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
-        // TODO Auto-generated method stub
-        return null;
+        return new DummyDependencyGraphPersistenceManager();
     }
 
     @Override

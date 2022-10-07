@@ -122,7 +122,7 @@ public class JdtClasspathEntryCreator {
                 }
                 ipsJarBundleEntry.initStorage(javaPath);
             } catch (IOException e) {
-                // this seem to be no jar bundle
+                // this seems to be no jar bundle
                 return null;
             }
             MessageList msgList = ipsJarBundleEntry.validate();

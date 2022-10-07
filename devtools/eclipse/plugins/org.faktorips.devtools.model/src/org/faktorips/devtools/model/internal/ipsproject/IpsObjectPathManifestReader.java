@@ -12,14 +12,14 @@ package org.faktorips.devtools.model.internal.ipsproject;
 
 import java.util.ArrayList;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
-import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This reader is used to create an {@link IIpsObjectPath} in when the option 'useManifest' in the
@@ -39,8 +39,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * @author dirmeier
  */
 public class IpsObjectPathManifestReader {
-
-    static final String REQUIRED_PLUGIN_CONTAINER = "org.eclipse.pde.core.requiredPlugins"; //$NON-NLS-1$
 
     private IpsObjectPath ipsObjectPath;
 
@@ -70,7 +68,7 @@ public class IpsObjectPathManifestReader {
         for (ManifestElement manifestElement : objectDirElements) {
             entries.add(readEntry(manifestElement, bundleManifest));
         }
-        entries.add(getRequiredPluginsContainerEntry());
+        WorkspaceAbstractions.addRequiredEntriesToIpsObjectPath(ipsObjectPath, entries::add);
         ipsObjectPath.setEntries(entries.toArray(new IIpsObjectPathEntry[entries.size()]));
         return ipsObjectPath;
     }
@@ -97,12 +95,5 @@ public class IpsObjectPathManifestReader {
             ipsSrcFolderEntry.setValidationMessagesBundle(validationMessagesBundle);
         }
         return ipsSrcFolderEntry;
-    }
-
-    private IIpsObjectPathEntry getRequiredPluginsContainerEntry() {
-        IpsContainerEntry ipsContainerEntry = new IpsContainerEntry(ipsObjectPath);
-        ipsContainerEntry.setContainerTypeId(IpsContainer4JdtClasspathContainerType.ID);
-        ipsContainerEntry.setOptionalPath(REQUIRED_PLUGIN_CONTAINER);
-        return ipsContainerEntry;
     }
 }

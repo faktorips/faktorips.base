@@ -13,8 +13,8 @@ package org.faktorips.devtools.model.builder;
 import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
 
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,8 +35,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
@@ -50,6 +48,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -100,7 +99,7 @@ public class IpsBuilder {
 
     static {
         TRACE_BUILDER_TRACE = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder"));
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/builder"));
     }
 
     /**
@@ -320,8 +319,8 @@ public class IpsBuilder {
         }
         IIpsProject ipsProject = getIpsProject();
         if ((delta
-                .findMember(toEclipsePath(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())) != null)
-                || (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null)) {
+                .findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath()) != null)
+                || (delta.findMember(Path.of(IpsBundleManifest.MANIFEST_NAME)) != null)) {
             return true;
         }
         IIpsArchiveEntry[] entries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getArchiveEntries();

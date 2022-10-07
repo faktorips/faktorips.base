@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.abstraction;
 
-import org.eclipse.core.runtime.IPath;
+import java.nio.file.Path;
 
 /**
  * A resource delta is the difference between two points in time for a given (container) resource.
@@ -23,7 +23,7 @@ public interface AResourceDelta extends AAbstraction {
      * @param path a relative path to a resource contained in this delta's resource
      * @return the child delta or {@code null} if no such resource exists
      */
-    AResourceDelta findMember(IPath path);
+    AResourceDelta findMember(Path path);
 
     /**
      * Returns the resource this delta refers to.

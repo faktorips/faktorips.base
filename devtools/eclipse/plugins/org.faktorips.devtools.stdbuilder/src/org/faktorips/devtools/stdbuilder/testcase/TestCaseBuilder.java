@@ -101,11 +101,11 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             boolean newlyCreated = createFileIfNotThere(file);
 
             if (newlyCreated) {
-                writeToFile(file, is, true, false);
+                writeToFile(file, is, false);
             } else {
                 String currentContent = getContentAsString(file.getContents(), encoding);
                 if (!content.equals(currentContent)) {
-                    writeToFile(file, is, true, true);
+                    writeToFile(file, is, true);
                 }
             }
         } catch (TransformerException e) {

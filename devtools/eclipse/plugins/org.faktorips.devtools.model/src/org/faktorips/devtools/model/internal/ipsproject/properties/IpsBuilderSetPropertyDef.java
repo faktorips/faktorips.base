@@ -52,7 +52,7 @@ public class IpsBuilderSetPropertyDef implements IIpsBuilderSetPropertyDef {
     }
 
     /**
-     * Returns the descripton specified in the plugin descriptor.
+     * Returns the description specified in the plugin descriptor.
      */
     @Override
     public String getDescription() {

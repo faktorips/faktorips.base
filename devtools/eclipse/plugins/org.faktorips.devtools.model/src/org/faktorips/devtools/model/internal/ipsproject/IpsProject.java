@@ -26,7 +26,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.TransformerException;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -35,7 +34,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaModelMarker;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
@@ -112,6 +110,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
@@ -130,7 +129,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
     }
 
     /**

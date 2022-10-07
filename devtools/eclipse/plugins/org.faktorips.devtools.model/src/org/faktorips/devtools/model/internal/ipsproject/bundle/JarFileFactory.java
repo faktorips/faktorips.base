@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.Abstractions;
 
@@ -40,7 +39,7 @@ import org.faktorips.devtools.abstraction.Abstractions;
 public class JarFileFactory {
 
     private static final boolean TRACE_JAR_FILES = Boolean
-            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")); //$NON-NLS-1$
+            .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/jarfiles")); //$NON-NLS-1$
 
     private static final Map<Path, OpenedJar> CACHE = new ConcurrentHashMap<>();
 

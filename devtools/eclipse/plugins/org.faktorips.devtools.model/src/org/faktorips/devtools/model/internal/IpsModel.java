@@ -37,21 +37,16 @@ import java.util.stream.Collectors;
 
 import javax.xml.transform.dom.DOMSource;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -61,6 +56,9 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
+import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -70,6 +68,7 @@ import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange.Type;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceDelta;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
@@ -132,13 +131,13 @@ import org.xml.sax.SAXException;
 public class IpsModel extends IpsElement implements IIpsModel {
 
     public static final boolean TRACE_MODEL_MANAGEMENT = Boolean
-            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")); //$NON-NLS-1$
+            .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/modelmanagement")); //$NON-NLS-1$
 
     public static final boolean TRACE_MODEL_CHANGE_LISTENERS = Boolean
-            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners"));
+            .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/modelchangelisteners"));
 
     public static final boolean TRACE_VALIDATION = Boolean
-            .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/validation"));
+            .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/validation"));
 
     /**
      * We must use a value different from {@link IResource#NULL_STAMP} because otherwise files which
@@ -1601,7 +1600,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
                 }
             } else {
-                IResourceDelta delta = event.getDelta();
+                AResourceDelta delta = wrap(event.getDelta()).as(AResourceDelta.class);
                 if (delta != null) {
                     try {
                         delta.accept(resourceDeltaVisitor);
@@ -1638,14 +1637,42 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
         }
 
-        private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles) {
+        private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, AResourceDelta> changedIpsSrcFiles) {
             forEachIpsSrcFilesChangeListener(
                     listener -> listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles)));
         }
 
-        private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {
+        @Override
+        protected void runSafe(ICoreRunnable action, IProgressMonitor monitor, Set<IIpsSrcFile> modifiedSrcFiles) {
+            super.runSafe(action, monitor, modifiedSrcFiles);
+        }
 
-            private Map<IIpsSrcFile, IResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
+        @Override
+        public IIpsProject createIpsProject(AProject project) {
+            try {
+                IProject eclipseProject = project.unwrap();
+                if (eclipseProject.getNature(IIpsProject.NATURE_ID) != null) {
+                    return getIpsProject(project);
+                }
+                IIpsProject ipsProject = getIpsProject(project);
+                IpsProjectUtil.addNature(eclipseProject, IIpsProject.NATURE_ID);
+
+                IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
+                if (infos.length > 0) {
+                    IIpsProjectProperties props = ipsProject.getProperties();
+                    props.setBuilderSetId(infos[0].getBuilderSetId());
+                    ipsProject.setProperties(props);
+                }
+
+                return ipsProject;
+            } catch (CoreException e) {
+                throw new IpsException(e);
+            }
+        }
+
+        private class IpsSrcFileChangeVisitor implements AResourceDeltaVisitor {
+
+            private Map<IIpsSrcFile, AResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
             private Set<String> fileExtensionsOfInterest;
 
             public IpsSrcFileChangeVisitor() {
@@ -1653,20 +1680,19 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
 
             @Override
-            public boolean visit(final IResourceDelta delta) {
-                IResource resource = delta.getResource();
-                if (resource == null || resource.getType() != IResource.FILE) {
+            public boolean visit(final AResourceDelta delta) {
+                AResource resource = delta.getResource();
+                if (resource == null || resource.getType() != AResourceType.FILE) {
                     return true;
                 }
-                if (fileExtensionsOfInterest.contains(((IFile)resource).getFileExtension())) {
-                    AResource aResource = wrap(resource).as(AResource.class);
-                    if (delta.getKind() == IResourceDelta.REMOVED) {
-                        IIpsElement ipsElement = getIpsElement(aResource);
+                if (fileExtensionsOfInterest.contains(((AFile)resource).getExtension())) {
+                    if (delta.getKind() == AResourceDeltaKind.REMOVED) {
+                        IIpsElement ipsElement = getIpsElement(resource);
                         if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
                             changedIpsSrcFiles.put((IIpsSrcFile)ipsElement, delta);
                         }
                     } else {
-                        final IIpsElement ipsElement = findIpsElement(aResource);
+                        final IIpsElement ipsElement = findIpsElement(resource);
                         if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
                             IpsSrcFile srcFile = (IpsSrcFile)ipsElement;
                             changedIpsSrcFiles.put(srcFile, delta);
@@ -1679,7 +1705,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     }
 
-    private static class PlainJavaIpsModel extends IpsModel {
+    public static class PlainJavaIpsModel extends IpsModel {
 
         private Consumer<PlainJavaResourceChange> resourceChangeListener;
 
@@ -1801,105 +1827,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
                 if (srcFile.getIpsProject().equals(ipsProject)) {
                     getValidationResultCache().removeStaleData(srcFile);
                 }
-            }
-        }
-
-        private static final class PlainJavaResourceDelta implements IResourceDelta {
-            private final PlainJavaResourceChange change;
-
-            private PlainJavaResourceDelta(PlainJavaResourceChange change) {
-                this.change = change;
-            }
-
-            @Override
-            public <T> T getAdapter(Class<T> adapter) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IResource getResource() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IPath getProjectRelativePath() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IPath getMovedToPath() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IPath getMovedFromPath() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IMarkerDelta[] getMarkerDeltas() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public int getKind() {
-                switch (change.getType()) {
-                    case ADDED:
-                        return IResourceDelta.ADDED;
-                    case REMOVED:
-                        return IResourceDelta.REMOVED;
-                    default:
-                        return IResourceDelta.CHANGED;
-                }
-            }
-
-            @Override
-            public IPath getFullPath() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public int getFlags() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IResourceDelta[] getAffectedChildren(int kindMask,
-                    int memberFlags) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IResourceDelta[] getAffectedChildren(int kindMask) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IResourceDelta[] getAffectedChildren() {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public IResourceDelta findMember(IPath path) {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void accept(IResourceDeltaVisitor visitor, int memberFlags)
-                    throws CoreException {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void accept(IResourceDeltaVisitor visitor,
-                    boolean includePhantoms) throws CoreException {
-                throw new UnsupportedOperationException();
-            }
-
-            @Override
-            public void accept(IResourceDeltaVisitor visitor)
-                    throws CoreException {
-                throw new UnsupportedOperationException();
             }
         }
     }

@@ -15,10 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.abstraction.util.JavaConventions;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
@@ -198,8 +197,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
 
         // Check for valid java field name.
         Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-        IStatus status = JavaConventions.validateFieldName(name, sourceVersion.toString(), sourceVersion.toString());
-        if (!(status.isOK())) {
+        if (!JavaConventions.validateName(name, sourceVersion)) {
             text = MessageFormat.format(Messages.EnumAttribute_NameNotAValidFieldName, name);
             validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_NAME_NOT_A_VALID_FIELD_NAME, text, Message.ERROR,
                     this, PROPERTY_NAME);

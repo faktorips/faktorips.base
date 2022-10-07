@@ -742,7 +742,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     /* private */ void writeToFile(IIpsSrcFile ipsSrcFile, AFile javaFile, String content) {
         ByteArrayInputStream inputStream = transform(ipsSrcFile, content);
-        writeToFile(javaFile, inputStream, true, false);
+        writeToFile(javaFile, inputStream, false);
     }
 
     /* private */ protected String getJavaFileContents(AFile javaFile, Charset charset) {

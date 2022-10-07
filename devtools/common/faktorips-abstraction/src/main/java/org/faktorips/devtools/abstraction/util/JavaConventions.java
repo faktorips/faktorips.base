@@ -7,21 +7,22 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.abstraction.plainjava.internal;
+package org.faktorips.devtools.abstraction.util;
 
 import java.text.MessageFormat;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.lang.model.SourceVersion;
 
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 
-public class PlainJavaConventions {
+public class JavaConventions {
     private static final Pattern PACKAGE_NAME = Pattern.compile("([a-zA-Z_]\\w*)(\\.[a-zA-Z_]\\w*)*"); //$NON-NLS-1$
     private static final Pattern NICE_PACKAGE_NAME = Pattern.compile("([a-z]\\w*)(\\.[a-z]\\w*)*"); //$NON-NLS-1$
-    private static final String MSG_CODE_PREFIX = PlainJavaConventions.class.getSimpleName() + '_';
+    private static final String MSG_CODE_PREFIX = JavaConventions.class.getSimpleName() + '_';
     private static final Set<String> FORBIDDEN_NAMES = Set.of("abstract", "continue", "for", "new", "switch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "assert", "default", "if", "package", "synchronized", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "boolean", "do", "goto", "private", "this", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
@@ -40,13 +41,15 @@ public class PlainJavaConventions {
     public static final String MSG_CODE_INVALID_TYPE_NAME = MSG_CODE_PREFIX + "InvalidTypeName"; //$NON-NLS-1$
     public static final String MSG_CODE_DISCOURAGED_TYPE_NAME = MSG_CODE_PREFIX + "DiscouragedTypeName"; //$NON-NLS-1$
 
-    private PlainJavaConventions() {
+    private JavaConventions() {
         // util
     }
 
     public static MessageList validatePackageName(String name) {
-        Matcher packageNameMatcher = PACKAGE_NAME.matcher(name);
-        if (!packageNameMatcher.matches()) {
+        if (name == null) {
+            return new MessageList(Message.newError(MSG_CODE_INVALID_PACKAGE_NAME, "A package name must not be null")); //$NON-NLS-1$
+        }
+        if (!PACKAGE_NAME.matcher(name).matches()) {
             return new MessageList(Message.newError(MSG_CODE_INVALID_PACKAGE_NAME,
                     MessageFormat.format("''{0}'' is not allowed as a Java package name", name))); //$NON-NLS-1$
         }
@@ -107,5 +110,23 @@ public class PlainJavaConventions {
             }
         });
         return messageList;
+    }
+
+    /**
+     * Validate the given field or method name for the given source level.
+     */
+    public static boolean validateName(String name, Runtime.Version sourceLevel) {
+        return !name.contains(".") && SourceVersion.isName(name, convertToSourceVersion(sourceLevel));
+    }
+
+    /**
+     * Validate the given field or method name.
+     */
+    public static boolean validateName(String name) {
+        return !name.contains(".") && SourceVersion.isName(name);
+    }
+
+    private static SourceVersion convertToSourceVersion(Runtime.Version rv) {
+        return SourceVersion.valueOf("RELEASE_" + rv.feature());
     }
 }

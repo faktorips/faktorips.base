@@ -23,6 +23,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 public class IpsModelActivator implements BundleActivator {
 
     public static final String PLUGIN_ID = "org.faktorips.devtools.model"; //$NON-NLS-1$
@@ -34,6 +36,7 @@ public class IpsModelActivator implements BundleActivator {
 
     private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
 
+    @SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "This is a standard Eclipse singleton pattern")
     public IpsModelActivator() {
         activator = this;
     }
@@ -68,6 +71,7 @@ public class IpsModelActivator implements BundleActivator {
         getEclipseIpsModel().startListeningToResourceChanges();
     }
 
+    @SuppressWarnings("deprecation")
     private EclipseIpsModel getEclipseIpsModel() {
         return (EclipseIpsModel)IpsModel.get();
     }

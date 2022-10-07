@@ -7,22 +7,17 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
+package org.faktorips.devtools.model.plugin;
 
-package org.faktorips.devtools.model.builder;
-
+import org.faktorips.devtools.model.builder.IDependencyGraph;
+import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
-import edu.umd.cs.findbugs.annotations.CheckForNull;
+public class DummyDependencyGraphPersistenceManager implements IDependencyGraphPersistenceManager {
 
-public interface IDependencyGraphPersistenceManager {
-
-    /**
-     * Returns the last persisted dependency graph for the provided IpsProject if available.
-     * Otherwise {@code null} will be returned.
-     * 
-     * @throws NullPointerException if the provided project is {@code null}
-     */
-    @CheckForNull
-    IDependencyGraph getDependencyGraph(IIpsProject project);
+    @Override
+    public IDependencyGraph getDependencyGraph(IIpsProject project) {
+        return null;
+    }
 
 }
