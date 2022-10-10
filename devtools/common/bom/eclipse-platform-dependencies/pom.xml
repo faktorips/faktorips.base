@@ -37,7 +37,9 @@
         <org-eclipse-equinox-preferences.version>3.7.700</org-eclipse-equinox-preferences.version>
         <org-eclipse-equinox-registry.version>3.8.700</org-eclipse-equinox-registry.version>
         <org-eclipse-jdt-core.version>3.21.0</org-eclipse-jdt-core.version>
+        <org-eclipse-jdt-launching.version>3.17.0</org-eclipse-jdt-launching.version>
         <org-eclipse-jface.version>3.19.0</org-eclipse-jface.version>
+        <org-eclipse-ltk-core-refactoring.version>3.10.400</org-eclipse-ltk-core-refactoring.version>
         <org-eclipse-osgi.version>3.15.200</org-eclipse-osgi.version>
         <org-eclipse-swt-win32-win32-x86_64.version>3.114.0</org-eclipse-swt-win32-win32-x86_64.version>
         <org-eclipse-text.version>3.10.100</org-eclipse-text.version>
@@ -123,9 +125,19 @@
                 <version>${org-eclipse-jdt-core.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>org.eclipse.jdt.launching</artifactId>
+                <version>${org-eclipse-jdt-launching.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.jface</artifactId>
                 <version>${org-eclipse-jface.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.ltk.core.refactoring</artifactId>
+                <version>${org-eclipse-ltk-core-refactoring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>

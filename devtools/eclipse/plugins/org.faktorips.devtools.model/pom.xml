@@ -12,6 +12,13 @@
 
     <packaging>eclipse-plugin</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
@@ -61,7 +68,7 @@
                         <configuration>
                             <target>
                                 <copy todir="${basedir}/xsd-schema">
-                                    <fileset dir="${basedir}/../../../common/faktorips-schemas/src/main/resources"/>
+                                    <fileset dir="${basedir}/../../../common/faktorips-schemas/src/main/resources" />
                                 </copy>
                             </target>
                         </configuration>

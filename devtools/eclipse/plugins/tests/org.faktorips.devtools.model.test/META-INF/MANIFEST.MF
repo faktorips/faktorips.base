@@ -4,13 +4,13 @@ Bundle-Name: Faktor-IPS Tests for devtools.model
 Bundle-SymbolicName: org.faktorips.devtools.model.test;singleton:=true
 Bundle-Version: 22.12.0.qualifier
 Fragment-Host: org.faktorips.devtools.model
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.jdt.core;bundle-version="3.4.0",
- org.eclipse.jdt.launching,
- org.eclipse.ltk.core.refactoring;bundle-version="3.4.0",
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.17.100",
+ org.eclipse.jdt.core;bundle-version="3.21.0",
+ org.eclipse.jdt.launching;bundle-version="3.17.0",
+ org.eclipse.ltk.core.refactoring;bundle-version="3.10.400",
  org.hamcrest;bundle-version="2.2",
- org.faktorips.abstracttest;bundle-version="22.12.0",
- org.faktorips.valuetypes;bundle-version="22.12.0"
+ org.faktorips.abstracttest,
+ org.faktorips.valuetypes
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH

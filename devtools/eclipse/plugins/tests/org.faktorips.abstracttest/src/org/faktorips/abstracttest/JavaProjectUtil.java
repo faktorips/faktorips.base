@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaElement;
@@ -29,7 +30,6 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
@@ -38,6 +38,7 @@ import org.faktorips.devtools.model.util.IpsProjectUtil;
 
 public class JavaProjectUtil {
     private static final String MODULE_INFO_JAVA_FILENAME = "module-info.java";
+    private static final String JRE_CONTAINER = "org.eclipse.jdt.launching.JRE_CONTAINER";
 
     private JavaProjectUtil() {
         // Utility class
@@ -93,7 +94,7 @@ public class JavaProjectUtil {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
         IClasspathEntry[] newEntries = new IClasspathEntry[oldEntries.length + 1];
         System.arraycopy(oldEntries, 0, newEntries, 0, oldEntries.length);
-        newEntries[oldEntries.length] = JavaRuntime.getDefaultJREContainerEntry();
+        newEntries[oldEntries.length] = JavaCore.newContainerEntry(new Path(JRE_CONTAINER));
         javaProject.setRawClasspath(newEntries, null);
     }
 
@@ -104,7 +105,7 @@ public class JavaProjectUtil {
     public static void convertToModuleProject(IJavaProject javaProject) {
         javaProject.setOption(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_11);
         try {
-            IPackageFragmentRoot[] packageFragmentRoots = collectPAckageFragmentRoots(javaProject);
+            IPackageFragmentRoot[] packageFragmentRoots = collectPackageFragmentRoots(javaProject);
 
             IPackageFragmentRoot targetPkgFragmentRoot = null;
 
@@ -114,19 +115,19 @@ public class JavaProjectUtil {
                     break;
                 }
             }
-            if (targetPkgFragmentRoot == null && packageFragmentRoots != null && packageFragmentRoots.length > 0) {
+            if (targetPkgFragmentRoot == null && packageFragmentRoots.length > 0) {
                 targetPkgFragmentRoot = packageFragmentRoots[0];
             }
-
-            createModuleInfoJava(javaProject, targetPkgFragmentRoot, packageFragmentRoots);
-            convertClasspathToModulePath(javaProject, null);
-
+            if (targetPkgFragmentRoot != null) {
+                createModuleInfoJava(javaProject, targetPkgFragmentRoot, packageFragmentRoots);
+                convertClasspathToModulePath(javaProject, null);
+            }
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static IPackageFragmentRoot[] collectPAckageFragmentRoots(IJavaProject javaProject)
+    private static IPackageFragmentRoot[] collectPackageFragmentRoots(IJavaProject javaProject)
             throws JavaModelException {
         IPackageFragmentRoot[] packageFragmentRoots = javaProject.getPackageFragmentRoots();
         List<IPackageFragmentRoot> packageFragmentRootsAsList = new ArrayList<>(

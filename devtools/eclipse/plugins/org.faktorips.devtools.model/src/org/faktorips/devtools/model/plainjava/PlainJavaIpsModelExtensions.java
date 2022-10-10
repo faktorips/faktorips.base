@@ -22,10 +22,10 @@ import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.DummyIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
-import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaExtensionPoints;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 
-public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaEclipsePlugins {
+public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionPoints {
 
     private static /* final */ PlainJavaIpsModelExtensions instance = new PlainJavaIpsModelExtensions();
 

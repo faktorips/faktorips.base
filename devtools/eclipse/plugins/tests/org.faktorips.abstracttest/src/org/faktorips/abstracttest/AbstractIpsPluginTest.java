@@ -73,7 +73,6 @@ import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
@@ -1200,7 +1199,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException {
-        IPath location = PathMapping.toEclipsePath(project.getJavaProject().getResource().getLocation());
+        IPath location = Path.fromOSString(project.getJavaProject().getResource().getLocation().toString());
         if (location != null) {
             IPath outputLocation = location
                     .append(Path.fromOSString(project.getJavaProject().getOutputLocation().toString())

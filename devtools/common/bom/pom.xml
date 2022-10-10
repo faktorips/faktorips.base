@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-runtime-bom</artifactId>
@@ -19,6 +19,7 @@
         <bsh.version>2.0b4</bsh.version>
         <apache-extras-bsh.version>2.0b6</apache-extras-bsh.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <guava.version>31.1-jre</guava.version>
         <osgi-framework.version>1.9.0</osgi-framework.version>
         <osgi-util-tracker.version>1.5.4</osgi-util-tracker.version>
     </properties>
@@ -69,6 +70,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
