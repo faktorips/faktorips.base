@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -20,16 +19,13 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
  * {@link IIpsObjectPathContainerType}-{@link List}-supplier for all implementations of the
  * extension point {@value ExtensionPoints#IPS_OBJECT_PATH_CONTAINER_TYPE}.
  */
-public class IpsObjectPathContainerTypesExtensions extends
-        LazyCollectionExtension<IIpsObjectPathContainerType, List<IIpsObjectPathContainerType>> {
+public class IpsObjectPathContainerTypesExtensions extends LazyListExtension<IIpsObjectPathContainerType> {
 
     public IpsObjectPathContainerTypesExtensions(ExtensionPoints extensionPoints) {
         super(extensionPoints,
                 ExtensionPoints.IPS_OBJECT_PATH_CONTAINER_TYPE,
                 ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
-                IIpsObjectPathContainerType.class,
-                ArrayList::new,
-                ($, containerType, list) -> list.add(containerType));
+                IIpsObjectPathContainerType.class);
     }
 
 }

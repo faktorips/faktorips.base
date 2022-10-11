@@ -92,11 +92,13 @@ public class FaktorIpsClasspathVariableInitializer extends ClasspathVariableInit
         URL local = null;
         try {
             local = FileLocator.toFileURL(installLocation);
+            // CSOFF: IllegalCatchCheck
         } catch (Exception e) {
             IpsLog.log(new IpsStatus("Error initializing classpath variable " + variable //$NON-NLS-1$
                     + ". Bundle install locaction: " + installLocation, e)); //$NON-NLS-1$
             return;
         }
+        // CSON: IllegalCatchCheck
         try {
             File file = new File(local.getPath());
             String fullPath = file.getAbsolutePath();

@@ -10,19 +10,22 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
-/**
- * {@link IIpsProjectConfigurator}-supplier for the single implementation of the extension point
- * {@value ExtensionPoints#ADD_IPS_NATURE}.
- */
-public class IpsProjectConfigurerExtension extends LazyListExtension<IIpsProjectConfigurator> {
+public class LazyListExtension<E> extends LazyCollectionExtension<E, List<E>> {
 
-    public IpsProjectConfigurerExtension(ExtensionPoints extensionPoints) {
+    public LazyListExtension(ExtensionPoints extensionPoints, String extensionPointId,
+            String configElementAttribute,
+            Class<E> extensionClass) {
         super(extensionPoints,
-                ExtensionPoints.ADD_IPS_NATURE,
-                ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
-                IIpsProjectConfigurator.class);
+                extensionPointId,
+                configElementAttribute,
+                extensionClass,
+                ArrayList::new,
+                ($, containerType, list) -> list.add(containerType));
     }
+
 }

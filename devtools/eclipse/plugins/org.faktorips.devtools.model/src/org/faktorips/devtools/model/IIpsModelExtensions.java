@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.IpsObjectPathContainerFactory;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.model.plainjava.PlainJavaIpsModelExtensions;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -199,5 +201,20 @@ public interface IIpsModelExtensions {
      * Returns all registered {@link Datatype Datatypes} mapped by their qualified names.
      */
     Map<String, Datatype> getPredefinedDatatypes();
+
+    /**
+     * Returns all registered {@link IProductCmptNamingStrategyFactory product component naming
+     * strategy factories}.
+     * 
+     * @since 22.12
+     */
+    List<IProductCmptNamingStrategyFactory> getProductCmptNamingStrategyFactories();
+
+    /**
+     * Returns all registered {@link ICustomValidation custom validations}.
+     * 
+     * @since 22.12
+     */
+    List<ICustomValidation<?>> getCustomValidations();
 
 }

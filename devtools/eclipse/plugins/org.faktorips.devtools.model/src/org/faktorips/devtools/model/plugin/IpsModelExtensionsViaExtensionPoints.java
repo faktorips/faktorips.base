@@ -30,9 +30,11 @@ import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
+import org.faktorips.devtools.model.plugin.extensions.CustomValidationExtensions;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitionExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
@@ -45,8 +47,10 @@ import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensio
 import org.faktorips.devtools.model.plugin.extensions.ModelPreferencesExtension;
 import org.faktorips.devtools.model.plugin.extensions.PreSaveProcessorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.PredefinedDatatypesExtensions;
+import org.faktorips.devtools.model.plugin.extensions.ProductCmptNamingStrategyFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.VersionProviderFactoryExtensions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
+import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -86,6 +90,12 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 22.6 */
     private final Supplier<Map<String, Datatype>> predefinedDatatypes;
 
+    /** @since 22.12 */
+    private final Supplier<List<IProductCmptNamingStrategyFactory>> productCmptNamingStrategyFactories;
+
+    /** @since 22.12 */
+    private final Supplier<List<ICustomValidation<?>>> customValidations;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
@@ -107,6 +117,8 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         ipsObjectPathContainerTypes = new IpsObjectPathContainerTypesExtensions(extensionPoints);
         preSaveProcessors = new PreSaveProcessorExtensions(extensionPoints);
         predefinedDatatypes = new PredefinedDatatypesExtensions(extensionPoints);
+        productCmptNamingStrategyFactories = new ProductCmptNamingStrategyFactoryExtensions(extensionPoints);
+        customValidations = new CustomValidationExtensions(extensionPoints);
     }
 
     @Override
@@ -192,4 +204,13 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         return predefinedDatatypes.get();
     }
 
+    @Override
+    public List<IProductCmptNamingStrategyFactory> getProductCmptNamingStrategyFactories() {
+        return productCmptNamingStrategyFactories.get();
+    }
+
+    @Override
+    public List<ICustomValidation<?>> getCustomValidations() {
+        return customValidations.get();
+    }
 }
