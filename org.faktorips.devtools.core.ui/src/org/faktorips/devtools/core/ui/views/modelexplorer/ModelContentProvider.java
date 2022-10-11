@@ -30,8 +30,11 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.devtools.abstraction.AAbstraction;
+import org.faktorips.devtools.abstraction.AContainer;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
+import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.mapping.PathMapping;
@@ -359,12 +362,12 @@ public class ModelContentProvider implements ITreeContentProvider {
         List<IIpsElement> pcts = new ArrayList<>();
         for (IIpsElement file2 : files) {
             if (file2 instanceof IIpsSrcFile) {
-                IFile file = ((IIpsSrcFile)file2).getCorrespondingFile().unwrap();
-                if (file != null && !file.isSynchronized(IResource.DEPTH_ZERO)) {
-                    try {
-                        file.getParent().refreshLocal(IResource.DEPTH_ONE, null);
-                    } catch (CoreException e) {
-                        throw new IpsException(e);
+                AFile file = ((IIpsSrcFile)file2).getCorrespondingFile();
+                if (file != null
+                        && !file.isSynchronized(AResourceTreeTraversalDepth.RESOURCE_ONLY)) {
+                    AContainer parent = file.getParent();
+                    if (parent != null) {
+                        parent.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
                     }
                 }
                 pcts.add(file2);
