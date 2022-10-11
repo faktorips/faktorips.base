@@ -59,9 +59,50 @@ pipeline {
 
     post {
         always {
+            parentReference referenceJob: 'FaktorIPS_CI', defaultBranch: 'main',  targetBranch: 'main', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: true, maxBuilds: 10, maxCommits: 500
+
+            publishCoverage(
+                adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/**/jacoco.xml')],
+                sourceFileResolver: sourceFiles('STORE_LAST_BUILD'),
+                sourceCodeEncoding: 'UTF-8',
+                sourceDirectories: [
+                    [path: 'devtools/common/faktorips-abstraction/src/main/java'],
+                    [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
+                    [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
+                    [path: 'devtools/common/faktorips-dtfl-common/src/main/java'],
+                    [path: 'devtools/common/faktorips-fl/src/main/java'],
+                    [path: 'devtools/common/faktorips-model-plainjava/src/main/java'],
+                    [path: 'devtools/common/faktorips-util/src/main/java'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.abstraction.eclipse/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.ant/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.refactor/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.core.ui/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.htmlexport.ui/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.builder/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.decorators/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.model.eclipse/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.stdbuilder.ui/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.devtools.tableconversion/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.eclipse.emf.codegen/src'],
+                    [path: 'devtools/eclipse/plugins/org.faktorips.m2e/src'],
+                    [path: 'faktorips-maven-plugin/src/main/java'],
+                    [path: 'runtime/faktorips-runtime/src/main/java'],
+                    [path: 'runtime/faktorips-runtime-groovy/src/main/java'],
+                    [path: 'runtime/faktorips-runtime-jakarta-xml/src/main/java'],
+                    [path: 'runtime/faktorips-runtime-javax-xml/src/main/java'],
+                    [path: 'runtime/faktorips-testsupport/src/main/java'],
+                    [path: 'runtime/faktorips-valuetypes/src/main/java'],
+                    [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
+                ]
+            )
+
             junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
             recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-            jacoco sourceInclusionPattern: '**/*.java'
+
             archiveArtifacts '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip'
             archiveArtifacts '**/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip'
             archiveArtifacts '**/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar'

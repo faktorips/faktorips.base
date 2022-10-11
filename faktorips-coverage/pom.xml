@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
@@ -8,25 +9,35 @@
 
     <packaging>pom</packaging>
 
+    <name>Faktor-IPS Coverage</name>
+    <description>
+        This module can be used to aggregate Jacoco coverage reports from projects which test classes are located in a
+        different project.
+        To do this, include these projects and the corresponding test projects as dependencies.
+    </description>
+
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
         <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
+
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
-        <!-- Plugins -->
+        <!-- Plugins from devtools/eclipse/plugins -->
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-abstraction</artifactId>
+            <artifactId>org.faktorips.abstracttest</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-abstraction-plainjava</artifactId>
+            <artifactId>org.faktorips.abstracttest.core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -88,12 +99,7 @@
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.htmlexport.test</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.devtools.htmlexport.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+        </dependency>        
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.htmlexport.ui</artifactId>
@@ -129,6 +135,16 @@
             <artifactId>org.faktorips.devtools.model.decorators.test</artifactId>
             <version>${project.version}</version>
         </dependency>
+                <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model.eclipse</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model.eclipse.test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.stdbuilder</artifactId>
@@ -161,72 +177,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.devtools.tableconversion.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-dtfl-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.eclipse.emf.codegen</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-fl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.core.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.core.ui.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.model.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.model.decorators.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.stdbuilder.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.nls.devtools.stdbuilder.ui.nl1</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-runtime</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-runtime-groovy</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-testsupport</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.testextensions</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -241,23 +192,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-util</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-valuetypes</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-valuetypes-joda</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <!-- Other -->
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-maven-plugin</artifactId>
+            <artifactId>org.faktorips.testextensions</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
@@ -294,6 +229,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>report-aggregate</id>

@@ -91,6 +91,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <checkstyle.version>10.3.3</checkstyle.version>
         <spotbugs-maven-plugin.version>4.7.2.0</spotbugs-maven-plugin.version>
         <spotbugs.version>4.7.1</spotbugs.version>
+        <jacoco.version>0.8.8</jacoco.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
         <tycho.version>3.0.3</tycho.version>
@@ -208,7 +209,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         <jdkToolchain>
                             <version>${java.version}</version>
                         </jdkToolchain>
-                        <argLine>-Duser.language=${user.language} -Dfile.encoding=${file.encoding} -Duser.country=${user.country}</argLine>
+                        <argLine>-Duser.language=${user.language} -Dfile.encoding=${file.encoding} -Duser.country=${user.country} ${argLine}</argLine>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -388,6 +389,11 @@ license terms are available from Faktor Zehn GmbH.</comments>
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -410,6 +416,24 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
