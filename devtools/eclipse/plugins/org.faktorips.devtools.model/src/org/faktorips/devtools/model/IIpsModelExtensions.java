@@ -217,4 +217,12 @@ public interface IIpsModelExtensions {
      */
     List<ICustomValidation<?>> getCustomValidations();
 
+    /**
+     * Returns all registered additional {@link IpsObjectType IPS object types} (beyond those
+     * defined in {@link IpsObjectType} itself).
+     * 
+     * @since 22.12
+     */
+    List<IpsObjectType> getAdditionalIpsObjectTypes();
+
 }

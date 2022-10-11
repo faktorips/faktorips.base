@@ -41,6 +41,7 @@ import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExten
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
+import org.faktorips.devtools.model.plugin.extensions.IpsObjectTypeExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsWorkspaceInteractionsExtension;
 import org.faktorips.devtools.model.plugin.extensions.MigrationOperationExtensions;
@@ -96,6 +97,9 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 22.12 */
     private final Supplier<List<ICustomValidation<?>>> customValidations;
 
+    /** @since 22.12 */
+    private final Supplier<List<IpsObjectType>> ipsObjectTypes;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
@@ -119,6 +123,7 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         predefinedDatatypes = new PredefinedDatatypesExtensions(extensionPoints);
         productCmptNamingStrategyFactories = new ProductCmptNamingStrategyFactoryExtensions(extensionPoints);
         customValidations = new CustomValidationExtensions(extensionPoints);
+        ipsObjectTypes = new IpsObjectTypeExtensions(extensionPoints);
     }
 
     @Override
@@ -212,5 +217,10 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public List<ICustomValidation<?>> getCustomValidations() {
         return customValidations.get();
+    }
+
+    @Override
+    public List<IpsObjectType> getAdditionalIpsObjectTypes() {
+        return ipsObjectTypes.get();
     }
 }

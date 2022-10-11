@@ -43,9 +43,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.ICoreRunnable;
-import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -111,9 +109,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
-import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
 import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
@@ -276,16 +272,11 @@ public class IpsModel extends IpsElement implements IIpsModel {
         types.add(IpsObjectType.TABLE_CONTENTS);
         types.add(IpsObjectType.TEST_CASE_TYPE);
         types.add(IpsObjectType.TEST_CASE);
-        if (Abstractions.isEclipseRunning()) {
-            ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
-            IExtension[] extensions = extensionPoints.getExtension(ExtensionPoints.IPS_OBJECT_TYPE);
-            for (IExtension extension : extensions) {
-                List<IpsObjectType> additionalTypes = createIpsObjectTypes(extension);
-                for (IpsObjectType objType : additionalTypes) {
-                    addIpsObjectTypeIfNotDuplicate(types, objType);
-                }
-            }
-        }
+
+        IIpsModelExtensions.get()
+                .getAdditionalIpsObjectTypes()
+                .forEach(t -> addIpsObjectTypeIfNotDuplicate(types, t));
+
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
         ipsObjectTypes = typesArray;
         if (TRACE_MODEL_MANAGEMENT) {
@@ -302,31 +293,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
         }
         types.add(newType);
-    }
-
-    private List<IpsObjectType> createIpsObjectTypes(IExtension extension) {
-        IpsObjectType type = null;
-        List<IpsObjectType> validTypes = new ArrayList<>();
-        IConfigurationElement[] configElements = extension.getConfigurationElements();
-        for (IConfigurationElement configElement : configElements) {
-            if (!"ipsobjecttype".equalsIgnoreCase(configElement.getName())) { //$NON-NLS-1$
-                String text = "Illegal IPS object type definition" + extension.getUniqueIdentifier() //$NON-NLS-1$
-                        + ". Expected Config Element <ipsobjectytpe> was " //$NON-NLS-1$
-                        + configElement.getName();
-                IpsLog.log(new IpsStatus(text));
-                continue;
-            }
-            type = ExtensionPoints.createExecutableExtension(extension, configElement, "class", //$NON-NLS-1$
-                    IpsObjectType.class);
-
-            if (type == null) {
-                String text = "Illegal IPS object type definition " + extension.getUniqueIdentifier(); //$NON-NLS-1$
-                IpsLog.log(new IpsStatus(text));
-            } else {
-                validTypes.add(type);
-            }
-        }
-        return validTypes;
     }
 
     /**
