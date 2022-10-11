@@ -44,7 +44,7 @@ import org.faktorips.valueset.ValueSet;
 
 @IpsPolicyCmptType(name = "TestPolicy")
 @IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute", "BooleanAttribute",
-        "EnumAttribute", "RangeAttribute" })
+        "EnumAttribute", "RangeAttribute", "onTheFly" })
 @IpsAssociations({ "TestDeckung" })
 @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
 public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
@@ -56,6 +56,7 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     public static final String PROPERTY_BOOLEAN_ATTRIBUTE = "BooleanAttribute";
     public static final String PROPERTY_ENUM_ATTRIBUTE = "EnumAttribute";
     public static final String PROPERTY_RANGE_ATTRIBUTE = "RangeAttribute";
+    public static final String PROPERTY_ONTHEFLY_ATTRIBUTE = "onTheFly";
     public static final IntegerRange MAX_MULTIPLICITY_OF_TESTDECKUNG = IntegerRange.valueOf(0, 2147483647);
     public static final String ASSOCIATION_TESTDECKUNGUNGEN = "testDeckungungen";
 
@@ -75,6 +76,8 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
     private ValueSet<Boolean> setOfAllowedValuesBooleanAttribute = new UnrestrictedValueSet<>();
     private OrderedValueSet<TestEnum> setOfAllowedValuesEnumAttribute = new OrderedValueSet<>(true, null,
             TestEnum.values());
+    private OrderedValueSet<String> setOfAllowedValuesOnTheFly = new OrderedValueSet<>(false,
+            "SOMEVAL");
     private LongRange rangeForRangeAttribute = LongRange.valueOf(2L, 5L, 1L, true);
 
     @IpsAllowedValues("IntegerAttribute")
@@ -290,5 +293,22 @@ public class TestPolicyWithVisitor implements IVisitorSupport, IModelObject {
                 ml.add(rel.validate(context));
             }
         }
+    }
+
+    @IpsAllowedValues("onTheFly")
+    public ValueSet<String> getAllowedValuesForOnTheFly() {
+        return setOfAllowedValuesOnTheFly;
+    }
+
+    @IpsAllowedValuesSetter("onTheFly")
+    public void setAllowedValuesForOnTheFly(OrderedValueSet<String> setOfAllowedValuesOnTheFly) {
+        this.setOfAllowedValuesOnTheFly = setOfAllowedValuesOnTheFly;
+    }
+
+    @IpsAttribute(name = "onTheFly", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.Enum)
+    public String getOnTheFly() {
+        // begin-user-code
+        return "SOMEVAL";
+        // end-user-code
     }
 }

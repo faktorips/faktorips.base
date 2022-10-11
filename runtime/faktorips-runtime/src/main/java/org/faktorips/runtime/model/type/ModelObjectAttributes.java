@@ -114,6 +114,7 @@ public class ModelObjectAttributes {
             Predicate<ModelObjectAttribute> shouldReset) {
         return ModelObjectAttributes.ofIncludingChildren(modelObject).stream()
                 .filter(shouldReset::test)
+                .filter(ModelObjectAttribute::isNotDerivedOnTheFly)
                 .map(ModelObjectAttribute::removeValue)
                 .collect(Collectors.toList());
     }

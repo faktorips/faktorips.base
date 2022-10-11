@@ -13,6 +13,7 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.Arrays;
 import java.util.List;
@@ -276,6 +277,14 @@ public class ModelObjectAttributesTest {
                 Arrays.asList(policy, deckung),
                 Arrays.asList(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
                         TestDeckungWithVisitor.PROPERTY_MONEY_ATTRIBUTE));
+    }
+
+    @Test
+    public void testResetIrrelevantAttributesOnTheFly() {
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        modelObject.setAllowedValuesForOnTheFly(new OrderedValueSet<>(false, null));
+
+        assertDoesNotThrow(() -> ModelObjectAttributes.resetIrrelevantAttributes(modelObject));
     }
 
     private void assertAttributeIsReset(List<ModelObjectAttribute> moa,

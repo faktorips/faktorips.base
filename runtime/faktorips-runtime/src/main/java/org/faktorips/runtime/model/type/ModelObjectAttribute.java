@@ -113,6 +113,16 @@ public class ModelObjectAttribute {
     }
 
     /**
+     * Checks whether this model object attribute is not derived on the fly and therefore has a
+     * setter.
+     * 
+     * @return {@code true} if not derived on the fly
+     */
+    public boolean isNotDerivedOnTheFly() {
+        return !AttributeKind.DERIVED_ON_THE_FLY.equals(policyAttribute.getAttributeKind());
+    }
+
+    /**
      * Sets the model object attribute to its null-value ({@code null} for most datatypes, a
      * {@link NullObject} for for the {@link NullObjectSupport}-datatypes {@link Decimal} and
      * {@link Money}, and an empty string for the datatype {@link String}) This only works for
