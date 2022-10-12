@@ -49,9 +49,11 @@ import org.faktorips.devtools.model.plugin.extensions.ModelPreferencesExtension;
 import org.faktorips.devtools.model.plugin.extensions.PreSaveProcessorExtensions;
 import org.faktorips.devtools.model.plugin.extensions.PredefinedDatatypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ProductCmptNamingStrategyFactoryExtensions;
+import org.faktorips.devtools.model.plugin.extensions.ReleaseExtensions;
 import org.faktorips.devtools.model.plugin.extensions.VersionProviderFactoryExtensions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
+import org.faktorips.devtools.model.productrelease.ReleaseExtension;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -100,6 +102,9 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 22.12 */
     private final Supplier<List<IpsObjectType>> ipsObjectTypes;
 
+    /** @since 22.12 */
+    private final Supplier<List<ReleaseExtension>> releaseExtensions;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
@@ -124,6 +129,7 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         productCmptNamingStrategyFactories = new ProductCmptNamingStrategyFactoryExtensions(extensionPoints);
         customValidations = new CustomValidationExtensions(extensionPoints);
         ipsObjectTypes = new IpsObjectTypeExtensions(extensionPoints);
+        releaseExtensions = new ReleaseExtensions(extensionPoints);
     }
 
     @Override
@@ -222,5 +228,10 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public List<IpsObjectType> getAdditionalIpsObjectTypes() {
         return ipsObjectTypes.get();
+    }
+
+    @Override
+    public List<ReleaseExtension> getReleaseExtensions() {
+        return releaseExtensions.get();
     }
 }

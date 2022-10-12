@@ -32,6 +32,8 @@ import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.model.enumtype.EnumType;
 import org.faktorips.values.Decimal;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 /**
  * Properties of the IPS project. The IPS project can't keep the properties itself, as it is a
  * handle. The properties are persisted in the ".ipsproject" file.
@@ -562,18 +564,21 @@ public interface IIpsProjectProperties {
     void setVersionProviderId(String versionProviderId);
 
     /**
-     * Getting the id of the release extension associated with this project
+     * Returns the id of the release extension associated with this project or {@code null} if no
+     * release extension is configured.
      * 
      * @return The id of the release extension for this project
      */
+    @CheckForNull
     String getReleaseExtensionId();
 
     /**
      * Setting the id of the release extension associated with this project
      * 
-     * @param releaseExtensionId The new id of the release extension for this project
+     * @param releaseExtensionId The new id of the release extension for this project or
+     *            {@code null} to remove a previously set extension
      */
-    void setReleaseExtensionId(String releaseExtensionId);
+    void setReleaseExtensionId(@CheckForNull String releaseExtensionId);
 
     /**
      * Setting the default currency for this project

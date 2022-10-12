@@ -10,17 +10,14 @@
 
 package org.faktorips.devtools.model.internal;
 
-import java.util.regex.Pattern;
-
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IVersionFormat;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.productrelease.ReleaseExtension;
 
 /**
  * The {@link DefaultVersionProvider} is the used when no other {@link IVersionProvider} is
@@ -45,14 +42,10 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
     }
 
     private IVersionFormat createVersionFormat() {
-        final IConfigurationElement releaseExtension = Abstractions.isEclipseRunning()
-                ? ExtensionPoints.getReleaseExtensionElement(ipsProject)
-                : null;
-        if (releaseExtension == null) {
-            return new OsgiVersionFormat();
-        } else {
-            return new ReleaseExtensionVersionFormat(releaseExtension);
-        }
+        return IIpsModelExtensions.get()
+                .getReleaseExtension(ipsProject)
+                .<IVersionFormat> map(ReleaseExtensionVersionFormat::new)
+                .orElseGet(OsgiVersionFormat::new);
     }
 
     @Override
@@ -92,35 +85,20 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
 
     public static final class ReleaseExtensionVersionFormat implements IVersionFormat {
 
-        public static final String VERSION_FORMAT_REGEX = "versionFormatRegex"; //$NON-NLS-1$
+        private final ReleaseExtension releaseExtension;
 
-        public static final String READABLE_VERSION_FORMAT = "readableVersionFormat"; //$NON-NLS-1$
-
-        private final IConfigurationElement releaseExtension;
-
-        private final Pattern versionPattern;
-
-        private ReleaseExtensionVersionFormat(IConfigurationElement releaseExtension) {
+        private ReleaseExtensionVersionFormat(ReleaseExtension releaseExtension) {
             this.releaseExtension = releaseExtension;
-            versionPattern = createVersionPattern(releaseExtension);
         }
 
         @Override
         public boolean isCorrectVersionFormat(String version) {
-            return versionPattern.matcher(version).matches();
+            return releaseExtension.getVersionFormatRegex().matcher(version).matches();
         }
 
         @Override
         public String getVersionFormat() {
-            return createVersionFormat(releaseExtension);
-        }
-
-        private Pattern createVersionPattern(final IConfigurationElement releaseExtension) {
-            return Pattern.compile(releaseExtension.getAttribute(VERSION_FORMAT_REGEX));
-        }
-
-        private String createVersionFormat(final IConfigurationElement releaseExtension) {
-            return releaseExtension.getAttribute(READABLE_VERSION_FORMAT);
+            return releaseExtension.getReadableVersionFormat();
         }
 
     }

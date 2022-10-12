@@ -12,6 +12,7 @@ package org.faktorips.devtools.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
 import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
+import org.faktorips.devtools.model.productrelease.ReleaseExtension;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
 import org.faktorips.devtools.model.util.SortorderSet;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
@@ -224,5 +226,29 @@ public interface IIpsModelExtensions {
      * @since 22.12
      */
     List<IpsObjectType> getAdditionalIpsObjectTypes();
+
+    /**
+     * Returns all registered {@link ReleaseExtension ReleaseExtensions}.
+     * 
+     * @since 22.12
+     */
+    List<ReleaseExtension> getReleaseExtensions();
+
+    /**
+     * Returns the {@link ReleaseExtension} registered for the given {@link IIpsProject}, if one is
+     * configured, otherwise {@link Optional#empty()}.
+     * 
+     * @param ipsProject the Faktor-IPS project for which the release extension is requested
+     * 
+     * @since 22.12
+     */
+    default Optional<ReleaseExtension> getReleaseExtension(IIpsProject ipsProject) {
+        String releaseExtensionId = ipsProject == null ? null
+                : ipsProject.getReadOnlyProperties().getReleaseExtensionId();
+        return releaseExtensionId == null ? Optional.empty()
+                : getReleaseExtensions().stream()
+                        .filter(e -> e.getId().equals(releaseExtensionId))
+                        .findFirst();
+    }
 
 }

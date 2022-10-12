@@ -13,14 +13,15 @@ package org.faktorips.devtools.model;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.StandardJavaProjectConfigurator;
 import org.faktorips.runtime.MessageList;
 
 /**
- * Implementations for the Faktor-IPS model extension point {@value ExtensionPoints#ADD_IPS_NATURE}
- * must implement this interface.
+ * Implementations for the Faktor-IPS model extension point
+ * {@value IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE} must implement this
+ * interface.
  * <p>
  * A project configurator is called after the IPS-Nature has been added to a project to configure
  * the project, for example by adding dependencies to Faktor-IPS runtime libraries.

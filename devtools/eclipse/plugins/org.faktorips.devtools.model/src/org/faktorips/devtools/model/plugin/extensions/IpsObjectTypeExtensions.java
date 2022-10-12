@@ -17,14 +17,21 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 /**
  * {@link IpsObjectType}-{@link List}-supplier for all implementations of the extension point
- * {@value ExtensionPoints#PRODUCT_COMPONENT_NAMING_STRATEGY}.
+ * {@value #EXTENSION_POINT_ID_IPS_OBJECT_TYPE}.
  */
 public class IpsObjectTypeExtensions extends LazyListExtension<IpsObjectType> {
 
+    /**
+     * IpsModelPlugin relative id of the extension point for IpsObjectTypes.
+     * 
+     * @see IpsObjectType
+     */
+    public static final String EXTENSION_POINT_ID_IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
+
     public IpsObjectTypeExtensions(ExtensionPoints extensionPoints) {
         super(extensionPoints,
-                ExtensionPoints.IPS_OBJECT_TYPE,
-                ExtensionPoints.ATTRIBUTE_CLASS,
+                EXTENSION_POINT_ID_IPS_OBJECT_TYPE,
+                ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
                 IpsObjectType.class);
     }
 

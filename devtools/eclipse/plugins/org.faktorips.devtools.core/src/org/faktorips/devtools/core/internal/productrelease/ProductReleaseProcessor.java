@@ -19,7 +19,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.JavaModelException;
@@ -30,23 +29,17 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.productrelease.ITeamOperations;
 import org.faktorips.devtools.core.productrelease.ITeamOperationsFactory;
-import org.faktorips.devtools.model.internal.DefaultVersionProvider;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.model.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.model.productrelease.ReleaseExtension;
 import org.faktorips.runtime.MessageList;
 
 public class ProductReleaseProcessor {
-
-    public static final String VERSION_FORMAT_REGEX = DefaultVersionProvider.ReleaseExtensionVersionFormat.VERSION_FORMAT_REGEX;
-
-    public static final String READABLE_VERSION_FORMAT = DefaultVersionProvider.ReleaseExtensionVersionFormat.READABLE_VERSION_FORMAT;
-
-    private static final String EXTENSION_OPERATION_PROPERTY = "operation"; //$NON-NLS-1$
 
     private ITeamOperations teamOperation;
     private final IIpsProject ipsProject;
@@ -54,8 +47,7 @@ public class ProductReleaseProcessor {
 
     private final ObservableProgressMessages observableProgressMessages;
 
-    public ProductReleaseProcessor(IIpsProject ipsProject, ObservableProgressMessages observableProgressMessages)
-            throws CoreException {
+    public ProductReleaseProcessor(IIpsProject ipsProject, ObservableProgressMessages observableProgressMessages) {
         this.ipsProject = ipsProject;
         teamOperation = getTeamOperations(ipsProject, observableProgressMessages);
         this.observableProgressMessages = observableProgressMessages;
@@ -138,13 +130,11 @@ public class ProductReleaseProcessor {
         return tagProject(ipsProject, newVersion, subMonitor.split(20));
     }
 
-    public IReleaseAndDeploymentOperation loadReleaseDeploymentOperation(IIpsProject ipsProject) throws CoreException {
-        IConfigurationElement releaseExtensionElement = getReleaseExtensionElement(ipsProject);
-        if (releaseExtensionElement == null) {
-            return null;
-        }
-        return (IReleaseAndDeploymentOperation)releaseExtensionElement
-                .createExecutableExtension(EXTENSION_OPERATION_PROPERTY);
+    public IReleaseAndDeploymentOperation loadReleaseDeploymentOperation(IIpsProject ipsProject) {
+        return IIpsModelExtensions.get()
+                .getReleaseExtension(ipsProject)
+                .map(ReleaseExtension::createReleaseAndDeploymentOperation)
+                .orElse(null);
     }
 
     private void checkSyncWithFilesystem(IIpsProject ipsProject, IProgressMonitor monitor) {
@@ -221,10 +211,6 @@ public class ProductReleaseProcessor {
         IProject project = ipsProject.getProject().unwrap();
         project.build(IncrementalProjectBuilder.CLEAN_BUILD, monitor);
         project.build(IncrementalProjectBuilder.FULL_BUILD, monitor);
-    }
-
-    public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
-        return ExtensionPoints.getReleaseExtensionElement(ipsProject);
     }
 
 }

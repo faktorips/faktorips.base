@@ -47,9 +47,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
 import org.faktorips.devtools.model.util.PersistenceSupportNames;
 import org.faktorips.m2e.version.MavenVersionFormatter;
@@ -59,7 +59,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * Concrete implementation of {@link IIpsProjectConfigurator}.
  * <p>
  * This class provides an extension for the IPS model extension point
- * {@link ExtensionPoints#ADD_IPS_NATURE}.
+ * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE}.
  * <p>
  * Use this in order to configure an existent Maven project for the usage of Faktor-IPS.
  * 

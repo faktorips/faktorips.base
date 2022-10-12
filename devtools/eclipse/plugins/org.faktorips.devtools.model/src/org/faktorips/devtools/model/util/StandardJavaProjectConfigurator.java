@@ -20,14 +20,15 @@ import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 
 /**
  * Configures a standard Java IPS-Project.
  * <p>
  * Use this standard configurator if no extension of the extension point
- * {@link ExtensionPoints#ADD_IPS_NATURE} is responsible for configuring the project.
+ * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE} is responsible for
+ * configuring the project.
  * 
  * @since 21.6
  * @author Florian Orendi

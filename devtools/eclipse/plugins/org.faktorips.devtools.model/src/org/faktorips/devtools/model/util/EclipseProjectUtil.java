@@ -48,9 +48,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategy;
 import org.faktorips.runtime.MessageList;
 
@@ -240,8 +240,9 @@ public class EclipseProjectUtil {
      * project.
      * <p>
      * Uses {@link IIpsProjectConfigurator IIpsProjectConfigurators} provided by the extension point
-     * {@value ExtensionPoints#ADD_IPS_NATURE} to add Faktor-IPS-dependencies in a way matching the
-     * used dependency management, defaulting to Eclipse Java project libraries.
+     * {@value IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE} to add
+     * Faktor-IPS-dependencies in a way matching the used dependency management, defaulting to
+     * Eclipse Java project libraries.
      * 
      * @param javaProject the selected java project
      * @param creationProperties the required properties {@link IpsProjectCreationProperties} for
@@ -496,7 +497,8 @@ public class EclipseProjectUtil {
     /**
      * Executes all responsible {@link IIpsProjectConfigurator project-configurators}.
      * <p>
-     * The configurators are provided by the extension point {@link ExtensionPoints#ADD_IPS_NATURE}.
+     * The configurators are provided by the extension point
+     * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE}.
      * 
      * @implNote If no extension is responsible for configuring the project, use the
      *               {@link StandardJavaProjectConfigurator}

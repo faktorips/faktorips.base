@@ -16,8 +16,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
@@ -42,18 +40,18 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IVersionFormat;
 import org.faktorips.devtools.model.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.model.productrelease.ITargetSystem;
 import org.faktorips.devtools.model.productrelease.ObservableProgressMessages;
+import org.faktorips.devtools.model.productrelease.ReleaseExtension;
 
 public class ProductReleaserBuilderWizardPage extends WizardPage {
 
     static final String SELECTED_PROJECT_SETTING = "selectedProject"; //$NON-NLS-1$
     static final String SELECTED_TARGET_SYSTEMS_SETTING = "selectedTargetSystems"; //$NON-NLS-1$
-
-    private static final String EXTENSION_ATTRIBUTE_VERSION_MUST_CHANGE = "versionMustChange"; //$NON-NLS-1$
 
     private final ObservableProgressMessages observableProgressMessages;
 
@@ -185,11 +183,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         productReleaseProcessor = null;
         if (ipsProject != null) {
             oldVersion = ipsProject.getVersionProvider().getProjectVersion().asString();
-            try {
-                productReleaseProcessor = new ProductReleaseProcessor(ipsProject, observableProgressMessages);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            productReleaseProcessor = new ProductReleaseProcessor(ipsProject, observableProgressMessages);
         }
         versionChangeRequired = isVersionChangeRequired();
         updateVersion(oldVersion, ipsProject);
@@ -297,17 +291,10 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     }
 
     private boolean isVersionChangeRequired() {
-        IConfigurationElement configuration = ProductReleaseProcessor.getReleaseExtensionElement(ipsProject);
-        if (configuration == null) {
-            return true;
-        }
-
-        String versionMustChange = configuration.getAttribute(EXTENSION_ATTRIBUTE_VERSION_MUST_CHANGE);
-        if (versionMustChange != null) {
-            return Boolean.parseBoolean(versionMustChange);
-        } else {
-            return true;
-        }
+        return IIpsModelExtensions.get()
+                .getReleaseExtension(ipsProject)
+                .map(ReleaseExtension::isVersionChangeRequired)
+                .orElse(true);
     }
 
     private boolean isCorrectReleaseProcessorSet() {

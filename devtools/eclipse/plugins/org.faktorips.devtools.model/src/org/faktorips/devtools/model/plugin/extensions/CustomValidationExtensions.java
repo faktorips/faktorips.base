@@ -18,11 +18,18 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 /**
  * {@link ICustomValidation}-{@link List}-supplier for all implementations of the extension point
- * {@value ExtensionPoints#CUSTOM_VALIDATION}.
+ * {@value #EXTENSION_POINT_ID_CUSTOM_VALIDATION}.
  */
 @SuppressWarnings("rawtypes")
 // can't use LazyListExtension, because of the <?> only on the collection but not on the Class
 public class CustomValidationExtensions extends LazyCollectionExtension<ICustomValidation, List<ICustomValidation<?>>> {
+
+    /**
+     * IpsModelPlugin relative id of the extension point for custom validations.
+     * 
+     * @see ICustomValidation
+     */
+    public static final String EXTENSION_POINT_ID_CUSTOM_VALIDATION = "customValidation"; //$NON-NLS-1$
 
     /**
      * Name of the attribute that holds the name of the validation class
@@ -31,7 +38,7 @@ public class CustomValidationExtensions extends LazyCollectionExtension<ICustomV
 
     public CustomValidationExtensions(ExtensionPoints extensionPoints) {
         super(extensionPoints,
-                ExtensionPoints.CUSTOM_VALIDATION,
+                EXTENSION_POINT_ID_CUSTOM_VALIDATION,
                 ATTRIBUTE_VALIDATION_CLASS,
                 ICustomValidation.class,
                 ArrayList::new,
