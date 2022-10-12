@@ -109,8 +109,12 @@ public enum PlainJavaImplementation implements AImplementation {
 
     @Override
     public String getDebugOption(String option) {
-        // TODO später anpassen
-        return "false";
+        // TODO später anpassen, z.B. Konfiguration über Maven?
+        String property = System.getProperty(option);
+        if (property == null) {
+            property = "false";
+        }
+        return property;
     }
 
     public static ResourceChanges getResourceChanges() {
