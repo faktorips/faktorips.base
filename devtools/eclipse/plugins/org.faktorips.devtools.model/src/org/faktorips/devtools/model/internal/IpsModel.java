@@ -42,7 +42,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -81,6 +80,7 @@ import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.builder.DependencyGraph;
@@ -113,7 +113,6 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.MultiLanguageSupport;
 import org.faktorips.devtools.model.plugin.extensions.CachingSupplier;
-import org.faktorips.devtools.model.util.IpsProjectUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -143,7 +142,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      */
     private static final int INVALID_MOD_STAMP = -42;
 
-    private static IpsModel theInstance = create();
+    private static IpsModel theInstance = WorkspaceAbstractions.createIpsModel();
 
     /** set of model change listeners that are notified about model changes */
     private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
@@ -201,12 +200,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
         initIpsObjectTypes();
     }
 
-    private static IpsModel create() {
-        return Abstractions.isEclipseRunning()
-                ? new EclipseIpsModel()
-                : new PlainJavaIpsModel();
-    }
-
     public void stopListeningToResourceChanges() {
         // only in specific implementations
     }
@@ -228,7 +221,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     @Deprecated
     public static void reInit() {
         theInstance.stopListeningToResourceChanges();
-        theInstance = create();
+        theInstance = WorkspaceAbstractions.createIpsModel();
         theInstance.startListeningToResourceChanges();
     }
 
@@ -380,38 +373,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     @Override
     public IIpsProject createIpsProject(AProject project) {
-        try {
-            if (Abstractions.isEclipseRunning()) {
-                IProject eclipseProject = project.unwrap();
-                if (eclipseProject.getNature(IIpsProject.NATURE_ID) != null) {
-                    return getIpsProject(project);
-                }
-                IIpsProject ipsProject = getIpsProject(project);
-                IpsProjectUtil.addNature(eclipseProject, IIpsProject.NATURE_ID);
-
-                IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
-                if (infos.length > 0) {
-                    IIpsProjectProperties props = ipsProject.getProperties();
-                    props.setBuilderSetId(infos[0].getBuilderSetId());
-                    ipsProject.setProperties(props);
-                }
-
-                return ipsProject;
-            } else {
-                PlainJavaProject plainJavaProject = (PlainJavaProject)project;
-                if (plainJavaProject.isIpsProject()) {
-                    return getIpsProject(project);
-                }
-
-                IIpsProject ipsProject = getIpsProject(project);
-                IIpsProjectProperties props = ipsProject.getProperties();
-                ipsProject.setProperties(props);
-
-                return ipsProject;
-            }
-        } catch (CoreException e) {
-            throw new IpsException(e);
-        }
+        return WorkspaceAbstractions.createIpsProject(this, project);
     }
 
     @Override
@@ -472,10 +434,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     }
 
     private IpsProject createIpsProject(String name) {
-        if (Abstractions.isEclipseRunning()) {
-            return new IpsProject.EclipseIpsProject(this, name);
-        }
-        return new IpsProject(this, name);
+        return WorkspaceAbstractions.createIpsProject(this, name);
     }
 
     @Override
@@ -1611,29 +1570,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
         @Override
         protected void runSafe(ICoreRunnable action, IProgressMonitor monitor, Set<IIpsSrcFile> modifiedSrcFiles) {
             super.runSafe(action, monitor, modifiedSrcFiles);
-        }
-
-        @Override
-        public IIpsProject createIpsProject(AProject project) {
-            try {
-                IProject eclipseProject = project.unwrap();
-                if (eclipseProject.getNature(IIpsProject.NATURE_ID) != null) {
-                    return getIpsProject(project);
-                }
-                IIpsProject ipsProject = getIpsProject(project);
-                IpsProjectUtil.addNature(eclipseProject, IIpsProject.NATURE_ID);
-
-                IIpsArtefactBuilderSetInfo[] infos = getIpsArtefactBuilderSetInfos();
-                if (infos.length > 0) {
-                    IIpsProjectProperties props = ipsProject.getProperties();
-                    props.setBuilderSetId(infos[0].getBuilderSetId());
-                    ipsProject.setProperties(props);
-                }
-
-                return ipsProject;
-            } catch (CoreException e) {
-                throw new IpsException(e);
-            }
         }
 
         private class IpsSrcFileChangeVisitor implements AResourceDeltaVisitor {

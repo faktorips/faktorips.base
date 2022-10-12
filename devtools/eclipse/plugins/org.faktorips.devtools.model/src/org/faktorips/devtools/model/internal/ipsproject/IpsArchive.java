@@ -29,29 +29,25 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AWorkspaceRoot;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.AbstractIpsStorage;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.IoUtil;
 import org.faktorips.util.StreamUtil;
 
@@ -284,25 +280,7 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
     }
 
     private File getFileFromPath() {
-        // accessing the file on local file system is tricky in eclipse. At least we have to refresh
-        AResource resource = getCorrespondingResource();
-        if (resource != null && Abstractions.isEclipseRunning()) {
-            try {
-                resource.refreshLocal(AResourceTreeTraversalDepth.RESOURCE_ONLY, null);
-                // this part is copied from org.eclipse.jdt.internal.core.util.Util.toLocalFile(URI,
-                // IProgressMonitor)
-                IFileStore fileStore = EFS.getStore(resource.getLocation().toUri());
-                File localFile = fileStore.toLocalFile(EFS.NONE, null);
-                if (localFile == null) {
-                    // non local file system
-                    localFile = fileStore.toLocalFile(EFS.CACHE, null);
-                }
-                return localFile;
-            } catch (CoreException e) {
-                IpsLog.log(e);
-            }
-        }
-        return getLocation().toFile();
+        return WorkspaceAbstractions.getFileFromArchivePath(this);
     }
 
     private Properties readIpsObjectsProperties(JarFile archive) {
