@@ -11,4 +11,4 @@
  * Mappings between different implementation specific classes used in
  * {@link org.faktorips.devtools.abstraction.AWrapper wrappers}.
  */
-package org.faktorips.devtools.abstraction.mapping;
+package org.faktorips.devtools.abstraction.eclipse.mapping;

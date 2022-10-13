@@ -13,7 +13,7 @@ import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.run;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrapSupplier;
-import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.BuildKindMapping.buildKind;
 
 import java.nio.charset.Charset;
 import java.util.Set;

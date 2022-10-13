@@ -14,8 +14,8 @@ import java.nio.file.Path;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.APackageFragmentRoot;
+import org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
 
 public class EclipsePackageFragmentRoot extends EclipseJavaElement implements APackageFragmentRoot {
 

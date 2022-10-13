@@ -10,7 +10,7 @@
 package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
 
 import java.nio.file.Path;
 

@@ -11,7 +11,7 @@ Require-Bundle: org.apache.ant,
 Bundle-ClassPath: .
 Import-Package: org.faktorips.abstracttest,
  org.faktorips.devtools.abstraction,
- org.faktorips.devtools.abstraction.mapping,
+ org.faktorips.devtools.abstraction.eclipse.mapping,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,

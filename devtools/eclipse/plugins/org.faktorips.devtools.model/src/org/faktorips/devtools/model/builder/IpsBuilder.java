@@ -12,7 +12,7 @@ package org.faktorips.devtools.model.builder;
 
 import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.BuildKindMapping.buildKind;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;

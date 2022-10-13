@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.abstraction.mapping;
+package org.faktorips.devtools.abstraction.eclipse.mapping;
 
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.faktorips.devtools.abstraction.ABuildKind;
