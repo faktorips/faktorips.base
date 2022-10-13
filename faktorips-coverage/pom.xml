@@ -11,12 +11,34 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
+        <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
+        <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-project-info-reports-plugin.version>3.4.1</maven-project-info-reports-plugin.version>
+        <maven-site-plugin.version>4.0.0-M3</maven-site-plugin.version>
     </properties>
 
     <dependencies>
         <!-- Plugins -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-plainjava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.abstraction.eclipse</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.abstraction.eclipse.test</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>org.faktorips.devtools.ant</artifactId>
@@ -124,7 +146,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.devtools.stdbuilder.test</artifactId>
+            <artifactId>org.faktorips.devtools.stdbuilder.ui.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -155,16 +177,6 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-fl</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.m2e</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>org.faktorips.m2e.test</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -264,7 +276,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.6</version>
                 <executions>
                     <execution>
                         <id>report-aggregate</id>
@@ -299,6 +310,16 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>${maven-project-info-reports-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>${maven-deploy-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
