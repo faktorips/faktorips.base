@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.faktorzehn.org">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation='https://www.w3.org/2009/01/xml.xsd' />
+    <xsd:include id="ips" schemaLocation='ips-global.xsd' />
+
+    <xsd:element name="IpsProject" type="IpsProjectType" />
+
+    <xsd:complexType name="IpsProjectType">
+        <xsd:sequence>
+            <xsd:element name="RequiredIpsFeatures" type="RequiredIpsFeaturesType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="IpsArtefactBuilderSet" type="IpsArtefactBuilderSetType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="ProductCmptNamingStrategy" type="ProductCmptNamingStrategyType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="IpsObjectPath" type="IpsObjectPathType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Datatypes" type="DatatypesType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="ResourcesExcludedFromProductDefinition" type="ResourcesExcludedFromProductDefinitionType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="ProductRelease" type="ProductReleaseType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="Version" type="VersionType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="AdditionalSettings" type="AdditionalSettingsType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="PersistenceOptions" type="PersistenceOptionsType" minOccurs="0" maxOccurs="1" />
+            <xsd:element name="SupportedLanguages" type="SupportedLanguagesType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="DefaultCurrency" type="DefaultCurrencyType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="FeatureConfigurations" type="FeatureConfigurationsType" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="changesInTimeNamingConvention" type="string" use="required" />
+        <xsd:attribute name="modelProject" type="boolean" use="required" />
+        <xsd:attribute name="persistentProject" type="boolean" default="false" />
+        <xsd:attribute name="productDefinitionProject" type="boolean" use="required" />
+        <xsd:attribute name="runtimeIdPrefix" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DefaultCurrencyType">
+        <xsd:attribute name="value" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="SupportedLanguagesType">
+        <xsd:sequence>
+            <xsd:element name="SupportedLanguage" type="SupportedLanguageType" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SupportedLanguageType">
+        <xsd:attribute name="defaultLanguage" type="boolean" default="false" />
+        <xsd:attribute name="locale" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="PersistenceOptionsType">
+        <xsd:sequence>
+            <xsd:element name="TableNamingStrategy" type="TableNamingStrategyType" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="TableColumnNamingStrategy" type="TableColumnNamingStrategyType" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="allowLazyFetchForSingleValuedAssociations" type="boolean" />
+        <xsd:attribute name="maxColumnNameLength" type="xsd:int" />
+        <xsd:attribute name="maxTableColumnPrecision" type="xsd:int" />
+        <xsd:attribute name="maxTableColumnScale" type="xsd:int" />
+        <xsd:attribute name="maxTableColumnSize" type="xsd:int" />
+        <xsd:attribute name="maxTableNameLength" type="xsd:int" />
+    </xsd:complexType>
+
+    <xsd:complexType name="TableColumnNamingStrategyType">
+        <xsd:attribute name="id" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="TableNamingStrategyType">
+        <xsd:attribute name="id" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="AdditionalSettingsType">
+        <xsd:sequence>
+            <xsd:element name="Setting" type="SettingType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="SettingType">
+        <xsd:attribute name="name" type="string" />
+        <xsd:attribute name="value" type="string" />
+        <xsd:attribute name="enabled" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="VersionType">
+        <xsd:attribute name="versionProvider" type="string" />
+        <xsd:attribute name="version" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ResourcesExcludedFromProductDefinitionType">
+        <xsd:sequence>
+            <xsd:element name="Resource" type="ResourceType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ResourceType">
+        <xsd:attribute name="path" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ProductReleaseType">
+        <xsd:attribute name="releaseExtensionId" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DatatypesType">
+        <xsd:sequence>
+            <xsd:element name="UsedPredefinedDatatypes" type="UsedPredefinedDatatypesType" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="DatatypeDefinitions" type="DatatypeDefinitionsType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="UsedPredefinedDatatypesType">
+        <xsd:sequence>
+            <xsd:element name="Datatype" type="PredefinedDatatypeType" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PredefinedDatatypeType">
+        <xsd:attribute name="id" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DatatypeDefinitionsType">
+        <xsd:sequence>
+            <xsd:element name="Datatype" type="DatatypeType" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="DatatypeType">
+        <xsd:sequence>
+            <xsd:element name="NullObjectId" type="NullObjectIdType" minOccurs="0" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="string" use="required" />
+        <xsd:attribute name="javaClass" type="string" use="required" />
+        <xsd:attribute name="valueObject" type="boolean" use="required" />
+        <xsd:attribute name="isEnumType" type="boolean" />
+        <xsd:attribute name="valueOfMethod" type="string" />
+        <xsd:attribute name="isParsableMethod" type="string" />
+        <xsd:attribute name="valueToStringMethod" type="string" />
+        <xsd:attribute name="getAllValuesMethod" type="string" />
+        <xsd:attribute name="isSupportingNames" type="boolean" />
+        <xsd:attribute name="getNameMethod" type="string" />
+        <xsd:attribute name="getValueByNameMethod" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="NullObjectIdType">
+        <xsd:attribute name="isNull" type="boolean" />
+    </xsd:complexType>
+
+    <xsd:complexType name="IpsObjectPathType">
+        <xsd:sequence>
+            <xsd:element maxOccurs="unbounded" name="Entry" type="EntryType" />
+        </xsd:sequence>
+        <xsd:attribute name="useManifest" type="boolean" />
+        <xsd:attribute name="basePackageDerived" type="string" />
+        <xsd:attribute name="basePackageMergable" type="string" />
+        <xsd:attribute name="outputDefinedPerSrcFolder" type="boolean" />
+        <xsd:attribute name="outputFolderDerivedSources" type="string" />
+        <xsd:attribute name="outputFolderMergableSources" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="EntryType">
+        <xsd:attribute name="basePackageDerived" type="string" />
+        <xsd:attribute name="basePackageMergable" type="string" />
+        <xsd:attribute name="outputFolderDerived" type="string" />
+        <xsd:attribute name="outputFolderMergable" type="string" />
+        <xsd:attribute name="sourceFolder" type="string" />
+        <xsd:attribute name="tocPath" type="string" />
+        <xsd:attribute name="type" type="string" />
+        <xsd:attribute name="validationMessagesBundle" type="string" />
+        <xsd:attribute name="reexported" type="boolean" />
+        <xsd:attribute name="uniqueQualifier" type="string" />
+        <xsd:attribute name="container" type="string" />
+        <xsd:attribute name="path" type="string" />
+        <xsd:attribute name="referencedIpsProject" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ProductCmptNamingStrategyType">
+        <xsd:sequence>
+            <xsd:any processContents="skip" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="DateBasedProductCmptNamingStrategyType">
+        <xsd:sequence>
+            <xsd:element name="JavaIdentifierCharReplacements" type="JavaIdentifierCharReplacementsType" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="dateFormatPattern" type="string" />
+        <xsd:attribute name="postfixAllowed" type="boolean" />
+        <xsd:attribute name="versionIdSeparator" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="JavaIdentifierCharReplacementsType">
+        <xsd:sequence>
+            <xsd:element name="Replacement" type="ReplacementType" minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="ReplacementType">
+        <xsd:attribute name="replacedChar" type="xsd:string" />
+        <xsd:attribute name="replacement" type="xsd:string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="IpsArtefactBuilderSetType">
+        <xsd:sequence>
+            <xsd:element name="IpsArtefactBuilderSetConfig" type="IpsArtefactBuilderSetConfigType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="IpsArtefactBuilderSetConfigType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType"  minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="PropertyType">
+        <xsd:attribute name="name" type="string" />
+        <xsd:attribute name="value" type="string" />
+    </xsd:complexType>
+
+    <xsd:complexType name="RequiredIpsFeaturesType">
+        <xsd:sequence>
+            <xsd:element name="RequiredIpsFeature" type="RequiredIpsFeatureType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="RequiredIpsFeatureType">
+        <xsd:attribute name="id" type="string" use="required" />
+        <xsd:attribute name="minVersion" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationsType">
+        <xsd:sequence>
+            <xsd:element name="FeatureConfiguration" type="FeatureConfigurationType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="FeatureConfigurationPropertyType"  minOccurs="1" maxOccurs="unbounded" />
+        </xsd:sequence>
+        <xsd:attribute name="featureId" type="string" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="FeatureConfigurationPropertyType">
+        <xsd:attribute name="name" type="string" use="required" />
+        <xsd:attribute name="value" type="string" use="required" />
+    </xsd:complexType>
+</xsd:schema>

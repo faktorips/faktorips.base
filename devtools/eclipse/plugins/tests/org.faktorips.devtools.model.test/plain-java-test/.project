@@ -22,7 +22,7 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>src</name>
+			<name>src/test/java</name>
 			<type>2</type>
 			<locationURI>FIPS_MODEL_TEST_LOC</locationURI>
 		</link>

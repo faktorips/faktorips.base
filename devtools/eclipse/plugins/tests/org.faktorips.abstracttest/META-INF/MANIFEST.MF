@@ -5,8 +5,11 @@ Bundle-SymbolicName: org.faktorips.abstracttest
 Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.13.700",
- org.eclipse.core.runtime;bundle-version="3.17.100",
- org.eclipse.jdt.core;bundle-version="3.21.0"
+ org.eclipse.jdt.core;bundle-version="3.21.0",
+ org.eclipse.equinox.common;bundle-version="3.11.0",
+ org.eclipse.equinox.registry;bundle-version="3.8.700",
+ org.eclipse.core.jobs;bundle-version="3.10.700",
+ org.eclipse.core.runtime;bundle-version="3.17.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: org.faktorips.abstracttest,
  org.faktorips.abstracttest.builder,
@@ -25,6 +28,8 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.devtools.model.builder,
  org.faktorips.devtools.model.datatype,
  org.faktorips.devtools.model.dependency,
+ org.faktorips.devtools.model.eclipse.builder,
+ org.faktorips.devtools.model.eclipse.internal,
  org.faktorips.devtools.model.enums,
  org.faktorips.devtools.model.extproperties,
  org.faktorips.devtools.model.internal,
@@ -45,7 +50,7 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,
  org.faktorips.devtools.model.pctype,
- org.faktorips.devtools.model.plainjava,
+ org.faktorips.devtools.model.plainjava.internal,
  org.faktorips.devtools.model.plugin,
  org.faktorips.devtools.model.preferences,
  org.faktorips.devtools.model.productcmpt,

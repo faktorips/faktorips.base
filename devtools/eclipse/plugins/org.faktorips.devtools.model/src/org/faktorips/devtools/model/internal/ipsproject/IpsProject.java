@@ -93,6 +93,7 @@ import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
@@ -141,6 +142,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * The file extension for IPS projects but with a dot added before.
      */
     public static final String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
+
+    /**
+     * The nature ID before Faktor-IPS 22.12
+     * 
+     * @since 22.12
+     * @deprecated do not use except for backwards compatibility
+     */
+    @Deprecated(since = "22.12")
+    public static final String OLD_NATURE_ID = IpsModelActivator.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     private final IJavaNamingConvention javaNamingConvention = new JavaNamingConvention();
 
@@ -1612,7 +1622,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             try {
                 String[] natures = getEclipseProject().getDescription().getNatureIds();
                 for (String nature : natures) {
-                    if (nature.equals(IIpsProject.NATURE_ID)) {
+                    if (nature.equals(IIpsProject.NATURE_ID) || nature.equals(OLD_NATURE_ID)) {
                         return true;
                     }
                 }

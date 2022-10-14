@@ -10,11 +10,16 @@
 package org.faktorips.devtools.model.abstractions;
 
 import java.io.File;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.ServiceLoader;
+import java.util.ServiceLoader.Provider;
 import java.util.function.Consumer;
 
 import org.faktorips.devtools.abstraction.AProject;
-import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
@@ -22,6 +27,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
 
 public final class WorkspaceAbstractions {
 
@@ -32,10 +38,18 @@ public final class WorkspaceAbstractions {
     }
 
     private static AWorkspaceAbstractionsImplementation get() {
-        // unless an implementation resides in another module, we don't need any fancy service
-        // loading / plugin mechanism to find them
-        return Abstractions.isEclipseRunning() ? EclipseWorkspaceImplementation.get()
-                : PlainJavaWorkspaceAbstractionsImplementation.get();
+        AWorkspaceAbstractionsImplementationProvider osgiProvider = IpsModelActivator.get();
+        if (osgiProvider != null) {
+            return osgiProvider.getWorkspaceAbstractionsImplementation();
+        }
+        Optional<AWorkspaceAbstractionsImplementationProvider> implementationProvider = ServiceLoader
+                .load(AWorkspaceAbstractionsImplementationProvider.class).stream()
+                .map(Provider::get)
+                .sorted(Comparator.comparing(AWorkspaceAbstractionsImplementationProvider::getPriority).reversed())
+                .findFirst();
+        return implementationProvider
+                .orElseThrow(() -> new IpsException("No workspace abstractions implementation provider found!")) //$NON-NLS-1$
+                .getWorkspaceAbstractionsImplementation();
     }
 
     public static IpsModel createIpsModel() {
@@ -74,6 +88,10 @@ public final class WorkspaceAbstractions {
      */
     public static File getFileFromArchivePath(IIpsArchive ipsArchive) {
         return IMPLEMENTATION.getFileFromArchivePath(ipsArchive);
+    }
+
+    public static IIpsModelExtensions getIpsModelExtensions() {
+        return IMPLEMENTATION.getIpsModelExtensions();
     }
 
     public interface AWorkspaceAbstractionsImplementation {
@@ -151,6 +169,8 @@ public final class WorkspaceAbstractions {
         default File getFileFromArchivePath(IIpsArchive ipsArchive) {
             return ipsArchive.getLocation().toFile();
         }
+
+        IIpsModelExtensions getIpsModelExtensions();
     }
 
 }

@@ -4,7 +4,11 @@ Bundle-Name: Eclipse-Implementation for Faktor-IPS Abstractions
 Bundle-SymbolicName: org.faktorips.devtools.abstraction.eclipse;singleton:=true
 Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Export-Package: org.faktorips.devtools.abstraction.eclipse.internal;x-friends:="org.faktorips.abstracttest,org.faktorips.devtools.model,org.faktorips.devtools.model.test",
+Export-Package: org.faktorips.devtools.abstraction.eclipse.internal;
+  x-friends:="org.faktorips.abstracttest,
+   org.faktorips.devtools.model,
+   org.faktorips.devtools.model.test,
+   org.faktorips.devtools.model.eclipse",
  org.faktorips.devtools.abstraction.eclipse.mapping
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-11

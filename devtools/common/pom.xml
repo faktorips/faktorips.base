@@ -29,6 +29,7 @@
         <module>faktorips-fl</module>
         <module>faktorips-schemas</module>
         <module>faktorips-util</module>
+        <module>faktorips-model-plainjava</module>
         <module>../eclipse/plugins/tests/org.faktorips.devtools.model.test/plain-java-test</module>
     </modules>
     

@@ -15,7 +15,6 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 import org.faktorips.devtools.model.util.IpsProjectCreationProperties;
-import org.faktorips.devtools.model.util.StandardJavaProjectConfigurator;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -37,7 +36,7 @@ public interface IIpsProjectConfigurator {
      *               example the existence of a file for a different kind of dependency management.
      * 
      * @implNote If no extension is responsible for a project, the standard configurator
-     *               {@link StandardJavaProjectConfigurator} will be used.
+     *               {@code StandardJavaProjectConfigurator} will be used.
      * 
      * @param javaProject the project to be configured
      * @return whether this configurator can configure the project

@@ -22,13 +22,13 @@ import org.faktorips.devtools.model.IClassLoaderProviderFactory;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
+import org.faktorips.devtools.model.eclipse.internal.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
-import org.faktorips.devtools.model.plainjava.PlainJavaIpsModelExtensions;
-import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
+import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 

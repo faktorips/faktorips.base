@@ -175,7 +175,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         String productXmlFile = packageName + "." + productCmpt.getName();
         productXmlFile = productXmlFile.replace('.', '/');
         productXmlFile += ".xml";
-        return ipsProject.getProject().getFile("bin//" + productXmlFile);
+        return ipsProject.getProject().getFile("bin/" + productXmlFile);
     }
 
     @Test

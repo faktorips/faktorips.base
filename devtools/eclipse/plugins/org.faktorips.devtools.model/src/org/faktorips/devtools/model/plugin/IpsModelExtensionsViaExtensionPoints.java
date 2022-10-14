@@ -26,7 +26,6 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
-import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
@@ -168,11 +167,6 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public IdentifierFilter getIdentifierFilter() {
         return identifierFilter.get();
-    }
-
-    @Override
-    public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
-        return IpsModelActivator.get().getDependencyGraphPersistenceManager();
     }
 
     @Override

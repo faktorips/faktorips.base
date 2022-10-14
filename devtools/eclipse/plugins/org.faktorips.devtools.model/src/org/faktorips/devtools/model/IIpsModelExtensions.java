@@ -17,7 +17,7 @@ import java.util.Optional;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AVersion;
-import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IFlIdentifierFilterExtension;
@@ -32,9 +32,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
-import org.faktorips.devtools.model.plainjava.PlainJavaIpsModelExtensions;
 import org.faktorips.devtools.model.plugin.IIpsWorkspaceInteractions;
-import org.faktorips.devtools.model.plugin.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.preferences.IIpsModelPreferences;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.productrelease.ReleaseExtension;
@@ -49,11 +47,7 @@ import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperation
 public interface IIpsModelExtensions {
 
     static IIpsModelExtensions get() {
-        if (Abstractions.isEclipseRunning()) {
-            return IpsModelExtensionsViaEclipsePlugins.get();
-        } else {
-            return PlainJavaIpsModelExtensions.get();
-        }
+        return WorkspaceAbstractions.getIpsModelExtensions();
     }
 
     /**

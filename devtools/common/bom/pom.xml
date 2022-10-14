@@ -53,6 +53,11 @@
             </dependency>
             <dependency>
                 <groupId>org.faktorips</groupId>
+                <artifactId>faktorips-model-plainjava</artifactId>
+                <version>${faktorips.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-util</artifactId>
                 <version>${faktorips.version}</version>
             </dependency>

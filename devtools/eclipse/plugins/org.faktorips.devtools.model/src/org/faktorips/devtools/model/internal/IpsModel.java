@@ -11,7 +11,6 @@
 package org.faktorips.devtools.model.internal;
 
 import static java.util.function.Predicate.not;
-import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,11 +36,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.transform.dom.DOMSource;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -53,20 +48,9 @@ import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceType;
-import org.faktorips.devtools.abstraction.AResourceDelta;
-import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
-import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
 import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFile;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaProject;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResource;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceChange.Type;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaResourceDelta;
-import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.IClassLoaderProvider;
@@ -78,7 +62,6 @@ import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IModificationStatusChangeListener;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
 import org.faktorips.devtools.model.IVersionProvider;
-import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ModificationStatusChangedEvent;
 import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions;
 import org.faktorips.devtools.model.builder.IDependencyGraph;
@@ -86,7 +69,6 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.builder.DependencyGraph;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
-import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileOffRoot;
 import org.faktorips.devtools.model.internal.ipsobject.LibraryIpsSrcFile;
@@ -99,7 +81,6 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -140,9 +121,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * <p>
      * Described in FIPS-5745
      */
-    private static final int INVALID_MOD_STAMP = -42;
+    protected static final int INVALID_MOD_STAMP = -42;
 
-    private static IpsModel theInstance = WorkspaceAbstractions.createIpsModel();
+    private static IpsModel theInstance;
 
     /** set of model change listeners that are notified about model changes */
     private CopyOnWriteArraySet<ContentsChangeListener> changeListeners = new CopyOnWriteArraySet<>();
@@ -191,7 +172,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     private final IMultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
 
-    private IpsModel() {
+    protected IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
         if (TRACE_MODEL_MANAGEMENT) {
             System.out.println("IpsModel.Constructor(): IpsModel created."); //$NON-NLS-1$
@@ -219,8 +200,10 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *                 environment.</em></strong>
      */
     @Deprecated
-    public static void reInit() {
-        theInstance.stopListeningToResourceChanges();
+    public static synchronized void reInit() {
+        if (theInstance != null) {
+            theInstance.stopListeningToResourceChanges();
+        }
         theInstance = WorkspaceAbstractions.createIpsModel();
         theInstance.startListeningToResourceChanges();
     }
@@ -233,7 +216,10 @@ public class IpsModel extends IpsElement implements IIpsModel {
      *                 implementation details, otherwise use {@link IIpsModel#get}!</em></strong>
      */
     @Deprecated
-    public static final IpsModel get() {
+    public static final synchronized IpsModel get() {
+        if (theInstance == null) {
+            theInstance = WorkspaceAbstractions.createIpsModel();
+        }
         return theInstance;
     }
 
@@ -1488,247 +1474,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
                             e));
                 }
                 // CSON: IllegalCatch
-            }
-        }
-    }
-
-    public static class EclipseIpsModel extends IpsModel implements IResourceChangeListener {
-
-        /**
-         * Resource delta visitor used to generate IPS source file contents changed events and
-         * trigger a build after changes to the IPS project properties file.
-         */
-        private ResourceDeltaVisitor resourceDeltaVisitor;
-
-        public EclipseIpsModel() {
-            super();
-            // has to be done after the IPS object types are initialized!
-            resourceDeltaVisitor = new ResourceDeltaVisitor(this);
-        }
-
-        @Override
-        public void startListeningToResourceChanges() {
-            ((IWorkspace)getWorkspace().unwrap()).addResourceChangeListener(this,
-                    IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE
-                            | IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_REFRESH);
-        }
-
-        @Override
-        public void stopListeningToResourceChanges() {
-            ((IWorkspace)getWorkspace().unwrap()).removeResourceChangeListener(this);
-        }
-
-        @Override
-        public void resourceChanged(IResourceChangeEvent event) {
-            if (event.getType() == IResourceChangeEvent.PRE_REFRESH) {
-                if (event.getResource() == null || event.getResource() instanceof IProject) {
-                    forceReloadOfCachedIpsSrcFileContents((IProject)event.getResource());
-                }
-            } else {
-                AResourceDelta delta = wrap(event.getDelta()).as(AResourceDelta.class);
-                if (delta != null) {
-                    try {
-                        delta.accept(resourceDeltaVisitor);
-                        IpsSrcFileChangeVisitor visitor = new IpsSrcFileChangeVisitor();
-                        delta.accept(visitor);
-                        if (!visitor.changedIpsSrcFiles.isEmpty()) {
-                            notifyIpsSrcFileChangedListeners(visitor.changedIpsSrcFiles);
-                        }
-                        // CSOFF: IllegalCatch
-                    } catch (Exception e) {
-                        IpsLog.log(new IpsStatus("Error updating model objects in resurce changed event.", //$NON-NLS-1$
-                                e));
-                    }
-                    // CSON: IllegalCatch
-                }
-            }
-        }
-
-        /**
-         * Forces to reload the the cached IPS source file contents of a single project or the whole
-         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
-         * each content object.
-         * 
-         * @param project The project that should considered or <code>null</code> if the whole
-         *            workspace should be considered.
-         */
-        private synchronized void forceReloadOfCachedIpsSrcFileContents(IProject project) {
-            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
-            for (IIpsSrcFile srcFile : copyKeys) {
-                if (!srcFile.isDirty()
-                        && (project == null || srcFile.getIpsProject().getProject().unwrap().equals(project))) {
-                    releaseInCache(srcFile);
-                }
-            }
-        }
-
-        private void notifyIpsSrcFileChangedListeners(final Map<IIpsSrcFile, AResourceDelta> changedIpsSrcFiles) {
-            forEachIpsSrcFilesChangeListener(
-                    listener -> listener.ipsSrcFilesChanged(new IpsSrcFilesChangedEvent(changedIpsSrcFiles)));
-        }
-
-        @Override
-        protected void runSafe(ICoreRunnable action, IProgressMonitor monitor, Set<IIpsSrcFile> modifiedSrcFiles) {
-            super.runSafe(action, monitor, modifiedSrcFiles);
-        }
-
-        private class IpsSrcFileChangeVisitor implements AResourceDeltaVisitor {
-
-            private Map<IIpsSrcFile, AResourceDelta> changedIpsSrcFiles = new HashMap<>(5);
-            private Set<String> fileExtensionsOfInterest;
-
-            public IpsSrcFileChangeVisitor() {
-                fileExtensionsOfInterest = resourceDeltaVisitor.getFileExtensionsOfInterest();
-            }
-
-            @Override
-            public boolean visit(final AResourceDelta delta) {
-                AResource resource = delta.getResource();
-                if (resource == null || resource.getType() != AResourceType.FILE) {
-                    return true;
-                }
-                if (fileExtensionsOfInterest.contains(((AFile)resource).getExtension())) {
-                    if (delta.getKind() == AResourceDeltaKind.REMOVED) {
-                        IIpsElement ipsElement = getIpsElement(resource);
-                        if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
-                            changedIpsSrcFiles.put((IIpsSrcFile)ipsElement, delta);
-                        }
-                    } else {
-                        final IIpsElement ipsElement = findIpsElement(resource);
-                        if (ipsElement instanceof IIpsSrcFile && ((IIpsSrcFile)ipsElement).isContainedInIpsRoot()) {
-                            IpsSrcFile srcFile = (IpsSrcFile)ipsElement;
-                            changedIpsSrcFiles.put(srcFile, delta);
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-
-    }
-
-    public static class PlainJavaIpsModel extends IpsModel {
-
-        private Consumer<PlainJavaResourceChange> resourceChangeListener;
-
-        public PlainJavaIpsModel() {
-            super();
-            resourceChangeListener = this::resourceChanged;
-            PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
-        }
-
-        @Override
-        public void startListeningToResourceChanges() {
-            PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
-        }
-
-        @Override
-        public void stopListeningToResourceChanges() {
-            PlainJavaImplementation.getResourceChanges().removeListener(resourceChangeListener);
-        }
-
-        private void resourceChanged(PlainJavaResourceChange change) {
-            PlainJavaResource resource = change.getChangedResource();
-            if (resource instanceof PlainJavaProject) {
-                AProject project = (AProject)resource;
-                projectChanged(project);
-            } else if (resource instanceof PlainJavaFile) {
-                AProject project = resource.getProject();
-                if (project != null && project.isIpsProject()) {
-                    IIpsProject ipsProject = getIpsProject(project);
-                    if (IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT.equals(resource.getName())) {
-                        cleanValidationCache(ipsProject);
-                    } else {
-                        String path = PathUtil.toPortableString(resource.getProjectRelativePath());
-                        if (QualifiedNameType.representsQualifiedNameType(path)) {
-                            IIpsSrcFile ipsSrcFile = findIpsSrcFile(resource, ipsProject, path);
-                            if (ipsSrcFile != null) {
-                                ipsSrcFileChanged(ipsSrcFile, change);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void ipsSrcFileChanged(IIpsSrcFile ipsSrcFile, PlainJavaResourceChange change) {
-            forEachIpsSrcFilesChangeListener(listener -> listener
-                    .ipsSrcFilesChanged(
-                            new IpsSrcFilesChangedEvent(
-                                    Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
-            if (Type.REMOVED == change.getType()) {
-                removeIpsSrcFileContent(ipsSrcFile);
-            } else {
-                IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
-                boolean isInSync = isInSync(ipsSrcFile, content);
-                if (!isInSync) {
-                    ipsSrcFileContentHasChanged(
-                            ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
-                }
-            }
-        }
-
-        private void projectChanged(AProject project) {
-            if (project.isIpsProject()) {
-                IIpsProject ipsProject = getIpsProject(project);
-                forceReloadOfCachedIpsSrcFileContents(ipsProject);
-            }
-        }
-
-        private IIpsSrcFile findIpsSrcFile(PlainJavaResource resource, IIpsProject ipsProject, String path) {
-            IIpsSrcFile ipsSrcFile = ipsProject
-                    .findIpsSrcFile(QualifiedNameType.newQualifedNameType(path));
-            if (ipsSrcFile == null) {
-                ipsSrcFile = findIpsSrcFileInIpsModel(resource);
-            }
-            return ipsSrcFile;
-        }
-
-        private IIpsSrcFile findIpsSrcFileInIpsModel(PlainJavaResource resource) {
-            return getIpsSrcFilesInternal().parallelStream()
-                    .filter(i -> resource.equals(i.getCorrespondingResource()))
-                    .findFirst().orElse(null);
-        }
-
-        /**
-         * This method checks whether the content was saved by a Faktor-IPS save or by an event
-         * outside of Faktor-IPS. If it was saved by us it is still in sync because we have other
-         * mechanism to trigger change events. These change events will be more detailed (for
-         * example it gives the information about a specific part that was changed). If the resource
-         * change event was not triggered by our own save operation we need to assume that the whole
-         * content may have changed.
-         */
-        private boolean isInSync(IIpsSrcFile srcFile, IpsSrcFileContent content) {
-            return content == null
-                    || content.wasModStampCreatedBySave(srcFile.getEnclosingResource().getModificationStamp());
-        }
-
-        /**
-         * Forces to reload the the cached IPS source file contents of a single project or the whole
-         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
-         * each content object.
-         */
-        private synchronized void forceReloadOfCachedIpsSrcFileContents(IIpsProject ipsProject) {
-            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
-            for (IIpsSrcFile srcFile : copyKeys) {
-                if (!srcFile.isDirty() && srcFile.getIpsProject().equals(ipsProject)) {
-                    releaseInCache(srcFile);
-                    getValidationResultCache().removeStaleData(srcFile);
-                }
-            }
-        }
-
-        /**
-         * Forces to reload the the cached IPS source file contents of a single project or the whole
-         * workspace. This is done by setting {@value #INVALID_MOD_STAMP} as modification stamp in
-         * each content object.
-         */
-        private synchronized void cleanValidationCache(IIpsProject ipsProject) {
-            HashSet<IIpsSrcFile> copyKeys = new HashSet<>(getIpsSrcFilesInternal());
-            for (IIpsSrcFile srcFile : copyKeys) {
-                if (srcFile.getIpsProject().equals(ipsProject)) {
-                    getValidationResultCache().removeStaleData(srcFile);
-                }
             }
         }
     }

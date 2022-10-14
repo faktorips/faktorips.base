@@ -42,7 +42,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -115,6 +114,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -804,7 +804,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // register helper
         setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
         TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+        builderSet.getTestObjectsMap().put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
 
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
         assertNotNull(helper);
@@ -823,7 +823,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         // create a referenced project with a data type helper
         setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
         TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
-        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+        builderSet.getTestObjectsMap().put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
         createProjectReference(referencingProject, ipsProject);
 
         // precondition: helper is found in referenced project

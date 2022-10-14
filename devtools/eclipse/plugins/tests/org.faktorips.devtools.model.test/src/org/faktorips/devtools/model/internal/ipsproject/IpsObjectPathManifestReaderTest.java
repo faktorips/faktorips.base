@@ -18,8 +18,6 @@ import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer;
-import org.faktorips.devtools.model.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.junit.Before;
@@ -177,10 +175,8 @@ public class IpsObjectPathManifestReaderTest {
 
         if (Abstractions.isEclipseRunning()) {
             assertEquals(1, ipsObjectPath.getEntries().length);
-            IpsContainerEntry ipsContainerEntry = (IpsContainerEntry)ipsObjectPath.getEntries()[0];
-            assertEquals(IpsContainer4JdtClasspathContainerType.ID, ipsContainerEntry.getContainerTypeId());
-            assertEquals(IpsContainer4JdtClasspathContainer.REQUIRED_PLUGIN_CONTAINER,
-                    ipsContainerEntry.getOptionalPath());
+            // detailed test in
+            // org.faktorips.devtools.model.eclipse.internal.ipsproject.IpsObjectPathManifestReaderTest
         } else {
             assertEquals(0, ipsObjectPath.getEntries().length);
         }
