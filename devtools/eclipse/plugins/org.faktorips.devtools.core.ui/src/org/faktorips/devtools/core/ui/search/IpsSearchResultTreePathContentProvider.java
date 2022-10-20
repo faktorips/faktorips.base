@@ -114,7 +114,10 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     }
 
     public Object[] getFoundIpsElements() {
-        return ((IpsSearchResult)searchResult).getIpsElements();
+        if (searchResult != null) {
+            return ((IpsSearchResult)searchResult).getIpsElements();
+        }
+        return new Object[0];
     }
 
     @Override

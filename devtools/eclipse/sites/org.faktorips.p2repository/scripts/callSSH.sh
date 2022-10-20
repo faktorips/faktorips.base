@@ -1,5 +1,5 @@
 #!/bin/bash
-# executes a loacl script on a given ssh server
+# executes a local script on a given ssh server
 # $1: URL of ssh server name@host
 # $2: Qualified name of the script (local)
 # $*: Arguments of the script

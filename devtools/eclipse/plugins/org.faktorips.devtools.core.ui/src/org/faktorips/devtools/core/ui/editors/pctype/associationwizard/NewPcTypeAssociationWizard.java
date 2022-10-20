@@ -42,6 +42,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.AssociationType;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.util.memento.Memento;
@@ -211,6 +212,7 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
         }
 
         inverseAssociationPage.setVisibleStateForDetailToMasterAssociation(association.isCompositionDetailToMaster());
+        inverseAssociationPage.setVisibleStateForTargetIsNotInWorkspace(isTargetInWorkspace());
 
         // handle validate state of current page
         if (currentPage instanceof IBlockedValidationWizardPage) {
@@ -366,25 +368,38 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
                 return null;
             }
 
-            /*
-             * display information in special case "no existing inverse association" if an existing
-             * inverse association should be used but no corresponding association exists
-             */
             if (nextPage instanceof InverseAssociationPropertyPage) {
-                ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
-                if (isExistingInverseAssociation()) {
-                    if (!areExistingAssociationsAvailable()) {
-                        ((WizardPage)getContainer().getCurrentPage()).setMessage(
-                                Messages.NewPcTypeAssociationWizard_warningNoExistingAssociationFound,
-                                IMessageProvider.WARNING);
-                    }
-                }
+                setMessageForInverseAssociationPropertyPage();
             }
 
             nextPage = pages.get(index + 1);
         }
 
         return nextPage;
+    }
+
+    private void setMessageForInverseAssociationPropertyPage() {
+        ((WizardPage)getContainer().getCurrentPage()).setMessage(null);
+        /*
+         * display information in special case "no existing inverse association" if an existing
+         * inverse association should be used but no corresponding association exists
+         */
+        if (isExistingInverseAssociation()) {
+            if (!areExistingAssociationsAvailable()) {
+                ((WizardPage)getContainer().getCurrentPage()).setMessage(
+                        Messages.NewPcTypeAssociationWizard_warningNoExistingAssociationFound,
+                        IMessageProvider.WARNING);
+            }
+        }
+        /*
+         * display information in case the target is not in the workspace and no inverse association
+         * can be configured.
+         */
+        if (!isTargetInWorkspace()) {
+            ((WizardPage)getContainer().getCurrentPage()).setMessage(
+                    Messages.InverseAssociationPage_labelOnlyNoInverseAssociationAllowed,
+                    IMessageProvider.WARNING);
+        }
     }
 
     private boolean checkError(IWizardPage page) {
@@ -745,6 +760,18 @@ public class NewPcTypeAssociationWizard extends Wizard implements ContentsChange
             targetPolicyCmptType.getIpsSrcFile().markAsClean();
         }
         mementoTargetBeforeNewAssociation = null;
+    }
+
+    /**
+     * Returns true if the target type is in the workspace.
+     */
+    boolean isTargetInWorkspace() {
+        boolean targetIsInWorkspace = true;
+        IType findTarget = getAssociation().findTarget(getIpsProject());
+        if (findTarget != null) {
+            targetIsInWorkspace = !findTarget.getIpsObject().getIpsSrcFile().isReadOnly();
+        }
+        return targetIsInWorkspace;
     }
 
     /**

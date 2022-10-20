@@ -171,6 +171,15 @@ public class DefaultPolicyAttributeTest {
         subAttr2.setValue(modelObject, "asd");
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetValue_OnTheFly() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(Policy.class);
+        PolicyAttribute onTheFly = modelType.getAttribute("onTheFly");
+        Policy modelObject = new Policy();
+
+        onTheFly.setValue(modelObject, "asd");
+    }
+
     @Test
     public void testGetValueSet_ProductComponent() {
         Produkt source = new Produkt();
@@ -1229,7 +1238,7 @@ public class DefaultPolicyAttributeTest {
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsAttributes({ "const", "attr1", "primitiveUnrestrictedAttr", "attrWithNull", "attrWithoutNull", "overriddenAttr",
             "attrWithValueSetWithoutValidationContext", "attrWithValueSetWithTooManyArgs", "getterOverriddenAttr",
-            "attrBoolean", "primitiveBooleanAttr", "attrEnum" })
+            "attrBoolean", "primitiveBooleanAttr", "attrEnum", "onTheFly" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     private static class Policy implements IModelObject {
 
@@ -1375,6 +1384,21 @@ public class DefaultPolicyAttributeTest {
         @IpsAttributeSetter("attrEnum")
         public void setAttrEnum(TestEnum attrEnum) {
             this.attrEnum = attrEnum;
+        }
+
+        public static final OrderedValueSet<String> MAX_ALLOWED_VALUES_FOR_ON_THE_FLY = new OrderedValueSet<>(false,
+                null);
+
+        @IpsAllowedValues("onTheFly")
+        public ValueSet<String> getAllowedValuesForOnTheFly() {
+            return MAX_ALLOWED_VALUES_FOR_ON_THE_FLY;
+        }
+
+        @IpsAttribute(name = "onTheFly", kind = AttributeKind.DERIVED_ON_THE_FLY, valueSetKind = ValueSetKind.Enum)
+        public String getOnTheFly() {
+            // begin-user-code
+            return "SOMEVAL";
+            // end-user-code
         }
     }
 
