@@ -268,7 +268,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
             if (policyCmptTypeAttribute
                     .getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
-                    && policyCmptTypeAttribute.isProductRelevant()) {
+                    && policyCmptTypeAttribute.isProductRelevant()
+                    && policyCmptTypeAttribute.isChangeable()) {
                 policyCmptTypeAttributes.add(policyCmptTypeAttribute);
             }
         }
@@ -293,61 +294,114 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IPolicyCmptTypeAttribute policyCmptTypeAttribute) {
         IConfiguredValueSet configuredValueSet = container.getPropertyValue(policyCmptTypeAttribute,
                 IConfiguredValueSet.class);
-        if (configuredValueSet == null || configuredValueSet.getValueSet() == null) {
-            return new TextPageElement(NOT_AVAILABLE, getContext());
-        }
-
         IConfiguredDefault configuredDefault = container.getPropertyValue(policyCmptTypeAttribute,
                 IConfiguredDefault.class);
-        if (configuredDefault == null || configuredDefault.getValue() == null) {
-            return new TextPageElement(NOT_AVAILABLE, getContext());
-        }
-
         IValueSet valueSet = configuredValueSet.getValueSet();
-        String defaultValue = configuredDefault.getValue();
-
+        String defaultValue;
+        if (configuredDefault == null || configuredDefault.getValue() == null) {
+            defaultValue = Messages.ProductGenerationAttributeTable_emptyDefaultValue;
+        } else {
+            defaultValue = configuredDefault.getValue();
+        }
+        if (policyCmptTypeAttribute.isRelevanceConfiguredByProduct()
+                && !policyCmptTypeAttribute.isValueSetConfiguredByProduct()) {
+            return createRelevanceCell(valueSet, defaultValue);
+        }
         return createValueSetCell(valueSet, defaultValue);
+    }
+
+    private void addDefaultValueToPageElement(IValueSet valueSet, String defaultValue, WrapperPageElement pageElement) {
+        pageElement.addPageElements(
+                new TextPageElement(
+                        Messages.ProductGenerationAttributeTable_DefaultValue
+                                + COLON_SEPARATOR
+                                + getContext().getDatatypeFormatter().formatValue(
+                                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue),
+                        TextType.BLOCK, getContext()));
     }
 
     private WrapperPageElement createValueSetCell(IValueSet valueSet, String defaultValue) {
         WrapperPageElement pageElement = new WrapperPageElement(WrapperType.BLOCK, getContext());
 
-        pageElement.addPageElements(
-                new TextPageElement(
-                        getContext().getMessage("ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
-                                + COLON_SEPARATOR
-                                + getContext().getDatatypeFormatter().formatValue(
-                                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue),
-                        TextType.BLOCK, getContext()));
+        addDefaultValueToPageElement(valueSet, defaultValue, pageElement);
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((IEnumValueSet)valueSet));
         } else if (valueSet.isUnrestricted()) {
-            pageElement.addPageElements(createUnrestrictedEnumValueCell());
+            pageElement.addPageElements(createUnrestrictedEnumValueCell(valueSet));
         } else if (valueSet.isRange()) {
             pageElement.addPageElements(createRangeValueSetCell((IRangeValueSet)valueSet));
         }
         return pageElement;
     }
 
-    private TextPageElement createRangeValueSetCell(IRangeValueSet rangeValueSet) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
-        builder.append(COLON_SEPARATOR);
-        ValueDatatype valueDatatype = rangeValueSet.findValueDatatype(getContext().getIpsProject());
-        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getLowerBound()));
-        builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getUpperBound()));
-        builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getStep()));
+    private WrapperPageElement createRelevanceCell(IValueSet valueSet, String defaultValue) {
+        WrapperPageElement pageElement = new WrapperPageElement(WrapperType.BLOCK, getContext());
 
-        return new TextPageElement(builder.toString(), TextType.BLOCK, getContext());
+        addDefaultValueToPageElement(valueSet, defaultValue, pageElement);
+        TextPageElement relevanceLabel = new TextPageElement(
+                Messages.ProductGenerationAttributeTable_AttributeRelevance + " " + getRelevanceLabel(valueSet),
+                TextType.BLOCK,
+                getContext());
+
+        pageElement.addPageElements(relevanceLabel);
+
+        return pageElement;
     }
 
-    private TextPageElement createUnrestrictedEnumValueCell() {
+    private String getRelevanceLabel(IValueSet valueSet) {
+        if (valueSet.isEmpty()) {
+            return Messages.ProductGenerationAttributeTable_Irrelevant;
+        }
+        if (valueSet.isContainsNull()) {
+            return Messages.ProductGenerationAttributeTable_Optional;
+        }
+        return Messages.ProductGenerationAttributeTable_Mandatory;
+    }
+
+    private TextPageElement createRangeValueSetCell(IRangeValueSet rangeValueSet) {
+        if (rangeValueSet.isEmpty()) {
+            return new TextPageElement(
+                    Messages.ProductGenerationAttributeTable_EmptyRange + " "
+                            + getNullIncludedString(rangeValueSet.isContainsNull()),
+                    TextType.BLOCK, getContext());
+        } else {
+            StringBuilder builder = new StringBuilder();
+            builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
+            builder.append(COLON_SEPARATOR);
+            ValueDatatype valueDatatype = rangeValueSet.findValueDatatype(getContext().getIpsProject());
+            builder.append(
+                    getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getLowerBound()));
+            builder.append(COMMA_SEPARATOR);
+            builder.append(
+                    getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getUpperBound()));
+            builder.append(COMMA_SEPARATOR);
+            builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getStep()));
+
+            return new TextPageElement(
+                    builder.toString() + " "
+                            + getNullIncludedString(rangeValueSet.isContainsNull()),
+                    TextType.BLOCK, getContext());
+        }
+
+    }
+
+    private TextPageElement createUnrestrictedEnumValueCell(IValueSet valueSet) {
         return new TextPageElement(
-                getContext().getMessage("ProductGenerationAttributeTable_valueSetUnrestricted"), TextType.BLOCK, //$NON-NLS-1$
+                Messages.ProductGenerationAttributeTable_valueSetUnrestricted
+                        + " "
+                        + getNullIncludedString(valueSet.isContainsNull()),
+                TextType.BLOCK,
                 getContext());
+    }
+
+    private String getEmptyValueSetString(boolean isEmpty) {
+        return isEmpty ? Messages.ProductGenerationAttributeTable_emptyValueSet : "";
+    }
+
+    private String getNullIncludedString(boolean isNullIncluded) {
+        return isNullIncluded ? Messages.ProductGenerationAttributeTable_nullIncluded
+                : Messages.ProductGenerationAttributeTable_nullNotIncluded;
     }
 
     private TextPageElement createEnumValueSetCell(IEnumValueSet enumValueSet) {
@@ -362,8 +416,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         }
         return new TextPageElement(
-                getContext().getMessage("ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
-                        + COLON_SEPARATOR + builder.toString(),
+                Messages.ProductGenerationAttributeTable_ValueSet
+                        + COLON_SEPARATOR + builder.toString() + " "
+                        + getEmptyValueSetString(enumValueSet.isEmpty()) + " "
+                        + getNullIncludedString(enumValueSet.isContainsNull()),
                 getContext());
     }
 
