@@ -11,9 +11,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -48,13 +46,9 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
             buildInternal();
             // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
-            IpsStatus ipsStatus = new IpsStatus(IStatus.ERROR, "A problem occured while procesing an object", e); //$NON-NLS-1$
+            // HtmlExportWizard#exportHtml opens the error dialog
+            IpsStatus ipsStatus = new IpsStatus(IStatus.ERROR, "A problem occured while processing an object", e); //$NON-NLS-1$
             getContext().addStatus(ipsStatus);
-            Set<Style> textStyles = new HashSet<>();
-            textStyles.add(Style.BOLD);
-            addPageElements(new TextPageElement(
-                    "An error occured while processing current object: " + e.getClass().getSimpleName(), textStyles, //$NON-NLS-1$
-                    getContext()));
         }
         // CSON: IllegalCatch
     }

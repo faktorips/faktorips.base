@@ -461,6 +461,7 @@
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.ui.nl1@default:false"/>
         <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>

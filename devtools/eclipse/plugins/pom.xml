@@ -24,6 +24,7 @@
         <module>org.faktorips.devtools.htmlexport</module>
         <module>org.faktorips.devtools.htmlexport.nl1</module>
         <module>org.faktorips.devtools.htmlexport.ui</module>
+        <module>org.faktorips.devtools.htmlexport.ui.nl1</module>
         <module>org.faktorips.devtools.model</module>
         <module>org.faktorips.devtools.model.builder</module>
         <module>org.faktorips.devtools.model.decorators</module>
