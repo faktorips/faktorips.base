@@ -28,7 +28,7 @@
                             !edu.umd.cs.findbugs.*,
                             org.faktorips.*,
                             javax.xml.*,
-                            org.apache.commons.text;version="[1.9,1.9]"
+                            org.apache.commons.text;version="1.10.0"
                         </Import-Package>
                         <Export-Package>
                         	org.faktorips.codegen,

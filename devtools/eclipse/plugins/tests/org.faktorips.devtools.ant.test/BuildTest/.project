@@ -6,7 +6,7 @@
 	</projects>
 	<buildSpec>
 		<buildCommand>
-			<name>org.faktorips.devtools.core.ipsbuilder</name>
+			<name>org.faktorips.devtools.core.eclipse.ipsbuilder</name>
 			<arguments>
 			</arguments>
 		</buildCommand>
@@ -17,7 +17,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.faktorips.devtools.core.ipsnature</nature>
+		<nature>org.faktorips.devtools.core.eclipse.ipsnature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>

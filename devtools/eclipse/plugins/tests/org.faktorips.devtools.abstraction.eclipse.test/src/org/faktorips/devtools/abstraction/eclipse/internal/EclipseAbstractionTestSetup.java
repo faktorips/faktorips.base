@@ -86,7 +86,7 @@ public class EclipseAbstractionTestSetup extends AbstractAbstractionTestSetup {
         String[] natures = description.getNatureIds();
         String[] newNatures = new String[natures.length + 1];
         System.arraycopy(natures, 0, newNatures, 1, natures.length);
-        newNatures[0] = "org.faktorips.devtools.model.ipsnature";
+        newNatures[0] = "org.faktorips.devtools.model.eclipse.ipsnature";
         description.setNatureIds(newNatures);
         return description;
     }

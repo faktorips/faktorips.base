@@ -1088,7 +1088,7 @@
               name="%org.faktorips.ipsobjectpathspropertypage">
          <filter
                name="nature"
-               value="org.faktorips.devtools.model.ipsnature">
+               value="org.faktorips.devtools.model.eclipse.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
@@ -1102,7 +1102,7 @@
               name="%org.faktorips.ipsbuildersetpropertypage">
          <filter
                name="nature"
-               value="org.faktorips.devtools.model.ipsnature">
+               value="org.faktorips.devtools.model.eclipse.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
@@ -1259,7 +1259,7 @@
       <image
             icon="icons/IpsProjectNatureOverlay.gif"
             id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
-            natureId="org.faktorips.devtools.model.ipsnature"/>
+            natureId="org.faktorips.devtools.model.eclipse.ipsnature"/>
    </extension>
    <extension
          id="org.faktorips.devtools.core.productCmptMergeViewer"

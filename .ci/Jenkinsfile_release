@@ -92,10 +92,14 @@ pipeline {
 
             steps {
                 script {
-                    sh 'rm -f $HOME/.m2/repository/.meta/p2-artifacts.properties'
+                    sh 'rm -rf $HOME/.m2/repository/.meta'
+                    sh 'rm -rf $HOME/.m2/repository/.cache'
+                    sh 'rm -rf $HOME/.m2/repository/p2'
                 }
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
+                        sh 'mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh "mvn -U -V -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
                     }
                 }

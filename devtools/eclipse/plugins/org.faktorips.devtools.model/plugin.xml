@@ -27,27 +27,6 @@
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
  
 
-<!-- 
-    Nature and Builders
-  -->
-   <extension
-         id="ipsnature"
-         name="FaktorIPS-Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.faktorips.devtools.model.internal.ipsproject.IpsProject$EclipseProjectNature">
-            <parameter
-                  name="installBuilder"
-                  value="true">
-            </parameter>
-         </run>
-      </runtime>
-      <builder
-            id="org.faktorips.devtools.model.eclipse.ipsbuilder">
-      </builder>
-   </extension>
-   
     
 <!-- 
     Default Datatypes
