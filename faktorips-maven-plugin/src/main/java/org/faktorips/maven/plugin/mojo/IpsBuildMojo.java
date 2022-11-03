@@ -35,6 +35,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.execution.MavenSession;
@@ -938,8 +939,15 @@ public class IpsBuildMojo extends AbstractMojo {
 
         // add path to localRepository to user settings if maven.repo.local is set
         if (localRepository != null) {
-            String copyUserSettingsDir = work.getAbsolutePath() + "\\data\\.metadata\\.plugins";
-            String copyUserSettingsPath = copyUserSettingsDir + "\\settings.xml";
+            if (!Paths.get(localRepository).isAbsolute()) {
+                localRepository = FilenameUtils
+                        .separatorsToSystem(session.getSystemProperties().get("user.dir") + "\\" + localRepository)
+                        .replace("\\", "\\\\");
+            }
+            String copyUserSettingsDir = FilenameUtils
+                    .separatorsToSystem(work.getAbsolutePath() + "\\data\\.metadata\\.plugins");
+            String copyUserSettingsPath = copyUserSettingsDir + FilenameUtils
+                    .separatorsToSystem("\\settings.xml");
             try {
                 FileUtils.forceMkdir(new File(copyUserSettingsDir));
 

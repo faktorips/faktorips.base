@@ -32,9 +32,11 @@ jobs:
         distribution: 'adopt'
         cache: maven
     - name: build config
-      run: mvn -B install --settings settings.xml --file codequality-config/pom.xml
+      run: mvn -B -V install --settings settings.xml --file codequality-config/pom.xml
+    - name: build targets
+      run: mvn -B -V clean install -pl :targets -am --settings settings.xml
     - name: Check compiles
-      run: mvn -B clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests -Dtycho.p2.transport.min-cache-minutes=1440 --global-toolchains ${{ github.workspace }}/.github/toolchains.xml
+      run: mvn -B -V clean package --settings settings.xml --file pom.xml -T1C -Dtarget-platform=eclipse-${{ matrix.eclipse-release }} -DskipTests -Dtycho.p2.transport.min-cache-minutes=1440 --global-toolchains ${{ github.workspace }}/.github/toolchains.xml
       if: ${{ matrix.eclipse-release != env.integration-test-release }}
     - name: Run Integration Tests
       uses: GabrielBB/xvfb-action@v1
