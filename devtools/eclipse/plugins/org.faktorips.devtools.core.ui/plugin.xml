@@ -1088,7 +1088,7 @@
               name="%org.faktorips.ipsobjectpathspropertypage">
          <filter
                name="nature"
-               value="org.faktorips.devtools.model.ipsnature">
+               value="org.faktorips.devtools.model.eclipse.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
@@ -1102,7 +1102,7 @@
               name="%org.faktorips.ipsbuildersetpropertypage">
          <filter
                name="nature"
-               value="org.faktorips.devtools.model.ipsnature">
+               value="org.faktorips.devtools.model.eclipse.ipsnature">
          </filter>
          <enabledWhen>
             <adapt
@@ -1124,7 +1124,7 @@
       <problemFilter name="Faktor-IPS Problems" id="org.faktorips.devtools.core.problemFilter"
                 enabled="true"
                 scope="ON_ANY">
-                <selectedType markerId="org.faktorips.devtools.model.problemmarker"/>
+                <selectedType markerId="org.faktorips.devtools.model.eclipse.problemmarker"/>
       </problemFilter>
    </extension>
 <!--
@@ -1259,7 +1259,7 @@
       <image
             icon="icons/IpsProjectNatureOverlay.gif"
             id="org.faktorips.devtools.core.ui.IpsProjectNatureImage"
-            natureId="org.faktorips.devtools.model.ipsnature"/>
+            natureId="org.faktorips.devtools.model.eclipse.ipsnature"/>
    </extension>
    <extension
          id="org.faktorips.devtools.core.productCmptMergeViewer"
@@ -1271,10 +1271,10 @@
             label="%org.faktorips.devtools.core.ui.team.compare.productcmpt.contentMergeViewer"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
-            contentTypeId="org.faktorips.devtools.model.productComponent"/>
+            contentTypeId="org.faktorips.devtools.model.eclipse.productComponent"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareViewer"
-            contentTypeId="org.faktorips.devtools.model.productComponentTemplate"/>
+            contentTypeId="org.faktorips.devtools.model.eclipse.productComponentTemplate"/>
       <viewer
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareViewerCreator"
             extensions="ipstablecontents,ipstablecontentsElement"
@@ -1282,7 +1282,7 @@
             label="%org.faktorips.devtools.core.ui.team.compare.tablecontent.contentMergeViewer"/>
       <contentTypeBinding
             contentMergeViewerId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareViewer"
-            contentTypeId="org.faktorips.devtools.model.tableContents"/>
+            contentTypeId="org.faktorips.devtools.model.eclipse.tableContents"/>
    </extension>
    <extension
          point="org.eclipse.compare.structureCreators">
@@ -1291,17 +1291,17 @@
             extensions="ipsproduct,ipstemplate"
             id="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.model.productComponent"
+            contentTypeId="org.faktorips.devtools.model.eclipse.productComponent"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.model.productComponentTemplate"
+            contentTypeId="org.faktorips.devtools.model.eclipse.productComponentTemplate"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.productcmpt.productCmptCompareItemCreator"/>
       <structureCreator
             class="org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator"
             extensions="ipstablecontents"
             id="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
       <contentTypeBinding
-            contentTypeId="org.faktorips.devtools.model.tableContents"
+            contentTypeId="org.faktorips.devtools.model.eclipse.tableContents"
             structureCreatorId="org.faktorips.devtools.core.ui.team.compare.tablecontents.tableContentsCompareItemCreator"/>
    </extension>
 <!-- Extensions for running and debugging ips tests -->
@@ -2972,7 +2972,7 @@
        point="org.eclipse.jdt.ui.classpathContainerPage">
     <classpathContainerPage
           class="org.faktorips.devtools.core.ui.IpsClasspathContainerPage"
-          id="org.faktorips.devtools.model.ipsClasspathContainer"
+          id="org.faktorips.devtools.model.eclipse.ipsClasspathContainer"
           name="Faktor-IPS Library">
     </classpathContainerPage>
  </extension>

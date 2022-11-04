@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-parent</artifactId>
+        <version>22.12.0-SNAPSHOT</version>
+        <relativePath>../../../../../common/pom.xml</relativePath>
+    </parent>
+
+    <properties>
+        <revapi.skip>true</revapi.skip>
+        <surefire.skip>false</surefire.skip>
+    </properties>
+
+    <artifactId>faktorips-model-test</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Plain-Java Tests for org.faktorips.devtools.model</name>
+    <description>Tests for the model used in the Faktor-IPS design time tools</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <configuration>
+                    <dependenciesToScan>
+                        <dependency>org.faktorips:org.faktorips.devtools.model.test</dependency>
+                    </dependenciesToScan>
+                    <excludedGroups>org.faktorips.devtools.abstraction.eclipse.internal.EclipseImplementation</excludedGroups>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model.test</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.faktorips</groupId>
+                    <artifactId>org.faktorips.devtools.abstraction.eclipse</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.abstracttest</artifactId>
+            <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.faktorips</groupId>
+                    <artifactId>org.faktorips.devtools.model</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.faktorips</groupId>
+                    <artifactId>org.faktorips.devtools.abstraction.eclipse</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.abstraction.eclipse</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jdt</groupId>
+            <artifactId>org.eclipse.jdt.launching</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.ltk.core.refactoring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>

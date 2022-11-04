@@ -24,7 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
-import org.faktorips.devtools.model.plugin.IpsClasspathContainerInitializer;
+import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 
 public class IpsClasspathContainerPage extends NewElementWizardPage implements IClasspathContainerPage,
         IClasspathContainerPageExtension2, IClasspathContainerPageExtension {

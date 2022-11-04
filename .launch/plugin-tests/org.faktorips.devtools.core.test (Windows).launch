@@ -322,7 +322,11 @@
         <setEntry value="org.faktorips.devtools.core.test@default:false"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
-        <setEntry value="org.faktorips.devtools.model@default:default"/>
+        <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.model@1:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
         <setEntry value="org.faktorips.fl@default:default"/>

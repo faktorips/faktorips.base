@@ -19,7 +19,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * A LocalizedStringsSet is a set of strings available in different locales. A localized string can
- * be looked up by a locale independant key and a {@link java.util.Locale locale}.
+ * be looked up by a locale independent key and a {@link java.util.Locale locale}.
  * <p>
  * The locale dependent strings have to be stored in property files. They are accessed via Java's
  * {@link java.util.ResourceBundle ResourceBundle}. To access the property files, they all have to
@@ -28,7 +28,7 @@ import org.faktorips.util.ArgumentCheck;
  * "org.faktorips.fl.Messages". For further information see the {@link java.util.ResourceBundle
  * ResourceBundle} documentation.
  * <p>
- * If a localized String contains sections that have to be replaced with locale dependant
+ * If a localized String contains sections that have to be replaced with locale dependent
  * replacements before the String is presented to a user, you can use one of the methods taking
  * replacement objects as a parameter. The mechanism used here is the one of
  * {@link java.text.MessageFormat}.

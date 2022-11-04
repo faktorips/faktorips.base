@@ -31,6 +31,7 @@
         <module>org.faktorips.devtools.model.test</module>
         <module>org.faktorips.devtools.model.builder.test</module>
         <module>org.faktorips.devtools.model.decorators.test</module>
+        <module>org.faktorips.devtools.model.eclipse.test</module>
         <module>org.faktorips.devtools.stdbuilder.test</module>
         <module>org.faktorips.devtools.stdbuilder.ui.test</module>
         <module>org.faktorips.devtools.tableconversion.test</module>
@@ -42,6 +43,10 @@
         <dependency>
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-abstraction-testsetup</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-model-plainjava</artifactId>
         </dependency>
     </dependencies>
 

@@ -20,17 +20,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.ICustomModelExtensions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
-import org.faktorips.devtools.model.internal.productcmpt.NoVersionIdProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.model.plugin.IpsModelActivator;
-import org.faktorips.devtools.model.productcmpt.DateBasedProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
 
@@ -61,21 +56,10 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     private void initProductCmptNamingStrategies() {
-        if (Abstractions.isEclipseRunning()) {
-            ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
-            List<IProductCmptNamingStrategyFactory> strategyFactories = extensionPoints.createExecutableExtensions(
-                    ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
-                    ExtensionPoints.PRODUCT_COMPONENT_NAMING_STRATEGY,
-                    "factoryClass", IProductCmptNamingStrategyFactory.class); //$NON-NLS-1$
-            for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
-                productCmptNamingStrategies.put(factory.getExtensionId(), factory);
-            }
-        } else {
-            // FIXME: Refactor ALL Extension Point usages!
-            productCmptNamingStrategies.put("org.faktorips.devtools.model.DateBasedProductCmptNamingStrategy", //$NON-NLS-1$
-                    new DateBasedProductCmptNamingStrategyFactory());
-            productCmptNamingStrategies.put("org.faktorips.devtools.model.NoVersionIdProductCmptNamingStrategy", //$NON-NLS-1$
-                    new NoVersionIdProductCmptNamingStrategyFactory());
+        List<IProductCmptNamingStrategyFactory> strategyFactories = IIpsModelExtensions.get()
+                .getProductCmptNamingStrategyFactories();
+        for (IProductCmptNamingStrategyFactory factory : strategyFactories) {
+            productCmptNamingStrategies.put(factory.getExtensionId(), factory);
         }
     }
 

@@ -37,10 +37,13 @@
         <org-eclipse-equinox-preferences.version>3.7.700</org-eclipse-equinox-preferences.version>
         <org-eclipse-equinox-registry.version>3.8.700</org-eclipse-equinox-registry.version>
         <org-eclipse-jdt-core.version>3.21.0</org-eclipse-jdt-core.version>
+        <org-eclipse-jdt-launching.version>3.17.0</org-eclipse-jdt-launching.version>
         <org-eclipse-jface.version>3.19.0</org-eclipse-jface.version>
+        <org-eclipse-ltk-core-refactoring.version>3.10.400</org-eclipse-ltk-core-refactoring.version>
         <org-eclipse-osgi.version>3.15.200</org-eclipse-osgi.version>
         <org-eclipse-swt-win32-win32-x86_64.version>3.114.0</org-eclipse-swt-win32-win32-x86_64.version>
         <org-eclipse-text.version>3.10.100</org-eclipse-text.version>
+        <icu.version>64.2</icu.version>
         <junit.version>4.13</junit.version>
         <junit-jupiter-api.version>5.6.0</junit-jupiter-api.version>
         <junit-jupiter-engine.version>5.6.0</junit-jupiter-engine.version>
@@ -75,6 +78,20 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.filesystem</artifactId>
                 <version>${org-eclipse-core-filesystem.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.equinox.common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.equinox.registry</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.osgi</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -85,11 +102,39 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.resources</artifactId>
                 <version>${org-eclipse-core-resources.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.equinox.common</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.equinox.registry</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.osgi</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.core.runtime</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.core.expressions</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.runtime</artifactId>
                 <version>${org-eclipse-core-runtime.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.equinox.common</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.emf</groupId>
@@ -105,6 +150,12 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.common</artifactId>
                 <version>${org-eclipse-equinox-common.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.osgi</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -115,6 +166,12 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.registry</artifactId>
                 <version>${org-eclipse-equinox-registry.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.eclipse.platform</groupId>
+                        <artifactId>org.eclipse.osgi</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
@@ -122,9 +179,19 @@
                 <version>${org-eclipse-jdt-core.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>org.eclipse.jdt.launching</artifactId>
+                <version>${org-eclipse-jdt-launching.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.jface</artifactId>
                 <version>${org-eclipse-jface.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.ltk.core.refactoring</artifactId>
+                <version>${org-eclipse-ltk-core-refactoring.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -140,6 +207,11 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.text</artifactId>
                 <version>${org-eclipse-text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>${icu.version}</version>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

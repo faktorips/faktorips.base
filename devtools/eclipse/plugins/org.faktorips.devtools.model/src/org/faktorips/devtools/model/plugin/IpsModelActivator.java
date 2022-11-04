@@ -9,21 +9,20 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.plugin;
 
-import java.util.Objects;
-
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.model.builder.DependencyGraphPersistenceManager;
-import org.faktorips.devtools.model.internal.IpsModel;
-import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
+import org.faktorips.devtools.model.abstractions.AWorkspaceAbstractionsImplementationProvider;
+import org.faktorips.devtools.model.abstractions.WorkspaceAbstractions.AWorkspaceAbstractionsImplementation;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
-public class IpsModelActivator implements BundleActivator {
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+public class IpsModelActivator implements BundleActivator, AWorkspaceAbstractionsImplementationProvider {
 
     public static final String PLUGIN_ID = "org.faktorips.devtools.model"; //$NON-NLS-1$
 
@@ -32,14 +31,17 @@ public class IpsModelActivator implements BundleActivator {
 
     private Bundle bundle;
 
-    private DependencyGraphPersistenceManager dependencyGraphPersistenceManager;
+    private ServiceTracker<AWorkspaceAbstractionsImplementation, AWorkspaceAbstractionsImplementation> implementationServiceTracker;
 
+    private AWorkspaceAbstractionsImplementation workspaceAbstractionsImplementation;
+
+    @SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", justification = "This is a standard Eclipse singleton pattern")
     public IpsModelActivator() {
         activator = this;
     }
 
     public static IpsModelActivator get() {
-        return Objects.requireNonNull(activator, "Plugin " + PLUGIN_ID + " was not activated yet."); //$NON-NLS-1$//$NON-NLS-2$
+        return activator;
     }
 
     public static boolean isStarted() {
@@ -57,19 +59,12 @@ public class IpsModelActivator implements BundleActivator {
     public void start(BundleContext context) throws Exception {
         bundle = context.getBundle();
 
+        implementationServiceTracker = new ServiceTracker<>(context, AWorkspaceAbstractionsImplementation.class, null);
+        implementationServiceTracker.open();
+
         // force loading of class before model is created!
         IpsObjectType.POLICY_CMPT_TYPE.getId();
 
-        dependencyGraphPersistenceManager = new DependencyGraphPersistenceManager();
-        IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
-        saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
-
-        getEclipseIpsModel().startListeningToResourceChanges();
-    }
-
-    private EclipseIpsModel getEclipseIpsModel() {
-        return (EclipseIpsModel)IpsModel.get();
     }
 
     /**
@@ -77,14 +72,7 @@ public class IpsModelActivator implements BundleActivator {
      */
     @Override
     public void stop(BundleContext context) throws Exception {
-        getEclipseIpsModel().stopListeningToResourceChanges();
-    }
-
-    /**
-     * Returns the persistence manager for the dependency graphs.
-     */
-    public DependencyGraphPersistenceManager getDependencyGraphPersistenceManager() {
-        return dependencyGraphPersistenceManager;
+        implementationServiceTracker = null;
     }
 
     /**
@@ -111,6 +99,30 @@ public class IpsModelActivator implements BundleActivator {
      */
     public static IPath getStateLocation() throws IllegalStateException {
         return Platform.getStateLocation(get().bundle);
+    }
+
+    @Override
+    public AWorkspaceAbstractionsImplementation getWorkspaceAbstractionsImplementation() {
+        if (workspaceAbstractionsImplementation == null) {
+            var tracker = implementationServiceTracker;
+            workspaceAbstractionsImplementation = tracker != null ? tracker.getService() : null;
+        }
+        return workspaceAbstractionsImplementation;
+    }
+
+    public void setWorkspaceAbstractionsImplementation(
+            AWorkspaceAbstractionsImplementation workspaceAbstractionsImplementation) {
+        this.workspaceAbstractionsImplementation = workspaceAbstractionsImplementation;
+    }
+
+    @Override
+    public boolean canRun() {
+        return implementationServiceTracker != null;
+    }
+
+    @Override
+    public int getPriority() {
+        return 1;
     }
 
 }

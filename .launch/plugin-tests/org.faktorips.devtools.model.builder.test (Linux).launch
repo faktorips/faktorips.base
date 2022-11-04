@@ -263,7 +263,7 @@
         <setEntry value="org.eclipse.xtend.lib.macro@default:default"/>
         <setEntry value="org.eclipse.xtend.lib@default:default"/>
         <setEntry value="org.eclipse.xtext.xbase.lib@default:default"/>
-        <setEntry value="org.hamcrest.core@default:default"/>
+        <setEntry value="org.hamcrest.core*1.3.0.zz-NO-SPLIT_PCK-v201303031735@default:default"/>
         <setEntry value="org.hamcrest@default:default"/>
         <setEntry value="org.junit.platform.commons@default:default"/>
         <setEntry value="org.junit.platform.engine@default:default"/>
@@ -291,6 +291,8 @@
         <setEntry value="org.faktorips.devtools.abstraction@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder.test@default:false"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.eclipse@default:default"/>
+        <setEntry value="org.faktorips.devtools.model.plainjava@default:default"/>
         <setEntry value="org.faktorips.devtools.model@default:true"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
@@ -301,7 +303,7 @@
         <setEntry value="org.faktorips.valuetypes@default:default"/>
     </setAttribute>
     <booleanAttribute key="show_selected_only" value="false"/>
-    <stringAttribute key="timestamp" value="1649763656564"/>
+    <stringAttribute key="timestamp" value="1665756744982"/>
     <booleanAttribute key="tracing" value="false"/>
     <booleanAttribute key="useCustomFeatures" value="false"/>
     <booleanAttribute key="useDefaultConfig" value="true"/>

@@ -10,11 +10,7 @@
 
 package org.faktorips.devtools.model.builder;
 
-import static org.faktorips.devtools.abstraction.Wrappers.unwrap;
-import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
-
+import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,15 +24,11 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.abstraction.ABuildKind;
@@ -50,6 +42,7 @@ import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -90,9 +83,9 @@ public class IpsBuilder {
     /**
      * The builders extension id.
      */
-    public static final String BUILDER_ID = IpsModelActivator.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
+    public static final String BUILDER_ID = IpsModelActivator.PLUGIN_ID + ".eclipse.ipsbuilder"; //$NON-NLS-1$
 
-    public static final String PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".problemmarker"; //$NON-NLS-1$
+    public static final String PROBLEM_MARKER = IpsModelActivator.PLUGIN_ID + ".eclipse.problemmarker"; //$NON-NLS-1$
 
     public static final boolean TRACE_BUILDER_TRACE;
 
@@ -100,7 +93,7 @@ public class IpsBuilder {
 
     static {
         TRACE_BUILDER_TRACE = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/builder"));
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/builder"));
     }
 
     /**
@@ -118,7 +111,7 @@ public class IpsBuilder {
         return new MultiStatus(IpsModelActivator.PLUGIN_ID, 0, Messages.IpsBuilder_msgBuildResults, null);
     }
 
-    protected Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) {
+    public Set<AProject> build(ABuildKind kind, IProgressMonitor monitor) {
         ABuildKind currentKind = kind;
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
@@ -247,7 +240,7 @@ public class IpsBuilder {
      * creates markers for the messages from the validation of the ipsproject differing between the
      * .ipsproject and manifest.mf as marked resource.
      */
-    void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) {
+    public void createMarkersForIpsProjectProperties(MessageList messages, IIpsProject ipsProject) {
         AResource projectPropertiesFile = ipsProject.getIpsProjectPropertiesFile();
         IIpsObjectPath ipsObjectPath = ipsProject.getReadOnlyProperties().getIpsObjectPath();
 
@@ -320,8 +313,8 @@ public class IpsBuilder {
         }
         IIpsProject ipsProject = getIpsProject();
         if ((delta
-                .findMember(toEclipsePath(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath())) != null)
-                || (delta.findMember(new Path(IpsBundleManifest.MANIFEST_NAME)) != null)) {
+                .findMember(ipsProject.getIpsProjectPropertiesFile().getProjectRelativePath()) != null)
+                || (delta.findMember(Path.of(IpsBundleManifest.MANIFEST_NAME)) != null)) {
             return true;
         }
         IIpsArchiveEntry[] entries = ipsProject.getReadOnlyProperties().getIpsObjectPath().getArchiveEntries();
@@ -501,7 +494,7 @@ public class IpsBuilder {
         return buildStatus;
     }
 
-    protected void clean(IProgressMonitor monitor) {
+    public void clean(IProgressMonitor monitor) {
         getIpsProject().clearCaches();
         IIpsPackageFragmentRoot[] roots = getIpsProject().getIpsPackageFragmentRoots();
         for (IIpsPackageFragmentRoot root : roots) {
@@ -733,7 +726,7 @@ public class IpsBuilder {
         // CSON: IllegalCatch
     }
 
-    void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
+    public void createMarkersFromMessageList(AResource markedResource, MessageList list, String markerType) {
         Set<AMarker> markers = new LinkedHashSet<>(
                 markedResource.findMarkers(markerType, true, AResourceTreeTraversalDepth.RESOURCE_ONLY));
         for (int i = 0; i < list.size(); i++) {
@@ -1023,41 +1016,6 @@ public class IpsBuilder {
         @Override
         public String toString() {
             return "Delete file " + toDelete; //$NON-NLS-1$
-        }
-
-    }
-
-    public static class EclipseIpsBuilder extends IncrementalProjectBuilder {
-
-        private final IpsBuilder ipsBuilder = new IpsBuilder(new EclipseBuilder());
-
-        public IpsBuilder getIpsBuilder() {
-            return ipsBuilder;
-        }
-
-        @Override
-        protected IProject[] build(int kind, Map<String, String> args, IProgressMonitor monitor) {
-            return unwrap(ipsBuilder.build(buildKind(kind), monitor)).asArrayOf(IProject.class);
-        }
-
-        @Override
-        protected void clean(IProgressMonitor monitor) throws CoreException {
-            ipsBuilder.clean(monitor);
-        }
-
-        public class EclipseBuilder implements ABuilder {
-
-            @Override
-            public AResourceDelta getDelta() {
-                return wrap(EclipseIpsBuilder.this.getDelta(EclipseIpsBuilder.this.getProject()))
-                        .as(AResourceDelta.class);
-            }
-
-            @Override
-            public AProject getProject() {
-                return wrap(EclipseIpsBuilder.this.getProject()).as(AProject.class);
-            }
-
         }
 
     }

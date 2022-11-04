@@ -18,9 +18,9 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -35,7 +35,7 @@ public class IpsObjectPathContainerFactory {
 
     /**
      * Creates a new factory with all container types defined as extensions for the extension point
-     * {@link ExtensionPoints#IPS_OBJECT_PATH_CONTAINER_TYPE}.
+     * {@link IpsObjectPathContainerTypesExtensions#EXTENSION_POINT_ID_IPS_OBJECT_PATH_CONTAINER_TYPE}.
      * 
      * @return The new factory.
      */

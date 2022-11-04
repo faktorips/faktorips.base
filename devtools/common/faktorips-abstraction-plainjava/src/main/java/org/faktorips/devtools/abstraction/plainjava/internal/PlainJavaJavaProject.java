@@ -58,7 +58,7 @@ public class PlainJavaJavaProject extends PlainJavaJavaElement implements AJavaP
 
     @Override
     public AProject getProject() {
-        return getResource().getProject();
+        return Wrappers.wrap(getResource().unwrap()).as(AProject.class);
     }
 
     @Override

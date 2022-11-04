@@ -73,7 +73,6 @@ import org.faktorips.devtools.abstraction.AWorkspace;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.ContentsChangeListener;
 import org.faktorips.devtools.model.CreateIpsArchiveOperation;
@@ -84,7 +83,6 @@ import org.faktorips.devtools.model.datatype.IDynamicValueDatatype;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.IpsModel;
-import org.faktorips.devtools.model.internal.IpsModel.EclipseIpsModel;
 import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.internal.enums.EnumContent;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -163,7 +161,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     public void setUp() throws Exception {
         IpsLog.setSuppressLoggingDuringTest(false);
         if (Abstractions.isEclipseRunning()) {
-            ((EclipseIpsModel)IpsModel.get()).stopListeningToResourceChanges();
+            IpsModel.get().stopListeningToResourceChanges();
             setAutoBuild(false);
         }
         testIpsModelExtensions = TestIpsModelExtensions.get();
@@ -191,6 +189,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     @After
+    @SuppressWarnings("deprecation")
     public void tearDown() throws Exception {
         if (Abstractions.isEclipseRunning()) {
             testIpsModelExtensions.close();
@@ -198,6 +197,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
             for (IProject project : projects) {
                 deleteProject(project);
             }
+            IpsModel.get().startListeningToResourceChanges();
         } else {
             Abstractions.getWorkspace().getRoot().getProjects().stream().forEach(p -> p.delete(null));
         }
@@ -1200,7 +1200,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     private void createEnumClassFileInProjectOutputLocation(IIpsProject project, Class<?> adaptedClass)
             throws IOException {
-        IPath location = PathMapping.toEclipsePath(project.getJavaProject().getResource().getLocation());
+        IPath location = Path.fromOSString(project.getJavaProject().getResource().getLocation().toString());
         if (location != null) {
             IPath outputLocation = location
                     .append(Path.fromOSString(project.getJavaProject().getOutputLocation().toString())

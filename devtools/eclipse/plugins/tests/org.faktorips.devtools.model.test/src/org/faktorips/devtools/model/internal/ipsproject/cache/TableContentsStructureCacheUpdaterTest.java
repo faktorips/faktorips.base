@@ -24,7 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -133,8 +134,6 @@ public class TableContentsStructureCacheUpdaterTest {
         IIpsObjectPath objectPathA = mock(IIpsObjectPath.class);
         when(ipsProjectA.getIpsObjectPath()).thenReturn(objectPathA);
 
-        mock(IIpsObjectPath.class);
-
         IIpsObjectPath objectPathC = mock(IIpsObjectPath.class);
         when(ipsProjectC.getIpsObjectPath()).thenReturn(objectPathC);
 
@@ -153,14 +152,14 @@ public class TableContentsStructureCacheUpdaterTest {
         setUpTableStructureIn(ipsProjectA);
         initCache();
 
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContents1 = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(2, tableContents1.size());
         assertThat(tableContents1, hasItem(tableContent1));
         assertThat(tableContents1, hasItem(tableContent2));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContents3 = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(2, tableContents3.size());
@@ -175,14 +174,14 @@ public class TableContentsStructureCacheUpdaterTest {
         initCache();
         when(objectPathEntryA.isReexported()).thenReturn(false);
 
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContents1 = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(2, tableContents1.size());
         assertThat(tableContents1, hasItem(tableContent1));
         assertThat(tableContents1, hasItem(tableContent2));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContents3 = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(1, tableContents3.size());
@@ -200,7 +199,7 @@ public class TableContentsStructureCacheUpdaterTest {
         assertEquals(1, tableContentsC.size());
         assertThat(tableContentsC, hasItem(tableContent1));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         tableContentsC = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(2, tableContentsC.size());
@@ -215,7 +214,7 @@ public class TableContentsStructureCacheUpdaterTest {
         setUpTableStructureIn(ipsProjectA);
         initCache();
 
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContentsA = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(1, tableContentsA.size());
@@ -228,13 +227,13 @@ public class TableContentsStructureCacheUpdaterTest {
         setUpTableStructureIn(ipsProjectA);
         initCache();
 
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.REMOVED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.REMOVED));
 
         List<IIpsSrcFile> tableContents1 = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(1, tableContents1.size());
         assertThat(tableContents1, hasItem(tableContent1));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.REMOVED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.REMOVED));
 
         List<IIpsSrcFile> tableContents3 = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(1, tableContents3.size());
@@ -248,13 +247,13 @@ public class TableContentsStructureCacheUpdaterTest {
         initCache();
 
         when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn("invalid");
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.CHANGED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.CHANGED));
 
         List<IIpsSrcFile> tableContentsA = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(1, tableContentsA.size());
         assertThat(tableContentsA, hasItem(tableContent1));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.CHANGED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableContent2, AResourceDeltaKind.CHANGED));
 
         List<IIpsSrcFile> tableContentsC = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(1, tableContentsC.size());
@@ -270,7 +269,7 @@ public class TableContentsStructureCacheUpdaterTest {
         List<IIpsSrcFile> tableContents = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(2, tableContents.size());
 
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableStructure, IResourceDelta.REMOVED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableStructure, AResourceDeltaKind.REMOVED));
 
         tableContents = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertTrue(tableContents.isEmpty());
@@ -282,14 +281,14 @@ public class TableContentsStructureCacheUpdaterTest {
         initCache();
 
         setUpTableStructureIn(ipsProjectA);
-        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableStructure, IResourceDelta.ADDED));
+        tableContentUpdaterA.ipsSrcFilesChanged(newChangeEvent(tableStructure, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContentsA = tableContentsStructureCacheA.getTableContents(tableStructure);
         assertEquals(2, tableContentsA.size());
         assertThat(tableContentsA, hasItem(tableContent1));
         assertThat(tableContentsA, hasItem(tableContent2));
 
-        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableStructure, IResourceDelta.ADDED));
+        tableContentUpdaterC.ipsSrcFilesChanged(newChangeEvent(tableStructure, AResourceDeltaKind.ADDED));
 
         List<IIpsSrcFile> tableContentsC = tableContentsStructureCacheC.getTableContents(tableStructure);
         assertEquals(2, tableContentsC.size());
@@ -297,9 +296,9 @@ public class TableContentsStructureCacheUpdaterTest {
         assertThat(tableContentsC, hasItem(tableContent2));
     }
 
-    private IpsSrcFilesChangedEvent newChangeEvent(IIpsSrcFile ipsSrcFile, int kind) {
-        Map<IIpsSrcFile, IResourceDelta> changedSrcFiles = new HashMap<>();
-        IResourceDelta delta = mock(IResourceDelta.class);
+    private IpsSrcFilesChangedEvent newChangeEvent(IIpsSrcFile ipsSrcFile, AResourceDeltaKind kind) {
+        Map<IIpsSrcFile, AResourceDelta> changedSrcFiles = new HashMap<>();
+        AResourceDelta delta = mock(AResourceDelta.class);
         when(delta.getKind()).thenReturn(kind);
         changedSrcFiles.put(ipsSrcFile, delta);
         return new IpsSrcFilesChangedEvent(changedSrcFiles);

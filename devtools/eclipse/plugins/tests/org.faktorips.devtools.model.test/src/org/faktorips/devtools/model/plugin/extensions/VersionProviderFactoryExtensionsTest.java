@@ -65,7 +65,7 @@ public class VersionProviderFactoryExtensionsTest {
                         .thenReturn(new IConfigurationElement[] { configElementDummy, configElementVersionProvider });
         when(configElementVersionProvider.getAttribute(VersionProviderFactoryExtensions.EXTENSION_ATTRIBUTE_ID))
                 .thenReturn(MY_VERSION_PROVIDER_ID);
-        when(configElementVersionProvider.createExecutableExtension(ExtensionPoints.ATTRIBUTE_CLASS))
+        when(configElementVersionProvider.createExecutableExtension(ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS))
                 .thenReturn(versionProviderFactory);
     }
 

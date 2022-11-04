@@ -15,7 +15,6 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
@@ -36,6 +35,7 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
@@ -57,7 +57,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
      * parameter into this map and the method would return the corresponding value.
      * 
      */
-    public Map<Object, Object> testObjectsMap = new HashMap<>();
+    private Map<Object, Object> testObjectsMap = new HashMap<>();
 
     public TestIpsArtefactBuilderSet() {
         this(new IIpsArtefactBuilder[0]);
@@ -132,12 +132,12 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public void setId(String id) {
-
+        // don't care
     }
 
     @Override
     public void setLabel(String label) {
-
+        // don't care
     }
 
     @Override
@@ -175,16 +175,16 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public AFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
-        return (AFile)testObjectsMap.get(root);
+        return (AFile)getTestObjectsMap().get(root);
     }
 
     public String getTocFilePackageName(IIpsPackageFragmentRoot root) {
-        return (String)testObjectsMap.get(root);
+        return (String)getTestObjectsMap().get(root);
     }
 
     @Override
     public String getRuntimeRepositoryTocResourceName(IIpsPackageFragmentRoot root) {
-        return (String)testObjectsMap.get(root);
+        return (String)getTestObjectsMap().get(root);
     }
 
     @Override
@@ -194,7 +194,7 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
-        return (DatatypeHelper)testObjectsMap.get(datatype);
+        return (DatatypeHelper)getTestObjectsMap().get(datatype);
     }
 
     @Override
@@ -206,60 +206,71 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         this.usesUnifiedValueSets = usesUnifiedValueSets;
     }
 
-    private final class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
+    public Map<Object, Object> getTestObjectsMap() {
+        return testObjectsMap;
+    }
+
+    public void setTestObjectsMap(Map<Object, Object> testObjectsMap) {
+        this.testObjectsMap = testObjectsMap;
+    }
+
+    private static class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
+
         private TestParameterIdentifierResolver(IExpression formula2, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(formula2, exprCompiler);
         }
 
         @Override
         protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-            return new IdentifierNodeGeneratorFactory<>() {
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAssociationNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAttributeNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumClassNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumValueNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForIndexBasedAssociationNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForQualifiedAssociationNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-
-                @Override
-                public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForInvalidNode() {
-                    return new DummyIdentifierNodeGenerator(this);
-                }
-            };
+            return new DummyIdentigierNodeGeneratorFactory();
         }
 
         @Override
         protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
             return new CompilationResultImpl("this", getExpression().findProductCmptType(getIpsProject())); //$NON-NLS-1$
+        }
+
+        private static final class DummyIdentigierNodeGeneratorFactory
+                implements IdentifierNodeGeneratorFactory<JavaCodeFragment> {
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAssociationNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAttributeNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumClassNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumValueNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForIndexBasedAssociationNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForQualifiedAssociationNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
+
+            @Override
+            public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForInvalidNode() {
+                return new DummyIdentifierNodeGenerator(this);
+            }
         }
     }
 

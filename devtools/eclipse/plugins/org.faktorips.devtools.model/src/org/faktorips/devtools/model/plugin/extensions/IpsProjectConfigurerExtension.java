@@ -10,25 +10,25 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 /**
  * {@link IIpsProjectConfigurator}-supplier for the single implementation of the extension point
- * {@value ExtensionPoints#ADD_IPS_NATURE}.
+ * {@value #EXTENSION_POINT_ID_ADD_IPS_NATURE}.
  */
-public class IpsProjectConfigurerExtension
-        extends LazyCollectionExtension<IIpsProjectConfigurator, List<IIpsProjectConfigurator>> {
+public class IpsProjectConfigurerExtension extends LazyListExtension<IIpsProjectConfigurator> {
+
+    /**
+     * IpsModelPlugin relative id of the extension point for configuring a Java project as an IPS
+     * project.
+     */
+    public static final String EXTENSION_POINT_ID_ADD_IPS_NATURE = "addIpsNature"; //$NON-NLS-1$
 
     public IpsProjectConfigurerExtension(ExtensionPoints extensionPoints) {
         super(extensionPoints,
-                ExtensionPoints.ADD_IPS_NATURE,
+                EXTENSION_POINT_ID_ADD_IPS_NATURE,
                 ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
-                IIpsProjectConfigurator.class,
-                ArrayList::new,
-                ($, f, l) -> l.add(f));
+                IIpsProjectConfigurator.class);
     }
 }

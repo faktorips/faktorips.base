@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>  
+
+<!-- 
+    Extensions to the Java perspective
+  -->
+   <extension point="org.eclipse.jdt.core.classpathVariableInitializer">            
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.eclipse.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.eclipse.ipsClasspathContainer instead"
+             variable="FAKTORIPS_VALUETYPES_JAVA5_SRC"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.eclipse.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5"/>                           
+       <classpathVariableInitializer
+             class="org.faktorips.devtools.model.plugin.FaktorIpsClasspathVariableInitializer"
+             deprecated="Use container org.faktorips.devtools.model.eclipse.ipsClasspathContainer instead"
+             variable="FAKTORIPS_RUNTIME_JAVA5_SRC"/>                           
+   </extension>
+  
+
+<!-- 
+    Nature and Builders
+  -->
+   <extension
+         id="ipsnature"
+         name="FaktorIPS-Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.faktorips.devtools.model.internal.ipsproject.IpsProject$EclipseProjectNature">
+            <parameter
+                  name="installBuilder"
+                  value="true">
+            </parameter>
+         </run>
+      </runtime>
+      <builder
+            id="org.faktorips.devtools.model.eclipse.ipsbuilder">
+      </builder>
+   </extension>
+   <extension
+         id="ipsbuilder"
+         name="FaktorIPS-Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="org.faktorips.devtools.model.eclipse.builder.EclipseIpsBuilder">
+         </run>
+      </builder>
+   </extension>
+   
+<!-- 
+  Markers
+-->
+   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="%problemmarker.name"> 
+      <persistent value="true"/> 
+      <super type="org.eclipse.core.resources.problemmarker"/> 
+   </extension> 
+
+
+<!-- 
+  Product-Definition-Extensions
+-->
+   
+
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <!-- the ipsSrcFile content-type will be used to open the standard text editor
+           if the ips object editor is not available, e.g. ips src file outside ips package -->
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            id="ipsSrcFile"
+            name="IPS Source File"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipsproject"
+            id="ipsProject"
+            name="IPS-Project"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipspolicycmpttype"
+            id="policyCmptType"
+            name="Policy Component Type"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipsproductcmpttype"
+            id="productCmptType"
+            name="Product Component Type"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipsproduct"
+            id="productComponent"
+            name="Product Component"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstemplate"
+            id="productComponentTemplate"
+            name="Product Component Template"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstablestructure"
+            id="tableStructure"
+            name="Table Structure"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstablecontents"
+            id="tableContents"
+            name="Table Contents"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstestcase"
+            id="testCase"
+            name="Test Case"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="UTF-8"
+            file-extensions="ipstestcasetype"
+            id="testCaseType"
+            name="TestCase Type"
+            priority="normal"/>
+   </extension>
+
+   
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer"
+            id="org.faktorips.devtools.model.eclipse.ipsClasspathContainer">
+      </classpathContainerInitializer>
+   </extension>
+   
+   <extension
+         point="org.faktorips.devtools.model.ipsObjectPathContainerType">
+      <containerType
+            class="org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainerType"
+            typeId="JDTClasspathContainer">
+      </containerType>
+   </extension>
+   
+   <extension
+         point="org.faktorips.devtools.model.versionProvider">
+      <versionProvider
+            class="org.faktorips.devtools.model.internal.BundleVersionProviderFactory"
+            id="org.faktorips.devtools.model.bundleVersionProvider">
+      </versionProvider>
+   </extension>
+</plugin>

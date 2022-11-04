@@ -26,7 +26,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.transform.TransformerException;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -35,7 +34,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaModelMarker;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
@@ -95,6 +93,7 @@ import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
@@ -112,6 +111,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
@@ -130,7 +130,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean
-                .parseBoolean(Platform.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
+                .parseBoolean(Abstractions.getDebugOption("org.faktorips.devtools.model/trace/properties")); //$NON-NLS-1$
     }
 
     /**
@@ -142,6 +142,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * The file extension for IPS projects but with a dot added before.
      */
     public static final String PROPERTY_FILE_EXTENSION_INCL_DOT = "." + PROPERTY_FILE_EXTENSION; //$NON-NLS-1$
+
+    /**
+     * The nature ID before Faktor-IPS 22.12
+     * 
+     * @since 22.12
+     * @deprecated do not use except for backwards compatibility
+     */
+    @Deprecated(since = "22.12")
+    public static final String OLD_NATURE_ID = IpsModelActivator.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     private final IJavaNamingConvention javaNamingConvention = new JavaNamingConvention();
 
@@ -1613,7 +1622,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             try {
                 String[] natures = getEclipseProject().getDescription().getNatureIds();
                 for (String nature : natures) {
-                    if (nature.equals(IIpsProject.NATURE_ID)) {
+                    if (nature.equals(IIpsProject.NATURE_ID) || nature.equals(OLD_NATURE_ID)) {
                         return true;
                     }
                 }

@@ -12,11 +12,10 @@ package org.faktorips.devtools.model.util;
 
 import java.util.stream.Stream;
 
-import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
+import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
 
 /**
  * Utility for working with {@link IIpsProjectConfigurator}.
@@ -30,7 +29,7 @@ public class IpsProjectConfigurators {
     /**
      * Returns all {@link IIpsProjectConfigurator IIpsProjectConfigurators} that
      * {@link IIpsProjectConfigurator#canConfigure(AJavaProject) can configure} the given
-     * {@link IJavaProject}.
+     * {@link AJavaProject}.
      *
      * @see IIpsModelExtensions#getIpsProjectConfigurators()
      */
@@ -42,8 +41,8 @@ public class IpsProjectConfigurators {
 
     /**
      * Checks whether at least one extension of the extension point
-     * {@link ExtensionPoints#ADD_IPS_NATURE} supports Groovy and is responsible for configuring the
-     * passed {@link AJavaProject}.
+     * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE} supports Groovy and
+     * is responsible for configuring the passed {@link AJavaProject}.
      * 
      * @return {@code true} whether at least one extension supports Groovy
      */

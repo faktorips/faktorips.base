@@ -211,7 +211,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         } else {
             try {
                 ByteArrayInputStream inputStream = new ByteArrayInputStream(xml.getBytes(encoding));
-                writeToFile(tocFile, inputStream, true, true);
+                writeToFile(tocFile, inputStream, true);
             } catch (UnsupportedEncodingException e1) {
                 throw new IpsException(new IpsStatus(e1));
             }
@@ -238,7 +238,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         } catch (UnsupportedEncodingException e1) {
             throw new IpsException(new IpsStatus(e1));
         }
-        writeToFile(tocFile, is, true, true);
+        writeToFile(tocFile, is, true);
     }
 
     private TableOfContent getToc(IIpsSrcFile ipsSrcFile) {

@@ -77,7 +77,7 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '10'))
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
     }
 }
 

@@ -23,12 +23,6 @@ import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.faktorips.devtools.model.ipsobject.ICustomValidation;
-import org.faktorips.devtools.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
-import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -39,56 +33,9 @@ import org.faktorips.util.ArgumentCheck;
 public class ExtensionPoints {
 
     /**
-     * IpsModelPlugin relative id of the extension point for IPS object path container types.
-     * 
-     * @see IIpsObjectPathContainerType
-     * 
-     * @since 3.4
-     */
-    public static final String IPS_OBJECT_PATH_CONTAINER_TYPE = "ipsObjectPathContainerType"; //$NON-NLS-1$
-    /**
-     * The name of the extension point property <code>containerType</code> in the extension point
-     * {@value #IPS_OBJECT_PATH_CONTAINER_TYPE}.
-     */
-    public static final String CONFIG_ELEMENT_CONTAINER_TYPE = "containerType"; //$NON-NLS-1$
-
-    /**
-     * IpsModelPlugin relative id of the extension point for IpsObjectTypes.
-     * 
-     * @see IpsObjectType
-     */
-    public static final String IPS_OBJECT_TYPE = "ipsobjecttype"; //$NON-NLS-1$
-
-    /**
-     * IpsModelPlugin relative id of the extension point for custom validations.
-     * 
-     * @see ICustomValidation
-     */
-    public static final String CUSTOM_VALIDATION = "customValidation"; //$NON-NLS-1$
-
-    /**
-     * IpsModelPlugin relative id of the extension point for product component naming strategies.
-     * 
-     * @see IProductCmptNamingStrategy
-     * @see IProductCmptNamingStrategyFactory
-     */
-    public static final String PRODUCT_COMPONENT_NAMING_STRATEGY = "productComponentNamingStrategy"; //$NON-NLS-1$
-
-    /**
      * IpsModelPlugin relative id of the extension point for "Pull Up" refactoring participants.
      */
     public static final String PULL_UP_PARTICIPANTS = "pullUpParticipants"; //$NON-NLS-1$
-
-    /**
-     * IpsModelPlugin relative id of the extension point for configuring a Maven project as an IPS
-     * project.
-     */
-    public static final String ADD_IPS_NATURE = "addIpsNature"; //$NON-NLS-1$
-
-    /**
-     * Name of the attribute that holds the name of the executable class
-     */
-    public static final String ATTRIBUTE_CLASS = "class"; //$NON-NLS-1$
 
     /**
      * The name of the {@link IConfigurationElement configuration element} property
@@ -98,11 +45,9 @@ public class ExtensionPoints {
 
     /**
      * The name of the {@link IConfigurationElement configuration element} property
-     * {@value #CONFIG_ELEMENT_PROPERTY_CLASS}.
+     * {@value #CONFIG_ELEMENT_PROPERTY_CLASS} defining the name of the executable class.
      */
     public static final String CONFIG_ELEMENT_PROPERTY_CLASS = "class"; //$NON-NLS-1$
-
-    private static final String RELEASE_EXTENSION_POINT_NAME = "productReleaseExtension"; //$NON-NLS-1$
 
     private final IExtensionRegistry registry;
 
@@ -361,18 +306,6 @@ public class ExtensionPoints {
             return null;
         }
         return expectedType.cast(object);
-    }
-
-    public static IConfigurationElement getReleaseExtensionElement(IIpsProject ipsProject) {
-        String releaseExtensionId = ipsProject.getReadOnlyProperties().getReleaseExtensionId();
-        IConfigurationElement[] configElements = Platform.getExtensionRegistry()
-                .getConfigurationElementsFor(IpsModelActivator.PLUGIN_ID, RELEASE_EXTENSION_POINT_NAME);
-        for (IConfigurationElement confElement : configElements) {
-            if (confElement.getAttribute("id").equals(releaseExtensionId)) { //$NON-NLS-1$
-                return confElement;
-            }
-        }
-        return null;
     }
 
     public static final Stream<IConfigurationElement> getConfigurationElements(IExtension extension,

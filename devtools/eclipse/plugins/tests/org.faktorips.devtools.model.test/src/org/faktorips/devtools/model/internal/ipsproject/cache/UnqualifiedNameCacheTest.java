@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;

@@ -11,7 +11,7 @@ package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.get;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
 
 import java.nio.file.Path;
 import java.text.MessageFormat;
@@ -37,8 +37,8 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.Wrappers;
+import org.faktorips.devtools.abstraction.eclipse.mapping.SeverityMapping;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.abstraction.mapping.SeverityMapping;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;

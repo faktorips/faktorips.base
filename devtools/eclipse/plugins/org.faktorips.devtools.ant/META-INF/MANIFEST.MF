@@ -16,8 +16,8 @@ Require-Bundle: org.apache.ant,
  org.eclipse.core.runtime;bundle-version="3.17.100"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-ClassPath: ant_tasks/ant-tasks.jar
-Import-Package: org.faktorips.devtools.abstraction.exception,
- org.faktorips.devtools.abstraction.mapping,
+Import-Package: org.faktorips.devtools.abstraction.eclipse.mapping,
+ org.faktorips.devtools.abstraction.exception,
  org.faktorips.devtools.htmlexport,
  org.faktorips.devtools.htmlexport.context,
  org.faktorips.devtools.htmlexport.generators,
@@ -30,6 +30,7 @@ Import-Package: org.faktorips.devtools.abstraction.exception,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.builder,
  org.faktorips.devtools.model.decorators,
+ org.faktorips.devtools.model.eclipse.builder,
  org.faktorips.devtools.model.ipsobject,
  org.faktorips.devtools.model.ipsproject,
  org.faktorips.devtools.model.plugin,

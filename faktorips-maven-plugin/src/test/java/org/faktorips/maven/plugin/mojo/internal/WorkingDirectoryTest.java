@@ -16,7 +16,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.nio.file.Path;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.project.MavenProject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public class WorkingDirectoryTest {
 
     private static final String FIX_PATH = "/fix/absolute/path/of/someDir";
-    private static final String CHECK_SUM = "d02e58c95a504e83cd8a6c305e3bd4e18905be07";
+    private static final String CHECK_SUM = DigestUtils.sha1Hex(new File(FIX_PATH).getAbsolutePath());
 
     private MavenProject mp;
 
@@ -42,16 +44,8 @@ public class WorkingDirectoryTest {
     public void testCreateFor() {
         File workingDirectory = WorkingDirectory.createFor(mp);
 
-        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(getTmpDir())
-                .append(File.separator)
-                .append("group.id")
-                .append(File.separator)
-                .append("artifact.id")
-                .append(File.separator)
-                .append("version")
-                .append(File.separator)
-                .append(CHECK_SUM)
-                .toString()));
+        assertThat(workingDirectory.getAbsolutePath(),
+                is(Path.of(getTmpDir(), "group.id", "artifact.id", "version", CHECK_SUM).toFile().getAbsolutePath()));
     }
 
     private String getTmpDir() {
@@ -66,11 +60,7 @@ public class WorkingDirectoryTest {
     public void testCreateForWithPrefix() {
         File workingDirectory = WorkingDirectory.createFor(mp, "project.name");
 
-        assertThat(workingDirectory.getAbsolutePath(), is(new StringBuilder(getTmpDir())
-                .append(File.separator)
-                .append("project.name")
-                .append(File.separator)
-                .append(CHECK_SUM)
-                .toString()));
+        assertThat(workingDirectory.getAbsolutePath(),
+                is(Path.of(getTmpDir(), "project.name", CHECK_SUM).toFile().getAbsolutePath()));
     }
 }

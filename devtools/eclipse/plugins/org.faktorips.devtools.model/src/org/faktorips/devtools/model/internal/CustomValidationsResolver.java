@@ -15,14 +15,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.internal.type.Attribute;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.model.plugin.ExtensionPoints;
-import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.type.IAttribute;
 
 /**
@@ -153,18 +151,9 @@ public class CustomValidationsResolver {
      * 
      * @return an instance of this map containing all registered custom validation instances.
      */
-    @SuppressWarnings({ "rawtypes" })
     public static <T extends IIpsObjectPartContainer> CustomValidationsResolver createFromExtensions() {
-        List<ICustomValidation<?>> typeSafe = new ArrayList<>();
-        if (Abstractions.isEclipseRunning()) {
-            ExtensionPoints extensionPoints = new ExtensionPoints(IpsModelActivator.PLUGIN_ID);
-            List<ICustomValidation> allValidations = extensionPoints.createExecutableExtensions(
-                    ExtensionPoints.CUSTOM_VALIDATION, "customValidation", "validationClass", ICustomValidation.class); //$NON-NLS-1$ //$NON-NLS-2$
-            for (ICustomValidation customValidation : allValidations) {
-                typeSafe.add(customValidation);
-            }
-        }
-        return createFromList(typeSafe);
+        List<ICustomValidation<?>> customValidations = IIpsModelExtensions.get().getCustomValidations();
+        return createFromList(customValidations);
     }
 
     /**

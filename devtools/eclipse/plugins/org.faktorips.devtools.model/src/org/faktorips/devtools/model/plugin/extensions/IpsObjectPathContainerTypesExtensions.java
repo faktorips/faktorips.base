@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.plugin.extensions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -18,18 +17,22 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 
 /**
  * {@link IIpsObjectPathContainerType}-{@link List}-supplier for all implementations of the
- * extension point {@value ExtensionPoints#IPS_OBJECT_PATH_CONTAINER_TYPE}.
+ * extension point {@value #EXTENSION_POINT_ID_IPS_OBJECT_PATH_CONTAINER_TYPE}.
  */
-public class IpsObjectPathContainerTypesExtensions extends
-        LazyCollectionExtension<IIpsObjectPathContainerType, List<IIpsObjectPathContainerType>> {
+public class IpsObjectPathContainerTypesExtensions extends LazyListExtension<IIpsObjectPathContainerType> {
+
+    /**
+     * IpsModelPlugin relative id of the extension point for IPS object path container types.
+     * 
+     * @see IIpsObjectPathContainerType
+     */
+    public static final String EXTENSION_POINT_ID_IPS_OBJECT_PATH_CONTAINER_TYPE = "ipsObjectPathContainerType"; //$NON-NLS-1$
 
     public IpsObjectPathContainerTypesExtensions(ExtensionPoints extensionPoints) {
         super(extensionPoints,
-                ExtensionPoints.IPS_OBJECT_PATH_CONTAINER_TYPE,
+                EXTENSION_POINT_ID_IPS_OBJECT_PATH_CONTAINER_TYPE,
                 ExtensionPoints.CONFIG_ELEMENT_PROPERTY_CLASS,
-                IIpsObjectPathContainerType.class,
-                ArrayList::new,
-                ($, containerType, list) -> list.add(containerType));
+                IIpsObjectPathContainerType.class);
     }
 
 }

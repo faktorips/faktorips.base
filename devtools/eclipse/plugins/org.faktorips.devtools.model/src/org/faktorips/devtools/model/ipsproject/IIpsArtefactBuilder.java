@@ -110,7 +110,6 @@ public interface IIpsArtefactBuilder {
      * Is supposed to return <code>true</code> if this builder is a builder for the provided
      * <code>IIpsSrcFile</code>.
      */
-    // TODO AW: This method does not need to - and should not - throw a checked exception.
     boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws IpsException;
 
     /**

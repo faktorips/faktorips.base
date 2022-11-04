@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://www.faktorzehn.org" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.faktorzehn.org">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation='https://www.w3.org/2009/01/xml.xsd' />
+    <xsd:include id="ips" schemaLocation='ips-global.xsd' />
+
+    <xsd:element name="ProductCmptType2">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element ref="TableStructureUsage" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Attribute" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Method" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Association" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="Category" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element ref="ProductCmptPropertyReference" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="abstract" />
+            <xsd:attributeGroup ref="changingOverTime" />
+            <xsd:attribute name="configurationForPolicyCmptType" type="boolean" use="optional" />
+            <xsd:attribute name="instancesIcon" type="string" use="optional" />
+            <xsd:attribute name="layerSupertype" type="boolean" use="optional" />
+            <xsd:attribute name="policyCmptType" type="qualifiedName" use="optional" />
+            <xsd:attributeGroup ref="since" />
+            <xsd:attributeGroup ref="supertype" />
+            <xsd:attribute ref="xml:space" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInProductCmptType">
+            <xsd:selector xpath="*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="Attribute">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element name="DefaultValue" type="DefaultValueAttribute" minOccurs="1" maxOccurs="1" />
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="ValueSet" type="ValueSet" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="category" />
+            <xsd:attributeGroup ref="changingOverTime" />
+            <xsd:attributeGroup ref="datatype" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="modifier" />
+            <xsd:attribute name="multiValueAttribute" type="boolean" use="optional" />
+            <xsd:attribute name="multilingual" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="overwrite" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="since" />
+            <xsd:attribute name="visible" type="boolean" use="required" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInAttribute">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="Category">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="defaultForFormulaSignatureDefinitions" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForPolicyCmptTypeAttributes" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForProductCmptTypeAttributes" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForTableStructureUsages" type="boolean" use="optional" />
+            <xsd:attribute name="defaultForValidationRules" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="name" type="string" use="required" />
+            <xsd:attribute name="position" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:whiteSpace value="collapse" />
+                        <xsd:enumeration value="left" />
+                        <xsd:enumeration value="right" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInCategory">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="Association">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attribute name="associationType" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="aggr" />
+                        <xsd:enumeration value="ass" />
+                        <xsd:whiteSpace value="collapse" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attributeGroup ref="category" />
+            <xsd:attributeGroup ref="changingOverTime" />
+            <xsd:attributeGroup ref="constrain" />
+            <xsd:attributeGroup ref="derivedUnion" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attributeGroup ref="matchingAssociation" />
+            <xsd:attributeGroup ref="cardinality" />
+            <xsd:attributeGroup ref="modifier" />
+            <xsd:attribute name="relevant" type="boolean" use="required" />
+            <xsd:attributeGroup ref="since" />
+            <xsd:attributeGroup ref="subsettedDerivedUnion" />
+            <xsd:attributeGroup ref="targetRole" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInAssociation">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+    <xsd:element name="Method">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:element name="Parameter" type="MethodParameter" minOccurs="0" maxOccurs="unbounded" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="abstract" />
+            <xsd:attributeGroup ref="category" />
+            <xsd:attributeGroup ref="changingOverTime" />
+            <xsd:attributeGroup ref="datatype" />
+            <xsd:attribute name="formulaName" type="string" use="optional" />
+            <xsd:attribute name="formulaSignatureDefinition" type="boolean" use="required" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="mandatory" type="boolean" use="required" />
+            <xsd:attributeGroup ref="modifier" />
+            <xsd:attributeGroup ref="name" />
+            <xsd:attribute name="overloadsFormula" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="since" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInMethod">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="TableStructureUsage">
+        <xsd:complexType>
+            <xsd:sequence minOccurs="1" maxOccurs="1">
+                <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                <xsd:group ref="LabelsAndDescriptions" />
+                <xsd:element name="TableStructure" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence minOccurs="0" maxOccurs="1">
+                            <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
+                        </xsd:sequence>
+                        <xsd:attributeGroup ref="id" />
+                        <xsd:attribute name="tableStructure" type="qualifiedName" use="required" />
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="Deprecation" type="Deprecation" minOccurs="0" maxOccurs="1" />
+            </xsd:sequence>
+            <xsd:attributeGroup ref="category" />
+            <xsd:attributeGroup ref="changingOverTime" />
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="mandatoryTableContent" type="boolean" use="optional" />
+            <xsd:attributeGroup ref="modifier" />
+            <xsd:attribute name="roleName" type="javaIdentifier" use="required" />
+            <xsd:attributeGroup ref="since" />
+        </xsd:complexType>
+        <xsd:unique name="UniqueIdInTableStructureUsage">
+            <xsd:selector xpath="./*" />
+            <xsd:field xpath="@id" />
+        </xsd:unique>
+    </xsd:element>
+
+    <xsd:element name="ProductCmptPropertyReference">
+        <xsd:complexType>
+            <xsd:attributeGroup ref="id" />
+            <xsd:attribute name="referencedIpsObjectType" use="required">
+                <xsd:simpleType>
+                    <xsd:restriction base="xsd:string">
+                        <xsd:enumeration value="ProductCmptType2" />
+                        <xsd:enumeration value="EnumContent" />
+                        <xsd:enumeration value="EnumType" />
+                        <xsd:enumeration value="PolicyCmptType" />
+                        <xsd:enumeration value="ProductCmptType2" />
+                        <xsd:enumeration value="TableStructure" />
+                        <xsd:enumeration value="ProductCmpt" />
+                        <xsd:enumeration value="TableContents" />
+                        <xsd:enumeration value="TestCaseType" />
+                        <xsd:enumeration value="TestCase" />
+                        <xsd:whiteSpace value="collapse" />
+                    </xsd:restriction>
+                </xsd:simpleType>
+            </xsd:attribute>
+            <xsd:attribute name="referencedPartId" type="uuid" use="required" />
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

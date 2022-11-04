@@ -12,14 +12,17 @@ package org.faktorips.devtools.model.builder;
 
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 
+import edu.umd.cs.findbugs.annotations.CheckForNull;
+
 public interface IDependencyGraphPersistenceManager {
 
     /**
      * Returns the last persisted dependency graph for the provided IpsProject if available.
-     * Otherwise <code>null</code> will be returned.
+     * Otherwise {@code null} will be returned.
      * 
-     * @throws NullPointerException if the provided project is <code>null</code>
+     * @throws NullPointerException if the provided project is {@code null}
      */
+    @CheckForNull
     IDependencyGraph getDependencyGraph(IIpsProject project);
 
 }

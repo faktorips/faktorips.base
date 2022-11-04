@@ -99,12 +99,22 @@ public enum PlainJavaImplementation implements AImplementation {
     @Override
     public AVersion getVersion() {
         // TODO FIPS-8693: Aus dem Manifest des diese Klasse enthaltenden JARs lesen?
-        return AVersion.parse("21.12"); //$NON-NLS-1$
+        return AVersion.parse("22.12"); //$NON-NLS-1$
     }
 
     @Override
     public ALog getLog() {
         return log;
+    }
+
+    @Override
+    public String getDebugOption(String option) {
+        // TODO später anpassen, z.B. Konfiguration über Maven?
+        String property = System.getProperty(option);
+        if (property == null) {
+            property = "false";
+        }
+        return property;
     }
 
     public static ResourceChanges getResourceChanges() {

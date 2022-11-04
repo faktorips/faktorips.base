@@ -12,7 +12,8 @@ package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import java.util.Set;
 
-import org.eclipse.core.resources.IResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta;
+import org.faktorips.devtools.abstraction.AResourceDelta.AResourceDeltaKind;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
@@ -129,10 +130,10 @@ class TableContentsStructureCacheUpdater implements IIpsSrcFilesChangeListener {
             }
         };
 
-        public static OperationKind getKind(IResourceDelta resourceDelta) {
-            if ((resourceDelta.getKind() & IResourceDelta.ADDED) != 0) {
+        public static OperationKind getKind(AResourceDelta resourceDelta) {
+            if (resourceDelta.getKind() == AResourceDeltaKind.ADDED) {
                 return ADDED;
-            } else if ((resourceDelta.getKind() & IResourceDelta.REMOVED) != 0) {
+            } else if (resourceDelta.getKind() == AResourceDeltaKind.REMOVED) {
                 return REMOVED;
             } else {
                 return CHANGED;

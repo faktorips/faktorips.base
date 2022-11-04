@@ -48,7 +48,7 @@ public abstract class AbstractPropertiesGenerator {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        builder.writeToFile(propertyFile, inputStream, true, true);
+        builder.writeToFile(propertyFile, inputStream, true);
     }
 
     /**

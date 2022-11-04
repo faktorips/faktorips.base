@@ -822,6 +822,10 @@ public class IpsBuildMojo extends AbstractMojo {
 
     private void addDependencies() {
         // default values for parameter dependencies
+        addDependency("org.faktorips.devtools.abstraction");
+        addDependency("org.faktorips.devtools.abstraction.eclipse");
+        addDependency("org.faktorips.devtools.model");
+        addDependency("org.faktorips.devtools.model.eclipse");
         addDependency("org.faktorips.devtools.core");
         addDependency("org.faktorips.devtools.stdbuilder");
         addDependency("org.faktorips.runtime.groovy");

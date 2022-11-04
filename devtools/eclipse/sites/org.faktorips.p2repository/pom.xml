@@ -52,6 +52,10 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
             <artifactId>faktorips-maven-archetype</artifactId>
         </dependency>
         <dependency>

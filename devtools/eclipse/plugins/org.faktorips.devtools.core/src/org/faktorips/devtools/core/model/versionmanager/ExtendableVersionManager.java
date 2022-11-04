@@ -22,7 +22,7 @@ import java.util.TreeSet;
 
 import org.eclipse.core.runtime.Platform;
 import org.faktorips.devtools.abstraction.AVersion;
-import org.faktorips.devtools.abstraction.mapping.OsgiVersionMapping;
+import org.faktorips.devtools.abstraction.eclipse.mapping.OsgiVersionMapping;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;

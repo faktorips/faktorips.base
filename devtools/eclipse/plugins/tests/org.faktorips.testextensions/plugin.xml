@@ -115,4 +115,12 @@
       </PreSaveProcessor>
    </extension>
 
+    <extension
+         id="TestExtensionForICustomValidation"
+         name="TestExtension@ICustomValidation"
+         point="org.faktorips.devtools.model.customValidation">
+      <customValidation
+            validationClass="org.faktorips.testextensions.TestExtensionCustomValidation">
+      </customValidation>
+   </extension>
 </plugin>

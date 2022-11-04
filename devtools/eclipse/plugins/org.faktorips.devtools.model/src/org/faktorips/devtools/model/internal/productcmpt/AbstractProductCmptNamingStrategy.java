@@ -218,7 +218,7 @@ public abstract class AbstractProductCmptNamingStrategy implements IProductCmptN
             }
         }
         String identifier = sb.toString();
-        MessageList status = ValidationUtils.validateJavaTypeName(identifier, ipsProject);
+        MessageList status = ValidationUtils.validateJavaTypeName(identifier);
         if (status.isEmpty() || status.getSeverity() == Severity.WARNING) {
             return identifier;
         }

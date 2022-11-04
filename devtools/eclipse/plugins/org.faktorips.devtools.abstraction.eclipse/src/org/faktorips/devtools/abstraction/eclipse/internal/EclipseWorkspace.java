@@ -10,7 +10,7 @@
 package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
-import static org.faktorips.devtools.abstraction.mapping.BuildKindMapping.buildKind;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.BuildKindMapping.buildKind;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.ICoreRunnable;

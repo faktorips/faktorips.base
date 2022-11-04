@@ -28,6 +28,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
 import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -104,7 +105,7 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
 
         IIpsObjectPath path = props.getIpsObjectPath();
         assertNotNull(path);
-        assertEquals(3, path.getEntries().length);
+        assertEquals(Abstractions.isEclipseRunning() ? 3 : 2, path.getEntries().length);
     }
 
     protected IpsProjectProperties initPropertiesWithDocumentElement() {

@@ -45,20 +45,26 @@ pipeline {
 
                 echo "Copy and rename pom files to match the jar artifacts"
                 # copy repos zip to jars
-                for i in $(find . -maxdepth 4 -name "*.zip" | grep -v 'sources\\|javadoc' | grep 'target/\\(org.\\)*faktorips');
+                for i in $(find . -maxdepth 6 -name "*.zip" | grep -v 'sources\\|javadoc' | grep 'target/org.faktorips');
                 do
                     to=$(echo $i | sed 's/.zip/.jar/g');
                     cp -v $i $to;
                 done
                 # copy all poms to jar-file-name.pom
-                for i in $(find . -maxdepth 4 -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/\\(org.\\)*faktorips');
+                for i in $(find . -maxdepth 4 -name "*.jar" | grep -v 'sources\\|javadoc' | grep 'target/faktorips');
                 do
                     to=$(echo $i | sed 's/.jar/.pom/g');
                     from=$(dirname $i | sed 's|/target|/pom.xml|g');
                     cp -v $from $to;
                 done
                 # use flattened poms
-                for i in $(find . -maxdepth 4 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/\\(org.\\)*faktorips' | grep -v 'bin');
+                for i in $(find . -maxdepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/faktorips' | grep -v 'bin');
+                do
+                    to=$(echo $i | sed 's/.jar/.pom/g');
+                    from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
+                    cp -v $from $to;
+                done
+                for i in $(find devtools/eclipse/sites -mindepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/org.faktorips' | grep -v 'bin');
                 do
                     to=$(echo $i | sed 's/.jar/.pom/g');
                     from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
@@ -87,6 +93,6 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '10'))
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
     }
 }

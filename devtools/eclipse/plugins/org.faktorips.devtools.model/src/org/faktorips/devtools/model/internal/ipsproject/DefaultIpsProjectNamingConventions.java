@@ -15,11 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
-import org.faktorips.devtools.abstraction.Abstractions;
-import org.faktorips.devtools.abstraction.mapping.SeverityMapping;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaConventions;
+import org.faktorips.devtools.abstraction.util.JavaConventions;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectNamingConventions;
@@ -243,19 +239,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
 
         MessageList ml = new MessageList();
         if (!qualifiedCheck) {
-            String sourceLevel = getCompilerSourceLevel(ipsProject);
-            String complianceLevel = getCompilerComplianceLevel(ipsProject);
-            Severity validationResult = Severity.NONE;
-            String validationMessage = IpsStringUtils.EMPTY;
-            if (Abstractions.isEclipseRunning()) {
-                IStatus status = JavaConventions.validateJavaTypeName(name, sourceLevel, complianceLevel);
-                validationResult = SeverityMapping.toIps(status.getSeverity());
-                validationMessage = status.getMessage();
-            } else {
-                MessageList validatePackageName = PlainJavaConventions.validateTypeName(name);
-                validationResult = validatePackageName.getSeverity();
-                validationMessage = validatePackageName.getText();
-            }
+            MessageList validatePackageName = JavaConventions.validateTypeName(name);
+            Severity validationResult = validatePackageName.getSeverity();
+            String validationMessage = validatePackageName.getText();
             switch (validationResult) {
                 case ERROR:
                     ml.add(new Message(INVALID_NAME,
@@ -294,19 +280,9 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             String msgNameNotValidError,
             String msgNameNotValidWarning) {
         MessageList ml = new MessageList();
-        String sourceLevel = getCompilerSourceLevel(ipsProject);
-        String complianceLevel = getCompilerComplianceLevel(ipsProject);
-        Severity validationResult = Severity.NONE;
-        String validationMessage = IpsStringUtils.EMPTY;
-        if (Abstractions.isEclipseRunning()) {
-            IStatus status = JavaConventions.validatePackageName(name, sourceLevel, complianceLevel);
-            validationResult = SeverityMapping.toIps(status.getSeverity());
-            validationMessage = status.getMessage();
-        } else {
-            MessageList validatePackageName = PlainJavaConventions.validatePackageName(name);
-            validationResult = validatePackageName.getSeverity();
-            validationMessage = validatePackageName.getText();
-        }
+        MessageList validatePackageName = JavaConventions.validatePackageName(name);
+        Severity validationResult = validatePackageName.getSeverity();
+        String validationMessage = validatePackageName.getText();
         switch (validationResult) {
             case ERROR:
                 ml.add(new Message(INVALID_NAME, MessageFormat.format(msgNameNotValidError, name, validationMessage),
@@ -334,21 +310,15 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             Object validatedObject,
             IIpsProject ipsProject) {
 
-        String sourceLevel = getCompilerSourceLevel(ipsProject);
-        String complianceLevel = getCompilerComplianceLevel(ipsProject);
-        IStatus status = JavaConventions.validateIdentifier(name, sourceLevel, complianceLevel);
-        if (!status.isOK()) {
+        Runtime.Version sourceLevel = getCompilerSourceLevel(ipsProject);
+        if (!JavaConventions.validateName(name, sourceLevel)) {
             return new Message(INVALID_NAME, text, Message.ERROR, validatedObject);
         }
         return null;
     }
 
-    private String getCompilerComplianceLevel(IIpsProject ipsProject) {
-        return ipsProject.getJavaProject().getSourceVersion().toString();
-    }
-
-    private String getCompilerSourceLevel(IIpsProject ipsProject) {
-        return ipsProject.getJavaProject().getSourceVersion().toString();
+    private Runtime.Version getCompilerSourceLevel(IIpsProject ipsProject) {
+        return ipsProject.getJavaProject().getSourceVersion();
     }
 
 }

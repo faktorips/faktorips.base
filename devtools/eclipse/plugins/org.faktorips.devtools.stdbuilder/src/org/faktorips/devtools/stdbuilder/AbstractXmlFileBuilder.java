@@ -90,7 +90,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         try {
             AFile copy = getXmlContentFile(ipsSrcFile);
             boolean newlyCreated = createFileIfNotThere(copy);
-            writeToFile(copy, newContent, true, !newlyCreated);
+            writeToFile(copy, newContent, !newlyCreated);
         } catch (IpsException e) {
             throw new IpsException(new IpsStatus("Unable to create a content file for the file: " //$NON-NLS-1$
                     + file.getName(), e));

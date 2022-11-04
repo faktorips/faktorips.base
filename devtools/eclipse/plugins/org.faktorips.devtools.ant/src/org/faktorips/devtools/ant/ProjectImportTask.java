@@ -24,7 +24,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
+import org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping;
 
 /**
  * Implements a custom Ant task, which imports a given directory to a running Eclipse workspace as

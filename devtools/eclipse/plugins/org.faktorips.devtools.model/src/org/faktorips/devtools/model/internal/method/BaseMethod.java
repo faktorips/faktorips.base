@@ -17,10 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.core.JavaConventions;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.abstraction.util.JavaConventions;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPartCollection;
@@ -31,6 +29,7 @@ import org.faktorips.devtools.model.method.IParameter;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.util.StringBuilderJoiner;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -148,9 +147,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
                     PROPERTY_NAME));
         } else {
             Runtime.Version sourceVersion = ipsProject.getJavaProject().getSourceVersion();
-            IStatus status = JavaConventions.validateMethodName(getName(), sourceVersion.toString(),
-                    sourceVersion.toString());
-            if (!status.isOK()) {
+            if (!JavaConventions.validateName(getName(), sourceVersion)) {
                 result.add(new Message(IBaseMethod.MSGCODE_INVALID_METHODNAME, Messages.Method_msg_InvalidMethodname,
                         Message.ERROR, this, PROPERTY_NAME));
             }

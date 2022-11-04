@@ -20,7 +20,7 @@ import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.abstraction.mapping.PathMapping;
+import org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsPackageFragment;

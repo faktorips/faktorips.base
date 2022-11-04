@@ -14,7 +14,7 @@
     <properties>
         <java.version>11</java.version>
         <target-platform>eclipse-2020-03</target-platform>
-        <version.kind></version.kind>
+        <version.kind>ci</version.kind>
     </properties>
 
     <modules>
@@ -107,7 +107,12 @@
                 <artifactId>tycho-packaging-plugin</artifactId>
                 <configuration>
                     <format>'${version.kind}_'yyyyMMdd-HHmm</format>
+                    <mapP2Dependencies>true</mapP2Dependencies>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

@@ -10,10 +10,12 @@
 package org.faktorips.devtools.abstraction.eclipse.internal;
 
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
+import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
+
+import java.nio.file.Path;
 
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.AResourceDeltaVisitor;
@@ -37,8 +39,8 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
     }
 
     @Override
-    public AResourceDelta findMember(IPath path) {
-        return wrap(resourceDelta().findMember(path)).as(AResourceDelta.class);
+    public AResourceDelta findMember(Path path) {
+        return wrap(resourceDelta().findMember(toEclipsePath(path))).as(AResourceDelta.class);
     }
 
     @Override

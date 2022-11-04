@@ -30,4 +30,13 @@
         </plugins>
     </build>
 
+    <dependencies>
+        <!-- modules as dependencies to ensure they are built before this 
+            p2 repository -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

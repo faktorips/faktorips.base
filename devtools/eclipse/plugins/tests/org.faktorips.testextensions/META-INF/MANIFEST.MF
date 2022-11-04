@@ -9,6 +9,7 @@ Bundle-Vendor: Faktor Zehn GmbH
 Import-Package: org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.controller,
  org.faktorips.devtools.core.ui.controller.fields,
+ org.faktorips.devtools.core.ui.controls,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.extproperties,
  org.faktorips.devtools.model.ipsobject,

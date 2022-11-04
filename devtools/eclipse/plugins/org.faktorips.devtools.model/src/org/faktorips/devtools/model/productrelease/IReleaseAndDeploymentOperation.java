@@ -35,7 +35,7 @@ public interface IReleaseAndDeploymentOperation {
     List<ITargetSystem> getAvailableTargetSystems(IIpsProject ipsProject);
 
     /**
-     * Returns a list of resources that have to be commited when the release operation commits the
+     * Returns a list of resources that have to be committed when the release operation commits the
      * .ipsproject file.
      * 
      * @param ipsProject the selected {@link IIpsProject}

@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Set;
 
-import org.eclipse.core.resources.IResource;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.abstraction.AResourceDelta;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -135,7 +134,7 @@ public interface IIpsStorage {
      * relative it have to be located in the roots project project. The file does not have exists
      * but have to be relative (to the project) or the first segment must match an existing project.
      * 
-     * @return The found {@link IResource} if the path is workspace or project relative. Returns
+     * @return The found {@link AResource} if the path is workspace or project relative. Returns
      *             null if the path is not valid.
      */
     AResource getCorrespondingResource();

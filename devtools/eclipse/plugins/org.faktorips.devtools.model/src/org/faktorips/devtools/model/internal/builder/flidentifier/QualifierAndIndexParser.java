@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
@@ -85,8 +84,9 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IdentifierNode invalidIndexNode() {
-        return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS
-                .bind(Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0, getIdentifierPart())));
+        return nodeFactory().createInvalidIdentifier(
+                Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, MessageFormat.format(
+                        Messages.AbstractParameterIdentifierResolver_noIndexFor1to1Association0, getIdentifierPart())));
     }
 
     private IdentifierNode createQualifierNode() {
@@ -96,8 +96,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
             return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
         } catch (IpsException e) {
             IpsLog.log(e);
-            return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS
-                    .bind(Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
+            return nodeFactory().createInvalidIdentifier(Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, MessageFormat
+                    .format(Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
         }
     }
 

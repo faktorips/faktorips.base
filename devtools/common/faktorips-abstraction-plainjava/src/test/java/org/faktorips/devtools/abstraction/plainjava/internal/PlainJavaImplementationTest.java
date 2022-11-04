@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) Faktor Zehn GmbH. <http://www.faktorzehn.org>
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
@@ -98,7 +98,7 @@ public class PlainJavaImplementationTest {
 
     @Test
     public void testGetVersion() {
-        assertThat(PlainJavaImplementation.get().getVersion(), is(AVersion.parse("21.12"))); //$NON-NLS-1$
+        assertThat(PlainJavaImplementation.get().getVersion(), is(AVersion.parse("22.12"))); //$NON-NLS-1$
     }
 
     @Test
