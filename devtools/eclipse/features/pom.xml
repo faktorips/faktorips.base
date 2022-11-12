@@ -42,5 +42,18 @@
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-dtfl-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-fl</artifactId>
+        </dependency>    
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction-plainjava</artifactId>
+        </dependency>
+        
     </dependencies>
 </project>
