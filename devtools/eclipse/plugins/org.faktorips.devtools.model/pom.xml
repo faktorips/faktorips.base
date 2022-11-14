@@ -11,6 +11,8 @@
     <artifactId>org.faktorips.devtools.model</artifactId>
 
     <packaging>eclipse-plugin</packaging>
+    <name>Faktor-IPS Model</name>
+    <description>Model for the Faktor-IPS design time tools</description>
 
     <dependencies>
         <dependency>

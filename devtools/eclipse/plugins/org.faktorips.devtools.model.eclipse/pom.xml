@@ -9,8 +9,9 @@
     </parent>
 
     <artifactId>org.faktorips.devtools.model.eclipse</artifactId>
-
     <packaging>eclipse-plugin</packaging>
+    <name>Faktor-IPS Model for Eclipse</name>
+    <description>Eclipse Module for the Faktor-IPS design time model</description>
 
     <dependencies>
         <dependency>
