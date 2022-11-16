@@ -132,6 +132,7 @@ pipeline {
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh "mvn deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                        sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -f {} \\;"
                     }
                 }
                 // deploy p2 repository
