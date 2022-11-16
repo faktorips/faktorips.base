@@ -56,7 +56,7 @@ pipeline {
                     eclipseRelaseVersion = mavenRelaseVersion.replaceFirst('-','.')
                     
                     def xmlfile = readFile 'pom.xml'
-                    def oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
+                    oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
                 }
             }
         }
