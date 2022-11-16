@@ -54,6 +54,9 @@ pipeline {
                     kind = kind == null ? "rfinal" : kind
                     mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','')
                     eclipseRelaseVersion = mavenRelaseVersion.replaceFirst('-','.')
+                    
+                    def xmlfile = readFile 'pom.xml'
+                    def oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
                 }
             }
         }
@@ -65,6 +68,8 @@ pipeline {
                         sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${eclipseRelaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
+                // see https://github.com/eclipse-tycho/tycho/issues/1677
+                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${eclipseRelaseVersion}/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
 
                 // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
@@ -78,6 +83,8 @@ pipeline {
                         sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
+                // see https://github.com/eclipse-tycho/tycho/issues/1677
+                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${eclipseRelaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare for next development iteration'"
 
                 sh "git checkout ${LOCAL_BRANCH}~1"
@@ -197,4 +204,9 @@ def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
         scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy
         ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'
     """
+}
+
+def String extractVersionFromPom(String xml, Closure closure) {
+    def node = new XmlSlurper().parseText(xml)
+    return closure.call(node)?.text()
 }
