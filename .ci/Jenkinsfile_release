@@ -34,7 +34,7 @@ pipeline {
                 script {
                     currentBuild.displayName = "Release ${params.RELEASE_VERSION} (${params.BRANCH})"
 
-                    assert params.RELEASE_VERSION ==~ /(\d+\.)+\d+(-rc\d\d|-m\d\d|-a\d{8}-\d\d|-rfinal)?/
+                    assert params.RELEASE_VERSION ==~ /(\d+\.)+\d+(\.rc\d\d|\.m\d\d|\.a\d{8}-\d\d|\.rfinal)?/
                     assert params.DEVELOPMENT_VERSION ==~ /(\d+\.)+\d+/
 
                     def scmVars = checkout([
@@ -50,9 +50,9 @@ pipeline {
                     // for an rfinal version, only the OSGi qualifier gets altered by mvn ... -Dversion.kind (therefore only seen in the eclipse update site)
                     // for other versions, append the kind to the maven and OSGi qualifiers (gets a special visual mark on maven central)
                     // an empty kind is considered an rfinal version
-                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
+                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:\.(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
                     kind = kind == null ? "rfinal" : kind
-                    relaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','').replaceFirst('-','.')
+                    relaseVersion = params.RELEASE_VERSION.replaceAll('.rfinal','')
                     
                     def xmlfile = readFile 'pom.xml'
                     oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }

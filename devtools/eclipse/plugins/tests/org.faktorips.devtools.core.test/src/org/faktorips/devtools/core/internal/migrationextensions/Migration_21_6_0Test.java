@@ -30,6 +30,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.eclipse.util.EclipseProjectUtil;
+import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreColumnNamingStrategy;
 import org.faktorips.devtools.model.internal.pctype.CamelCaseToUpperUnderscoreTableNamingStrategy;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -61,6 +62,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
         assertFalse(EclipseProjectUtil.hasIpsNature(project));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testMigrate() throws Exception {
         IProject project = newPlatformProject("OldIpsProject").unwrap();
@@ -77,7 +79,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
             MessageList messageList = migration_21_6_0.migrate(new NullProgressMonitor());
 
             assertTrue(messageList.isEmpty());
-            assertTrue(EclipseProjectUtil.hasIpsNature(project));
+            assertTrue(project.getDescription().hasNature(IpsProject.OLD_NATURE_ID));
             IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
             assertThat(ipsProjectProperties.getProductCmptNamingStrategy(),
                     is(instanceOf(DateBasedProductCmptNamingStrategy.class)));

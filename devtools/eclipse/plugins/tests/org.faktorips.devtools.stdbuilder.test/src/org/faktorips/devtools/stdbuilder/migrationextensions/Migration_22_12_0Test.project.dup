@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>FIPS-22.6 with duplicate/old builders/natures</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.faktorips.devtools.model.ipsbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+        <buildCommand>
+            <name>org.faktorips.devtools.model.eclipse.ipsbuilder</name>
+            <arguments>
+            </arguments>
+        </buildCommand>
+        <buildCommand>
+            <name>org.faktorips.devtools.core.ipsbuilder</name>
+            <arguments>
+            </arguments>
+        </buildCommand>
+	</buildSpec>
+	<natures>
+        <nature>org.faktorips.devtools.model.ipsnature</nature>
+        <nature>org.faktorips.devtools.model.eclipse.ipsnature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

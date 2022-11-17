@@ -41,7 +41,6 @@ import org.faktorips.devtools.model.IIpsProjectConfigurator;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.internal.builder.JavaNamingConvention;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
@@ -104,10 +103,7 @@ public class EclipseProjectUtil {
      */
     public static final boolean hasIpsNature(IProject project) {
         try {
-            @SuppressWarnings("deprecation")
-            String oldNatureId = IpsProject.OLD_NATURE_ID;
-            return project.getDescription().hasNature(IIpsProject.NATURE_ID)
-                    || project.getDescription().hasNature(oldNatureId);
+            return project.getDescription().hasNature(IIpsProject.NATURE_ID);
         } catch (CoreException e) {
             throw new IpsException(e);
         }
