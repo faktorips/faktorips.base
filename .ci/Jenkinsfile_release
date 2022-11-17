@@ -52,8 +52,7 @@ pipeline {
                     // an empty kind is considered an rfinal version
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /(\d+)\.(\d+)\.(\d+)(?:-(rc\d{1,2}|m\d{1,2}|rfinal))?/)[0]
                     kind = kind == null ? "rfinal" : kind
-                    mavenRelaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','')
-                    eclipseRelaseVersion = mavenRelaseVersion.replaceFirst('-','.')
+                    relaseVersion = params.RELEASE_VERSION.replaceAll('-rfinal','').replaceFirst('-','.')
                     
                     def xmlfile = readFile 'pom.xml'
                     oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
@@ -65,11 +64,11 @@ pipeline {
             steps {
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${eclipseRelaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${relaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
-                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${eclipseRelaseVersion}/' {} \\;"
+                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${relaseVersion}/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare release ${params.RELEASE_VERSION}' && git tag -a -m ${params.RELEASE_VERSION} v${params.RELEASE_VERSION}"
 
                 // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
@@ -79,7 +78,7 @@ pipeline {
                     }
                 }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
-                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${eclipseRelaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
+                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${relaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
@@ -137,7 +136,7 @@ pipeline {
                 }
                 // deploy p2 repository
                 script {
-                    def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, mavenRelaseVersion)
+                    def archiveZipFile = MessageFormat.format(archiveZipFileTmpl, relaseVersion)
                     def archiveDeployDir = MessageFormat.format(archiveDeployDirTmpl, major, minor)
                     def ps2DeployDir = MessageFormat.format(ps2DeployDirTmpl, major, minor)
                     // add license to zipped repository (archive download) using zip from the shell 
@@ -157,19 +156,19 @@ pipeline {
                         """
                         sh """
                             echo "copy repository to eclipse update site"
-                            ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${mavenRelaseVersion}'
-                            scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${mavenRelaseVersion}
+                            ssh ${p2Server} 'mkdir -p ${ps2DeployDir}/${relaseVersion}'
+                            scp -r ${p2RepositoryFolder}/target/repository/* ${p2Server}:${ps2DeployDir}/${relaseVersion}
                         """
                         // create a composite, let eclipse see all versions in a sub dir e.g.: In v22_12 there could be 22.12.0-m01, 22.12.0-rc01 & 22.12.0-rfinal
                         // execute local script with stdin of ssh command
                         sh """
                             echo "create update site composite"
-                            bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${mavenRelaseVersion}
+                            bash ${p2RepositoryFolder}/scripts/callSSH.sh ${p2Server} ${p2RepositoryFolder}/scripts/buildComposites.sh ${ps2DeployDir} ${ps2DeployDir}/${relaseVersion}
                         """
                     }
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
-                        replaceOnServer(docServer, '2004', mavenDocFolder, "${mavenDocDeployFolder}/${mavenRelaseVersion}")
+                        replaceOnServer(docServer, '2004', mavenDocFolder, "${mavenDocDeployFolder}/${relaseVersion}")
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
                         replaceOnServer(docServer, '2004', xsdFolder, xsdDeployFolder)
