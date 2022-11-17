@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Refactoring
 Bundle-SymbolicName: org.faktorips.devtools.core.refactor;singleton:=true
-Bundle-Version: 22.12.0.a20221117-02
+Bundle-Version: 22.12.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.core.manipulation,
