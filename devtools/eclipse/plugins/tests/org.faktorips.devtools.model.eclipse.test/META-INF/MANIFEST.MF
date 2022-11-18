@@ -47,8 +47,6 @@ Import-Package: org.apache.commons.lang3;version="3.12.0",
  org.mockito.junit,
  org.mockito.stubbing,
  org.mockito.verification
-Export-Package: org.faktorips.devtools.model.eclipse.builder,
- org.faktorips.devtools.model.eclipse.internal,
- org.faktorips.devtools.model.eclipse.internal.ipsproject,
+Export-Package: org.faktorips.devtools.model.eclipse.internal.ipsproject,
  org.faktorips.devtools.model.eclipse.internal.ipsproject.jdtcontainer,
  org.faktorips.devtools.model.eclipse.util
