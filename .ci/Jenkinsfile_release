@@ -77,13 +77,19 @@ pipeline {
                         sh "mvn install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
-                // see https://github.com/eclipse-tycho/tycho/issues/1677
-                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${relaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
+               // install targets, as they are resolved by tycho when setting the versions back, which won't work if they are missing
+                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
+                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
+                        sh "mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                    }
+                }
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
+                 // see https://github.com/eclipse-tycho/tycho/issues/1677
+                sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${relaseVersion}/${params.DEVELOPMENT_VERSION}-SNAPSHOT/' {} \\;"
                 sh "git add . && git commit -m '[release] prepare for next development iteration'"
 
                 sh "git checkout ${LOCAL_BRANCH}~1"
