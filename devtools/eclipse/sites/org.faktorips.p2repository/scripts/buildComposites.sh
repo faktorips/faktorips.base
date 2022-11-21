@@ -24,7 +24,7 @@ contentFile=$COMPOSITE_DIR/compositeContent.xml
 artifactFile=$COMPOSITE_DIR/compositeArtifacts.xml
 artifactHeader="<?xml version='1.0' encoding='UTF-8'?>
 <?compositeArtifactRepository version='1.0.0'?>
-<repository name='&quot;IPS 4 FSPM Composite Site&quot;'
+<repository name='Faktor-IPS'
     type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='1'>
     <property name='p2.timestamp' value='%s'/>
