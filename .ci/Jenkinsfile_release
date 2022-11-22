@@ -34,7 +34,7 @@ pipeline {
                 script {
                     currentBuild.displayName = "Release ${params.RELEASE_VERSION} (${params.BRANCH})"
 
-                    assert params.RELEASE_VERSION ==~ /^(\d+\.)+\d+(\.rc\d\d|\.m\d\d|\.a\d{8}-\d\d|\.release)$/
+                    assert params.RELEASE_VERSION ==~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/
                     assert params.DEVELOPMENT_VERSION ==~ /(\d+\.)+\d+/
 
                     def scmVars = checkout([
@@ -47,7 +47,7 @@ pipeline {
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
 
                     // parse the version
-                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /^(\d+\.)+\d+(\.rc\d\d|\.m\d\d|\.a\d{8}-\d\d|\.release)$/)[0]
+                    (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/)[0]
                     relaseVersion = params.RELEASE_VERSION
                     
                     def xmlfile = readFile 'pom.xml'
