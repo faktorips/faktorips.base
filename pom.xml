@@ -14,7 +14,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.faktorips</groupId>
-    <version>22.12.1.release</version>
+    <version>22.12.2-SNAPSHOT</version>
     <artifactId>base</artifactId>
     <packaging>pom</packaging>
 

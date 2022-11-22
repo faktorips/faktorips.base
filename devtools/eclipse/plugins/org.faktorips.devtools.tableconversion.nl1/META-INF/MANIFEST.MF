@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Development Tools Table Im/Export Internationalisierung
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion.nl1
-Bundle-Version: 22.12.1.release
+Bundle-Version: 22.12.2.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.devtools.tableconversion
 Bundle-RequiredExecutionEnvironment: JavaSE-11
