@@ -77,4 +77,9 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
         }
         return projects.toArray();
     }
+
+    public Object[] getAllElements() {
+        return super.getElements();
+    }
+
 }

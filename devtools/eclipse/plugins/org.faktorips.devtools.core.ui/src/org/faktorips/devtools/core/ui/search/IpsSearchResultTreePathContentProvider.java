@@ -26,6 +26,7 @@ import org.eclipse.search.ui.text.AbstractTextSearchResult;
 import org.eclipse.search.ui.text.Match;
 import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.search.ui.text.RemoveAllEvent;
+import org.faktorips.devtools.core.ui.search.reference.ReferenceSearchResult;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -114,8 +115,11 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     }
 
     public Object[] getFoundIpsElements() {
-        if (searchResult != null) {
+        if (searchResult instanceof IpsSearchResult) {
             return ((IpsSearchResult)searchResult).getIpsElements();
+        }
+        if (searchResult instanceof ReferenceSearchResult) {
+            return ((ReferenceSearchResult)searchResult).getAllElements();
         }
         return new Object[0];
     }
