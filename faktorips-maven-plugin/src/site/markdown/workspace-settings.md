@@ -39,7 +39,8 @@ It can also be imported as a Eclipse project if a .project file exists. This beh
 
 ### exportHtml
 With this setting `<exportHtml>true</exportHtml>` the Faktor-IPS build will export the model with the **Faktor-IPS Html Export** Wizard.
-To package the generated HTML export in its own JAR, configure the maven-jar-plugin like:
+To package the generated HTML export in its own JAR, configure the maven-jar-plugin like
+
 ```
  <plugin>
    <artifactId>maven-jar-plugin</artifactId>
