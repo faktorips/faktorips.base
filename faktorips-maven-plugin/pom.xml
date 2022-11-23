@@ -25,8 +25,9 @@
         <commons-io.version>2.11.0</commons-io.version>
         <!-- plugins -->
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
-        <maven-plugin-plugin.version>3.6.4</maven-plugin-plugin.version>
+        <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
         <tycho-maven-plugin.version>3.0.0</tycho-maven-plugin.version>
+        <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     </properties>
 
     <dependencies>
@@ -229,6 +230,21 @@
 
     <reporting>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>summary</report>
+                            <report>dependencies</report>
+                            <report>dependency-info</report>
+                            <report>plugin-management</report>
+                            <report>plugins</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>
