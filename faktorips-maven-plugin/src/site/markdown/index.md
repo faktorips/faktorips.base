@@ -1,4 +1,10 @@
-The faktorips-maven-plugin can be used to build a Faktor-IPS project in a maven build. 
+The faktorips-maven-plugin can be used to build a Faktor-IPS project in a maven build.  
+
+It requires *Java 17* to run. Other JDKs may be used in the project(s) beeing built, see ["Using 
+a different JDK"](using-different-jdk.html).
+
+If you use Eclipse for development, we recommend configuring the same version for use 
+in this plugin, to avoid discrepancies in code formatter settings, see ["Repositories and additional plugins"](repositories-additional-plugins.html).
 
 See [here](plugin-info.html) for configuration.
 

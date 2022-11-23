@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project>
+<project name="Faktor-IPS Maven Plugin" xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd">
+
     <body>
         <menu name="Faktor-IPS">
             <item name="Faktor-IPS Maven Plugin" href="plugin-info.html" />
@@ -24,7 +25,17 @@
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.9</version>
+        <version>1.11.1</version>
     </skin>
+
+    <custom>
+        <fluidoSkin>
+            <gitHub>
+                <projectId>faktorips/faktorips.base</projectId>
+                <ribbonOrientation>right</ribbonOrientation>
+                <ribbonColor>black</ribbonColor>
+            </gitHub>
+        </fluidoSkin>
+    </custom>
 
 </project>
