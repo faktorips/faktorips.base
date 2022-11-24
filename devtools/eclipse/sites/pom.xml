@@ -24,6 +24,57 @@
             <url>http://drone.faktorzehn.de:8080/maven/faktor-ips_3_snapshots</url>
         </snapshotRepository>
     </distributionManagement>
+      <dependencies>
+        <!-- modules as dependencies to ensure they are built before this 
+            p2 repository -->
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime-groovy</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-valuetypes-joda</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-testsupport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-abstraction</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-maven-archetype</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.feature</artifactId>
+            <version>${faktorips.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.groovy.feature</artifactId>
+            <version>${faktorips.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.m2e.feature</artifactId>
+            <version>${faktorips.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
