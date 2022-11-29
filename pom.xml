@@ -119,6 +119,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>devtools</module>
         <module>faktorips-maven-archetype</module>
         <module>faktorips-maven-plugin</module>
+        <module>faktorips-validation-maven-plugin</module>
         <module>faktorips-coverage</module>
     </modules>
 
