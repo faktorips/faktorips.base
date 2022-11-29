@@ -19,6 +19,14 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
+import org.faktorips.devtools.abstraction.AProject;
+import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
+import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaWorkspace;
+import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.MessageList;
 
 /**
  * Validates a Faktor-IPS project.
@@ -45,6 +53,20 @@ public class IpsValidationMojo extends AbstractMojo {
             return;
         }
 
-        // TODO Implement Validation
+        PlainJavaWorkspace plainJavaWorkspace = new PlainJavaWorkspace(project.getBasedir().getParentFile());
+        PlainJavaImplementation.get().setWorkspace(plainJavaWorkspace);
+        AProject aProject = Abstractions.getWorkspace().getRoot().getProject(project.getBasedir().getName());
+        IIpsModel ipsModel = IIpsModel.get();
+        IIpsProject ipsProject = ipsModel.getIpsProject(aProject);
+
+        MessageList validationResults = ipsProject.validate();
+
+        ipsProject.findAllIpsSrcFiles()
+                .parallelStream()
+                .map(IIpsSrcFile::getIpsObject)
+                .map(o -> o.validate(ipsProject))
+                .forEach(validationResults::add);
+
+        System.out.println(validationResults);
     }
 }

@@ -38,6 +38,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.JavaClass2DatatypeAdaptor;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IFunctionResolverFactory;
 import org.faktorips.devtools.model.IIpsModel;
@@ -271,7 +272,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public MessageList validate(IIpsProject ipsProject) {
         try {
             MessageList list = new MessageList();
-            if (validateBuilderSetId(ipsProject, list)) {
+            if (Abstractions.isEclipseRunning() && validateBuilderSetId(ipsProject, list)) {
                 validateBuilderSetConfig(ipsProject, list);
             }
             validateProductCmptNamingStrategy(list);
@@ -348,6 +349,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private boolean validateBuilderSetId(IIpsProject ipsProject, MessageList list) {
         IIpsArtefactBuilderSetInfo builderSetInfo = ipsProject.getIpsModel().getIpsArtefactBuilderSetInfo(builderSetId);
+
         if (builderSetInfo == null) {
             String text = Messages.IpsProjectProperties_msgUnknownBuilderSetId + builderSetId;
             Message msg = new Message(IIpsProjectProperties.MSGCODE_UNKNOWN_BUILDER_SET_ID, text, Message.ERROR, this,

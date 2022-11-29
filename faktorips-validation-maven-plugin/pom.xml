@@ -29,6 +29,11 @@
     </properties>
 
     <dependencies>
+         <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-model-plainjava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-shared-utils</artifactId>

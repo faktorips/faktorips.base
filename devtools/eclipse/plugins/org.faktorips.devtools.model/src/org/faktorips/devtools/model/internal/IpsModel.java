@@ -1325,12 +1325,12 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     @Override
     public IVersionProvider<?> getVersionProvider(IIpsProject ipsProject) {
-        IVersionProvider<?> verionProvider = getIpsProjectData(ipsProject).getVersionProvider();
-        if (verionProvider == null) {
-            verionProvider = IIpsModelExtensions.get().getVersionProvider(ipsProject);
-            getIpsProjectData(ipsProject).setVersionProvider(verionProvider);
+        IVersionProvider<?> versionProvider = getIpsProjectData(ipsProject).getVersionProvider();
+        if (versionProvider == null) {
+            versionProvider = IIpsModelExtensions.get().getVersionProvider(ipsProject);
+            getIpsProjectData(ipsProject).setVersionProvider(versionProvider);
         }
-        return verionProvider;
+        return versionProvider;
     }
 
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
