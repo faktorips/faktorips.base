@@ -55,7 +55,7 @@ public class HistogramTest {
     public void testDistribution_SingleValue() {
         Element a = element("A");
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, a);
-        assertThat(histogram.getDistribution().size(), is(1));
+        assertThat(histogram.countElements(), is(1));
         assertThat(histogram.getDistribution().get("A"), hasItems(a));
         assertThat(histogram.getDistribution().get("B").isEmpty(), is(true));
     }
@@ -67,7 +67,7 @@ public class HistogramTest {
         Element a3 = element("A");
         List<Element> elements = List.of(a1, a2, a3);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
-        assertThat(histogram.getDistribution().size(), is(3));
+        assertThat(histogram.countElements(), is(3));
         assertThat(histogram.getDistribution().get("A"), hasItems(a1, a2, a3));
         assertThat(histogram.getDistribution().get("B").isEmpty(), is(true));
     }
@@ -79,7 +79,7 @@ public class HistogramTest {
         Element a = element("A");
         List<Element> elements = List.of(null1, null2, a);
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
-        assertThat(histogram.getDistribution().size(), is(3));
+        assertThat(histogram.countElements(), is(3));
         assertThat(histogram.getDistribution().get(null), hasItems(null1, null2));
         assertThat(histogram.getDistribution().get("A"), hasItems(a));
     }
@@ -95,7 +95,7 @@ public class HistogramTest {
         List<Element> elements = List.of(a1, a2, a3, b1, b2, c);
 
         Histogram<String, Element> histogram = new Histogram<>(VALUE_FUNCTION, elements);
-        assertThat(histogram.getDistribution().size(), is(6));
+        assertThat(histogram.countElements(), is(6));
         assertThat(histogram.getDistribution().get("A"), hasItems(a1, a2, a3));
         assertThat(histogram.getDistribution().get("B"), hasItems(b1, b2));
         assertThat(histogram.getDistribution().get("C"), hasItems(c));

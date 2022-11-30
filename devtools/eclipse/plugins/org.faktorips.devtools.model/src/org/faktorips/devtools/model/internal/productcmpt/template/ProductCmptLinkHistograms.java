@@ -18,9 +18,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
-
-import com.google.common.collect.Maps;
 
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.productcmpt.Cardinality;
@@ -113,7 +112,7 @@ public class ProductCmptLinkHistograms {
          */
         @Override
         public BestValue<Cardinality> getBestValue(Decimal threshold) {
-            SortedMap<Cardinality, Decimal> relativeDistribution = Maps.newTreeMap(super.getRelativeDistribution());
+            SortedMap<Cardinality, Decimal> relativeDistribution = new TreeMap<>(super.getRelativeDistribution());
             relativeDistribution.remove(Cardinality.UNDEFINED);
             Cardinality candidateValue = relativeDistribution.firstKey();
             return getBestValue(threshold, relativeDistribution, candidateValue);

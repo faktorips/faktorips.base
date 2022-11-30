@@ -15,8 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.primitives.Ints;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
@@ -115,7 +114,8 @@ public class FixEnumContentStrategy implements TabularContentStrategy<IEnumType,
             if (Arrays.equals(attributeOrdering, currentAttribute)) {
                 break;
             }
-            int indexDestination = Ints.indexOf(currentAttribute, attributeOrdering[i]);
+
+            int indexDestination = ArrayUtils.indexOf(currentAttribute, attributeOrdering[i]);
             // No swapping needed if the EnumAttribute is already at the right position
             if (i == indexDestination) {
                 continue;

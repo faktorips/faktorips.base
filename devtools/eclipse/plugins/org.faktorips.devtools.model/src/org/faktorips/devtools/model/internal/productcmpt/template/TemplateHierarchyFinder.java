@@ -13,18 +13,16 @@ package org.faktorips.devtools.model.internal.productcmpt.template;
 import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_CMPT;
 import static org.faktorips.devtools.model.ipsobject.IpsObjectType.PRODUCT_TEMPLATE;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
-
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.util.Tree.Node;
+import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.util.MultiMap;
 
 public class TemplateHierarchyFinder {
 
@@ -48,9 +46,9 @@ public class TemplateHierarchyFinder {
             return Tree.emptyTree();
         }
 
-        Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
+        MultiMap<String, IIpsSrcFile> templateMap = MultiMap.createWithLinkedSetAsValues();
         for (IIpsProject p : ipsProject.findReferencingProjectLeavesOrSelf()) {
-            templateMap.putAll(createTemplateMap(p));
+            templateMap.merge(createTemplateMap(p));
         }
 
         Tree<IIpsSrcFile> tree = new Tree<>(template.getIpsSrcFile());
@@ -63,8 +61,8 @@ public class TemplateHierarchyFinder {
      * qualified names of templates and the values are the source files found in the given project
      * that reference that template.
      */
-    private static Multimap<String, IIpsSrcFile> createTemplateMap(IIpsProject ipsProject) {
-        Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
+    private static MultiMap<String, IIpsSrcFile> createTemplateMap(IIpsProject ipsProject) {
+        MultiMap<String, IIpsSrcFile> templateMap = MultiMap.createWithLinkedSetAsValues();
         for (IIpsSrcFile srcFile : ipsProject.findAllIpsSrcFiles(PRODUCT_CMPT, PRODUCT_TEMPLATE)) {
             String template = srcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
             if (IpsStringUtils.isNotBlank(template)) {
@@ -80,7 +78,7 @@ public class TemplateHierarchyFinder {
      */
     private static void addTemplateReferences(Node<IIpsSrcFile> parent,
             String templateQName,
-            Multimap<String, IIpsSrcFile> templateMap) {
+            MultiMap<String, IIpsSrcFile> templateMap) {
 
         Set<Node<IIpsSrcFile>> children = addDirectTemplateReferences(parent, templateQName, templateMap);
         for (Node<IIpsSrcFile> child : children) {
@@ -98,8 +96,8 @@ public class TemplateHierarchyFinder {
      */
     private static Set<Node<IIpsSrcFile>> addDirectTemplateReferences(Node<IIpsSrcFile> parent,
             String templateQName,
-            Multimap<String, IIpsSrcFile> templateMap) {
-        Set<Node<IIpsSrcFile>> addedNodes = Sets.newLinkedHashSet();
+            MultiMap<String, IIpsSrcFile> templateMap) {
+        Set<Node<IIpsSrcFile>> addedNodes = new LinkedHashSet<>();
         for (IIpsSrcFile srcFile : templateMap.get(templateQName)) {
             addedNodes.add(parent.addChild(srcFile));
         }

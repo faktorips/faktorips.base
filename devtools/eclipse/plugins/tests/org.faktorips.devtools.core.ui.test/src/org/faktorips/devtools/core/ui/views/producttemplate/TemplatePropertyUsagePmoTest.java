@@ -277,7 +277,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();
         pmo.setTemplatedValue(tTable);
         Histogram<Object, ITemplatedValue> histogram = pmo.getDefinedValuesHistogram();
-        assertThat(histogram.getDistribution().size(), is(3));
+        assertThat(histogram.countElements(), is(3));
         assertThat(histogram.getDistribution().get("Table-A"), hasItems((ITemplatedValue)p1Table));
         assertThat(histogram.getDistribution().get("Table-B"), hasItems((ITemplatedValue)p2Table, p2Table));
 

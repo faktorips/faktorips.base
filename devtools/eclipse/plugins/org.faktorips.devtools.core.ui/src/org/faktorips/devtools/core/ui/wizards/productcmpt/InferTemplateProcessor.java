@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -190,7 +191,7 @@ public class InferTemplateProcessor implements ICoreRunnable {
 
     private void updateOriginPropertyValues(ITemplatedValueIdentifier identifier, Object value) {
         Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(identifier);
-        Set<IPropertyValue> elements = histogram.getElements(value);
+        Collection<IPropertyValue> elements = histogram.getElements(value);
         for (IPropertyValue propertyValue : elements) {
             preSrcFileChanged(propertyValue.getIpsSrcFile());
             propertyValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);

@@ -16,9 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Multimap;
-
 import org.faktorips.devtools.model.internal.util.Histogram;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -26,12 +23,13 @@ import org.faktorips.devtools.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.ITemplatedValueIdentifier;
+import org.faktorips.util.MultiMap;
 
 public class PropertyValueHistograms {
 
     private final Map<ITemplatedValueIdentifier, Histogram<Object, IPropertyValue>> propertyValueHistorgram = new HashMap<>();
 
-    private PropertyValueHistograms(Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues) {
+    private PropertyValueHistograms(MultiMap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues) {
         for (Entry<ITemplatedValueIdentifier, Collection<IPropertyValue>> propertyValuesEntry : propertyToValues
                 .asMap().entrySet()) {
             ITemplatedValueIdentifier name = propertyValuesEntry.getKey();
@@ -54,7 +52,7 @@ public class PropertyValueHistograms {
     }
 
     public static PropertyValueHistograms createFor(List<IProductCmpt> cmpts) {
-        Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues = LinkedListMultimap.create();
+        MultiMap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues = MultiMap.createWithLinkedSetAsValues();
         for (IProductCmpt productCmpt : cmpts) {
             addAllPropertyValues(propertyToValues, productCmpt);
             IProductCmptGeneration productCmptGeneration = productCmpt.getLatestProductCmptGeneration();
@@ -64,7 +62,7 @@ public class PropertyValueHistograms {
         return new PropertyValueHistograms(propertyToValues);
     }
 
-    private static void addAllPropertyValues(Multimap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues,
+    private static void addAllPropertyValues(MultiMap<ITemplatedValueIdentifier, IPropertyValue> propertyToValues,
             IPropertyValueContainer propertyValueContainer) {
         for (IPropertyValue propertyValue : propertyValueContainer.getAllPropertyValues()) {
             propertyToValues.put(propertyValue.getIdentifier(), propertyValue);

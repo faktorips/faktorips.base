@@ -41,7 +41,12 @@ public class MultiMap<K, V> implements Serializable {
 
     private final CollectionFactory<V> collectionFactory;
 
-    private final ConcurrentHashMap<K, Collection<V>> internalMap;
+    private final Map<K, Collection<V>> internalMap;
+
+    protected MultiMap(Map<K, Collection<V>> map, CollectionFactory<V> collectionFactory) {
+        internalMap = map;
+        this.collectionFactory = collectionFactory;
+    }
 
     /**
      * Creates a new {@link MultiMap} with {@link ArrayList} instances as values.
@@ -50,9 +55,13 @@ public class MultiMap<K, V> implements Serializable {
         this(new ArrayListFactory<V>());
     }
 
+    /**
+     * Creates a new {@link MultiMap} with an given {@link CollectionFactory}.
+     * 
+     * @param collectionFactory the collection factory to use
+     */
     public MultiMap(CollectionFactory<V> collectionFactory) {
-        this.collectionFactory = collectionFactory;
-        internalMap = new ConcurrentHashMap<>(16, 0.75f, 1);
+        this(new ConcurrentHashMap<>(16, 0.75f, 1), collectionFactory);
     }
 
     public static <K, V> MultiMap<K, V> createWithSetsAsValues() {
@@ -76,8 +85,7 @@ public class MultiMap<K, V> implements Serializable {
      */
     @SafeVarargs
     public final void put(K key, V... values) {
-        Collection<V> collection = getCollectionInternal(key);
-        collection.addAll(Arrays.asList(values));
+        put(key, Arrays.asList(values));
     }
 
     /**
@@ -219,6 +227,24 @@ public class MultiMap<K, V> implements Serializable {
     }
 
     /**
+     * Returns an unmodifiable {@link Map} containing the entries of this multi map.
+     * 
+     * @return an unmodifiable view of this Map.
+     */
+    public Map<K, Collection<V>> asMap() {
+        return Collections.unmodifiableMap(internalMap);
+    }
+
+    /**
+     * Returns true if this multi map contains no key-value pairs.
+     * 
+     * @return {@code true} if empty
+     */
+    public boolean isEmpty() {
+        return internalMap.isEmpty();
+    }
+
+    /**
      * Factory for creating collection instances to be used as values in a {@link MultiMap}.
      */
     public interface CollectionFactory<V> extends Serializable {
@@ -244,7 +270,6 @@ public class MultiMap<K, V> implements Serializable {
         public Collection<V> createCollection() {
             return new ArrayList<>();
         }
-
     }
 
     /**
@@ -261,7 +286,6 @@ public class MultiMap<K, V> implements Serializable {
         public Collection<V> createCollection() {
             return new HashSet<>();
         }
-
     }
 
     /**
@@ -278,7 +302,5 @@ public class MultiMap<K, V> implements Serializable {
         public Collection<V> createCollection() {
             return new LinkedHashSet<>();
         }
-
     }
-
 }

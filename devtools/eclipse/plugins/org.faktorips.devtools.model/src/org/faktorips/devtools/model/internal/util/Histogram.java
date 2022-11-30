@@ -16,22 +16,20 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Function;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.TreeMultimap;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.util.MultiMap;
+import org.faktorips.util.MultiMaps;
+import org.faktorips.util.SortedMultiMap;
 import org.faktorips.values.Decimal;
 
 /**
@@ -51,7 +49,7 @@ public class Histogram<V, E> {
      * Map containing the mapping of a value to the elements containing that value. The amount of
      * elements is the distribution how often the value occurs.
      */
-    private final TreeMultimap<V, E> valueToElements;
+    private final SortedMultiMap<V, E> valueToElements;
 
     /** Function to determine an element's value. */
     private final Function<E, V> elementToValueFunction;
@@ -97,7 +95,7 @@ public class Histogram<V, E> {
         this.valueComparator = valueComparator;
         this.totalCount = elements.size();
         this.elementToValueFunction = elementToValueFunction;
-        this.valueToElements = TreeMultimap.create(valueComparator, new SameInstanceComparator<E>());
+        this.valueToElements = new SortedMultiMap<>(valueComparator, new SameInstanceComparator<E>());
         initValueToElementsMap(elements);
     }
 
@@ -107,8 +105,8 @@ public class Histogram<V, E> {
      * how often the value occurs. The map is sorted so that values occurring more often come first.
      */
     public SortedMap<V, Integer> getAbsoluteDistribution() {
-        TreeMap<V, Integer> sortedDistribution = Maps
-                .newTreeMap(new DistributionComparator<>(valueToElements, valueComparator));
+        TreeMap<V, Integer> sortedDistribution = new TreeMap<>(
+                new DistributionComparator<>(valueToElements, valueComparator));
         sortedDistribution.putAll(transformToOccurenceCountMap(valueToElements));
         return Collections.unmodifiableSortedMap(sortedDistribution);
     }
@@ -132,15 +130,15 @@ public class Histogram<V, E> {
      * @return a multimap that contains all values in this histogram (the map's keys) and the
      *             elements with these values (the map's values)
      */
-    public Multimap<V, E> getDistribution() {
-        return Multimaps.unmodifiableMultimap(valueToElements);
+    public MultiMap<V, E> getDistribution() {
+        return MultiMaps.unmodifiableMultimap(valueToElements);
     }
 
     /**
      * Gives the amount of elements in this histogram.
      */
     public int countElements() {
-        return valueToElements.size();
+        return valueToElements.count();
     }
 
     /**
@@ -150,8 +148,8 @@ public class Histogram<V, E> {
      * @return the elements in this histogram that have the given value. The set is empty if no
      *             elements in this histogram have the given value.
      */
-    public Set<E> getElements(V value) {
-        return Collections.unmodifiableSet(valueToElements.get(value));
+    public Collection<E> getElements(V value) {
+        return valueToElements.get(value);
     }
 
     /**
@@ -168,16 +166,19 @@ public class Histogram<V, E> {
      * containing the relative distribution of values.
      */
     private SortedMap<V, Decimal> transformToRelativeDistribution(SortedMap<V, Integer> map) {
-        return Maps.transformEntries(map,
-                (value, elementCount) -> Decimal.valueOf(elementCount).divide(totalCount, SCALE, RoundingMode.HALF_UP));
+        SortedMap<V, Decimal> relative = new TreeMap<>(map.comparator());
+        map.forEach((k, v) -> relative.put(k, Decimal.valueOf(v).divide(totalCount, SCALE, RoundingMode.HALF_UP)));
+        return relative;
     }
 
     /**
      * Transforms the given {@code Multimap} to a simple {@code Map}, the keys are the key from the
      * {@code Multimap}, the value is the number of values to that key in the {@code Multimap}.
      */
-    private Map<V, Integer> transformToOccurenceCountMap(Multimap<V, E> map) {
-        return Maps.transformEntries(map.asMap(), ($, elements) -> elements.size());
+    private Map<V, Integer> transformToOccurenceCountMap(MultiMap<V, E> map) {
+        Map<V, Integer> occurence = new LinkedHashMap<>();
+        map.asMap().forEach((k, v) -> occurence.put(k, v.size()));
+        return occurence;
     }
 
     /**
@@ -289,11 +290,11 @@ public class Histogram<V, E> {
 
         private static final long serialVersionUID = 1L;
 
-        private final TreeMultimap<V, ?> valueToElements;
+        private final SortedMultiMap<V, ?> valueToElements;
 
         private Comparator<? super V> valueComparator;
 
-        public DistributionComparator(TreeMultimap<V, ?> valueToElements, Comparator<? super V> valueComparator) {
+        public DistributionComparator(SortedMultiMap<V, ?> valueToElements, Comparator<? super V> valueComparator) {
             this.valueToElements = valueToElements;
             this.valueComparator = valueComparator;
         }

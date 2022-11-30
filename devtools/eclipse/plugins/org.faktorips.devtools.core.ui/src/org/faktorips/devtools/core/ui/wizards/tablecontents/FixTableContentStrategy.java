@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.primitives.Ints;
-
+import org.apache.commons.lang3.ArrayUtils;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
@@ -112,7 +111,8 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
             if (Arrays.equals(columnOrdering, currentColumnOrdering)) {
                 break;
             }
-            int indexDestination = Ints.indexOf(currentColumnOrdering, columnOrdering[i]);
+
+            int indexDestination = ArrayUtils.indexOf(currentColumnOrdering, columnOrdering[i]);
             // no swapping needed when the column is already at the right position
             if (i == indexDestination) {
                 continue;

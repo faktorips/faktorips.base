@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -91,7 +90,7 @@ public class MultiMapTest {
 
     @Test
     public void testPut_multiValueList() {
-        multiMap.put(1, Arrays.asList("a", "b"));
+        multiMap.put(1, List.of("a", "b"));
 
         Collection<String> stringCollection = multiMap.get(1);
 
@@ -178,7 +177,7 @@ public class MultiMapTest {
 
     @Test
     public void testPutReplace_noPreviousEntry() throws Exception {
-        List<String> list = Arrays.asList("a", "b", "c");
+        List<String> list = List.of("a", "b", "c");
         multiMap.putReplace(1, list);
 
         Collection<String> result = multiMap.get(1);
@@ -189,7 +188,7 @@ public class MultiMapTest {
     @Test
     public void testPutReplace_withPreviousEntry() throws Exception {
         multiMap.put(1, "x", "y", "z");
-        List<String> list = Arrays.asList("a", "b", "c");
+        List<String> list = List.of("a", "b", "c");
         multiMap.putReplace(1, list);
 
         Collection<String> result = multiMap.get(1);
@@ -200,8 +199,8 @@ public class MultiMapTest {
     @Test
     public void testPutReplace_wrongCollectionType() throws Exception {
         multiMap = MultiMap.createWithSetsAsValues();
-        multiMap.putReplace(1, Arrays.asList("x", "y", "z"));
-        List<String> list = Arrays.asList("a", "b", "c");
+        multiMap.putReplace(1, List.of("x", "y", "z"));
+        List<String> list = List.of("a", "b", "c");
         multiMap.putReplace(1, list);
 
         Collection<String> result = multiMap.get(1);
