@@ -14,6 +14,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -39,6 +40,7 @@ import org.faktorips.runtime.MessageList;
 public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionPoints {
 
     private static /* final */ PlainJavaIpsModelExtensions instance = new PlainJavaIpsModelExtensions();
+    private Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider;
 
     protected PlainJavaIpsModelExtensions() {
         super(new PlainJavaRegistryProvider().getRegistry());
@@ -98,6 +100,20 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
         return List.of(new PlainJavaJDTClasspathContainer());
     }
 
+    /**
+     * Returns a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries} for a {@link IIpsProject}.
+     */
+    public Function<IIpsProject, List<IIpsObjectPathEntry>> getProjectDependenciesProvider() {
+        return projectDependenciesProvider;
+    }
+
+    /**
+     * Sets a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries} for a {@link IIpsProject}.
+     */
+    public void setProjectDependenciesProvider(Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider) {
+        this.projectDependenciesProvider = projectDependenciesProvider;
+    }
+
     private static final class PlainJavaMavenVersionProviderFactory implements IVersionProviderFactory {
 
         @Override
@@ -119,7 +135,7 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
 
                 @Override
                 public List<IIpsObjectPathEntry> resolveEntries() {
-                    return List.of();
+                    return PlainJavaIpsModelExtensions.get().getProjectDependenciesProvider().apply(ipsProject);
                 }
 
                 @Override

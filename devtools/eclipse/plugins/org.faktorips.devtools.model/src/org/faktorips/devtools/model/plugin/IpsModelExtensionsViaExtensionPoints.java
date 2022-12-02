@@ -17,6 +17,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AVersion;
@@ -34,6 +35,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.model.plugin.extensions.ClassLoaderProviderFactoryExtension;
 import org.faktorips.devtools.model.plugin.extensions.CustomValidationExtensions;
+import org.faktorips.devtools.model.plugin.extensions.DatatypeHelperRegistry;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitionExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
@@ -104,6 +106,9 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 22.12 */
     private final Supplier<List<ReleaseExtension>> releaseExtensions;
 
+    /** @since 23.1 */
+    private final Supplier<Map<Datatype, DatatypeHelper>> datatypeHelperRegistry;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
@@ -111,7 +116,8 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         ipsWorkspaceInteractions = new IpsWorkspaceInteractionsExtension(extensionPoints);
         ipsProjectConfigurators = new IpsProjectConfigurerExtension(extensionPoints);
         classLoaderProviderFactory = new ClassLoaderProviderFactoryExtension(extensionPoints);
-        MigrationOperationExtensions migrationOperationExtensions = new MigrationOperationExtensions(extensionPoints);
+        MigrationOperationExtensions migrationOperationExtensions = new MigrationOperationExtensions(
+                extensionPoints);
         registeredMigrationOperations = contributorName -> migrationOperationExtensions.get()
                 .computeIfAbsent(contributorName, $ -> Map.of());
         flFunctionResolvers = new FunctionResolverFactoryExtensions(extensionPoints);
@@ -129,6 +135,7 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         customValidations = new CustomValidationExtensions(extensionPoints);
         ipsObjectTypes = new IpsObjectTypeExtensions(extensionPoints);
         releaseExtensions = new ReleaseExtensions(extensionPoints);
+        datatypeHelperRegistry = new DatatypeHelperRegistry(extensionPoints);
     }
 
     @Override
@@ -227,5 +234,10 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public List<ReleaseExtension> getReleaseExtensions() {
         return releaseExtensions.get();
+    }
+
+    @Override
+    public Supplier<Map<Datatype, DatatypeHelper>> getDatatypeHelperRegistry() {
+        return datatypeHelperRegistry;
     }
 }
