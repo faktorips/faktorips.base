@@ -14,13 +14,6 @@
     <name>Faktor-IPS Model</name>
     <description>Model for the Faktor-IPS design time tools</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->

@@ -13,13 +13,6 @@
     <name>Faktor-IPS Model for Eclipse</name>
     <description>Eclipse Module for the Faktor-IPS design time model</description>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <!-- Update the product Build ID and version in the about text -->
