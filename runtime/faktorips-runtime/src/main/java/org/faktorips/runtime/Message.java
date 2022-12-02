@@ -601,6 +601,13 @@ public class Message implements Serializable {
         }
         sb.append(' ');
         sb.append(code);
+        appendInvalidObjectProperties(sb);
+        sb.append(System.lineSeparator());
+        sb.append(text);
+        return sb.toString();
+    }
+
+    public void appendInvalidObjectProperties(StringBuilder sb) {
         sb.append('[');
         StringBuilderJoiner.join(sb, invalidOp, op -> {
             sb.append(op.getObject().toString());
@@ -608,9 +615,6 @@ public class Message implements Serializable {
             sb.append(op.getProperty());
         });
         sb.append(']');
-        sb.append(System.lineSeparator());
-        sb.append(text);
-        return sb.toString();
     }
 
     /**
