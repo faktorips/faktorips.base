@@ -92,7 +92,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <spotbugs-maven-plugin.version>4.7.2.0</spotbugs-maven-plugin.version>
         <spotbugs.version>4.7.1</spotbugs.version>
         <!-- Tycho & Eclipse-->
-        <tycho.version>3.0.0</tycho.version>
+        <!-- tycho-version is configured in .mvn/maven.config to be used here and in .mvn/extensions.xml -->
+        <tycho.version>${tycho-version}</tycho.version>
         <xtend-maven-plugin.version>2.28.0</xtend-maven-plugin.version>
         <!-- Others -->
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
@@ -439,5 +440,4 @@ license terms are available from Faktor Zehn GmbH.</comments>
             </plugin>
         </plugins>
     </reporting>
-
 </project>
