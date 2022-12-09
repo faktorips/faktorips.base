@@ -11,6 +11,7 @@ package org.faktorips.maven.plugin.validation;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
@@ -31,8 +32,9 @@ public class IpsDependency {
     private String artifactId;
     private String groupId;
     private String version;
-    private IIpsProject ipsProject;
     private Path path;
+    private IIpsProject ipsProject;
+    private MavenProject mavenProject;
 
     public static IpsDependency create(Artifact artifact) {
         IpsDependency ipsDependency = new IpsDependency();
@@ -51,6 +53,7 @@ public class IpsDependency {
         ipsDependency.setVersion(project.getVersion());
         ipsDependency.setPath(project.getBasedir().toPath());
         ipsDependency.setIpsProject(convertMavenProjectToIpsProject(project));
+        ipsDependency.setMavenProject(project);
         return ipsDependency;
     }
 
@@ -101,6 +104,14 @@ public class IpsDependency {
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    public Optional<MavenProject> getMavenProject() {
+        return Optional.ofNullable(mavenProject);
+    }
+
+    public void setMavenProject(MavenProject mavenProject) {
+        this.mavenProject = mavenProject;
     }
 
     @Override

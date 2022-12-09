@@ -49,6 +49,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
+import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
@@ -79,18 +80,26 @@ public class IpsValidationMojo extends AbstractMojo {
             getLog().info("skipping mojo execution");
             return;
         }
-
-        PlainJavaWorkspace plainJavaWorkspace = new PlainJavaWorkspace(project.getBasedir().getParentFile());
-        PlainJavaImplementation.get().setWorkspace(plainJavaWorkspace);
+        initWorkspace();
         AProject aProject = Abstractions.getWorkspace().getRoot().getProject(project.getBasedir().getName());
 
         if (!aProject.isIpsProject()) {
             return;
         }
 
-        addDependencies();
+        Set<IpsDependency> ipsDependencies = findDependencies();
+        setIpsObjectPath(ipsDependencies);
 
         IIpsProject ipsProject = IIpsModel.get().getIpsProject(aProject);
+
+        setVersionProvider(ipsDependencies);
+
+        MessageList validationResults = validate(ipsProject);
+
+        logMessages(validationResults, getLog());
+    }
+
+    private MessageList validate(IIpsProject ipsProject) {
         MessageList validationResults = ipsProject.validate();
 
         // TODO FIPS-9513 -> parallelStream()
@@ -99,8 +108,19 @@ public class IpsValidationMojo extends AbstractMojo {
                 .map(IIpsSrcFile::getIpsObject)
                 .map(o -> o.validate(ipsProject))
                 .forEach(validationResults::add);
+        return validationResults;
+    }
 
-        logMessages(validationResults, getLog());
+    private void initWorkspace() {
+        PlainJavaWorkspace plainJavaWorkspace = new PlainJavaWorkspace(project.getBasedir().getParentFile());
+        PlainJavaImplementation.get().setWorkspace(plainJavaWorkspace);
+    }
+
+    private void setVersionProvider(Set<IpsDependency> ipsDependencies) {
+        var dependenciesInclProject = new LinkedHashSet<>(ipsDependencies);
+        dependenciesInclProject.add(IpsDependency.create(project));
+        PlainJavaIpsModelExtensions.get().setVersionProviderFactory("org.faktorips.maven.mavenVersionProvider",
+                new MavenVersionProviderFactory(dependenciesInclProject));
     }
 
     static void logMessages(MessageList messageList, Log log) {
@@ -125,16 +145,19 @@ public class IpsValidationMojo extends AbstractMojo {
         }
     }
 
-    private void addDependencies() {
-        Set<IpsDependency> ipsDependencies = new LinkedHashSet<>();
-        ipsDependencies.addAll(findUpstreamProjects());
-        ipsDependencies.addAll(findIpsJars(project));
-
+    private void setIpsObjectPath(Set<IpsDependency> ipsDependencies) {
         Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependencyEntries = ipsDependencies.isEmpty()
                 ? i -> new ArrayList<>()
                 : i -> createIpsObjectPathEntries(i,
                         ipsDependencies);
         PlainJavaIpsModelExtensions.get().setProjectDependenciesProvider(projectDependencyEntries);
+    }
+
+    private Set<IpsDependency> findDependencies() {
+        Set<IpsDependency> ipsDependencies = new LinkedHashSet<>();
+        ipsDependencies.addAll(findUpstreamProjects());
+        ipsDependencies.addAll(findIpsJars(project));
+        return ipsDependencies;
     }
 
     private List<IIpsObjectPathEntry> createIpsObjectPathEntries(IIpsProject ipsProject,

@@ -12,6 +12,8 @@ package org.faktorips.devtools.model.plainjava.internal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,10 +22,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
-import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.builder.IDependencyGraphPersistenceManager;
-import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.model.internal.preferences.DefaultIpsModelPreferences;
 import org.faktorips.devtools.model.ipsproject.IClasspathContentsChangeListener;
@@ -42,6 +42,8 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
     private static /* final */ PlainJavaIpsModelExtensions instance = new PlainJavaIpsModelExtensions();
     private Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider;
 
+    private Map<String, IVersionProviderFactory> versionProviderFactoryOverrides = new LinkedHashMap<>();
+
     protected PlainJavaIpsModelExtensions() {
         super(new PlainJavaRegistryProvider().getRegistry());
     }
@@ -51,8 +53,7 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
     }
 
     /**
-     * <em><strong>For testing with a custom {@link IExtensionRegistry}
-     * only.</strong></em>
+     * <em><strong>For testing with a custom {@link IExtensionRegistry} only.</strong></em>
      * 
      * @param testInstance an PlainJavaIpsModelExtensions with test data
      */
@@ -87,11 +88,14 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
         return $ -> null;
     }
 
+    public void setVersionProviderFactory(String id, IVersionProviderFactory factory) {
+        versionProviderFactoryOverrides.put(id, factory);
+    }
+
     @Override
     public Map<String, IVersionProviderFactory> getVersionProviderFactories() {
-        Map<String, IVersionProviderFactory> versionProviderFactories = super.getVersionProviderFactories();
-        IVersionProviderFactory mavenVersionProviderFactory = new PlainJavaMavenVersionProviderFactory();
-        versionProviderFactories.put("org.faktorips.maven.mavenVersionProvider", mavenVersionProviderFactory);
+        var versionProviderFactories = new HashMap<>(super.getVersionProviderFactories());
+        versionProviderFactories.putAll(versionProviderFactoryOverrides);
         return versionProviderFactories;
     }
 
@@ -112,15 +116,6 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
      */
     public void setProjectDependenciesProvider(Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider) {
         this.projectDependenciesProvider = projectDependenciesProvider;
-    }
-
-    private static final class PlainJavaMavenVersionProviderFactory implements IVersionProviderFactory {
-
-        @Override
-        public IVersionProvider<?> createVersionProvider(IIpsProject ipsProject) {
-            // TODO FIPS-9503
-            return new DefaultVersionProvider(ipsProject);
-        }
     }
 
     private static final class PlainJavaJDTClasspathContainer implements IIpsObjectPathContainerType {
