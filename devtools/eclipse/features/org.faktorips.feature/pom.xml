@@ -32,6 +32,7 @@
                         <plugin id="com.opencsv" />
                         <plugin id="org.apache.commons.collections" />
                     </excludes>
+                    <missingSourcesAction>FAIL</missingSourcesAction>
                 </configuration>
             </plugin>
             <plugin>

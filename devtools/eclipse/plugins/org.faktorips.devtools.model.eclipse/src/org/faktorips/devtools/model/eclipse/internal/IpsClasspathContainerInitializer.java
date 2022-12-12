@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.Messages;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Bundle;
 
@@ -162,7 +162,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
      * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
      * for additional optional libraries.
      * 
-     * @return A Path like "org.faktorips.devtools.model.eclipse.ipsClasspathContainer/bundleId1,bundleId2"
+     * @return A Path like
+     *             "org.faktorips.devtools.model.eclipse.ipsClasspathContainer/bundleId1,bundleId2"
      */
     private static final IPath newEntryPath(List<String> additionalBundles) {
         String path = CONTAINER_ID;
@@ -266,6 +267,9 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         }
 
         private File getBundleEntry(Bundle bundle, boolean sources) throws IOException {
+            if (bundle.getLocation().endsWith(".jar")) {
+                return null;
+            }
             var plainBundle = bundle.getEntry(sources ? "src" : "bin"); //$NON-NLS-1$//$NON-NLS-2$
             if (plainBundle != null) {
                 URL local = FileLocator.toFileURL(plainBundle);
@@ -293,6 +297,11 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             String[] split = fullPath.split(pluginIdForRegext);
 
             if (split.length < 2) {
+                // pluginId is not in the file name
+                String sourceJarPath = fullPath.replace(".jar", "-sources.jar");
+                if (new File(sourceJarPath).exists()) {
+                    return sourceJarPath;
+                }
                 return null;
             }
             String result = IpsStringUtils.EMPTY;
