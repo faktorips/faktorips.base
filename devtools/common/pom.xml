@@ -51,5 +51,40 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-pde-source-header</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attached-p2-metadata</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-metadata</goal>
+                        </goals>
+                        <configuration>
+                            <supportedProjectTypes>
+                                <value>bundle</value>
+                                <value>jar</value>
+                            </supportedProjectTypes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

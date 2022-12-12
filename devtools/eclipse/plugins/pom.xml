@@ -82,4 +82,20 @@
             <artifactId>faktorips-abstraction-plainjava</artifactId>
         </dependency>
     </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>plugin-source</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
