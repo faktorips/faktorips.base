@@ -921,13 +921,6 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         try {
             doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
-            if (properties.isValidateIpsSchema()) {
-                XmlUtil.getXsdValidator(IpsProjectType.IPS_PROJECT, xsdValidationHandler).validate(new DOMSource(doc));
-                if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
-                    IpsLog.log(new IpsStatus("Schema validation failed for ips project properties file " + file)); //$NON-NLS-1$
-                }
-            }
-
         } catch (SAXException e) {
             IpsLog.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
             return properties;
@@ -945,9 +938,15 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         try {
             properties = IpsProjectProperties.createFromXml(ipsProject, doc.getDocumentElement());
-            properties.setXsdValidationHandler(xsdValidationHandler);
-            if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
-                properties.setCreatedFromParsableFileContents(false);
+            if (properties.isValidateIpsSchema()) {
+                XmlUtil.getXsdValidator(IpsProjectType.IPS_PROJECT, xsdValidationHandler).validate(new DOMSource(doc));
+                if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
+                    IpsLog.log(new IpsStatus("Schema validation failed for ips project properties file " + file)); //$NON-NLS-1$
+                }
+                properties.setXsdValidationHandler(xsdValidationHandler);
+                if (!xsdValidationHandler.getXsdValidationErrors().isEmpty()) {
+                    properties.setCreatedFromParsableFileContents(false);
+                }
             }
             // CSOFF: IllegalCatch
         } catch (Exception e) {
