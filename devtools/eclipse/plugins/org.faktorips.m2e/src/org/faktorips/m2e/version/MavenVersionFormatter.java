@@ -32,7 +32,7 @@ public class MavenVersionFormatter {
      * @throws IllegalArgumentException If the passed version is invalid
      */
     public static String formatVersion(String version) throws IllegalArgumentException {
-        Pattern pattern = Pattern.compile("[0-9]+[.][0-9]+[.][0-9]+");
+        Pattern pattern = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)(\\.(rc\\d\\d|m\\d\\d|a\\d{8}-\\d\\d|release))?");
         Matcher versionMatcher = pattern.matcher(version);
         String mavenVersion = "";
         if (versionMatcher.find() && versionMatcher.start() == 0) {
