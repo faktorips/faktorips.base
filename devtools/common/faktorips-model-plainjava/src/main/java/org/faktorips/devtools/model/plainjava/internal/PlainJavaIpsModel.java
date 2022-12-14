@@ -23,19 +23,14 @@ import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
-import org.faktorips.devtools.model.internal.builder.flidentifier.AbstractIdentifierResolver;
-import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGenerator;
-import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plainjava.internal.fl.PlainJavaIdentifierResolver;
 import org.faktorips.devtools.model.productcmpt.IExpression;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.DefaultDatatypeHelperProvider;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.IdentifierResolver;
@@ -48,7 +43,7 @@ public class PlainJavaIpsModel extends IpsModel {
         super();
         resourceChangeListener = this::resourceChanged;
         PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
-        setFallbackBuilderSetProvider(i -> new PlainJavaBuilderSet(i));
+        setFallbackBuilderSetProvider(PlainJavaBuilderSet::new);
     }
 
     @Override
@@ -162,7 +157,9 @@ public class PlainJavaIpsModel extends IpsModel {
     }
 
     /**
-     * An {@link IIpsArtefactBuilderSet} implementation that is used in a {@link PlainJavaIpsModel}. It extends the {@link EmptyBuilderSet} and overwrites the {@link #getDatatypeHelper(Datatype)} method.
+     * An {@link IIpsArtefactBuilderSet} implementation that is used in a {@link PlainJavaIpsModel}.
+     * It extends the {@link EmptyBuilderSet} and overwrites the
+     * {@link #getDatatypeHelper(Datatype)} method.
      */
     private static class PlainJavaBuilderSet extends EmptyBuilderSet {
 
@@ -195,82 +192,6 @@ public class PlainJavaIpsModel extends IpsModel {
         public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
                 ExprCompiler<JavaCodeFragment> exprCompiler) {
             return new PlainJavaIdentifierResolver(formula, exprCompiler);
-        }
-    }
-
-    private static class PlainJavaIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
-
-        public PlainJavaIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler) {
-            super(expression, exprCompiler);
-        }
-
-        @Override
-        protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-            return new PlainJavaIdentifierNodeGeneratorFactory();
-        }
-
-        @Override
-        protected CompilationResult<JavaCodeFragment> getStartingCompilationResult() {
-            return new CompilationResultImpl(); // $NON-NLS-1$
-        }
-
-    }
-
-    private static class PlainJavaIdentifierNodeGeneratorFactory
-            implements IdentifierNodeGeneratorFactory<JavaCodeFragment> {
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForParameterNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAssociationNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAttributeNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumClassNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForEnumValueNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForIndexBasedAssociationNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForQualifiedAssociationNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-        @Override
-        public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForInvalidNode() {
-            return new PlainJavaIdentifierNodeGenerator(this);
-        }
-
-    }
-
-    private static class PlainJavaIdentifierNodeGenerator extends IdentifierNodeGenerator<JavaCodeFragment> {
-
-        public PlainJavaIdentifierNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> factory) {
-            super(factory);
-        }
-
-        @Override
-        protected CompilationResult<JavaCodeFragment> getCompilationResultForCurrentNode(IdentifierNode identifierNode,
-                CompilationResult<JavaCodeFragment> contextCompilationResult) {
-            return contextCompilationResult;
         }
     }
 }
