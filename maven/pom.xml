@@ -9,31 +9,28 @@
         <relativePath>../runtime/pom.xml</relativePath>
     </parent>
 
-    <artifactId>faktorips-validation-maven-plugin</artifactId>
-    <packaging>maven-plugin</packaging>
-    <name>Faktor-IPS Validation Maven Plugin</name>
+    <artifactId>faktorips-maven</artifactId>
+    <packaging>pom</packaging>
+    <name>Faktor-IPS Maven Plugins</name>
 
     <properties>
-        <java.version>11</java.version>
         <!-- dependencies -->
         <maven-core.version>3.8.6</maven-core.version>
         <maven-shared-utils.version>3.3.4</maven-shared-utils.version>
         <maven-plugin-api.version>3.8.6</maven-plugin-api.version>
         <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
-        <commons-codec.version>1.15</commons-codec.version>
-        <commons-io.version>2.11.0</commons-io.version>
         <!-- plugins -->
         <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
         <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     </properties>
+    
+    <modules>
+        <module>build</module>
+        <module>validation</module>
+    </modules>
 
     <dependencies>
-         <dependency>
-            <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-model-plainjava</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-shared-utils</artifactId>
@@ -58,20 +55,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <scope>test</scope>
@@ -94,35 +77,22 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>./</directory>
-                <includes>
-                    <include>LICENSE.txt</include>
-                    <include>agpl-3.0.txt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <includes>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
                     <version>${maven-plugin-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <source>${jdk.version}</source>
+                        <doclint>accessibility,html,reference,syntax,-missing</doclint>
+                        <detectJavaApiLink>true</detectJavaApiLink>
+                        <failOnError>true</failOnError>
+                    </configuration>
                 </plugin>
                 <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
                 <plugin>
@@ -172,12 +142,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                        <configuration>
-                            <source>${jdk.version}</source>
-                            <doclint>accessibility,html,reference,syntax,-missing</doclint>
-                            <detectJavaApiLink>true</detectJavaApiLink>
-                            <failOnError>true</failOnError>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -205,13 +169,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
