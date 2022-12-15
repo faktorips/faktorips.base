@@ -1,7 +1,9 @@
 import java.text.MessageFormat
 
-def mavenDocFolder = './faktorips-maven-plugin/target/site'
-def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
+def mavenBuildDocFolder = './maven/build/target/site'
+def mavenBuildDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
+def mavenValidationDocFolder = './maven/validation/target/site'
+def mavenValidationDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-validation-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
 
@@ -47,7 +49,8 @@ pipeline {
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenDocFolder, "${mavenDocDeployFolder}/${fipsVersion}")
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenBuildDocFolder, "${mavenBuildDocDeployFolder}/${fipsVersion}")
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenValidationDocFolder, "${mavenValidationDocDeployFolder}/${fipsVersion}")
                         // deploy xsd
                         replaceOnServer('doc@doc.faktorzehn.org', '2004', xsdFolder, xsdDeployFolder)
                     }

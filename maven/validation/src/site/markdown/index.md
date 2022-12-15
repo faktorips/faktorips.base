@@ -1,4 +1,8 @@
-The faktorips-validation-maven-plugin can be used to validate a Faktor-IPS project in a maven build.  
+The faktorips-validation-maven-plugin can be used to validate a Faktor-IPS project in a maven build.
+It runs the same validations that are run by the Faktor-IPS plugin in an Eclipse workspace. 
+Infos, warnings, and errors are logged like any other Maven output.
+
+Call it on your project with `mvn org.faktorips:faktorips-validation-maven-plugin:faktorips-validate`.
 
 See [here](plugin-info.html) for configuration.
 
