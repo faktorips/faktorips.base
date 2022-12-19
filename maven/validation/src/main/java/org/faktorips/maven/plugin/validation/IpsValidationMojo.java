@@ -83,6 +83,15 @@ public class IpsValidationMojo extends AbstractMojo {
             getLog().info("skipping mojo execution");
             return;
         }
+
+        @SuppressWarnings("unchecked")
+        boolean alreadyValidated = getPluginContext().put("VALIDATED" + project.getBasedir().getName(),
+                Boolean.TRUE) != null;
+
+        if (alreadyValidated) {
+            return;
+        }
+
         initWorkspace();
         AProject aProject = Abstractions.getWorkspace().getRoot().getProject(project.getBasedir().getName());
 
