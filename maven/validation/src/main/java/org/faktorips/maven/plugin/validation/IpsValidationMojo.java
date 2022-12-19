@@ -13,6 +13,7 @@ package org.faktorips.maven.plugin.validation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -47,6 +48,8 @@ import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
 import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
@@ -103,8 +106,14 @@ public class IpsValidationMojo extends AbstractMojo {
         MessageList validationResults = ipsProject.validate();
 
         // TODO FIPS-9513 -> parallelStream()
-        ipsProject.findAllIpsSrcFiles()
-                .stream()
+        Arrays.stream(ipsProject.getIpsPackageFragmentRoots(false))
+                .filter(IIpsPackageFragmentRoot::isBasedOnSourceFolder)
+                .map(IIpsPackageFragmentRoot::getIpsPackageFragments)
+                .flatMap(Arrays::stream)
+                .map(IIpsPackageFragment::getChildren)
+                .flatMap(Arrays::stream)
+                .filter(IIpsSrcFile.class::isInstance)
+                .map(IIpsSrcFile.class::cast)
                 .map(IIpsSrcFile::getIpsObject)
                 .map(o -> o.validate(ipsProject))
                 .forEach(validationResults::add);
