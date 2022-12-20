@@ -24,11 +24,19 @@
         <maven-plugin-plugin.version>3.7.0</maven-plugin-plugin.version>
         <maven-site-plugin.version>3.12.1</maven-site-plugin.version>
     </properties>
-    
+
     <modules>
         <module>build</module>
         <module>validation</module>
     </modules>
+
+    <distributionManagement>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips-maven-plugin/${project.version}/</url>
+        </site>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
@@ -166,6 +174,13 @@
                         <phase>clean</phase>
                         <goals>
                             <goal>site</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>attach-descriptor</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-descriptor</goal>
                         </goals>
                     </execution>
                 </executions>
