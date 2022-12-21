@@ -19,6 +19,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspaceRoot;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -133,7 +134,8 @@ public class IpsDependency {
     }
 
     protected static IIpsProject convertMavenProjectToIpsProject(MavenProject mavenProject) {
-        AProject aProject = Abstractions.getWorkspace().getRoot().getProject(mavenProject.getBasedir().getName());
+        AProject aProject = Abstractions.getWorkspace().getRoot()
+                .getProject(MavenWorkspaceRoot.toProjectName(mavenProject));
         return IIpsModel.get().getIpsProject(aProject);
     }
 }

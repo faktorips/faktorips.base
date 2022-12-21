@@ -40,7 +40,6 @@ import org.codehaus.plexus.logging.Logger;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
-import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaWorkspace;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
@@ -52,6 +51,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
+import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspace;
+import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspaceRoot;
 import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -92,14 +93,16 @@ public class IpsValidationMojo extends AbstractMojo {
             return;
         }
 
-        initWorkspace();
-        AProject aProject = Abstractions.getWorkspace().getRoot().getProject(project.getBasedir().getName());
+        List<MavenProject> upstreamProjects = session.getProjectDependencyGraph().getUpstreamProjects(project, true);
+        initWorkspace(upstreamProjects);
+        AProject aProject = Abstractions.getWorkspace().getRoot()
+                .getProject(MavenWorkspaceRoot.toProjectName(project));
 
         if (!aProject.isIpsProject()) {
             return;
         }
 
-        Set<IpsDependency> ipsDependencies = findDependencies();
+        Set<IpsDependency> ipsDependencies = findDependencies(upstreamProjects);
         setIpsObjectPath(ipsDependencies);
 
         IIpsProject ipsProject = IIpsModel.get().getIpsProject(aProject);
@@ -129,9 +132,8 @@ public class IpsValidationMojo extends AbstractMojo {
         return validationResults;
     }
 
-    private void initWorkspace() {
-        PlainJavaWorkspace plainJavaWorkspace = new PlainJavaWorkspace(project.getBasedir().getParentFile());
-        PlainJavaImplementation.get().setWorkspace(plainJavaWorkspace);
+    private void initWorkspace(List<MavenProject> upstreamProjects) {
+        PlainJavaImplementation.get().setWorkspace(new MavenWorkspace(project, upstreamProjects));
     }
 
     private void setVersionProvider(Set<IpsDependency> ipsDependencies) {
@@ -171,10 +173,11 @@ public class IpsValidationMojo extends AbstractMojo {
         PlainJavaIpsModelExtensions.get().setProjectDependenciesProvider(projectDependencyEntries);
     }
 
-    private Set<IpsDependency> findDependencies() {
+    private Set<IpsDependency> findDependencies(List<MavenProject> upstreamProjects) {
         Set<IpsDependency> ipsDependencies = new LinkedHashSet<>();
-        ipsDependencies.addAll(findUpstreamProjects());
-        ipsDependencies.addAll(findIpsJars(project));
+        Set<IpsDependency> upstreamIpsProjects = findUpstreamProjects(upstreamProjects);
+        ipsDependencies.addAll(upstreamIpsProjects);
+        ipsDependencies.addAll(findIpsJars(project, upstreamIpsProjects));
         return ipsDependencies;
     }
 
@@ -198,28 +201,35 @@ public class IpsValidationMojo extends AbstractMojo {
         return entries;
     }
 
-    private Set<IpsDependency> findIpsJars(MavenProject project) {
+    private Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
         Set<IpsDependency> dependencies = new HashSet<>();
         ArtifactRepository localRepository = session.getLocalRepository();
         Set<Artifact> dependencyArtifacts = project.getArtifacts();
         for (Artifact artifact : dependencyArtifacts) {
             File file = localRepository.find(artifact).getFile();
-            try (JarFile jarFile = new JarFile(file)) {
-                Object attribute = jarFile.getManifest().getMainAttributes()
-                        .get(new Attributes.Name("Fips-BasePackage"));
-                if (attribute != null) {
-                    dependencies.add(IpsDependency.create(artifact));
+            if (upstreamProjects.stream().anyMatch(d -> d.getArtifactId().equals(artifact.getArtifactId())
+                    && d.getGroupId().equals(artifact.getGroupId())
+                    && d.getVersion().equals(artifact.getVersion()))) {
+                // already a local dependency
+                getLog().info("Using upstream project for " + artifact);
+            } else if (file.exists()) {
+                try (JarFile jarFile = new JarFile(file)) {
+                    Object attribute = jarFile.getManifest().getMainAttributes()
+                            .get(new Attributes.Name("Fips-BasePackage"));
+                    if (attribute != null) {
+                        dependencies.add(IpsDependency.create(artifact));
+                    }
+                } catch (IOException e) {
+                    getLog().error(e);
                 }
-            } catch (IOException e) {
-                getLog().error(e);
+            } else {
+                getLog().error("Can't find " + file);
             }
         }
         return dependencies;
     }
 
-    private Set<IpsDependency> findUpstreamProjects() {
-        List<MavenProject> upstreamProjects = session.getProjectDependencyGraph()
-                .getUpstreamProjects(project, true);
+    private Set<IpsDependency> findUpstreamProjects(List<MavenProject> upstreamProjects) {
         return upstreamProjects.stream()
                 .filter(p -> p.getPackaging().equalsIgnoreCase("jar"))
                 .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())

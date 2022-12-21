@@ -145,7 +145,7 @@ public class PlainJavaWorkspaceRoot extends PlainJavaFolder implements AWorkspac
         throw new IllegalArgumentException(path + " is not a folder"); //$NON-NLS-1$
     }
 
-    PlainJavaProject project(Path path) {
+    protected PlainJavaProject project(Path path) {
         Path absolutePath = path.toAbsolutePath();
         PlainJavaResource resource = resources.computeIfAbsent(absolutePath,
                 p -> (PlainJavaProject)wrap(p.toFile()).as(AProject.class));
