@@ -49,6 +49,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
+import org.faktorips.maven.plugin.validation.abstraction.MavenIpsModelExtensions;
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspace;
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspaceRoot;
 import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
@@ -113,7 +114,7 @@ public class IpsValidationMojo extends AbstractMojo {
 
         MessageList validationResults = validate(ipsProject);
 
-        IpsValidationMessageMapper.logMessages(validationResults, getLog());
+        IpsValidationMessageMapper.logMessages(validationResults, getLog(), project);
 
         if (!ignoreValidationErrors && validationResults.containsErrorMsg()) {
             throw new MojoFailureException(BUILD_FAILURE_MESSAGE);
@@ -139,6 +140,7 @@ public class IpsValidationMojo extends AbstractMojo {
     }
 
     private void initWorkspace(List<MavenProject> upstreamProjects) {
+        new MavenIpsModelExtensions(session);
         PlainJavaImplementation.get().setWorkspace(new MavenWorkspace(project, upstreamProjects));
     }
 

@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -28,10 +29,12 @@ import org.junit.jupiter.api.Test;
 public class IpsValidationMessageMapperTest {
 
     private Log mockLog;
+    private MavenProject mockProject;
 
     @BeforeEach
     public void setUp() {
         mockLog = mock(Log.class);
+        mockProject = mock(MavenProject.class);
     }
 
     @Test
@@ -42,7 +45,7 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog);
+        logMessages(ml, mockLog, mockProject);
 
         verify(mockLog).error(MOJO_NAME + " foo (testcode)[object.prop0]");
     }
@@ -55,7 +58,7 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog);
+        logMessages(ml, mockLog, mockProject);
 
         verify(mockLog).warn(MOJO_NAME + " foo (testcode)[object.prop0]");
     }
@@ -68,7 +71,7 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog);
+        logMessages(ml, mockLog, mockProject);
 
         verify(mockLog).info(MOJO_NAME + " foo (testcode)[object.prop0]");
     }
@@ -98,7 +101,7 @@ public class IpsValidationMessageMapperTest {
 
         ml.add(errorMessage);
 
-        logMessages(ml, mockLog);
+        logMessages(ml, mockLog, mockProject);
 
         verify(mockLog, times(3)).info(MOJO_NAME + " foo (info)[]");
         verify(mockLog, times(2)).warn(MOJO_NAME + " bar (warning)[object.prop]");

@@ -99,6 +99,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
         <moditect-maven-plugin.version>1.0.0.RC2</moditect-maven-plugin.version>
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+        <auto-service.version>1.0.1</auto-service.version>
     </properties>
 
     <distributionManagement>
@@ -112,6 +113,11 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <name>Faktor-IPS Snapshots</name>
             <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
         </snapshotRepository>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS Documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips/${project.version}/</url>
+        </site>
     </distributionManagement>
 
     <modules>

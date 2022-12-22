@@ -28,6 +28,11 @@
             <name>Faktor-IPS Snapshots</name>
             <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
         </snapshotRepository>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS Documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips/${project.version}/</url>
+        </site>
     </distributionManagement>
 
     <build>
