@@ -240,6 +240,24 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(expected, msg.toString());
     }
 
+    @Test
+    public void testAppendInvalidObjectProperties_Empty() {
+        Message msg = Message.newError("1", "blabla");
+        StringBuilder sb = new StringBuilder();
+        msg.appendInvalidObjectProperties(sb);
+
+        assertEquals("[]", sb.toString());
+    }
+
+    @Test
+    public void testAppendInvalidObjectProperties() {
+        Message msg = new Message("code", "blabla", Message.INFO, "ObjectA", "p1", "p2");
+        StringBuilder sb = new StringBuilder();
+        msg.appendInvalidObjectProperties(sb);
+
+        assertEquals("[ObjectA.p1, ObjectA.p2]", sb.toString());
+    }
+
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEqualsObject() {

@@ -4,7 +4,7 @@ def mavenVersion = 'maven 3.8.6'
 def jdkVersion = 'AdoptiumJDK17'
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
-def mavenDocFolder = './faktorips-maven-plugin/target/site'
+def mavenDocFolder = './maven/target/staging'
 def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
@@ -109,6 +109,7 @@ pipeline {
                         sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh 'mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh "mvn -U -V -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                        sh 'mvn -U -V -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                     }
                 }
 

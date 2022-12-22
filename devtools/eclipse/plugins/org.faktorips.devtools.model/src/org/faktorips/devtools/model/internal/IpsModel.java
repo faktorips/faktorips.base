@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -171,6 +172,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
             .newFactoryBasedOnExtensions();
 
     private final IMultiLanguageSupport multiLanguageSupport = new MultiLanguageSupport();
+
+    private Function<IIpsProject, IIpsArtefactBuilderSet> fallbackBuilderSetProvider;
 
     protected IpsModel() {
         super(null, "IpsModel"); //$NON-NLS-1$
@@ -782,6 +785,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
         IIpsProjectProperties data = getIpsProjectProperties(project);
         IIpsArtefactBuilderSet builderSet = createIpsArtefactBuilderSet(data.getBuilderSetId(), project);
         if (builderSet == null || !initBuilderSet(builderSet, project, data)) {
+            if (getFallbackBuilderSetProvider() != null) {
+                return getFallbackBuilderSetProvider().apply(project);
+            }
             EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
             try {
                 emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<String, Object>()));
@@ -1324,12 +1330,12 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     @Override
     public IVersionProvider<?> getVersionProvider(IIpsProject ipsProject) {
-        IVersionProvider<?> verionProvider = getIpsProjectData(ipsProject).getVersionProvider();
-        if (verionProvider == null) {
-            verionProvider = IIpsModelExtensions.get().getVersionProvider(ipsProject);
-            getIpsProjectData(ipsProject).setVersionProvider(verionProvider);
+        IVersionProvider<?> versionProvider = getIpsProjectData(ipsProject).getVersionProvider();
+        if (versionProvider == null) {
+            versionProvider = IIpsModelExtensions.get().getVersionProvider(ipsProject);
+            getIpsProjectData(ipsProject).setVersionProvider(versionProvider);
         }
-        return verionProvider;
+        return versionProvider;
     }
 
     private static void logTraceMessage(String text, IIpsSrcFile ipsSrcFile) {
@@ -1409,6 +1415,21 @@ public class IpsModel extends IpsElement implements IIpsModel {
      */
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums(IpsProject ipsProject) {
         return getIpsProjectData(ipsProject).getMarkerEnums();
+    }
+
+    /**
+     * Returns the {@link IIpsArtefactBuilderSet} provider.
+     */
+    protected Function<IIpsProject, IIpsArtefactBuilderSet> getFallbackBuilderSetProvider() {
+        return fallbackBuilderSetProvider;
+    }
+
+    /**
+     * Sets the {@link IIpsArtefactBuilderSet} provider.
+     */
+    public void setFallbackBuilderSetProvider(
+            Function<IIpsProject, IIpsArtefactBuilderSet> fallbackBuilderSetProvider) {
+        this.fallbackBuilderSetProvider = fallbackBuilderSetProvider;
     }
 
     private final class RunnableChangeListenerImplementation implements Runnable {

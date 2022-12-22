@@ -35,7 +35,7 @@ public class IpsJarBundleContentIndex extends AbstractIpsBundleContentIndex {
      * are indexed relative to the model folder.
      * 
      * @param jarFile The {@link JarFile} that should be read and indexed
-     * @param modelFolders The list of model folders, the paths are relativ to the root of the jar
+     * @param modelFolders The list of model folders, the paths are relative to the root of the jar
      *            file
      */
     public IpsJarBundleContentIndex(JarFile jarFile, List<Path> modelFolders) {

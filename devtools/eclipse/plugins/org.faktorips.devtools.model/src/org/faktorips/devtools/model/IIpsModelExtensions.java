@@ -13,7 +13,9 @@ package org.faktorips.devtools.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.abstraction.AVersion;
@@ -227,6 +229,13 @@ public interface IIpsModelExtensions {
      * @since 22.12
      */
     List<ReleaseExtension> getReleaseExtensions();
+
+    /**
+     * Returns a registry for looking up helpers for data types.
+     * 
+     * @since 23.1
+     */
+    Supplier<Map<Datatype, DatatypeHelper>> getDatatypeHelperRegistry();
 
     /**
      * Returns the {@link ReleaseExtension} registered for the given {@link IIpsProject}, if one is

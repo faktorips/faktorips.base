@@ -58,7 +58,7 @@ public interface IIpsProjectProperties {
     /**
      * Validation message code to indicate that the IPS artifact builder set id is unknown.
      */
-    String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknwonBuilderSetId"; //$NON-NLS-1$
+    String MSGCODE_UNKNOWN_BUILDER_SET_ID = MSGCODE_PREFIX + "UnknownBuilderSetId"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a used predefined data type is unknown.

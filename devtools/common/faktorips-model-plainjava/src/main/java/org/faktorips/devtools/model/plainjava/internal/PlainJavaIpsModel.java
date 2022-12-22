@@ -1,9 +1,15 @@
 package org.faktorips.devtools.model.plainjava.internal;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaFile;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
@@ -16,11 +22,18 @@ import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.builder.EmptyBuilderSet;
 import org.faktorips.devtools.model.internal.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plainjava.internal.fl.PlainJavaIdentifierResolver;
+import org.faktorips.devtools.model.productcmpt.IExpression;
+import org.faktorips.fl.DefaultDatatypeHelperProvider;
+import org.faktorips.fl.ExprCompiler;
+import org.faktorips.fl.IdentifierResolver;
 
 public class PlainJavaIpsModel extends IpsModel {
 
@@ -30,6 +43,7 @@ public class PlainJavaIpsModel extends IpsModel {
         super();
         resourceChangeListener = this::resourceChanged;
         PlainJavaImplementation.getResourceChanges().addListener(resourceChangeListener);
+        setFallbackBuilderSetProvider(PlainJavaBuilderSet::new);
     }
 
     @Override
@@ -67,18 +81,15 @@ public class PlainJavaIpsModel extends IpsModel {
     }
 
     private void ipsSrcFileChanged(IIpsSrcFile ipsSrcFile, PlainJavaResourceChange change) {
-        forEachIpsSrcFilesChangeListener(listener -> listener
-                .ipsSrcFilesChanged(
-                        new IpsSrcFilesChangedEvent(
-                                Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
+        forEachIpsSrcFilesChangeListener(listener -> listener.ipsSrcFilesChanged(
+                new IpsSrcFilesChangedEvent(Map.of(ipsSrcFile, new PlainJavaResourceDelta(change)))));
         if (Type.REMOVED == change.getType()) {
             removeIpsSrcFileContent(ipsSrcFile);
         } else {
             IpsSrcFileContent content = getIpsSrcFileContent(ipsSrcFile);
             boolean isInSync = isInSync(ipsSrcFile, content);
             if (!isInSync) {
-                ipsSrcFileContentHasChanged(
-                        ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
+                ipsSrcFileContentHasChanged(ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile));
             }
         }
     }
@@ -91,8 +102,7 @@ public class PlainJavaIpsModel extends IpsModel {
     }
 
     private IIpsSrcFile findIpsSrcFile(PlainJavaResource resource, IIpsProject ipsProject, String path) {
-        IIpsSrcFile ipsSrcFile = ipsProject
-                .findIpsSrcFile(QualifiedNameType.newQualifedNameType(path));
+        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(QualifiedNameType.newQualifedNameType(path));
         if (ipsSrcFile == null) {
             ipsSrcFile = findIpsSrcFileInIpsModel(resource);
         }
@@ -100,8 +110,7 @@ public class PlainJavaIpsModel extends IpsModel {
     }
 
     private IIpsSrcFile findIpsSrcFileInIpsModel(PlainJavaResource resource) {
-        return getIpsSrcFilesInternal().parallelStream()
-                .filter(i -> resource.equals(i.getCorrespondingResource()))
+        return getIpsSrcFilesInternal().parallelStream().filter(i -> resource.equals(i.getCorrespondingResource()))
                 .findFirst().orElse(null);
     }
 
@@ -144,6 +153,45 @@ public class PlainJavaIpsModel extends IpsModel {
             if (srcFile.getIpsProject().equals(ipsProject)) {
                 getValidationResultCache().removeStaleData(srcFile);
             }
+        }
+    }
+
+    /**
+     * An {@link IIpsArtefactBuilderSet} implementation that is used in a {@link PlainJavaIpsModel}.
+     * It extends the {@link EmptyBuilderSet} and overwrites the
+     * {@link #getDatatypeHelper(Datatype)} method.
+     */
+    private static class PlainJavaBuilderSet extends EmptyBuilderSet {
+
+        private Map<Datatype, DatatypeHelper> datatypeHelperRegistry;
+
+        public PlainJavaBuilderSet(IIpsProject project) {
+            initialize(project);
+        }
+
+        private void initialize(IIpsProject project) {
+            datatypeHelperRegistry = PlainJavaIpsModelExtensions.get().getDatatypeHelperRegistry().get();
+
+            List<Datatype> definedDatatypes = project.getProperties().getDefinedDatatypes();
+            for (Datatype datatype : definedDatatypes) {
+                if (datatype instanceof GenericValueDatatype) {
+                    GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                    datatypeHelperRegistry.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
+                }
+            }
+        }
+
+        @Override
+        public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+            DatatypeHelper datatypeHelper = datatypeHelperRegistry.get(datatype);
+            return (datatypeHelper != null) ? datatypeHelper
+                    : new DefaultDatatypeHelperProvider().getDatatypeHelper(datatype);
+        }
+
+        @Override
+        public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
+                ExprCompiler<JavaCodeFragment> exprCompiler) {
+            return new PlainJavaIdentifierResolver(formula, exprCompiler);
         }
     }
 }

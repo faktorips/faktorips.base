@@ -1,0 +1,3 @@
+A collection of Maven plugins to work with [Faktor-IPS](https://doc.faktorzehn.org/faktor-ips/latest/) projects.
+ * [Faktor-IPS Build](faktorips-maven-plugin/index.html) builds (generates Java code) a Faktor-IPS project using [Eclipse Tycho](https://github.com/eclipse-tycho/tycho#readme)
+ * [Faktor-IPS Validation](faktorips-validation-maven-plugin/index.html) validates a Faktor-IPS project without starting Eclipse plugins

@@ -43,7 +43,7 @@ public enum PlainJavaImplementation implements AImplementation {
     private final ALog log = new PlainJavaLog();
     private final ResourceChanges resourceChanges = new ResourceChanges();
 
-    static PlainJavaImplementation get() {
+    public static PlainJavaImplementation get() {
         return INSTANCE;
     }
 
