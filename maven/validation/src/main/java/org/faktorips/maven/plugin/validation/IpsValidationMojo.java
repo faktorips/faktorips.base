@@ -29,14 +29,12 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.Logger;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
 import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaImplementation;
@@ -54,7 +52,6 @@ import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensio
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspace;
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspaceRoot;
 import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
-import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -71,9 +68,6 @@ public class IpsValidationMojo extends AbstractMojo {
 
     @Parameter(property = "session", readonly = true, required = true)
     private MavenSession session;
-
-    @Component
-    private Logger logger;
 
     @Component
     private MavenProject project;
@@ -111,7 +105,7 @@ public class IpsValidationMojo extends AbstractMojo {
 
         MessageList validationResults = validate(ipsProject);
 
-        logMessages(validationResults, getLog());
+        IpsValidationMessageMapper.logMessages(validationResults, getLog());
     }
 
     private MessageList validate(IIpsProject ipsProject) {
@@ -141,28 +135,6 @@ public class IpsValidationMojo extends AbstractMojo {
         dependenciesInclProject.add(IpsDependency.create(project));
         PlainJavaIpsModelExtensions.get().setVersionProviderFactory("org.faktorips.maven.mavenVersionProvider",
                 new MavenVersionProviderFactory(dependenciesInclProject));
-    }
-
-    static void logMessages(MessageList messageList, Log log) {
-        for (Message message : messageList) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(message.getText());
-            sb.append(" (");
-            sb.append(message.getCode());
-            sb.append(")");
-            message.appendInvalidObjectProperties(sb);
-            String messageWithoutSeverity = sb.toString();
-            switch (message.getSeverity()) {
-                case ERROR:
-                    log.error(messageWithoutSeverity);
-                    break;
-                case WARNING:
-                    log.warn(messageWithoutSeverity);
-                    break;
-                default:
-                    log.info(messageWithoutSeverity);
-            }
-        }
     }
 
     private void setIpsObjectPath(Set<IpsDependency> ipsDependencies) {
