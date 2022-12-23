@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.core.ui.test
-Bundle-Version: 23.1.0.qualifier
+Bundle-Version: 23.1.0.a20221223-01
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Fragment-Host: org.faktorips.devtools.core.ui
 Import-Package: org.faktorips.abstracttest,
