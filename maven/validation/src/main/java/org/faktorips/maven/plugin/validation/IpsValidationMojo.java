@@ -60,11 +60,19 @@ import org.faktorips.runtime.MessageList;
 @Mojo(name = "faktorips-validate", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
 public class IpsValidationMojo extends AbstractMojo {
 
+    /* private */ static final String BUILD_FAILURE_MESSAGE = "The Faktor-IPS Validation ended with Errors.";
+
     /**
      * Whether to skip mojo execution.
      */
     @Parameter(property = "faktorips.skipValidation", defaultValue = "false")
     private boolean skip;
+
+    /**
+     * Whether to fail the build when validation errors occur or ignore them.
+     */
+    @Parameter(property = "faktorips.ignoreValidationErrors", defaultValue = "false")
+    private boolean ignoreValidationErrors;
 
     @Parameter(property = "session", readonly = true, required = true)
     private MavenSession session;
@@ -106,6 +114,10 @@ public class IpsValidationMojo extends AbstractMojo {
         MessageList validationResults = validate(ipsProject);
 
         IpsValidationMessageMapper.logMessages(validationResults, getLog());
+
+        if (!ignoreValidationErrors && validationResults.containsErrorMsg()) {
+            throw new MojoFailureException(BUILD_FAILURE_MESSAGE);
+        }
     }
 
     private MessageList validate(IIpsProject ipsProject) {
