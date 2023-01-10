@@ -169,6 +169,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code
      * <jvmArgs>
      *   <args>-javaagent:lombok.jar</args>
+     *   <args>-Xmx5g</args>
      * </jvmArgs>
      * }
      * </pre>
@@ -710,10 +711,8 @@ public class IpsBuildMojo extends AbstractMojo {
             applicationsArgs.add(getPathToAntScript());
             applicationsArgs.add(antTarget);
 
-            // default values for parameter jvmArgs
-            jvmArgs.add("-Xmx1024m");
-            jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
-            jvmArgs.add("-DjavacFailOnError=true");
+            addDefaultJvmArgs();
+
             if (usesCustomJdk()) {
                 jvmArgs.add("-Djdk.dir=" + getPathToJdk());
             }
@@ -746,6 +745,32 @@ public class IpsBuildMojo extends AbstractMojo {
 
             failBuildForAntStatusError(statusFile);
         }
+    }
+
+    /**
+     * Set default jvmArgs values ​​if not already configured.
+     * <p>
+     * Default args are:
+     * <ul>
+     * <li>Heap size of 1024M</li>
+     * <li>Heap dump on OutOfMemoryExceptions</li>
+     * <li>Fail on compilation errors for the Ant &lt;javac&gt; task</li>
+     * </ul>
+     */
+    private void addDefaultJvmArgs() {
+        if (!jvmArgsContains("-Xmx")) {
+            jvmArgs.add("-Xmx1024m");
+        }
+        if (!jvmArgsContains("HeapDumpOnOutOfMemoryError")) {
+            jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError");
+        }
+        if (!jvmArgsContains("-DjavacFailOnError")) {
+            jvmArgs.add("-DjavacFailOnError=true");
+        }
+    }
+
+    private boolean jvmArgsContains(String param) {
+        return jvmArgs.stream().anyMatch(s -> s.contains(param));
     }
 
     private void configureDebug() {
