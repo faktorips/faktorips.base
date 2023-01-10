@@ -19,7 +19,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 /**
  * A type's attribute.
  */
-public interface IAttribute extends IChangingOverTimeProperty {
+public interface IAttribute extends IOverridableLabeledElement, IChangingOverTimeProperty {
 
     String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
@@ -192,4 +192,8 @@ public interface IAttribute extends IChangingOverTimeProperty {
      */
     void setChangingOverTime(boolean changesOverTime);
 
+    @Override
+    default IAttribute findOverriddenElement(IIpsProject ipsProject) {
+        return findOverwrittenAttribute(ipsProject);
+    }
 }

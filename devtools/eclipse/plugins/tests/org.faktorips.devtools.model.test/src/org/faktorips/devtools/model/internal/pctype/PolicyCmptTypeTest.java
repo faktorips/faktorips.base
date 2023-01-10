@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
 import org.faktorips.datatype.Datatype;
@@ -1052,7 +1053,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         attribute.setValueSetType(ValueSetType.ENUM);
         attribute.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
         for (IDescription description : attribute.getDescriptions()) {
-            description.setText("Overridden Description");
+            description.setText("Description");
         }
 
         IPolicyCmptType overridingType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "OverridingType");
@@ -1063,9 +1064,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertEquals(attribute.isProductRelevant(), overriddenAttribute.isProductRelevant());
         assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
         assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
-        for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
-            assertEquals(attribute.getDescriptions().get(i).getText(),
-                    overriddenAttribute.getDescriptions().get(i).getText());
+        for (IDescription element : overriddenAttribute.getDescriptions()) {
+            assertEquals(StringUtils.EMPTY, element.getText());
         }
         assertTrue(overriddenAttribute.isOverwrite());
     }
@@ -1240,6 +1240,14 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         assertThat(message,
                 hasInvalidObject(superPolicyCmptType, IPolicyCmptType.PROPERTY_GENERATE_VALIDATOR_CLASS));
         assertThat(message.getText(), CoreMatchers.containsString(superSuperPolicyCmptType.getQualifiedName()));
+    }
+
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        superPolicyCmptType.setDescriptionText(Locale.ENGLISH, "english description");
+        assertEquals("english description", policyCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+        policyCmptType.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description", policyCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
     }
 
     private static class AggregateRootBuilderSet extends EmptyBuilderSet {

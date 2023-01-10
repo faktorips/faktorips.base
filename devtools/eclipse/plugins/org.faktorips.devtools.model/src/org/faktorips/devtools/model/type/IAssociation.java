@@ -10,7 +10,11 @@
 
 package org.faktorips.devtools.model.type;
 
+import java.util.Locale;
+
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
@@ -22,7 +26,7 @@ import org.faktorips.devtools.model.productcmpttype.AggregationKind;
  * 
  * @author Jan Ortmann
  */
-public interface IAssociation extends ITypePart {
+public interface IAssociation extends IOverridableLabeledElement, ITypePart {
 
     int CARDINALITY_ONE = 1;
     int CARDINALITY_MANY = Integer.MAX_VALUE;
@@ -489,4 +493,24 @@ public interface IAssociation extends ITypePart {
      */
     IAssociation findMatchingAssociation();
 
+    @Override
+    default IAssociation findOverriddenElement(IIpsProject ipsProject) {
+        return findSuperAssociationWithSameName(ipsProject);
+    }
+
+    /**
+     * Returns the association's plural {@link ILabel label} value for the given {@link Locale
+     * locale}. If the the association has no plural label for the locale and constrains another
+     * association, the label value of the constrained association is returned.
+     */
+    default String getPluralLabelValueFromThisOrSuper(Locale locale) {
+        String labelValue = getPluralLabelValue(locale);
+        if (StringUtils.EMPTY.equals(labelValue)) {
+            IAssociation superPart = findOverriddenElement(getIpsProject());
+            if (superPart != null) {
+                return superPart.getPluralLabelValueFromThisOrSuper(locale);
+            }
+        }
+        return labelValue;
+    }
 }

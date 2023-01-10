@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -24,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
@@ -40,10 +42,12 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.type.IOverridableElement;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.type.Documentation;
 import org.faktorips.util.memento.Memento;
 
 /**
@@ -220,7 +224,21 @@ public abstract class IpsPartEditDialog2 extends EditDialog implements ContentsC
         if (part instanceof IDescribedElement) {
             Group descriptionGroup = getToolkit().createGroup(composite, Messages.IpsPartEditDialog_groupDescription);
             descriptionGroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
-            new DescriptionEditComposite(descriptionGroup, (IDescribedElement)part, getToolkit(), getBindingContext());
+            DescriptionEditComposite descriptionEditComposite = new DescriptionEditComposite(descriptionGroup,
+                    (IDescribedElement)part, getToolkit(), getBindingContext());
+            createInheritDocMessageIfRequired(descriptionEditComposite);
+        }
+    }
+
+    private void createInheritDocMessageIfRequired(Composite composite) {
+        part.getIpsObject();
+        IIpsObjectPart ipsPart = getIpsPart();
+        if (ipsPart instanceof IOverridableElement
+                && ((IOverridableElement)ipsPart).findOverriddenElement(part.getIpsProject()) != null) {
+            Label message = getToolkit().createLabel(composite,
+                    NLS.bind(Messages.IpsPartEditDialog2_inheritOverriddenElementMessage,
+                            Documentation.INHERIT_DESCRIPTION_TAG));
+            message.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, true));
         }
     }
 

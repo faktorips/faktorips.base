@@ -14,11 +14,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.LinkedHashMap;
 import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.type.Deprecation;
+import org.faktorips.runtime.model.type.Documentation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.model.type.read.SimpleTypePartsReader;
@@ -135,4 +137,14 @@ public class EnumAttribute extends ModelElement {
                 (modelType, name, getterMethod) -> new EnumAttribute((EnumType)modelType, name, getterMethod))
                         .createParts(enumClass, enumType);
     }
+
+    public Optional<EnumAttribute> findSuperEnumAttribute() {
+        return enumType.findSuperEnumType().map(s -> s.getAttribute(getName()));
+    }
+
+    @Override
+    protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
+        return Documentation.of(this, type, locale, fallback, this::findSuperEnumAttribute);
+    }
+
 }

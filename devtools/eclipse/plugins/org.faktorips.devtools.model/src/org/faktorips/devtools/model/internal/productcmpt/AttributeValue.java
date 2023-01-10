@@ -261,7 +261,7 @@ public class AttributeValue extends AbstractSimplePropertyValue implements IAttr
         String caption = null;
         IAttribute foundAttribute = findAttribute(getIpsProject());
         if (foundAttribute != null) {
-            caption = foundAttribute.getLabelValue(locale);
+            caption = foundAttribute.getLabelValueFromThisOrSuper(locale);
         }
         return caption;
     }

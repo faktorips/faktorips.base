@@ -802,6 +802,52 @@ public class AssociationTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
+        association.setDescriptionText(Locale.ENGLISH, "english description");
+
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A)
+                .withCardinality(1, 5).build();
+
+        assertEquals("english description", subAssociation.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+
+        subAssociation.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description",
+                subAssociation.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testGetLabelValueFromThisOrSuper() {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
+        association.setLabelValue(Locale.ENGLISH, "english label");
+
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A)
+                .withCardinality(1, 5).build();
+
+        assertEquals("english label", subAssociation.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+
+        subAssociation.setLabelValue(Locale.ENGLISH, "overwritten label");
+        assertEquals("overwritten label",
+                subAssociation.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+    }
+    
+    @Test
+    public void testGetPluralLabelValueFromThisOrSuper() {
+        IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
+        association.setPluralLabelValue(Locale.ENGLISH, "english plural label");
+
+        IAssociation subAssociation = builder.constrain(association).from(SUB_A)
+                .withCardinality(1, 5).build();
+
+        assertEquals("english plural label", subAssociation.getPluralLabelValueFromThisOrSuper(Locale.ENGLISH));
+
+        subAssociation.setPluralLabelValue(Locale.ENGLISH, "overwritten plural label");
+        assertEquals("overwritten plural label",
+                subAssociation.getPluralLabelValueFromThisOrSuper(Locale.ENGLISH));
+    }
+
+
+    @Test
     public void testToXml() {
         association.setAssociationType(AssociationType.AGGREGATION);
         association.setTarget("pack1.CoverageType");

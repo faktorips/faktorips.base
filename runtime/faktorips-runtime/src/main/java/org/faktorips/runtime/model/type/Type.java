@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -347,6 +348,11 @@ public abstract class Type extends ModelElement {
      */
     public Optional<? extends Type> findSuperType() {
         return Optional.ofNullable(getSuperType());
+    }
+
+    @Override
+    public String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
+        return Documentation.of(this, type, locale, fallback, this::findSuperType);
     }
 
     /**

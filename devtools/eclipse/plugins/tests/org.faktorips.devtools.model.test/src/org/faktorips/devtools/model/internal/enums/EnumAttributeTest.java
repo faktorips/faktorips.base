@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -34,6 +35,7 @@ import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.model.type.Documentation;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -506,5 +508,55 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         assertThat(datatype, instanceOf(EnumTypeDatatypeAdapter.class));
         assertNull(((EnumTypeDatatypeAdapter)datatype).getEnumContent());
         assertThat((EnumType)((EnumTypeDatatypeAdapter)datatype).getEnumType(), is(paymentMode));
+    }
+
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        String superEnumName = "SuperEnum";
+        IEnumType superEnum = newEnumType(ipsProject, superEnumName);
+        IEnumType subEnum = newEnumType(ipsProject, "SubEnum");
+        subEnum.setSuperEnumType(superEnumName);
+
+        IEnumAttribute attr = superEnum.newEnumAttribute();
+        attr.setName("attr");
+        IEnumAttribute overwritingAttr = subEnum.newEnumAttribute();
+        overwritingAttr.setName("attr");
+        overwritingAttr.setInherited(true);
+
+        //Inherit description from parent class
+        attr.setDescriptionText(Locale.ENGLISH, "english Description");
+        assertEquals("english Description", overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+
+        //Overwrite description from parent class
+        overwritingAttr.setDescriptionText(Locale.ENGLISH, "overwritten english Description");
+        assertEquals("overwritten english Description",
+                overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+        
+        //Inherit description via inherit tag
+        overwritingAttr.setDescriptionText(Locale.ENGLISH, Documentation.INHERIT_DESCRIPTION_TAG + " foo");
+        assertEquals("english Description foo", overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testGetLabelFromThisOrSuper() {
+        String superEnumName = "SuperEnum";
+        IEnumType superEnum = newEnumType(ipsProject, superEnumName);
+        IEnumType subEnum = newEnumType(ipsProject, "SubEnum");
+        subEnum.setSuperEnumType(superEnumName);
+
+        IEnumAttribute attr = superEnum.newEnumAttribute();
+        attr.setName("attr");
+        IEnumAttribute overwritingAttr = subEnum.newEnumAttribute();
+        overwritingAttr.setName("attr");
+        overwritingAttr.setInherited(true);
+
+        //Inherit label from parent class
+        attr.setLabelValue(Locale.ENGLISH, "english label");
+        assertEquals("english label", overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+
+        //Overwrite label from parent class
+        overwritingAttr.setLabelValue(Locale.ENGLISH, "overwritten english Label");
+        assertEquals("overwritten english Label",
+                overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));
     }
 }

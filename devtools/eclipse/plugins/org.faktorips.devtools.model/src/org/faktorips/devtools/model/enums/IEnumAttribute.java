@@ -14,11 +14,11 @@ import java.util.List;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
-import org.faktorips.devtools.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IOverridableElement;
+import org.faktorips.devtools.model.type.IOverridableLabeledElement;
 
 /**
  * An <code>IEnumAttribute</code> is a part of an <code>IEnumType</code> that describes a property
@@ -44,7 +44,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabeledElement, IVersionControlledElement {
+public interface IEnumAttribute
+        extends IOverridableLabeledElement, IIpsObjectPart, IVersionControlledElement {
 
     /** The XML tag for this IPS object part. */
     String XML_TAG = "EnumAttribute"; //$NON-NLS-1$
@@ -483,4 +484,9 @@ public interface IEnumAttribute extends IIpsObjectPart, IDescribedElement, ILabe
      * Returns true if multi language support for this attribute is supported, false otherwise.
      */
     boolean isMultilingualSupported();
+
+    @Override
+    default IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
+        return findSuperEnumAttribute(ipsProject);
+    }
 }

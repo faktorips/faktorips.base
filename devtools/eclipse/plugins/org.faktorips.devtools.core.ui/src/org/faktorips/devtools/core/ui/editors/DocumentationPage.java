@@ -10,8 +10,10 @@
 
 package org.faktorips.devtools.core.ui.editors;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.widgets.Section;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -22,6 +24,8 @@ import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.model.type.IOverridableElement;
+import org.faktorips.runtime.model.type.Documentation;
 
 /**
  * An editor page that allows to edit the {@link ILabel}s and {@link IDescription}s of an
@@ -84,11 +88,22 @@ class DocumentationPage extends IpsObjectEditorPage {
 
         private DescriptionSection(IDescribedElement describedElement, Composite parent, UIToolkit toolkit) {
             super(parent, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
-
             this.describedElement = describedElement;
 
             initControls();
             setText(Messages.DescriptionSection_description);
+            createInheritDocMessageIfRequired(toolkit);
+        }
+
+        private void createInheritDocMessageIfRequired(UIToolkit toolkit) {
+            if (describedElement instanceof IOverridableElement
+                    && ((IOverridableElement)describedElement)
+                            .findOverriddenElement(describedElement.getIpsProject()) != null) {
+                Label message = toolkit.createLabel(descriptionEditComposite,
+                        NLS.bind(Messages.DocumentationPage_inheritSupertypeMessage,
+                                Documentation.INHERIT_DESCRIPTION_TAG));
+                message.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, false, false));
+            }
         }
 
         @Override
@@ -111,7 +126,6 @@ class DocumentationPage extends IpsObjectEditorPage {
         public VersionSection(IVersionControlledElement versionElement, Composite composite, UIToolkit toolkit) {
             super(composite, Section.TITLE_BAR, GridData.FILL_BOTH, toolkit);
             this.versionElement = versionElement;
-
             initControls();
             setText(Messages.IpsPartEditDialog_groupVersion);
         }

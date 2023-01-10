@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.faktorips.runtime.IModelObject;
@@ -122,11 +123,19 @@ public class TypeTest {
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
+    @Test
+    public void testGetDocumentation() {
+        Type superType = IpsModel.getType(ISuperSource.class);
+        Type type = IpsModel.getType(ISource.class);
+        assertThat(superType.getDescription(Locale.GERMAN), is("Description of super source"));
+        assertThat(type.getDescription(Locale.GERMAN), is("Description of super source"));
+    }
+
     @IpsPublishedInterface(implementation = SuperSource.class)
     @IpsPolicyCmptType(name = "SuperSource")
     @IpsAssociations({ "SuperTarget", "Target" })
     @IpsAttributes({ "SuperAttribute", "OverwrittenAttribute" })
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     public interface ISuperSource extends IModelObject {
 
         @IpsAssociation(name = "SuperTarget", pluralName = "SuperTargets", kind = AssociationKind.Composition, targetClass = SuperTarget.class, min = 0, max = Integer.MAX_VALUE)
@@ -172,7 +181,7 @@ public class TypeTest {
     @IpsPolicyCmptType(name = "Source")
     @IpsAssociations({ "AnotherTarget" })
     @IpsAttributes({ "OverwrittenAttribute", "Attribute" })
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     public interface ISource extends ISuperSource {
         @IpsAssociation(name = "AnotherTarget", pluralName = "", kind = AssociationKind.Composition, targetClass = Target.class, min = 0, max = 1)
         @IpsSubsetOfDerivedUnion("SuperTarget")
@@ -202,7 +211,7 @@ public class TypeTest {
     @IpsPublishedInterface(implementation = SuperTarget.class)
     @IpsPolicyCmptType(name = "SuperTarget")
     @IpsAssociations({ "SuperSource" })
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     public interface ISuperTarget extends IModelObject {
         @IpsAssociation(name = "SuperSource", pluralName = "", kind = AssociationKind.CompositionToMaster, targetClass = SuperSource.class, min = 0, max = 1)
         @IpsInverseAssociation("SuperTarget")
@@ -229,7 +238,7 @@ public class TypeTest {
     @IpsPublishedInterface(implementation = Target.class)
     @IpsPolicyCmptType(name = "Target")
     @IpsAssociations({ "SuperSource", "Source" })
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     public interface ITarget extends ISuperTarget {
         @IpsAssociation(name = "Source", pluralName = "", kind = AssociationKind.CompositionToMaster, targetClass = Source.class, min = 0, max = 1)
         @IpsInverseAssociation("AnotherTarget")
@@ -261,7 +270,7 @@ public class TypeTest {
 
     @IpsPolicyCmptType(name = "Faker")
     @IpsAssociations({})
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type", defaultLocale = "de")
     public static class Faker implements IModelObject {
         @IpsAssociation(name = "Not a real association", pluralName = "", kind = AssociationKind.Association, targetClass = Faker.class, min = 0, max = 0)
         @Override
@@ -273,7 +282,7 @@ public class TypeTest {
 
     @IpsPolicyCmptType(name = "Dep")
     @IpsAssociations({})
-    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test.model-label-and-descriptions", defaultLocale = "de")
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.test", defaultLocale = "de")
     @Deprecated
     public static class DeprecatedType implements IModelObject {
 

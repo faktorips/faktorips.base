@@ -14,7 +14,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.method.IBaseMethod;
 
-public interface IMethod extends ITypePart, IBaseMethod {
+public interface IMethod extends IOverridableLabeledElement, IBaseMethod, ITypePart {
 
     String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
@@ -68,5 +68,10 @@ public interface IMethod extends ITypePart, IBaseMethod {
      * @throws IpsException If an error occurs while searching.
      */
     IMethod findOverriddenMethod(IIpsProject ipsProject) throws IpsException;
+
+    @Override
+    default IMethod findOverriddenElement(IIpsProject ipsProject) {
+        return findOverriddenMethod(ipsProject);
+    }
 
 }

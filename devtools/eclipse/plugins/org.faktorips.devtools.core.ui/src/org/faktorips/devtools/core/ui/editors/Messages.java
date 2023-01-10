@@ -24,6 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String DocumentationPage_inheritSupertypeMessage;
+
     public static String IpsObjectEditor_fileHasChangesOnDiskMessage;
     public static String IpsObjectEditor_fileHasChangesOnDiskNoButton;
     public static String IpsObjectEditor_fileHasChangesOnDiskTitle;
@@ -57,6 +59,8 @@ public class Messages extends NLS {
     public static String IpsPartsComposite_override;
     public static String IpsPartsComposite_deleteAttribute;
     public static String IpsPartsComposite_deleteAttributeConfirm;
+
+    public static String IpsPartEditDialog2_inheritOverriddenElementMessage;
 
     public static String UnparsableFilePage_fileContentIsNotParsable;
 

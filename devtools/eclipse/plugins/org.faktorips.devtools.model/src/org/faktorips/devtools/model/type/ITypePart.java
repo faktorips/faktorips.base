@@ -11,7 +11,9 @@
 package org.faktorips.devtools.model.type;
 
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsobject.Modifier;
@@ -56,4 +58,12 @@ public interface ITypePart extends IIpsObjectPart, IDescribedElement, ILabeledEl
      */
     void setModifier(Modifier modifier);
 
+    /**
+     * Copies the properties of the given type part to this part except the {@link ILabel labels}
+     * and {@link IDescription descriptions}.
+     * 
+     * @throws IllegalArgumentException If the class of the given type part is not the same as the
+     *             class of this type part
+     */
+    void copyFromWithoutLabelAndDescription(ITypePart source);
 }

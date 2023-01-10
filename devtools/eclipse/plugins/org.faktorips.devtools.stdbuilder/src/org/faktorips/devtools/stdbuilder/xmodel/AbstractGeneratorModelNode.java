@@ -31,7 +31,6 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.model.type.IOverridableElement;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.labels.LabelAndDescriptionPropertiesBuilder;
@@ -181,10 +181,13 @@ public abstract class AbstractGeneratorModelNode {
         String description = ""; //$NON-NLS-1$
         if (getIpsObjectPartContainer() instanceof IDescribedElement) {
             IDescribedElement describedElement = (IDescribedElement)getIpsObjectPartContainer();
-            IDescription generatorDescription = describedElement.getDescription(getLanguageUsedInGeneratedSourceCode());
-            if (generatorDescription != null) {
-                description = generatorDescription.getText();
+            if (describedElement instanceof IOverridableElement) {
+                description = ((IOverridableElement)describedElement)
+                        .getDescriptionTextFromThisOrSuper(getLanguageUsedInGeneratedSourceCode());
             } else {
+                description = describedElement.getDescriptionText(getLanguageUsedInGeneratedSourceCode());
+            }
+            if (StringUtils.isEmpty(description)) {
                 description = IIpsModel.get().getMultiLanguageSupport().getDefaultDescription(describedElement);
             }
         }

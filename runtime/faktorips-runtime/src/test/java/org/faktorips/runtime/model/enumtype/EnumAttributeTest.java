@@ -20,7 +20,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
+import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.type.Deprecation;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
@@ -39,12 +42,21 @@ public class EnumAttributeTest {
 
     private EnumAttribute barModel;
 
+    private final EnumType superEnumType = IpsModel.getEnumType(SuperAbstractEnumType.class);
+
+    private final EnumType enumType2 = IpsModel.getEnumType(AbstractEnumType.class);
+
+    private EnumAttribute superAttr = superEnumType.getAttribute("attributeWithDescription");
+
+    private EnumAttribute attr = enumType2.getAttribute("attributeWithDescription");
+
     @Before
     public void initModels() throws SecurityException, NoSuchMethodException {
         Method fooGetter = MyEnum.class.getMethod("getFoo");
         fooModel = new EnumAttribute(enumType, "foo", fooGetter);
         Method barGetter = MyEnum.class.getMethod("getBar", Locale.class);
         barModel = new EnumAttribute(enumType, "bar", barGetter);
+
     }
 
     @Test
@@ -121,6 +133,39 @@ public class EnumAttributeTest {
         assertThat(deprecation.isPresent(), is(true));
         assertThat(deprecation.get().getSinceVersion().isPresent(), is(false));
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
+    }
+
+    @Test
+    public void testFindSuperEnumAttribute() throws Exception {
+        assertThat(superAttr.findSuperEnumAttribute(), is((Optional.empty())));
+        assertThat(attr.findSuperEnumAttribute(), is(Optional.of(superAttr)));
+    }
+
+    @Test
+    public void testGetDocumentation() {
+        assertThat(superAttr.getDescription(Locale.GERMAN), is("Description of EnumAttributeWithDescription"));
+        assertThat(attr.getDescription(Locale.GERMAN),
+                is("Description of EnumAttributeWithDescription in AbstractEnumType"));
+    }
+
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "de")
+    @IpsEnumType(name = "SuperAbstractEnumType", attributeNames = { "id", "name", "attributeWithDescription" })
+    public interface SuperAbstractEnumType {
+
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true)
+        Integer getId();
+
+        @IpsEnumAttribute(name = "name", displayName = true)
+        String getName();
+
+        @IpsEnumAttribute(name = "attributeWithDescription")
+        String getAttributeWithDescription();
+    }
+
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "en")
+    @IpsEnumType(name = "AbstractEnumType", attributeNames = { "id", "name", "attributeWithDescription" })
+    public interface AbstractEnumType extends SuperAbstractEnumType {
+        // an abstract enumType
     }
 
     private static class MyEnum {

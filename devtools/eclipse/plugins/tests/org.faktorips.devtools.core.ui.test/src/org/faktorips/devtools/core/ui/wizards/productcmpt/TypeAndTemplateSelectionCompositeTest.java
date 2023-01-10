@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.ui.util.DescriptionFinder;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.TypeAndTemplateSelectionComposite.LabelProvider;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.model.ipsobject.IDescription;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -44,9 +43,7 @@ public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest
     @Test
     public void testGetToolTipText_describedElement() throws Exception {
         IDescribedElement describedElement = mock(IDescribedElement.class);
-        IDescription description = mock(IDescription.class);
-        when(description.getText()).thenReturn(TEST_DESCRIPTION);
-        when(describedElement.getDescription(any(Locale.class))).thenReturn(description);
+        when(describedElement.getDescriptionText(any(Locale.class))).thenReturn(TEST_DESCRIPTION);
 
         assertThat(labelProvider.getToolTipText(describedElement), is(TEST_DESCRIPTION));
     }
@@ -57,9 +54,7 @@ public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest
         IProductCmpt productCmpt = mock(IProductCmpt.class);
         when(ipsSrcFile.getIpsObject()).thenReturn(productCmpt);
         ProductCmptViewItem viewItem = new ProductCmptViewItem(ipsSrcFile);
-        IDescription description = mock(IDescription.class);
-        when(description.getText()).thenReturn(TEST_DESCRIPTION);
-        when(productCmpt.getDescription(any(Locale.class))).thenReturn(description);
+        when(productCmpt.getDescriptionText(any(Locale.class))).thenReturn(TEST_DESCRIPTION);
 
         assertThat(labelProvider.getToolTipText(viewItem), is(TEST_DESCRIPTION));
     }
@@ -78,9 +73,7 @@ public class TypeAndTemplateSelectionCompositeTest extends AbstractIpsPluginTest
         IProductCmpt productCmpt = mock(IProductCmpt.class);
         DescriptionFinder df = new DescriptionFinder(project);
 
-        IDescription description = mock(IDescription.class);
-        when(description.getText()).thenReturn(TEST_DESCRIPTION);
-        when(productCmpt.getDescription(any(Locale.class))).thenReturn(description);
+        when(productCmpt.getDescriptionText(any(Locale.class))).thenReturn(TEST_DESCRIPTION);
 
         df.start(productCmpt);
 

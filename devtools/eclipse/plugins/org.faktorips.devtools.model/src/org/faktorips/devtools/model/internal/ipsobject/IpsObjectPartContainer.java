@@ -51,6 +51,7 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.model.type.ITypePart;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
@@ -1172,6 +1173,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         ArgumentCheck.isTrue(getClass().equals(source.getClass()));
         Element xmlElement = source.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
         initFromXml(xmlElement);
+    }
+
+    /**
+     * @see ITypePart#copyFromWithoutLabelAndDescription(ITypePart)
+     */
+    public void copyFromWithoutLabelAndDescription(ITypePart source) {
+        copyFrom(source);
+        descriptions.clear();
+        labels.clear();
+        initLabelsAndDescriptions();
     }
 
     /**

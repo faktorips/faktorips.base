@@ -11,6 +11,7 @@
 package org.faktorips.runtime.model.type;
 
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.faktorips.runtime.IProductComponent;
@@ -145,6 +146,11 @@ public abstract class Attribute extends TypePart {
 
     protected Object getRelevantProductObject(IProductComponent productComponent, Calendar effectiveDate) {
         return getRelevantProductObject(productComponent, effectiveDate, isChangingOverTime());
+    }
+
+    @Override
+    protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
+        return Documentation.of(this, type, locale, fallback, this::findSuperAttribute);
     }
 
 }

@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.util.DatatypeComparator;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -45,6 +44,7 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -456,7 +456,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         IAttribute override = getAttribute(attribute.getName());
         if (override == null) {
             override = newAttribute();
-            override.copyFrom(attribute);
+            override.copyFromWithoutLabelAndDescription(attribute);
         }
         return override;
     }
@@ -712,7 +712,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         IAssociation association = getAssociation(associationToConstrain.getName());
         if (association == null) {
             association = newAssociation();
-            association.copyFrom(associationToConstrain);
+            association.copyFromWithoutLabelAndDescription(associationToConstrain);
         }
         return association;
     }

@@ -433,6 +433,14 @@ public class PolicyAssociationTest {
     }
 
     @Test
+    public void testGetDocumentation() {
+        PolicyAssociation association = policyCmptType.getAssociation("targets1toN");
+        PolicyAssociation subAssociation = IpsModel.getPolicyCmptType(SubSource.class).getAssociation("targets1toN");
+        assertThat(association.getDescription(Locale.GERMAN), is("Description of targets1toN"));
+        assertThat(subAssociation.getDescription(Locale.GERMAN), is("Description of targets1toN"));
+    }
+
+    @Test
     public void testIsQualified() {
         PolicyAssociation qualifiedAssociation = IpsModel.getPolicyCmptType(Source.class)
                 .getAssociation("moreTargets1toN");

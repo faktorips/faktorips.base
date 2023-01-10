@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -400,4 +401,37 @@ public class MethodTest extends AbstractIpsPluginTest {
         assertEquals(null, result);
     }
 
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        IType superType = newPolicyCmptType(ipsProject, "superType");
+        IType subType = newPolicyCmptType(ipsProject, "thisType");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IMethod superMethod = superType.newMethod();
+        superMethod.setDescriptionText(Locale.ENGLISH, "english description");
+        IMethod subMethod = subType.newMethod();
+
+        assertEquals("english description", subMethod.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+
+        subMethod.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description",
+                subMethod.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testGetLabelFromThisOrSuper() {
+        IType superType = newPolicyCmptType(ipsProject, "superType");
+        IType subType = newPolicyCmptType(ipsProject, "thisType");
+        subType.setSupertype(superType.getQualifiedName());
+
+        IMethod superMethod = superType.newMethod();
+        superMethod.setLabelValue(Locale.ENGLISH, "english label");
+        IMethod subMethod = subType.newMethod();
+
+        assertEquals("english label", subMethod.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+
+        subMethod.setLabelValue(Locale.ENGLISH, "overwritten label");
+        assertEquals("overwritten label",
+                subMethod.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+    }
 }

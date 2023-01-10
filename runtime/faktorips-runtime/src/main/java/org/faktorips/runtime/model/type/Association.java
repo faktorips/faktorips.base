@@ -318,4 +318,8 @@ public abstract class Association extends TypePart {
         return annotation;
     }
 
+    @Override
+    protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
+        return Documentation.of(this, type, locale, fallback, this::findSuperAssociation);
+    }
 }

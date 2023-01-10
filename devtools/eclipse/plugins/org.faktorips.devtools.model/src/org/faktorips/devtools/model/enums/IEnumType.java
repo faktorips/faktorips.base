@@ -18,6 +18,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsMetaClass;
 import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.type.IOverridableElement;
 
 /**
  * An <code>IEnumType</code> represents the structure of an enumeration in the Faktor-IPS model.
@@ -48,7 +49,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * 
  * @since 2.3
  */
-public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionControlledElement {
+public interface IEnumType extends IOverridableElement, IEnumValueContainer, IIpsMetaClass, IVersionControlledElement {
 
     /** The XML tag for this IPS object. */
     String XML_TAG = "EnumType"; //$NON-NLS-1$
@@ -640,4 +641,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * <code>IEnumLiteralNameAttribute</code>.
      */
     boolean containsEnumLiteralNameAttribute();
+
+    @Override
+    default IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
+        return findSuperEnumType(ipsProject);
+    }
 }

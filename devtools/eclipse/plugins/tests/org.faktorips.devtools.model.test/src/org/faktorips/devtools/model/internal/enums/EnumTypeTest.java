@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -1412,6 +1413,17 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertFalse(genderEnumType.isCapableOfContainingValues());
         genderEnumType.setAbstract(false);
         assertTrue(genderEnumType.isCapableOfContainingValues());
+    }
+
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        IEnumType subEnumType = newEnumType(ipsProject, "SubEnumType");
+        subEnumType.setSuperEnumType(genderEnumType.getQualifiedName());
+
+        genderEnumType.setDescriptionText(Locale.ENGLISH, "english description");
+        assertEquals("english description", subEnumType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+        subEnumType.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description", subEnumType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
     }
 
     public class ContentsChangeCounter implements ContentsChangeListener {

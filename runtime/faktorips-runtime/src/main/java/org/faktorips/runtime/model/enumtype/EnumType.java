@@ -14,15 +14,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.AnnotatedDeclaration;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.runtime.model.type.Deprecation;
+import org.faktorips.runtime.model.type.Documentation;
 import org.faktorips.runtime.model.type.DocumentationKind;
 import org.faktorips.runtime.model.type.ModelElement;
 import org.faktorips.runtime.util.MessagesHelper;
@@ -151,6 +155,18 @@ public class EnumType extends ModelElement {
         StringBuilderJoiner.join(sb, attributeNames);
         sb.append(')');
         return sb.toString();
+    }
+
+    public Optional<EnumType> findSuperEnumType() {
+        return Arrays.stream(getEnumClass().getInterfaces())
+                .filter(IpsModel::isEnumType)
+                .findFirst()
+                .map(IpsModel::getEnumType);
+    }
+
+    @Override
+    protected String getDocumentation(Locale locale, DocumentationKind type, String fallback) {
+        return Documentation.of(this, type, locale, fallback, this::findSuperEnumType);
     }
 
     @FunctionalInterface

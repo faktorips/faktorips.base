@@ -20,8 +20,8 @@ import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
@@ -44,6 +44,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -359,6 +360,48 @@ public class AttributeTest extends AbstractIpsPluginTest {
         attribute.setChangingOverTime(superAttr.isChangingOverTime());
         ml = attribute.validate(ipsProject);
         assertThat(ml, lacksMessageCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+    }
+
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        String superTypeQName = "SuperPCType";
+        PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
+        PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");
+        pCType.setSupertype(superTypeQName);
+
+        IPolicyCmptTypeAttribute attr = superPCType.newPolicyCmptTypeAttribute("attr");
+        IPolicyCmptTypeAttribute overwritingAttr = pCType.newPolicyCmptTypeAttribute("attr");
+        attr.setDatatype("Integer");
+        attr.setDescriptionText(Locale.ENGLISH, "english description");
+        overwritingAttr.setDatatype("Integer");
+        overwritingAttr.setOverwrite(true);
+
+        assertEquals("english description", overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+
+        overwritingAttr.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description",
+                overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
+
+    @Test
+    public void testGetLabelFromThisOrSuper() {
+        String superTypeQName = "SuperPCType";
+        PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
+        PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");
+        pCType.setSupertype(superTypeQName);
+
+        IPolicyCmptTypeAttribute attr = superPCType.newPolicyCmptTypeAttribute("attr");
+        IPolicyCmptTypeAttribute overwritingAttr = pCType.newPolicyCmptTypeAttribute("attr");
+        attr.setDatatype("Integer");
+        attr.setLabelValue(Locale.ENGLISH, "english label");
+        overwritingAttr.setDatatype("Integer");
+        overwritingAttr.setOverwrite(true);
+
+        assertEquals("english label", overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));
+
+        overwritingAttr.setLabelValue(Locale.ENGLISH, "overwritten english label");
+        assertEquals("overwritten english label",
+                overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));
     }
 
     @Test

@@ -26,6 +26,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.devtools.model.type.IOverridableElement;
+import org.faktorips.devtools.model.type.IOverridableLabeledElement;
 import org.faktorips.devtools.model.value.IValue;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
@@ -149,18 +151,12 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ArgumentCheck.notNull(labeledElement);
 
         String label;
-        ILabel localizedLabel = labeledElement.getLabel(getLocalizationLocale());
-        if (localizedLabel == null) {
-            label = getDefaultLabel(labeledElement);
+        if (labeledElement instanceof IOverridableLabeledElement) {
+            label = ((IOverridableLabeledElement)labeledElement).getLabelValueFromThisOrSuper(getLocalizationLocale());
         } else {
-            String value = localizedLabel.getValue();
-            if (IpsStringUtils.isEmpty(value)) {
-                label = getDefaultLabel(labeledElement);
-            } else {
-                label = value;
-            }
+            label = labeledElement.getLabelValue(getLocalizationLocale());
         }
-        return label;
+        return (IpsStringUtils.isEmpty(label)) ? getDefaultLabel(labeledElement) : label;
     }
 
     @Override
@@ -169,18 +165,13 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ArgumentCheck.isTrue(labeledElement.isPluralLabelSupported());
 
         String pluralLabel;
-        ILabel localizedLabel = labeledElement.getLabel(getLocalizationLocale());
-        if (localizedLabel == null) {
-            pluralLabel = getDefaultPluralLabel(labeledElement);
+        if (labeledElement instanceof IAssociation) {
+            pluralLabel = ((IAssociation)labeledElement)
+                    .getPluralLabelValueFromThisOrSuper(getLocalizationLocale());
         } else {
-            String pluralValue = localizedLabel.getPluralValue();
-            if (IpsStringUtils.isEmpty(pluralValue)) {
-                pluralLabel = getDefaultPluralLabel(labeledElement);
-            } else {
-                pluralLabel = pluralValue;
-            }
+            pluralLabel = labeledElement.getPluralLabelValue(getLocalizationLocale());
         }
-        return pluralLabel;
+        return (IpsStringUtils.isEmpty(pluralLabel)) ? getDefaultPluralLabel(labeledElement) : pluralLabel;
     }
 
     @Override
@@ -197,14 +188,21 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             }
         }
 
-        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
-        if (defaultLabel != null) {
-            String value = defaultLabel.getValue();
-            if (!(IpsStringUtils.isEmpty(value))) {
-                label = value;
+        String value = getDefaultLabelValue(labeledElement);
+
+        return (IpsStringUtils.isEmpty(value)) ? label : value;
+    }
+
+    private String getDefaultLabelValue(ILabeledElement labeledElement) {
+        Locale defaultLocale = getDefaultLocale(labeledElement.getIpsProject());
+        if (defaultLocale != null) {
+            if (labeledElement instanceof IOverridableLabeledElement) {
+                return ((IOverridableLabeledElement)labeledElement).getLabelValueFromThisOrSuper(defaultLocale);
+            } else {
+                return labeledElement.getLabelValue(defaultLocale);
             }
         }
-        return label;
+        return "";
     }
 
     @Override
@@ -219,14 +217,21 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
             pluralLabel = StringUtils.capitalize(((IAssociation)labeledElement).getTargetRolePlural());
         }
 
-        ILabel defaultLabel = getDefaultLabelPart(labeledElement);
-        if (defaultLabel != null) {
-            String pluralValue = defaultLabel.getPluralValue();
-            if (!(IpsStringUtils.isEmpty(pluralValue))) {
-                pluralLabel = pluralValue;
+        String value = getDefaultPluralLabelValue(labeledElement);
+
+        return (IpsStringUtils.isEmpty(value)) ? pluralLabel : value;
+    }
+
+    private String getDefaultPluralLabelValue(ILabeledElement labeledElement) {
+        Locale defaultLocale = getDefaultLocale(labeledElement.getIpsProject());
+        if (defaultLocale != null) {
+            if (labeledElement instanceof IAssociation) {
+                return ((IAssociation)labeledElement).getPluralLabelValueFromThisOrSuper(defaultLocale);
+            } else {
+                return labeledElement.getPluralLabelValue(defaultLocale);
             }
         }
-        return pluralLabel;
+        return "";
     }
 
     /**
@@ -284,30 +289,36 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         ArgumentCheck.notNull(describedElement);
 
         String description = ""; //$NON-NLS-1$
-        IDescription localizedDescription = describedElement.getDescription(getLocalizationLocale());
-        if (localizedDescription == null) {
-            description = getDefaultDescription(describedElement);
+        if (describedElement instanceof IOverridableElement) {
+            description = ((IOverridableElement)describedElement)
+                    .getDescriptionTextFromThisOrSuper(getLocalizationLocale());
         } else {
-            String text = localizedDescription.getText();
-            if (IpsStringUtils.isEmpty(text)) {
-                description = getDefaultDescription(describedElement);
-            } else {
-                description = text;
-            }
+            description = describedElement.getDescriptionText(getLocalizationLocale());
         }
-        return description;
+        return (IpsStringUtils.isEmpty(description)) ? getDefaultDescription(describedElement) : description;
     }
 
     @Override
     public String getDefaultDescription(IDescribedElement describedElement) {
         ArgumentCheck.notNull(describedElement);
 
-        String description = ""; //$NON-NLS-1$
-        IDescription defaultDescription = getDefaultDescriptionPart(describedElement);
-        if (defaultDescription != null) {
-            description = defaultDescription.getText();
+        String text = getDefaultDescriptionText(describedElement);
+
+        return (IpsStringUtils.isEmpty(text)) ? "" : text;
+
+    }
+
+    private String getDefaultDescriptionText(IDescribedElement describedElement) {
+        Locale defaultLocale = getDefaultLocale(describedElement.getIpsProject());
+        if (defaultLocale != null) {
+            if (describedElement instanceof IOverridableElement) {
+                return ((IOverridableElement)describedElement)
+                        .getDescriptionTextFromThisOrSuper(defaultLocale);
+            } else {
+                return describedElement.getDescriptionText(defaultLocale);
+            }
         }
-        return description;
+        return null;
     }
 
     /**

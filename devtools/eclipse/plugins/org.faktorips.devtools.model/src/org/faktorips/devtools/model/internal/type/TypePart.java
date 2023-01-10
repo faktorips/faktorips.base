@@ -142,5 +142,4 @@ public abstract class TypePart extends BaseIpsObjectPart implements ITypePart {
             element.setAttribute(PROPERTY_CATEGORY_POSITION, Integer.toString(categoryPosition));
         }
     }
-
 }

@@ -38,6 +38,7 @@ import org.faktorips.devtools.model.productcmpt.IExpressionDependencyDetail;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IAttribute;
+import org.faktorips.devtools.model.type.IOverridableLabeledElement;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.IdentifierResolver;
@@ -277,7 +278,9 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         String caption = null;
         IBaseMethod signature = findFormulaSignature(getIpsProject());
         if (signature != null) {
-            if (signature instanceof ILabeledElement) {
+            if (signature instanceof IOverridableLabeledElement) {
+                caption = ((IOverridableLabeledElement)signature).getLabelValueFromThisOrSuper(locale);
+            } else if (signature instanceof ILabeledElement) {
                 caption = ((ILabeledElement)signature).getLabelValue(locale);
             } else {
                 caption = signature.getSignatureString();

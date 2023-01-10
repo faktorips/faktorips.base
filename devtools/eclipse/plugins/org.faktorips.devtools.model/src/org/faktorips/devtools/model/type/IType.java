@@ -26,7 +26,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
  * 
  * @author Jan Ortmann
  */
-public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionControlledElement {
+public interface IType extends IOverridableElement, IIpsObject, Datatype, ILabeledElement, IVersionControlledElement {
 
     String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
@@ -544,5 +544,10 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Creates a new sub type hierarchy for the type and returns it.
      */
     ITypeHierarchy getSubtypeHierarchy() throws IpsException;
+
+    @Override
+    default IOverridableElement findOverriddenElement(IIpsProject ipsProject) {
+        return findSupertype(ipsProject);
+    }
 
 }

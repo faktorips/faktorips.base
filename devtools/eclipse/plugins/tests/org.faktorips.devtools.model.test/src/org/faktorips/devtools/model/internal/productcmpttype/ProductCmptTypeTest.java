@@ -30,10 +30,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -3072,9 +3074,8 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(attribute.getDatatype(), overriddenAttribute.getDatatype());
         assertEquals(attribute.getDefaultValue(), overriddenAttribute.getDefaultValue());
         assertEquals(attribute.getValueSet().getValueSetType(), overriddenAttribute.getValueSet().getValueSetType());
-        for (int i = 0; i < overriddenAttribute.getDescriptions().size(); i++) {
-            assertEquals(attribute.getDescriptions().get(i).getText(),
-                    overriddenAttribute.getDescriptions().get(i).getText());
+        for (IDescription element : overriddenAttribute.getDescriptions()) {
+            assertEquals(StringUtils.EMPTY, element.getText());
         }
         assertTrue(overriddenAttribute.isOverwrite());
     }
@@ -3275,4 +3276,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 message.getInvalidObjectProperties().get(1));
     }
 
+    @Test
+    public void testGetDescriptionFromThisOrSuper() {
+        superProductCmptType.setDescriptionText(Locale.ENGLISH, "english description");
+        assertEquals("english description", productCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+        productCmptType.setDescriptionText(Locale.ENGLISH, "overwritten description");
+        assertEquals("overwritten description", productCmptType.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
+    }
 }

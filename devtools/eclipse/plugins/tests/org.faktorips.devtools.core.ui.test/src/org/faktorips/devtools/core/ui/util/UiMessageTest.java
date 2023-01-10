@@ -21,7 +21,6 @@ import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsproject.properties.SupportedLanguage;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.model.ipsobject.ILabel;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
@@ -123,11 +122,9 @@ public class UiMessageTest {
 
     @Test
     public void testGetPrefix_label() throws Exception {
-        ILabel label = mock(ILabel.class);
-        when(label.getValue()).thenReturn(LABEL1);
         ILabeledElement labeledElement = mock(ILabeledElement.class);
         when(labeledElement.getIpsProject()).thenReturn(ipsProject);
-        when(labeledElement.getLabel(Locale.GERMAN)).thenReturn(label);
+        when(labeledElement.getLabelValue(Locale.GERMAN)).thenReturn(LABEL1);
         message = new Message("ABC", "text", Message.INFO, labeledElement);
         uiMessage = new UiMessage(message);
 

@@ -16,9 +16,11 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsEnumAttribute;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsExtensibleEnum;
@@ -114,7 +116,16 @@ public class EnumTypeTest {
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
+    @Test
+    public void testGetDocumentation() {
+        EnumType superEnumType = IpsModel.getEnumType(SuperAbstractEnumType.class);
+        EnumType enumType = IpsModel.getEnumType(AbstractEnumType.class);
+        assertThat(superEnumType.getDescription(Locale.GERMAN), is("Description of super source"));
+        assertThat(enumType.getDescription(Locale.GERMAN), is("Description of super source"));
+    }
+
     @IpsEnumType(name = "my.foo", attributeNames = { "x", "Z", "y" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "de")
     private static class Foo {
 
         private Integer x;
@@ -140,15 +151,36 @@ public class EnumTypeTest {
 
     @IpsExtensibleEnum(enumContentName = "my.baz")
     @IpsEnumType(name = "my.bar", attributeNames = {})
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "de")
     private static class Bar {
         // en extensible enum
     }
 
     @IpsExtensibleEnum(enumContentName = "deprecated.content")
     @IpsEnumType(name = "deprecated.structure", attributeNames = {})
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "de")
     @Deprecated
     private static class DeprecatedEnum {
         // a dreprecated enum
     }
 
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "de")
+    @IpsEnumType(name = "SuperAbstractEnumType", attributeNames = { "id", "name", "attributeWithDescription" })
+    public interface SuperAbstractEnumType {
+
+        @IpsEnumAttribute(name = "id", identifier = true, unique = true)
+        Integer getId();
+
+        @IpsEnumAttribute(name = "name", displayName = true)
+        String getName();
+
+        @IpsEnumAttribute(name = "attributeWithDescription")
+        String getAttributeWithDescription();
+    }
+
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.enumtype.test", defaultLocale = "en")
+    @IpsEnumType(name = "AbstractEnumType", attributeNames = { "id", "name", "attributeWithDescription" })
+    public interface AbstractEnumType extends SuperAbstractEnumType {
+        // an abstract enumType
+    }
 }

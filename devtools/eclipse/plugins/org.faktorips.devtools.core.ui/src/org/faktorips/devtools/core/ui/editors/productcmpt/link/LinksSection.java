@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -63,6 +64,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropLi
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
@@ -453,10 +455,19 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 IPolicyCmptTypeAssociation policyAssociation = productAssociation
                         .findMatchingPolicyCmptTypeAssociation(productAssociation.getIpsProject());
 
+                String localizedDescription = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedDescription(productAssociation);
+
                 if (policyAssociation == null) {
-                    return getProductAssociationToolTip(productAssociation);
+                    return (StringUtils.isEmpty(localizedDescription) ? ""
+                            : localizedDescription + System.lineSeparator())
+                            + getProductAssociationToolTip(productAssociation);
                 }
-                return getPolicyAssociationToolTip(policyAssociation) + System.lineSeparator()
+
+                return (StringUtils.isEmpty(localizedDescription) ? ""
+                        : localizedDescription + System.lineSeparator())
+                        + getPolicyAssociationToolTip(policyAssociation)
+                        + System.lineSeparator()
                         + getProductAssociationToolTip(productAssociation);
             }
             return null;
@@ -471,7 +482,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             return NLS.bind(Messages.LinksSection_Tooltip_ProductAssociation,
                     cardinalityProductAssociation,
                     productAssocationTargetRole);
-
         }
 
         private String getPolicyAssociationToolTip(IPolicyCmptTypeAssociation association) {
@@ -479,9 +489,15 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         }
 
         private String getRole(IAssociation association) {
-            return association.is1ToMany()
-                    ? association.getTargetRolePlural()
-                    : association.getTargetRoleSingular();
+            if (association.is1ToMany()) {
+                String localizedLabel = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedPluralLabel(association);
+                return StringUtils.isEmpty(localizedLabel) ? association.getTargetRolePlural() : localizedLabel;
+            } else {
+                String localizedLabel = IIpsModel.get().getMultiLanguageSupport()
+                        .getLocalizedLabel(association);
+                return StringUtils.isEmpty(localizedLabel) ? association.getTargetRoleSingular() : localizedLabel;
+            }
         }
     }
 
