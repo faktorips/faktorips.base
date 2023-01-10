@@ -64,7 +64,7 @@ If you want to use Java 17, you need to set ExecutionEnvironment and an Eclipse 
                 <groupId>org.faktorips</groupId>
                 <artifactId>faktorips-maven-plugin</artifactId>
                 <configuration>
-                    <executionEnvironment>JavaSE-17<executionEnvironment>
+                    <executionEnvironment>JavaSE-17</executionEnvironment>
                     <!-- Eclipse 2021-12 -->
                     <eclipseRepository>https://download.eclipse.org/eclipse/updates/4.22/</eclipseRepository>
                 </configuration>
