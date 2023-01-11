@@ -10,7 +10,6 @@
 package org.faktorips.maven.plugin.validation;
 
 import static org.faktorips.maven.plugin.validation.IpsValidationMessageMapper.MOJO_NAME;
-import static org.faktorips.maven.plugin.validation.IpsValidationMessageMapper.logMessages;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +44,7 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog, mockProject);
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
 
         verify(mockLog).error(MOJO_NAME + " foo (testcode)[object.prop0]");
     }
@@ -58,7 +57,7 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog, mockProject);
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
 
         verify(mockLog).warn(MOJO_NAME + " foo (testcode)[object.prop0]");
     }
@@ -71,9 +70,27 @@ public class IpsValidationMessageMapperTest {
                 .create();
         MessageList ml = MessageList.of(message);
 
-        logMessages(ml, mockLog, mockProject);
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
 
         verify(mockLog).info(MOJO_NAME + " foo (testcode)[object.prop0]");
+    }
+
+    @Test
+    public void testLogMessages_NoObjectProperties() {
+        MessageList ml = MessageList.of(Message.newInfo("info", "foo"));
+
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
+
+        verify(mockLog).info(MOJO_NAME + " foo (info)[]");
+    }
+
+    @Test
+    public void testLogMessages_MultipleObjectProperties() {
+        MessageList ml = MessageList.of(Message.newError("error", "baz", "object", "prop1", "prop2"));
+
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
+
+        verify(mockLog).error(MOJO_NAME + " baz (error)[object.prop1, object.prop2]");
     }
 
     @Test
@@ -101,7 +118,7 @@ public class IpsValidationMessageMapperTest {
 
         ml.add(errorMessage);
 
-        logMessages(ml, mockLog, mockProject);
+        new IpsValidationMessageMapper(mockLog, mockProject).logMessages(ml);
 
         verify(mockLog, times(3)).info(MOJO_NAME + " foo (info)[]");
         verify(mockLog, times(2)).warn(MOJO_NAME + " bar (warning)[object.prop]");

@@ -39,7 +39,8 @@ public class MavenWorkspaceRoot extends PlainJavaWorkspaceRoot {
                 .filter(e -> e.getValue().equals(p))
                 .map(Entry::getKey)
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException(
+                        "Can't find name for project '" + p + "' in workspace '" + getWorkspace() + "'"));
     }
 
     @Override

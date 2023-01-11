@@ -32,9 +32,7 @@ class MavenVersionProviderFactoryTest {
         IIpsProject ipsProject = new IpsProject(IIpsModel.get(), "foo");
         MavenProject mavenProject = mock(MavenProject.class);
         doReturn("1.2.3-SNAPSHOT").when(mavenProject).getVersion();
-        IpsDependency ipsDependency = new IpsDependency();
-        ipsDependency.setIpsProject(ipsProject);
-        ipsDependency.setMavenProject(mavenProject);
+        IpsDependency ipsDependency = new IpsDependency(null, null, null, null, ipsProject, mavenProject);
         MavenVersionProviderFactory factory = new MavenVersionProviderFactory(Set.of(ipsDependency));
 
         MavenVersionProvider versionProvider = factory.createVersionProvider(ipsProject);
@@ -57,17 +55,11 @@ class MavenVersionProviderFactoryTest {
         IIpsProject ipsProject1 = new IpsProject(IIpsModel.get(), "foo");
         MavenProject mavenProject1 = mock(MavenProject.class);
         doReturn("1.2.3-SNAPSHOT").when(mavenProject1).getVersion();
-        IpsDependency ipsDependency1 = new IpsDependency();
-        ipsDependency1.setArtifactId("foo");
-        ipsDependency1.setIpsProject(ipsProject1);
-        ipsDependency1.setMavenProject(mavenProject1);
+        IpsDependency ipsDependency1 = new IpsDependency("foo", null, null, null, ipsProject1, mavenProject1);
         IIpsProject ipsProject2 = new IpsProject(IIpsModel.get(), "bar");
         MavenProject mavenProject2 = mock(MavenProject.class);
         doReturn("2.3.4.release").when(mavenProject2).getVersion();
-        IpsDependency ipsDependency2 = new IpsDependency();
-        ipsDependency2.setArtifactId("bar");
-        ipsDependency2.setIpsProject(ipsProject2);
-        ipsDependency2.setMavenProject(mavenProject2);
+        IpsDependency ipsDependency2 = new IpsDependency("bar", null, null, null, ipsProject2, mavenProject2);
         MavenVersionProviderFactory factory = new MavenVersionProviderFactory(Set.of(ipsDependency1, ipsDependency2));
 
         MavenVersionProvider versionProvider = factory.createVersionProvider(ipsProject2);

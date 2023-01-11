@@ -13,7 +13,6 @@ package org.faktorips.maven.plugin.validation;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,6 +28,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -42,21 +42,17 @@ import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.model.internal.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.model.internal.ipsproject.bundle.IpsBundleEntry;
-import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plainjava.internal.PlainJavaIpsModelExtensions;
 import org.faktorips.maven.plugin.validation.abstraction.MavenIpsModelExtensions;
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspace;
 import org.faktorips.maven.plugin.validation.abstraction.MavenWorkspaceRoot;
 import org.faktorips.maven.plugin.validation.mavenversion.MavenVersionProviderFactory;
-import org.faktorips.runtime.MessageList;
 
 /**
- * Validates a Faktor-IPS project.
+ * Creates a Faktor-IPS project for the current Maven project and validates it.
  */
 @Mojo(name = "faktorips-validate", defaultPhase = LifecyclePhase.VALIDATE, threadSafe = true, requiresDependencyResolution = ResolutionScope.TEST)
 public class IpsValidationMojo extends AbstractMojo {
@@ -83,8 +79,9 @@ public class IpsValidationMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+        Log log = getLog();
         if (skip) {
-            getLog().info("skipping mojo execution");
+            log.info("skipping mojo execution");
             return;
         }
 
@@ -112,31 +109,7 @@ public class IpsValidationMojo extends AbstractMojo {
 
         setVersionProvider(ipsDependencies);
 
-        MessageList validationResults = validate(ipsProject);
-
-        IpsValidationMessageMapper.logMessages(validationResults, getLog(), project);
-
-        if (!ignoreValidationErrors && validationResults.containsErrorMsg()) {
-            throw new MojoFailureException(BUILD_FAILURE_MESSAGE);
-        }
-    }
-
-    private MessageList validate(IIpsProject ipsProject) {
-        MessageList validationResults = ipsProject.validate();
-
-        // TODO FIPS-9513 -> parallelStream()
-        Arrays.stream(ipsProject.getIpsPackageFragmentRoots(false))
-                .filter(IIpsPackageFragmentRoot::isBasedOnSourceFolder)
-                .map(IIpsPackageFragmentRoot::getIpsPackageFragments)
-                .flatMap(Arrays::stream)
-                .map(IIpsPackageFragment::getChildren)
-                .flatMap(Arrays::stream)
-                .filter(IIpsSrcFile.class::isInstance)
-                .map(IIpsSrcFile.class::cast)
-                .map(IIpsSrcFile::getIpsObject)
-                .map(o -> o.validate(ipsProject))
-                .forEach(validationResults::add);
-        return validationResults;
+        new IpsProjectValidator(ipsProject, project, log).validate(!ignoreValidationErrors);
     }
 
     private void initWorkspace(List<MavenProject> upstreamProjects) {
@@ -154,14 +127,13 @@ public class IpsValidationMojo extends AbstractMojo {
     private void setIpsObjectPath(Set<IpsDependency> ipsDependencies) {
         Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependencyEntries = ipsDependencies.isEmpty()
                 ? i -> new ArrayList<>()
-                : i -> createIpsObjectPathEntries(i,
-                        ipsDependencies);
+                : i -> createIpsObjectPathEntries(i, ipsDependencies);
         PlainJavaIpsModelExtensions.get().setProjectDependenciesProvider(projectDependencyEntries);
     }
 
     private Set<IpsDependency> findDependencies(List<MavenProject> upstreamProjects) {
         Set<IpsDependency> ipsDependencies = new LinkedHashSet<>();
-        Set<IpsDependency> upstreamIpsProjects = findUpstreamProjects(upstreamProjects);
+        Set<IpsDependency> upstreamIpsProjects = findUpstreamIpsProjects(upstreamProjects);
         ipsDependencies.addAll(upstreamIpsProjects);
         ipsDependencies.addAll(findIpsJars(project, upstreamIpsProjects));
         return ipsDependencies;
@@ -172,55 +144,79 @@ public class IpsValidationMojo extends AbstractMojo {
         IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
         List<IIpsObjectPathEntry> entries = new ArrayList<>();
         for (IpsDependency dependency : ipsDependencies) {
-            if (!dependency.isProject()) {
-                IpsBundleEntry ipsBundleEntry = new IpsBundleEntry((IpsObjectPath)ipsObjectPath);
-                try {
-                    ipsBundleEntry.initStorage(dependency.getPath());
-                    entries.add(ipsBundleEntry);
-                } catch (IOException e) {
-                    getLog().error(e);
-                }
+            if (dependency.ipsProject() == null) {
+                addJarDependency(ipsObjectPath, entries, dependency);
             } else {
-                entries.add(new IpsProjectRefEntry((IpsObjectPath)ipsObjectPath, dependency.getIpsProject()));
+                addProjectDependency(ipsObjectPath, entries, dependency);
             }
         }
         return entries;
     }
 
+    private void addProjectDependency(IIpsObjectPath ipsObjectPath,
+            List<IIpsObjectPathEntry> entries,
+            IpsDependency dependency) {
+        entries.add(new IpsProjectRefEntry((IpsObjectPath)ipsObjectPath, dependency.ipsProject()));
+    }
+
+    private void addJarDependency(IIpsObjectPath ipsObjectPath,
+            List<IIpsObjectPathEntry> entries,
+            IpsDependency dependency) {
+        IpsBundleEntry ipsBundleEntry = new IpsBundleEntry((IpsObjectPath)ipsObjectPath);
+        try {
+            ipsBundleEntry.initStorage(dependency.path());
+            entries.add(ipsBundleEntry);
+        } catch (IOException e) {
+            getLog().error(e);
+        }
+    }
+
     private Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
         Set<IpsDependency> dependencies = new HashSet<>();
-        ArtifactRepository localRepository = session.getLocalRepository();
-        Set<Artifact> dependencyArtifacts = project.getArtifacts();
-        for (Artifact artifact : dependencyArtifacts) {
-            File file = localRepository.find(artifact).getFile();
-            if (upstreamProjects.stream().anyMatch(d -> d.getArtifactId().equals(artifact.getArtifactId())
-                    && d.getGroupId().equals(artifact.getGroupId())
-                    && d.getVersion().equals(artifact.getVersion()))) {
+        ArtifactRepository repository = session.getLocalRepository();
+
+        for (Artifact artifact : project.getArtifacts()) {
+            File file = repository.find(artifact).getFile();
+            if (upstreamProjects.stream().anyMatch(d -> d.artifactId().equals(artifact.getArtifactId())
+                    && d.groupId().equals(artifact.getGroupId())
+                    && d.version().equals(artifact.getVersion()))) {
                 // already a local dependency
                 getLog().info("Using upstream project for " + artifact);
-            } else if (file.exists()) {
-                try (JarFile jarFile = new JarFile(file)) {
-                    Object attribute = jarFile.getManifest().getMainAttributes()
-                            .get(new Attributes.Name("Fips-BasePackage"));
-                    if (attribute != null) {
-                        dependencies.add(IpsDependency.create(artifact));
-                    }
-                } catch (IOException e) {
-                    getLog().error(e);
-                }
-            } else {
-                getLog().error("Can't find " + file);
+            } else if (file.exists() && isFipsProjectFromManifest(file)) {
+                dependencies.add(IpsDependency.create(artifact));
             }
         }
         return dependencies;
     }
 
-    private Set<IpsDependency> findUpstreamProjects(List<MavenProject> upstreamProjects) {
+    private boolean isFipsProjectFromManifest(File file) {
+        try (JarFile jarFile = new JarFile(file)) {
+            return jarFile.getManifest().getMainAttributes()
+                    .get(new Attributes.Name("Fips-BasePackage")) != null;
+        } catch (IOException e) {
+            getLog().error(e);
+        }
+        return false;
+    }
+
+    private Set<IpsDependency> findUpstreamIpsProjects(List<MavenProject> upstreamProjects) {
         return upstreamProjects.stream()
-                .filter(p -> p.getPackaging().equalsIgnoreCase("jar"))
-                .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())
-                .filter(p -> new File(p.getBasedir().getAbsoluteFile(), ".ipsproject").exists())
+                .filter(this::isPackagingJar)
+                .filter(this::hasPomFile)
+                .filter(this::isFipsProject)
                 .map(IpsDependency::create)
                 .collect(Collectors.toSet());
+    }
+
+    private boolean isPackagingJar(MavenProject p) {
+        return p.getPackaging().equalsIgnoreCase("jar");
+    }
+
+    private boolean hasPomFile(MavenProject p) {
+        return new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists();
+    }
+
+    private boolean isFipsProject(MavenProject p) {
+        return new File(p.getBasedir().getAbsoluteFile(), ".ipsproject").exists();
     }
 }

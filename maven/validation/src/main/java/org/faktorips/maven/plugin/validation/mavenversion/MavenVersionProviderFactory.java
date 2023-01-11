@@ -27,7 +27,7 @@ public class MavenVersionProviderFactory implements IVersionProviderFactory {
     @Override
     public MavenVersionProvider createVersionProvider(IIpsProject ipsProject) {
         return ipsDependencies.stream()
-                .filter(d -> ipsProject.equals(d.getIpsProject()))
+                .filter(d -> ipsProject.equals(d.ipsProject()))
                 .map(IpsDependency::getMavenProject)
                 .flatMap(Optional::stream).findFirst()
                 .map(MavenVersionProvider::new)

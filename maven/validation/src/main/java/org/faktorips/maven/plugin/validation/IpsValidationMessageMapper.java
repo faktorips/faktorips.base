@@ -19,21 +19,15 @@ import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
-public class IpsValidationMessageMapper {
+record IpsValidationMessageMapper(Log log, MavenProject project) {
 
     /* private */ static final String MOJO_NAME = "[Faktor-IPS-Validation]";
     /* private */ static final String DATATYPE_WARNING = "The class %s is in this project. Therefore the project must be built before the datatype can be validated. To avoid this, the class should be moved to another project.";
 
-    private IpsValidationMessageMapper() {
-        // Utility class not to be instantiated.
-    }
-
-    /* public */ static void logMessages(MessageList messageList,
-            Log log,
-            MavenProject project) {
+    /* public */ void logMessages(MessageList messageList) {
 
         for (Message message : messageList) {
-            checkAndLogDatatypeError(message, log, project);
+            checkAndLogDatatypeError(message);
 
             StringBuilder logMessage = new StringBuilder()
                     .append(MOJO_NAME)
@@ -55,9 +49,7 @@ public class IpsValidationMessageMapper {
         }
     }
 
-    private static void checkAndLogDatatypeError(Message message,
-            Log log,
-            MavenProject project) {
+    private void checkAndLogDatatypeError(Message message) {
         if (message.getCode().equals(GenericValueDatatype.MSGCODE_JAVACLASS_NOT_FOUND)) {
             Object object = message.getInvalidObjectProperties().get(0).getObject();
             if (object instanceof String) {
@@ -83,6 +75,5 @@ public class IpsValidationMessageMapper {
                 }
             }
         }
-
     }
 }
