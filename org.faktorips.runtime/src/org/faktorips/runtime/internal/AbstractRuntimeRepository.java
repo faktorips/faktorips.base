@@ -827,7 +827,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         // the type of the object. This is ugly design!
         IEnumValueLookupService<T> enumValueLookupService = (IEnumValueLookupService<T>)enumValueLookups.get(enumClazz);
         if (enumValueLookupService == null) {
-            for (IRuntimeRepository repository : getAllReferencedRepositories()) {
+            for (IRuntimeRepository repository : getDirectlyReferencedRepositories()) {
                 enumValueLookupService = repository.getEnumValueLookupService(enumClazz);
                 if (enumValueLookupService != null) {
                     break;
