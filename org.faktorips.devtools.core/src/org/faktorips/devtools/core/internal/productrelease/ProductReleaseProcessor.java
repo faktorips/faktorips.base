@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.productrelease;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -24,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.team.core.TeamException;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AResource.AResourceTreeTraversalDepth;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -210,9 +210,9 @@ public class ProductReleaseProcessor {
         List<IResource> resources = new ArrayList<>();
         resources.add(ipsProject.getProject().getFile(IIpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT).unwrap());
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
-            IFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root).unwrap();
+            AFile tocFile = ipsProject.getIpsArtefactBuilderSet().getRuntimeRepositoryTocFile(root);
             if (tocFile != null) {
-                resources.add(tocFile);
+                resources.add(tocFile.unwrap());
             }
         }
 
