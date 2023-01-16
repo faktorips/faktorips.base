@@ -16,11 +16,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -93,8 +95,7 @@ public class IpsValidationMojo extends AbstractMojo {
             return;
         }
 
-        List<MavenProject> upstreamProjects = session.getProjectDependencyGraph().getUpstreamProjects(project, true);
-        initWorkspace(upstreamProjects);
+        initWorkspace();
         AProject aProject = Abstractions.getWorkspace().getRoot()
                 .getProject(MavenWorkspaceRoot.toProjectName(project));
 
@@ -102,41 +103,54 @@ public class IpsValidationMojo extends AbstractMojo {
             return;
         }
 
-        Set<IpsDependency> ipsDependencies = findDependencies(upstreamProjects);
-        setIpsObjectPath(ipsDependencies);
-
         IIpsProject ipsProject = IIpsModel.get().getIpsProject(aProject);
-
-        setVersionProvider(ipsDependencies);
 
         new IpsProjectValidator(ipsProject, project, log).validate(!ignoreValidationErrors);
     }
 
-    private void initWorkspace(List<MavenProject> upstreamProjects) {
-        new MavenIpsModelExtensions(session);
-        PlainJavaImplementation.get().setWorkspace(new MavenWorkspace(project, upstreamProjects));
+    private void initWorkspace() {
+        synchronized (session) {
+            if (!(PlainJavaIpsModelExtensions.get() instanceof MavenIpsModelExtensions)) {
+                new MavenIpsModelExtensions(session);
+                PlainJavaImplementation.get()
+                        .setWorkspace(new MavenWorkspace(session.getTopLevelProject(), session.getAllProjects()));
+                Set<IpsDependency> ipsProjectsInBuild = asIpsDependencies(session.getAllProjects());
+                setVersionProvider(ipsProjectsInBuild);
+                PlainJavaIpsModelExtensions.get()
+                        .setProjectDependenciesProvider(i -> createProjectDependencies(ipsProjectsInBuild, i));
+            }
+        }
+    }
+
+    private List<IIpsObjectPathEntry> createProjectDependencies(Set<IpsDependency> ipsProjectsInBuild,
+            IIpsProject ipsProject) {
+        MavenProject mavenProject = findByIpsProject(ipsProjectsInBuild, ipsProject).get();
+        Set<IpsDependency> projectDependencies = session.getProjectDependencyGraph()
+                .getUpstreamProjects(mavenProject, true)
+                .stream()
+                .flatMap(p -> findByMavenProject(ipsProjectsInBuild, p))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        Set<IpsDependency> ipsDependencies = new LinkedHashSet<>(projectDependencies);
+        ipsDependencies.addAll(findIpsJars(mavenProject, projectDependencies));
+        return createIpsObjectPathEntries(ipsProject, ipsDependencies);
+    }
+
+    private Stream<IpsDependency> findByMavenProject(Set<IpsDependency> ipsDependencies, MavenProject mavenProject) {
+        return ipsDependencies.stream()
+                .filter(d -> d.getMavenProject().filter(Predicate.isEqual(mavenProject)).isPresent())
+                .findFirst().stream();
+    }
+
+    private Optional<MavenProject> findByIpsProject(Set<IpsDependency> ipsDependencies, IIpsProject ipsProject) {
+        return ipsDependencies.stream()
+                .filter(d -> d.ipsProject().equals(ipsProject))
+                .flatMap(d -> d.getMavenProject().stream())
+                .findFirst();
     }
 
     private void setVersionProvider(Set<IpsDependency> ipsDependencies) {
-        var dependenciesInclProject = new LinkedHashSet<>(ipsDependencies);
-        dependenciesInclProject.add(IpsDependency.create(project));
         PlainJavaIpsModelExtensions.get().setVersionProviderFactory("org.faktorips.maven.mavenVersionProvider",
-                new MavenVersionProviderFactory(dependenciesInclProject));
-    }
-
-    private void setIpsObjectPath(Set<IpsDependency> ipsDependencies) {
-        Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependencyEntries = ipsDependencies.isEmpty()
-                ? i -> new ArrayList<>()
-                : i -> createIpsObjectPathEntries(i, ipsDependencies);
-        PlainJavaIpsModelExtensions.get().setProjectDependenciesProvider(projectDependencyEntries);
-    }
-
-    private Set<IpsDependency> findDependencies(List<MavenProject> upstreamProjects) {
-        Set<IpsDependency> ipsDependencies = new LinkedHashSet<>();
-        Set<IpsDependency> upstreamIpsProjects = findUpstreamIpsProjects(upstreamProjects);
-        ipsDependencies.addAll(upstreamIpsProjects);
-        ipsDependencies.addAll(findIpsJars(project, upstreamIpsProjects));
-        return ipsDependencies;
+                new MavenVersionProviderFactory(ipsDependencies));
     }
 
     private List<IIpsObjectPathEntry> createIpsObjectPathEntries(IIpsProject ipsProject,
@@ -174,7 +188,6 @@ public class IpsValidationMojo extends AbstractMojo {
     private Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
         Set<IpsDependency> dependencies = new HashSet<>();
         ArtifactRepository repository = session.getLocalRepository();
-
         for (Artifact artifact : project.getArtifacts()) {
             File file = repository.find(artifact).getFile();
             if (upstreamProjects.stream().anyMatch(d -> d.artifactId().equals(artifact.getArtifactId())
@@ -199,8 +212,8 @@ public class IpsValidationMojo extends AbstractMojo {
         return false;
     }
 
-    private Set<IpsDependency> findUpstreamIpsProjects(List<MavenProject> upstreamProjects) {
-        return upstreamProjects.stream()
+    private Set<IpsDependency> asIpsDependencies(List<MavenProject> mavenProjects) {
+        return mavenProjects.stream()
                 .filter(this::isPackagingJar)
                 .filter(this::hasPomFile)
                 .filter(this::isFipsProject)

@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.faktorips.maven.plugin.validation.abstraction;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.maven.project.MavenProject;
 import org.faktorips.devtools.abstraction.AProject;
@@ -24,7 +24,7 @@ import org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaWorkspaceR
  */
 public class MavenWorkspaceRoot extends PlainJavaWorkspaceRoot {
 
-    private final Map<String, AProject> projects = new LinkedHashMap<>();
+    private final Map<String, AProject> projects = new ConcurrentHashMap<>();
     private final List<MavenProject> upstreamProjects;
     private final MavenProject project;
 

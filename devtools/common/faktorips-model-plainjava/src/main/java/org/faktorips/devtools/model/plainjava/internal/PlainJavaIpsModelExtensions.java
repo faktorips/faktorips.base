@@ -105,20 +105,24 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
     }
 
     /**
-     * Returns a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries} for a {@link IIpsProject}.
+     * Returns a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries}
+     * for a {@link IIpsProject}.
      */
     public Function<IIpsProject, List<IIpsObjectPathEntry>> getProjectDependenciesProvider() {
         return projectDependenciesProvider;
     }
 
     /**
-     * Sets a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries} for a {@link IIpsProject}.
+     * Sets a function that compiles a list of {@link IIpsObjectPathEntry IIpsObjectPathEntries} for
+     * a {@link IIpsProject}.
      */
-    public void setProjectDependenciesProvider(Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider) {
+    public void setProjectDependenciesProvider(
+            Function<IIpsProject, List<IIpsObjectPathEntry>> projectDependenciesProvider) {
         this.projectDependenciesProvider = projectDependenciesProvider;
     }
 
     private static final class PlainJavaJDTClasspathContainer implements IIpsObjectPathContainerType {
+
         @Override
         public String getId() {
             return "JDTClasspathContainer";
@@ -126,18 +130,39 @@ public class PlainJavaIpsModelExtensions extends IpsModelExtensionsViaExtensionP
 
         @Override
         public IIpsObjectPathContainer newContainer(IIpsProject ipsProject, String optionalPath) {
-            return new AbstractIpsObjectPathContainer("JDTClasspathContainer", optionalPath, ipsProject) {
+            return new PlainJavaIpsObjectPathContainer("JDTClasspathContainer", optionalPath, ipsProject);
+        }
 
-                @Override
-                public List<IIpsObjectPathEntry> resolveEntries() {
-                    return PlainJavaIpsModelExtensions.get().getProjectDependenciesProvider().apply(ipsProject);
-                }
+        private static final class PlainJavaIpsObjectPathContainer extends AbstractIpsObjectPathContainer {
+            private volatile List<IIpsObjectPathEntry> entries;
 
-                @Override
-                public MessageList validate() {
-                    return MessageList.of();
+            private PlainJavaIpsObjectPathContainer(String containerId, String optionalPath, IIpsProject ipsProject) {
+                super(containerId, optionalPath, ipsProject);
+            }
+
+            @Override
+            public List<IIpsObjectPathEntry> resolveEntries() {
+                List<IIpsObjectPathEntry> result = entries;
+                if (result == null) {
+                    synchronized (this) {
+                        if (entries == null) {
+                            // CSOFF: InnerAssignment
+                            // Efficient lazy initialization pattern from "Effective Java", 3rd
+                            // edition, p.334
+                            entries = result = PlainJavaIpsModelExtensions.get()
+                                    .getProjectDependenciesProvider()
+                                    .apply(getIpsProject());
+                            // CSON: InnerAssignment
+                        }
+                    }
                 }
-            };
+                return result;
+            }
+
+            @Override
+            public MessageList validate() {
+                return MessageList.of();
+            }
         }
     }
 
