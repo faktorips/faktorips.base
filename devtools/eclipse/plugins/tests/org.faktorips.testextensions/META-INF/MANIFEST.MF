@@ -6,14 +6,20 @@ Bundle-Version: 23.1.0.qualifier
 Automatic-Module-Name: org.faktorips.testextensions
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Faktor Zehn GmbH
-Import-Package: org.faktorips.devtools.core.ui,
+Import-Package: org.faktorips.codegen,
+ org.faktorips.codegen.dthelpers,
+ org.faktorips.datatype,
+ org.faktorips.devtools.abstraction.exception,
+ org.faktorips.devtools.core.ui,
  org.faktorips.devtools.core.ui.controller,
  org.faktorips.devtools.core.ui.controller.fields,
  org.faktorips.devtools.core.ui.controls,
  org.faktorips.devtools.model,
  org.faktorips.devtools.model.extproperties,
  org.faktorips.devtools.model.ipsobject,
+ org.faktorips.devtools.model.ipsproject,
  org.faktorips.devtools.model.pctype,
  org.faktorips.devtools.model.productcmpt,
- org.faktorips.devtools.model.type
+ org.faktorips.devtools.model.type,
+ org.faktorips.runtime
 Require-Bundle: org.eclipse.swt

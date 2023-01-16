@@ -115,12 +115,20 @@
       </PreSaveProcessor>
    </extension>
 
-    <extension
+   <extension
          id="TestExtensionForICustomValidation"
          name="TestExtension@ICustomValidation"
          point="org.faktorips.devtools.model.customValidation">
       <customValidation
             validationClass="org.faktorips.testextensions.TestExtensionCustomValidation">
       </customValidation>
+   </extension>
+   
+   <extension
+         point="org.faktorips.devtools.model.datatypeDefinition">
+      <datatypeDefinition
+            datatypeClass="org.faktorips.testextensions.customdatatypes.CountryDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.StringHelper">
+      </datatypeDefinition>
    </extension>
 </plugin>
