@@ -20,8 +20,10 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 
 public class JavaConventions {
-    private static final Pattern PACKAGE_NAME = Pattern.compile("([a-zA-Z_]\\w*)(\\.[a-zA-Z_]\\w*)*"); //$NON-NLS-1$
-    private static final Pattern NICE_PACKAGE_NAME = Pattern.compile("([a-z]\\w*)(\\.[a-z]\\w*)*"); //$NON-NLS-1$
+    private static final Pattern PACKAGE_NAME = Pattern
+            .compile("(?:[\\p{L}_][\\p{L}\\p{N}_]*)(?:\\.[\\p{L}_][\\p{L}\\p{N}_]*)*"); //$NON-NLS-1$
+    private static final Pattern NICE_PACKAGE_NAME = Pattern
+            .compile("(?:[\\p{Ll}][\\p{L}\\p{N}]*)(?:\\.[\\p{Ll}][\\p{L}\\p{N}]*)*"); //$NON-NLS-1$
     private static final String MSG_CODE_PREFIX = JavaConventions.class.getSimpleName() + '_';
     private static final Set<String> FORBIDDEN_NAMES = Set.of("abstract", "continue", "for", "new", "switch", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
             "assert", "default", "if", "package", "synchronized", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
