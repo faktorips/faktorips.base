@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Html Export Plug-in UI
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport.ui;singleton:=true
-Bundle-Version: 22.12.3.release
+Bundle-Version: 22.12.4.qualifier
 Bundle-Activator: org.faktorips.devtools.htmlexport.ui.HtmlExportPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.jdt.core,
