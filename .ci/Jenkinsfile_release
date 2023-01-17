@@ -60,7 +60,7 @@ pipeline {
             steps {
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${relaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                        sh "mvn -V -T1C org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${relaseVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
@@ -70,7 +70,7 @@ pipeline {
                 // install codequality-config, as it is used as an extension and setting the versions back won't work if it is missing
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                        sh "mvn -V install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
                // install targets, as they are resolved by tycho when setting the versions back, which won't work if they are missing
@@ -81,7 +81,7 @@ pipeline {
                 }
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
+                        sh "mvn -V -T1C org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${params.DEVELOPMENT_VERSION}-SNAPSHOT -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
                     }
                 }
                  // see https://github.com/eclipse-tycho/tycho/issues/1677
@@ -107,9 +107,9 @@ pipeline {
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind'
-                        sh 'mvn -U -V -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
+                        sh 'mvn -U -V -T1C -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
+                        sh 'mvn -U -V -T1C -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind'
+                        sh 'mvn -V -T1C -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                     }
                 }
 
@@ -133,8 +133,8 @@ pipeline {
                 // deploys plain maven artifacts
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
-                        sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -f {} \\;"
+                        sh "mvn -V -T1C deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                        sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn -V -T1C deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -f {} \\;"
                     }
                 }
                 // deploy p2 repository
