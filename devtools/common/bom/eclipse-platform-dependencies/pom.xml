@@ -17,7 +17,7 @@
     <properties>
         <apiguardian-api.version>1.1.0</apiguardian-api.version>
         <org-eclipse-core-commands.version>3.9.700</org-eclipse-core-commands.version>
-        <org-eclipse-core-contenttype.version>3.7.600</org-eclipse-core-contenttype.version>
+        <org-eclipse-core-contenttype.version>3.8.200</org-eclipse-core-contenttype.version>
         <org-eclipse-core-databinding.version>1.8.0</org-eclipse-core-databinding.version>
         <org-eclipse-core-databinding-beans.version>1.6.100</org-eclipse-core-databinding-beans.version>
         <org-eclipse-core-databinding-observable.version>1.9.0</org-eclipse-core-databinding-observable.version>
