@@ -20,7 +20,7 @@
         <maven-core.version>3.8.6</maven-core.version>
         <maven-shared-utils.version>3.3.4</maven-shared-utils.version>
         <maven-plugin-api.version>3.8.6</maven-plugin-api.version>
-        <maven-plugin-annotations.version>3.6.4</maven-plugin-annotations.version>
+        <maven-plugin-annotations.version>3.7.1</maven-plugin-annotations.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>
         <!-- plugins -->
