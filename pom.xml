@@ -87,7 +87,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
         <!-- Code quality -->
-        <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
+        <maven-checkstyle-plugin.version>3.2.1</maven-checkstyle-plugin.version>
         <checkstyle.version>10.3.3</checkstyle.version>
         <spotbugs-maven-plugin.version>4.7.2.0</spotbugs-maven-plugin.version>
         <spotbugs.version>4.7.1</spotbugs.version>
