@@ -22,7 +22,7 @@
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
         <joda.version>2.11.1</joda.version>
-        <opencsv.version>5.6</opencsv.version>
+        <opencsv.version>5.7.1</opencsv.version>
         <spotbugs-annotations.version>4.7.1</spotbugs-annotations.version>
         <!-- Test dependencies -->
         <mockito-core.version>4.7.0</mockito-core.version>
