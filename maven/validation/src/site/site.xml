@@ -13,6 +13,7 @@
                 <item name="Plugin-Management" href="plugin-management.html" />
                 <item name="Plugins" href="plugins.html" />
                 <item name="Summary" href="summary.html" />
+                <item name="Datatypes from Plugins" href="datatypes-from-plugins.html"/>
             </item>      
         </menu>
     </body>
