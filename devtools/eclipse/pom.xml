@@ -108,6 +108,7 @@
                 <configuration>
                     <format>'${version.kind}_'yyyyMMdd-HHmm</format>
                     <mapP2Dependencies>true</mapP2Dependencies>
+                    <replacePackagingType>true</replacePackagingType>
                 </configuration>
             </plugin>
             <plugin>
