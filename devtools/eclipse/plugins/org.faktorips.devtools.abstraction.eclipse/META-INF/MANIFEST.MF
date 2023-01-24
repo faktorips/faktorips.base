@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse-Implementation for Faktor-IPS Abstractions
 Bundle-SymbolicName: org.faktorips.devtools.abstraction.eclipse;singleton:=true
-Bundle-Version: 23.1.0.qualifier
+Bundle-Version: 23.1.0.a20230124-01
 Bundle-Vendor: Faktor Zehn GmbH
 Export-Package: org.faktorips.devtools.abstraction.eclipse.internal;
   x-friends:="org.faktorips.abstracttest,
