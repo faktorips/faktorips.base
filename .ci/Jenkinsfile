@@ -1,6 +1,6 @@
 import java.text.MessageFormat
 
-def mavenDocFolder = './maven/target/staging'
+def mavenDocFolder = './maven/faktorips-maven-plugin'
 def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'

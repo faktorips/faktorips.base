@@ -6,3 +6,4 @@
 **/.idea
 **/bin/
 **/.flattened-pom.xml
+faktorips-maven-plugin
