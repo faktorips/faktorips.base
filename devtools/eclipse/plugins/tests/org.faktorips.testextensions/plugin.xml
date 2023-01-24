@@ -123,12 +123,4 @@
             validationClass="org.faktorips.testextensions.TestExtensionCustomValidation">
       </customValidation>
    </extension>
-   
-   <extension
-         point="org.faktorips.devtools.model.datatypeDefinition">
-      <datatypeDefinition
-            datatypeClass="org.faktorips.testextensions.customdatatypes.CountryDatatype"
-            helperClass="org.faktorips.codegen.dthelpers.StringHelper">
-      </datatypeDefinition>
-   </extension>
 </plugin>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Plugin providing a Faktor-IPS datatype for testing purposes
+Bundle-SymbolicName: org.faktorips.testdatatype;singleton:=true
+Bundle-Version: 23.1.0.qualifier
+Import-Package: org.faktorips.codegen.dthelpers,
+ org.faktorips.datatype,
+ org.faktorips.runtime
+Automatic-Module-Name: org.faktorips.tychoReproducer.datatypePlugin.singleton.true
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.faktorips.devtools.model;bundle-version="22.12.4"
+Bundle-Vendor: Faktor Zehn GmbH
+Bundle-ActivationPolicy: lazy

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.faktorips.devtools.model.datatypeDefinition">
+      <datatypeDefinition
+            datatypeClass="org.faktorips.testdatatype.CountryDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.StringHelper">
+      </datatypeDefinition>
+   </extension>
+</plugin>

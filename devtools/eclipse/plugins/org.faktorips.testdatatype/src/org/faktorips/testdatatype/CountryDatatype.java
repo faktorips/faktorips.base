@@ -1,4 +1,14 @@
-package org.faktorips.testextensions.customdatatypes;
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+
+package org.faktorips.testdatatype;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -8,6 +18,9 @@ import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 
+/**
+ * Provides country ISO code Strings as a datatype.
+ */
 public class CountryDatatype extends GenericValueDatatype implements EnumDatatype {
 
     public CountryDatatype() {
