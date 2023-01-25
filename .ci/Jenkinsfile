@@ -48,7 +48,7 @@ pipeline {
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenDocFolder, "${mavenDocDeployFolder}/${fipsVersion}")
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', "${mavenDocFolder}/${fipsVersion}", "${mavenDocDeployFolder}/${fipsVersion}")
                         // deploy xsd
                         replaceOnServer('doc@doc.faktorzehn.org', '2004', xsdFolder, xsdDeployFolder)
                     }
