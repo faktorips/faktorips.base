@@ -50,7 +50,6 @@ import org.faktorips.devtools.core.ui.controls.tableedit.FormattedCellEditingSup
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartContainerSection;
 import org.faktorips.devtools.core.ui.editors.SearchBar;
 import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
-import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.LinkedColumnsTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -223,38 +222,20 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     @Override
     protected void initClientComposite(Composite client, UIToolkit toolkit) {
         searchBar = new SearchBar(client, toolkit);
-        enumValuesTable = toolkit.createTable(client,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION);
-        enumValuesTableViewer = new TableViewer(enumValuesTable);
 
-        final SelectionStatusBarPublisher selectionStatusBarPublisher = new SelectionStatusBarPublisher(editorSite);
-        enumValuesTableViewer.addSelectionChangedListener(
-                event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
+        createTable(client, toolkit);
+
+        createTableViewer(toolkit);
+
         searchBar.setFilterTo(enumValuesTableViewer);
+    }
 
-        createTableColumns();
-
-        enumValuesTableViewer.refresh();
-
-        enumValuesTableViewer.setContentProvider(new EnumValuesContentProvider(enumValueContainer));
-
-        enumValuesTableViewer.setInput(enumValueContainer);
-
-        // Set the RowDeletor listener to automatically delete empty rows at the end of the table.
-        enumValuesTableViewer.addSelectionChangedListener(new RowDeletor(enumValuesTableViewer));
-        enumValuesTable.setHeaderVisible(true);
-        enumValuesTable.setLinesVisible(true);
-
-        // Fill all space.
-        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        tableGridData.minimumHeight = 85;
-        enumValuesTable.setLayoutData(tableGridData);
-
-        TableUtil.increaseHeightOfTableRows(enumValuesTable, enumValuesTable.getColumnCount(), 5);
+    private void createTable(Composite client, UIToolkit toolkit) {
+        enumValuesTable = toolkit.createAndConfigureTable(client,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION);
 
         // Key listener for deleting rows with the DEL key.
         enumValuesTable.addKeyListener(new KeyAdapter() {
-
             @Override
             public void keyReleased(KeyEvent e) {
                 if (e.keyCode == SWT.DEL) {
@@ -262,7 +243,22 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
                 }
             }
         });
-        createTableValidationHoverService();
+
+        TableUtil.increaseHeightOfTableRows(enumValuesTable, enumValuesTable.getColumnCount(), 5);
+    }
+
+    private void createTableViewer(UIToolkit toolkit) {
+        enumValuesTableViewer = toolkit.createAndConfigureTableViewer(enumValuesTable, enumValueContainer,
+                new EnumValuesContentProvider(enumValueContainer));
+
+        createTableColumns();
+
+        final SelectionStatusBarPublisher selectionStatusBarPublisher = new SelectionStatusBarPublisher(editorSite);
+        enumValuesTableViewer.addSelectionChangedListener(
+                event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
+
+        // Set the RowDeletor listener to automatically delete empty rows at the end of the table.
+        enumValuesTableViewer.addSelectionChangedListener(new RowDeletor(enumValuesTableViewer));
     }
 
     @Override
@@ -294,6 +290,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
         } else {
             createTableColumnsForEnumContent();
         }
+        enumValuesTableViewer.refresh();
     }
 
     /**
@@ -556,23 +553,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     private void updateTableViewer() {
         enumValuesTableViewer.refresh();
-    }
-
-    /**
-     * Creates the hover service for validation messages for the <code>enumValuesTableViewer</code>.
-     */
-    private void createTableValidationHoverService() {
-        new TableMessageHoverService(enumValuesTableViewer) {
-
-            @Override
-            protected MessageList getMessagesFor(Object element) {
-                if (element != null) {
-                    return ((IEnumValue)element).validate(enumValueContainer.getIpsProject());
-                }
-                return null;
-            }
-
-        };
     }
 
     /**

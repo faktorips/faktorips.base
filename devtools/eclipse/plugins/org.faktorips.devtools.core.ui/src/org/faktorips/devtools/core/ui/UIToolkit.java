@@ -25,7 +25,9 @@ import org.eclipse.jface.fieldassist.IContentProposalListener2;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.IControlContentAdapter;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -67,13 +69,17 @@ import org.faktorips.devtools.core.ui.controls.TableStructureRefControl;
 import org.faktorips.devtools.core.ui.controls.TestCaseTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ContentProposals;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
+import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.devtools.model.INamedValue;
+import org.faktorips.devtools.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 
 /**
@@ -1054,6 +1060,40 @@ public class UIToolkit {
             return formToolkit.createTable(parent, style);
         }
         return new Table(parent, style);
+    }
+
+    public Table createAndConfigureTable(Composite parent, int style) {
+        Table table = new Table(parent, style);
+        table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+
+        // Fill all space.
+        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        tableGridData.widthHint = parent.getClientArea().width;
+        tableGridData.heightHint = parent.getClientArea().height;
+        table.setLayoutData(tableGridData);
+
+        return table;
+    }
+
+    public TableViewer createAndConfigureTableViewer(Table table, IIpsObject input, IContentProvider contentProvider) {
+        TableViewer tableViewer = new TableViewer(table);
+        tableViewer.setContentProvider(contentProvider);
+        tableViewer.setInput(input);
+
+        // Creates the hover service for validation messages for the table viewer.
+        new TableMessageHoverService(tableViewer) {
+            @Override
+            protected MessageList getMessagesFor(Object element) {
+                if (element != null) {
+                    return ((IIpsObjectPart)element).validate(((IIpsObjectPart)element).getIpsProject());
+                }
+                return null;
+            }
+
+        };
+
+        return tableViewer;
     }
 
     public EnumControl createEnumControl(Composite parent) {
