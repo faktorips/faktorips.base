@@ -12,30 +12,24 @@
 
     <packaging>bundle</packaging>
     <name>Faktor-IPS Value Types</name>
-
+    <description>Value type runtime library for Faktor-IPS. 
+    When using Java 9 or newer, you need to provide the jaxb-api.</description>
 
     <dependencies>
         <dependency>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-annotations</artifactId>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.activation</groupId>
-            <artifactId>javax.activation</artifactId>
-            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -65,12 +59,12 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.valuetypes {
-                                    	requires static com.github.spotbugs.annotations;
-                                    	requires java.xml.bind;
-                                    	exports org.faktorips.annotation;
-                                    	exports org.faktorips.values;
-                                    	exports org.faktorips.values.xml;
-                                    	exports org.faktorips.valueset;
+                                        requires static com.github.spotbugs.annotations;
+                                        requires java.xml.bind;
+                                        exports org.faktorips.annotation;
+                                        exports org.faktorips.values;
+                                        exports org.faktorips.values.xml;
+                                        exports org.faktorips.valueset;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -88,10 +82,10 @@
                             javax.xml.bind.*
                         </Import-Package>
                         <Export-Package>
-                        	org.faktorips.annotation,
-                        	org.faktorips.values,
-                        	org.faktorips.values.xml,
-                        	org.faktorips.valueset
+                            org.faktorips.annotation,
+                            org.faktorips.values,
+                            org.faktorips.values.xml,
+                            org.faktorips.valueset
                         </Export-Package>
                         <Bundle-SymbolicName>org.faktorips.valuetypes</Bundle-SymbolicName>
                     </instructions>
