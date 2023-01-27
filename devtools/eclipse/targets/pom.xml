@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse</artifactId>
-        <version>22.12.5.release</version>
+        <version>22.12.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>targets</artifactId>
