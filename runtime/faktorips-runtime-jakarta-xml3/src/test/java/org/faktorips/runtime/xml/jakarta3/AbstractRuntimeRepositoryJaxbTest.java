@@ -33,7 +33,6 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import jakarta.xml.bind.JAXBContext;
@@ -47,7 +46,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 
 public class AbstractRuntimeRepositoryJaxbTest {
 
-    @Ignore
     @Test
     public void testNewJAXBContext() throws JAXBException {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(Foo.class);
@@ -67,7 +65,6 @@ public class AbstractRuntimeRepositoryJaxbTest {
         assertThat(foo2.getMyId(), is(foo.getMyId()));
     }
 
-    @Ignore
     @Test
     public void testNewJAXBContext_SuperSuperClass() {
         AbstractRuntimeRepository repository = new TestAbstractRuntimeRepository(FooSuppe2.class);

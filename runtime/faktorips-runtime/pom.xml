@@ -185,12 +185,5 @@
             <artifactId>commons-text</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <!-- needed when running the tests with Java > 8 -->
-            <groupId>org.glassfish.jaxb</groupId>
-            <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.0.1</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

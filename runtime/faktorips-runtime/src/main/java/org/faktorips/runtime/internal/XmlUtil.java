@@ -21,7 +21,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * A collection of utility methods for xml handling.
+ * A collection of utility methods for XML DOM handling.
  * 
  * @author Jan Ortmann
  */

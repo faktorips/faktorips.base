@@ -27,6 +27,7 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
  */
 public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration>
         implements IIpsXmlAdapter<String, ProductConfiguration> {
+
     private final IpsProductConfigurationXmlAdapter ipsProductConfigurationXmlAdapter;
 
     public ProductConfigurationXmlAdapter(IRuntimeRepository repository) {
@@ -50,4 +51,5 @@ public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductCo
     public ProductConfiguration unmarshal(String id) throws Exception {
         return ipsProductConfigurationXmlAdapter.unmarshal(id);
     }
+
 }
