@@ -10,10 +10,12 @@
 package org.faktorips.runtime.xml.jakarta3;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.runtime.xml.IXmlBindingSupport;
 
 import jakarta.xml.bind.JAXB;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Jakarta {@link JAXB} version of the {@link IXmlBindingSupport}, to be used with Java EE 9 or
@@ -32,4 +34,22 @@ public enum JaxbSupport implements IXmlBindingSupport<JAXBContext> {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <ValueType, BoundType> XmlAdapter<ValueType, BoundType> wrap(
+            IIpsXmlAdapter<ValueType, BoundType> xmlAdapter) {
+        if (xmlAdapter instanceof XmlAdapter) {
+            return (XmlAdapter<ValueType, BoundType>)xmlAdapter;
+        }
+        return new XmlAdapter<ValueType, BoundType>() {
+            @Override
+            public BoundType unmarshal(ValueType v) throws Exception {
+                return xmlAdapter.unmarshal(v);
+            }
+
+            @Override
+            public ValueType marshal(BoundType v) throws Exception {
+                return xmlAdapter.marshal(v);
+            }
+        };
+    }
 }

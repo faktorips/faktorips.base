@@ -7,13 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.jaxb;
+package org.faktorips.runtime.xml.jakarta3;
 
 import java.time.MonthDay;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.xml.IIpsMonthDayAdapter;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * {@link XmlAdapter} for {@link MonthDay}. The adapter can be used for individual
@@ -21,20 +21,15 @@ import org.faktorips.runtime.xml.IIpsMonthDayAdapter;
  * 
  * <pre>
  * <code>
- &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jaxb.MonthDayAdapter.class),
+ &#64;jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
+     &#64;jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jakarta.xml.MonthDayAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
- * 
- * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.MonthDayAdapter}
- *                 or {@code org.faktorips.runtime.xml.jakarta.MonthDayAdapter} instead
  */
-@Deprecated
 public class MonthDayAdapter extends XmlAdapter<String, MonthDay> implements IIpsMonthDayAdapter {
-
     @Override
     public MonthDay unmarshal(String v) {
         return IIpsMonthDayAdapter.super.unmarshal(v);

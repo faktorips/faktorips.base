@@ -7,13 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.runtime.jaxb;
+package org.faktorips.runtime.xml.jakarta3;
 
 import java.time.LocalTime;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.xml.IIpsLocalTimeAdapter;
+
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * {@link XmlAdapter} for {@link LocalTime}. The adapter can be used for individual
@@ -21,18 +21,14 @@ import org.faktorips.runtime.xml.IIpsLocalTimeAdapter;
  *
  * <pre>
  * <code>
- &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorzehn.runtime.jaxb.LocalTimeAdapter.class),
+ &#64;jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
+     &#64;jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorzehn.runtime.jakarta.xml.LocalTimeAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
- * 
- * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.LocalTimeAdapter}
- *                 or {@code org.faktorips.runtime.xml.jakarta.LocalTimeAdapter} instead
  */
-@Deprecated
 public class LocalTimeAdapter extends XmlAdapter<String, LocalTime> implements IIpsLocalTimeAdapter {
 
     @Override
