@@ -12,7 +12,10 @@
     <packaging>bundle</packaging>
 
     <name>Faktor-IPS Runtime</name>
-    <description>Runtime library for Faktor-IPS</description>
+    <description>Runtime library for Faktor-IPS. 
+    When using Java 9 or newer, you need to provide the jaxb-api. 
+    When using CSV to read tables, add the optional dependencies to opencsv, commons-lang3 and commons-text. 
+    If you want to run Faktor-IPS tests as JUnit-Tests, you need to provide either junit (JUnit 4) or junit-jupiter-api (JUnit 5)</description>
 
     <build>
         <plugins>
@@ -135,6 +138,11 @@
             <artifactId>faktorips-valuetypes</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>compile</scope>
@@ -143,6 +151,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
+            <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>

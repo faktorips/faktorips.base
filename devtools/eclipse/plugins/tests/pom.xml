@@ -48,6 +48,12 @@
             <groupId>org.faktorips</groupId>
             <artifactId>faktorips-model-plainjava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model</artifactId>
+            <version>${faktorips.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

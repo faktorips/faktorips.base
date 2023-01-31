@@ -115,7 +115,7 @@
       </PreSaveProcessor>
    </extension>
 
-    <extension
+   <extension
          id="TestExtensionForICustomValidation"
          name="TestExtension@ICustomValidation"
          point="org.faktorips.devtools.model.customValidation">

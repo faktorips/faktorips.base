@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-devtools-eclipse-plugins</artifactId>
+        <version>23.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>org.faktorips.testdatatype</artifactId>
+
+    <packaging>eclipse-plugin</packaging>
+    <name>Faktor-IPS Test-Datatype</name>
+    <description>Plugin providing a Faktor-IPS datatype for testing purposes</description>
+    
+    <properties>
+        <checkstyle.skip>true</checkstyle.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

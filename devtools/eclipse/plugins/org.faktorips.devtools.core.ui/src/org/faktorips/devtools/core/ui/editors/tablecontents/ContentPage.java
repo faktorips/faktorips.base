@@ -35,7 +35,6 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -53,7 +52,6 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.SearchBar;
 import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
-import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -69,7 +67,6 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
-import org.faktorips.runtime.MessageList;
 
 /**
  * The content-page for the <code>TableContentsEditor</code>. Allows the editing of
@@ -161,10 +158,10 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
 
         searchBar = new SearchBar(formBody, toolkit);
 
-        table = createTable(formBody);
-        initTableViewer(table);
+        createTable(formBody, toolkit);
 
-        tableViewer.setInput(getTableContents());
+        initTableViewer(toolkit);
+
         TableRows tableRows = (TableRows)getTableContents().getTableRows();
         tableViewer.setItemCount(tableRows.getNumOfRows());
 
@@ -175,6 +172,18 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
         initTablePopupMenu(table, deleteRowAction, newRowAction);
 
         searchBar.setFilterTo(tableViewer);
+
+    }
+
+    /**
+     * Creates a Table with the given formBody as a parent. Inits the look, layout of the table and
+     * adds a KeyListener that enables the editing of the first cell in the currently selected row
+     * by pressing "F2".
+     */
+    private void createTable(Composite formBody, UIToolkit toolkit) {
+        // Table: scroll both vertically and horizontally
+        table = toolkit.createAndConfigureTable(formBody,
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
 
         // FS#822 workaround to activate the correct cell editor (row and column),
         // after scrolling and activating another cell the table on a different page.
@@ -191,12 +200,88 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
                 deactivateCellEditors();
             }
         };
+
         table.getVerticalBar().addSelectionListener(cellEditorDeactivator);
         table.getHorizontalBar().addSelectionListener(cellEditorDeactivator);
 
+        table.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (e.keyCode == SWT.F2) {
+                    IRow selectedRow = (IRow)((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
+                    if (selectedRow != null) {
+                        tableViewer.editElement(selectedRow, 0);
+                    }
+                }
+            }
+        });
+
+        table.removeAll();
+        TableUtil.increaseHeightOfTableRows(table, getTableContents().getColumnReferencesCount(), 5);
+    }
+
+    /**
+     * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
+     * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
+     * hoverservice.
+     */
+    private void initTableViewer(UIToolkit toolkit) {
+        tableViewer = toolkit.createAndConfigureTableViewer(table, getTableContents(),
+                new TableContentsContentProvider());
+        /*
+         * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
+         * 
+         * 
+         * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
+         * 
+         * tableViewer.setUseHashlookup(true);
+         */
+        TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
+        tableViewer.setLabelProvider(labelProvider);
+
+        createNewTableViewer();
+
         tableViewer.addSelectionChangedListener(
                 event -> selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection())));
+    }
 
+    /**
+     * creates a new <code>TableViewer</code> based on the corresponding <code>ITableContents</code>
+     */
+    private void createNewTableViewer() {
+        ITableStructure tableStructure = getTableStructure();
+        int columnReferencesCount = getTableContents().getColumnReferencesCount();
+        String[] columnProperties = new String[columnReferencesCount];
+        List<Integer> columnSizes = readColumnWidths();
+        int numReadSizes = columnSizes.size();
+        // use the number of references in the contents as only those can be edited.
+        CellEditor[] editors = new CellEditor[columnReferencesCount];
+        ValueDatatype[] datatypes = new ValueDatatype[columnReferencesCount];
+        for (int i = 0; i < columnReferencesCount; i++) {
+            String columnName;
+            ValueDatatype dataType = null;
+            if (tableStructure == null) {
+                columnName = Messages.ContentPage_Column + (i + 1);
+            } else {
+                String referenceName = getTableContents().getColumnReferences().get(i).getName();
+                IColumn column = tableStructure.getColumn(referenceName);
+                columnName = findColumnName(column, referenceName);
+                dataType = findValueDatatype(column);
+            }
+            ValueDatatypeControlFactory factory = getValueDatatypeControlFactory(dataType);
+            createTableColumn(columnSizes, numReadSizes, i, columnName, factory);
+            columnProperties[i] = columnName;
+            editors[i] = createCellEditor(i, dataType, factory);
+            datatypes[i] = dataType;
+        }
+        tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
+        tableViewer.setColumnProperties(columnProperties);
+        if (tableStructure != null) {
+            tableViewer.setCellEditors(editors);
+        }
+        ((TableContentsLabelProvider)tableViewer.getLabelProvider()).setValueDatatypes(datatypes);
+        tableViewer.setComparator(new TableSorter());
+        tableViewer.refresh();
     }
 
     /**
@@ -303,38 +388,6 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
     }
 
     /**
-     * Creates a Table with the given formBody as a parent and returns it. Inits the look, layout of
-     * the table and adds a KeyListener that enables the editing of the first cell in the currently
-     * selected row by pressing "F2".
-     * 
-     * @return The newly created and initialised Table.
-     */
-    private Table createTable(Composite formBody) {
-        // Table: scroll both vertically and horizontally
-        Table newTable = new Table(formBody,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
-        newTable.setHeaderVisible(true);
-        newTable.setLinesVisible(true);
-        // occupy all available space
-        GridData tableGridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        tableGridData.widthHint = formBody.getClientArea().width;
-        tableGridData.heightHint = formBody.getClientArea().height;
-        newTable.setLayoutData(tableGridData);
-        newTable.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyReleased(KeyEvent e) {
-                if (e.keyCode == SWT.F2) {
-                    IRow selectedRow = (IRow)((IStructuredSelection)tableViewer.getSelection()).getFirstElement();
-                    if (selectedRow != null) {
-                        tableViewer.editElement(selectedRow, 0);
-                    }
-                }
-            }
-        });
-        return newTable;
-    }
-
-    /**
      * Reads the widths of the table columns stored for this table content. If no widths have been
      * stored, the default width for each column is returned.
      * 
@@ -369,83 +422,6 @@ public class ContentPage extends IpsObjectEditorPage implements ContentsChangeLi
             settings = IpsPlugin.getDefault().getDialogSettings().addNewSection(tableSettingsKey);
         }
         settings.put(COLUMN_PREFIX + index, column.getWidth());
-    }
-
-    /**
-     * Inits the <code>TableViewer</code> for this page. Sets content- and labelprovider, column
-     * headers and widths, column properties, cell editors, sorter. Inits popupmenu and
-     * hoverservice.
-     */
-    private void initTableViewer(Table table) {
-
-        table.removeAll();
-        TableUtil.increaseHeightOfTableRows(table, getTableContents().getColumnReferencesCount(), 5);
-
-        tableViewer = new TableViewer(table);
-        /*
-         * SetUseHashlookup in combination with SWT.VIRTUAL does't work.
-         * 
-         * 
-         * https://bugs.eclipse.org/bugs/show_bug.cgi?id=269721
-         * 
-         * tableViewer.setUseHashlookup(true);
-         */
-        tableViewer.setContentProvider(new TableContentsContentProvider());
-        TableContentsLabelProvider labelProvider = new TableContentsLabelProvider();
-        tableViewer.setLabelProvider(labelProvider);
-
-        createNewTableViewer();
-
-        new TableMessageHoverService(tableViewer) {
-
-            @Override
-            protected MessageList getMessagesFor(Object element) {
-                if (element != null) {
-                    return ((IRow)element).validate(((IRow)element).getIpsProject());
-                }
-                return null;
-            }
-        };
-
-    }
-
-    /**
-     * creates a new <code>TableViewer</code> based on the corresponding <code>ITableContents</code>
-     */
-    private void createNewTableViewer() {
-        ITableStructure tableStructure = getTableStructure();
-        int columnReferencesCount = getTableContents().getColumnReferencesCount();
-        String[] columnProperties = new String[columnReferencesCount];
-        List<Integer> columnSizes = readColumnWidths();
-        int numReadSizes = columnSizes.size();
-        // use the number of references in the contents as only those can be edited.
-        CellEditor[] editors = new CellEditor[columnReferencesCount];
-        ValueDatatype[] datatypes = new ValueDatatype[columnReferencesCount];
-        for (int i = 0; i < columnReferencesCount; i++) {
-            String columnName;
-            ValueDatatype dataType = null;
-            if (tableStructure == null) {
-                columnName = Messages.ContentPage_Column + (i + 1);
-            } else {
-                String referenceName = getTableContents().getColumnReferences().get(i).getName();
-                IColumn column = tableStructure.getColumn(referenceName);
-                columnName = findColumnName(column, referenceName);
-                dataType = findValueDatatype(column);
-            }
-            ValueDatatypeControlFactory factory = getValueDatatypeControlFactory(dataType);
-            createTableColumn(columnSizes, numReadSizes, i, columnName, factory);
-            columnProperties[i] = columnName;
-            editors[i] = createCellEditor(i, dataType, factory);
-            datatypes[i] = dataType;
-        }
-        tableViewer.setCellModifier(new TableContentsCellModifier(tableViewer, this));
-        tableViewer.setColumnProperties(columnProperties);
-        if (tableStructure != null) {
-            tableViewer.setCellEditors(editors);
-        }
-        ((TableContentsLabelProvider)tableViewer.getLabelProvider()).setValueDatatypes(datatypes);
-        tableViewer.setComparator(new TableSorter());
-        tableViewer.refresh();
     }
 
     private IpsCellEditor createCellEditor(int i, ValueDatatype dataType, ValueDatatypeControlFactory factory) {

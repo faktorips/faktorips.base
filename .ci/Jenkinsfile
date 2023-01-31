@@ -1,6 +1,6 @@
 import java.text.MessageFormat
 
-def mavenDocFolder = './faktorips-maven-plugin/target/site'
+def mavenDocFolder = './maven/faktorips-maven-plugin'
 def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
@@ -33,6 +33,7 @@ pipeline {
                         sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh 'mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh 'mvn -U -V -fae -e clean deploy site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
+                        sh 'mvn -U -V -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                     }
                 }
             }
@@ -47,7 +48,7 @@ pipeline {
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenDocFolder, "${mavenDocDeployFolder}/${fipsVersion}")
+                        replaceOnServer('doc@doc.faktorzehn.org', '2004', "${mavenDocFolder}/${fipsVersion}", "${mavenDocDeployFolder}/${fipsVersion}")
                         // deploy xsd
                         replaceOnServer('doc@doc.faktorzehn.org', '2004', xsdFolder, xsdDeployFolder)
                     }

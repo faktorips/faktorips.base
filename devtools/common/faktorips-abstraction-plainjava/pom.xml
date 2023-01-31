@@ -15,10 +15,6 @@
     <name>Plain-Java implementation of Faktor-IPS Abstractions</name>
     <description>Plain-Java implementation of abstractions used in the Faktor-IPS design time tools</description>
 
-    <properties>
-        <auto-service.version>1.0.1</auto-service.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.faktorips</groupId>

@@ -88,7 +88,11 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             String text = "The Java class represented by the datatype can't be found. (Classname: " //$NON-NLS-1$
                     + getAdaptedClassName() + "). " //$NON-NLS-1$
                     + "Either the class is not on the classpath or the resource it is stored in is out of sync. See error log for more details."; //$NON-NLS-1$
-            list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
+            if (getAdaptedClassName() != null) {
+                list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text, getAdaptedClassName()));
+            } else {
+                list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
+            }
             return list;
         }
         checkIsParsableMethodName(list);

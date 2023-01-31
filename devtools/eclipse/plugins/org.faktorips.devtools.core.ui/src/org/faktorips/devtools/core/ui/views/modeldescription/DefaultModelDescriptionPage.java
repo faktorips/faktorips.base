@@ -330,11 +330,23 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
             sb.append("</span></p>"); //$NON-NLS-1$
         } else {
             sb.append("<p>"); //$NON-NLS-1$
-            sb.append(description);
+            String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            String formattedNullRepresentation = nullPresentation.replace("<", "&lt;").replace(">", "&gt;");
+            String formattedDescription = description.replaceAll("\\R", "<br />").replace(nullPresentation,
+                    formattedNullRepresentation);
+            sb.append(formattedDescription);
             sb.append("</p>"); //$NON-NLS-1$
         }
         sb.append("</form>"); //$NON-NLS-1$
-        client.setText(sb.toString(), true, true);
+        try {
+            client.setText(sb.toString(), true, true);
+        } catch (IllegalArgumentException iae) {
+            client.setText(
+                    sb.toString().replace("<form><p>", "").replace("</p></form>", "").replace("&lt;", "<")
+                            .replace("&gt;", ">").replace("<br />", "\n"),
+                    false,
+                    true);
+        }
         // don't ignore whitespaces and newlines
     }
 

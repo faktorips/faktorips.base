@@ -35,6 +35,11 @@ public class PlainJavaProject extends PlainJavaFolder implements AProject {
     }
 
     @Override
+    public String getName() {
+        return PlainJavaImplementation.get().getWorkspace().getName(this);
+    }
+
+    @Override
     public boolean isIpsProject() {
         return directory().toPath().resolve(PROPERTY_FILE_EXTENSION_INCL_DOT).toFile().exists();
     }

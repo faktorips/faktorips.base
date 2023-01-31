@@ -4,7 +4,7 @@ def mavenVersion = 'maven 3.8.6'
 def jdkVersion = 'AdoptiumJDK17'
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
-def mavenDocFolder = './faktorips-maven-plugin/target/site'
+def mavenDocFolder = './maven/faktorips-maven-plugin'
 def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
@@ -108,7 +108,8 @@ pipeline {
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                         sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                         sh 'mvn -U -V -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh "mvn -U -V -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                        sh 'mvn -U -V -P release clean install site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind'
+                        sh 'mvn -U -V -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
                     }
                 }
 
@@ -170,7 +171,7 @@ pipeline {
                     }
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
-                        replaceOnServer(docServer, '2004', mavenDocFolder, "${mavenDocDeployFolder}/${relaseVersion}")
+                        replaceOnServer(docServer, '2004', "${mavenDocFolder}/${relaseVersion}", "${mavenDocDeployFolder}/${relaseVersion}")
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
                         replaceOnServer(docServer, '2004', xsdFolder, xsdDeployFolder)

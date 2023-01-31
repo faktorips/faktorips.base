@@ -818,6 +818,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testGetDatatypeHelper_DelegatesToReferencedProjects() throws Exception {
         // no referenced project present, no helper is found
         IIpsProject referencingProject = newIpsProject();
+        ((IpsModel)referencingProject.getIpsModel()).setFallbackBuilderSetProvider(null);
         assertNull(referencingProject.getDatatypeHelper(Datatype.DECIMAL));
 
         // create a referenced project with a data type helper

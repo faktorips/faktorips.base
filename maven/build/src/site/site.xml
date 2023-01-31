@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Faktor-IPS Maven Plugin" xmlns="http://maven.apache.org/DECORATION/1.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.8.0 http://maven.apache.org/xsd/decoration-1.8.0.xsd">
+
+    <body>
+        <menu name="Overview">
+            <item name="About" href="index.html" />
+            <item name="Goals" href="plugin-info.html" />
+        </menu>
+        <menu name="Examples"> 
+                <item name="Repositories and additional plugins" href="repositories-additional-plugins.html" />
+                <item name="Using a different JDK" href="using-different-jdk.html" />
+                <item name="Faktor-IPS workspace settings" href="workspace-settings.html" />
+                <item name="Using Git to check for modifications" href="git-status.html" />
+                <item name="Properties" href="properties.html" />
+        </menu>
+        <menu name="Project Documentation">   
+            <item name="Project Information" href="project-info.html">
+                <item name="Dependencies" href="dependencies.html" />
+                <item name="Dependency Information" href="dependency-info.html" />
+                <item name="Plugin-Management" href="plugin-management.html" />
+                <item name="Plugins" href="plugins.html" />
+                <item name="Summary" href="summary.html" />
+            </item>      
+        </menu>
+    </body>
+
+</project>

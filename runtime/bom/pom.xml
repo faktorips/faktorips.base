@@ -139,6 +139,12 @@
                 <artifactId>joda-time</artifactId>
                 <version>${joda.version}</version>
             </dependency>
+            <!-- To find service implementations -->
+            <dependency>
+                <groupId>com.google.auto.service</groupId>
+                <artifactId>auto-service-annotations</artifactId>
+                <version>${auto-service.version}</version>
+            </dependency>
             <!-- For matchers in Testsupport -->
             <dependency>
                 <groupId>org.hamcrest</groupId>

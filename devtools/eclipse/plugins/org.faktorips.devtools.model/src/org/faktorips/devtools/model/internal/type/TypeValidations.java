@@ -14,13 +14,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -33,6 +32,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
@@ -50,7 +50,7 @@ public class TypeValidations {
             Set.of(IpsObjectType.TABLE_STRUCTURE, IpsObjectType.TABLE_CONTENTS),
             Set.of(IpsObjectType.TEST_CASE_TYPE, IpsObjectType.TEST_CASE));
 
-    private static final Map<IpsObjectType, List<IpsObjectType>> CONFLICTING_OBJECT_TYPES = new HashMap<>();
+    private static final Map<IpsObjectType, List<IpsObjectType>> CONFLICTING_OBJECT_TYPES = new ConcurrentHashMap<>();
 
     private TypeValidations() {
         // Utility class not to be instantiated.

@@ -16,6 +16,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -398,6 +400,18 @@ public class AbstractRuntimeRepositoryTest {
         Lookup lookup2 = new Lookup();
         mainRepository.addEnumValueLookupService(lookup2);
         assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+    }
+
+    @Test
+    public void testGetEnumValueLookup_Deep() {
+        IRuntimeRepository runtimeRepository3 = spy(new InMemoryRuntimeRepository());
+        IRuntimeRepository runtimeRepository2 = spy(new InMemoryRuntimeRepository());
+        runtimeRepository2.addDirectlyReferencedRepository(runtimeRepository3);
+        IRuntimeRepository runtimeRepository1 = spy(new InMemoryRuntimeRepository());
+        runtimeRepository1.addDirectlyReferencedRepository(runtimeRepository2);
+        inBetweenRepositoryA.addDirectlyReferencedRepository(runtimeRepository1);
+        mainRepository.getEnumValueLookupService(TestEnumValue.class);
+        verify(runtimeRepository3).getEnumValueLookupService(TestEnumValue.class);
     }
 
     @Test

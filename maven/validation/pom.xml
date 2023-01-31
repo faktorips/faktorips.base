@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-maven</artifactId>
+        <version>23.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-validation-maven-plugin</artifactId>
+    <packaging>maven-plugin</packaging>
+    <name>Faktor-IPS Validation Maven Plugin</name>
+
+    <properties>
+        <java.version>17</java.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-model-plainjava</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Needed as a direct dependency although it is a transitive dependency of faktorips-model-plainjava, 
+            probably due to some Maven confusion regarding the eclipse-plugin packaging type -->
+            <groupId>org.faktorips</groupId>
+            <artifactId>org.faktorips.devtools.model</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.auto.service</groupId>
+            <artifactId>auto-service-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>eclipse-platform-dependencies</artifactId>
+            <version>${faktorips.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>./</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                    <include>agpl-3.0.txt</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.auto.service</groupId>
+                            <artifactId>auto-service</artifactId>
+                            <version>${auto-service.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

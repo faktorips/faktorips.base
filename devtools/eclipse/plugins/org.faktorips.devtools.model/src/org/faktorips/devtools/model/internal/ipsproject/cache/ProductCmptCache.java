@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.ipsproject.cache;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -79,21 +80,24 @@ public abstract class ProductCmptCache {
      * has not been initialized yet or a matching file does not exist anymore.
      */
     protected synchronized Collection<IIpsSrcFile> findProductCmptsByKey(String key) {
+        if (key == null) {
+            return Collections.emptyList();
+        }
         checkedInit(key);
         return prodCmptIpsSrcFilesMap.get(key);
     }
 
-    private void checkedInit(String key) {
+    private synchronized void checkedInit(String key) {
         if (requiresInit(key)) {
             init();
         }
     }
 
-    private boolean requiresInit(String key) {
+    private synchronized boolean requiresInit(String key) {
         return state != State.INITIALIZED || containsNonexistantFiles(key);
     }
 
-    private boolean containsNonexistantFiles(String key) {
+    private synchronized boolean containsNonexistantFiles(String key) {
         for (IIpsSrcFile ipsSrcFile : prodCmptIpsSrcFilesMap.get(key)) {
             if (!ipsSrcFile.exists()) {
                 return true;
@@ -102,7 +106,7 @@ public abstract class ProductCmptCache {
         return false;
     }
 
-    private void init() {
+    private synchronized void init() {
         prodCmptIpsSrcFilesMap.clear();
         List<IIpsSrcFile> allProdCmptIpsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : allProdCmptIpsSrcFiles) {

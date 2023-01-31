@@ -59,4 +59,8 @@ public class PlainJavaWorkspace extends AWrapper<File> implements AWorkspace {
         getRoot().getProjects().forEach(p -> p.build(buildKind, monitor));
     }
 
+    public String getName(PlainJavaProject project) {
+        return project.file().getName();
+    }
+
 }

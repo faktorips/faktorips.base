@@ -93,12 +93,13 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <spotbugs.version>4.7.1</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
-        <tycho.version>3.0.1</tycho.version>
+        <tycho.version>3.0.2-SNAPSHOT</tycho.version>
         <xtend-maven-plugin.version>2.28.0</xtend-maven-plugin.version>
         <!-- Others -->
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
         <moditect-maven-plugin.version>1.0.0.RC2</moditect-maven-plugin.version>
         <flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+        <auto-service.version>1.0.1</auto-service.version>
     </properties>
 
     <distributionManagement>
@@ -112,6 +113,11 @@ license terms are available from Faktor Zehn GmbH.</comments>
             <name>Faktor-IPS Snapshots</name>
             <url>https://nexus.faktorzehn.de/content/repositories/faktorips-snapshots/</url>
         </snapshotRepository>
+        <site>
+            <id>doc</id>
+            <name>Faktor-IPS Documentation</name>
+            <url>https://doc.faktorzehn.org/faktorips/${project.version}/</url>
+        </site>
     </distributionManagement>
 
     <modules>
@@ -119,7 +125,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <module>runtime</module>
         <module>devtools</module>
         <module>faktorips-maven-archetype</module>
-        <module>faktorips-maven-plugin</module>
+        <module>maven</module>
         <module>faktorips-coverage</module>
     </modules>
 
@@ -440,4 +446,10 @@ license terms are available from Faktor Zehn GmbH.</comments>
             </plugin>
         </plugins>
     </reporting>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>tycho-snapshots</id>
+            <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
