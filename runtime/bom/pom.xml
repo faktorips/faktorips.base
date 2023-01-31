@@ -21,6 +21,7 @@
         <groovy.version>3.0.12</groovy.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
+        <jakarta-xml-api.version>3.0.1</jakarta-xml-api.version>
         <joda.version>2.11.1</joda.version>
         <opencsv.version>5.6</opencsv.version>
         <spotbugs-annotations.version>4.7.1</spotbugs-annotations.version>
@@ -83,18 +84,25 @@
                 <version>${spotbugs-annotations.version}</version>
                 <type>jar</type>
             </dependency>
-            <!-- For JAXB-support in value-converters / runtime base classes -->
+            <!-- For traditional JAXB-support with javax.xml packages in value-converters / runtime base classes -->
             <dependency>
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
                 <version>${jaxb-api.version}</version>
                 <type>jar</type>
             </dependency>
-            <!-- For JAXB-support in value-converters / runtime base classes -->
+            <!-- For traditional JAXB-support in value-converters / runtime base classes -->
             <dependency>
                 <groupId>com.sun.activation</groupId>
                 <artifactId>javax.activation</artifactId>
                 <version>${javax.activation.version}</version>
+                <type>jar</type>
+            </dependency>
+            <!-- For modern JAXB-support with jakarta.xml packages in value-converters / runtime base classes -->
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>${jakarta-xml-api.version}</version>
                 <type>jar</type>
             </dependency>
             <!-- for IPS-Test-Suites with JUnit 4 -->

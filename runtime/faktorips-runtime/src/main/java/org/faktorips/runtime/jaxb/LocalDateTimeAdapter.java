@@ -10,12 +10,10 @@
 package org.faktorips.runtime.jaxb;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.xml.IIpsLocalDateTimeAdapter;
 
 /**
  * {@link XmlAdapter} for {@link LocalDateTime}. The adapter can be used for individual
@@ -24,36 +22,27 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * <pre>
  * <code>
  &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = de.faktorzehn.commons.jaxb.LocalDateTimeAdapter.class),
+     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jaxb.LocalDateTimeAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
+ * 
+ * @deprecated for removal since 23.6; use
+ *                 {@code org.faktorips.runtime.xml.javax.LocalDateTimeAdapter} or
+ *                 {@code org.faktorips.runtime.xml.jakarta.LocalDateTimeAdapter} instead
  */
-public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> {
+@Deprecated
+public class LocalDateTimeAdapter extends XmlAdapter<String, LocalDateTime> implements IIpsLocalDateTimeAdapter {
 
     @Override
     public LocalDateTime unmarshal(String v) {
-        if (IpsStringUtils.isBlank(v)) {
-            return null;
-        }
-
-        try {
-            return LocalDateTime.parse(v);
-        } catch (DateTimeParseException e) {
-            // support old Faktor-IOS format with milliseconds
-            LocalDateTime localDateTimeWithMilliseconds = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss:SSS")
-                    .parse(v, LocalDateTime::from);
-            return localDateTimeWithMilliseconds.withNano(0);
-        }
+        return IIpsLocalDateTimeAdapter.super.unmarshal(v);
     }
 
     @Override
     public String marshal(LocalDateTime v) {
-        if (v == null) {
-            return null;
-        }
-        return v.toString();
+        return IIpsLocalDateTimeAdapter.super.marshal(v);
     }
 }

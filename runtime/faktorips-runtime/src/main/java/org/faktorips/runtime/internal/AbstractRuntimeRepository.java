@@ -13,7 +13,6 @@ package org.faktorips.runtime.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -27,10 +26,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -41,7 +36,6 @@ import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
-import org.faktorips.runtime.jaxb.IpsJAXBContext;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.type.PolicyCmptType;
 import org.faktorips.runtime.model.type.ProductCmptType;
@@ -49,6 +43,8 @@ import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.runtime.xml.IXmlBindingSupport;
 
 /**
  * Abstract implementation of runtime repository.
@@ -840,7 +836,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @param repository the runtime repository that needs to be used by the XmlAdapters that are
      *            returned by this method
      */
-    protected abstract List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository);
+    protected abstract List<IIpsXmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository);
 
     /**
      * Adds all enumeration XmlAdapters available in this repository to the provided list. These are
@@ -854,10 +850,10 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @see #addEnumValueLookupService(IEnumValueLookupService)
      * @see IEnumValueLookupService#getXmlAdapter()
      */
-    private void addAllEnumXmlAdapters(List<XmlAdapter<?, ?>> adapters, IRuntimeRepository repository) {
+    public void addAllEnumXmlAdapters(List<IIpsXmlAdapter<?, ?>> adapters, IRuntimeRepository repository) {
         adapters.addAll(getAllInternalEnumXmlAdapters(repository));
         for (IEnumValueLookupService<?> lookupService : enumValueLookups.values()) {
-            XmlAdapter<?, ?> adapter = lookupService.getXmlAdapter();
+            IIpsXmlAdapter<?, ?> adapter = lookupService.getXmlAdapter();
             if (adapter != null) {
                 adapters.add(adapter);
             }
@@ -882,85 +878,35 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract void getAllEnumClasses(LinkedHashSet<Class<?>> result);
 
     /**
-     * Creates a {@link JAXBContext} that wraps the provided context and extends the marshaling
+     * Creates a {@code JAXBContext} that wraps the provided context and extends the marshaling
      * methods to provide marshaling of Faktor-IPS enumerations and model objects configured by
      * product components.
+     * 
+     * @deprecated for removal since 23.6; directly use an implementation of
+     *                 {@link IXmlBindingSupport#newJAXBContext(Object, IRuntimeRepository)} instead
      */
-    public JAXBContext newJAXBContext(JAXBContext ctx) {
-        LinkedList<XmlAdapter<?, ?>> adapters = new LinkedList<>();
-        addAllEnumXmlAdapters(adapters, this);
-        for (IRuntimeRepository runtimeRepository : getAllReferencedRepositories()) {
-            AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
-            refRepository.addAllEnumXmlAdapters(adapters, this);
-        }
-        return new IpsJAXBContext(ctx, adapters, this);
+    @Deprecated
+    public <JAXBContext> JAXBContext newJAXBContext(JAXBContext ctx) {
+        IXmlBindingSupport<JAXBContext> xmlBindingSupport = IXmlBindingSupport.get();
+        return xmlBindingSupport.newJAXBContext(ctx, this);
     }
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in this
-     * repository. If the repository references other repositories (directly or indirectly), the
-     * context can also handle the classes defined in those.
+     * Creates a new {@code JAXBContext} that can marshal / unmarshal all model classes defined in
+     * this repository. If the repository references other repositories (directly or indirectly),
+     * the context can also handle the classes defined in those.
      * 
      * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
-     *             class loader or creating the jaxb context are wrapped into a runtime exception
+     *             class loader or creating the JAXB context are wrapped into a runtime exception
+     * 
+     * @deprecated for removal since 23.6; directly use an implementation of
+     *                 {@link IXmlBindingSupport#newJAXBContext(IRuntimeRepository)} instead
      */
     @Override
-    public JAXBContext newJAXBContext() {
-        ClassLoader tccl = null;
-        try {
-            Set<String> classNames = getAllModelTypeImplementationClasses();
-            Set<Class<?>> classes = new LinkedHashSet<>(classNames.size());
-            for (String className : classNames) {
-                Class<?> clazz = getClassLoader().loadClass(className);
-                if (isAnnotatedXmlRootElement(clazz)) {
-                    classes.add(clazz);
-                }
-            }
-
-            tccl = getPrivilegedCurrentThreadContextClassLoader();
-            Thread.currentThread().setContextClassLoader(getClassLoader());
-
-            JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
-
-            return newJAXBContext(ctx);
-            // CSOFF: IllegalCatch
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            // CSON: IllegalCatch
-            throw new RuntimeException(e);
-        } finally {
-            if (tccl != null) {
-                Thread.currentThread().setContextClassLoader(tccl);
-            }
-        }
-    }
-
-    /**
-     * Jaxb uses the class loader from the thread context. By default, the thread context class
-     * loader is not aware of OSGi and thus doesn't see any of the classes imported in the bundle.
-     * 
-     * If a {@link SecurityManager} is used the {@link ClassLoader} is loaded with
-     * {@link java.security.AccessController#doPrivileged(java.security.PrivilegedAction)}.
-     * 
-     * @return the context {@code ClassLoader} for this thread, or {@code null}
-     */
-    private ClassLoader getPrivilegedCurrentThreadContextClassLoader() {
-        if (System.getSecurityManager() == null) {
-            return Thread.currentThread().getContextClassLoader();
-        } else {
-            return java.security.AccessController.doPrivileged(
-                    (PrivilegedAction<ClassLoader>)Thread.currentThread()::getContextClassLoader);
-        }
-    }
-
-    private boolean isAnnotatedXmlRootElement(Class<?> clazz) {
-        for (Class<?> c = clazz; c != null; c = c.getSuperclass()) {
-            if (c.isAnnotationPresent(XmlRootElement.class)) {
-                return true;
-            }
-        }
-        return false;
+    @Deprecated
+    public <JAXBContext> JAXBContext newJAXBContext() {
+        IXmlBindingSupport<JAXBContext> xmlBindingSupport = IXmlBindingSupport.get();
+        return xmlBindingSupport.newJAXBContext(this);
     }
 
     /**
@@ -1011,5 +957,4 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup) {
         runtimeRepositoryLookup = repositoryLookup;
     }
-
 }

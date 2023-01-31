@@ -26,11 +26,10 @@ import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.TreeSet;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 
 /**
  * A runtime repository that keeps its data in memory.
@@ -62,7 +61,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      */
     private Map<Class<?>, List<?>> enumValuesMap = new HashMap<>();
 
-    private List<XmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<>();
+    private List<IIpsXmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<>();
 
     /** Contains all maps for all other runtime objects with their qualified name as key. */
     private Map<Class<?>, Map<String, IRuntimeObject>> customRuntimeObjectsByType = new HashMap<>();
@@ -365,15 +364,15 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     /**
-     * Adds an {@link XmlAdapter} for a Faktor-IPS enumeration that defers its content to a
+     * Adds an {@link IIpsXmlAdapter} for a Faktor-IPS enumeration that defers its content to a
      * enumeration content to this repository.
      */
-    public void addEnumXmlAdapter(XmlAdapter<?, ?> enumXmlAdapter) {
+    public void addEnumXmlAdapter(IIpsXmlAdapter<?, ?> enumXmlAdapter) {
         enumXmlAdapters.add(enumXmlAdapter);
     }
 
     @Override
-    protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
+    protected List<IIpsXmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         return enumXmlAdapters;
     }
 

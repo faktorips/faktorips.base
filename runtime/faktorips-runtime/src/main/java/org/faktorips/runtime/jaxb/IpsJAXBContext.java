@@ -32,10 +32,10 @@ import org.w3c.dom.Node;
  * Faktor-IPS IRuntimeRepository. See {@link #createMarshaller()} and {@link #createUnmarshaller()}
  * for more details. All other methods just delegate to the wrapped context.
  * 
- * @author Jan Ortmann
+ * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.IpsJAXBContext} or
+ *                 {@code org.faktorips.runtime.xml.jakarta.IpsJAXBContext} instead
  */
-@SuppressWarnings("deprecation")
-// can't get rid of warnings as createValidator() must be implemented, but Validator is deprecated!
+@Deprecated
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;

@@ -40,7 +40,7 @@
                                     requires transitive junit;
                                     requires transitive java.desktop;
                                     requires transitive java.xml;
-                                    requires transitive java.xml.bind;
+                                    requires static transitive javax.xml.bind;
                                     exports org.faktorips.runtime;
                                     exports org.faktorips.runtime.annotation;
                                     exports org.faktorips.runtime.caching;
@@ -48,6 +48,7 @@
                                     exports org.faktorips.runtime.internal;
                                     exports org.faktorips.runtime.internal.tableindex;
                                     exports org.faktorips.runtime.internal.toc;
+                                    exports org.faktorips.runtime.jakarta.xml;
                                     exports org.faktorips.runtime.jaxb;
                                     exports org.faktorips.runtime.model;
                                     exports org.faktorips.runtime.model.annotation;
@@ -60,6 +61,7 @@
                                     exports org.faktorips.runtime.util;
                                     exports org.faktorips.runtime.util.function;
                                     exports org.faktorips.runtime.validation;
+                                    exports org.faktorips.runtime.xml;
                                     }
                                 </moduleInfoSource>
                             </module>
@@ -160,6 +162,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <!-- Needed only when table contents are saved as CSV -->
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
@@ -178,6 +186,7 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+            <!-- needed when running the tests with Java > 8 -->
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.0.1</version>

@@ -13,7 +13,7 @@ import java.time.MonthDay;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.xml.IIpsMonthDayAdapter;
 
 /**
  * {@link XmlAdapter} for {@link MonthDay}. The adapter can be used for individual
@@ -22,28 +22,26 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * <pre>
  * <code>
  &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = de.faktorzehn.commons.jaxb.MonthAdapter.class),
+     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jaxb.MonthAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
+ * 
+ * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.MonthDayAdapter}
+ *                 or {@code org.faktorips.runtime.xml.jakarta.MonthDayAdapter} instead
  */
-public class MonthDayAdapter extends XmlAdapter<String, MonthDay> {
+@Deprecated
+public class MonthDayAdapter extends XmlAdapter<String, MonthDay> implements IIpsMonthDayAdapter {
 
     @Override
     public MonthDay unmarshal(String v) {
-        if (IpsStringUtils.isBlank(v)) {
-            return null;
-        }
-        return MonthDay.parse(v);
+        return IIpsMonthDayAdapter.super.unmarshal(v);
     }
 
     @Override
     public String marshal(MonthDay v) {
-        if (v == null) {
-            return null;
-        }
-        return v.toString();
+        return IIpsMonthDayAdapter.super.marshal(v);
     }
 }

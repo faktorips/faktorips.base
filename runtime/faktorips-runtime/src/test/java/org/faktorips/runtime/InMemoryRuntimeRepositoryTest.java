@@ -22,8 +22,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.DummyTocEntryFactory.DummyRuntimeObject;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -37,6 +35,7 @@ import org.faktorips.runtime.test.IpsTestCase2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.test.MyFormulaTestCase;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -519,11 +518,11 @@ public class InMemoryRuntimeRepositoryTest {
 
     @Test
     public void testAddEnumXmlAdapter() {
-        XmlAdapter<?, TestEnumValue> xmlAdapter = new TestXmlAdapter();
+        IIpsXmlAdapter<?, TestEnumValue> xmlAdapter = new TestXmlAdapter();
         repository.addEnumXmlAdapter(xmlAdapter);
-        List<XmlAdapter<?, ?>> xmlAdapterList = repository.getAllInternalEnumXmlAdapters(repository);
-        assertEquals(1, xmlAdapterList.size());
-        assertEquals(xmlAdapter, xmlAdapterList.get(0));
+        List<IIpsXmlAdapter<?, ?>> xmlBindingSupport = repository.getAllInternalEnumXmlAdapters(repository);
+        assertEquals(1, xmlBindingSupport.size());
+        assertEquals(xmlAdapter, xmlBindingSupport.get(0));
 
     }
 
@@ -545,7 +544,7 @@ public class InMemoryRuntimeRepositoryTest {
         // another table class
     }
 
-    private static class TestXmlAdapter extends XmlAdapter<String, TestEnumValue> {
+    private static class TestXmlAdapter implements IIpsXmlAdapter<String, TestEnumValue> {
 
         @Override
         public String marshal(TestEnumValue value) throws Exception {

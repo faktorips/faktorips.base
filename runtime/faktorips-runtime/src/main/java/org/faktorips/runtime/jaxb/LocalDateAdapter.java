@@ -13,7 +13,7 @@ import java.time.LocalDate;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.xml.IIpsLocalDateAdapter;
 
 /**
  * {@link XmlAdapter} for {@link LocalDate}. The adapter can be used for individual
@@ -22,28 +22,26 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * <pre>
  * <code>
  &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = de.faktorzehn.commons.jaxb.LocalDateAdapter.class),
+     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jaxb.LocalDateAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
+ * 
+ * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.LocalDateAdapter}
+ *                 or {@code org.faktorips.runtime.xml.jakarta.LocalDateAdapter} instead
  */
-public class LocalDateAdapter extends XmlAdapter<String, LocalDate> {
+@Deprecated
+public class LocalDateAdapter extends XmlAdapter<String, LocalDate> implements IIpsLocalDateAdapter {
 
     @Override
     public LocalDate unmarshal(String v) {
-        if (IpsStringUtils.isBlank(v)) {
-            return null;
-        }
-        return LocalDate.parse(v);
+        return IIpsLocalDateAdapter.super.unmarshal(v);
     }
 
     @Override
     public String marshal(LocalDate v) {
-        if (v == null) {
-            return null;
-        }
-        return v.toString();
+        return IIpsLocalDateAdapter.super.marshal(v);
     }
 }

@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.IEnumValueLookupService;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -38,6 +36,7 @@ import org.faktorips.runtime.ProductCmptNotFoundException;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.sample.model.TestAbstractEnum;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.junit.Before;
@@ -569,7 +568,7 @@ public class AbstractRuntimeRepositoryTest {
         }
 
         @Override
-        public XmlAdapter<?, TestEnumValue> getXmlAdapter() {
+        public IIpsXmlAdapter<?, TestEnumValue> getXmlAdapter() {
             return null;
         }
 
@@ -606,7 +605,7 @@ public class AbstractRuntimeRepositoryTest {
         }
 
         @Override
-        public XmlAdapter<?, TestAbstractEnum> getXmlAdapter() {
+        public IIpsXmlAdapter<?, TestAbstractEnum> getXmlAdapter() {
             return null;
         }
 
@@ -643,10 +642,9 @@ public class AbstractRuntimeRepositoryTest {
         }
 
         @Override
-        public XmlAdapter<?, TestConcreteExtensibleEnum> getXmlAdapter() {
+        public IIpsXmlAdapter<?, TestConcreteExtensibleEnum> getXmlAdapter() {
             return null;
         }
-
     }
 
 }

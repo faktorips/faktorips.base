@@ -15,20 +15,28 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.runtime.xml.IpsProductConfigurationXmlAdapter;
 
 /**
- * Custom JAXB marshaling/unmarshaling for {@link ProductConfiguration} instances.
+ * Custom JAXB marshalling/unmarshalling for {@link ProductConfiguration} instances.
  * <p>
- * When marshaling/unmarshaling a configurable policy component (and thus a
+ * When marshalling/unmarshalling a configurable policy component (and thus a
  * {@link ProductConfiguration}), the respective product component is preserved in XML by the means
  * of the product component ID.
+ * 
+ * @deprecated for removal since 23.6; use
+ *                 {@code org.faktorips.runtime.xml.javax.ProductConfigurationXmlAdapter} or
+ *                 {@code org.faktorips.runtime.xml.jakarta.ProductConfigurationXmlAdapter} instead
  */
-public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration> {
+@Deprecated
+public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration>
+        implements IIpsXmlAdapter<String, ProductConfiguration> {
 
-    private final IRuntimeRepository repository;
+    private final IpsProductConfigurationXmlAdapter ipsProductConfigurationXmlAdapter;
 
     public ProductConfigurationXmlAdapter(IRuntimeRepository repository) {
-        this.repository = repository;
+        ipsProductConfigurationXmlAdapter = new IpsProductConfigurationXmlAdapter(repository);
     }
 
     /**
@@ -38,10 +46,7 @@ public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductCo
      */
     @Override
     public String marshal(ProductConfiguration config) throws Exception {
-        if (config == null || config.getProductComponent() == null) {
-            return null;
-        }
-        return config.getProductComponent().getId();
+        return ipsProductConfigurationXmlAdapter.marshal(config);
     }
 
     /**
@@ -49,18 +54,7 @@ public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductCo
      */
     @Override
     public ProductConfiguration unmarshal(String id) throws Exception {
-        IProductComponent productComponent = getProductComponentFor(id);
-        return new ProductConfiguration(productComponent);
-    }
-
-    private IProductComponent getProductComponentFor(String id) {
-        IProductComponent productComponent;
-        if (id == null) {
-            return null;
-        } else {
-            productComponent = repository.getProductComponent(id);
-        }
-        return productComponent;
+        return ipsProductConfigurationXmlAdapter.unmarshal(id);
     }
 
 }

@@ -23,7 +23,6 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,13 +65,15 @@ public class GeneratorConfigTest {
         assertThat(generatorConfig.getBaseClassPolicyCmptType(), is(AbstractModelObject.class.getName()));
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetBaseClassPolicyCmptType_defaultJaxb() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
                 .thenReturn("");
         when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn(true);
-        assertThat(generatorConfig.getBaseClassPolicyCmptType(), is(AbstractJaxbModelObject.class.getName()));
+        assertThat(generatorConfig.getBaseClassPolicyCmptType(),
+                is(org.faktorips.runtime.internal.AbstractJaxbModelObject.class.getName()));
     }
 
     @Test

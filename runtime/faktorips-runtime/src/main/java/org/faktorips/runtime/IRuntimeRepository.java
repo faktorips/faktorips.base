@@ -14,8 +14,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.bind.JAXBContext;
-
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
 import org.faktorips.runtime.internal.ProductConfiguration;
@@ -27,6 +25,7 @@ import org.faktorips.runtime.model.type.Type;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
+import org.faktorips.runtime.xml.IXmlBindingSupport;
 
 /**
  * The runtime repository gives access to the information about products, enums and tables.
@@ -448,11 +447,15 @@ public interface IRuntimeRepository {
     Set<String> getAllModelTypeImplementationClasses();
 
     /**
-     * Creates a new JAXBContext that can marshall / unmarshall all model classes defined in the
-     * given repository. If the repository references other repositories (directly or indirectly),
-     * the context can also handle the classes defined in these other repositories.
+     * Creates a new {@code JAXBContext} that can marshal / unmarshal all model classes defined in
+     * the given repository. If the repository references other repositories (directly or
+     * indirectly), the context can also handle the classes defined in these other repositories.
+     * 
+     * @deprecated for removal since 23.6; directly use an implementation of
+     *                 {@link IXmlBindingSupport#newJAXBContext(IRuntimeRepository)} instead
      */
-    JAXBContext newJAXBContext();
+    @Deprecated
+    <JAXBContext> JAXBContext newJAXBContext();
 
     /**
      * Getting a formula evaluator factory to create a new formula evaluator. If formula evaluation
@@ -508,5 +511,4 @@ public interface IRuntimeRepository {
      * @see IRuntimeRepositoryLookup
      */
     void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup);
-
 }

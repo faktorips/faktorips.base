@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
@@ -26,8 +25,8 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.runtime.internal.AbstractJaxbModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 
 /**
@@ -202,12 +201,15 @@ public class GeneratorConfig {
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
+    @SuppressWarnings("deprecation")
     public String getBaseClassPolicyCmptType() {
         String baseClass = config
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
         return IpsStringUtils.isBlank(baseClass)
                 ? config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)
-                        ? AbstractJaxbModelObject.class.getName()
+                        // FIXME FIPS-8160 use
+                        // org.faktorips.runtime.xml.javax/jakarta.AbstractJaxbModelObject
+                        ? org.faktorips.runtime.internal.AbstractJaxbModelObject.class.getName()
                         : AbstractModelObject.class.getName()
                 : baseClass;
     }

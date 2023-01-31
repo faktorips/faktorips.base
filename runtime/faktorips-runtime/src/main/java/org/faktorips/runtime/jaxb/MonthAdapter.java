@@ -13,6 +13,8 @@ import java.time.Month;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+import org.faktorips.runtime.xml.IIpsMonthAdapter;
+
 /**
  * {@link XmlAdapter} for {@link Month}. The adapter can be used for individual elements/attributes
  * or registered in {@code package-info.java}:
@@ -20,28 +22,26 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * <pre>
  * <code>
  &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = de.faktorzehn.commons.jaxb.MonthAdapter.class),
+     &#64;javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(value = org.faktorips.runtime.jaxb.MonthAdapter.class),
      ...
  })
  package com.acme.foo;
  * </code>
  * </pre>
+ * 
+ * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.MonthAdapter} or
+ *                 {@code org.faktorips.runtime.xml.jakarta.MonthAdapter} instead
  */
-public class MonthAdapter extends XmlAdapter<Integer, Month> {
+@Deprecated
+public class MonthAdapter extends XmlAdapter<Integer, Month> implements IIpsMonthAdapter {
 
     @Override
     public Month unmarshal(Integer i) {
-        if (i == null) {
-            return null;
-        }
-        return Month.of(i);
+        return IIpsMonthAdapter.super.unmarshal(i);
     }
 
     @Override
     public Integer marshal(Month m) {
-        if (m == null) {
-            return null;
-        }
-        return m.getValue();
+        return IIpsMonthAdapter.super.marshal(m);
     }
 }

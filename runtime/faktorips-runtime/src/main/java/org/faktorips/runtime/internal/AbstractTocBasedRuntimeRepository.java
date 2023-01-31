@@ -21,8 +21,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.IProductComponent;
@@ -41,6 +39,7 @@ import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 
 /**
  * Abstract base implementation of runtime repository that uses a table of contents to lazily load
@@ -280,16 +279,16 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     /**
-     * Creates and returns an {@link XmlAdapter} instance for the provided class name.
+     * Creates and returns an {@link IIpsXmlAdapter} instance for the provided class name.
      * 
-     * @throws Exception can occur while localizing the xml adapter class and creating the instance
+     * @throws Exception can occur while localizing the XML adapter class and creating the instance
      */
     @SuppressWarnings("unchecked")
-    protected XmlAdapter<String, ?> createEnumXmlAdapter(String className, IRuntimeRepository repository)
+    protected IIpsXmlAdapter<String, ?> createEnumXmlAdapter(String className, IRuntimeRepository repository)
             throws Exception {
-        Class<XmlAdapter<String, ?>> xmlAdapterClass = (Class<XmlAdapter<String, ?>>)getClassLoader()
+        Class<IIpsXmlAdapter<String, ?>> xmlAdapterClass = (Class<IIpsXmlAdapter<String, ?>>)getClassLoader()
                 .loadClass(className);
-        Constructor<XmlAdapter<String, ?>> constructor = xmlAdapterClass.getConstructor(IRuntimeRepository.class);
+        Constructor<IIpsXmlAdapter<String, ?>> constructor = xmlAdapterClass.getConstructor(IRuntimeRepository.class);
         return constructor.newInstance(repository);
     }
 
@@ -312,8 +311,8 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    protected List<XmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository) {
-        List<XmlAdapter<?, ?>> enumXmlAdapters = new ArrayList<>();
+    protected List<IIpsXmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository) {
+        List<IIpsXmlAdapter<?, ?>> enumXmlAdapters = new ArrayList<>();
         for (TocEntry tocEntry : toc.getEnumXmlAdapterTocEntries()) {
             try {
                 enumXmlAdapters.add(createEnumXmlAdapter(tocEntry.getImplementationClassName(), repository));

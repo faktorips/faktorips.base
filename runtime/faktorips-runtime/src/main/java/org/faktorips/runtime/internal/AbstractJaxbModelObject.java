@@ -22,7 +22,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Abstract base class for policy component types enabled for JAXB persistence.
+ * 
+ * @deprecated for removal since 23.6; use
+ *                 {@code org.faktorips.runtime.xml.javax.AbstractJaxbModelObject} or
+ *                 {@code org.faktorips.runtime.xml.jakarta.AbstractJaxbModelObject} instead
  */
+@Deprecated
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement
 public abstract class AbstractJaxbModelObject extends AbstractModelObject {

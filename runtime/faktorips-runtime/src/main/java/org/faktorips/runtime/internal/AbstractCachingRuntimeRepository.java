@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-
 import org.faktorips.runtime.GenerationId;
 import org.faktorips.runtime.ICacheFactory;
 import org.faktorips.runtime.IProductComponent;
@@ -25,21 +23,22 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.IComputable;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 
 /**
  * This abstract runtime repository handles the caching for already loaded instances. The caching
  * have to be thread safe for every cache instance that we do not load an object twice. That means,
  * the regular way we load an object is to have a look in the cache if it is already there if not we
- * call the getNotCached... method.
+ * call the {@code getNotCached...} method.
  * <p>
- * To be performant and thread safe we use the double checking ideom as it is discribed by doug lea.
- * Since we use Java 5 there is a threadsafe way to do so:<br>
+ * To be performant and thread safe we use the double checking idiom as it is described by Doug Lea.
+ * Since we use Java 5 there is a thread-safe way to do so:<br>
  * First of all we have a not synchronized look in the cache. As we assume that the cache itself is
  * implemented with a {@link ConcurrentHashMap} this lookup would see the real state of the map. If
  * there is no object yet we have to enter a synchronized block. This block is synchronized for
  * every cache instance so we could handle calls for different objects at same time. In this
- * synchonized block it is important to check again if there is an cached object now because another
- * thread may created one meantime (double-check). Again this only works for
+ * synchronized block it is important to check again if there is an cached object now because
+ * another thread may created one meantime (double-check). Again this only works for
  * {@link ConcurrentHashMap}. If there still is no object cached we create a new one. As long we are
  * in the synchronized block, every other thread is blocked. After the new object is created we put
  * it in the cache and the {@link ConcurrentHashMap} ensures that it is stored completely
@@ -57,7 +56,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
     private volatile IComputable<String, ITable<?>> tableCacheByQName;
     private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
-    private List<XmlAdapter<?, ?>> enumXmlAdapters;
+    private List<IIpsXmlAdapter<?, ?>> enumXmlAdapters;
     private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<>();
 
     public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
@@ -144,7 +143,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     protected abstract ITable<?> getNotCachedTable(String qualifiedTableName);
 
     @Override
-    protected List<XmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
+    protected List<IIpsXmlAdapter<?, ?>> getAllInternalEnumXmlAdapters(IRuntimeRepository repository) {
         if (!enumXmlAdapters.isEmpty()) {
             return enumXmlAdapters;
         }
@@ -152,7 +151,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         return enumXmlAdapters;
     }
 
-    protected abstract List<XmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository);
+    protected abstract List<IIpsXmlAdapter<?, ?>> getNotCachedEnumXmlAdapter(IRuntimeRepository repository);
 
     @Override
     protected <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName) {
