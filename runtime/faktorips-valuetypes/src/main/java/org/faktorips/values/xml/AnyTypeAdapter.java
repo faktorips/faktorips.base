@@ -15,8 +15,9 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 /**
  * Can be used to map interfaces.
  * 
- * @see "https://jaxb.dev.java.net/guide/Mapping_interfaces.html"
+ * @deprecated for removal since 23.6. Use a custom adapter instead.
  */
+@Deprecated
 public class AnyTypeAdapter extends XmlAdapter<Object, Object> {
 
     @Override

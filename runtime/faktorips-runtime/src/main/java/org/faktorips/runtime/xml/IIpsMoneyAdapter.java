@@ -7,33 +7,26 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-
-package org.faktorips.values.xml;
-
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+package org.faktorips.runtime.xml;
 
 import org.faktorips.values.Money;
 
 /**
- * Maps a Faktor-IPS {@link Money}.
- * 
- * @deprecated for removal since 23.6. Use {@code org.faktorips.runtime.jaxb.MoneyAdapter} instead.
+ * {@link IIpsXmlAdapter} for {@link Money}.
  */
-@Deprecated
-public class MoneyXmlAdapter extends XmlAdapter<String, Money> {
+public interface IIpsMoneyAdapter extends IIpsXmlAdapter<String, Money> {
 
     @Override
-    public String marshal(Money v) throws Exception {
+    default Money unmarshal(String v) {
+        return Money.valueOf(v);
+    }
+
+    @Override
+    default String marshal(Money v) {
         if (v == null || v.isNull()) {
             return "";
         }
 
         return v.toString();
     }
-
-    @Override
-    public Money unmarshal(String v) throws Exception {
-        return Money.valueOf(v);
-    }
-
 }

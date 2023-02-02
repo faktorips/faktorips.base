@@ -68,6 +68,8 @@ public class XmlBindingSupportHelper<JAXBContext> implements IXmlBindingSupport<
     @Override
     public JAXBContext newJAXBContext(JAXBContext ctx, IRuntimeRepository repository) {
         LinkedList<IIpsXmlAdapter<?, ?>> adapters = new LinkedList<>();
+        ((AbstractRuntimeRepository)repository).addAllEnumXmlAdapters(adapters, repository);
+
         for (IRuntimeRepository runtimeRepository : repository.getAllReferencedRepositories()) {
             AbstractRuntimeRepository refRepository = (AbstractRuntimeRepository)runtimeRepository;
             refRepository.addAllEnumXmlAdapters(adapters, repository);

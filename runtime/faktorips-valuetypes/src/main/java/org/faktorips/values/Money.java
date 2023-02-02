@@ -19,10 +19,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.faktorips.values.xml.MoneyXmlAdapter;
-
 /**
  * Value class representing an amount of money in any currency.
  * <p>
@@ -45,7 +41,6 @@ import org.faktorips.values.xml.MoneyXmlAdapter;
  * 
  * @author Jan Ortmann
  */
-@XmlJavaTypeAdapter(MoneyXmlAdapter.class)
 public class Money implements Comparable<Money>, NullObjectSupport, Serializable {
 
     /**

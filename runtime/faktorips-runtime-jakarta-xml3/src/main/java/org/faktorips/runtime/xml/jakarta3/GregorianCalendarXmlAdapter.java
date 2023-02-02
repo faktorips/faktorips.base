@@ -8,41 +8,43 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.values.xml;
+package org.faktorips.runtime.xml.jakarta3;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import javax.xml.bind.annotation.adapters.XmlAdapter;
+import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
  * Maps a {@link GregorianCalendar} to an ISO date.
  * <p>
  * This adapter can be used, if you are only interested in the date portion of a
  * {@link GregorianCalendar}.
- * 
- * @deprecated for removal since 23.6. Use
- *                 {@code org.faktorips.runtime.jaxb.GregorianCalendarXmlAdapter} instead.
  */
-@Deprecated
 public class GregorianCalendarXmlAdapter extends XmlAdapter<String, GregorianCalendar> {
 
-    private DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    // can't move this to an interface, as it can't have instance fields and DateFormat is not
+    // thread-safe
+    private final DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
-    public String marshal(GregorianCalendar v) throws Exception {
-        return df.format(v.getTime());
+    public GregorianCalendar unmarshal(String v) {
+        try {
+            GregorianCalendar cal = new GregorianCalendar();
+            Date date = isoDateFormat.parse(v);
+            cal.setTime(date);
+            return cal;
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public GregorianCalendar unmarshal(String v) throws Exception {
-        GregorianCalendar cal = new GregorianCalendar();
-        Date date = df.parse(v);
-        cal.setTime(date);
-
-        return cal;
+    public String marshal(GregorianCalendar v) {
+        return isoDateFormat.format(v.getTime());
     }
 
 }

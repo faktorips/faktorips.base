@@ -16,10 +16,6 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.faktorips.values.xml.DecimalXmlAdapter;
-
 /**
  * Value class that represents a decimal number. This class is similar to Java's BigDecimal with two
  * differences:
@@ -33,7 +29,6 @@ import org.faktorips.values.xml.DecimalXmlAdapter;
  * @see org.faktorips.values.DecimalNull
  * @see Decimal#NULL
  */
-@XmlJavaTypeAdapter(DecimalXmlAdapter.class)
 public class Decimal extends Number implements Comparable<Decimal>, NullObjectSupport {
 
     /**

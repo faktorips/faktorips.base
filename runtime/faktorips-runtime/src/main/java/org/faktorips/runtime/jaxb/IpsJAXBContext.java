@@ -23,6 +23,8 @@ import javax.xml.bind.Validator;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.values.xml.DecimalXmlAdapter;
+import org.faktorips.values.xml.MoneyXmlAdapter;
 import org.w3c.dom.Node;
 
 /**
@@ -66,6 +68,8 @@ public class IpsJAXBContext extends JAXBContext {
         marshaller.setAdapter(new LocalTimeAdapter());
         marshaller.setAdapter(new MonthDayAdapter());
         marshaller.setAdapter(new MonthAdapter());
+        marshaller.setAdapter(new DecimalXmlAdapter());
+        marshaller.setAdapter(new MoneyXmlAdapter());
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             marshaller.setAdapter(xmlAdapter);
         }
@@ -81,6 +85,8 @@ public class IpsJAXBContext extends JAXBContext {
         unmarshaller.setAdapter(new LocalTimeAdapter());
         unmarshaller.setAdapter(new MonthDayAdapter());
         unmarshaller.setAdapter(new MonthAdapter());
+        unmarshaller.setAdapter(new DecimalXmlAdapter());
+        unmarshaller.setAdapter(new MoneyXmlAdapter());
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             unmarshaller.setAdapter(xmlAdapter);
         }

@@ -16,7 +16,11 @@ import org.faktorips.values.Decimal;
 
 /**
  * Maps a Faktor-IPS {@link Decimal}.
+ * 
+ * @deprecated for removal since 23.6. Use {@code org.faktorips.runtime.jaxb.DecimalAdapter}
+ *                 instead.
  */
+@Deprecated
 public class DecimalXmlAdapter extends XmlAdapter<String, Decimal> {
 
     @Override
