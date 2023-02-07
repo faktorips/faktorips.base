@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Fips-BasePackage: org.faktorips
+Fips-SourcecodeOutput: src
+Fips-ResourceOutput: resources
+Fips-ObjectDir: model;toc="faktorips-repository-toc.xml";validation-mes
+ sages="validation-messages"

@@ -31,4 +31,5 @@ Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.devtools.model.ipsproject,
  org.faktorips.devtools.model.plugin,
  org.faktorips.devtools.model.valueset,
+ org.faktorips.runtime.internal,
  org.faktorips.util

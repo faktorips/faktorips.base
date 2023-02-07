@@ -66,16 +66,16 @@
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef
-            defaultValue="false"
+            defaultValue="None"
             description="%generateJaxbSupportDescription"
-            disableValue="false"
+            disableValue="None"
             label="%generateJaxbSupportLabel"
             name="generateJaxbSupport"
             type="enum">
             <discreteValues>
-               <value value="false" />
-               <value value="true" />
-               <value value="true (Jakarta XML Binding 3.0)" />
+               <value value="None" />
+               <value value="ClassicJAXB" />
+               <value value="JakartaXmlBinding3" />
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef

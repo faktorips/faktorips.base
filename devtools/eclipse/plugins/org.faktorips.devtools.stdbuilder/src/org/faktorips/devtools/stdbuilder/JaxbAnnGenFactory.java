@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -18,7 +19,6 @@ import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAssoc
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassAttributeFieldJaxbGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassJaxbAnnGen;
 import org.faktorips.devtools.stdbuilder.policycmpttype.PolicyCmptImplClassProductConfigurationJaxbGen;
-import org.faktorips.devtools.stdbuilder.xmodel.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.xtend.enumtype.EnumDeclClassJaxbAnnGen;
 
 public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {

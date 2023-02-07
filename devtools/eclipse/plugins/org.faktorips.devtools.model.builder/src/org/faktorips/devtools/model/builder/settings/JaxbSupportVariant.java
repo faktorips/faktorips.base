@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.stdbuilder.xmodel;
+package org.faktorips.devtools.model.builder.settings;
 
 import org.faktorips.runtime.internal.IpsStringUtils;
 
@@ -20,18 +20,25 @@ public enum JaxbSupportVariant {
     /** No JAXB **/
     None,
     /** Classic JAXB, javax.xml.bind.* */
-    Javax,
+    ClassicJAXB,
     /** Jakarta XML Binding 3, jakarta.xml.bind.* */
-    Jakarta3;
+    JakartaXmlBinding3;
 
     public static JaxbSupportVariant of(String configValue) {
-        if (IpsStringUtils.isBlank(configValue)) {
+        if (null == configValue) {
             return None;
         }
-        String trimmedValue = configValue.trim();
-        if ("true (Jakarta XML Binding 3.0)".equalsIgnoreCase(trimmedValue)) {
-            return Jakarta3;
+        switch (configValue.trim().toLowerCase()) {
+            case IpsStringUtils.EMPTY:
+            case "false":
+            case "none":
+                return None;
+
+            case "jakartaxmlbinding3":
+                return JakartaXmlBinding3;
+
+            default:
+                return ClassicJAXB;
         }
-        return Boolean.parseBoolean(trimmedValue) ? Javax : None;
     }
 }

@@ -17,7 +17,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import java.util.jar.Manifest;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
@@ -29,7 +28,6 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.eclipse.util.EclipseIOUtil;
-import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.internal.pctype.ValidationRule;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -171,24 +169,6 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
             throw new IpsException(new IpsStatus(e));
         }
 
-    }
-
-    private void updateManifest() {
-        IIpsProject ipsProject = getIpsProject();
-        AFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
-        if (!manifestFile.exists()) {
-            manifestFile = ipsProject.getProject().getFile("src/main/resources/" + IpsBundleManifest.MANIFEST_NAME); //$NON-NLS-1$
-        }
-        if (manifestFile.exists()) {
-            try {
-                Manifest manifest = new Manifest(manifestFile.getContents());
-                IpsBundleManifest ipsBundleManifest = new IpsBundleManifest(manifest);
-                ipsBundleManifest.writeBuilderSettings(ipsProject, manifestFile);
-            } catch (IOException e) {
-                throw new IpsException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
-            }
-
-        }
     }
 
     @Override

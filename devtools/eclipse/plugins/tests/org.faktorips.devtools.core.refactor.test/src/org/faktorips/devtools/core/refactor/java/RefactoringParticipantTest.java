@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -54,7 +55,8 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     private void configureBuilderSetToGenerateJaxbSupport() {
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         IIpsArtefactBuilderSetConfigModel configModel = ipsProjectProperties.getBuilderSetConfig();
-        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT, "true", null);
+        configModel.setPropertyValue(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT,
+                JaxbSupportVariant.ClassicJAXB.name(), null);
         ipsProjectProperties.setBuilderSetConfig(configModel);
         ipsProject.setProperties(ipsProjectProperties);
     }

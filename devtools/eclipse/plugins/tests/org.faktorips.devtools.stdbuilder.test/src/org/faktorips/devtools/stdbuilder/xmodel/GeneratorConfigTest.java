@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.IIpsModel;
+import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -115,6 +116,58 @@ public class GeneratorConfigTest {
         Boolean propertyValueAsBoolean = config
                 .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_MINIMAL_JAVADOC);
         assertThat(propertyValueAsBoolean, is(false));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_Default() throws Exception {
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_OldValue_True() throws Exception {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("true");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_OldValue_False() throws Exception {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("false");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_None() throws Exception {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("none");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_ClassicJAXB() throws Exception {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("ClassicJAXB");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
+    }
+
+    @SuppressWarnings("removal")
+    @Test
+    public void testGetJaxbSupport_JakartaXmlBinding3() throws Exception {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("JakartaXmlBinding3");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.JakartaXmlBinding3));
+        assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
 
 }

@@ -10,15 +10,21 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
+import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
+import org.faktorips.devtools.model.internal.IpsModel;
+import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.MessageList;
 
 /**
@@ -59,6 +65,30 @@ public class MarkAsDirtyMigration extends DefaultMigration {
     protected void migrate(IIpsSrcFile srcFile) {
         if (typesToMigrate.contains(srcFile.getIpsObjectType())) {
             srcFile.markAsDirty();
+        }
+    }
+
+    /**
+     * Updates the META-INF/MANIFEST.MF with the Faktor-IPS generator settings
+     */
+    protected void updateManifest() {
+        @SuppressWarnings("deprecation")
+        IpsModel ipsModel = IpsModel.get();
+        ipsModel.clearProjectSpecificCaches(getIpsProject());
+        IIpsProject ipsProject = getIpsProject();
+        AFile manifestFile = ipsProject.getProject().getFile(IpsBundleManifest.MANIFEST_NAME);
+        if (!manifestFile.exists()) {
+            manifestFile = ipsProject.getProject().getFile("src/main/resources/" + IpsBundleManifest.MANIFEST_NAME); //$NON-NLS-1$
+        }
+        if (manifestFile.exists()) {
+            try {
+                Manifest manifest = new Manifest(manifestFile.getContents());
+                IpsBundleManifest ipsBundleManifest = new IpsBundleManifest(manifest);
+                ipsBundleManifest.writeBuilderSettings(ipsProject, manifestFile);
+            } catch (IOException e) {
+                throw new IpsException(new IpsStatus("Can't read " + manifestFile, e)); //$NON-NLS-1$
+            }
+
         }
     }
 }

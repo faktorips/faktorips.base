@@ -26,6 +26,7 @@ import org.faktorips.devtools.model.builder.java.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.DefaultJavaClassNameProvider;
 import org.faktorips.devtools.model.builder.naming.IJavaClassNameProvider;
+import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -33,7 +34,6 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
-import org.faktorips.devtools.stdbuilder.xmodel.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.faktorips.runtime.IRuntimeRepository;
 
