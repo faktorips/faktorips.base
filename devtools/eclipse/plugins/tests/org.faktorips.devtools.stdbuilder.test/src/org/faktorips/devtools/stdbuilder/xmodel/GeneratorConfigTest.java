@@ -66,7 +66,6 @@ public class GeneratorConfigTest {
         assertThat(generatorConfig.getBaseClassPolicyCmptType(), is(AbstractModelObject.class.getName()));
     }
 
-    @SuppressWarnings("deprecation")
     @Test
     public void testGetBaseClassPolicyCmptType_defaultJaxb() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
@@ -74,7 +73,17 @@ public class GeneratorConfigTest {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
                 .thenReturn("true");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(),
-                is(org.faktorips.runtime.internal.AbstractJaxbModelObject.class.getName()));
+                is("org.faktorips.runtime.xml.javax.AbstractJaxbModelObject"));
+    }
+
+    @Test
+    public void testGetBaseClassPolicyCmptType_Jakarta() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
+                .thenReturn("");
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
+                .thenReturn("jakartaxmlbinding3");
+        assertThat(generatorConfig.getBaseClassPolicyCmptType(),
+                is("org.faktorips.runtime.xml.jakarta3.AbstractJaxbModelObject"));
     }
 
     @Test

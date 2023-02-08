@@ -12,8 +12,8 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.JaxbAnnotation;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 
@@ -23,7 +23,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS
  * 
  */
-public class PolicyCmptImplClassJaxbAnnGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassJaxbAnnGen extends AbstractJaxbAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
@@ -32,7 +32,8 @@ public class PolicyCmptImplClassJaxbAnnGen extends AbstractAnnotationGenerator {
             XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
 
             String unqualifiedName = xPolicyCmptClass.getImplClassName();
-            codeBuilder.annotationLn("javax.xml.bind.annotation.XmlRootElement", "name", unqualifiedName);
+            codeBuilder.annotationLn(getQualifiedName(JaxbAnnotation.XmlRootElement, generatorModelNode), "name",
+                    unqualifiedName);
         }
         return codeBuilder.getFragment();
     }

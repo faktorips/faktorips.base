@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.xml.IIpsXmlAdapter;
 
 /**
  * A builder for JAXB XmlAdapters. XmlAdapters are generated for Faktor-IPS enumerations that defer
@@ -132,19 +133,40 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
 
         DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(idAttributeDatatype);
 
-        StringBuilder superClassName = new StringBuilder();
-        superClassName.append("javax.xml.bind.annotation.adapters.XmlAdapter"); //$NON-NLS-1$
-        superClassName.append("<"); //$NON-NLS-1$
-        superClassName.append(datatypeHelper.getJavaClassName());
-        superClassName.append(", "); //$NON-NLS-1$
-        superClassName.append(getEnumModelNode().getQualifiedClassName());
-        superClassName.append(">"); //$NON-NLS-1$
-        mainSection.setSuperClass(superClassName.toString());
+        StringBuilder genericsForAdapter = new StringBuilder()
+                .append("<") //$NON-NLS-1$
+                .append(datatypeHelper.getJavaClassName())
+                .append(", ") //$NON-NLS-1$
+                .append(getEnumModelNode().getQualifiedClassName())
+                .append(">");
+
+        setExtendingClass(mainSection, genericsForAdapter);
+
+        setExtendingInterface(mainSection, genericsForAdapter);
 
         generateConstructor(mainSection.getConstructorBuilder());
         generateMethodMarshal(mainSection.getMethodBuilder(), datatypeHelper);
         generateMethodUnMarshal(mainSection.getMethodBuilder(), datatypeHelper);
         generateFieldRepository(mainSection.getMemberVarBuilder());
+    }
+
+    private void setExtendingInterface(TypeSection mainSection, StringBuilder genericsForAdapter) {
+        StringBuilder interfaceName = new StringBuilder()
+                .append(IIpsXmlAdapter.class.getName())
+                .append(genericsForAdapter);
+        mainSection.setExtendedInterfaces(List.of(interfaceName.toString()).toArray(new String[0]));
+    }
+
+    private void setExtendingClass(TypeSection mainSection, StringBuilder genericsForAdapter) {
+        StringBuilder superClassName = getXmlAdapterClass()
+                .append(genericsForAdapter);
+        mainSection.setSuperClass(superClassName.toString());
+    }
+
+    private StringBuilder getXmlAdapterClass() {
+        return new StringBuilder()
+                .append(GeneratorConfig.forIpsObject(getIpsObject()).getJaxbSupport().getLibraryPackage())
+                .append("annotation.adapters.XmlAdapter"); //$NON-NLS-1$
     }
 
     /**

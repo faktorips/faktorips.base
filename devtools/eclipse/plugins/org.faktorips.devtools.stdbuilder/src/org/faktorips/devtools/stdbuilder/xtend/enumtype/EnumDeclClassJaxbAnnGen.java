@@ -10,13 +10,12 @@
 
 package org.faktorips.devtools.stdbuilder.xtend.enumtype;
 
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.stdbuilder.BuilderKindIds;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.JaxbAnnotation;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumType;
@@ -45,10 +44,14 @@ public class EnumDeclClassJaxbAnnGen implements IAnnotationGenerator {
 
         EnumXmlAdapterBuilder xmlAdapterBuilder = xEnumType.getIpsProject().getIpsArtefactBuilderSet()
                 .getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER, EnumXmlAdapterBuilder.class);
-        codeFragmentBuilder.annotationLn(XmlJavaTypeAdapter.class,
+        codeFragmentBuilder.annotationLn(getXmlJavaTypeAdapter(xEnumType),
                 xEnumType.addImport(xmlAdapterBuilder.getQualifiedClassName(enumType)) + ".class");
 
         return codeFragmentBuilder.getFragment();
+    }
+
+    private String getXmlJavaTypeAdapter(AbstractGeneratorModelNode modelNode) {
+        return JaxbAnnotation.XmlJavaTypeAdapter.qualifiedNameFrom(modelNode.getGeneratorConfig().getJaxbSupport());
     }
 
 }

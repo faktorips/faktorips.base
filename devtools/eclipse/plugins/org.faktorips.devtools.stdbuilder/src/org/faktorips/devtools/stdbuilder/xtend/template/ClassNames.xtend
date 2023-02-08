@@ -12,8 +12,6 @@ import java.util.Locale
 import java.util.Map
 import java.util.NoSuchElementException
 import java.util.TimeZone
-import javax.xml.bind.annotation.XmlAttribute
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.runtime.AssociationChangedEvent
 import org.faktorips.runtime.CardinalityRange
@@ -50,7 +48,6 @@ import org.faktorips.runtime.internal.ProductConfiguration
 import org.faktorips.runtime.internal.Table
 import org.faktorips.runtime.internal.ValueToXmlHelper
 import org.faktorips.runtime.internal.XmlCallback
-import org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter
 import org.faktorips.runtime.util.MessagesHelper
 import org.faktorips.runtime.validation.GenericRelevanceValidation
 import org.faktorips.values.DefaultInternationalString
@@ -105,14 +102,6 @@ class ClassNames {
     def static AbstractModelObject(AbstractGeneratorModelNode it) { addImport(typeof(AbstractModelObject)) }
 
     def static ProductConfiguration(AbstractGeneratorModelNode it) { addImport(typeof(ProductConfiguration)) }
-
-    def static ProductConfigurationXmlAdapter(AbstractGeneratorModelNode it) {
-        addImport(typeof(ProductConfigurationXmlAdapter))
-    }
-
-    def static XmlJavaTypeAdapter(AbstractGeneratorModelNode it) { addImport(typeof(XmlJavaTypeAdapter)) }
-
-    def static XmlAttribute(AbstractGeneratorModelNode it) { addImport(typeof(XmlAttribute)) }
 
     def static IValidationContext(AbstractGeneratorModelNode it) { addImport(typeof(IValidationContext)) }
 

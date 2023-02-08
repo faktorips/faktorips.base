@@ -18,11 +18,19 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  */
 public enum JaxbSupportVariant {
     /** No JAXB **/
-    None,
-    /** Classic JAXB, javax.xml.bind.* */
-    ClassicJAXB,
-    /** Jakarta XML Binding 3, jakarta.xml.bind.* */
-    JakartaXmlBinding3;
+    None("", ""),
+    /** Classic JAXB, **/
+    ClassicJAXB("javax.xml.bind.", "org.faktorips.runtime.xml.javax."),
+    /** Jakarta XML Binding 3 **/
+    JakartaXmlBinding3("jakarta.xml.bind.", "org.faktorips.runtime.xml.jakarta3.");
+
+    private final String libraryPackage;
+    private final String ipsPackage;
+
+    JaxbSupportVariant(String libraryPackage, String ipsPackage) {
+        this.libraryPackage = libraryPackage;
+        this.ipsPackage = ipsPackage;
+    }
 
     public static JaxbSupportVariant of(String configValue) {
         if (null == configValue) {
@@ -40,5 +48,13 @@ public enum JaxbSupportVariant {
             default:
                 return ClassicJAXB;
         }
+    }
+
+    public String getLibraryPackage() {
+        return libraryPackage;
+    }
+
+    public String getIpsPackage() {
+        return ipsPackage;
     }
 }

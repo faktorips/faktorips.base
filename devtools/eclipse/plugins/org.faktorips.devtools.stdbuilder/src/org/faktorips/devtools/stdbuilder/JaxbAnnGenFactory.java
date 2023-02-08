@@ -57,4 +57,68 @@ public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT)) != JaxbSupportVariant.None;
     }
 
+    /**
+     * This enum
+     */
+    public enum JaxbAnnotation {
+        XmlAttribute,
+        XmlElement,
+        XmlElementWrapper,
+        XmlIDREF,
+        XmlJavaTypeAdapter {
+            private static final String ADAPTERS_PACKAGE = "adapters.";
+
+            @Override
+            String getPartiallyQualifiedName() {
+                return ANNOTATION_PACKAGE + ADAPTERS_PACKAGE + name();
+            }
+        },
+        XmlRootElement;
+
+        private static final String ANNOTATION_PACKAGE = "annotation.";
+
+        String getPartiallyQualifiedName() {
+            return ANNOTATION_PACKAGE + name();
+        }
+
+        /**
+         * Generates the qualified class name of an javax/jakarta annotation, depending on the given
+         * {@link JaxbSupportVariant}.
+         * 
+         * @param setting The configured {@code generateJaxbSupport} setting of an Faktor-IPS
+         *            project.
+         * @return The qualified class name of an javax/jakarta annotation.
+         */
+        public String qualifiedNameFrom(JaxbSupportVariant setting) {
+            return setting.getLibraryPackage() + getPartiallyQualifiedName();
+        }
+    }
+
+    /**
+     * The names of all Faktor-IPS {@code XmlAdapters}.
+     */
+    public enum IpsXmlAdapters {
+        ProductConfigurationXmlAdapter,
+        AbstractJaxbModelObject,
+        DecimalAdapter,
+        GregorianCalendarAdapter,
+        LocalDateAdapter,
+        LocalDateTimeAdapter,
+        LocalTimeAdapter,
+        MoneyAdapter,
+        MonthAdapter,
+        MonthDayAdapter;
+
+        /**
+         * Generates the qualified class name of the Faktor-IPS {@code XmlAdapter} depending on the
+         * given {@link JaxbSupportVariant}.
+         * 
+         * @param setting The configured {@code generateJaxbSupport} setting of an Faktor-IPS
+         *            project.
+         * @return The qualified class name of the Faktor-IPS {@code XmlAdapter}
+         */
+        public String qualifiedNameFrom(JaxbSupportVariant setting) {
+            return setting.getIpsPackage() + name();
+        }
+    }
 }

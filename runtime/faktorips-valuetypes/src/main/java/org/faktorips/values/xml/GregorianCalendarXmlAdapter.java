@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * {@link GregorianCalendar}.
  * 
  * @deprecated for removal since 23.6. Use
- *                 {@code org.faktorips.runtime.jaxb.GregorianCalendarXmlAdapter} instead.
+ *                 {@code org.faktorips.runtime.jaxb.GregorianCalendarAdapter} instead.
  */
 @Deprecated
 public class GregorianCalendarXmlAdapter extends XmlAdapter<String, GregorianCalendar> {

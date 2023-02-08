@@ -24,7 +24,7 @@ import jakarta.xml.bind.annotation.adapters.XmlAdapter;
  * This adapter can be used, if you are only interested in the date portion of a
  * {@link GregorianCalendar}.
  */
-public class GregorianCalendarXmlAdapter extends XmlAdapter<String, GregorianCalendar> {
+public class GregorianCalendarAdapter extends XmlAdapter<String, GregorianCalendar> {
 
     // can't move this to an interface, as it can't have instance fields and DateFormat is not
     // thread-safe

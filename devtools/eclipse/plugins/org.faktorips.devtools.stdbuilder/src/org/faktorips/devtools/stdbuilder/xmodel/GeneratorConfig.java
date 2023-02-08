@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.IpsXmlAdapters;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
@@ -202,16 +203,13 @@ public class GeneratorConfig {
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
-    @SuppressWarnings("deprecation")
     public String getBaseClassPolicyCmptType() {
         String baseClass = config
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
         return IpsStringUtils.isBlank(baseClass)
                 ? JaxbSupportVariant.None == getJaxbSupport()
                         ? AbstractModelObject.class.getName()
-                        // FIXME FIPS-8639 use
-                        // org.faktorips.runtime.xml.javax/jakarta.AbstractJaxbModelObject
-                        : org.faktorips.runtime.internal.AbstractJaxbModelObject.class.getName()
+                        : IpsXmlAdapters.AbstractJaxbModelObject.qualifiedNameFrom(getJaxbSupport())
                 : baseClass;
     }
 

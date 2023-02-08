@@ -12,10 +12,10 @@ package org.faktorips.devtools.stdbuilder.policycmpttype;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.IpsXmlAdapters;
+import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.JaxbAnnotation;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
-import org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter;
 
 /**
  * Generates JAXB annotations for the product configuration field of policy component type
@@ -23,7 +23,7 @@ import org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter;
  * 
  * @see AnnotatedJavaElementType#POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD
  */
-public class PolicyCmptImplClassProductConfigurationJaxbGen extends AbstractAnnotationGenerator {
+public class PolicyCmptImplClassProductConfigurationJaxbGen extends AbstractJaxbAnnotationGenerator {
 
     public PolicyCmptImplClassProductConfigurationJaxbGen() {
     }
@@ -31,10 +31,11 @@ public class PolicyCmptImplClassProductConfigurationJaxbGen extends AbstractAnno
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        builder.annotationLn("javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter",
+        builder.annotationLn(getQualifiedName(JaxbAnnotation.XmlJavaTypeAdapter, generatorModelNode),
                 "value = ProductConfigurationXmlAdapter.class");
-        builder.annotationLn("javax.xml.bind.annotation.XmlAttribute", "name = \"product-component.id\"");
-        builder.addImport(ProductConfigurationXmlAdapter.class);
+        builder.annotationLn(getQualifiedName(JaxbAnnotation.XmlAttribute, generatorModelNode),
+                "name = \"product-component.id\"");
+        builder.addImport(getQualifiedName(IpsXmlAdapters.ProductConfigurationXmlAdapter, generatorModelNode));
         return builder.getFragment();
     }
 
