@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.model.enums.IEnumType;

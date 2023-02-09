@@ -16,7 +16,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.JaxbAnnotation;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;

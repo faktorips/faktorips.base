@@ -19,6 +19,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
@@ -89,7 +90,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
                     JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE, "true") }; //$NON-NLS-1$
         }
         IClasspathEntry ipsContainerEntry = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
-                .newEntryPath(addJodaSupport, addGroovySupport),
+                .newEntryPath(addJodaSupport, addGroovySupport, JaxbSupportVariant.None),
                 new IAccessRule[0], extraAttributes, false);
         entries[oldEntries.length] = ipsContainerEntry;
         javaProject.setRawClasspath(entries, null);

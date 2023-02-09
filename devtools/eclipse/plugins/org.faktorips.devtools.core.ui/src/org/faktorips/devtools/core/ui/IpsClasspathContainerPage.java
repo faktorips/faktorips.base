@@ -21,9 +21,12 @@ import org.eclipse.jdt.ui.wizards.NewElementWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 
 public class IpsClasspathContainerPage extends NewElementWizardPage implements IClasspathContainerPage,
@@ -36,6 +39,10 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
 
     private Checkbox includeJodaCheckbox;
     private Checkbox includeGroovyCheckbox;
+
+    private Checkbox includeJaxbSupportCheckbox;
+    private Combo jaxbSelectionCombo;
+    private JaxbSelectionPmo jaxbSelectionPmo = new JaxbSelectionPmo(JaxbSupportVariant.ClassicJAXB);
 
     public IpsClasspathContainerPage() {
         super(Messages.IpsClasspathContainerPage_title);
@@ -55,6 +62,8 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
         createJodaSupportCheckbox(composite, toolkit);
 
         createGroovySupportCheckbox(composite, toolkit);
+
+        createJaxbSupportCheckboxAndSelection(composite, toolkit);
 
         toolkit.createVerticalSpacer(composite, 8);
         createLabel(composite, Messages.IpsClasspathContainerPage_disclaimer1);
@@ -93,6 +102,46 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
         }
     }
 
+    private void createJaxbSupportCheckboxAndSelection(Composite composite, UIToolkit toolkit) {
+        String text = Messages.IpsClasspathContainerPage_includeJaxbSupport;
+        boolean jaxbAvailable = IpsClasspathContainerInitializer.isJaxbSupportAvailable();
+        if (!jaxbAvailable) {
+            text = text + Messages.IpsClasspathContainerPage_bundleNotInstalled;
+        }
+        includeJaxbSupportCheckbox = toolkit.createCheckbox(composite, text);
+        includeJaxbSupportCheckbox.setEnabled(jaxbAvailable);
+        if (entry == null) {
+            includeJaxbSupportCheckbox.setChecked(jaxbAvailable);
+        } else {
+            includeJaxbSupportCheckbox.setChecked(IpsClasspathContainerInitializer.isClassicJaxbSupportIncluded(entry)
+                    || IpsClasspathContainerInitializer.isJakartaSupportIncluded(entry));
+        }
+
+        BindingContext bc = new BindingContext();
+        jaxbSelectionCombo = toolkit.createCombo(composite);
+        bc.bindContent(jaxbSelectionCombo, jaxbSelectionPmo, JaxbSelectionPmo.PROPERTY_SELECTED,
+                JaxbSupportVariant.class);
+
+        if (IpsClasspathContainerInitializer.isClassicJaxbSupportIncluded(entry)) {
+            jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.ClassicJAXB);
+        } else if (IpsClasspathContainerInitializer.isJakartaSupportIncluded(entry)) {
+            jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.JakartaXmlBinding3);
+        }
+
+        jaxbSelectionCombo.setEnabled(includeJaxbSupportCheckbox.isChecked());
+        jaxbSelectionCombo.setVisible(includeJaxbSupportCheckbox.isChecked());
+
+        includeJaxbSupportCheckbox.addListener(SWT.Selection, event -> {
+            jaxbSelectionCombo.setEnabled(includeJaxbSupportCheckbox.isChecked());
+            jaxbSelectionCombo.setVisible(includeJaxbSupportCheckbox.isChecked());
+            if (!includeJaxbSupportCheckbox.isChecked()) {
+                jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.None);
+            }
+        });
+
+        bc.updateUI();
+    }
+
     private Label createLabel(Composite parent, String text) {
         Label label = new Label(parent, SWT.NONE);
         label.setFont(parent.getFont());
@@ -109,7 +158,8 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
     @Override
     public IClasspathEntry getSelection() {
         IPath entryPath = IpsClasspathContainerInitializer.newEntryPath(includeJodaCheckbox.isChecked(),
-                includeGroovyCheckbox.isChecked());
+                includeGroovyCheckbox.isChecked(),
+                jaxbSelectionPmo.getSelectedValue());
         if (entry.getPath().equals(entryPath)) {
             return entry;
         } else {
@@ -135,12 +185,32 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
     public IClasspathEntry[] getNewContainers() {
         IClasspathEntry[] res = new IClasspathEntry[1];
         IPath entryPath = IpsClasspathContainerInitializer.newEntryPath(includeJodaCheckbox.isChecked(),
-                includeGroovyCheckbox.isChecked());
+                includeGroovyCheckbox.isChecked(),
+                jaxbSelectionPmo.getSelectedValue());
         res[0] = JavaCore.newContainerEntry(entryPath, isExported());
         return res;
     }
 
     private boolean isExported() {
         return entry == null ? false : entry.isExported();
+    }
+
+    public static class JaxbSelectionPmo {
+
+        public static final String PROPERTY_SELECTED = "selectedValue"; //$NON-NLS-1$
+
+        private JaxbSupportVariant selectedValue;
+
+        public JaxbSelectionPmo(JaxbSupportVariant defaultValue) {
+            selectedValue = defaultValue;
+        }
+
+        public void setSelectedValue(JaxbSupportVariant selected) {
+            selectedValue = selected;
+        }
+
+        public JaxbSupportVariant getSelectedValue() {
+            return selectedValue;
+        }
     }
 }

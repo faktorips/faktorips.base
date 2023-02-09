@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;

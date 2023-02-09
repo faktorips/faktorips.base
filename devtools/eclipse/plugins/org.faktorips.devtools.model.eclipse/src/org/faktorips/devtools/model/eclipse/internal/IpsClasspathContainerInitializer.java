@@ -30,6 +30,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.plugin.Messages;
@@ -51,15 +52,27 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final String GROOVY_BUNDLE = "org.faktorips.runtime.groovy"; //$NON-NLS-1$
 
+    public static final String CLASSIC_JAXB_BUNDLE = "org.faktorips.runtime.xml.javax"; //$NON-NLS-1$
+
+    public static final String JAKARTA_BUNDLE = "org.faktorips.runtime.xml.jakarta3"; //$NON-NLS-1$
+
     /**
-     * Returns <code>true</code> if Groovy support is available, otherwise <code>false</code>.
+     * Returns {@code true} if either jakarta or classic jaxb support is available, otherwise
+     * <code>false</code>.
+     */
+    public static final boolean isJaxbSupportAvailable() {
+        return Platform.getBundle(CLASSIC_JAXB_BUNDLE) != null || Platform.getBundle(JAKARTA_BUNDLE) != null;
+    }
+
+    /**
+     * Returns {@code true} if Groovy support is available, otherwise <code>false</code>.
      */
     public static final boolean isGroovySupportAvailable() {
         return Platform.getBundle(GROOVY_BUNDLE) != null;
     }
 
     /**
-     * Returns <code>true</code> if the given JODA support bundle is available, otherwise
+     * Returns {@code true} if the given JODA support bundle is available, otherwise
      * <code>false</code>.
      */
     public static final boolean isJodaSupportAvailable() {
@@ -67,14 +80,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     /**
-     * Returns <code>true</code> if the given bundle is available, otherwise <code>false</code>.
+     * Returns {@code true} if the given bundle is available, otherwise <code>false</code>.
      */
     public static final boolean isPluginAvailable(String bundleId) {
         return Platform.getBundle(bundleId) != null;
     }
 
     /**
-     * Returns <code>true</code> if container entry specifies that the support library for the JODA
+     * Returns {@code true} if container entry specifies that the support library for the JODA
      * library should be included, otherwise <code>false</code>.
      */
     public static final boolean isJodaSupportIncluded(IClasspathEntry containerEntry) {
@@ -82,8 +95,8 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     /**
-     * Returns <code>true</code> if container entry specifies that the support library for
-     * evaluation formulas with Groovy should be included, otherwise <code>false</code>. Returns
+     * Returns {@code true} if container entry specifies that the support library for evaluation
+     * formulas with Groovy should be included, otherwise <code>false</code>. Returns
      * <code>false</code> if containerEntry is <code>null</code>.
      */
     public static final boolean isGroovySupportIncluded(IClasspathEntry containerEntry) {
@@ -91,8 +104,26 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     /**
-     * Returns <code>true</code> if container entry specifies that the given bundle should be
-     * included, otherwise <code>false</code>. Returns <code>false</code> if containerEntry is
+     * Returns {@code true} if container entry specifies that the support library for classic jaxb
+     * should be included, otherwise <code>false</code>. Returns <code>false</code> if
+     * containerEntry is <code>null</code>.
+     */
+    public static final boolean isClassicJaxbSupportIncluded(IClasspathEntry containerEntry) {
+        return isAdditionalBundleIdsIncluded(containerEntry, CLASSIC_JAXB_BUNDLE);
+    }
+
+    /**
+     * Returns {@code true} if container entry specifies that the support library for jakarta should
+     * be included, otherwise <code>false</code>. Returns <code>false</code> if containerEntry is
+     * <code>null</code>.
+     */
+    public static final boolean isJakartaSupportIncluded(IClasspathEntry containerEntry) {
+        return isAdditionalBundleIdsIncluded(containerEntry, JAKARTA_BUNDLE);
+    }
+
+    /**
+     * Returns {@code true} if container entry specifies that the given bundle should be included,
+     * otherwise <code>false</code>. Returns <code>false</code> if containerEntry is
      * <code>null</code>.
      */
     private static final boolean isAdditionalBundleIdsIncluded(IClasspathEntry containerEntry, String bundleId) {
@@ -133,27 +164,36 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
     }
 
     public static IPath newDefaultEntryPath() {
-        return newEntryPath(isJodaSupportAvailable(), isGroovySupportAvailable());
+        return newEntryPath(isJodaSupportAvailable(), isGroovySupportAvailable(), JaxbSupportVariant.None);
     }
 
     /**
      * Creates a new container entry path for the Faktor-IPS runtime and valuetypes libraries and
      * for additional optional libraries.
      * 
-     * @param includeJoda <code>true</code> if the support library for JODA should be included.
-     * @param includeGroovy <code>true</code> if the support library for GROOVY should be included.
+     * @param includeJoda {@code true} if the support library for JODA should be included.
+     * @param includeGroovy {@code true} if the support library for GROOVY should be included.
+     * @param jaxbSupport the selected {@link JaxbSupportVariant}.
      * 
      * @return A Path like
      *             "org.faktorips.devtools.model.eclipse.ipsClasspathContainer/org.faktorips.valuetypes.joda,org.faktorips.runtime.groovy"
      *             if both additional libraries are included.
      */
-    public static final IPath newEntryPath(boolean includeJoda, boolean includeGroovy) {
+    public static final IPath newEntryPath(boolean includeJoda,
+            boolean includeGroovy,
+            JaxbSupportVariant jaxbSupport) {
         List<String> bundleIds = new ArrayList<>();
         if (includeJoda) {
             bundleIds.add(JODA_BUNDLE);
         }
         if (includeGroovy) {
             bundleIds.add(GROOVY_BUNDLE);
+        }
+        if (JaxbSupportVariant.ClassicJAXB.equals(jaxbSupport)) {
+            bundleIds.add(CLASSIC_JAXB_BUNDLE);
+        }
+        if (JaxbSupportVariant.JakartaXmlBinding3.equals(jaxbSupport)) {
+            bundleIds.add(JAKARTA_BUNDLE);
         }
         return newEntryPath(bundleIds);
     }

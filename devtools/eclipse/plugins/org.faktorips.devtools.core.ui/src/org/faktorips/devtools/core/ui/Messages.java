@@ -135,5 +135,5 @@ public class Messages extends NLS {
     public static String IpsUIPlugin_dialogSaveDirtyEditorMessageMany;
     public static String IpsUIPlugin_dialogSaveDirtyEditorMessageSimple;
     public static String IpsUIPlugin_dialogSaveDirtyEditorTitle;
-
+    public static String IpsClasspathContainerPage_includeJaxbSupport;
 }

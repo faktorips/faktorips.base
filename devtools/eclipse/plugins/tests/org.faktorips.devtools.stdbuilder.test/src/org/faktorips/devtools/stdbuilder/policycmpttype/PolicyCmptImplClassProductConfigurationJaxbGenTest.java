@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.junit.Before;

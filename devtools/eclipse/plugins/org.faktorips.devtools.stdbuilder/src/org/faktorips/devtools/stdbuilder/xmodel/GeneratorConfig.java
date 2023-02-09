@@ -13,7 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import java.util.Locale;
 
 import org.faktorips.devtools.model.builder.AbstractBuilderSet;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;

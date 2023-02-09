@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.stdbuilder.policycmpttype;
 
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.IpsXmlAdapters;
 import org.faktorips.devtools.stdbuilder.JaxbAnnGenFactory.JaxbAnnotation;

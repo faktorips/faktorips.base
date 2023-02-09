@@ -9,12 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.model.builder.settings;
 
-import static org.faktorips.devtools.model.builder.settings.JaxbSupportVariant.ClassicJAXB;
-import static org.faktorips.devtools.model.builder.settings.JaxbSupportVariant.JakartaXmlBinding3;
-import static org.faktorips.devtools.model.builder.settings.JaxbSupportVariant.None;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.ClassicJAXB;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding3;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.None;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.junit.Test;
 
 public class JaxbSupportVariantTest {

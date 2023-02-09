@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;

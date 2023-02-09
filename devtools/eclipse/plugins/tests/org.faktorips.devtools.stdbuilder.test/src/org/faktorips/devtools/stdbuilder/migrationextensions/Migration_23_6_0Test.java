@@ -33,7 +33,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.core.internal.migrationextensions.Migration_23_6_0;
 import org.faktorips.devtools.model.IIpsModel;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;

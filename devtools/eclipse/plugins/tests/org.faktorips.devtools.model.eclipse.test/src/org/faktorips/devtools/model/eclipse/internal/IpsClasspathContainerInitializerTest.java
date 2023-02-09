@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer.IpsClasspathContainer;
 import org.junit.Test;
 
@@ -54,19 +55,31 @@ public class IpsClasspathContainerInitializerTest {
     @Test
     public void testNewDefaultEntryPath() {
         IPath expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false));
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, false, JaxbSupportVariant.None));
 
         expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
                 + IpsClasspathContainerInitializer.JODA_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false));
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, false, JaxbSupportVariant.None));
 
         expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
                 + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true));
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(false, true, JaxbSupportVariant.None));
 
         expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
                 + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE);
-        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true));
+        assertEquals(expected, IpsClasspathContainerInitializer.newEntryPath(true, true, JaxbSupportVariant.None));
+
+        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE
+                + "," + IpsClasspathContainerInitializer.CLASSIC_JAXB_BUNDLE);
+        assertEquals(expected,
+                IpsClasspathContainerInitializer.newEntryPath(true, true, JaxbSupportVariant.ClassicJAXB));
+
+        expected = new Path(IpsClasspathContainerInitializer.CONTAINER_ID + "/"
+                + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE
+                + "," + IpsClasspathContainerInitializer.JAKARTA_BUNDLE);
+        assertEquals(expected,
+                IpsClasspathContainerInitializer.newEntryPath(true, true, JaxbSupportVariant.JakartaXmlBinding3));
     }
 
     @Test

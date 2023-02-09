@@ -41,7 +41,7 @@ import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.model.builder.settings.JaxbSupportVariant;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
 import org.faktorips.devtools.model.internal.ipsproject.IpsPackageFragmentRoot;
