@@ -24,6 +24,10 @@ public enum JaxbSupportVariant {
     /** Jakarta XML Binding 3 **/
     JakartaXmlBinding3("jakarta.xml.bind.", "org.faktorips.runtime.xml.jakarta3.");
 
+    /**
+     * The Jaxb support ID used by the standard builder.
+     */
+    public static final String STD_BUILDER_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
     private final String libraryPackage;
     private final String ipsPackage;
 

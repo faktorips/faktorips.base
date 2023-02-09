@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 
 import org.faktorips.devtools.abstraction.AJavaProject;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
@@ -40,11 +41,13 @@ public class IpsProjectCreationProperties {
     private String sourceFolderName;
     private String basePackageName;
     private String persistenceSupport;
+    private JaxbSupportVariant jaxbSupport;
 
     private boolean isModelProject;
     private boolean isProductDefinitionProject;
     private boolean isPersistentProject;
     private boolean isGroovySupport;
+    private boolean isJaxbEnabled;
 
     private List<Locale> locales;
 
@@ -63,10 +66,12 @@ public class IpsProjectCreationProperties {
         sourceFolderName = Messages.IpsProjectCreation_defaultSourceFolderName;
         basePackageName = Messages.IpsProjectCreation_defaultBasePackageName;
         persistenceSupport = PersistenceSupportNames.ID_GENERIC_JPA_2;
+        jaxbSupport = JaxbSupportVariant.None;
         isModelProject = true;
         isProductDefinitionProject = false;
         isPersistentProject = false;
         isGroovySupport = true;
+        isJaxbEnabled = false;
         locales = new ArrayList<>();
     }
 
@@ -102,6 +107,14 @@ public class IpsProjectCreationProperties {
         this.persistenceSupport = persistenceSupport;
     }
 
+    public JaxbSupportVariant getJaxbSupport() {
+        return jaxbSupport;
+    }
+
+    public void setJaxbSupport(JaxbSupportVariant jaxbSupport) {
+        this.jaxbSupport = jaxbSupport;
+    }
+
     public boolean isModelProject() {
         return isModelProject;
     }
@@ -124,6 +137,14 @@ public class IpsProjectCreationProperties {
 
     public void setPersistentProject(boolean isPersistentProject) {
         this.isPersistentProject = isPersistentProject;
+    }
+
+    public boolean isJaxbEnabled() {
+        return isJaxbEnabled;
+    }
+
+    public void setJaxbEnabled(boolean isJaxbEnabled) {
+        this.isJaxbEnabled = isJaxbEnabled;
     }
 
     public boolean isGroovySupport() {
@@ -154,7 +175,6 @@ public class IpsProjectCreationProperties {
                 return Messages.IpsProjectCreationProperties_persistenceSupport;
             case PROPERTY_LOCALES:
                 return Messages.IpsProjectCreationProperties_locales;
-
             default:
                 return property;
         }

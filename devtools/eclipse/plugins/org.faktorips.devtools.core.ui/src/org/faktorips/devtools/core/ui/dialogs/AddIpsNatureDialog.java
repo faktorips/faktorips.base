@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.dialogs;
 import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 
 import java.util.LinkedHashMap;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.IpsProjectConfigurators;
@@ -64,8 +66,10 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
     private Button enableGroovyCheckbox;
     private Button enablePersistenceCheckbox;
+    private Button enableJaxbSupport;
 
     private Combo persistenceSupport;
+    private Combo jaxbSelection;
 
     private Image dlgTitleImage;
     private Button okButton;
@@ -194,6 +198,29 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
         persistenceSupport.setEnabled(false);
         PersistenceSupportNames.getAllPersistenceProviderOptions().forEach(persistenceSupport::add);
         persistenceSupport.select(0);
+
+        String jaxbCheckboxText = Messages.AddIpsNatureDialog_JaxbSupport;
+        boolean jaxbAvailable = IpsClasspathContainerInitializer.isJaxbSupportAvailable();
+        if (!jaxbAvailable) {
+            jaxbCheckboxText = jaxbCheckboxText
+                    + org.faktorips.devtools.core.ui.Messages.IpsClasspathContainerPage_bundleNotInstalled;
+        }
+        enableJaxbSupport = kit.createButton(projectSelectionGroup.getComposite(), jaxbCheckboxText, SWT.CHECK);
+        enableJaxbSupport.setEnabled(jaxbAvailable);
+        enableJaxbSupport.addListener(SWT.Selection, event -> {
+            if (enableJaxbSupport.getSelection()) {
+                jaxbSelection.setEnabled(true);
+                jaxbSelection.select(1);
+            } else {
+                jaxbSelection.setEnabled(false);
+                jaxbSelection.select(0);
+            }
+        });
+
+        jaxbSelection = kit.createCombo(projectSelectionGroup.getComposite());
+        Stream.of(JaxbSupportVariant.values()).map(JaxbSupportVariant::name).forEach(jaxbSelection::add);
+        jaxbSelection.setEnabled(false);
+        jaxbSelection.select(0);
     }
 
     /**
@@ -313,6 +340,8 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
             if (isGroovyAvailable()) {
                 ipsProjectCreationProperties.setGroovySupport(enableGroovyCheckbox.getSelection());
             }
+            ipsProjectCreationProperties.setJaxbEnabled(enableJaxbSupport.getSelection());
+            ipsProjectCreationProperties.setJaxbSupport(JaxbSupportVariant.of(jaxbSelection.getText()));
             ipsProjectCreationProperties.setLocales(supportedLanguagesControl.getLocales());
             MessageList messages = ipsProjectCreationProperties
                     .validate(wrap(javaProject).as(AJavaProject.class));

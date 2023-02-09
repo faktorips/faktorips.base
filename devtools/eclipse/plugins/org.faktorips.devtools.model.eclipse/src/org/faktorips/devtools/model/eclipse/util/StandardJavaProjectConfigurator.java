@@ -49,7 +49,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
     @Deprecated
     public static void configureDefaultIpsProject(IJavaProject javaProject) {
         try {
-            configureJavaProject(javaProject, false, false);
+            configureJavaProject(javaProject, false, false, JaxbSupportVariant.None);
         } catch (JavaModelException e) {
             throw new IpsException(e);
         }
@@ -72,13 +72,17 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
         boolean isGroovySupportAvailable = IpsClasspathContainerInitializer.isGroovySupportAvailable()
                 && creationProperties.isGroovySupport();
         try {
-            configureJavaProject(javaProject, isJodaSupportAvailable, isGroovySupportAvailable);
+            configureJavaProject(javaProject, isJodaSupportAvailable, isGroovySupportAvailable,
+                    creationProperties.getJaxbSupport());
         } catch (JavaModelException e) {
             throw new IpsException(e);
         }
     }
 
-    public static void configureJavaProject(IJavaProject javaProject, boolean addJodaSupport, boolean addGroovySupport)
+    public static void configureJavaProject(IJavaProject javaProject,
+            boolean addJodaSupport,
+            boolean addGroovySupport,
+            JaxbSupportVariant jaxbSupport)
             throws JavaModelException {
         IClasspathEntry[] oldEntries = javaProject.getRawClasspath();
         IClasspathEntry[] entries = new IClasspathEntry[oldEntries.length + 1];
@@ -90,7 +94,7 @@ public class StandardJavaProjectConfigurator implements IIpsProjectConfigurator 
                     JavaCore.newClasspathAttribute(IClasspathAttribute.MODULE, "true") }; //$NON-NLS-1$
         }
         IClasspathEntry ipsContainerEntry = JavaCore.newContainerEntry(IpsClasspathContainerInitializer
-                .newEntryPath(addJodaSupport, addGroovySupport, JaxbSupportVariant.None),
+                .newEntryPath(addJodaSupport, addGroovySupport, jaxbSupport),
                 new IAccessRule[0], extraAttributes, false);
         entries[oldEntries.length] = ipsContainerEntry;
         javaProject.setRawClasspath(entries, null);

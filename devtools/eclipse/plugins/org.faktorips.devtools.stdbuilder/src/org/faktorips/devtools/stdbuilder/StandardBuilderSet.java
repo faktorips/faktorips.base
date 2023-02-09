@@ -35,6 +35,7 @@ import org.faktorips.devtools.model.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.model.builder.GenericBuilderKindId;
 import org.faktorips.devtools.model.builder.IJavaBuilderSet;
 import org.faktorips.devtools.model.builder.IPersistenceProvider;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.builder.java.JavaSourceFileBuilder;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
@@ -151,7 +152,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
     /**
      * Configuration property that enables/disables the generation of JAXB support.
      */
-    public static final String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = "generateJaxbSupport"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT = JaxbSupportVariant.STD_BUILDER_PROPERTY_GENERATE_JAXB_SUPPORT;
 
     /**
      * Configuration property contains the persistence provider implementation.

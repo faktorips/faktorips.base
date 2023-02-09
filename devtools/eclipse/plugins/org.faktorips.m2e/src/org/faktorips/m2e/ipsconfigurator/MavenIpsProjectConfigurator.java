@@ -43,6 +43,7 @@ import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.IIpsProjectConfigurator;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -322,6 +323,8 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
         addGroovySupport(mavenModel, creationProperties, ipsVersion, dependencies);
 
         addPersistenceSupport(mavenModel, creationProperties);
+
+        addJaxbSupport(mavenModel, creationProperties, ipsVersion);
     }
 
     private void addFaktorIpsRuntime(Model mavenModel, String ipsVersion, Set<String> dependencies) {
@@ -347,6 +350,22 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 ipsGroovyDependency.setArtifactId(groovyArtifactId);
                 ipsGroovyDependency.setVersion(ipsVersion);
                 mavenModel.addDependency(ipsGroovyDependency);
+            }
+        }
+    }
+
+    private void addJaxbSupport(Model mavenModel, IpsProjectCreationProperties creationProperties, String ipsVersion) {
+        if (creationProperties.isJaxbEnabled()) {
+            JaxbSupportVariant jaxbSupport = creationProperties.getJaxbSupport();
+            switch (jaxbSupport) {
+                case ClassicJAXB:
+                    addDependency(mavenModel, IPS_GROUP_ID, "faktorips-runtime-javax-xml", ipsVersion);
+                    break;
+                case JakartaXmlBinding3:
+                    addDependency(mavenModel, IPS_GROUP_ID, "faktorips-runtime-jakarta-xml3", ipsVersion);
+                    break;
+                default:
+                    break;
             }
         }
     }

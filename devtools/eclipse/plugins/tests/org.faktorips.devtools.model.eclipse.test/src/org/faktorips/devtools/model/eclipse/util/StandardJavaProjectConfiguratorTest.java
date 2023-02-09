@@ -24,6 +24,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.Abstractions;
+import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.eclipse.internal.IpsClasspathContainerInitializer;
 import org.junit.Before;
 import org.junit.Test;
@@ -97,7 +98,7 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
             convertToModuleProject(javaProject);
             List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
 
-            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false);
+            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false, JaxbSupportVariant.None);
 
             List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
             assertThat(classpathEntriesAfter.size(), is(classpathEntriesBefore.size() + 1));
@@ -121,7 +122,7 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
     public void testConfigureJavaProject_GroovyEnabled() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
             List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
-            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, true);
+            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, true, JaxbSupportVariant.None);
 
             List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
             assertThat(classpathEntriesBefore.size(), is(classpathEntriesAfter.size() - 1));
@@ -143,7 +144,7 @@ public class StandardJavaProjectConfiguratorTest extends AbstractIpsPluginTest {
     public void testConfigureJavaProject_GroovyDisabled() throws CoreException {
         if (Abstractions.isEclipseRunning()) {
             List<IClasspathEntry> classpathEntriesBefore = Arrays.asList(javaProject.getRawClasspath());
-            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false);
+            StandardJavaProjectConfigurator.configureJavaProject(javaProject, false, false, JaxbSupportVariant.None);
 
             List<IClasspathEntry> classpathEntriesAfter = Arrays.asList(javaProject.getRawClasspath());
             assertThat(classpathEntriesBefore.size(), is(classpathEntriesAfter.size() - 1));

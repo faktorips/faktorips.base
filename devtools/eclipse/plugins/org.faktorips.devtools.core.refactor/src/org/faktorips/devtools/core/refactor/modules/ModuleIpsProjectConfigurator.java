@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.refactor.modules;
 
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.ClassicJAXB;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding3;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,6 +93,12 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
         }
         if (creationProperties.isPersistentProject()) {
             requiredModules.add("javax.persistence");
+        }
+        if (ClassicJAXB.equals(creationProperties.getJaxbSupport())) {
+            requiredModules.add(ClassicJAXB.getIpsPackage());
+        }
+        if (JakartaXmlBinding3.equals(creationProperties.getJaxbSupport())) {
+            requiredModules.add(JakartaXmlBinding3.getIpsPackage());
         }
         Modules.addRequired(javaProject.unwrap(), true, requiredModules);
     }

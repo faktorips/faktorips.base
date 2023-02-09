@@ -439,6 +439,11 @@ public class EclipseProjectUtil {
         builderSetConfig.setPropertyValue(PersistenceSupportNames.STD_BUILDER_PROPERTY_PERSISTENCE_PROVIDER,
                 creationProperties.getPersistenceSupport(), persistenceDescription);
 
+        String jaxbDescription = builderSetConfig
+                .getPropertyDescription("generateJaxbSupport");
+        builderSetConfig.setPropertyValue("generateJaxbSupport",
+                creationProperties.getJaxbSupport().name(), jaxbDescription);
+
         if (creationProperties.isModelProject()) {
             builderSetConfig.setPropertyValue(AbstractBuilderSet.CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED,
                     "false", //$NON-NLS-1$
