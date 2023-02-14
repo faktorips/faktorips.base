@@ -56,6 +56,10 @@ private void executePostprocessor() {
     String isPersistenceSupport = properties.get("IPS-IsPersistentProject")
     PersistenceSupport persistenceSupport = new PersistenceSupport(projectPath, lineSeparator)
     persistenceSupport.setPersistenceSupport(isPersistenceSupport)
+    
+    String isJaxbSupport = properties.get("IPS-IsJaxbSupport")
+    JaxbSupport jaxbSupport = new JaxbSupport(projectPath, lineSeparator)
+    jaxbSupport.setJaxbSupport(isJaxbSupport)
 }
 
 //////////////////////////////////////////////////////////////
@@ -488,3 +492,137 @@ class LogUtil {
         }
     }
 }
+
+//////////////////////////////////////////////////////////////
+// Jaxb support
+//////////////////////////////////////////////////////////////
+/**
+ * Adjusts the maven dependencies and the .ipsproject file
+ * in order to add persistence support, if required.
+ *
+ * This requires another user input.
+ */
+class JaxbSupport {
+
+    // Names of required files
+    private final String POM = "pom.xml"
+    private final String IPS_PROJECT = ".ipsproject"
+    private final String VERSION = '\${faktor-ips.version}'
+
+    // Names of possible jaxb support variants
+    private final String NONE = "None"
+    private final String CLASSIC_JAXB= "ClassicJAXB"
+    private final String JAKARTA_XML_BINDING_3 = "JakartaXmlBinding3"
+
+    // Templates to be replaced
+    private final String IPS_PROJECT_TEMPLATE = '$IPS-JaxbSupport$'
+    private final String MAVEN_DEPENDENCY_TEMPLATE = '<!-- $JaxbDependencyTemplate$ -->'
+
+    // Using the system specific line separators (Groovy uses LF only)
+    // The indentation fits to the maven dependencies
+    private final String CLASSIC_JAXB_DEPENDENCY = """<dependency>$lineSeparator\
+            <groupId>org.faktorips</groupId>$lineSeparator\
+            <artifactId>faktorips-runtime-javax-xml</artifactId>$lineSeparator\
+            <version>$VERSION</version>$lineSeparator\
+        </dependency>"""
+    private final String JAKARTA_XML_BINDING_3_DEPENDENCY = """<dependency>$lineSeparator\
+            <groupId>org.faktorips</groupId>$lineSeparator\
+            <artifactId>faktorips-runtime-jakarta-xml3</artifactId>$lineSeparator\
+            <version>$VERSION</version>$lineSeparator\
+        </dependency>"""
+
+    private final Path projectPath
+    private final String lineSeparator
+
+    JaxbSupport(Path projectPath, String lineSeparator) {
+        this.projectPath = projectPath
+        this.lineSeparator = lineSeparator
+    }
+
+    /**
+     * Sets the required values in the .ipsproject file and
+     * the maven dependencies to the pom.xml if jaxb support is enabled.
+     * Otherwise, removes the templates from these files.
+     *
+     * @param isJaxbSupport Is true whether jaxb support is enabled, else false
+     */
+    void setJaxbSupport(String isJaxbSupport) {
+        File pom = new File(projectPath.resolve(POM).toString())
+        File ipsProject = new File(projectPath.resolve(IPS_PROJECT).toString())
+        if (Boolean.valueOf(isJaxbSupport)) {
+            JaxbApi jaxbApi = getJaxbApi()
+
+            // Adjusting the .ipsproject
+            String newName = ipsProject.text.replace(IPS_PROJECT_TEMPLATE, jaxbApi.name)
+            ipsProject.text = newName
+
+            // Adjusting the maven dependencies
+            String newDependency = pom.text.replace(MAVEN_DEPENDENCY_TEMPLATE, jaxbApi.dependency)
+            pom.text = newDependency
+        } else {
+            // Has to be set in order to have a valid .ipsproject
+            String newName = ipsProject.text.replace(IPS_PROJECT_TEMPLATE, NONE)
+            ipsProject.text = newName
+            String newDependency = pom.text.replace(MAVEN_DEPENDENCY_TEMPLATE, "")
+            pom.text = newDependency
+        }
+    }
+
+    /**
+     * Asks the user for the required persistence technology.
+     *
+     * @return the matching persistence API
+     */
+    private JaxbApi getJaxbApi() {
+        String possibilities = "Select index for choosing jaxb support:" +
+                "$lineSeparator(1) $CLASSIC_JAXB," +
+                "$lineSeparator(2) $JAKARTA_XML_BINDING_3:"
+
+        LogUtil.printSeparator(2)
+
+        JaxbApi jaxbApi
+
+        while (jaxbApi == null) {
+            LogUtil.printMessage(possibilities)
+            String index = System.in.newReader().readLine()
+            switch (index) {
+                case "1":
+                    jaxbApi = new JaxbApi(CLASSIC_JAXB, CLASSIC_JAXB_DEPENDENCY)
+                    break
+                case "2":
+                    jaxbApi = new JaxbApi(JAKARTA_XML_BINDING_3, JAKARTA_XML_BINDING_3_DEPENDENCY)
+                    break
+                default:
+                    LogUtil.printErrorMessage("Invalid index, please try again...")
+            }
+        }
+
+        LogUtil.printInfoMessage("Selected Jaxb API: " + jaxbApi.getName())
+        LogUtil.printSeparator(2)
+
+        return jaxbApi
+    }
+
+    /**
+     * Contains information about the selected Jaxb API.
+     */
+    private class JaxbApi {
+
+        private final String name
+        private final String dependency
+
+        private JaxbApi(String name, String dependency) {
+            this.name = name
+            this.dependency = dependency
+        }
+
+        private String getName() {
+            return name
+        }
+
+        private String getDependency() {
+            return dependency
+        }
+    }
+}
+

@@ -31,6 +31,10 @@
             <defaultValue>false</defaultValue>
             <validationRegex>true|false</validationRegex>
         </requiredProperty>
+        <requiredProperty key="IPS-IsJaxbSupport">
+            <defaultValue>false</defaultValue>
+            <validationRegex>true|false</validationRegex>
+        </requiredProperty>
         <requiredProperty key="IPS-SourceFolder">
             <defaultValue>model</defaultValue>
             <validationRegex>[a-zA-Z][?:a-zA-Z\d]*</validationRegex>

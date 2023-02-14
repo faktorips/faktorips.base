@@ -69,8 +69,8 @@
  <IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">
   <IpsArtefactBuilderSetConfig>
 
-   <!--Enables the generation of JAXB support-->
-   <Property name="generateJaxbSupport" value="false"/>
+   <!--Enables the generation of JAXB support. May be either 'None' or one of 'ClassicJAXB' or 'JakartaXmlBinding3'.-->
+   <Property name="generateJaxbSupport" value="$IPS-JaxbSupport$"/>
 
    <!--Generate the published interfaces (true) or only implementation classes (false)-->
    <Property name="generatePublishedInterfaces" value="false"/>
