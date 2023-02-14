@@ -62,7 +62,8 @@ public class XsdValidatorHolder extends ThreadLocal<Validator> {
 
         Schema schema;
         try {
-            if (NetUtil.isSchemaReachable(ipsObjectType)) {
+            if (NetUtil.isSchemaReachable(ipsObjectType)
+                    && NetUtil.isUrlReachable("https://www.w3.org/2009/01/xml.xsd")) {
                 schema = factory.newSchema();
             } else {
                 // offline developers need to copy the content of
