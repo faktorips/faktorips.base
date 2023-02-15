@@ -60,7 +60,7 @@
       <unit id="org.eclipse.xtend.sdk.feature.group" version="0.0.0" />
       <repository location="https://update.faktorzehn.org/p2repositories/2021-06/" />
     </location>
-    <location uri="mvn:org.faktorips:thirdparty:22.12.7.release:target" type="Target"></location>
+    <location uri="mvn:org.faktorips:thirdparty:22.12.8-SNAPSHOT:target" type="Target"></location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="org.junit" version="0.0.0" />
       <repository location="https://update.faktorzehn.org/p2repositories/2022-03/" />
