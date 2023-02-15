@@ -54,7 +54,7 @@ public class NetUtil {
             URLConnection connection = url.openConnection();
             connection.setConnectTimeout(TIMEOUT);
             connection.setReadTimeout(TIMEOUT);
-            connection.connect();
+            readFromConnection(connection);
         } catch (IOException e) {
             return false;
         }
@@ -109,7 +109,7 @@ public class NetUtil {
         }
     }
 
-    private static List<String> readFromConnection(URLConnection connection) {
+    private static List<String> readFromConnection(URLConnection connection) throws IOException {
         List<String> content = new ArrayList<>();
         try (InputStream inputStream = connection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
@@ -120,8 +120,6 @@ public class NetUtil {
                 content.add(inputLine);
             }
             return content;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
