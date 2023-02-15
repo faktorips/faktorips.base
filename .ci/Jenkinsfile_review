@@ -51,24 +51,14 @@ pipeline {
                     to=$(echo $i | sed 's/.zip/.jar/g');
                     cp -v $i $to;
                 done
-                # copy all poms to jar-file-name.pom
-                for i in $(find . -maxdepth 4 -name "*.jar" | grep -v 'sources\\|javadoc' | grep 'target/faktorips');
+                # copy all .flattened-pom.xml to jar-file-name.pom
+                # finds all faktorips* (maven projects) and org.faktorips* (eclipse projects) jar-files
+                # copies their project-name/.flattened-pom.xml to project-name/target/project-name-version.pom
+                # archiving will be done by jenkins on all jar-/pom-files in the target folder
+                for i in $(find . -name "*.jar" | grep -v 'sources\\|javadoc' | grep 'target/\\(org\\.\\)*faktorips' | grep -v '/bin/'); 
                 do
                     to=$(echo $i | sed 's/.jar/.pom/g');
-                    from=$(dirname $i | sed 's|/target|/pom.xml|g');
-                    cp -v $from $to;
-                done
-                # use flattened poms
-                for i in $(find . -maxdepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/faktorips' | grep -v 'bin');
-                do
-                    to=$(echo $i | sed 's/.jar/.pom/g');
-                    from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
-                    cp -v $from $to;
-                done
-                for i in $(find devtools/eclipse/sites -mindepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/org.faktorips' | grep -v 'bin');
-                do
-                    to=$(echo $i | sed 's/.jar/.pom/g');
-                    from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
+                    from=$(dirname $i)/../.flattened-pom.xml;
                     cp -v $from $to;
                 done
                 '''

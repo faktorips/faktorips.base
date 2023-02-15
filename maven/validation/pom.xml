@@ -40,6 +40,21 @@
             <type>pom</type>
             <scope>import</scope>
         </dependency>
+        <!-- 
+            should be in faktorips-model-plainjava but breaks the dependency 
+            of org.faktorips.abstracttest, by missing??
+        -->
+        <dependency>
+            <groupId>org.eclipse.platform</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+            <version>3.17.100</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.eclipse.platform</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
 
     <build>

@@ -40,7 +40,7 @@
                                     requires transitive junit;
                                     requires transitive java.desktop;
                                     requires transitive java.xml;
-                                    requires static transitive javax.xml.bind;
+                                    requires static transitive java.xml.bind;
                                     exports org.faktorips.runtime;
                                     exports org.faktorips.runtime.annotation;
                                     exports org.faktorips.runtime.caching;

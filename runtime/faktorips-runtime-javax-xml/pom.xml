@@ -34,7 +34,7 @@
                                 <moduleInfoSource>
                                     module org.faktorips.runtime.xml.javax {
                                         requires transitive org.faktorips.runtime;
-                                        requires transitive javax.xml.bind;
+                                        requires static transitive java.xml.bind;
                                         exports org.faktorips.runtime.xml.javax;
                                     }
                                 </moduleInfoSource>

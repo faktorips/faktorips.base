@@ -40,6 +40,14 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime-jakarta-xml3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime-javax-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.faktorips</groupId>
             <artifactId>faktorips-dtfl-common</artifactId>
         </dependency>
         <dependency>

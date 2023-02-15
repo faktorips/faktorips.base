@@ -146,6 +146,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
       <import plugin="org.apache.poi.poi"/>
       <import plugin="org.apache.poi.poi-ooxml"/>
       <import plugin="org.apache.commons.commons-io"/>
+      <import plugin="jakarta.xml.bind-api"/>
    </requires>
 
    <plugin
@@ -311,6 +312,20 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
 
    <plugin
          id="org.faktorips.devtools.model.eclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.runtime.xml.jakarta3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.faktorips.runtime.xml.javax"
          download-size="0"
          install-size="0"
          version="0.0.0"
