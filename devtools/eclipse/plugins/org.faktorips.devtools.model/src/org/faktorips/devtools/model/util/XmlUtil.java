@@ -70,6 +70,8 @@ import org.xml.sax.SAXParseException;
  */
 public class XmlUtil {
 
+    public static final String FAKTOR_IPS_SCHEMA_URL = "https://doc.faktorzehn.org/schema/faktor-ips/";
+
     /**
      * Used for the project org.faktorips.devtools.stdbuilder because it uses jaxb-api as
      * dependency. Jaxb-api uses the same javax.xml package as {@link XMLConstants} from the JDK and
@@ -747,7 +749,7 @@ public class XmlUtil {
 
     public static final String getSchemaLocation(String schemaName) {
         AVersion version = Abstractions.getVersion();
-        return String.format("https://doc.faktorzehn.org/schema/faktor-ips/%s/%s.xsd", //$NON-NLS-1$
+        return String.format(FAKTOR_IPS_SCHEMA_URL + "%s/%s.xsd", //$NON-NLS-1$
                 version.majorMinor().toString(),
                 schemaName);
     }
