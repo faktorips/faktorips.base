@@ -65,7 +65,7 @@ public class EnumDeclClassJaxbAnnGenTest extends AbstractStdBuilderTest {
 
     @Test
     public void testCreateAnnotation_jakarta() {
-        configureBuilderSetToGenerateJaxbSupport(JaxbSupportVariant.JakartaXmlBinding3);
+        configureBuilderSetToGenerateJaxbSupport(JaxbSupportVariant.JakartaXmlBinding);
 
         EnumDeclClassJaxbAnnGen enumDeclClassJaxbAnnGen = new EnumDeclClassJaxbAnnGen();
         String qualifiedName = "foo.Enum";

@@ -59,7 +59,7 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
 
     @Test
     public void testCreateAnnotation_Jakarta() throws Exception {
-        when(generatorConfig.getJaxbSupport()).thenReturn(JaxbSupportVariant.JakartaXmlBinding3);
+        when(generatorConfig.getJaxbSupport()).thenReturn(JaxbSupportVariant.JakartaXmlBinding);
         JavaCodeFragment codeFragment = jaxbGen.createAnnotation(modelNode);
         assertNotNull(codeFragment);
         String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)"
@@ -70,7 +70,7 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
         assertThat(importDeclaration.getImports(),
                 hasItems("jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter",
                         "jakarta.xml.bind.annotation.XmlAttribute",
-                        "org.faktorips.runtime.xml.jakarta3.ProductConfigurationXmlAdapter"));
+                        "org.faktorips.runtime.xml.jakarta.ProductConfigurationXmlAdapter"));
 
     }
 

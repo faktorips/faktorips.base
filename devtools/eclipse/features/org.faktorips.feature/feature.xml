@@ -318,7 +318,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          unpack="false"/>
 
    <plugin
-         id="org.faktorips.runtime.xml.jakarta3"
+         id="org.faktorips.runtime.xml.jakarta"
          download-size="0"
          install-size="0"
          version="0.0.0"

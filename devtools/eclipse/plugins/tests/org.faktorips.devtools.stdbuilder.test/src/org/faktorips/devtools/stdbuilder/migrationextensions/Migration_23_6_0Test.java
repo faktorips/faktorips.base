@@ -98,7 +98,7 @@ public class Migration_23_6_0Test extends AbstractIpsPluginTest {
 
         Migration_23_6_0 migration_23_6_0 = new Migration_23_6_0(ipsProject, "irrelevant");
         ((IpsMigrationOption<JaxbSupportVariant>)migration_23_6_0.getOptions().iterator().next())
-                .setSelectedValue(JaxbSupportVariant.JakartaXmlBinding3);
+                .setSelectedValue(JaxbSupportVariant.JakartaXmlBinding);
 
         try {
             MessageList messageList = migration_23_6_0.migrate(new NullProgressMonitor());
@@ -108,7 +108,7 @@ public class Migration_23_6_0Test extends AbstractIpsPluginTest {
             String ipsProjectFile = Files.readString(project.getFile(".ipsproject").getLocation().toFile().toPath(),
                     StandardCharsets.UTF_8);
             assertThat(ipsProjectFile,
-                    containsString("<Property name=\"generateJaxbSupport\" value=\"JakartaXmlBinding3\"/>"));
+                    containsString("<Property name=\"generateJaxbSupport\" value=\"JakartaXmlBinding\"/>"));
 
             String manifestContent = Files.readString(manifest.getLocation().toFile().toPath(), StandardCharsets.UTF_8);
             manifestContent = manifestContent.replace("\r\n", "\n");
@@ -116,7 +116,7 @@ public class Migration_23_6_0Test extends AbstractIpsPluginTest {
             assertThat(manifestContent, containsString("Manifest-Version: 1.0"));
             assertThat(manifestContent,
                     containsString("Fips-GeneratorConfig: org.faktorips.devtools.stdbuilder.ipsstdbuilderset"));
-            assertThat(manifestContent, containsString("generateJaxbSupport=\"JakartaXmlBinding3\""));
+            assertThat(manifestContent, containsString("generateJaxbSupport=\"JakartaXmlBinding\""));
         } catch (NullPointerException npe) {
             npe.printStackTrace(System.err);
             assertEquals("", Arrays.stream(npe.getStackTrace()).map(StackTraceElement::toString)

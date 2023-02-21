@@ -81,9 +81,9 @@ public class GeneratorConfigTest {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
                 .thenReturn("");
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("jakartaxmlbinding3");
+                .thenReturn("jakartaxmlbinding");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(),
-                is("org.faktorips.runtime.xml.jakarta3.AbstractJaxbModelObject"));
+                is("org.faktorips.runtime.xml.jakarta.AbstractJaxbModelObject"));
     }
 
     @Test
@@ -172,10 +172,10 @@ public class GeneratorConfigTest {
 
     @SuppressWarnings("removal")
     @Test
-    public void testGetJaxbSupport_JakartaXmlBinding3() throws Exception {
+    public void testGetJaxbSupport_JakartaXmlBinding() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("JakartaXmlBinding3");
-        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.JakartaXmlBinding3));
+                .thenReturn("JakartaXmlBinding");
+        assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.JakartaXmlBinding));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
 

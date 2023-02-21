@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.faktorips</groupId>
+        <artifactId>faktorips-runtime-parent</artifactId>
+        <version>23.6.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>faktorips-runtime-jakarta-xml</artifactId>
+
+    <packaging>bundle</packaging>
+
+    <name>Faktor-IPS Runtime Jakarta XML Binding Extension</name>
+    <description>Faktor-IPS Runtime Extension for XML binding with Jakarta JAXB 3 as included in Java EE 9.</description>
+    
+    <properties>
+        <!-- java and compiler options -->
+        <java.version>11</java.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.moditect</groupId>
+                <artifactId>moditect-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-module-infos</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>add-module-info</goal>
+                        </goals>
+                        <configuration>
+                            <jvmVersion>11</jvmVersion>
+                            <overwriteExistingFiles>true</overwriteExistingFiles>
+                            <module>
+                                <moduleInfoSource>
+                                    module org.faktorips.runtime.xml.jakarta {
+                                        requires transitive org.faktorips.runtime;
+                                        requires transitive jakarta.xml.bind;
+                                        exports org.faktorips.runtime.xml.jakarta;
+                                    }
+                                </moduleInfoSource>
+                            </module>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <!-- <_nouses>true</_nouses> -->
+                        <Import-Package>
+                            !edu.umd.cs.findbugs.*,
+                            jakarta.xml.bind.*,
+                            org.faktorips.*
+                        </Import-Package>
+                        <Export-Package>
+                            org.faktorips.runtime.xml.jakarta
+                        </Export-Package>
+                        <Bundle-SymbolicName>org.faktorips.runtime.xml.jakarta</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-pde-source-header</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.tycho</groupId>
+                <artifactId>tycho-p2-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attached-p2-metadata</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-metadata</goal>
+                        </goals>
+                        <configuration>
+                            <supportedProjectTypes>
+                                <value>bundle</value>
+                                <value>jar</value>
+                            </supportedProjectTypes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.faktorips</groupId>
+            <artifactId>faktorips-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Test -->
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

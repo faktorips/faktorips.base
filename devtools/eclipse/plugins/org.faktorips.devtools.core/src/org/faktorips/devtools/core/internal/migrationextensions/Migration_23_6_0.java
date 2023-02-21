@@ -64,7 +64,6 @@ public class Migration_23_6_0 extends MarkAsDirtyMigration {
         builderSetConfig.setPropertyValue(MIGRATION_OPTION_JAXB_VARIANT,
                 selectedValue != null ? selectedValue.toString() : null,
                 Messages.Migration_Option_JAXB_Variant_Description);
-
         MigrationUtil.updateAllIpsArtefactBuilderSetDescriptions(builderSetInfo, builderSetConfig);
 
         ipsProject.setProperties(properties);

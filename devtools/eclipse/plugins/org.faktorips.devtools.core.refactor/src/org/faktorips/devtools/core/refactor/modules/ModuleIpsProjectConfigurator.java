@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.refactor.modules;
 
 import static org.faktorips.devtools.model.builder.JaxbSupportVariant.ClassicJAXB;
-import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding3;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,8 +97,8 @@ public class ModuleIpsProjectConfigurator implements IIpsProjectConfigurator {
         if (ClassicJAXB.equals(creationProperties.getJaxbSupport())) {
             requiredModules.add(ClassicJAXB.getIpsPackage());
         }
-        if (JakartaXmlBinding3.equals(creationProperties.getJaxbSupport())) {
-            requiredModules.add(JakartaXmlBinding3.getIpsPackage());
+        if (JakartaXmlBinding.equals(creationProperties.getJaxbSupport())) {
+            requiredModules.add(JakartaXmlBinding.getIpsPackage());
         }
         Modules.addRequired(javaProject.unwrap(), true, requiredModules);
     }

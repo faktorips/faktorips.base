@@ -79,7 +79,7 @@ public class IpsClasspathContainerInitializerTest {
                 + IpsClasspathContainerInitializer.JODA_BUNDLE + "," + IpsClasspathContainerInitializer.GROOVY_BUNDLE
                 + "," + IpsClasspathContainerInitializer.JAKARTA_BUNDLE);
         assertEquals(expected,
-                IpsClasspathContainerInitializer.newEntryPath(true, true, JaxbSupportVariant.JakartaXmlBinding3));
+                IpsClasspathContainerInitializer.newEntryPath(true, true, JaxbSupportVariant.JakartaXmlBinding));
     }
 
     @Test

@@ -70,7 +70,7 @@ public class AbstractJaxbAnnotationGeneratorTest {
     @Test
     public void testGetQualifiedName_JakartaXmlBinding() {
         GeneratorConfig generatorConfig = mock(GeneratorConfig.class);
-        doReturn(JaxbSupportVariant.JakartaXmlBinding3).when(generatorConfig).getJaxbSupport();
+        doReturn(JaxbSupportVariant.JakartaXmlBinding).when(generatorConfig).getJaxbSupport();
         AbstractGeneratorModelNode generatorModelNode = mock(AbstractGeneratorModelNode.class);
         doReturn(generatorConfig).when(generatorModelNode).getGeneratorConfig();
 

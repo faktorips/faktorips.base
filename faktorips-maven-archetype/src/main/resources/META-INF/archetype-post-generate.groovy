@@ -512,7 +512,7 @@ class JaxbSupport {
     // Names of possible jaxb support variants
     private final String NONE = "None"
     private final String CLASSIC_JAXB= "ClassicJAXB"
-    private final String JAKARTA_XML_BINDING_3 = "JakartaXmlBinding3"
+    private final String JAKARTA_XML_BINDING = "JakartaXmlBinding"
 
     // Templates to be replaced
     private final String IPS_PROJECT_TEMPLATE = '$IPS-JaxbSupport$'
@@ -525,9 +525,9 @@ class JaxbSupport {
             <artifactId>faktorips-runtime-javax-xml</artifactId>$lineSeparator\
             <version>$VERSION</version>$lineSeparator\
         </dependency>"""
-    private final String JAKARTA_XML_BINDING_3_DEPENDENCY = """<dependency>$lineSeparator\
+    private final String JAKARTA_XML_BINDING_DEPENDENCY = """<dependency>$lineSeparator\
             <groupId>org.faktorips</groupId>$lineSeparator\
-            <artifactId>faktorips-runtime-jakarta-xml3</artifactId>$lineSeparator\
+            <artifactId>faktorips-runtime-jakarta-xml</artifactId>$lineSeparator\
             <version>$VERSION</version>$lineSeparator\
         </dependency>"""
 
@@ -576,7 +576,7 @@ class JaxbSupport {
     private JaxbApi getJaxbApi() {
         String possibilities = "Select index for choosing jaxb support:" +
                 "$lineSeparator(1) $CLASSIC_JAXB," +
-                "$lineSeparator(2) $JAKARTA_XML_BINDING_3:"
+                "$lineSeparator(2) $JAKARTA_XML_BINDING:"
 
         LogUtil.printSeparator(2)
 
@@ -590,7 +590,7 @@ class JaxbSupport {
                     jaxbApi = new JaxbApi(CLASSIC_JAXB, CLASSIC_JAXB_DEPENDENCY)
                     break
                 case "2":
-                    jaxbApi = new JaxbApi(JAKARTA_XML_BINDING_3, JAKARTA_XML_BINDING_3_DEPENDENCY)
+                    jaxbApi = new JaxbApi(JAKARTA_XML_BINDING, JAKARTA_XML_BINDING_DEPENDENCY)
                     break
                 default:
                     LogUtil.printErrorMessage("Invalid index, please try again...")

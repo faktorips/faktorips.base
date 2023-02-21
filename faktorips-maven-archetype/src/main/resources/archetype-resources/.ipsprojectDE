@@ -69,7 +69,7 @@
  <IpsArtefactBuilderSet id="org.faktorips.devtools.stdbuilder.ipsstdbuilderset">
   <IpsArtefactBuilderSetConfig>
 
-   <!--Generiert JAXB-Annotationen in Vertragsklassen. Erlaubte Werte sind 'None', 'ClassicJAXB' oder 'JakartaXmlBinding3'.-->
+   <!--Generiert JAXB-Annotationen in Vertragsklassen. Erlaubte Werte sind 'None', 'ClassicJAXB' oder 'JakartaXmlBinding'.-->
    <Property name="generateJaxbSupport" value="$IPS-JaxbSupport$"/>
 
    <!--Generiert nur Implementierungsklassen (false) oder auch Published Interfaces (true)-->

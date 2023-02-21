@@ -29,7 +29,7 @@
         <module>faktorips-runtime/client</module>
         <module>faktorips-runtime-groovy</module>
         <module>faktorips-runtime-javax-xml</module>
-        <module>faktorips-runtime-jakarta-xml3</module>
+        <module>faktorips-runtime-jakarta-xml</module>
         <module>faktorips-testsupport</module>
         <module>faktorips-valuetypes</module>
         <module>faktorips-valuetypes-joda</module>

@@ -10,7 +10,7 @@
 package org.faktorips.devtools.model.builder.settings;
 
 import static org.faktorips.devtools.model.builder.JaxbSupportVariant.ClassicJAXB;
-import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding3;
+import static org.faktorips.devtools.model.builder.JaxbSupportVariant.JakartaXmlBinding;
 import static org.faktorips.devtools.model.builder.JaxbSupportVariant.None;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -27,9 +27,9 @@ public class JaxbSupportVariantTest {
         assertThat(JaxbSupportVariant.of("  "), is(None));
         assertThat(JaxbSupportVariant.of("false"), is(None));
         assertThat(JaxbSupportVariant.of("FALSE"), is(None));
-        assertThat(JaxbSupportVariant.of("JakartaXmlBinding3"), is(JakartaXmlBinding3));
-        assertThat(JaxbSupportVariant.of(" JakartaXmlBinding3 "), is(JakartaXmlBinding3));
-        assertThat(JaxbSupportVariant.of("jakartaxmlbinding3"), is(JakartaXmlBinding3));
+        assertThat(JaxbSupportVariant.of("JakartaXmlBinding"), is(JakartaXmlBinding));
+        assertThat(JaxbSupportVariant.of(" JakartaXmlBinding "), is(JakartaXmlBinding));
+        assertThat(JaxbSupportVariant.of("jakartaxmlbinding"), is(JakartaXmlBinding));
         assertThat(JaxbSupportVariant.of("ClassicJAXB"), is(ClassicJAXB));
         assertThat(JaxbSupportVariant.of("classicJaxb"), is(ClassicJAXB));
         assertThat(JaxbSupportVariant.of("true"), is(ClassicJAXB));

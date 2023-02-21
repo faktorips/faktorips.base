@@ -855,7 +855,7 @@ public class IpsBuildMojo extends AbstractMojo {
         addDependency("org.faktorips.devtools.stdbuilder");
         addDependency("org.faktorips.runtime.groovy");
         addDependency("org.faktorips.runtime.xml.javax");
-        addDependency("org.faktorips.runtime.xml.jakarta3");
+        addDependency("org.faktorips.runtime.xml.jakarta");
         addDependency("org.faktorips.valuetypes.joda");
         addDependency("org.faktorips.devtools.ant");
         if (exportHtml) {

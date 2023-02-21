@@ -21,8 +21,8 @@ public enum JaxbSupportVariant {
     None("", ""),
     /** Classic JAXB, **/
     ClassicJAXB("javax.xml.bind.", "org.faktorips.runtime.xml.javax."),
-    /** Jakarta XML Binding 3 **/
-    JakartaXmlBinding3("jakarta.xml.bind.", "org.faktorips.runtime.xml.jakarta3.");
+    /** Jakarta XML Binding **/
+    JakartaXmlBinding("jakarta.xml.bind.", "org.faktorips.runtime.xml.jakarta.");
 
     /**
      * The Jaxb support ID used by the standard builder.
@@ -46,8 +46,8 @@ public enum JaxbSupportVariant {
             case "none":
                 return None;
 
-            case "jakartaxmlbinding3":
-                return JakartaXmlBinding3;
+            case "jakartaxmlbinding":
+                return JakartaXmlBinding;
 
             default:
                 return ClassicJAXB;

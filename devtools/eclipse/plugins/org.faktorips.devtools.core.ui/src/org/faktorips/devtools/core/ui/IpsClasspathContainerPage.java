@@ -125,7 +125,7 @@ public class IpsClasspathContainerPage extends NewElementWizardPage implements I
         if (IpsClasspathContainerInitializer.isClassicJaxbSupportIncluded(entry)) {
             jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.ClassicJAXB);
         } else if (IpsClasspathContainerInitializer.isJakartaSupportIncluded(entry)) {
-            jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.JakartaXmlBinding3);
+            jaxbSelectionPmo.setSelectedValue(JaxbSupportVariant.JakartaXmlBinding);
         }
 
         jaxbSelectionCombo.setEnabled(includeJaxbSupportCheckbox.isChecked());

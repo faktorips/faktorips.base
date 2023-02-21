@@ -40,7 +40,7 @@
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>
-            <artifactId>faktorips-runtime-jakarta-xml3</artifactId>
+            <artifactId>faktorips-runtime-jakarta-xml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.faktorips</groupId>

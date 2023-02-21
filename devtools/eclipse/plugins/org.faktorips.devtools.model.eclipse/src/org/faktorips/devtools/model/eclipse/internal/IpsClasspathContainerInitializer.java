@@ -54,7 +54,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final String CLASSIC_JAXB_BUNDLE = "org.faktorips.runtime.xml.javax"; //$NON-NLS-1$
 
-    public static final String JAKARTA_BUNDLE = "org.faktorips.runtime.xml.jakarta3"; //$NON-NLS-1$
+    public static final String JAKARTA_BUNDLE = "org.faktorips.runtime.xml.jakarta"; //$NON-NLS-1$
 
     /**
      * Returns {@code true} if either jakarta or classic jaxb support is available, otherwise
@@ -192,7 +192,7 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
         if (JaxbSupportVariant.ClassicJAXB.equals(jaxbSupport)) {
             bundleIds.add(CLASSIC_JAXB_BUNDLE);
         }
-        if (JaxbSupportVariant.JakartaXmlBinding3.equals(jaxbSupport)) {
+        if (JaxbSupportVariant.JakartaXmlBinding.equals(jaxbSupport)) {
             bundleIds.add(JAKARTA_BUNDLE);
         }
         return newEntryPath(bundleIds);

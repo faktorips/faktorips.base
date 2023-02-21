@@ -75,7 +75,7 @@
             <discreteValues>
                <value value="None" />
                <value value="ClassicJAXB" />
-               <value value="JakartaXmlBinding3" />
+               <value value="JakartaXmlBinding" />
             </discreteValues>
          </builderSetPropertyDef>
          <builderSetPropertyDef

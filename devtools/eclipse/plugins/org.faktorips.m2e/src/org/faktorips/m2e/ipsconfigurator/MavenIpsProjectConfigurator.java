@@ -361,8 +361,8 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
                 case ClassicJAXB:
                     addDependency(mavenModel, IPS_GROUP_ID, "faktorips-runtime-javax-xml", ipsVersion);
                     break;
-                case JakartaXmlBinding3:
-                    addDependency(mavenModel, IPS_GROUP_ID, "faktorips-runtime-jakarta-xml3", ipsVersion);
+                case JakartaXmlBinding:
+                    addDependency(mavenModel, IPS_GROUP_ID, "faktorips-runtime-jakarta-xml", ipsVersion);
                     break;
                 default:
                     break;

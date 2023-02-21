@@ -341,7 +341,7 @@
         <setEntry value="org.faktorips.fl@default:default"/>
         <setEntry value="org.faktorips.m2e@default:default"/>
         <setEntry value="org.faktorips.runtime.groovy@default:default"/>
-        <setEntry value="org.faktorips.runtime.xml.jakarta3@default:default"/>
+        <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>

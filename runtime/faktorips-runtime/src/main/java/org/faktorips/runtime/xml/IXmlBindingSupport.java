@@ -59,7 +59,7 @@ public interface IXmlBindingSupport<JAXBContext> {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
             return (IXmlBindingSupport<JAXBContext>)classLoader
-                    .loadClass("org.faktorips.runtime.xml.jakarta3.JaxbSupport").getField("INSTANCE")
+                    .loadClass("org.faktorips.runtime.xml.jakarta.JaxbSupport").getField("INSTANCE")
                     .get(null);
         } catch (ClassNotFoundException | SecurityException | IllegalAccessException | IllegalArgumentException
                 | NoSuchFieldException | UnsupportedClassVersionError e) {
