@@ -27,16 +27,17 @@
     <stringAttribute key="pde.version" value="3.3"/>
     <stringAttribute key="product" value="org.eclipse.platform.ide"/>
     <setAttribute key="selected_target_bundles">
-        <setEntry value="com.google.guava@default:default"/>
         <setEntry value="com.google.guava*30.1.0.v20210127-2300@default:default"/>
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
+        <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.activation.javax.activation@default:default"/>
         <setEntry value="com.sun.jna.platform@default:default"/>
         <setEntry value="com.sun.jna@default:default"/>
         <setEntry value="com.sun.xml.bind.jaxb-osgi@default:default"/>
         <setEntry value="groovy@default:default"/>
+        <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="javaewah@default:default"/>
         <setEntry value="javax.annotation@default:default"/>
         <setEntry value="javax.inject@default:default"/>
@@ -338,7 +339,10 @@
         <setEntry value="org.faktorips.fl@default:default"/>
         <setEntry value="org.faktorips.m2e@default:default"/>
         <setEntry value="org.faktorips.runtime.groovy@default:default"/>
+        <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
+        <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime@default:default"/>
+        <setEntry value="org.faktorips.testdatatype@default:default"/>
         <setEntry value="org.faktorips.util@default:default"/>
         <setEntry value="org.faktorips.valuetypes.joda@default:default"/>
         <setEntry value="org.faktorips.valuetypes@default:default"/>

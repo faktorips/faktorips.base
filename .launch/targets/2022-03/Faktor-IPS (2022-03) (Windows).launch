@@ -27,10 +27,12 @@
         <setEntry value="com.ibm.icu"/>
         <setEntry value="com.jcraft.jsch"/>
         <setEntry value="com.opencsv"/>
+        <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.activation.javax.activation"/>
         <setEntry value="com.sun.jna"/>
         <setEntry value="com.sun.jna.platform"/>
         <setEntry value="com.sun.xml.bind.jaxb-osgi"/>
+        <setEntry value="jakarta.xml.bind-api@default:default"/>
         <setEntry value="groovy"/>
         <setEntry value="javaewah"/>
         <setEntry value="javax.annotation"/>
@@ -337,6 +339,8 @@
         <setEntry value="org.faktorips.eclipse.emf.codegen"/>
         <setEntry value="org.faktorips.fl"/>
         <setEntry value="org.faktorips.m2e"/>
+        <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
+        <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
         <setEntry value="org.faktorips.runtime"/>
         <setEntry value="org.faktorips.runtime.groovy"/>
         <setEntry value="org.faktorips.util"/>
