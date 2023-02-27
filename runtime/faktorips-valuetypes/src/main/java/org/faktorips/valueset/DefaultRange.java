@@ -305,6 +305,9 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         if (isNullValue(value)) {
             return containsNull();
         }
+        if (empty) {
+            return false;
+        }
 
         boolean withinBounds = (isLowerBoundNull() || value.compareTo(lowerBound) >= 0)
                 && (isUpperBoundNull() || value.compareTo(upperBound) <= 0);

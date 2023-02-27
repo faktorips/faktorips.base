@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -86,6 +88,13 @@ public class DoubleRangeTest {
         assertTrue(range.contains(10.0));
         assertFalse(range.contains(-10.0));
         assertFalse(range.contains(44.0));
+    }
+
+    @Test
+    public void testContains_Empty() {
+        DoubleRange range = DoubleRange.empty();
+        assertThat(range.contains(null), is(false));
+        assertThat(range.contains(1.0), is(false));
     }
 
     @Test

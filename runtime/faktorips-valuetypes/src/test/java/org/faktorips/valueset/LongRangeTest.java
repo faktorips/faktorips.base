@@ -172,6 +172,13 @@ public class LongRangeTest {
     }
 
     @Test
+    public void testContains_Empty() {
+        LongRange range = LongRange.empty();
+        assertThat(range.contains(null), is(false));
+        assertThat(range.contains(1L), is(false));
+    }
+
+    @Test
     public void testCheckIfValueCompliesToStepIncrement() {
         assertThat(LongRange.valueOf(1L, 10L, null, false).checkIfValueCompliesToStepIncrement(3L, 10L), is(true));
         assertThat(LongRange.valueOf(1L, 10L, 1L, false).checkIfValueCompliesToStepIncrement(3L, 10L), is(true));

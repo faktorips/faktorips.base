@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -262,6 +264,13 @@ public class BigDecimalRangeTest {
     public void testSizeOfBigDecimalRangeWithEqualBoundariesHavingDifferentPrecision() {
         BigDecimalRange range = BigDecimalRange.valueOf(new BigDecimal("10"), new BigDecimal("10.00"));
         assertEquals(1, range.size());
+    }
+
+    @Test
+    public void testContains_Empty() {
+        BigDecimalRange range = BigDecimalRange.empty();
+        assertThat(range.contains(null), is(false));
+        assertThat(range.contains(new BigDecimal("10.00")), is(false));
     }
 
 }
