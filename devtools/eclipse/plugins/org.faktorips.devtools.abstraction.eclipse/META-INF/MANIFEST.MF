@@ -11,7 +11,7 @@ Export-Package: org.faktorips.devtools.abstraction.eclipse.internal;
    org.faktorips.devtools.model.eclipse",
  org.faktorips.devtools.abstraction.eclipse.mapping
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: edu.umd.cs.findbugs.annotations;bundle-version="4.7.1";resolution:=optional,
  org.faktorips.devtools.abstraction,
  org.faktorips.devtools.abstraction.exception,

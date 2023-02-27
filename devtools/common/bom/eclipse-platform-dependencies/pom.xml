@@ -11,53 +11,137 @@
     <artifactId>eclipse-platform-dependencies</artifactId>
     <packaging>pom</packaging>
 
-    <name>Eclipse Platform Dependencies of Release 2020-03</name>
-    <description>The same dependencies as in the target platform 2020-03</description>
+    <name>Eclipse Platform Dependencies of Release 2022-09</name>
+    <description>The same dependencies as in the target platform 2022-09</description>
 
     <properties>
-        <apiguardian-api.version>1.1.0</apiguardian-api.version>
-        <org-eclipse-core-commands.version>3.9.700</org-eclipse-core-commands.version>
-        <org-eclipse-core-contenttype.version>3.7.600</org-eclipse-core-contenttype.version>
-        <org-eclipse-core-databinding.version>1.8.0</org-eclipse-core-databinding.version>
-        <org-eclipse-core-databinding-beans.version>1.6.100</org-eclipse-core-databinding-beans.version>
-        <org-eclipse-core-databinding-observable.version>1.9.0</org-eclipse-core-databinding-observable.version>
-        <org-eclipse-core-databinding-property.version>1.8.0</org-eclipse-core-databinding-property.version>
-        <org-eclipse-core-expressions.version>3.6.700</org-eclipse-core-expressions.version>
-        <org-eclipse-core-filesystem.version>1.7.700</org-eclipse-core-filesystem.version>
-        <org-eclipse-core-jobs.version>3.10.700</org-eclipse-core-jobs.version>
-        <org-eclipse-core-resources.version>3.13.700</org-eclipse-core-resources.version>
-        <org-eclipse-core-runtime.version>3.17.100</org-eclipse-core-runtime.version>
-        <org-eclipse-core-variables.version>3.4.800</org-eclipse-core-variables.version>
-        <org-eclipse-cvs.version>1.4.1300</org-eclipse-cvs.version>
-        <org-eclipse-emf-common.version>2.18.0</org-eclipse-emf-common.version>
-        <org-eclipse-emf-ecore-change.version>2.14.0</org-eclipse-emf-ecore-change.version>
-        <org-eclipse-emf-ecore-xmi.version>2.16.0</org-eclipse-emf-ecore-xmi.version>
-        <org-eclipse-equinox-app.version>1.4.400</org-eclipse-equinox-app.version>
-        <org-eclipse-equinox-common.version>3.11.0</org-eclipse-equinox-common.version>
-        <org-eclipse-equinox-preferences.version>3.7.700</org-eclipse-equinox-preferences.version>
-        <org-eclipse-equinox-registry.version>3.8.700</org-eclipse-equinox-registry.version>
-        <org-eclipse-jdt-core.version>3.21.0</org-eclipse-jdt-core.version>
-        <org-eclipse-jdt-launching.version>3.17.0</org-eclipse-jdt-launching.version>
-        <org-eclipse-jface.version>3.19.0</org-eclipse-jface.version>
-        <org-eclipse-ltk-core-refactoring.version>3.10.400</org-eclipse-ltk-core-refactoring.version>
-        <org-eclipse-osgi.version>3.15.200</org-eclipse-osgi.version>
-        <org-eclipse-swt-win32-win32-x86_64.version>3.114.0</org-eclipse-swt-win32-win32-x86_64.version>
-        <org-eclipse-text.version>3.10.100</org-eclipse-text.version>
-        <icu.version>64.2</icu.version>
-        <junit.version>4.13.2</junit.version>
-        <junit-jupiter-api.version>5.6.0</junit-jupiter-api.version>
-        <junit-jupiter-engine.version>5.6.0</junit-jupiter-engine.version>
-        <junit-platform-commons.version>1.6.0</junit-platform-commons.version>
-        <junit-platform-launcher.version>1.6.0</junit-platform-launcher.version>
+        <icu4j.version>67.1</icu4j.version>
+        <jna.version>5.8.0</jna.version>
+        <jna-platform.version>5.8.0</jna-platform.version>
+        <commons-codec.version>1.14</commons-codec.version>
+        <commons-jxpath.version>1.3</commons-jxpath.version>
+        <commons-logging.version>1.2</commons-logging.version>
+        <org-apache-felix-gogo-command.version>1.1.2</org-apache-felix-gogo-command.version>
+        <org-apache-felix-gogo-runtime.version>1.1.6</org-apache-felix-gogo-runtime.version>
+        <org-apache-felix-gogo-shell.version>1.1.4</org-apache-felix-gogo-shell.version>
+        <org-eclipse-core-commands.version>3.10.200</org-eclipse-core-commands.version>
+        <org-eclipse-core-contenttype.version>3.8.200</org-eclipse-core-contenttype.version>
+        <org-eclipse-core-expressions.version>3.8.200</org-eclipse-core-expressions.version>
+        <org-eclipse-core-filebuffers.version>3.7.200</org-eclipse-core-filebuffers.version>
+        <org-eclipse-core-filesystem.version>1.9.500</org-eclipse-core-filesystem.version>
+        <org-eclipse-core-jobs.version>3.13.100</org-eclipse-core-jobs.version>
+        <org-eclipse-core-net.version>1.4.0</org-eclipse-core-net.version>
+        <org-eclipse-core-resources.version>3.18.0</org-eclipse-core-resources.version>
+        <org-eclipse-core-runtime.version>3.26.0</org-eclipse-core-runtime.version>
+        <org-eclipse-core-variables.version>3.5.100</org-eclipse-core-variables.version>
+        <org-eclipse-debug-core.version>3.20.0</org-eclipse-debug-core.version>
+        <org-eclipse-ecf.version>3.10.0</org-eclipse-ecf.version>
+        <org-eclipse-ecf-filetransfer.version>5.1.102</org-eclipse-ecf-filetransfer.version>
+        <org-eclipse-ecf-identity.version>3.9.402</org-eclipse-ecf-identity.version>
+        <org-eclipse-ecf-provider-filetransfer.version>3.2.800</org-eclipse-ecf-provider-filetransfer.version>
+        <org-eclipse-equinox-app.version>1.6.200</org-eclipse-equinox-app.version>
+        <org-eclipse-equinox-common.version>3.16.200</org-eclipse-equinox-common.version>
+        <org-eclipse-equinox-concurrent.version>1.2.100</org-eclipse-equinox-concurrent.version>
+        <org-eclipse-equinox-frameworkadmin.version>2.2.100</org-eclipse-equinox-frameworkadmin.version>
+        <org-eclipse-equinox-frameworkadmin-equinox.version>1.2.200</org-eclipse-equinox-frameworkadmin-equinox.version>
+        <org-eclipse-equinox-p2-artifact-repository.version>1.4.500</org-eclipse-equinox-p2-artifact-repository.version>
+        <org-eclipse-equinox-p2-core.version>2.9.200</org-eclipse-equinox-p2-core.version>
+        <org-eclipse-equinox-p2-director.version>2.5.400</org-eclipse-equinox-p2-director.version>
+        <org-eclipse-equinox-p2-director-app.version>1.2.200</org-eclipse-equinox-p2-director-app.version>
+        <org-eclipse-equinox-p2-engine.version>2.7.500</org-eclipse-equinox-p2-engine.version>
+        <org-eclipse-equinox-p2-garbagecollector.version>1.2.0</org-eclipse-equinox-p2-garbagecollector.version>
+        <org-eclipse-equinox-p2-jarprocessor.version>1.2.300</org-eclipse-equinox-p2-jarprocessor.version>
+        <org-eclipse-equinox-p2-metadata.version>2.6.300</org-eclipse-equinox-p2-metadata.version>
+        <org-eclipse-equinox-p2-metadata-repository.version>1.4.100</org-eclipse-equinox-p2-metadata-repository.version>
+        <org-eclipse-equinox-p2-publisher.version>1.7.200</org-eclipse-equinox-p2-publisher.version>
+        <org-eclipse-equinox-p2-publisher-eclipse.version>1.4.100</org-eclipse-equinox-p2-publisher-eclipse.version>
+        <org-eclipse-equinox-p2-reconciler-dropins.version>1.4.100</org-eclipse-equinox-p2-reconciler-dropins.version>
+        <org-eclipse-equinox-p2-repository.version>2.6.200</org-eclipse-equinox-p2-repository.version>
+        <org-eclipse-equinox-p2-repository-tools.version>2.3.100</org-eclipse-equinox-p2-repository-tools.version>
+        <org-eclipse-equinox-p2-touchpoint-eclipse.version>2.3.300</org-eclipse-equinox-p2-touchpoint-eclipse.version>
+        <org-eclipse-equinox-p2-touchpoint-natives.version>1.4.400</org-eclipse-equinox-p2-touchpoint-natives.version>
+        <org-eclipse-equinox-p2-transport-ecf.version>1.3.300</org-eclipse-equinox-p2-transport-ecf.version>
+        <org-eclipse-equinox-p2-updatesite.version>1.2.300</org-eclipse-equinox-p2-updatesite.version>
+        <org-eclipse-equinox-preferences.version>3.10.100</org-eclipse-equinox-preferences.version>
+        <org-eclipse-equinox-registry.version>3.11.200</org-eclipse-equinox-registry.version>
+        <org-eclipse-equinox-security.version>1.3.1000</org-eclipse-equinox-security.version>
+        <org-eclipse-equinox-simpleconfigurator.version>1.4.100</org-eclipse-equinox-simpleconfigurator.version>
+        <org-eclipse-equinox-simpleconfigurator-manipulator.version>2.2.0</org-eclipse-equinox-simpleconfigurator-manipulator.version>
+        <org-eclipse-jdt-core.version>3.31.0</org-eclipse-jdt-core.version>
+        <org-eclipse-jdt-debug.version>3.19.300</org-eclipse-jdt-debug.version>
+        <org-eclipse-jdt-launching.version>3.19.700</org-eclipse-jdt-launching.version>
+        <org-eclipse-ltk-core-refactoring.version>3.13.0</org-eclipse-ltk-core-refactoring.version>
+        <org-eclipse-osgi.version>3.18.100</org-eclipse-osgi.version>
+        <org-eclipse-osgi-compatibility-state.version>1.2.700</org-eclipse-osgi-compatibility-state.version>
+        <org-eclipse-osgi-services.version>3.11.0</org-eclipse-osgi-services.version>
+        <org-eclipse-text.version>3.12.200</org-eclipse-text.version>
         <opentest4j.version>1.2.0</opentest4j.version>
+        <org-osgi-service-cm.version>1.6.1</org-osgi-service-cm.version>
+        <org-osgi-service-component.version>1.5.0</org-osgi-service-component.version>
+        <org-osgi-service-device.version>1.1.1</org-osgi-service-device.version>
+        <org-osgi-service-event.version>1.4.1</org-osgi-service-event.version>
+        <org-osgi-service-metatype.version>1.4.1</org-osgi-service-metatype.version>
+        <org-osgi-service-prefs.version>1.1.2</org-osgi-service-prefs.version>
+        <org-osgi-service-provisioning.version>1.2.0</org-osgi-service-provisioning.version>
+        <org-osgi-service-upnp.version>1.2.1</org-osgi-service-upnp.version>
+        <org-osgi-service-useradmin.version>1.1.1</org-osgi-service-useradmin.version>
+        <org-osgi-service-wireadmin.version>1.0.2</org-osgi-service-wireadmin.version>
+        <org-osgi-util-function.version>1.2.0</org-osgi-util-function.version>
+        <org-osgi-util-measurement.version>1.0.2</org-osgi-util-measurement.version>
+        <org-osgi-util-position.version>1.0.1</org-osgi-util-position.version>
+        <org-osgi-util-promise.version>1.2.0</org-osgi-util-promise.version>
+        <org-osgi-util-xml.version>1.0.2</org-osgi-util-xml.version>
+        <org-ow2-sat4j-core.version>2.3.6</org-ow2-sat4j-core.version>
+        <org-ow2-sat4j-pb.version>2.3.6</org-ow2-sat4j-pb.version>
+        <xz.version>1.9</xz.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.apiguardian</groupId>
-                <artifactId>apiguardian-api</artifactId>
-                <version>${apiguardian-api.version}</version>
+                <groupId>com.ibm.icu</groupId>
+                <artifactId>icu4j</artifactId>
+                <version>${icu4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna</artifactId>
+                <version>${jna.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.java.dev.jna</groupId>
+                <artifactId>jna-platform</artifactId>
+                <version>${jna-platform.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-jxpath</groupId>
+                <artifactId>commons-jxpath</artifactId>
+                <version>${commons-jxpath.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>${commons-logging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.command</artifactId>
+                <version>${org-apache-felix-gogo-command.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.runtime</artifactId>
+                <version>${org-apache-felix-gogo-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.gogo.shell</artifactId>
+                <version>${org-apache-felix-gogo-shell.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -76,22 +160,13 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.core.filebuffers</artifactId>
+                <version>${org-eclipse-core-filebuffers.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.filesystem</artifactId>
                 <version>${org-eclipse-core-filesystem.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.registry</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.osgi</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -100,46 +175,48 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.core.net</artifactId>
+                <version>${org-eclipse-core-net.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.resources</artifactId>
                 <version>${org-eclipse-core-resources.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.common</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.registry</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.osgi</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.core.runtime</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.core.expressions</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.core.runtime</artifactId>
                 <version>${org-eclipse-core-runtime.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.equinox.common</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.emf</groupId>
-                <artifactId>org.eclipse.emf.common</artifactId>
-                <version>${org-eclipse-emf-common.version}</version>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.core.variables</artifactId>
+                <version>${org-eclipse-core-variables.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.debug.core</artifactId>
+                <version>${org-eclipse-debug-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.ecf</groupId>
+                <artifactId>org.eclipse.ecf</artifactId>
+                <version>${org-eclipse-ecf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.ecf</groupId>
+                <artifactId>org.eclipse.ecf.filetransfer</artifactId>
+                <version>${org-eclipse-ecf-filetransfer.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.ecf</groupId>
+                <artifactId>org.eclipse.ecf.identity</artifactId>
+                <version>${org-eclipse-ecf-identity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.ecf</groupId>
+                <artifactId>org.eclipse.ecf.provider.filetransfer</artifactId>
+                <version>${org-eclipse-ecf-provider-filetransfer.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -150,12 +227,111 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.common</artifactId>
                 <version>${org-eclipse-equinox-common.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.osgi</artifactId>
-                    </exclusion>
-                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.concurrent</artifactId>
+                <version>${org-eclipse-equinox-concurrent.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.frameworkadmin</artifactId>
+                <version>${org-eclipse-equinox-frameworkadmin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.frameworkadmin.equinox</artifactId>
+                <version>${org-eclipse-equinox-frameworkadmin-equinox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.artifact.repository</artifactId>
+                <version>${org-eclipse-equinox-p2-artifact-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.core</artifactId>
+                <version>${org-eclipse-equinox-p2-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.director</artifactId>
+                <version>${org-eclipse-equinox-p2-director.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.director.app</artifactId>
+                <version>${org-eclipse-equinox-p2-director-app.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.engine</artifactId>
+                <version>${org-eclipse-equinox-p2-engine.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.garbagecollector</artifactId>
+                <version>${org-eclipse-equinox-p2-garbagecollector.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.jarprocessor</artifactId>
+                <version>${org-eclipse-equinox-p2-jarprocessor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.metadata</artifactId>
+                <version>${org-eclipse-equinox-p2-metadata.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.metadata.repository</artifactId>
+                <version>${org-eclipse-equinox-p2-metadata-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.publisher</artifactId>
+                <version>${org-eclipse-equinox-p2-publisher.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.publisher.eclipse</artifactId>
+                <version>${org-eclipse-equinox-p2-publisher-eclipse.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.reconciler.dropins</artifactId>
+                <version>${org-eclipse-equinox-p2-reconciler-dropins.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.repository</artifactId>
+                <version>${org-eclipse-equinox-p2-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+                <version>${org-eclipse-equinox-p2-repository-tools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.touchpoint.eclipse</artifactId>
+                <version>${org-eclipse-equinox-p2-touchpoint-eclipse.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.touchpoint.natives</artifactId>
+                <version>${org-eclipse-equinox-p2-touchpoint-natives.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.transport.ecf</artifactId>
+                <version>${org-eclipse-equinox-p2-transport-ecf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.p2.updatesite</artifactId>
+                <version>${org-eclipse-equinox-p2-updatesite.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -166,12 +342,21 @@
                 <groupId>org.eclipse.platform</groupId>
                 <artifactId>org.eclipse.equinox.registry</artifactId>
                 <version>${org-eclipse-equinox-registry.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.eclipse.platform</groupId>
-                        <artifactId>org.eclipse.osgi</artifactId>
-                    </exclusion>
-                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.security</artifactId>
+                <version>${org-eclipse-equinox-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.simpleconfigurator</artifactId>
+                <version>${org-eclipse-equinox-simpleconfigurator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.equinox.simpleconfigurator.manipulator</artifactId>
+                <version>${org-eclipse-equinox-simpleconfigurator-manipulator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
@@ -180,13 +365,13 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.jdt</groupId>
-                <artifactId>org.eclipse.jdt.launching</artifactId>
-                <version>${org-eclipse-jdt-launching.version}</version>
+                <artifactId>org.eclipse.jdt.debug</artifactId>
+                <version>${org-eclipse-jdt-debug.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.eclipse.platform</groupId>
-                <artifactId>org.eclipse.jface</artifactId>
-                <version>${org-eclipse-jface.version}</version>
+                <groupId>org.eclipse.jdt</groupId>
+                <artifactId>org.eclipse.jdt.launching</artifactId>
+                <version>${org-eclipse-jdt-launching.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -200,8 +385,13 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
-                <artifactId>org.eclipse.swt.win32.win32.x86_64</artifactId>
-                <version>${org-eclipse-swt-win32-win32-x86_64.version}</version>
+                <artifactId>org.eclipse.osgi.compatibility.state</artifactId>
+                <version>${org-eclipse-osgi-compatibility-state.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.osgi.services</artifactId>
+                <version>${org-eclipse-osgi-services.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.platform</groupId>
@@ -209,34 +399,99 @@
                 <version>${org-eclipse-text.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.ibm.icu</groupId>
-                <artifactId>icu4j</artifactId>
-                <version>${icu.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>${junit.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit-jupiter-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit-jupiter-engine.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.platform</groupId>
-                <artifactId>junit-platform-commons</artifactId>
-                <version>${junit-platform-commons.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.opentest4j</groupId>
                 <artifactId>opentest4j</artifactId>
                 <version>${opentest4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.cm</artifactId>
+                <version>${org-osgi-service-cm.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.component</artifactId>
+                <version>${org-osgi-service-component.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.device</artifactId>
+                <version>${org-osgi-service-device.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.event</artifactId>
+                <version>${org-osgi-service-event.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.metatype</artifactId>
+                <version>${org-osgi-service-metatype.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.prefs</artifactId>
+                <version>${org-osgi-service-prefs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.provisioning</artifactId>
+                <version>${org-osgi-service-provisioning.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.upnp</artifactId>
+                <version>${org-osgi-service-upnp.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.useradmin</artifactId>
+                <version>${org-osgi-service-useradmin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.service.wireadmin</artifactId>
+                <version>${org-osgi-service-wireadmin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.function</artifactId>
+                <version>${org-osgi-util-function.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.measurement</artifactId>
+                <version>${org-osgi-util-measurement.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.position</artifactId>
+                <version>${org-osgi-util-position.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.promise</artifactId>
+                <version>${org-osgi-util-promise.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.util.xml</artifactId>
+                <version>${org-osgi-util-xml.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.sat4j</groupId>
+                <artifactId>org.ow2.sat4j.core</artifactId>
+                <version>${org-ow2-sat4j-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ow2.sat4j</groupId>
+                <artifactId>org.ow2.sat4j.pb</artifactId>
+                <version>${org-ow2-sat4j-pb.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tukaani</groupId>
+                <artifactId>xz</artifactId>
+                <version>${xz.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

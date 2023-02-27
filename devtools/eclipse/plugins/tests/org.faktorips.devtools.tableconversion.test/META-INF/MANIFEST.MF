@@ -4,7 +4,7 @@ Bundle-Name: Faktor-IPS Tests for devtools.tableconversion
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion.test
 Bundle-Version: 23.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.faktorips.devtools.tableconversion
 Import-Package: org.apache.commons.io;version="2.11.0",
