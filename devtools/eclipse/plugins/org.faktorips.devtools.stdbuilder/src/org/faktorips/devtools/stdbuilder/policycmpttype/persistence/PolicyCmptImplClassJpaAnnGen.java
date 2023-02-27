@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.Objects;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
@@ -80,8 +80,9 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
             tableName = getTableNameFromSupertype(persistenceTypeInfo);
         }
 
-        if (IpsStringUtils.isNotEmpty(tableName) && !persistenceTypeInfo.isUseTableDefinedInSupertype()) {
-            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Table), "name",
+        if (isTableAnnotation(persistenceTypeInfo, inhStrategy, tableName)) {
+            fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Table),
+                    "name",
                     tableName);
         }
 
@@ -110,6 +111,18 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
             fragmentBuilder.annotationLn(persistenceProvider.getQualifiedName(PersistenceAnnotation.Inheritance),
                     param);
         }
+    }
+
+    private boolean isTableAnnotation(IPersistentTypeInfo persistenceTypeInfo,
+            InheritanceStrategy inhStrategy,
+            String tableName) {
+        if (IpsStringUtils.isNotEmpty(tableName)) {
+            if (!persistenceTypeInfo.isUseTableDefinedInSupertype()
+                    || (inhStrategy == InheritanceStrategy.JOINED_SUBCLASS)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getTableNameFromSupertype(IPersistentTypeInfo persistenceTypeInfo) {
