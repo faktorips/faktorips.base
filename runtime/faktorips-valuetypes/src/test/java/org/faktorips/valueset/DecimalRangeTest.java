@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -237,5 +239,12 @@ public class DecimalRangeTest {
         DecimalRange allowedValues = DecimalRange.valueOf("0", "5", "1", true);
 
         assertTrue(allowedValues.contains(Decimal.NULL));
+    }
+
+    @Test
+    public void testContains_Empty() {
+        DecimalRange range = DecimalRange.empty();
+        assertThat(range.contains(null), is(false));
+        assertThat(range.contains(Decimal.valueOf(1)), is(false));
     }
 }

@@ -164,8 +164,9 @@ public class MoneyRangeTest {
     }
 
     @Test
-    public void testContains_EmptyRange() {
+    public void testContains_Empty() {
         MoneyRange range = MoneyRange.empty();
-        assertThat(range.contains(Money.usd(1, 0)), is(true));
+        assertThat(range.contains(null), is(false));
+        assertThat(range.contains(Money.usd(1, 0)), is(false));
     }
 }
