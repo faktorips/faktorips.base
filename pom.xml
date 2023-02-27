@@ -93,7 +93,7 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <spotbugs.version>4.7.1</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
-        <tycho.version>3.0.2-SNAPSHOT</tycho.version>
+        <tycho.version>3.0.3</tycho.version>
         <xtend-maven-plugin.version>2.28.0</xtend-maven-plugin.version>
         <!-- Others -->
         <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
