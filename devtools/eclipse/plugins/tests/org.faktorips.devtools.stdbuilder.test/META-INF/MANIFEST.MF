@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.stdbuilder
 Bundle-SymbolicName: org.faktorips.devtools.stdbuilder.test
-Bundle-Version: 22.12.9.qualifier
+Bundle-Version: 22.12.9.release
 Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.stdbuilder
 Require-Bundle: org.hamcrest;bundle-version="2.2"
