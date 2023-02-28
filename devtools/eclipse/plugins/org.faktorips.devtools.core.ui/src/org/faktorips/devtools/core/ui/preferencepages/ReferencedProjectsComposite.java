@@ -143,11 +143,15 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
     /** add new project references to current IPS project, based on items selected in dialog */
     private void addIpsProjects() {
         IIpsProject[] ipsProjects = getSelectableIpsProjects();
-        ListSelectionDialog dialog = new ListSelectionDialog(null, ipsProjects, new ArrayContentProvider(),
-                new TableLabelProvider(), Messages.ReferencedProjectsComposite_select_projects_label);
 
-        dialog.setTitle(Messages.ReferencedProjectsComposite_select_projects_title);
-        dialog.setInitialSelections((Object[])ipsObjectPath.getProjectRefEntries());
+        ListSelectionDialog dialog = ListSelectionDialog.of(ipsProjects)
+                .contentProvider(new ArrayContentProvider())
+                .labelProvider(new TableLabelProvider())
+                .message(Messages.ReferencedProjectsComposite_select_projects_label)
+                .title(Messages.ReferencedProjectsComposite_select_projects_title)
+                .preselect((Object[])ipsObjectPath.getProjectRefEntries())
+                .create(null);
+
         if (dialog.open() == Window.OK) {
             Object[] selectedReferencedProjects = dialog.getResult();
             if (selectedReferencedProjects.length > 0) {
