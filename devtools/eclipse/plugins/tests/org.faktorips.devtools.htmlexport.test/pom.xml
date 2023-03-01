@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse-plugin-tests</artifactId>
-        <version>23.6.0.a20230301-01</version>
+        <version>23.6.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>org.faktorips.devtools.htmlexport.test</artifactId>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport.test;singleton:=true
-Bundle-Version: 23.6.0.a20230301-01
+Bundle-Version: 23.6.0.qualifier
 Fragment-Host: org.faktorips.devtools.htmlexport
 Require-Bundle: org.hamcrest;bundle-version="2.2"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
