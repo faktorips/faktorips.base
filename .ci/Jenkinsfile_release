@@ -132,9 +132,10 @@ pipeline {
             steps {
                 // deploys plain maven artifacts
                 withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}", publisherStrategy: 'EXPLICIT') {
+                    // deployment must be singlethreaded - otherwise ther may be multiple staging repositories created
                     configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn -V -T1C deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
-                        sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn -V -T1C deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -f {} \\;"
+                        sh "mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -Dversion.kind=$kind"
+                        sh "find devtools/eclipse/targets -mindepth 2 -name .flattened-pom.xml -exec mvn -V deploy -P release -DskipTests=true -Dmaven.test.skip=true -s $MAVEN_SETTINGS -t $TOOLCHAINS -f {} \\;"
                     }
                 }
                 // deploy p2 repository
