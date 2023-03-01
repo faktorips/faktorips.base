@@ -192,8 +192,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
                 String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         ((ITableStructure)structure).getColumn(i));
                 columns[i].setText(columnName);
-            } else if (structure instanceof IEnumType) {
-                IEnumType type = (IEnumType)structure;
+            } else if (structure instanceof IEnumType type) {
                 String columnName = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
                         type.getEnumAttributesIncludeSupertypeCopies(true).get(i));
                 columns[i].setText(columnName);

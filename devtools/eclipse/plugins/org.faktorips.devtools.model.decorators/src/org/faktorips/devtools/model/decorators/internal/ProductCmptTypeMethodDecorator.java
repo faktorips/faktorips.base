@@ -25,8 +25,7 @@ public class ProductCmptTypeMethodDecorator extends MethodDecorator {
      */
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IProductCmptTypeMethod) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)ipsObjectPart;
+        if (ipsObjectPart instanceof IProductCmptTypeMethod method) {
             String[] overlays = getOverlays(method);
             if (!method.isChangingOverTime()) {
                 overlays[0] = OverlayIcons.STATIC;

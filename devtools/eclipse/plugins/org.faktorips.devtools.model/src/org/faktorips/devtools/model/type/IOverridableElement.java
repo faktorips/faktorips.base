@@ -22,8 +22,9 @@ import org.faktorips.runtime.model.type.Documentation;
 
 /**
  * Common interface for {@link IDescribedElement described elements} that can be overridden:
- * {@link IOverridableLabeledElement overridable labeled elements}, {@link IPolicyCmptType policy component
- * types}, {@link IProductCmptType product component types} and {@link IEnumType enum types}.
+ * {@link IOverridableLabeledElement overridable labeled elements}, {@link IPolicyCmptType policy
+ * component types}, {@link IProductCmptType product component types} and {@link IEnumType enum
+ * types}.
  */
 public interface IOverridableElement extends IDescribedElement {
 

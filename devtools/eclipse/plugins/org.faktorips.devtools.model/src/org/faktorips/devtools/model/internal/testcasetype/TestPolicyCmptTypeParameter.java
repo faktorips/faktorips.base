@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -566,8 +566,7 @@ public class TestPolicyCmptTypeParameter extends TestParameter implements ITestP
                     ITestParameter targetOfAssoziationInTestCaseType = null;
                     ITestParameter[] allTestParameter = getTestCaseType().getAllTestParameter();
                     for (ITestParameter element : allTestParameter) {
-                        if (element instanceof ITestPolicyCmptTypeParameter) {
-                            ITestPolicyCmptTypeParameter tPCTP = (ITestPolicyCmptTypeParameter)element;
+                        if (element instanceof ITestPolicyCmptTypeParameter tPCTP) {
                             boolean isTestObject = isRoot();
                             if (!isTestObject) {
                                 // check if the test parameter implements no accosiation

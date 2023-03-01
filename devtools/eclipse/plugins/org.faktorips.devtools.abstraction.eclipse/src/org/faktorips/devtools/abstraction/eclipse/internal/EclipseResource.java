@@ -103,20 +103,14 @@ public abstract class EclipseResource extends AWrapper<IResource> implements ARe
     @Override
     public AResourceType getType() {
         int type = resource().getType();
-        switch (type) {
-            case IResource.FILE:
-                return AResourceType.FILE;
-            case IResource.FOLDER:
-                return AResourceType.FOLDER;
-            case IResource.PROJECT:
-                return AResourceType.PROJECT;
-            case IResource.ROOT:
-                return AResourceType.WORKSPACE;
-            case 0:
-                return null;
-            default:
-                throw new IllegalStateException(getName() + " uses the undefined resource type " + type); //$NON-NLS-1$
-        }
+        return switch (type) {
+            case IResource.FILE -> AResourceType.FILE;
+            case IResource.FOLDER -> AResourceType.FOLDER;
+            case IResource.PROJECT -> AResourceType.PROJECT;
+            case IResource.ROOT -> AResourceType.WORKSPACE;
+            case 0 -> null;
+            default -> throw new IllegalStateException(getName() + " uses the undefined resource type " + type); //$NON-NLS-1$
+        };
     }
 
     @Override
@@ -180,17 +174,12 @@ public abstract class EclipseResource extends AWrapper<IResource> implements ARe
     }
 
     private static int to(AResourceTreeTraversalDepth depth) {
-        switch (depth) {
-            case RESOURCE_ONLY:
-                return IResource.DEPTH_ZERO;
-            case RESOURCE_AND_DIRECT_MEMBERS:
-                return IResource.DEPTH_ONE;
-            case INFINITE:
-                return IResource.DEPTH_INFINITE;
-
-            default:
-                throw new IllegalArgumentException("Unknown depth: " + depth); //$NON-NLS-1$
-        }
+        return switch (depth) {
+            case RESOURCE_ONLY -> IResource.DEPTH_ZERO;
+            case RESOURCE_AND_DIRECT_MEMBERS -> IResource.DEPTH_ONE;
+            case INFINITE -> IResource.DEPTH_INFINITE;
+            default -> throw new IllegalArgumentException("Unknown depth: " + depth); //$NON-NLS-1$
+        };
     }
 
 }

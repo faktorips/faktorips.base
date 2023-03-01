@@ -92,28 +92,23 @@ public class IpsTestAction extends IpsAction {
             } else {
                 root = null;
             }
-        } else if (object instanceof IIpsPackageFragment) {
-            IIpsPackageFragment child = (IIpsPackageFragment)object;
+        } else if (object instanceof IIpsPackageFragment child) {
             root = child.getRoot();
             String name = child.getName();
             addElement(pathElements, root, name);
-        } else if (object instanceof ITestCase) {
-            ITestCase testCase = (ITestCase)object;
+        } else if (object instanceof ITestCase testCase) {
             root = testCase.getIpsPackageFragment().getRoot();
             String name = testCase.getQualifiedName();
             addElement(pathElements, root, name);
         } else if (object instanceof IIpsProject) {
             root = ipsProjectSelected((IIpsProject)object, pathElements);
-        } else if (object instanceof IJavaProject) {
-            // e.g. if selected from the standard package explorer
-            IJavaProject javaProject = (IJavaProject)object;
+        } else if (object instanceof IJavaProject javaProject) {
             IProject project = javaProject.getProject();
             if (project.hasNature(IIpsProject.NATURE_ID)) {
                 IIpsProject ipsProject = IIpsModel.get().getIpsProject(project.getName());
                 root = ipsProjectSelected(ipsProject, pathElements);
             }
-        } else if (object instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)object;
+        } else if (object instanceof IProductCmpt productCmpt) {
             root = productCmpt.getIpsPackageFragment().getRoot();
             String name = productCmpt.getQualifiedName();
             addElement(pathElements, root, name);

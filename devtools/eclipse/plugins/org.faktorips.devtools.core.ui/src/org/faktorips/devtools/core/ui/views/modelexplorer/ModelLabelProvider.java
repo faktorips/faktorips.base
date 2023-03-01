@@ -129,8 +129,7 @@ public class ModelLabelProvider implements ILabelProvider {
     public String getText(Object element) {
         if (element instanceof IIpsElement) {
 
-            if (element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+            if (element instanceof IIpsPackageFragment fragment) {
                 if (fragment.isDefaultPackage()) {
                     return Messages.ModelExplorer_defaultPackageLabel;
                 }

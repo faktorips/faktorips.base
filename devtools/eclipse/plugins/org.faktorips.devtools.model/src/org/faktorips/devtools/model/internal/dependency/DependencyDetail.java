@@ -81,10 +81,9 @@ public class DependencyDetail implements IDependencyDetail {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof DependencyDetail)) {
+        if ((obj == null) || !(obj instanceof DependencyDetail other)) {
             return false;
         }
-        DependencyDetail other = (DependencyDetail)obj;
         return Objects.equals(part, other.part)
                 && Objects.equals(propertyName, other.propertyName);
     }

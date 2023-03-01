@@ -76,16 +76,12 @@ public class MessageDecoration {
      * @return the id of the {@link FieldDecoration}
      */
     private String mapSeverityToFieldDecoration(Severity severity) {
-        switch (severity) {
-            case ERROR:
-                return FieldDecorationRegistry.DEC_ERROR;
-            case WARNING:
-                return FieldDecorationRegistry.DEC_WARNING;
-            case INFO:
-                return FieldDecorationRegistry.DEC_INFORMATION;
-            default:
-                return null;
-        }
+        return switch (severity) {
+            case ERROR -> FieldDecorationRegistry.DEC_ERROR;
+            case WARNING -> FieldDecorationRegistry.DEC_WARNING;
+            case INFO -> FieldDecorationRegistry.DEC_INFORMATION;
+            default -> null;
+        };
     }
 
 }

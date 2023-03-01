@@ -76,8 +76,7 @@ public class TestRunPane {
         fTable.addSelectionListener(new SelectionListener() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-                if (e.item instanceof TableItem) {
-                    TableItem selectedTestCase = (TableItem)e.item;
+                if (e.item instanceof TableItem selectedTestCase) {
                     showDetailsInFailurePane(selectedTestCase);
                 }
             }

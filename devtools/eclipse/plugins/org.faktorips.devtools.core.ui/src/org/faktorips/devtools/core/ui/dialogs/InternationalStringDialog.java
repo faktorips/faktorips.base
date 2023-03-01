@@ -211,16 +211,12 @@ public class InternationalStringDialog extends IpsPartEditDialog2 {
 
         @Override
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof LocalizedString) {
-                LocalizedString locString = (LocalizedString)element;
-                switch (columnIndex) {
-                    case 0:
-                        return locString.getLocale() == null ? "" : locString.getLocale().getDisplayLanguage(); //$NON-NLS-1$
-                    case 1:
-                        return locString.getValue();
-                    default:
-                        return ""; //$NON-NLS-1$
-                }
+            if (element instanceof LocalizedString locString) {
+                return switch (columnIndex) {
+                    case 0 -> locString.getLocale() == null ? "" : locString.getLocale().getDisplayLanguage(); //$NON-NLS-1$
+                    case 1 -> locString.getValue();
+                    default -> ""; //$NON-NLS-1$
+                };
             }
             return null;
         }

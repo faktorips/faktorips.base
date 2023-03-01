@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.model.internal.builder.flidentifier.ast.Identifier
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * The parser for enum value identifiers.
@@ -116,8 +116,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     }
 
     protected String getDescription(EnumDatatype enumDatatype) {
-        if (enumDatatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)enumDatatype;
+        if (enumDatatype instanceof EnumTypeDatatypeAdapter enumTypeDatatypeAdapter) {
             IMultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
             return getNameAndDescription(enumTypeDatatypeAdapter.getEnumType(), multiLanguageSupport);
         }

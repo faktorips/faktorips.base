@@ -161,8 +161,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 throw new RuntimeException("No selection available."); //$NON-NLS-1$
             }
 
-            if (selectedElement instanceof IIpsPackageFragment) {
-                IIpsPackageFragment targetFragment = (IIpsPackageFragment)selectedElement;
+            if (selectedElement instanceof IIpsPackageFragment targetFragment) {
                 getIpsCompositeMoveRefactoring().setTargetIpsPackageFragment(targetFragment);
             } else {
                 throw new RuntimeException("Only package fragments are valid selections."); //$NON-NLS-1$
@@ -203,8 +202,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                 try {
                     if (parentElement instanceof IIpsProject) {
                         return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
-                    } else if (parentElement instanceof IIpsPackageFragmentRoot) {
-                        IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)parentElement;
+                    } else if (parentElement instanceof IIpsPackageFragmentRoot root) {
                         return root.getIpsPackageFragments();
                     }
                 } catch (IpsException e) {

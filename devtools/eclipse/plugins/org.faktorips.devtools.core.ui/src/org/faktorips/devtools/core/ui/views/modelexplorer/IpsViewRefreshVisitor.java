@@ -155,8 +155,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
     private boolean handleIpsElement(IResourceDelta delta, IIpsElement ipsElement) {
         if (isAddedOrRemoved(delta)) {
             IIpsElement parentEl = (IIpsElement)getParent(ipsElement);
-            if (parentEl instanceof IIpsPackageFragment) {
-                IIpsPackageFragment pack = (IIpsPackageFragment)parentEl;
+            if (parentEl instanceof IIpsPackageFragment pack) {
                 if (pack.isDefaultPackage()) {
                     // in version up to 2.5.0.rc2 we have the following optimization coded here
                     // if ( pack.isDefaultPackage() && pack.getChildren().length == 1) {

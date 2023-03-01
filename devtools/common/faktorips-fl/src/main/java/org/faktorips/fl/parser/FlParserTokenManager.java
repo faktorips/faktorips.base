@@ -54,35 +54,29 @@ public class FlParserTokenManager implements FlParserConstants {
     }
 
     private final int jjMoveStringLiteralDfa0_0() {
-        switch (curChar) {
-            case 33:
+        return switch (curChar) {
+            case 33 -> {
                 jjmatchedKind = 30;
-                return jjMoveStringLiteralDfa1_0(0x200000L);
-            case 40:
-                return jjStopAtPos(0, 31);
-            case 41:
-                return jjStopAtPos(0, 32);
-            case 42:
-                return jjStopAtPos(0, 28);
-            case 43:
-                return jjStopAtPos(0, 26);
-            case 45:
-                return jjStopAtPos(0, 27);
-            case 47:
-                return jjStartNfaWithStates_0(0, 29, 143);
-            case 59:
-                return jjStopAtPos(0, 33);
-            case 60:
+                yield jjMoveStringLiteralDfa1_0(0x200000L);
+            }
+            case 40 -> jjStopAtPos(0, 31);
+            case 41 -> jjStopAtPos(0, 32);
+            case 42 -> jjStopAtPos(0, 28);
+            case 43 -> jjStopAtPos(0, 26);
+            case 45 -> jjStopAtPos(0, 27);
+            case 47 -> jjStartNfaWithStates_0(0, 29, 143);
+            case 59 -> jjStopAtPos(0, 33);
+            case 60 -> {
                 jjmatchedKind = 22;
-                return jjMoveStringLiteralDfa1_0(0x1000000L);
-            case 61:
-                return jjStopAtPos(0, 20);
-            case 62:
+                yield jjMoveStringLiteralDfa1_0(0x1000000L);
+            }
+            case 61 -> jjStopAtPos(0, 20);
+            case 62 -> {
                 jjmatchedKind = 23;
-                return jjMoveStringLiteralDfa1_0(0x2000000L);
-            default:
-                return jjMoveNfa_0(0, 0);
-        }
+                yield jjMoveStringLiteralDfa1_0(0x2000000L);
+            }
+            default -> jjMoveNfa_0(0, 0);
+        };
     }
 
     private final int jjMoveStringLiteralDfa1_0(long active0) {
@@ -1575,12 +1569,10 @@ public class FlParserTokenManager implements FlParserConstants {
     }
 
     private static final boolean jjCanMove_1(int hiByte, int i2, long l2) {
-        switch (hiByte) {
-            case 0:
-                return ((jjbitVec3[i2] & l2) != 0L);
-            default:
-                return false;
-        }
+        return switch (hiByte) {
+            case 0 -> ((jjbitVec3[i2] & l2) != 0L);
+            default -> false;
+        };
     }
 
     public static final String[] jjstrLiteralImages = { "", null, null, null, null, null, null, null, null, null, null,

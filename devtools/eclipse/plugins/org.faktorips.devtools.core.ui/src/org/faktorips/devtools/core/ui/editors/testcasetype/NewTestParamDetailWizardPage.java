@@ -94,8 +94,7 @@ public class NewTestParamDetailWizardPage extends WizardPage implements ValueCha
         }
 
         // req product cmpt is not editable for associations
-        if (testParameter instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter = (ITestPolicyCmptTypeParameter)testParameter;
+        if (testParameter instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
             IPolicyCmptTypeAssociation association;
             try {
                 association = testPolicyCmptTypeParameter.findAssociation(testPolicyCmptTypeParameter.getIpsProject());

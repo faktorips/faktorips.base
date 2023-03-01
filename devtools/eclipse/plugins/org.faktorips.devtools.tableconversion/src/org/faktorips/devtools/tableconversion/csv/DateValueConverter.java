@@ -59,7 +59,7 @@ public class DateValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof String) {
             try {
                 String dateFormat = tableFormat.getProperty(CSVTableFormat.PROPERTY_DATE_FORMAT);
-                Date parseDate = DateUtils.parseDate((String)externalDataValue, new String[] { dateFormat });
+                Date parseDate = DateUtils.parseDate((String)externalDataValue, dateFormat);
                 return DateUtil.dateToIsoDateString(parseDate);
                 // CSOFF: Empty Statement
             } catch (ParseException ignored) {

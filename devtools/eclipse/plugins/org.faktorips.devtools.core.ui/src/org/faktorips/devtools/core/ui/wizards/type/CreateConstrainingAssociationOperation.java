@@ -190,11 +190,9 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private IType findMatchingType(IType type) {
-        if (type instanceof IProductCmptType) {
-            IProductCmptType productCmptType = (IProductCmptType)type;
+        if (type instanceof IProductCmptType productCmptType) {
             return productCmptType.findPolicyCmptType(getIpsProject());
-        } else if (type instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)type;
+        } else if (type instanceof IPolicyCmptType policyCmptType) {
             return policyCmptType.findProductCmptType(getIpsProject());
         } else {
             return null;

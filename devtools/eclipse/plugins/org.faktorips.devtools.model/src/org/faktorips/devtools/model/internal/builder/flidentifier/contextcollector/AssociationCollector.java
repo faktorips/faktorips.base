@@ -60,8 +60,7 @@ public class AssociationCollector extends AbstractProductCmptCollector {
     private Set<IProductCmpt> getAllProductCmpts() {
         LinkedHashSet<IProductCmpt> result = new LinkedHashSet<>();
         IType target = getAssociation().findTarget(getIpsProject());
-        if (target instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)target;
+        if (target instanceof IPolicyCmptType policyCmptType) {
             IProductCmptType productCmptType = policyCmptType.findProductCmptType(getIpsProject());
             Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
             for (IIpsSrcFile ipsSrcFile : productComponents) {

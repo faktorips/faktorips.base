@@ -43,8 +43,7 @@ public class StaticContentSelectIpsObjectContext implements ISelectIpsObjectCont
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                if (element instanceof IIpsSrcFile) {
-                    IIpsSrcFile srcFile = (IIpsSrcFile)element;
+                if (element instanceof IIpsSrcFile srcFile) {
                     for (IIpsSrcFile allowedSrcFile : ipsSrcFiles) {
                         if (srcFile.equals(allowedSrcFile)) {
                             return true;

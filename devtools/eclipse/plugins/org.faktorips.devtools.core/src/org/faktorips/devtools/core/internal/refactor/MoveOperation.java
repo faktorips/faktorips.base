@@ -121,10 +121,9 @@ public abstract class MoveOperation {
                 if (representsFolder(target)) {
                     AFolder sourceFolder = (AFolder)((IIpsElement)source).getCorrespondingResource();
                     AResource targetResource = ((IIpsElement)target).getCorrespondingResource();
-                    if (!(targetResource instanceof AFolder)) {
+                    if (!(targetResource instanceof AFolder targetFolder)) {
                         return false;
                     }
-                    AFolder targetFolder = (AFolder)targetResource;
                     if (targetFolder.getWorkspaceRelativePath().startsWith(sourceFolder.getWorkspaceRelativePath())) {
                         return false;
                     }
@@ -139,8 +138,7 @@ public abstract class MoveOperation {
     }
 
     private static boolean isDefaultPackageFragement(Object source) {
-        if (source instanceof IIpsPackageFragment) {
-            IIpsPackageFragment packageFragment = (IIpsPackageFragment)source;
+        if (source instanceof IIpsPackageFragment packageFragment) {
             if (packageFragment.isDefaultPackage()) {
                 return true;
             }

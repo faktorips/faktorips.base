@@ -53,8 +53,7 @@ public abstract class AbstractLocalizedStringCellEditor extends IpsCellEditor {
      */
     @Override
     protected void doSetValue(Object value) {
-        if (value instanceof LocalizedString) {
-            final LocalizedString localizedString = (LocalizedString)value;
+        if (value instanceof LocalizedString localizedString) {
             locale = localizedString.getLocale();
             String textValue = localizedString.getValue();
             getTextControl().setText(textValue == null ? IpsStringUtils.EMPTY : textValue);

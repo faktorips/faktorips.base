@@ -81,11 +81,9 @@ public class DatatypeDependency implements IDependency, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof DatatypeDependency)) {
+        if (!(obj instanceof DatatypeDependency other)) {
             return false;
         }
-
-        DatatypeDependency other = (DatatypeDependency)obj;
 
         return getSource().equals(other.getSource()) && getTarget().equals(other.getTarget())
                 && getType().equals(other.getType());

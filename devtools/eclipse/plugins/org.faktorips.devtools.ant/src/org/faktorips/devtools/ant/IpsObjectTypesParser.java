@@ -143,10 +143,9 @@ class IpsObjectTypesParser {
             if (this == obj) {
                 return true;
             }
-            if ((obj == null) || !(obj instanceof Parameter)) {
+            if ((obj == null) || !(obj instanceof Parameter other)) {
                 return false;
             }
-            Parameter other = (Parameter)obj;
             return Objects.equals(key, other.key);
         }
 

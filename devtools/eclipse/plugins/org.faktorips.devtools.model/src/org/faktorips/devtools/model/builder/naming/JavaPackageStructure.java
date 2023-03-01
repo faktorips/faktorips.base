@@ -10,11 +10,11 @@
 
 package org.faktorips.devtools.model.builder.naming;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.model.util.QNameUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Implements the old interface {@link IJavaPackageStructure} containing a lot of static util

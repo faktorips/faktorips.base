@@ -74,8 +74,7 @@ public class ReferenceDeleteAction extends Action {
             // Only delete if only links are selected
             // and every src file is editable
             // --> all or nothing!
-            if (o instanceof IProductCmptReference) {
-                IProductCmptReference cmptReference = (IProductCmptReference)o;
+            if (o instanceof IProductCmptReference cmptReference) {
                 IProductCmptLink link = cmptReference.getLink();
                 if (link != null && IpsUIPlugin.isEditable(link.getIpsSrcFile())) {
                     links[i] = link;

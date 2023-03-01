@@ -272,8 +272,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof IProductCmptType) {
-                IProductCmptType productCmptType = (IProductCmptType)element;
+            if (element instanceof IProductCmptType productCmptType) {
                 ImageDescriptor descriptorForInstancesOf = productCmptDecorator
                         .getImageDescriptorForInstancesOf(productCmptType);
                 return JFaceResources.getResources().createImage(descriptorForInstancesOf);
@@ -294,8 +293,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
         @Override
         public String getToolTipText(Object element) {
             String text = null;
-            if (element instanceof IDescribedElement) {
-                IDescribedElement type = (IDescribedElement)element;
+            if (element instanceof IDescribedElement type) {
                 text = IIpsModel.get().getMultiLanguageSupport().getLocalizedDescription(type);
             } else if (element instanceof ProductCmptViewItem) {
                 IProductCmpt productCmpt = ((ProductCmptViewItem)element).getProductCmpt();
@@ -338,8 +336,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
         @Override
         public Object[] getChildren(Object parentElement) {
-            if (parentElement instanceof ProductCmptViewItem) {
-                ProductCmptViewItem viewItem = (ProductCmptViewItem)parentElement;
+            if (parentElement instanceof ProductCmptViewItem viewItem) {
                 return viewItem.getChildren().toArray();
             } else {
                 return new Object[0];
@@ -348,8 +345,7 @@ public class TypeAndTemplateSelectionComposite extends Composite {
 
         @Override
         public Object getParent(Object element) {
-            if (element instanceof ProductCmptViewItem) {
-                ProductCmptViewItem viewItem = (ProductCmptViewItem)element;
+            if (element instanceof ProductCmptViewItem viewItem) {
                 return viewItem.getParent();
             } else {
                 return null;

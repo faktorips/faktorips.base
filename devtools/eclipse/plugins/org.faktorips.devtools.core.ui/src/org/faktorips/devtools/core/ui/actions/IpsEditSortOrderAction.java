@@ -45,8 +45,7 @@ public class IpsEditSortOrderAction extends IpsAction {
 
         IIpsPackageFragment packageFragment = null;
 
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
+        if (element instanceof IIpsElement ipsElement) {
             IIpsProject project = ipsElement.getIpsProject();
             if (project.isProductDefinitionProject()) {
                 packageFragment = findPackageFragment(ipsElement);

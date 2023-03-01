@@ -59,8 +59,7 @@ public abstract class MinMaxNativeTypes extends AbstractFlFunction {
                 if (argType.getWrapperType().equals(otherArgTypes[i])) {
                     continue;
                 }
-            } else if (otherArgTypes[i] instanceof ValueDatatype) {
-                ValueDatatype other = (ValueDatatype)otherArgTypes[i];
+            } else if (otherArgTypes[i] instanceof ValueDatatype other) {
                 if (argType.equals(other.getWrapperType())) {
                     continue;
                 }

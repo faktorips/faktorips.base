@@ -92,10 +92,9 @@ public class AnyValueSetEditDialog extends IpsPartEditDialog2 {
         vsEdit.setAllowedValueSetTypes(allowedValuesSetTypes);
         vsEdit.setEnabled(!viewOnly);
         Object layoutData = vsEdit.getLayoutData();
-        if (layoutData instanceof GridData) {
+        if (layoutData instanceof GridData gd) {
             // set the minimum height to show at least the maximum size of the selected
             // ValueSetEditControl
-            GridData gd = (GridData)layoutData;
             gd.heightHint = 250;
         }
         return vsEdit;

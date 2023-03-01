@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.model.internal.versionmanager.util;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.service.resolver.VersionRange;
 import org.eclipse.osgi.util.ManifestElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.osgi.framework.Constants;
 

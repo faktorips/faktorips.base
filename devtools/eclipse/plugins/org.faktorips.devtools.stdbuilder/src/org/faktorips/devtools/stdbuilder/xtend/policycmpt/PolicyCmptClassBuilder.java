@@ -71,8 +71,7 @@ public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
             return true;
         }
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        if (ipsObject instanceof IProductCmptType) {
-            IProductCmptType proCmptType = (IProductCmptType)ipsObject;
+        if (ipsObject instanceof IProductCmptType proCmptType) {
             return proCmptType.isConfigurationForPolicyCmptType();
         } else {
             return false;
@@ -84,8 +83,7 @@ public class PolicyCmptClassBuilder extends XtendTypeBuilder<XPolicyCmptClass> {
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
         if (ipsObject instanceof IPolicyCmptType) {
             return ipsObject;
-        } else if (ipsObject instanceof IProductCmptType) {
-            IProductCmptType productCmptType = (IProductCmptType)ipsObject;
+        } else if (ipsObject instanceof IProductCmptType productCmptType) {
             if (productCmptType.isConfigurationForPolicyCmptType()) {
                 return productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
             }

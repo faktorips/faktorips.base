@@ -34,8 +34,7 @@ public class MethodDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IMethod) {
-            IMethod method = (IMethod)ipsObjectPart;
+        if (ipsObjectPart instanceof IMethod method) {
             String[] overlays = getOverlays(method);
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(METHOD_IMAGE_NAME, overlays);
         } else {
@@ -63,8 +62,7 @@ public class MethodDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IBaseMethod) {
-            IBaseMethod method = (IBaseMethod)ipsObjectPart;
+        if (ipsObjectPart instanceof IBaseMethod method) {
             StringBuilder builder = new StringBuilder(method.getName());
             builder.append('(');
             StringBuilderJoiner.join(builder, method.getParameters(),

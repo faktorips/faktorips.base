@@ -255,8 +255,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     public void showInstancesOf(IIpsObject element) {
         if (element != null && !element.getEnclosingResource().isAccessible()) {
             setInputData(null);
-        } else if (element instanceof IIpsMetaObject) {
-            IIpsMetaObject metaObject = (IIpsMetaObject)element;
+        } else if (element instanceof IIpsMetaObject metaObject) {
             IIpsSrcFile metaClassSrcFile = metaObject.findMetaClassSrcFile(metaObject.getIpsProject());
             if (metaClassSrcFile != null) {
                 setInputData((IIpsMetaClass)metaClassSrcFile.getIpsObject());
@@ -353,8 +352,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             if (ipsSrcFile.exists()) {
                 IDependency[] dependencys = ipsSrcFile.getIpsObject().dependsOn();
                 for (IDependency dependency : dependencys) {
-                    if (dependency instanceof IpsObjectDependency) {
-                        IpsObjectDependency ipsObjectDependency = (IpsObjectDependency)dependency;
+                    if (dependency instanceof IpsObjectDependency ipsObjectDependency) {
                         String qualifiedName = ipsObjectDependency.getTargetAsQNameType().getName();
                         if (element.getQualifiedName().equals(qualifiedName)) {
                             return true;
@@ -382,8 +380,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
     private boolean containsElement(Set<IIpsSrcFile> ipsSrcFiles) {
         Object[] elements = contentProvider.getElements(null);
         for (Object anElement : elements) {
-            if (anElement instanceof InstanceIpsSrcFileViewItem) {
-                InstanceIpsSrcFileViewItem viewItem = (InstanceIpsSrcFileViewItem)anElement;
+            if (anElement instanceof InstanceIpsSrcFileViewItem viewItem) {
                 IIpsSrcFile srcFileElement = viewItem.getIpsSrcFile();
                 if (ipsSrcFiles.contains(srcFileElement)) {
                     showInstancesOf(contentProvider.getActualElement());
@@ -399,8 +396,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             Object element = tableViewer.getInput();
             if (element == null) {
                 showEmptyMessage();
-            } else if (element instanceof IIpsObject) {
-                IIpsObject ipsObject = (IIpsObject)element;
+            } else if (element instanceof IIpsObject ipsObject) {
                 subtypeSearchAction.setEnabled(supportsSubtypes(ipsObject));
                 if (tableViewer.getTable().getItemCount() == 0) {
                     showEmptyTableMessage(ipsObject);
@@ -487,8 +483,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
         public void run() {
             try {
                 Object input = tableViewer.getInput();
-                if (input instanceof IIpsMetaClass) {
-                    IIpsMetaClass element = (IIpsMetaClass)input;
+                if (input instanceof IIpsMetaClass element) {
                     if (!element.getIpsSrcFile().exists()) {
                         setInputData(null);
                         contentProvider.removeActualElement();
@@ -535,8 +530,7 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
                 }
                 return;
             }
-            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
+            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile ipsSrcFile) {
                 IIpsObject selected = ipsSrcFile.getIpsObject();
                 if (InstanceExplorer.supports(selected)) {
                     event.detail = DND.DROP_LINK;

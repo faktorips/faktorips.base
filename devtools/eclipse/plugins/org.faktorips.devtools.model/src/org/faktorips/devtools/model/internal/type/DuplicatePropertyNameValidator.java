@@ -343,8 +343,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             properties.put(propertyName, new ObjectProperty[] { wrapper });
             return;
         }
-        if (objInMap instanceof ObjectProperty[]) {
-            ObjectProperty[] objects = (ObjectProperty[])objInMap;
+        if (objInMap instanceof ObjectProperty[] objects) {
             int i = objects.length;
             ObjectProperty[] objectsCopy = Arrays.copyOf(objects, i + 1);
             objectsCopy[i] = wrapper;

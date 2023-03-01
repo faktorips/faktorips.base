@@ -850,10 +850,9 @@ public class IpsBuilder {
 
             // only interested in IpsSrcFile changes
             IIpsElement element = IIpsModel.get().getIpsElement(resource);
-            if (!(element instanceof IIpsSrcFile)) {
+            if (!(element instanceof IIpsSrcFile ipsSrcFile)) {
                 return true;
             }
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
             switch (delta.getKind()) {
                 case ADDED:
                     if (element.exists()) {

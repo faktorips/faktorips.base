@@ -89,11 +89,9 @@ public class LinkCandidateFilter {
 
     private List<IProductCmptTypeAssociation> getUncheckedAssociations(
             IProductCmptStructureReference structureReference) {
-        if (structureReference instanceof IProductCmptReference) {
-            IProductCmptReference productCmptReference = (IProductCmptReference)structureReference;
+        if (structureReference instanceof IProductCmptReference productCmptReference) {
             return getUncheckedAssociations(productCmptReference);
-        } else if (structureReference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)structureReference;
+        } else if (structureReference instanceof IProductCmptTypeAssociationReference associationReference) {
             return Arrays.asList(associationReference.getAssociation());
         }
         return Collections.emptyList();
@@ -111,11 +109,9 @@ public class LinkCandidateFilter {
     }
 
     private IProductCmpt getProductCmpt(IProductCmptStructureReference structureReference) {
-        if (structureReference instanceof IProductCmptReference) {
-            IProductCmptReference productCmptReference = (IProductCmptReference)structureReference;
+        if (structureReference instanceof IProductCmptReference productCmptReference) {
             return productCmptReference.getProductCmpt();
-        } else if (structureReference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)structureReference;
+        } else if (structureReference instanceof IProductCmptTypeAssociationReference associationReference) {
             return getProductCmpt(associationReference.getParent());
         }
         return null;

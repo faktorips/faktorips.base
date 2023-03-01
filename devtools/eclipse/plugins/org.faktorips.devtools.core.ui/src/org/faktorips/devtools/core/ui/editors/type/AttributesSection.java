@@ -139,11 +139,10 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
             @Override
             protected boolean computeEnabledProperty(IStructuredSelection selection) {
                 Object selected = selection.getFirstElement();
-                if (!(selected instanceof IAttribute)) {
+                if (!(selected instanceof IAttribute attribute)) {
                     return false;
                 }
 
-                IAttribute attribute = (IAttribute)selected;
                 Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
                 return datatype instanceof EnumTypeDatatypeAdapter;
             }
@@ -151,14 +150,12 @@ public abstract class AttributesSection extends SimpleIpsPartsSection {
             @Override
             public void run(IStructuredSelection selection) {
                 Object selected = selection.getFirstElement();
-                if (!(selected instanceof IAttribute)) {
+                if (!(selected instanceof IAttribute attribute)) {
                     return;
                 }
 
-                IAttribute attribute = (IAttribute)selected;
                 Datatype datatype = attribute.findDatatype(attribute.getIpsProject());
-                if (datatype instanceof EnumTypeDatatypeAdapter) {
-                    EnumTypeDatatypeAdapter enumDatatype = (EnumTypeDatatypeAdapter)datatype;
+                if (datatype instanceof EnumTypeDatatypeAdapter enumDatatype) {
                     IpsUIPlugin.getDefault().openEditor(enumDatatype.getEnumValueContainer());
                 }
             }

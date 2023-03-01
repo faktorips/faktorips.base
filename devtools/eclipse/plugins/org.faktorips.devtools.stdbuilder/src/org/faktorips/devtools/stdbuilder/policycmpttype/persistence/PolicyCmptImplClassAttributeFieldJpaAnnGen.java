@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.ValueDatatype;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This class generates JPA annotations for fields derived from policy component type attributes.
@@ -38,9 +38,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
-        if (generatorModelNode instanceof XPolicyAttribute) {
-            XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
-
+        if (generatorModelNode instanceof XPolicyAttribute xPolicyAttribute) {
             IPolicyCmptTypeAttribute attribute = xPolicyAttribute.getAttribute();
             ValueDatatype datatype = getDatatype(attribute);
             IPersistentAttributeInfo jpaAttributeInfo = attribute.getPersistenceAttributeInfo();

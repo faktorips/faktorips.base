@@ -164,20 +164,14 @@ public class IpsProjectCreationProperties {
     }
 
     private String getPropertyName(String property) {
-        switch (property) {
-            case PROPERTY_RUNTIME_ID_PREFIX:
-                return Messages.IpsProjectCreationProperties_runtimeIdPrefix;
-            case PROPERTY_SOURCE_FOLDER_NAME:
-                return Messages.IpsProjectCreationProperties_sourceFolderName;
-            case PROPERTY_BASE_PACKAGE_NAME:
-                return Messages.IpsProjectCreationProperties_basePackageName;
-            case PROPERTY_PERSISTENCE_SUPPORT:
-                return Messages.IpsProjectCreationProperties_persistenceSupport;
-            case PROPERTY_LOCALES:
-                return Messages.IpsProjectCreationProperties_locales;
-            default:
-                return property;
-        }
+        return switch (property) {
+            case PROPERTY_RUNTIME_ID_PREFIX -> Messages.IpsProjectCreationProperties_runtimeIdPrefix;
+            case PROPERTY_SOURCE_FOLDER_NAME -> Messages.IpsProjectCreationProperties_sourceFolderName;
+            case PROPERTY_BASE_PACKAGE_NAME -> Messages.IpsProjectCreationProperties_basePackageName;
+            case PROPERTY_PERSISTENCE_SUPPORT -> Messages.IpsProjectCreationProperties_persistenceSupport;
+            case PROPERTY_LOCALES -> Messages.IpsProjectCreationProperties_locales;
+            default -> property;
+        };
     }
 
     private void validateNonEmpty(MessageList messages, String property, Supplier<String> getter) {

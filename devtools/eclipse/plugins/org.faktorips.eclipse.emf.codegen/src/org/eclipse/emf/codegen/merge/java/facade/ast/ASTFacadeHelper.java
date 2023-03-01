@@ -403,8 +403,7 @@ public class ASTFacadeHelper extends FacadeHelper {
             if (node instanceof ASTJField) {
                 newASTJNode = cloneField((ASTJField)node, contextNode);
                 newASTJNode.setRewriter(contextNode.getRewriter());
-            } else if (node instanceof ASTJMethod) {
-                ASTJMethod method = (ASTJMethod)node;
+            } else if (node instanceof ASTJMethod method) {
                 ASTNode astNode = method.getASTNode();
                 AST ast = contextNode.getWrappedObject().getAST();
                 ASTNode copySubtree = ASTNode.copySubtree(ast, astNode);
@@ -539,9 +538,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     protected ASTJNode<?> doConvertToNode(Object object) {
         ASTJNode<?> node = null;
 
-        if (object instanceof ASTNode) {
-            ASTNode astNode = (ASTNode)object;
-
+        if (object instanceof ASTNode astNode) {
             // get rewriter
             ASTRewrite rewriter = null;
             ASTJCompilationUnit compilationUnit = (ASTJCompilationUnit)getCompilationUnit(findParent((ASTNode)object));

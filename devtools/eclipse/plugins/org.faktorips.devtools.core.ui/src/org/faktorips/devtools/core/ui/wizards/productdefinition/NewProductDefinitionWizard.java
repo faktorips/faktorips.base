@@ -74,20 +74,15 @@ public abstract class NewProductDefinitionWizard extends ResizableWizard impleme
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         if (selection != null) {
             Object element = selection.getFirstElement();
-            if (element instanceof IAdaptable) {
-                IAdaptable adaptableObject = (IAdaptable)element;
+            if (element instanceof IAdaptable adaptableObject) {
                 IIpsElement ipsElement = adaptableObject.getAdapter(IIpsElement.class);
-                if (ipsElement instanceof IIpsPackageFragmentRoot) {
-                    IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
+                if (ipsElement instanceof IIpsPackageFragmentRoot ipsPackageRoot) {
                     initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
-                } else if (ipsElement instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                } else if (ipsElement instanceof IIpsPackageFragment packageFragment) {
                     initDefaults(packageFragment, null);
-                } else if (ipsElement instanceof IIpsObject) {
-                    IIpsObject ipsObject = (IIpsObject)ipsElement;
+                } else if (ipsElement instanceof IIpsObject ipsObject) {
                     initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
-                } else if (ipsElement instanceof IIpsSrcFile) {
-                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+                } else if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
                     IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
                     initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
                 } else {

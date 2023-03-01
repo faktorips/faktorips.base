@@ -36,8 +36,7 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
     public ListOfValueDatatypeHelper(DatatypeHelper elementDatatypeHelper) {
         super(new ListOfTypeDatatype(elementDatatypeHelper.getDatatype()));
-        if (elementDatatypeHelper instanceof PrimitiveDatatypeHelper) {
-            PrimitiveDatatypeHelper primitiveDatatypeHelper = (PrimitiveDatatypeHelper)elementDatatypeHelper;
+        if (elementDatatypeHelper instanceof PrimitiveDatatypeHelper primitiveDatatypeHelper) {
             this.elementDatatypeHelper = primitiveDatatypeHelper.getWrapperTypeHelper();
         } else {
             this.elementDatatypeHelper = elementDatatypeHelper;

@@ -25,11 +25,9 @@ public abstract class AbstractAssociationAnnGen implements IAnnotationGenerator 
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        if (!(modelNode instanceof XAssociation)) {
+        if (!(modelNode instanceof XAssociation association)) {
             return new JavaCodeFragment();
         } else {
-            XAssociation association = (XAssociation)modelNode;
-
             return new JavaCodeFragmentBuilder().append(createAnnAssociation(association))
                     .append(createAnnDerivedUnion(association)).append(createAnnSubsetOfDerivedUnion(association))
                     .append(createAnnMatchingAssociation(association)).getFragment();

@@ -141,8 +141,7 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         IIpsObjectPathEntry[] entries = path.getEntries();
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
-            if (entry instanceof IpsSrcFolderEntry) {
-                IpsSrcFolderEntry srcFolderEntry = (IpsSrcFolderEntry)entry;
+            if (entry instanceof IpsSrcFolderEntry srcFolderEntry) {
                 srcFolderEntry.setUniqueQualifier(qualifiers[i]);
             }
         }

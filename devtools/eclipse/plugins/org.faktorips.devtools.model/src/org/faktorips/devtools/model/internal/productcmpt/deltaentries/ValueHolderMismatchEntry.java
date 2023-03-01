@@ -62,8 +62,7 @@ public class ValueHolderMismatchEntry extends AbstractDeltaEntryForProperty {
     @Override
     public void fix() {
         IValueHolder<?> value = getPropertyValue().getValueHolder();
-        if (!attribute.isMultiValueAttribute() && value instanceof MultiValueHolder) {
-            MultiValueHolder multiValue = (MultiValueHolder)value;
+        if (!attribute.isMultiValueAttribute() && value instanceof MultiValueHolder multiValue) {
             IValue<?> oldValue = null;
             if (!multiValue.getValue().isEmpty()) {
                 oldValue = multiValue.getValue().get(0).getValue();

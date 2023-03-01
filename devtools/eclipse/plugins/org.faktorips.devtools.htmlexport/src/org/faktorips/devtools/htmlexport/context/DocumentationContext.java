@@ -246,11 +246,10 @@ public class DocumentationContext {
     }
 
     public String getLabel(IIpsElement element, boolean singular) {
-        if (!(element instanceof ILabeledElement)) {
+        if (!(element instanceof ILabeledElement labeledElement)) {
             return element.getName();
         }
 
-        ILabeledElement labeledElement = (ILabeledElement)element;
         if (singular) {
             return getMultiLanguageSupport().getLocalizedLabel(labeledElement);
         }

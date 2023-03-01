@@ -49,8 +49,7 @@ public class LabelAndDescriptionGenerator extends AbstractPropertiesGenerator {
 
     private void addLabelAndDescription(IIpsObjectPartContainer ipsObjectPart,
             LabelAndDescriptionProperties labelsAndDescriptions) {
-        if (ipsObjectPart instanceof ILabeledElement) {
-            ILabeledElement labeledElement = (ILabeledElement)ipsObjectPart;
+        if (ipsObjectPart instanceof ILabeledElement labeledElement) {
             String label = labeledElement.getLabelValue(getLocale());
             if (IpsStringUtils.isNotBlank(label)) {
                 labelsAndDescriptions.put(ipsObjectPart, DocumentationKind.LABEL, label);

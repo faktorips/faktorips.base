@@ -21,8 +21,7 @@ public class FixDifferencesCompositeWorkbenchAdapter implements IWorkbenchAdapte
 
     @Override
     public Object[] getChildren(Object o) {
-        if (o instanceof IFixDifferencesComposite) {
-            IFixDifferencesComposite fixDifferencesComposite = (IFixDifferencesComposite)o;
+        if (o instanceof IFixDifferencesComposite fixDifferencesComposite) {
             return fixDifferencesComposite.getChildren().toArray();
         }
         return new Object[0];
@@ -30,8 +29,7 @@ public class FixDifferencesCompositeWorkbenchAdapter implements IWorkbenchAdapte
 
     @Override
     public ImageDescriptor getImageDescriptor(Object object) {
-        if (object instanceof IFixDifferencesComposite) {
-            IFixDifferencesComposite fixDifferencesComposite = (IFixDifferencesComposite)object;
+        if (object instanceof IFixDifferencesComposite fixDifferencesComposite) {
             return IpsUIPlugin.getImageHandling().getImageDescriptor(
                     fixDifferencesComposite.getCorrespondingIpsElement());
         }
@@ -40,8 +38,7 @@ public class FixDifferencesCompositeWorkbenchAdapter implements IWorkbenchAdapte
 
     @Override
     public String getLabel(Object o) {
-        if (o instanceof IFixDifferencesComposite) {
-            IFixDifferencesComposite fixDifferencesComposite = (IFixDifferencesComposite)o;
+        if (o instanceof IFixDifferencesComposite fixDifferencesComposite) {
             if (fixDifferencesComposite.getCorrespondingIpsElement() instanceof ILabeledElement) {
                 ILabeledElement labeledElement = (ILabeledElement)fixDifferencesComposite.getCorrespondingIpsElement();
                 return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(labeledElement);

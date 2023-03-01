@@ -31,8 +31,7 @@ public class TestPolicyCmptTypeParameterDecorator implements IIpsObjectPartDecor
          * return the image which is provided by the association or if the association is not found
          * the default "association.gif" image.
          */
-        if (ipsObjectPart instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter testParameter = (ITestPolicyCmptTypeParameter)ipsObjectPart;
+        if (ipsObjectPart instanceof ITestPolicyCmptTypeParameter testParameter) {
             if (IpsStringUtils.isEmpty(testParameter.getAssociation())) {
                 if (testParameter.isRequiresProductCmpt()) {
                     return IIpsDecorators.getImageHandling()

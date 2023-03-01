@@ -27,8 +27,7 @@ public class TestPolicyCmptLinkDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof ITestPolicyCmptLink) {
-            ITestPolicyCmptLink policyCmptLink = (ITestPolicyCmptLink)ipsObjectPart;
+        if (ipsObjectPart instanceof ITestPolicyCmptLink policyCmptLink) {
             if (policyCmptLink.isAssociation()) {
                 // return the linked product cmpt image if the target relates a product cmpt,
                 // or return the linked policy cmpt if target not found or no product cmpt is

@@ -164,8 +164,7 @@ public class AttributeValueEditComposite
         @Override
         protected IInternationalString getInternationalString() {
             IValueHolder<?> valueHolder = attributeValue.getValueHolder();
-            if (valueHolder instanceof SingleValueHolder) {
-                SingleValueHolder singleValueHolder = (SingleValueHolder)valueHolder;
+            if (valueHolder instanceof SingleValueHolder singleValueHolder) {
                 IValue<?> value = singleValueHolder.getValue();
                 Object content = value.getContent();
                 if (content instanceof IInternationalString) {

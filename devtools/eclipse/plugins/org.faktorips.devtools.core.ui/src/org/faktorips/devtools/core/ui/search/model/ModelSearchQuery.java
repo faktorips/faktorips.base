@@ -92,11 +92,9 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
     }
 
     private boolean isMatchingLabel(IIpsElement element, WildcardMatcher stringMatcher) {
-        if (!(element instanceof ILabeledElement)) {
+        if (!(element instanceof ILabeledElement labeledElement)) {
             return false;
         }
-
-        ILabeledElement labeledElement = (ILabeledElement)element;
 
         List<ILabel> labels = labeledElement.getLabels();
 

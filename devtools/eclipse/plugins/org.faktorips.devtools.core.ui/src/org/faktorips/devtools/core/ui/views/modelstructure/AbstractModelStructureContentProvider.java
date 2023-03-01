@@ -334,8 +334,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
 
     @Override
     public final Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ComponentNode) {
-            ComponentNode node = (ComponentNode)parentElement;
+        if (parentElement instanceof ComponentNode node) {
             if (node.isRepetition()) {
                 return new Object[0];
             }

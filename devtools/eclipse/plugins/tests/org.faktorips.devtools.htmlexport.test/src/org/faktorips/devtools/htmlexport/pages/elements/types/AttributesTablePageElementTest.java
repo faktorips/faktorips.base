@@ -135,11 +135,9 @@ public class AttributesTablePageElementTest extends AbstractXmlUnitHtmlExportTes
         List<IPageElement> subElements = objectContentPage.getSubElements();
 
         basis: for (IPageElement pageElement : subElements) {
-            if (pageElement instanceof WrapperPageElement) {
-                WrapperPageElement wrapperPageElement = (WrapperPageElement)pageElement;
+            if (pageElement instanceof WrapperPageElement wrapperPageElement) {
                 for (IPageElement iPageElement : wrapperPageElement.getSubElements()) {
-                    if (iPageElement instanceof PolicyCmptTypeAttributesTablePageElement) {
-                        PolicyCmptTypeAttributesTablePageElement policyCmptTypeAttributesTablePageElement = (PolicyCmptTypeAttributesTablePageElement)iPageElement;
+                    if (iPageElement instanceof PolicyCmptTypeAttributesTablePageElement policyCmptTypeAttributesTablePageElement) {
                         anzahlExtensionProperties = policyCmptTypeAttributesTablePageElement
                                 .getPropertyDefinitions().length;
                         break basis;

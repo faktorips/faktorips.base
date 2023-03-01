@@ -83,13 +83,11 @@ public final class PullUpRefactoringParticipant extends RefactoringParticipant {
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
 
-            if (!(originalJavaElement instanceof IMember && targetJavaElement instanceof IMember)) {
+            if (!(originalJavaElement instanceof IMember originalJavaMember && targetJavaElement instanceof IMember targetJavaMember)) {
                 throw new RuntimeException(
                         "This kind of Java element is not supported by the pull up refactoring participant."); //$NON-NLS-1$
             }
 
-            IMember originalJavaMember = (IMember)originalJavaElement;
-            IMember targetJavaMember = (IMember)targetJavaElement;
             if (originalJavaMember.getParent().equals(targetJavaMember.getParent())) {
                 return null;
             }

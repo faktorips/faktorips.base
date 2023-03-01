@@ -40,18 +40,11 @@ public enum JaxbSupportVariant {
         if (null == configValue) {
             return None;
         }
-        switch (configValue.trim().toLowerCase()) {
-            case IpsStringUtils.EMPTY:
-            case "false":
-            case "none":
-                return None;
-
-            case "jakartaxmlbinding":
-                return JakartaXmlBinding;
-
-            default:
-                return ClassicJAXB;
-        }
+        return switch (configValue.trim().toLowerCase()) {
+            case IpsStringUtils.EMPTY, "false", "none" -> None;
+            case "jakartaxmlbinding" -> JakartaXmlBinding;
+            default -> ClassicJAXB;
+        };
     }
 
     public String getLibraryPackage() {

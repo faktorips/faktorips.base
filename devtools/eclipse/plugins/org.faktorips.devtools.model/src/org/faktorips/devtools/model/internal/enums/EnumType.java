@@ -22,7 +22,6 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.dependency.IDependency;
@@ -49,6 +48,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -787,8 +787,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
 
     @Override
     protected boolean removePartThis(final IIpsObjectPart part) {
-        if (part instanceof IEnumAttribute) {
-            final IEnumAttribute enumAttributeToDelete = (IEnumAttribute)part;
+        if (part instanceof IEnumAttribute enumAttributeToDelete) {
             ((IpsModel)getIpsModel())
                     .executeModificationsWithSingleEvent(new SingleEventModification<Void>(getIpsSrcFile()) {
                         @Override

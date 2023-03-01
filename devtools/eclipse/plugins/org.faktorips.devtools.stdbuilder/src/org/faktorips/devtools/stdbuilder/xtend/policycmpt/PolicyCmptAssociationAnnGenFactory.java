@@ -28,17 +28,12 @@ public class PolicyCmptAssociationAnnGenFactory implements IAnnotationGeneratorF
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER:
-                return new PolicyCmptAssociationGetterAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER:
-                return new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationAdder.class);
-            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER:
-                return new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationRemover.class);
-
-            default:
-                return null;
-        }
+        return switch (type) {
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER -> new PolicyCmptAssociationGetterAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationAdder.class);
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationRemover.class);
+            default -> null;
+        };
     }
 
 }

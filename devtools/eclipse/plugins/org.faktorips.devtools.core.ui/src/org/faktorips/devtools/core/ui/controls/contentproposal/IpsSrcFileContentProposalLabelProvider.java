@@ -36,8 +36,7 @@ public class IpsSrcFileContentProposalLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof IpsSrcFileContentProposal) {
-            IpsSrcFileContentProposal proposal = (IpsSrcFileContentProposal)element;
+        if (element instanceof IpsSrcFileContentProposal proposal) {
             return internalLabelProvider.getImage(proposal.getIpsSrcFile());
         } else {
             return super.getImage(element);

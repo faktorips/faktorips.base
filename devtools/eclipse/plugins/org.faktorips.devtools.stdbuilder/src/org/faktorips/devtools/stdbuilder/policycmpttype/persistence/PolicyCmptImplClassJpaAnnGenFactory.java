@@ -22,22 +22,15 @@ public class PolicyCmptImplClassJpaAnnGenFactory implements IAnnotationGenerator
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case POLICY_CMPT_IMPL_CLASS:
-                return new PolicyCmptImplClassJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
-                return new PolicyCmptImplClassAttributeFieldJpaAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER:
-                return new PolicyCmptImplClassAttributeGetterJpaAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER:
-                return new PolicyCmptImplClassAttributeSetterJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD:
-                return new PolicyCmptImplClassTransientFieldJpaAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD:
-                return new PolicyCmptImplClassAssociationJpaAnnGen();
-            default:
-                return null;
-        }
+        return switch (type) {
+            case POLICY_CMPT_IMPL_CLASS -> new PolicyCmptImplClassJpaAnnGen();
+            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD -> new PolicyCmptImplClassAttributeFieldJpaAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER -> new PolicyCmptImplClassAttributeGetterJpaAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER -> new PolicyCmptImplClassAttributeSetterJpaAnnGen();
+            case POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD -> new PolicyCmptImplClassTransientFieldJpaAnnGen();
+            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD -> new PolicyCmptImplClassAssociationJpaAnnGen();
+            default -> null;
+        };
     }
 
     @Override

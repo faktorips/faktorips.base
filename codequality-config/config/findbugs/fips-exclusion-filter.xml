@@ -1,19 +1,26 @@
 <FindBugsFilter>
-	<!-- All bugs of rank greater 15 -->
-	<Match>
-    <Rank value="15"/>
-	</Match>
+    <!-- All bugs of rank greater 15 -->
+    <Match>
+        <Rank value="15" />
+    </Match>
 
-	<!-- All bugs in messages classes -->
-	<Match>
-		<Class name="~.*\.*Messages" />
-	</Match>
+    <!-- All bugs in messages classes -->
+    <Match>
+        <Class name="~.*\.*Messages" />
+    </Match>
 
-	<!-- All bugs in test classes, except for JUnit-specific bugs -->
-	<Match>
-		<Class name="~.*\.*Test" />
-		<Not>
-			<Bug code="IJU" />
-		</Not>
-	</Match>
+    <!-- All bugs in test classes, except for JUnit-specific bugs -->
+    <Match>
+        <Class name="~.*\.*Test" />
+        <Not>
+            <Bug code="IJU" />
+        </Not>
+    </Match>
+    <!-- ignore false positive instanceof pattern  -->
+    <Match>
+        <Bug pattern="SA_LOCAL_SELF_COMPARISON" />
+    </Match>
+    <Match>
+        <Bug pattern="SA_FIELD_SELF_COMPARISON" />
+    </Match>
 </FindBugsFilter>

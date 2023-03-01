@@ -128,8 +128,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
         if (Objects.equals(functionDataType, expressionDataType)) {
             return true;
         }
-        if (expressionDataType instanceof AbstractDatatype) {
-            AbstractDatatype abstractDatatype = (AbstractDatatype)expressionDataType;
+        if (expressionDataType instanceof AbstractDatatype abstractDatatype) {
             return abstractDatatype.matchDatatype(functionDataType);
         }
         return false;

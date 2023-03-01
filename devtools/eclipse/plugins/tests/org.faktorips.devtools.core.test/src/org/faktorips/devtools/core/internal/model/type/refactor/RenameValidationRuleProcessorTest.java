@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.model.pctype.IValidationRule;
 import org.faktorips.devtools.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.model.testcase.ITestRule;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Test;
 
 public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTest {
@@ -61,6 +61,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         ipsRenameProcessor.setNewName(NEW_NAME);
         RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
                 new CheckConditionsContext());
+
         assertFalse(status.hasError());
     }
 

@@ -12,7 +12,6 @@ package org.faktorips.devtools.tableconversion.excel;
 
 import java.io.IOException;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Operation to import ipstablecontents from an excel-file.

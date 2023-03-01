@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.labels;
 import java.util.Collection;
 import java.util.Objects;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.stdbuilder.propertybuilder.AbstractLocalizedProperties;
 import org.faktorips.devtools.stdbuilder.propertybuilder.PropertyKey;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.type.DocumentationKind;
 
 public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
@@ -61,7 +61,8 @@ public class LabelAndDescriptionProperties extends AbstractLocalizedProperties {
             IIpsObject ipsObject = ipsObjectPart.getIpsObject();
             ipsObjectQname = ipsObject.getQualifiedName();
             type = ipsObject.getIpsObjectType();
-            String ipsObjectPartName = ipsObjectPart instanceof IpsObject ? IpsStringUtils.EMPTY : ipsObjectPart.getName();
+            String ipsObjectPartName = ipsObjectPart instanceof IpsObject ? IpsStringUtils.EMPTY
+                    : ipsObjectPart.getName();
             key = messageType.getKey(ipsObjectQname, type.getId(), ipsObjectPartName);
         }
 

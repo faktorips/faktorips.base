@@ -186,9 +186,7 @@ public class PageElementUtils {
     }
 
     public String createAnchorId(IIpsElement element) {
-        if (element instanceof IIpsObjectPart) {
-
-            IIpsObjectPart part = (IIpsObjectPart)element;
+        if (element instanceof IIpsObjectPart part) {
 
             String objectPartContainerName = part.getIpsSrcFile().getQualifiedNameType().getName();
             String objectPartClassName = part.getClass().getSimpleName();

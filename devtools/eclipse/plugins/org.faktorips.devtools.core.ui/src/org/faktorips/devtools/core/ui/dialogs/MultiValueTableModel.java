@@ -201,10 +201,9 @@ public class MultiValueTableModel implements IEditTableModel<SingleValueViewItem
 
         @Override
         public boolean equals(Object other) {
-            if (!(other instanceof SingleValueViewItem)) {
+            if (!(other instanceof SingleValueViewItem otherItem)) {
                 return false;
             }
-            SingleValueViewItem otherItem = (SingleValueViewItem)other;
             return ((holder == null && otherItem.holder == null) || (holder != null && holder.equals(otherItem.holder)))
                     && index == otherItem.index;
         }

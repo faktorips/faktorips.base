@@ -35,7 +35,7 @@ import org.w3c.dom.Element;
 
 /**
  * @deprecated for removal since 22.6; Use {@link IProductCmptProperty#getCategoryPosition()}
- *             instead.
+ *                 instead.
  */
 @Deprecated(forRemoval = true, since = "22.6")
 public class ProductCmptPropertyReferenceTest extends AbstractIpsPluginTest {

@@ -69,18 +69,11 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
     }
 
     private ValueSetKind getValueSetKind(IAttribute attribute) {
-        ValueSetKind valueSetKind = null;
-        switch (attribute.getValueSet().getValueSetType()) {
-            case ENUM:
-                valueSetKind = ValueSetKind.Enum;
-                break;
-            case RANGE:
-                valueSetKind = ValueSetKind.Range;
-                break;
-            default:
-                valueSetKind = ValueSetKind.AllValues;
-        }
-        return valueSetKind;
+        return switch (attribute.getValueSet().getValueSetType()) {
+            case ENUM -> ValueSetKind.Enum;
+            case RANGE -> ValueSetKind.Range;
+            default -> ValueSetKind.AllValues;
+        };
     }
 
     @Override

@@ -74,12 +74,9 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
 
-            if (!(originalJavaElement instanceof IType && targetJavaElement instanceof IType)) {
+            if (!(originalJavaElement instanceof IType originalJavaType && targetJavaElement instanceof IType targetJavaType)) {
                 return null;
             }
-
-            IType originalJavaType = (IType)originalJavaElement;
-            IType targetJavaType = (IType)targetJavaElement;
 
             RefactoringContribution moveContribution = RefactoringCore
                     .getRefactoringContribution(IJavaRefactorings.MOVE);

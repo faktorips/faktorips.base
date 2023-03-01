@@ -45,8 +45,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
 
     @Override
     public Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
-        if (inputElement instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)inputElement;
+        if (inputElement instanceof IProductCmpt productCmpt) {
             try {
                 List<GenerationDate> result = collectGenerationDates(productCmpt, monitor);
                 return result.toArray();
@@ -146,8 +145,7 @@ public class GenerationDateContentProvider extends DeferredStructuredContentProv
     private List<IProductCmptGeneration> getRelevantGenerations(IProductCmpt target, IIpsObjectGeneration reference) {
         List<IProductCmptGeneration> result = new ArrayList<>();
         for (IIpsObjectGeneration aGeneration : target.getGenerations()) {
-            if (aGeneration instanceof IProductCmptGeneration) {
-                IProductCmptGeneration prodGeneration = (IProductCmptGeneration)aGeneration;
+            if (aGeneration instanceof IProductCmptGeneration prodGeneration) {
                 /*
                  * all generations with prodGeneration.validFrom have to be before or equal
                  * reference.validTo and prodGeneration.validTo have to be after or equal

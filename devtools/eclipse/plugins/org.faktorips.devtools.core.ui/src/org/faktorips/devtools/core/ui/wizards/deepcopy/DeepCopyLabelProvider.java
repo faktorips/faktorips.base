@@ -54,8 +54,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     public abstract void update(ViewerCell cell);
 
     protected Image getImage(Object element) {
-        if (element instanceof IProductCmptStructureReference) {
-            IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
+        if (element instanceof IProductCmptStructureReference reference) {
             boolean enabled = deepCopyPreview.getPresentationModel().getTreeStatus().isEnabled(reference);
             if (element instanceof IProductCmptReference) {
                 return IpsUIPlugin.getImageHandling().getImage(((IProductCmptReference)element).getProductCmpt(),
@@ -72,8 +71,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     protected String getNewName(Object element) {
-        if (element instanceof IProductCmptStructureReference) {
-            IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
+        if (element instanceof IProductCmptStructureReference reference) {
             if (deepCopyPreview.getPresentationModel().getTreeStatus().isEnabled(reference)
                     && deepCopyPreview.getPresentationModel().getTreeStatus()
                             .getCopyOrLink(reference) == CopyOrLink.COPY) {
@@ -84,8 +82,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     protected String getOldName(Object element) {
-        if (element instanceof IProductCmptReference) {
-            IProductCmptReference productCmptReference = (IProductCmptReference)element;
+        if (element instanceof IProductCmptReference productCmptReference) {
             return productCmptReference.getProductCmpt().getName();
         } else if (element instanceof IProductCmptTypeAssociationReference) {
             IAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
@@ -150,8 +147,7 @@ public abstract class DeepCopyLabelProvider extends StyledCellLabelProvider {
     }
 
     private String getSuffixFor(Object item) {
-        if (item instanceof IProductCmptReference) {
-            IProductCmptReference productCmptReference = (IProductCmptReference)item;
+        if (item instanceof IProductCmptReference productCmptReference) {
             String packageName = ""; //$NON-NLS-1$
             if (deepCopyPreview.getPresentationModel().getTreeStatus()
                     .getCopyOrLink(productCmptReference) == CopyOrLink.COPY) {

@@ -122,8 +122,7 @@ public class ImageHandling implements IImageHandling {
         if (adaptable == null) {
             return getSharedImageDescriptor("IpsElement_broken.gif", true); //$NON-NLS-1$
         }
-        if (adaptable instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)adaptable;
+        if (adaptable instanceof IIpsElement ipsElement) {
             ImageDescriptor descriptor = IIpsDecorators.getImageDescriptor(ipsElement);
             if (descriptor != null) {
                 return descriptor;

@@ -195,8 +195,7 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
         if (!contextMenuManager.isEmpty()) {
             final Menu contextMenu = contextMenuManager.createContextMenu(getViewer().getControl());
             getViewer().getControl().setMenu(contextMenu);
-            if (site instanceof IEditorSite) {
-                IEditorSite editorSite = (IEditorSite)site;
+            if (site instanceof IEditorSite editorSite) {
                 editorSite.registerContextMenu(contextMenuManager, getViewer(), false);
             } else {
                 site.registerContextMenu(contextMenuManager, getViewer());

@@ -176,8 +176,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
     @Override
     public String getElementName(Object item) {
-        if (item instanceof IIpsElement) {
-            IIpsElement element = (IIpsElement)item;
+        if (item instanceof IIpsElement element) {
             return element.getName();
         }
         return ""; //$NON-NLS-1$
@@ -199,11 +198,9 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     }
 
     private static IIpsPackageFragment getPackageFragment(Object element) {
-        if (element instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)element;
+        if (element instanceof IIpsObject ipsObject) {
             return ipsObject.getIpsPackageFragment();
-        } else if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)element;
+        } else if (element instanceof IIpsSrcFile srcFile) {
             return srcFile.getIpsPackageFragment();
         }
         return null;
@@ -223,8 +220,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
         @Override
         public boolean isConsistentItem(Object object) {
-            if (object instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
+            if (object instanceof IIpsSrcFile ipsSrcFile) {
                 return ipsSrcFile.exists();
             }
             return true;
@@ -232,8 +228,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
         @Override
         public boolean matchItem(Object object) {
-            if (object instanceof IIpsSrcFile) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)object;
+            if (object instanceof IIpsSrcFile srcFile) {
                 return matches(srcFile.getName());
             }
             return false;
@@ -444,8 +439,7 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
 
         @Override
         protected void storeItemToMemento(Object object, IMemento memento) {
-            if (object instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
+            if (object instanceof IIpsSrcFile ipsSrcFile) {
                 AResource resource = ipsSrcFile.getEnclosingResource();
                 Path location = resource.getLocation();
                 if (location != null) {

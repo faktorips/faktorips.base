@@ -236,9 +236,7 @@ class DropToLinkHelper {
             return false;
         }
 
-        if (target instanceof TestCaseTypeAssociation) {
-            TestCaseTypeAssociation testCaseTypeAssociation = (TestCaseTypeAssociation)target;
-
+        if (target instanceof TestCaseTypeAssociation testCaseTypeAssociation) {
             ITestPolicyCmpt parentTestPolicyCmpt = testCaseTypeAssociation.getParentTestPolicyCmpt();
             if (!testCaseTypeAssociation.isRoot()) {
                 // Will be null if drag over root test policy component

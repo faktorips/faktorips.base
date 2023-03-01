@@ -248,7 +248,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
 
         Integer ratio = memento.getInteger(TAG_RATIO);
         if (ratio != null) {
-            fSashForm.setWeights(new int[] { ratio.intValue(), 1000 - ratio.intValue() });
+            fSashForm.setWeights(ratio.intValue(), 1000 - ratio.intValue());
         }
         Integer orientation = memento.getInteger(TAG_ORIENTATION);
         if (orientation != null) {
@@ -337,7 +337,7 @@ public class IpsTestRunnerViewPart extends ViewPart implements IIpsTestRunListen
         fFailurePane = new FailurePane(bottom, failureToolBar, this, clipboard);
         bottom.setContent(fFailurePane.getComposite());
 
-        fSashForm.setWeights(new int[] { 50, 50 });
+        fSashForm.setWeights(50, 50);
         return fSashForm;
     }
 

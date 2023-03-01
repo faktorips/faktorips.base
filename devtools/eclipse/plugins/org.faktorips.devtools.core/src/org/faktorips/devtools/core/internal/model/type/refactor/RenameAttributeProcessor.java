@@ -276,8 +276,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
             for (IPropertyValueContainer container : getPropertyValueContainers(productCmpt)) {
                 List<IPropertyValue> configElements = container.getPropertyValues(getOriginalName());
                 for (IPropertyValue propertyValue : configElements) {
-                    if (propertyValue instanceof IConfigElement) {
-                        IConfigElement configElement = (IConfigElement)propertyValue;
+                    if (propertyValue instanceof IConfigElement configElement) {
                         configElement.setPolicyCmptTypeAttribute(getNewName());
                     }
                 }

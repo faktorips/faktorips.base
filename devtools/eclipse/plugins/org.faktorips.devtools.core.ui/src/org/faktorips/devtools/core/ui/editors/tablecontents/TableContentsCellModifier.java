@@ -50,8 +50,7 @@ public class TableContentsCellModifier implements ICellModifier {
     public String getValue(Object element, String property) {
         int columnIndex = getColumnIndexForProperty(property);
         if (columnIndex >= 0) {
-            if (element instanceof IRow) {
-                IRow row = (IRow)element;
+            if (element instanceof IRow row) {
                 return row.getValue(columnIndex);
             }
         }

@@ -131,8 +131,7 @@ public class DatatypeMismatchEntry extends AbstractDeltaEntryForProperty {
         } else if (propertyValue instanceof IConfiguredDefault) {
             return Optional
                     .of((DatatypeMismatch<P>)new ConfiguredDefaultDatatypeMismatch((IConfiguredDefault)propertyValue));
-        } else if (propertyValue instanceof IConfiguredValueSet) {
-            IConfiguredValueSet configuredValueSet = (IConfiguredValueSet)propertyValue;
+        } else if (propertyValue instanceof IConfiguredValueSet configuredValueSet) {
             IValueSet valueSet = configuredValueSet.getValueSet();
             if (valueSet.isEnum()) {
                 return Optional.of((DatatypeMismatch<P>)new EnumValueSetDatatypeMismatch(configuredValueSet));

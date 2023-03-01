@@ -203,8 +203,7 @@ public class IpsElementImagePageElementTest extends AbstractHtmlExportPluginTest
     private void assertImagePathWorksWithIpsObjectAndIpsSrcFile(IIpsObject ipsObject) {
         String expectedFileName = ipsObject.getIpsObjectType().getFileExtension();
 
-        if (ipsObject instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+        if (ipsObject instanceof IProductCmpt productCmpt) {
             IProductCmptType productCmptType = productCmpt.findProductCmptType(ipsObject.getIpsProject());
             if (productCmptType.isUseCustomInstanceIcon()) {
                 expectedFileName = productCmptType.getQualifiedName();

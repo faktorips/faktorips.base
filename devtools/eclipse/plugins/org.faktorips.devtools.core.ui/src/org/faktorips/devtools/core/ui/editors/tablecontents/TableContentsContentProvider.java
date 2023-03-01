@@ -18,8 +18,7 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
 
     @Override
     public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof ITableContents) {
-            ITableContents table = (ITableContents)inputElement;
+        if (inputElement instanceof ITableContents table) {
             return table.getTableRows().getRows();
         }
         return new Object[0];

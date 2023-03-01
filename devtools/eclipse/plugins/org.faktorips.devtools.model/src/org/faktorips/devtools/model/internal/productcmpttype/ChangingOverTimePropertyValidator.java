@@ -12,13 +12,13 @@ package org.faktorips.devtools.model.internal.productcmpttype;
 
 import java.text.MessageFormat;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This class is used to validate {@link IChangingOverTimeProperty}s.

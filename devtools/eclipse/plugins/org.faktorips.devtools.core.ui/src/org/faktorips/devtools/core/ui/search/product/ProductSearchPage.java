@@ -160,8 +160,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         List<?> list = structuredSelection.toList();
         for (Object object : list) {
-            if (object instanceof ProductSearchConditionPresentationModel) {
-                ProductSearchConditionPresentationModel productSearchConditionPresentationModel = (ProductSearchConditionPresentationModel)object;
+            if (object instanceof ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
                 getPresentationModel().removeProductSearchConditionPresentationModels(
                         productSearchConditionPresentationModel);
             }

@@ -26,14 +26,11 @@ public class PlainJavaResourceDelta extends AWrapper<PlainJavaResourceChange> im
 
     @Override
     public AResourceDeltaKind getKind() {
-        switch (change.getType()) {
-            case ADDED:
-                return AResourceDeltaKind.ADDED;
-            case REMOVED:
-                return AResourceDeltaKind.REMOVED;
-            default:
-                return AResourceDeltaKind.CHANGED;
-        }
+        return switch (change.getType()) {
+            case ADDED -> AResourceDeltaKind.ADDED;
+            case REMOVED -> AResourceDeltaKind.REMOVED;
+            default -> AResourceDeltaKind.CHANGED;
+        };
     }
 
     @Override

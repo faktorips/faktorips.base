@@ -575,8 +575,7 @@ public class JPatternDictionary extends FacadeVisitor {
                     try {
                         Method getMethod = matchRule.getGetFeature().getFeatureMethod();
                         Object value = getMethod.invoke(node, JMerger.NO_ARGUMENTS);
-                        if (value instanceof String) {
-                            String stringValue = (String)value;
+                        if (value instanceof String stringValue) {
                             Pattern signature = matchRule.getSignature();
                             if (signature != null) {
                                 Matcher matcher = signature.matcher(stringValue);

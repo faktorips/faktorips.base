@@ -95,8 +95,7 @@ public abstract class JavaGeneratorForIpsPart {
     protected final String getDescriptionInGeneratorLanguage(IIpsObjectPart ipsObjectPart) {
         ArgumentCheck.notNull(ipsObjectPart);
         String description = ""; //$NON-NLS-1$
-        if (ipsObjectPart instanceof IDescribedElement) {
-            IDescribedElement describedElement = (IDescribedElement)ipsObjectPart;
+        if (ipsObjectPart instanceof IDescribedElement describedElement) {
             IDescription generatorDescription = describedElement.getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();

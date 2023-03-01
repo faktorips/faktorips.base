@@ -487,8 +487,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
             menumanager.add(deleteAction);
         }
 
-        if (selectedRef instanceof IProductCmptVRuleReference) {
-            IProductCmptVRuleReference ruleRef = (IProductCmptVRuleReference)selectedRef;
+        if (selectedRef instanceof IProductCmptVRuleReference ruleRef) {
             final IAction toggleRuleAction = new ToggleRuleAction(ruleRef.getValidationRuleConfig());
             toggleRuleAction.setEnabled(editable);
             menumanager.add(toggleRuleAction);
@@ -507,8 +506,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
 
     private void createCardinalityContextMenu(IMenuManager menumanager, IProductCmptStructureReference selectedRef) {
         // change cardinalities
-        if (selectedRef instanceof IProductCmptReference) {
-            IProductCmptReference productCmptReference = (IProductCmptReference)selectedRef;
+        if (selectedRef instanceof IProductCmptReference productCmptReference) {
             if (canChangeCardinality(productCmptReference)) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,
                         IpsUIPlugin.getImageHandling().createImageDescriptor("Cardinality.gif"), null); //$NON-NLS-1$
@@ -715,8 +713,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
             Runnable runnable = () -> {
                 if (!treeViewer.getControl().isDisposed()) {
                     Object input = treeViewer.getInput();
-                    if (input instanceof IProductCmptTreeStructure) {
-                        IProductCmptTreeStructure structure = (IProductCmptTreeStructure)input;
+                    if (input instanceof IProductCmptTreeStructure structure) {
                         try {
                             structure.refresh();
                         } catch (CycleInProductStructureException e) {
@@ -985,11 +982,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart
         }
 
         Object input = treeViewer.getInput();
-        if (!(input instanceof IProductCmptTreeStructure)) {
+        if (!(input instanceof IProductCmptTreeStructure struct)) {
             return;
         }
 
-        IProductCmptTreeStructure struct = (IProductCmptTreeStructure)input;
         List<IProductCmptReference> refs = struct.findReferencesFor(toBeSelected);
         IStructuredSelection selection = new StructuredSelection(refs);
 

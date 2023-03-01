@@ -21,12 +21,10 @@ public class LocalTimeHelperFactory extends AbstractDateHelperFactory<LocalTimeD
 
     @Override
     DatatypeHelper createDatatypeHelper(LocalTimeDatatype datatype, LocalDateHelperVariant variant) {
-        switch (variant) {
-            case JAVA8:
-                return new org.faktorips.codegen.dthelpers.java8.LocalTimeHelper(datatype);
-            default:
-                return new org.faktorips.codegen.dthelpers.joda.LocalTimeHelper(datatype);
-        }
+        return switch (variant) {
+            case JAVA8 -> new org.faktorips.codegen.dthelpers.java8.LocalTimeHelper(datatype);
+            default -> new org.faktorips.codegen.dthelpers.joda.LocalTimeHelper(datatype);
+        };
     }
 
 }

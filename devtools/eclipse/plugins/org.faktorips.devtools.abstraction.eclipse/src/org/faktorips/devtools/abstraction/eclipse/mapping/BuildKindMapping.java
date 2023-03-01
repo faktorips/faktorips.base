@@ -27,18 +27,13 @@ public class BuildKindMapping {
      * @return the int constant used in eclipse
      */
     public static int buildKind(ABuildKind kind) {
-        switch (kind) {
-            case FULL:
-                return IncrementalProjectBuilder.FULL_BUILD;
-            case INCREMENTAL:
-                return IncrementalProjectBuilder.INCREMENTAL_BUILD;
-            case CLEAN:
-                return IncrementalProjectBuilder.CLEAN_BUILD;
-            case AUTO:
-                return IncrementalProjectBuilder.AUTO_BUILD;
-            default:
-                return 0;
-        }
+        return switch (kind) {
+            case FULL -> IncrementalProjectBuilder.FULL_BUILD;
+            case INCREMENTAL -> IncrementalProjectBuilder.INCREMENTAL_BUILD;
+            case CLEAN -> IncrementalProjectBuilder.CLEAN_BUILD;
+            case AUTO -> IncrementalProjectBuilder.AUTO_BUILD;
+            default -> 0;
+        };
     }
 
     /**
@@ -49,17 +44,13 @@ public class BuildKindMapping {
      * @return the build kind used in our abstractions
      */
     public static ABuildKind buildKind(int kind) {
-        switch (kind) {
-            case IncrementalProjectBuilder.INCREMENTAL_BUILD:
-                return ABuildKind.INCREMENTAL;
-            case IncrementalProjectBuilder.CLEAN_BUILD:
-                return ABuildKind.CLEAN;
-            case IncrementalProjectBuilder.AUTO_BUILD:
-                return ABuildKind.AUTO;
-            case IncrementalProjectBuilder.FULL_BUILD:
-            default:
-                return ABuildKind.FULL;
-        }
+        return switch (kind) {
+            case IncrementalProjectBuilder.INCREMENTAL_BUILD -> ABuildKind.INCREMENTAL;
+            case IncrementalProjectBuilder.CLEAN_BUILD -> ABuildKind.CLEAN;
+            case IncrementalProjectBuilder.AUTO_BUILD -> ABuildKind.AUTO;
+            case IncrementalProjectBuilder.FULL_BUILD -> ABuildKind.FULL;
+            default -> ABuildKind.FULL;
+        };
     }
 
 }

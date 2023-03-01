@@ -53,7 +53,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
  * @see org.eclipse.compare.contentmergeviewer.IDocumentRange
  */
 public abstract class AbstractCompareItem
-        implements IStreamContentAccessor, IStructureComparator, ITypedElement, IDocumentRange {
+implements IStreamContentAccessor, IStructureComparator, ITypedElement, IDocumentRange {
 
     protected static final String COLON_BLANK = ": "; //$NON-NLS-1$
     protected static final String COLON = ":"; //$NON-NLS-1$
@@ -291,14 +291,10 @@ public abstract class AbstractCompareItem
         } else if ((element1 == null || element2 == null)
                 || (element1.getClass() != element2.getClass())) {
             return false;
-        } else if (element1 instanceof IIpsObject) {
-            IIpsObject object1 = (IIpsObject)element1;
-            IIpsObject object2 = (IIpsObject)element2;
+        } else if (element1 instanceof IIpsObject object1 && element2 instanceof IIpsObject object2) {
             // only compare type to allow compares of two different ips objects with each other
             return object1.getIpsObjectType().equals(object2.getIpsObjectType());
-        } else if (element1 instanceof IIpsObjectPart) {
-            IIpsObjectPart part1 = (IIpsObjectPart)element1;
-            IIpsObjectPart part2 = (IIpsObjectPart)element2;
+        } else if (element1 instanceof IIpsObjectPart part1 && element2 instanceof IIpsObjectPart part2) {
             return isEqualIpsElementInStructure(part1.getParent(), part2.getParent())
                     && isEqualIpsObjectPart(part1, part2);
         } else {
@@ -318,11 +314,9 @@ public abstract class AbstractCompareItem
      */
     @Override
     public int hashCode() {
-        if (ipsElement instanceof IIpsObjectPart) {
-            IIpsObjectPart part = (IIpsObjectPart)ipsElement;
+        if (ipsElement instanceof IIpsObjectPart part) {
             return part.getName().hashCode();
-        } else if (ipsElement instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)ipsElement;
+        } else if (ipsElement instanceof IIpsObject ipsObject) {
             return ipsObject.getIpsObjectType().hashCode();
         } else {
             return 0;

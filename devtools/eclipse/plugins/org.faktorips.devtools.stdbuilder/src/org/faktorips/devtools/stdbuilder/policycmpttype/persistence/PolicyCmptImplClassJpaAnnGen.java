@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
 import java.util.Objects;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.model.IIpsElement;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A generator for JPA annotations of <code>IPolicyCmptType</code>s.
@@ -45,9 +45,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
         IPersistenceProvider persistenceProvider = getPersistenceProvider(generatorModelNode.getIpsProject());
-        if (generatorModelNode instanceof XPolicyCmptClass) {
-            XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
-
+        if (generatorModelNode instanceof XPolicyCmptClass xPolicyCmptClass) {
             IPolicyCmptType pcType = xPolicyCmptClass.getType();
 
             IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();

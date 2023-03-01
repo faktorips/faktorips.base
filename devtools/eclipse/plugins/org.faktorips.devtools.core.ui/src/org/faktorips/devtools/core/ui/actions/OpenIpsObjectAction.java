@@ -71,8 +71,7 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     protected String getSelectedText(IWorkbenchWindow activeWorkbenchWindow) {
         String selectedText = IpsStringUtils.EMPTY;
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
-        if (selection instanceof ITextSelection) {
-            ITextSelection textSelection = (ITextSelection)selection;
+        if (selection instanceof ITextSelection textSelection) {
             selectedText = textSelection.getText();
         }
         return selectedText;

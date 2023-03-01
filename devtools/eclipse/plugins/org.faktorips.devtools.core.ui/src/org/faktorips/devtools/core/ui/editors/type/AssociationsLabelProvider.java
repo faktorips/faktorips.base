@@ -17,10 +17,9 @@ public class AssociationsLabelProvider extends DefaultLabelProvider {
 
     @Override
     public String getText(Object element) {
-        if (!(element instanceof IAssociation)) {
+        if (!(element instanceof IAssociation association)) {
             return super.getText(element);
         }
-        IAssociation association = (IAssociation)element;
         String prefix = ""; //$NON-NLS-1$
         if (association.isDerivedUnion()) {
             prefix = "/ "; //$NON-NLS-1$

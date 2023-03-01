@@ -42,10 +42,9 @@ public class ImportStatement extends AbstractImportStatement {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof ImportStatement)) {
+        if (!(obj instanceof ImportStatement other)) {
             return false;
         }
-        ImportStatement other = (ImportStatement)obj;
         return Objects.equals(getClassName(), other.getClassName())
                 && Objects.equals(getPackageName(), other.getPackageName());
     }

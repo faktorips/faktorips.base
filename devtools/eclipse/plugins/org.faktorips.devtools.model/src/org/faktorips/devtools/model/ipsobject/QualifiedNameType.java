@@ -17,10 +17,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -171,8 +171,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof QualifiedNameType) {
-            QualifiedNameType other = (QualifiedNameType)obj;
+        if (obj instanceof QualifiedNameType other) {
             return type.equals(other.type) && qualifiedName.equals(other.qualifiedName);
         }
         return false;

@@ -262,7 +262,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      * Get the Hierarchy of the IIpsObject for setting it in the TreeViewer
      */
     public void showHierarchy(final IIpsObject element) {
-        if (element instanceof IType && element.getEnclosingResource().isAccessible()) {
+        if (element instanceof IType iType && element.getEnclosingResource().isAccessible()) {
             // TODO: Waiting label is currently deactivated. Check if we do need some
             // display.asyncExec(new Runnable() {
             // @Override
@@ -272,7 +272,6 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             // updateView();
             // }
             // });
-            IType iType = (IType)element;
             BuildingHierarchyJob job = new BuildingHierarchyJob(iType);
             job.schedule();
         } else if (element == null) {
@@ -296,8 +295,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             } else if (element instanceof String) {
                 // waiting for building hierarchy
                 showMessageOrTableView(MessageTableSwitch.TABLE);
-            } else if (element instanceof ITypeHierarchy) {
-                ITypeHierarchy hierarchy = (ITypeHierarchy)element;
+            } else if (element instanceof ITypeHierarchy hierarchy) {
                 showMessageOrTableView(MessageTableSwitch.TABLE);
                 enableButtons(true);
                 IType type = hierarchy.getType();
@@ -403,8 +401,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         if (!linkingEnabled || editorPart == null) {
             return;
         }
-        if (editorPart instanceof IpsObjectEditor) {
-            IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
+        if (editorPart instanceof IpsObjectEditor ipsEditor) {
             IIpsObject iipsObject = ipsEditor.getIpsSrcFile().getIpsObject();
             if (iipsObject instanceof IType) {
                 showHierarchy(iipsObject);
@@ -577,8 +574,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
                 }
                 return;
             }
-            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
+            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile ipsSrcFile) {
                 IIpsObject selectedIpsObject = ipsSrcFile.getIpsObject();
                 if (selectedIpsObject instanceof IType) {
                     event.detail = DND.DROP_LINK;

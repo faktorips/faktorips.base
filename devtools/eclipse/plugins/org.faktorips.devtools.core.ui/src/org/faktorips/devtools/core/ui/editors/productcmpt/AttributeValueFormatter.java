@@ -87,8 +87,7 @@ public class AttributeValueFormatter {
     public String getFormattedValue() {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         IValueHolder<?> valueHolder = getActualValueHolder(attrValue.getValueHolder());
-        if (valueHolder instanceof MultiValueHolder) {
-            MultiValueHolder multiHolder = (MultiValueHolder)valueHolder;
+        if (valueHolder instanceof MultiValueHolder multiHolder) {
             List<String> stringValues = new ArrayList<>();
             for (ISingleValueHolder holder : multiHolder.getValue()) {
                 String formattedValue = getFormattedSingleValue(datatypeFormatter, holder);

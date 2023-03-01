@@ -151,8 +151,7 @@ public class CustomIconSection extends IpsSection {
             return;
         }
         IIpsElementDecorator decorator = IIpsDecorators.get(ProductCmpt.class);
-        if (decorator instanceof ProductCmptDecorator) {
-            ProductCmptDecorator adapter = (ProductCmptDecorator)decorator;
+        if (decorator instanceof ProductCmptDecorator adapter) {
             iconPreview.setImage(IpsUIPlugin.getImageHandling()
                     .getImage(adapter.getImageDescriptorForInstancesOf((IProductCmptType)type)));
         }
@@ -219,8 +218,7 @@ public class CustomIconSection extends IpsSection {
                 return selectFile((IFile)element);
             }
 
-            if (element instanceof IFolder) {
-                IFolder folder = (IFolder)element;
+            if (element instanceof IFolder folder) {
                 if (!isIpsSrcFolder(folder)) {
                     return false;
                 }

@@ -258,14 +258,12 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * case we try to find the element by name.
      */
     public final IIpsElement getIpsElement() {
-        if (ipsElement instanceof IIpsObjectPart) {
-            IIpsObjectPart ipsObjectPart = (IIpsObjectPart)ipsElement;
+        if (ipsElement instanceof IIpsObjectPart ipsObjectPart) {
             if (!ipsObjectPart.isDeleted()) {
                 return ipsObjectPart;
             }
         }
-        if (ipsElement instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)ipsElement;
+        if (ipsElement instanceof IIpsObject ipsObject) {
             // this would reload the content or simply returns the existing one
             return ipsObject.getIpsSrcFile().getIpsObject();
         }

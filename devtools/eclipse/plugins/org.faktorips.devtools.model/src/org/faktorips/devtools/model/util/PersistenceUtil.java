@@ -12,12 +12,12 @@ package org.faktorips.devtools.model.util;
 
 import java.util.regex.Pattern;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A utility class for persistence (validation of table names, ...).

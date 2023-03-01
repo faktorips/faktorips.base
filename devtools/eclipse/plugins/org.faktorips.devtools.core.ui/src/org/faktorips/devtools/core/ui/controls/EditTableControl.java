@@ -207,8 +207,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
         // support switching rows while editing:
         control.addKeyListener(new CellNavigationKeyAdapter(editor, editorColumn));
 
-        if (editor instanceof UnfocusableTextCellEditor) {
-            final UnfocusableTextCellEditor contentAssistEditor = (UnfocusableTextCellEditor)editor;
+        if (editor instanceof UnfocusableTextCellEditor contentAssistEditor) {
             contentAssistEditor.addListener(new CellEditorListener(editorColumn, contentAssistEditor));
         }
     }

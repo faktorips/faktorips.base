@@ -180,8 +180,7 @@ public class FailurePane implements IMenuListener {
     private IEditorInput getEditorInput(IJavaElement javaElement) {
         IJavaElement element = javaElement;
         while (element != null) {
-            if (element instanceof ICompilationUnit) {
-                ICompilationUnit unit = (ICompilationUnit)element;
+            if (element instanceof ICompilationUnit unit) {
                 IResource resource = unit.getResource();
                 if (resource instanceof IFile) {
                     return new FileEditorInput((IFile)resource);

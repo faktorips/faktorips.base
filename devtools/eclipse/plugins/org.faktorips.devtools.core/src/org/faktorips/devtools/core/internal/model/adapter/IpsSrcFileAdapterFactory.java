@@ -20,8 +20,7 @@ public class IpsSrcFileAdapterFactory extends AbstractIpsAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (adaptableObject instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
+        if (adaptableObject instanceof IIpsSrcFile ipsSrcFile) {
             if (!ipsSrcFile.exists()) {
                 return null;
             }

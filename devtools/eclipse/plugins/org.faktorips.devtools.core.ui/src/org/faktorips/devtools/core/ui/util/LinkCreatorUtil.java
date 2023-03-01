@@ -58,13 +58,11 @@ public class LinkCreatorUtil {
         try {
             boolean result;
             IIpsSrcFile ipsSrcFile;
-            if (target instanceof IProductCmptReference) {
-                IProductCmptReference cmptReference = (IProductCmptReference)target;
+            if (target instanceof IProductCmptReference cmptReference) {
                 ipsSrcFile = cmptReference.getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processProductCmptReference(droppedCmpts, cmptReference, true);
-            } else if (target instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)target;
+            } else if (target instanceof IProductCmptTypeAssociationReference relationReference) {
                 ipsSrcFile = relationReference.getParent().getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processAssociationReference(droppedCmpts, relationReference, true);
@@ -119,8 +117,7 @@ public class LinkCreatorUtil {
                     Object[] selectedAssociations = selectAssociation(draggedCmpt.getQualifiedName(), possibleAssos);
                     if (selectedAssociations != null) {
                         for (Object object : selectedAssociations) {
-                            if (object instanceof IProductCmptTypeAssociation) {
-                                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)object;
+                            if (object instanceof IProductCmptTypeAssociation association) {
                                 createLink(association, generation, draggedCmpt.getQualifiedName(),
                                         draggedCmpts.size() == 1);
                             }

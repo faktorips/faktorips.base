@@ -202,8 +202,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         localeComboField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                if (element instanceof ISupportedLanguage) {
-                    ISupportedLanguage supportedLanguage = (ISupportedLanguage)element;
+                if (element instanceof ISupportedLanguage supportedLanguage) {
                     return supportedLanguage.getLanguageName();
                 }
                 return super.getText(element);
@@ -271,23 +270,17 @@ public class MessagesImportPage extends WizardDataTransferPage {
             return;
         }
         Object firstElement = selection.getFirstElement();
-        if (firstElement instanceof IAdaptable) {
-            IAdaptable adaptableObject = (IAdaptable)firstElement;
+        if (firstElement instanceof IAdaptable adaptableObject) {
             IIpsElement ipsElement = getIpsElement(adaptableObject);
-            if (ipsElement instanceof IIpsProject) {
-                IIpsProject ipsProject = (IIpsProject)ipsElement;
+            if (ipsElement instanceof IIpsProject ipsProject) {
                 getMessagesImportPMO().setIpsPackageFragmentRoot(ipsProject.getIpsPackageFragmentRoots()[0]);
-            } else if (ipsElement instanceof IIpsPackageFragmentRoot) {
-                IIpsPackageFragmentRoot pckFragRoot = (IIpsPackageFragmentRoot)ipsElement;
+            } else if (ipsElement instanceof IIpsPackageFragmentRoot pckFragRoot) {
                 getMessagesImportPMO().setIpsPackageFragmentRoot(pckFragRoot);
-            } else if (ipsElement instanceof IIpsPackageFragment) {
-                IIpsPackageFragment pckFrag = (IIpsPackageFragment)ipsElement;
+            } else if (ipsElement instanceof IIpsPackageFragment pckFrag) {
                 getMessagesImportPMO().setIpsPackageFragmentRoot(pckFrag.getRoot());
-            } else if (ipsElement instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+            } else if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
                 getMessagesImportPMO().setIpsPackageFragmentRoot(ipsSrcFile.getIpsPackageFragment().getRoot());
-            } else if (ipsElement instanceof IIpsObjectPartContainer) {
-                IIpsObjectPartContainer partContainer = (IIpsObjectPartContainer)ipsElement;
+            } else if (ipsElement instanceof IIpsObjectPartContainer partContainer) {
                 getMessagesImportPMO().setIpsPackageFragmentRoot(
                         partContainer.getIpsSrcFile().getIpsPackageFragment().getRoot());
             }

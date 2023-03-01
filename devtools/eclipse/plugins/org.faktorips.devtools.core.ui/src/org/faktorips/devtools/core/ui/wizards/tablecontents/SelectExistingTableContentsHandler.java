@@ -67,11 +67,9 @@ public class SelectExistingTableContentsHandler extends AbstractAddTableContents
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            if (element instanceof IIpsSrcFile
-                    && IpsObjectType.TABLE_CONTENTS.equals(((IIpsSrcFile)element).getIpsObjectType())) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)element;
-                String tableStructure;
-                tableStructure = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+            if (element instanceof IIpsSrcFile srcFile
+                    && IpsObjectType.TABLE_CONTENTS.equals(srcFile.getIpsObjectType())) {
+                String tableStructure = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
                 for (String structure : tableStructureUsage.getTableStructures()) {
                     if (tableStructure != null && tableStructure.equals(structure)) {
                         return true;

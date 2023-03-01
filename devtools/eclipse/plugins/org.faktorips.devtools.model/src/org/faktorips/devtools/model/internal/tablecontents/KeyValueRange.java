@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.tablecontents;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.tablestructure.ColumnRange;
@@ -18,6 +17,7 @@ import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A key value range is an object which stores the 'from'-value for a unique key of a table row. The

@@ -120,8 +120,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         targetSystemViewer.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                if (element instanceof ITargetSystem) {
-                    ITargetSystem targetSystem = (ITargetSystem)element;
+                if (element instanceof ITargetSystem targetSystem) {
                     return targetSystem.getName();
                 }
                 return super.getText(element);
@@ -312,8 +311,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     public List<ITargetSystem> getSelectedTargetSystems() {
         List<ITargetSystem> result = new ArrayList<>();
         for (Object checkedItem : targetSystemViewer.getCheckedElements()) {
-            if (checkedItem instanceof ITargetSystem) {
-                ITargetSystem targetSystem = (ITargetSystem)checkedItem;
+            if (checkedItem instanceof ITargetSystem targetSystem) {
                 result.add(targetSystem);
             }
         }

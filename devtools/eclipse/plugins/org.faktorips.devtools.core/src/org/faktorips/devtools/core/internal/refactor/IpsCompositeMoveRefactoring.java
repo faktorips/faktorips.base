@@ -47,8 +47,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
         }
 
         for (IIpsElement ipsElement : getIpsElements()) {
-            if (ipsElement instanceof IIpsObject) {
-                IIpsObject ipsObject = (IIpsObject)ipsElement;
+            if (ipsElement instanceof IIpsObject ipsObject) {
                 if (ipsObject.getIpsPackageFragment().equals(targetIpsPackageFragment)) {
                     refactoringStatus
                             .addWarning(NLS
@@ -56,8 +55,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
                                             ipsObject.getName()));
                     skipElement(ipsObject);
                 }
-            } else if (ipsElement instanceof IIpsPackageFragment) {
-                IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+            } else if (ipsElement instanceof IIpsPackageFragment packageFragment) {
                 if (targetIpsPackageFragment.equals(packageFragment.getParentIpsPackageFragment())) {
                     refactoringStatus
                             .addError(NLS

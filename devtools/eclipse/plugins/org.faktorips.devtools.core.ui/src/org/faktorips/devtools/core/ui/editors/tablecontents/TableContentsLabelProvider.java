@@ -72,8 +72,7 @@ public class TableContentsLabelProvider implements ITableLabelProvider {
      */
     @Override
     public String getColumnText(Object element, int columnIndex) {
-        if (element instanceof IRow) {
-            IRow row = (IRow)element;
+        if (element instanceof IRow row) {
             if (row.getTableContents().getNumOfColumns() == 0) {
                 return null;
             }

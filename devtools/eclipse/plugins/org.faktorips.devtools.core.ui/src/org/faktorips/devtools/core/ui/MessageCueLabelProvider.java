@@ -91,8 +91,7 @@ public class MessageCueLabelProvider extends LabelProvider implements IStyledLab
      */
     public MessageList getMessages(Object element) {
         MessageList result = new MessageList();
-        if (element instanceof IIpsObjectPartContainer) {
-            IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
+        if (element instanceof IIpsObjectPartContainer part) {
             MessageList msgList = part.getIpsObject().validate(ipsProject);
             collectMessagesForIpsObjectPartContainer(result, msgList, part);
         }

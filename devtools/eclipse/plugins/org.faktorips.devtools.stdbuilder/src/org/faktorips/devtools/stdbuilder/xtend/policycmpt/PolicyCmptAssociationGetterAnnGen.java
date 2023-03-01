@@ -41,8 +41,7 @@ public class PolicyCmptAssociationGetterAnnGen extends AbstractAssociationAnnGen
     protected XPolicyAssociation getXPolicyAssociation(AbstractGeneratorModelNode modelNode) {
         if (modelNode instanceof XPolicyAssociation) {
             return (XPolicyAssociation)modelNode;
-        } else if (modelNode instanceof XDerivedUnionAssociation) {
-            XDerivedUnionAssociation derivedUnionAssociation = (XDerivedUnionAssociation)modelNode;
+        } else if (modelNode instanceof XDerivedUnionAssociation derivedUnionAssociation) {
             return modelNode.getModelNode(derivedUnionAssociation.getAssociation(), XPolicyAssociation.class);
         } else {
             throw new IllegalArgumentException("Unsupported model node " + modelNode);

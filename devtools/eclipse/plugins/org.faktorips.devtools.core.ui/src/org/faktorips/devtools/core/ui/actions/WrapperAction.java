@@ -158,8 +158,7 @@ public class WrapperAction extends IpsAction {
     @Override
     public void run(IStructuredSelection selection) {
         if (wrappedActionDelegate != null) {
-            if (wrappedActionDelegate instanceof IObjectActionDelegate) {
-                IObjectActionDelegate objectActionDelegate = (IObjectActionDelegate)wrappedActionDelegate;
+            if (wrappedActionDelegate instanceof IObjectActionDelegate objectActionDelegate) {
                 objectActionDelegate.setActivePart(this, PlatformUI.getWorkbench().getActiveWorkbenchWindow()
                         .getPartService().getActivePart());
             }

@@ -140,10 +140,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     @Override
     public StyledString getStyledText(Object element) {
         StyledString styledString = new StyledString(getText(element));
-        if (element instanceof IProductCmptReference) {
-            // Product component
-            IProductCmptReference productCmptReference = (IProductCmptReference)element;
-
+        if (element instanceof IProductCmptReference productCmptReference) {
             // show cardinality
             IProductCmptTypeAssociationReference parent = productCmptReference.getParent();
             if (parent != null) {
@@ -206,8 +203,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
     private String getRolenameLabel(IProductCmptReference productCmptReference) {
         IProductCmptStructureReference parent = productCmptReference.getParent();
         // get the parent of the reference, should be a ProductCmptTypeAssociationReference
-        if (parent instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)parent;
+        if (parent instanceof IProductCmptTypeAssociationReference associationReference) {
             // for associations always show the rolename
             if (associationReference.getAssociation().isAssoziation()) {
                 return getRolenameLabel(associationReference.getAssociation());
@@ -215,8 +211,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             parent = associationReference.getParent();
             // The parent of the ProductCmptTypeAssociationReference should be a
             // ProductCmptReference
-            if (parent instanceof IProductCmptReference) {
-                IProductCmptReference parentCmptReference = (IProductCmptReference)parent;
+            if (parent instanceof IProductCmptReference parentCmptReference) {
                 // getting all associations of the parent ProductCmptReference
                 IProductCmptTypeAssociationReference[] associationReferences = parentCmptReference.getStructure()
                         .getChildProductCmptTypeAssociationReferences(parentCmptReference, true);

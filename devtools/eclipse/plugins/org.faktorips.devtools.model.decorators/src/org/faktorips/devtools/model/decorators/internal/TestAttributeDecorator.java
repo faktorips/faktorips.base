@@ -25,8 +25,7 @@ public class TestAttributeDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof ITestAttribute) {
-            ITestAttribute testAttribute = (ITestAttribute)ipsObjectPart;
+        if (ipsObjectPart instanceof ITestAttribute testAttribute) {
             try {
                 IPolicyCmptTypeAttribute attribute = testAttribute.findAttribute(testAttribute.getIpsProject());
                 if (attribute != null) {

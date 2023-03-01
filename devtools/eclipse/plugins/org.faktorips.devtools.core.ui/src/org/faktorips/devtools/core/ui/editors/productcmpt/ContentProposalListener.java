@@ -42,8 +42,7 @@ public class ContentProposalListener implements IContentProposalListener {
         IControlContentAdapter controlContentAdapter = contentProposalAdapter.getControlContentAdapter();
         int cursorPosition = controlContentAdapter.getCursorPosition(control);
 
-        if (proposal instanceof ContentProposal) {
-            ContentProposal contentProposal = (ContentProposal)proposal;
+        if (proposal instanceof ContentProposal contentProposal) {
             int prefixLength = contentProposal.getPrefixLength();
             if (prefixLength > 0) {
                 int newCursorPosition = cursorPosition - prefixLength;
@@ -51,14 +50,12 @@ public class ContentProposalListener implements IContentProposalListener {
                     controlContentAdapter.setCursorPosition(contentProposalAdapter.getControl(), newCursorPosition);
                     pos = newCursorPosition;
                 }
-                if (control instanceof Text) {
-                    Text textControl = (Text)control;
+                if (control instanceof Text textControl) {
                     String textBefore = textControl.getText().substring(0, newCursorPosition);
                     String textBehind = textControl.getText().substring(cursorPosition, textControl.getText().length());
                     controlContentAdapter.setControlContents(textControl, textBefore + textBehind, newCursorPosition);
                 }
-                if (control instanceof StyledText) {
-                    StyledText textControl = (StyledText)control;
+                if (control instanceof StyledText textControl) {
                     String textBefore = textControl.getText().substring(0, newCursorPosition);
                     String textBehind = textControl.getText().substring(cursorPosition, textControl.getText().length());
                     controlContentAdapter.setControlContents(textControl, textBefore + textBehind, newCursorPosition);

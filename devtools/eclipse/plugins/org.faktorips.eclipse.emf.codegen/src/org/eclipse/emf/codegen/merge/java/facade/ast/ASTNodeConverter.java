@@ -184,8 +184,7 @@ public class ASTNodeConverter implements NodeConverter {
                 ASTJNode<?> nodeToRemove = (ASTJNode<?>)child;
                 ASTJNode<?> nodeToInsert = nodeToRemove;
 
-                if (nodeToRemove instanceof ASTJField) {
-                    ASTJField field = (ASTJField)nodeToRemove;
+                if (nodeToRemove instanceof ASTJField field) {
                     nodeToInsert = convertFieldToEnumConst(field);
                 }
 
@@ -334,8 +333,7 @@ public class ASTNodeConverter implements NodeConverter {
             // create map of public static final field initializers to fields
             int i = 0;
             for (JNode child : enumChildren) {
-                if (child instanceof ASTJField) {
-                    ASTJField field = (ASTJField)child;
+                if (child instanceof ASTJField field) {
                     if ((field.getFlags() & (FacadeFlags.PUBLIC | FacadeFlags.STATIC | FacadeFlags.FINAL)) != 0) {
                         fieldInitializersMap.put(field.getInitializer(), field);
                         fieldIndexesMap.put(field, i++);
@@ -378,8 +376,7 @@ public class ASTNodeConverter implements NodeConverter {
                 ASTJNode<?> originalNode = (ASTJNode<?>)child;
 
                 // convert enum constants and add to list of converted constants
-                if (originalNode instanceof ASTJEnumConstant) {
-                    ASTJEnumConstant constant = (ASTJEnumConstant)originalNode;
+                if (originalNode instanceof ASTJEnumConstant constant) {
                     convertedEnumConstants.add(convertEnumConstToField(constant));
                 } else {
                     // move the node

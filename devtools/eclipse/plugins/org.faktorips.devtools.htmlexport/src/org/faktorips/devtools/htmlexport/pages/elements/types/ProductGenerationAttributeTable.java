@@ -262,10 +262,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
 
         for (IAttribute attribute : allAttributes) {
-            if (!(attribute instanceof IPolicyCmptTypeAttribute)) {
+            if (!(attribute instanceof IPolicyCmptTypeAttribute policyCmptTypeAttribute)) {
                 continue;
             }
-            IPolicyCmptTypeAttribute policyCmptTypeAttribute = (IPolicyCmptTypeAttribute)attribute;
             if (policyCmptTypeAttribute
                     .getProductCmptPropertyType() == ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE
                     && policyCmptTypeAttribute.isProductRelevant()

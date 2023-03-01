@@ -204,10 +204,9 @@ public class GenerationsSection extends SimpleIpsPartsSection {
 
             @Override
             public Image getImage(Object element) {
-                if (!(element instanceof IProductCmptGeneration)) {
+                if (!(element instanceof IProductCmptGeneration generation)) {
                     return super.getImage(element);
                 }
-                IProductCmptGeneration generation = (IProductCmptGeneration)element;
                 Image image = super.getImage(element);
                 if (getActiveGeneration() == generation) {
                     return image;

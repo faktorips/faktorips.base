@@ -551,8 +551,7 @@ public class JMerger {
                     Method targetPutMethod = pullRule.getTargetPutFeature().getFeatureMethod();
                     if (!sourceGetMethod.getReturnType().isArray() || targetPutMethod.getParameterTypes()[0]
                             .isAssignableFrom(sourceGetMethod.getReturnType())) {
-                        if (value instanceof String) {
-                            String stringValue = (String)value;
+                        if (value instanceof String stringValue) {
                             stringValue = getControlModel().getFacadeHelper().applyFormatRules(stringValue);
                             Pattern sourceTransfer = pullRule.getSourceTransfer();
                             if (sourceTransfer != null) {
@@ -571,7 +570,7 @@ public class JMerger {
                                         }
                                         for (boolean match = sourceMatcher.find(sourceStart)
                                                 && targetMatcher.find(targetStart); match; match = sourceMatcher.find()
-                                                        && targetMatcher.find()) {
+                                                && targetMatcher.find()) {
                                             result.append(stringValue.substring(index, sourceMatcher.start(1)));
                                             String group1 = targetMatcher.group(1);
                                             if (group1 != null) {
@@ -622,15 +621,15 @@ public class JMerger {
                             if (sourceGetMethod.getName().equals("getReturnType")
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null && getControlModel().getBlockPattern()
-                                            .matcher(((JMethod)targetNode).getComment()).find()) {
+                                    .matcher(((JMethod)targetNode).getComment()).find()) {
                                 continue;
                             }
 
                             targetPutMethod.invoke(targetNode, value);
                             targetCompilationChanged = true;
-                            if (targetPutMethod.getName().equals("setBody") && sourceNode instanceof JMethod) {
-                                JMethod sourceMethod = (JMethod)sourceNode;
-                                JMethod targetMethod = (JMethod)targetNode;
+                            if (targetPutMethod.getName().equals("setBody")
+                                    && sourceNode instanceof JMethod sourceMethod
+                                    && targetNode instanceof JMethod targetMethod) {
 
                                 String[] sourceParameterTypes = sourceMethod.getParameterTypes();
                                 String[] targetParameterTypes = targetMethod.getParameterTypes();
@@ -883,8 +882,7 @@ public class JMerger {
         // Don't push method annotations into redirected methods.
         //
         String redirect = getControlModel().getRedirect();
-        if (redirect != null && node instanceof JAnnotation && sourceParent instanceof JMethod) {
-            JMethod sourceMethod = (JMethod)sourceParent;
+        if (redirect != null && node instanceof JAnnotation && sourceParent instanceof JMethod sourceMethod) {
             if (!sourceMethod.isConstructor() && !sourceMethod.getName().endsWith(redirect)
                     && targetParent instanceof JMethod && ((JMethod)targetParent).getName().endsWith(redirect)) {
                 return false;
@@ -948,7 +946,7 @@ public class JMerger {
         } else {
             for (JNode sourceChild = facadeHelper.getFirstChild(sourceNode), targetChild = facadeHelper
                     .getFirstChild(targetNode); sourceChild != null; sourceChild = facadeHelper
-                            .getNext(sourceChild), targetChild = facadeHelper.getNext(targetChild)) {
+                    .getNext(sourceChild), targetChild = facadeHelper.getNext(targetChild)) {
                 mapChildren(sourceChild, targetChild);
             }
         }
@@ -966,8 +964,7 @@ public class JMerger {
         protected void visit(JNode target) {
             // retrieve source node corresponding to target
             //
-            if (target instanceof JAbstractType) {
-                JAbstractType targetAbstractType = (JAbstractType)target;
+            if (target instanceof JAbstractType targetAbstractType) {
                 String comment = targetAbstractType.getComment();
 
                 isBlocked = targetAbstractType.getParent() instanceof JCompilationUnit

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.model.internal.method;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.internal.ValidationUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -20,6 +19,7 @@ import org.faktorips.devtools.model.method.IParameterContainer;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

@@ -86,8 +86,7 @@ public abstract class DefaultMigration extends AbstractIpsProjectMigrationOperat
         monitor.beginTask("Migrate package " + pack.getName(), members.size()); //$NON-NLS-1$
         for (AResource member : members) {
             try {
-                if (member instanceof AFile) {
-                    AFile file = (AFile)member;
+                if (member instanceof AFile file) {
                     boolean wasMigrated = migrate(file);
                     if (!wasMigrated) {
                         IIpsSrcFile srcFile = pack.getIpsSrcFile(file.getName());

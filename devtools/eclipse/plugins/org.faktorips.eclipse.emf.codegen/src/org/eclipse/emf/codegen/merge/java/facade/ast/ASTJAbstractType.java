@@ -160,8 +160,7 @@ public abstract class ASTJAbstractType<T extends AbstractTypeDeclaration> extend
 
         for (BodyDeclaration declaration : bodyDeclarations) {
             // for field declarations use variable declaration fragments instead
-            if (declaration instanceof FieldDeclaration) {
-                FieldDeclaration fieldDeclaration = (FieldDeclaration)declaration;
+            if (declaration instanceof FieldDeclaration fieldDeclaration) {
                 ListRewrite fragmentslistRewrite = rewriter.getListRewrite(fieldDeclaration,
                         FieldDeclaration.FRAGMENTS_PROPERTY);
                 List<?> fragments = fragmentslistRewrite.getRewrittenList();

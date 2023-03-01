@@ -74,11 +74,9 @@ public class EnumExportWizard extends IpsObjectExportWizard {
         IStructuredSelection structuredSelection = selection;
         if (structuredSelection.isEmpty()) {
             IEditorPart activeEditor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (activeEditor instanceof EnumTypeEditor) {
-                EnumTypeEditor enumTypeEditor = (EnumTypeEditor)activeEditor;
+            if (activeEditor instanceof EnumTypeEditor enumTypeEditor) {
                 structuredSelection = new StructuredSelection(enumTypeEditor.getIpsObject());
-            } else if (activeEditor instanceof EnumContentEditor) {
-                EnumContentEditor enumContentEditor = (EnumContentEditor)activeEditor;
+            } else if (activeEditor instanceof EnumContentEditor enumContentEditor) {
                 structuredSelection = new StructuredSelection(enumContentEditor.getIpsObject());
             }
         }

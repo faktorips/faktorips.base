@@ -85,23 +85,15 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
     }
 
     private String getLocalizedLabel(PropertyValueType propertyType) {
-        switch (propertyType) {
-            case ATTRIBUTE_VALUE:
-                return Messages.MissingPropertyValueEntry_ATTRIBUTE_VALUE;
-            case CONFIGURED_DEFAULT:
-                return Messages.MissingPropertyValueEntry_CONFIGURED_DEFAULT;
-            case CONFIGURED_VALUESET:
-                return Messages.MissingPropertyValueEntry_CONFIGURED_VALUESET;
-            case FORMULA:
-                return Messages.MissingPropertyValueEntry_FORMULA;
-            case TABLE_CONTENT_USAGE:
-                return Messages.MissingPropertyValueEntry_TABLE_CONTENT_USAGE;
-            case VALIDATION_RULE_CONFIG:
-                return Messages.MissingPropertyValueEntry_VALIDATION_RULE_CONFIG;
-
-            default:
-                throw new IllegalStateException("Unknown property type: " + propertyType); //$NON-NLS-1$
-        }
+        return switch (propertyType) {
+            case ATTRIBUTE_VALUE -> Messages.MissingPropertyValueEntry_ATTRIBUTE_VALUE;
+            case CONFIGURED_DEFAULT -> Messages.MissingPropertyValueEntry_CONFIGURED_DEFAULT;
+            case CONFIGURED_VALUESET -> Messages.MissingPropertyValueEntry_CONFIGURED_VALUESET;
+            case FORMULA -> Messages.MissingPropertyValueEntry_FORMULA;
+            case TABLE_CONTENT_USAGE -> Messages.MissingPropertyValueEntry_TABLE_CONTENT_USAGE;
+            case VALIDATION_RULE_CONFIG -> Messages.MissingPropertyValueEntry_VALIDATION_RULE_CONFIG;
+            default -> throw new IllegalStateException("Unknown property type: " + propertyType); //$NON-NLS-1$
+        };
     }
 
     @Override

@@ -45,8 +45,7 @@ public class Days360 extends AbstractFlFunction {
         ArgumentCheck.length(argResults, 2);
         Datatype datatype = getArgTypes()[0];
         DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
-        if (datatypeHelper instanceof ILocalDateHelper) {
-            ILocalDateHelper localDateHelper = (ILocalDateHelper)datatypeHelper;
+        if (datatypeHelper instanceof ILocalDateHelper localDateHelper) {
             JavaCodeFragment d1 = argResults[0].getCodeFragment();
             JavaCodeFragment d2 = argResults[1].getCodeFragment();
             JavaCodeFragment fragment = new JavaCodeFragment();

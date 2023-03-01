@@ -133,11 +133,9 @@ public class MethodTest extends AbstractIpsPluginTest {
         NodeList children = element.getChildNodes();
         for (int i = 0; i < children.getLength(); i++) {
             Node node = children.item(i);
-            if (!(node instanceof Element)) {
+            if (!(node instanceof Element nodeElement)) {
                 continue;
             }
-            Element nodeElement = (Element)node;
-
             System.out.println(nodeElement.getNodeName());
 
             if (!nodeElement.hasAttribute("id")) {

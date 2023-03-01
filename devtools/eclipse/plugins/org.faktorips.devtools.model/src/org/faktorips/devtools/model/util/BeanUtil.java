@@ -79,10 +79,9 @@ public final class BeanUtil {
             if (this == obj) {
                 return true;
             }
-            if (!(obj instanceof ClassAndProperty)) {
+            if (!(obj instanceof ClassAndProperty other)) {
                 return false;
             }
-            ClassAndProperty other = (ClassAndProperty)obj;
             return Objects.equals(clazz, other.clazz) && Objects.equals(propertyName, other.propertyName);
         }
 

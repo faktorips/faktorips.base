@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.testcase;
 
 import java.text.MessageFormat;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.IpsObjectPart;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.model.testcasetype.ITestPolicyCmptTypeParameter;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

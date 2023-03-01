@@ -24,8 +24,7 @@ public class TestPolicyCmptDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof ITestPolicyCmpt) {
-            ITestPolicyCmpt testPC = (ITestPolicyCmpt)ipsObjectPart;
+        if (ipsObjectPart instanceof ITestPolicyCmpt testPC) {
             if (testPC.isProductRelevant()) {
                 return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(POLICY_CMPT_INSTANCE_IMAGE,
                         OverlayIcons.PRODUCT_RELEVANT,

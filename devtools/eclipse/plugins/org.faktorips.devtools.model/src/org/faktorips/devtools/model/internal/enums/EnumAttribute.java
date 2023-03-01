@@ -282,8 +282,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
          * The data type must not be the EnumType that contains this EnumAttribute (or subclasses of
          * it).
          */
-        if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)ipsDatatype;
+        if (ipsDatatype instanceof EnumTypeDatatypeAdapter adapter) {
             IEnumType adaptedEnumType = adapter.getEnumType();
             if (adaptedEnumType.isSubEnumTypeOrSelf(enumType, ipsProject)) {
                 text = Messages.EnumAttribute_DatatypeIsContainingEnumTypeOrSubclass;
@@ -297,8 +296,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
          * The data type may not be an enumeration that does not contain values if the EnumType this
          * EnumAttribute belongs to does contain values.
          */
-        if (ipsDatatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter enumDatatypeAdapter = (EnumTypeDatatypeAdapter)ipsDatatype;
+        if (ipsDatatype instanceof EnumTypeDatatypeAdapter enumDatatypeAdapter) {
             IEnumType enumDatatype = enumDatatypeAdapter.getEnumType();
             if (enumType.isInextensibleEnum() && !(enumDatatype.isInextensibleEnum())) {
                 text = MessageFormat.format(

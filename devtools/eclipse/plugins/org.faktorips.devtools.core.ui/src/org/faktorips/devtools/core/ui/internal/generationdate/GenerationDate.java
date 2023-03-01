@@ -48,8 +48,7 @@ public class GenerationDate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof GenerationDate) {
-            GenerationDate other = (GenerationDate)obj;
+        if (obj instanceof GenerationDate other) {
             return validFrom.getTimeInMillis() == other.validFrom.getTimeInMillis()
                     && (validTo != null && other.validTo != null ? validTo.getTimeInMillis() == other.validTo
                             .getTimeInMillis() : validTo == other.validTo);

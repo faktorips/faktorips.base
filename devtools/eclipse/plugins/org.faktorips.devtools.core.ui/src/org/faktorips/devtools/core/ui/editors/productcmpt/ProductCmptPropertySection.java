@@ -382,21 +382,15 @@ public abstract class ProductCmptPropertySection extends IpsSection {
          * provided {@link ProductCmptPropertyType}.
          */
         public static PropertyValueUI getValueByPropertyType(PropertyValueType propertyType) {
-            switch (propertyType) {
-                case ATTRIBUTE_VALUE:
-                    return ATTRIBUTE_VALUE;
-                case VALIDATION_RULE_CONFIG:
-                    return VALIDATION_RULE_CONFIG;
-                case FORMULA:
-                    return FORMULA;
-                case TABLE_CONTENT_USAGE:
-                    return TABLE_CONTENT_USAGE;
-                case CONFIGURED_VALUESET:
-                    return CONFIGURED_VALUESET;
-                case CONFIGURED_DEFAULT:
-                    return CONFIGURED_DEFAULT;
-            }
-            return null;
+            return switch (propertyType) {
+                case ATTRIBUTE_VALUE -> ATTRIBUTE_VALUE;
+                case VALIDATION_RULE_CONFIG -> VALIDATION_RULE_CONFIG;
+                case FORMULA -> FORMULA;
+                case TABLE_CONTENT_USAGE -> TABLE_CONTENT_USAGE;
+                case CONFIGURED_VALUESET -> CONFIGURED_VALUESET;
+                case CONFIGURED_DEFAULT -> CONFIGURED_DEFAULT;
+                default -> null;
+            };
         }
 
         /**

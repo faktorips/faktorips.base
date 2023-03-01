@@ -740,8 +740,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return null;
         }
         // Update shown generation if product component editor was opened
-        if (openedEditor instanceof ProductCmptEditor) {
-            ProductCmptEditor productCmptEditor = (ProductCmptEditor)openedEditor;
+        if (openedEditor instanceof ProductCmptEditor productCmptEditor) {
             if (!productCmptEditor.getActiveGeneration().equals(productCmptGeneration)) {
                 productCmptEditor.setActiveGeneration(productCmptGeneration);
             }
@@ -1036,8 +1035,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             filteredEditorParts.addAll(dirtyEditorParts);
         } else {
             for (IEditorPart part : dirtyEditorParts) {
-                if (part instanceof IpsObjectEditor) {
-                    IpsObjectEditor ipsObjectEditor = (IpsObjectEditor)part;
+                if (part instanceof IpsObjectEditor ipsObjectEditor) {
                     for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
                         if (ipsObjectEditor.getIpsSrcFile().equals(ipsSrcFile)) {
                             filteredEditorParts.add(ipsObjectEditor);

@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.builder.IJavaPackageStructure;
 import org.faktorips.devtools.model.builder.naming.JavaClassNaming;
@@ -48,6 +47,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.IGeneratedJavaElement;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportHandler;
 import org.faktorips.devtools.stdbuilder.xmodel.ImportStatement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**

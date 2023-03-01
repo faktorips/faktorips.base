@@ -125,8 +125,7 @@ public abstract class NewIpsObjectWizard extends Wizard implements INewIpsObject
                 monitor.beginTask(Messages.NewIpsObjectWizard_creatingObject, 4);
             }
             for (IWizardPage page : pages) {
-                if (page instanceof AbstractIpsObjectNewWizardPage) {
-                    AbstractIpsObjectNewWizardPage newWizardPage = (AbstractIpsObjectNewWizardPage)page;
+                if (page instanceof AbstractIpsObjectNewWizardPage newWizardPage) {
                     if (newWizardPage.canCreateIpsSrcFile()) {
                         createIpsObject(newWizardPage, monitor);
                     }

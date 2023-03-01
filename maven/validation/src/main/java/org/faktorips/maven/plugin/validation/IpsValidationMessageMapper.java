@@ -52,11 +52,9 @@ record IpsValidationMessageMapper(Log log, MavenProject project) {
     private void checkAndLogDatatypeError(Message message) {
         if (message.getCode().equals(GenericValueDatatype.MSGCODE_JAVACLASS_NOT_FOUND)) {
             Object object = message.getInvalidObjectProperties().get(0).getObject();
-            if (object instanceof String) {
+            if (object instanceof String datatypeClassName) {
                 // otherwise this is the wrapped message from e.g.
                 // ValidationUtils#checkValueDatatypeReference
-                String datatypeClassName = (String)object;
-
                 for (String compileSourceRoot : project.getCompileSourceRoots()) {
                     StringBuilder pathToDatatypeClass = new StringBuilder()
                             .append(compileSourceRoot)

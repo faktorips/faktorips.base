@@ -24,15 +24,11 @@ public class EnumAnnGenFactory implements IAnnotationGeneratorFactory {
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case ENUM_CLASS:
-                return new EnumDeclClassAnnGen();
-            case ENUM_ATTRIBUTE_GETTER:
-                return new EnumAttributeAnnGen();
-
-            default:
-                return null;
-        }
+        return switch (type) {
+            case ENUM_CLASS -> new EnumDeclClassAnnGen();
+            case ENUM_ATTRIBUTE_GETTER -> new EnumAttributeAnnGen();
+            default -> null;
+        };
     }
 
 }

@@ -36,10 +36,9 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getElements(Object inputElement) {
-        if (!(inputElement instanceof IProductCmptGeneration)) {
+        if (!(inputElement instanceof IProductCmptGeneration generation)) {
             throw new RuntimeException("Unknown input element type " + inputElement.getClass()); //$NON-NLS-1$
         }
-        IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
         IProductCmpt pc = generation.getProductCmpt();
 
         IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
@@ -113,8 +112,7 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        if (element instanceof LinkViewItem) {
-            LinkViewItem linkViewItem = (LinkViewItem)element;
+        if (element instanceof LinkViewItem linkViewItem) {
             IProductCmptLink link = linkViewItem.getLink();
             IProductCmptTypeAssociation association = link.findAssociation(link.getIpsProject());
             return createAssociationViewItem(link.getProductCmptLinkContainer(), association);
@@ -124,8 +122,7 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        if (element instanceof AbstractAssociationViewItem) {
-            AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+        if (element instanceof AbstractAssociationViewItem associationViewItem) {
             return associationViewItem.hasChildren();
         } else {
             return false;

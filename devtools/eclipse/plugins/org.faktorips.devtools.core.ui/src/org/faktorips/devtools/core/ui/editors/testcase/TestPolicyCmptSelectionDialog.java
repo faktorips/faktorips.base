@@ -299,8 +299,7 @@ public class TestPolicyCmptSelectionDialog extends SelectionStatusDialog {
         public boolean select(Viewer viewer, Object parentElement, Object element) {
             if (element instanceof ITestPolicyCmpt) {
                 return isFilterChildOf((ITestPolicyCmpt)element, filteredPolicyCmptType);
-            } else if (element instanceof TestCaseTypeAssociation) {
-                TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
+            } else if (element instanceof TestCaseTypeAssociation dummyAssociation) {
                 ITestPolicyCmpt testPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
                 if (testPolicyCmpt == null) {
                     return true;

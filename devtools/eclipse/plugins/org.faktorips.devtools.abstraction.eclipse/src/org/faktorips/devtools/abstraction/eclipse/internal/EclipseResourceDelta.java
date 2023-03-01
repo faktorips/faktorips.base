@@ -51,14 +51,11 @@ public class EclipseResourceDelta extends AWrapper<IResourceDelta> implements AR
     @Override
     public AResourceDeltaKind getKind() {
         int kind = resourceDelta().getKind();
-        switch (kind) {
-            case IResourceDelta.ADDED:
-                return AResourceDeltaKind.ADDED;
-            case IResourceDelta.REMOVED:
-                return AResourceDeltaKind.REMOVED;
-            default:
-                return AResourceDeltaKind.CHANGED;
-        }
+        return switch (kind) {
+            case IResourceDelta.ADDED -> AResourceDeltaKind.ADDED;
+            case IResourceDelta.REMOVED -> AResourceDeltaKind.REMOVED;
+            default -> AResourceDeltaKind.CHANGED;
+        };
     }
 
     @Override

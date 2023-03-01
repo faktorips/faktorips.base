@@ -242,10 +242,9 @@ public class ImportDeclaration {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof ImportDeclaration)) {
+        if (!(obj instanceof ImportDeclaration other)) {
             return false;
         }
-        ImportDeclaration other = (ImportDeclaration)obj;
         return Objects.equals(classes, other.classes)
                 && Objects.equals(packages, other.packages);
     }

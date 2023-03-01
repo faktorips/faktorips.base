@@ -278,12 +278,10 @@ public interface AResource extends AAbstraction, Comparable<AResource> {
         INFINITE;
 
         public AResourceTreeTraversalDepth decrement() {
-            switch (this) {
-                case RESOURCE_AND_DIRECT_MEMBERS:
-                    return RESOURCE_ONLY;
-                default:
-                    return this;
-            }
+            return switch (this) {
+                case RESOURCE_AND_DIRECT_MEMBERS -> RESOURCE_ONLY;
+                default -> this;
+            };
         }
     }
 }

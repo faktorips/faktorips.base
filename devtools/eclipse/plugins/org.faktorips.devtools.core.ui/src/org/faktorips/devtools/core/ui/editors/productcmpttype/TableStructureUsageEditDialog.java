@@ -262,8 +262,7 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
 
     private void removedClicked() {
         ISelection selection = viewer.getSelection();
-        if (selection != null && selection instanceof IStructuredSelection) {
-            IStructuredSelection structSelection = (IStructuredSelection)selection;
+        if (selection != null && selection instanceof IStructuredSelection structSelection) {
             for (Object name : structSelection) {
                 String element = (String)name;
                 tableStructureUsage.removeTableStructure(element);

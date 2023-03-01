@@ -54,8 +54,7 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)ipsElement;
+        if (ipsElement instanceof IProductCmpt productCmpt) {
             if (productCmpt.isProductTemplate()) {
                 return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
             } else {

@@ -1,6 +1,1 @@
-bin
-temp.folder
-build.xml
-javaCompiler.faktorips-util.jar.args
-/target
-/.flattened-pom.xml
+/target/

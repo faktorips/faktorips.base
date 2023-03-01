@@ -243,8 +243,7 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
         // Go once over all EnumTypeDatatypeAdapters.
         for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
-            if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
-                EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
+            if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter adapter) {
                 IEnumType enumTypeOfDatatype = adapter.getEnumType();
 
                 // Continue if it is the parent EnumType that we have already disallowed.

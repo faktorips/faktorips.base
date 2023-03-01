@@ -414,8 +414,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         // refresh the pages and control state
         IEditorPart editorPart = getActivePageInstance();
-        if (editorPart instanceof IpsObjectEditorPage) {
-            IpsObjectEditorPage page = (IpsObjectEditorPage)editorPart;
+        if (editorPart instanceof IpsObjectEditorPage page) {
             page.refresh();
         }
 
@@ -439,8 +438,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         boolean newState = computeDataChangeableState();
         setDataChangeable(newState);
         IEditorPart editor = getActivePageInstance();
-        if (editor instanceof IpsObjectEditorPage) {
-            IpsObjectEditorPage page = (IpsObjectEditorPage)editor;
+        if (editor instanceof IpsObjectEditorPage page) {
             page.updateDataChangeableState();
         }
     }
@@ -867,31 +865,21 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     private String getTextForMultipleMessages(int messageType) {
-        switch (messageType) {
-            case IMessageProvider.ERROR:
-                return Messages.IpsObjectEditor_multipleErrorMessages;
-            case IMessageProvider.WARNING:
-                return Messages.IpsObjectEditor_multipleWarningMessages;
-            case IMessageProvider.INFORMATION:
-                return Messages.IpsObjectEditor_multipleInformationMessages;
-            default:
-                // should not happen
-                return IpsStringUtils.EMPTY;
-        }
+        return switch (messageType) {
+            case IMessageProvider.ERROR -> Messages.IpsObjectEditor_multipleErrorMessages;
+            case IMessageProvider.WARNING -> Messages.IpsObjectEditor_multipleWarningMessages;
+            case IMessageProvider.INFORMATION -> Messages.IpsObjectEditor_multipleInformationMessages;
+            default -> /* should not happen */ IpsStringUtils.EMPTY;
+        };
     }
 
     private String getTextForSingleMessage(int messageType) {
-        switch (messageType) {
-            case IMessageProvider.ERROR:
-                return Messages.IpsObjectEditor_singleErrorMessage;
-            case IMessageProvider.WARNING:
-                return Messages.IpsObjectEditor_singleWarningMessage;
-            case IMessageProvider.INFORMATION:
-                return Messages.IpsObjectEditor_singleInformationMessage;
-            default:
-                // should not happen
-                return IpsStringUtils.EMPTY;
-        }
+        return switch (messageType) {
+            case IMessageProvider.ERROR -> Messages.IpsObjectEditor_singleErrorMessage;
+            case IMessageProvider.WARNING -> Messages.IpsObjectEditor_singleWarningMessage;
+            case IMessageProvider.INFORMATION -> Messages.IpsObjectEditor_singleInformationMessage;
+            default -> /* should not happen */ IpsStringUtils.EMPTY;
+        };
     }
 
     protected List<IMessage> getMessages() {

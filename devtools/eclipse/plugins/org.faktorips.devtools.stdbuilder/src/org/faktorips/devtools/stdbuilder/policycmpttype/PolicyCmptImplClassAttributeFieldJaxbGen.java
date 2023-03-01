@@ -56,9 +56,7 @@ public class PolicyCmptImplClassAttributeFieldJaxbGen extends AbstractJaxbAnnota
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        if (generatorModelNode instanceof XPolicyAttribute) {
-            XPolicyAttribute xPolicyAttribute = (XPolicyAttribute)generatorModelNode;
-
+        if (generatorModelNode instanceof XPolicyAttribute xPolicyAttribute) {
             IPolicyCmptTypeAttribute attribute = xPolicyAttribute.getAttribute();
             ValueDatatype datatype = attribute.findDatatype(attribute.getIpsProject());
 

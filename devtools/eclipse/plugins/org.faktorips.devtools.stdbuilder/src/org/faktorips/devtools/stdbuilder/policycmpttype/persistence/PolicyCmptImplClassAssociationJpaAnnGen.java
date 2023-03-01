@@ -42,9 +42,7 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
-        if (generatorModelNode instanceof XPolicyAssociation) {
-            XPolicyAssociation xPolicyAssociation = (XPolicyAssociation)generatorModelNode;
-
+        if (generatorModelNode instanceof XPolicyAssociation xPolicyAssociation) {
             IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
             try {
@@ -110,19 +108,13 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
     private String getAnnotationForRelationshipType(RelationshipType relationShip,
             IPersistenceProvider persistenceProvider) {
-        switch (relationShip) {
-            case MANY_TO_MANY:
-                return persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToMany);
-            case MANY_TO_ONE:
-                return persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToOne);
-            case ONE_TO_MANY:
-                return persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToMany);
-            case ONE_TO_ONE:
-                return persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToOne);
-
-            default:
-                return null;
-        }
+        return switch (relationShip) {
+            case MANY_TO_MANY -> persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToMany);
+            case MANY_TO_ONE -> persistenceProvider.getQualifiedName(PersistenceAnnotation.ManyToOne);
+            case ONE_TO_MANY -> persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToMany);
+            case ONE_TO_ONE -> persistenceProvider.getQualifiedName(PersistenceAnnotation.OneToOne);
+            default -> null;
+        };
 
     }
 
@@ -340,10 +332,9 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
     @Override
     public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
-        if (!(ipsElement instanceof IPolicyCmptTypeAssociation)) {
+        if (!(ipsElement instanceof IPolicyCmptTypeAssociation pcTypeAssociation)) {
             return false;
         }
-        IPolicyCmptTypeAssociation pcTypeAssociation = (IPolicyCmptTypeAssociation)ipsElement;
         if (!pcTypeAssociation.getPolicyCmptType().isPersistentEnabled()
                 || pcTypeAssociation.getPersistenceAssociatonInfo().isTransient()) {
             return false;

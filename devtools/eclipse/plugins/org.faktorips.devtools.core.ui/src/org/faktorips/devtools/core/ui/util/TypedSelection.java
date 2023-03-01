@@ -100,8 +100,7 @@ public class TypedSelection<T> {
         ArgumentCheck.isTrue(minElements <= maxElements, "minElements <= maxElements: " + minElements + " <= " //$NON-NLS-1$ //$NON-NLS-2$
                 + maxElements);
 
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        if (selection instanceof IStructuredSelection structuredSelection) {
             elements = new ArrayList<>(structuredSelection.size());
             boolean elementTypesValid = initElements(type, structuredSelection);
             isValidSelection = elementTypesValid && (minElements <= elements.size())
@@ -240,8 +239,7 @@ public class TypedSelection<T> {
      * @return <code>true</code> if both collections are equal
      */
     public static boolean isEqual(final ISelection selection, final Collection<?> collection) {
-        if (selection instanceof StructuredSelection) {
-            StructuredSelection structuredSelection = (StructuredSelection)selection;
+        if (selection instanceof StructuredSelection structuredSelection) {
             Set<Object> providerElements = new HashSet<>(Arrays.asList(structuredSelection.toArray()));
             Set<Object> modelElements = new HashSet<>(collection);
             return providerElements.equals(modelElements);

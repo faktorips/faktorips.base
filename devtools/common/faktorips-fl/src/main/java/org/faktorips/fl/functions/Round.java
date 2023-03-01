@@ -76,14 +76,11 @@ public class Round extends AbstractFlFunction {
     }
 
     private static FunctionSignatures getSignature(RoundingMode mode) {
-        switch (mode) {
-            case DOWN:
-                return FunctionSignatures.RoundDown;
-            case UP:
-                return FunctionSignatures.RoundUp;
-            default:
-                return FunctionSignatures.Round;
-        }
+        return switch (mode) {
+            case DOWN -> FunctionSignatures.RoundDown;
+            case UP -> FunctionSignatures.RoundUp;
+            default -> FunctionSignatures.Round;
+        };
     }
 
 }

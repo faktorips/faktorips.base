@@ -98,8 +98,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
         NodeList propertyElNodeList = propertyEl.getChildNodes();
         for (int j = 0; j < propertyElNodeList.getLength(); j++) {
             Node child = propertyElNodeList.item(j);
-            if (child instanceof Comment) {
-                Comment comment = (Comment)child;
+            if (child instanceof Comment comment) {
                 propertiesDescription.put(key, comment.getData());
             }
         }

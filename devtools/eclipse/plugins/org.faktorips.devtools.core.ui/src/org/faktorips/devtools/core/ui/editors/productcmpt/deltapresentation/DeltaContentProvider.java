@@ -122,11 +122,9 @@ public class DeltaContentProvider implements ITreeContentProvider {
         if (a instanceof ProductCmptGenerationsDeltaViewItem) {
             a = ((ProductCmptGenerationsDeltaViewItem)a).getDelta();
         }
-        if (!(a instanceof IPropertyValueContainerToTypeDelta) || !(b instanceof IPropertyValueContainerToTypeDelta)) {
+        if (!(a instanceof IPropertyValueContainerToTypeDelta aDelta) || !(b instanceof IPropertyValueContainerToTypeDelta bDelta)) {
             return false;
         }
-        IPropertyValueContainerToTypeDelta aDelta = (IPropertyValueContainerToTypeDelta)a;
-        IPropertyValueContainerToTypeDelta bDelta = (IPropertyValueContainerToTypeDelta)b;
         IDeltaEntry[] aDeltaEntries = aDelta.getEntries();
         IDeltaEntry[] bDeltaEntries = bDelta.getEntries();
         if (aDeltaEntries == null) {
@@ -195,11 +193,9 @@ public class DeltaContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof IProductCmpt) {
             return getChildrenOfIProductCmpt((IProductCmpt)parentElement);
-        } else if (parentElement instanceof DeltaTypeWrapper) {
-            DeltaTypeWrapper delta = (DeltaTypeWrapper)parentElement;
+        } else if (parentElement instanceof DeltaTypeWrapper delta) {
             return delta.getDelta().getEntries(delta.getDeltaType());
-        } else if (parentElement instanceof IPropertyValueContainerToTypeDelta) {
-            IPropertyValueContainerToTypeDelta delta = (IPropertyValueContainerToTypeDelta)parentElement;
+        } else if (parentElement instanceof IPropertyValueContainerToTypeDelta delta) {
             return getPropertyChildren(delta);
         } else if (parentElement instanceof ProductCmptGenerationsDeltaViewItem) {
             return getPropertyChildren(((ProductCmptGenerationsDeltaViewItem)parentElement).getDelta());

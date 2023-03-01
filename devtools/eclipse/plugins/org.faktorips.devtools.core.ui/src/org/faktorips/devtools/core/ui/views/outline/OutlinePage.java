@@ -71,8 +71,7 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
             ArrayList<Object> result = new ArrayList<>(Arrays.asList(super.getChildren(element)));
             for (Iterator<Object> iter = result.iterator(); iter.hasNext();) {
                 Object o = iter.next();
-                if (o instanceof IIpsElement) {
-                    IIpsElement ipsElement = (IIpsElement)o;
+                if (o instanceof IIpsElement ipsElement) {
                     if (ipsElement.getName().isEmpty()) {
                         iter.remove();
                     }

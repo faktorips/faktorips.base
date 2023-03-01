@@ -453,8 +453,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public ValueSetPmo(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
-            if (valueSetOwner instanceof IConfigElement) {
-                IConfigElement configElement = (IConfigElement)valueSetOwner;
+            if (valueSetOwner instanceof IConfigElement configElement) {
                 IPolicyCmptTypeAttribute attribute = configElement
                         .findPcTypeAttribute(configElement.getIpsProject());
                 sourceSet = attribute.getValueSet();

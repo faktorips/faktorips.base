@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaElement;
@@ -61,6 +60,7 @@ import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class HtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
         ICheckStateListener {
@@ -444,10 +444,9 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
 
         @Override
         public Image getImage(Object element) {
-            if (!(element instanceof IpsObjectType)) {
+            if (!(element instanceof IpsObjectType ipsObjectType)) {
                 return null;
             }
-            IpsObjectType ipsObjectType = (IpsObjectType)element;
             return IpsUIPlugin.getImageHandling().getImage(IIpsDecorators.getDefaultImageDescriptor(ipsObjectType));
         }
 
@@ -459,8 +458,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             if (element == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
                 return Messages.HtmlExportWizardPage_product;
             }
-            if (element instanceof IpsObjectType) {
-                IpsObjectType ipsObjectType = (IpsObjectType)element;
+            if (element instanceof IpsObjectType ipsObjectType) {
                 return ipsObjectType.getDisplayNamePlural();
             }
             return null;
@@ -538,10 +536,9 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
             if (element instanceof IpsObjectTypeTreeViewBaseNodes) {
                 return IpsObjectTypeTreeViewBaseNodes.ROOT;
             }
-            if (!(element instanceof IpsObjectType)) {
+            if (!(element instanceof IpsObjectType type)) {
                 return null;
             }
-            IpsObjectType type = (IpsObjectType)element;
             return type.isProductDefinitionType() ? IpsObjectTypeTreeViewBaseNodes.PRODUCT
                     : IpsObjectTypeTreeViewBaseNodes.POLICY;
         }

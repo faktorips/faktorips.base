@@ -36,8 +36,7 @@ public class IpsPerspectivePropertyTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (receiver instanceof IWorkbenchWindow) {
-            final IWorkbenchWindow window = (IWorkbenchWindow)receiver;
+        if (receiver instanceof IWorkbenchWindow window) {
             if (PROPERTY_IS_PERSPECTIVE_OPEN.equals(property)) {
                 if (args.length != 1) {
                     throw new RuntimeException("invalid number of arguments in IpsPerspectivePropertyTester"); //$NON-NLS-1$

@@ -475,28 +475,23 @@ public class BindingContext {
         mapping.getField().getControl().addFocusListener(listener);
         mappings.add(mapping);
         Object object = mapping.getObject();
-        if (object instanceof IIpsObjectPartContainer) {
-            // in case of IIpsObjectPartContainer we validate the whole IIpsObject
-            IIpsObjectPartContainer container = (IIpsObjectPartContainer)object;
+        if (object instanceof IIpsObjectPartContainer container) {
             IIpsObject ipsObject = container.getIpsObject();
             validatables.add(ipsObject);
-        } else if (object instanceof Validatable) {
-            Validatable validatable = (Validatable)object;
+        } else if (object instanceof Validatable validatable) {
             validatables.add(validatable);
         }
         addListenerToObject(object);
     }
 
     protected void addListenerToObject(Object object) {
-        if (object instanceof PresentationModelObject) {
-            PresentationModelObject pmo = (PresentationModelObject)object;
+        if (object instanceof PresentationModelObject pmo) {
             pmo.addPropertyChangeListener(listener);
         }
     }
 
     private void removeListenerFromObject(Object object) {
-        if (object instanceof PresentationModelObject) {
-            PresentationModelObject pmo = (PresentationModelObject)object;
+        if (object instanceof PresentationModelObject pmo) {
             pmo.removePropertyChangeListener(listener);
         }
     }

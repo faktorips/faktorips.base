@@ -89,8 +89,8 @@ license terms are available from Faktor Zehn GmbH.</comments>
         <!-- Code quality -->
         <maven-checkstyle-plugin.version>3.2.0</maven-checkstyle-plugin.version>
         <checkstyle.version>10.3.3</checkstyle.version>
-        <spotbugs-maven-plugin.version>4.7.2.0</spotbugs-maven-plugin.version>
-        <spotbugs.version>4.7.1</spotbugs.version>
+        <spotbugs-maven-plugin.version>4.7.2.1</spotbugs-maven-plugin.version>
+        <spotbugs.version>4.7.3</spotbugs.version>
         <!-- Tycho & Eclipse-->
         <!-- Thanks to Eclipse m2e bug https://github.com/eclipse-m2e/m2e-core/issues/274, we can't configure this version once in the maven.config but need to duplicate it in the .mvn/extensions.xml -->
         <tycho.version>3.0.3</tycho.version>

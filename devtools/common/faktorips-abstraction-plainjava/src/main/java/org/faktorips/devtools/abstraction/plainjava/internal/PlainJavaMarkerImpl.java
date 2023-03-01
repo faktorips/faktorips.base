@@ -45,10 +45,9 @@ public class PlainJavaMarkerImpl {
         if (this == obj) {
             return true;
         }
-        if (!super.equals(obj) || !(obj instanceof PlainJavaMarkerImpl)) {
+        if (!super.equals(obj) || !(obj instanceof PlainJavaMarkerImpl other)) {
             return false;
         }
-        PlainJavaMarkerImpl other = (PlainJavaMarkerImpl)obj;
         return id == other.id;
     }
 

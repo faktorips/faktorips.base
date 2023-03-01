@@ -74,9 +74,10 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             addPage(getIpsOIWStartingPage());
             addPage(newEnumContentPage);
             addPage(selectContentsPage);
-
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
             IpsPlugin.logAndShowErrorDialog(e);
+            // CSON: IllegalCatch
         }
     }
 
@@ -124,17 +125,16 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-        if (selection.isEmpty()) {
+        IStructuredSelection structuredSelection = selection;
+        if (structuredSelection.isEmpty()) {
             IEditorPart activeEditor = workbench.getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-            if (activeEditor instanceof EnumTypeEditor) {
-                EnumTypeEditor enumTypeEditor = (EnumTypeEditor)activeEditor;
-                selection = new StructuredSelection(enumTypeEditor.getIpsObject());
-            } else if (activeEditor instanceof EnumContentEditor) {
-                EnumContentEditor enumContentEditor = (EnumContentEditor)activeEditor;
-                selection = new StructuredSelection(enumContentEditor.getIpsObject());
+            if (activeEditor instanceof EnumTypeEditor enumTypeEditor) {
+                structuredSelection = new StructuredSelection(enumTypeEditor.getIpsObject());
+            } else if (activeEditor instanceof EnumContentEditor enumContentEditor) {
+                structuredSelection = new StructuredSelection(enumContentEditor.getIpsObject());
             }
         }
-        super.init(workbench, selection);
+        super.init(workbench, structuredSelection);
     }
 
     @Override

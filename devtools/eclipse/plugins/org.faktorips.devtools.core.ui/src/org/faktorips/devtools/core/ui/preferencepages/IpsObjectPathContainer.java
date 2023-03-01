@@ -195,8 +195,7 @@ public class IpsObjectPathContainer {
     }
 
     private void tabChanged(Widget widget) {
-        if (widget instanceof TabItem) {
-            TabItem tabItem = (TabItem)widget;
+        if (widget instanceof TabItem tabItem) {
             pageIndex = tabItem.getParent().getSelectionIndex();
         }
         doUpdateUI();

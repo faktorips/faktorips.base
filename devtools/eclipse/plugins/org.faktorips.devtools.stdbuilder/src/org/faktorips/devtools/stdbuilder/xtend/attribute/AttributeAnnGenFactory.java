@@ -28,24 +28,14 @@ public class AttributeAnnGenFactory implements IAnnotationGeneratorFactory {
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER:
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER:
-                return new AttributeGetterAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER:
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_SETTER:
-                return new AttributeSetterAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES:
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES:
-                return new AttributeAllowedValuesAnnGen();
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT:
-                return new AttributeDefaultValueAnnGen();
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER:
-                return new AttributeDefaultValueSetterAnnGen();
-            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER:
-                return new AttributeAllowedValuesSetterAnnGen();
-            default:
-                return null;
-        }
+        return switch (type) {
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_GETTER, PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_GETTER -> new AttributeGetterAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_SETTER, PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_SETTER -> new AttributeSetterAnnGen();
+            case POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES -> new AttributeAllowedValuesAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT -> new AttributeDefaultValueAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_DEFAULT_SETTER -> new AttributeDefaultValueSetterAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES_SETTER -> new AttributeAllowedValuesSetterAnnGen();
+            default -> null;
+        };
     }
 }

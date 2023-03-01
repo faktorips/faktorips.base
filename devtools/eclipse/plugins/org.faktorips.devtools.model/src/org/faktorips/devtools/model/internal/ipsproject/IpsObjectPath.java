@@ -255,8 +255,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public IIpsProjectRefEntry newIpsProjectRefEntry(IIpsProject referencedIpsProject) {
         if (containsProjectRefEntry(referencedIpsProject)) {
             for (IIpsObjectPathEntry entry : entries) {
-                if (entry instanceof IpsProjectRefEntry) {
-                    IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
+                if (entry instanceof IpsProjectRefEntry ref) {
                     if (ref.getReferencedIpsProject().equals(referencedIpsProject)) {
                         return ref;
                     }
@@ -271,8 +270,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public boolean containsProjectRefEntry(IIpsProject ipsProject) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry instanceof IpsProjectRefEntry) {
-                IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
+            if (entry instanceof IpsProjectRefEntry ref) {
                 if (ref.getReferencedIpsProject().equals(ipsProject)) {
                     return true;
                 }
@@ -285,8 +283,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public void removeProjectRefEntry(IIpsProject ipsProject) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
-            if (entry instanceof IpsProjectRefEntry) {
-                IpsProjectRefEntry ref = (IpsProjectRefEntry)entry;
+            if (entry instanceof IpsProjectRefEntry ref) {
                 if (ref.getReferencedIpsProject().equals(ipsProject)) {
                     removeEntry(i);
                     return;
@@ -298,8 +295,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public boolean containsArchiveEntry(IIpsArchive ipsArchive) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry instanceof IpsArchiveEntry) {
-                IpsArchiveEntry ref = (IpsArchiveEntry)entry;
+            if (entry instanceof IpsArchiveEntry ref) {
                 if (ref.getIpsArchive().equals(ipsArchive)) {
                     return true;
                 }
@@ -312,8 +308,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public void removeArchiveEntry(IIpsArchive ipsArchive) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
-            if (entry instanceof IpsArchiveEntry) {
-                IpsArchiveEntry archiveEntry = (IpsArchiveEntry)entry;
+            if (entry instanceof IpsArchiveEntry archiveEntry) {
                 if (archiveEntry.getIpsArchive().equals(ipsArchive)) {
                     removeEntry(i);
                     return;
@@ -325,8 +320,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public boolean containsSrcFolderEntry(AFolder folder) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry instanceof IpsSrcFolderEntry) {
-                IpsSrcFolderEntry ref = (IpsSrcFolderEntry)entry;
+            if (entry instanceof IpsSrcFolderEntry ref) {
                 if (ref.getSourceFolder().equals(folder)) {
                     return true;
                 }
@@ -339,8 +333,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public void removeSrcFolderEntry(AFolder srcFolder) {
         for (int i = 0; i < entries.length; i++) {
             IIpsObjectPathEntry entry = entries[i];
-            if (entry instanceof IpsSrcFolderEntry) {
-                IpsSrcFolderEntry srcFolderEntry = (IpsSrcFolderEntry)entry;
+            if (entry instanceof IpsSrcFolderEntry srcFolderEntry) {
                 if (srcFolderEntry.getSourceFolder().equals(srcFolder)) {
                     removeEntry(i);
                     return;

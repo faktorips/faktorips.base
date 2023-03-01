@@ -35,8 +35,7 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends Xtend
             return true;
         }
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
-            IPolicyCmptType polCmptType = (IPolicyCmptType)ipsObject;
+        if (ipsObject instanceof IPolicyCmptType polCmptType) {
             return isGeneratingArtifactsFor(polCmptType);
         } else {
             return false;
@@ -52,8 +51,7 @@ public abstract class ProductClassBuilder<T extends XProductClass> extends Xtend
         IIpsObject ipsObject = ipsObjectPartContainer.getIpsObject();
         if (ipsObject instanceof IProductCmptType) {
             return ipsObject;
-        } else if (ipsObject instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)ipsObject;
+        } else if (ipsObject instanceof IPolicyCmptType policyCmptType) {
             if (policyCmptType.isConfigurableByProductCmptType()) {
                 return policyCmptType.findProductCmptType(policyCmptType.getIpsProject());
             }

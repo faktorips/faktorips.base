@@ -82,8 +82,7 @@ public class ModelExplorerSorter extends ViewerComparator {
             // Containers are the number one
             return ModelExplorerCategory.CAT_IPS_CONTAINERS.getOrder();
         }
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
+        if (element instanceof IIpsElement ipsElement) {
             if (ipsElement instanceof IIpsObject) {
                 return category(((IIpsObject)ipsElement).getIpsObjectType());
             } else if (ipsElement instanceof IIpsSrcFile) {

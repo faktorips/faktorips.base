@@ -74,11 +74,10 @@ public class ListPageElement extends AbstractCompositePageElement {
     }
 
     private boolean isListItem(IPageElement pageElement) {
-        if (!(pageElement instanceof WrapperPageElement)) {
+        if (!(pageElement instanceof WrapperPageElement wrapper)) {
             return false;
         }
 
-        WrapperPageElement wrapper = (WrapperPageElement)pageElement;
         return wrapper.getWrapperType() == WrapperType.LISTITEM;
     }
 

@@ -31,8 +31,7 @@ public class TableStructureUsageDecorator extends SimpleIpsElementDecorator impl
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof ITableStructureUsage) {
-            ITableStructureUsage tableStructureUsage = (ITableStructureUsage)ipsObjectPart;
+        if (ipsObjectPart instanceof ITableStructureUsage tableStructureUsage) {
             String baseImage = BASE_IMAGE;
             String[] overlays = new String[4];
 

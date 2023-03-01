@@ -53,8 +53,7 @@ public class ConfigElementDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IConfigElement) {
-            IConfigElement configElement = (IConfigElement)ipsObjectPart;
+        if (ipsObjectPart instanceof IConfigElement configElement) {
             String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(configElement);
             Object value = configElement.getPropertyValue();
             if (value instanceof String) {

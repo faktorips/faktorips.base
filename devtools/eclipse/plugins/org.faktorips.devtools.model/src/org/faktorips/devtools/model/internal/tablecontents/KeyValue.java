@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.internal.tablecontents;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.IIndex;
 import org.faktorips.devtools.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A key value is an object which stores the value (string) of the content of all key item column

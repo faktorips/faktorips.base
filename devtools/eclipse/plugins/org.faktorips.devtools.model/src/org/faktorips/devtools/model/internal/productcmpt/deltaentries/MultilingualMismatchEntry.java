@@ -78,13 +78,11 @@ public class MultilingualMismatchEntry extends AbstractDeltaEntryForProperty {
     @Override
     public void fix() {
         IValueHolder<?> value = getPropertyValue().getValueHolder();
-        if (value instanceof MultiValueHolder) {
-            MultiValueHolder multiValue = (MultiValueHolder)value;
+        if (value instanceof MultiValueHolder multiValue) {
             for (ISingleValueHolder valueHolder : multiValue.getValue()) {
                 setNewValueInSingleValueHolder(valueHolder);
             }
-        } else if (value instanceof SingleValueHolder) {
-            SingleValueHolder valueHolder = (SingleValueHolder)value;
+        } else if (value instanceof SingleValueHolder valueHolder) {
             setNewValueInSingleValueHolder(valueHolder);
         }
     }

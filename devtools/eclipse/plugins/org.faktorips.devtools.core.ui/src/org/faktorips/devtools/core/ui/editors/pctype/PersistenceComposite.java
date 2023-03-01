@@ -47,8 +47,7 @@ public abstract class PersistenceComposite extends IpsPartsComposite {
     @Override
     protected ContentViewer createViewer(Composite parent, UIToolkit toolkit) {
         ContentViewer viewer = super.createViewer(parent, toolkit);
-        if (viewer instanceof TableViewer) {
-            TableViewer tableViewer = (TableViewer)viewer;
+        if (viewer instanceof TableViewer tableViewer) {
             ILabelProvider labelProvider = createLabelProvider();
             tableViewer.setLabelProvider(labelProvider);
             IContentProvider contentProvider = createContentProvider();

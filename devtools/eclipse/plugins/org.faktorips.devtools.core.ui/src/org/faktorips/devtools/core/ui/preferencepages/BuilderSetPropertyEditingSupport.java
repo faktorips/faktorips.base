@@ -60,8 +60,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
 
     @Override
     protected boolean canEdit(Object element) {
-        if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        if (element instanceof IIpsBuilderSetPropertyDef propertyDef) {
             if (propertyDef.isAvailable(ipsProject)) {
                 return true;
             }
@@ -71,8 +70,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
 
     @Override
     protected CellEditor getCellEditor(Object element) {
-        if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        if (element instanceof IIpsBuilderSetPropertyDef propertyDef) {
             String type = propertyDef.getType();
             UIToolkit toolkit = new UIToolkit(null);
             CellEditor editor = null;
@@ -126,8 +124,7 @@ public class BuilderSetPropertyEditingSupport extends EditingSupport {
 
     @Override
     protected Object getValue(Object element) {
-        if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        if (element instanceof IIpsBuilderSetPropertyDef propertyDef) {
             return builderSetConfigModel.getPropertyValue(propertyDef.getName());
         }
         return null;

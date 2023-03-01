@@ -99,8 +99,7 @@ public class IpsProblemMarkerManager implements IResourceChangeListener {
         @Override
         public boolean visit(IResourceDelta delta) {
             IResource res = delta.getResource();
-            if (res instanceof IProject && delta.getKind() == IResourceDelta.CHANGED) {
-                IProject project = (IProject)res;
+            if (res instanceof IProject project && delta.getKind() == IResourceDelta.CHANGED) {
                 if (!project.isAccessible()) {
                     // Only track open projects
                     return false;

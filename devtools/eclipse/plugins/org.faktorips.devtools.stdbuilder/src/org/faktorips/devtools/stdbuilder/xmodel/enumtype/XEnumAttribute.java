@@ -164,8 +164,7 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     }
 
     private boolean isExtensibleEnumDatatype(DatatypeHelper helper) {
-        if (helper instanceof EnumTypeDatatypeHelper) {
-            EnumTypeDatatypeHelper enumHelper = (EnumTypeDatatypeHelper)helper;
+        if (helper instanceof EnumTypeDatatypeHelper enumHelper) {
             if (enumHelper.getEnumType().isExtensible()) {
                 return true;
             }

@@ -49,32 +49,18 @@ public class DeltaLabelProvider extends LabelProvider {
         return getImageForDescriptor(element, descriptor);
     }
 
-    // CSOFF: CyclomaticComplexityCheck
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
-        switch (deltaType) {
-            case MISSING_PROPERTY_VALUE:
-            case VALUE_HOLDER_MISMATCH:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
-            case VALUE_WITHOUT_PROPERTY:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
-            case PROPERTY_TYPE_MISMATCH:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
-            case VALUE_SET_MISMATCH:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
-            case LINK_WITHOUT_ASSOCIATION:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-            case HIDDEN_ATTRIBUTE_MISMATCH:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
-            case INVALID_GENERATIONS:
-                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
-            case LINK_CHANGING_OVER_TIME_MISMATCH:
-            case MISSING_TEMPLATE_LINK:
-            case REMOVED_TEMPLATE_LINK:
-                return IIpsDecorators.getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
-            default:
-                return null;
-        }
-        // CSON: CyclomaticComplexityCheck
+        return switch (deltaType) {
+            case MISSING_PROPERTY_VALUE, VALUE_HOLDER_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
+            case VALUE_WITHOUT_PROPERTY -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
+            case PROPERTY_TYPE_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
+            case VALUE_SET_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
+            case LINK_WITHOUT_ASSOCIATION -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
+            case HIDDEN_ATTRIBUTE_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
+            case INVALID_GENERATIONS -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
+            case LINK_CHANGING_OVER_TIME_MISMATCH, MISSING_TEMPLATE_LINK, REMOVED_TEMPLATE_LINK -> IIpsDecorators.getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
+            default -> null;
+        };
     }
 
     private ImageDescriptor getImageDescriptorForDeltaEntry(IDeltaEntry deltaEntry) {

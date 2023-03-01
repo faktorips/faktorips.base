@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.model.util.ListElementMover;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
@@ -245,11 +245,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         for (IIndex indexKey : indices) {
             IKeyItem[] keyItems = indexKey.getKeyItems();
             for (IKeyItem keyItem : keyItems) {
-                if (keyItem instanceof IColumn) {
-                    IColumn column = (IColumn)keyItem;
+                if (keyItem instanceof IColumn column) {
                     validateUniqueKeyValue(list, structure, column.getName());
-                } else if (keyItem instanceof IColumnRange) {
-                    IColumnRange columnRange = (IColumnRange)keyItem;
+                } else if (keyItem instanceof IColumnRange columnRange) {
                     if (columnRange.getColumnRangeType().isOneColumnFrom()) {
                         validateUniqueKeyValue(list, structure, columnRange.getFromColumn());
                     } else if (columnRange.getColumnRangeType().isOneColumnTo()) {

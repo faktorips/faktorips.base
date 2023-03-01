@@ -28,20 +28,14 @@ public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case POLICY_CMPT_IMPL_CLASS:
-                return new PolicyCmptImplClassJaxbAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD:
-                return new PolicyCmptImplClassAssociationJaxbAnnGen();
-            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
-                return new PolicyCmptImplClassAttributeFieldJaxbGen();
-            case POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD:
-                return new PolicyCmptImplClassProductConfigurationJaxbGen();
-            case ENUM_CLASS:
-                return new EnumDeclClassJaxbAnnGen();
-            default:
-                return null;
-        }
+        return switch (type) {
+            case POLICY_CMPT_IMPL_CLASS -> new PolicyCmptImplClassJaxbAnnGen();
+            case POLICY_CMPT_IMPL_CLASS_ASSOCIATION_FIELD -> new PolicyCmptImplClassAssociationJaxbAnnGen();
+            case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD -> new PolicyCmptImplClassAttributeFieldJaxbGen();
+            case POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD -> new PolicyCmptImplClassProductConfigurationJaxbGen();
+            case ENUM_CLASS -> new EnumDeclClassJaxbAnnGen();
+            default -> null;
+        };
     }
 
     @Override

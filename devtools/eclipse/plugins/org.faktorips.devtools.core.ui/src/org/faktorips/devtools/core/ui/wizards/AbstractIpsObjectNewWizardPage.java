@@ -118,8 +118,7 @@ public abstract class AbstractIpsObjectNewWizardPage extends WizardPage {
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragmentRoot((IIpsPackageFragmentRoot)element);
-        } else if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment pack = (IIpsPackageFragment)element;
+        } else if (element instanceof IIpsPackageFragment pack) {
             setIpsPackageFragment(pack);
             setIpsPackageFragmentRoot(pack.getRoot());
         } else if (element instanceof IIpsSrcFile) {

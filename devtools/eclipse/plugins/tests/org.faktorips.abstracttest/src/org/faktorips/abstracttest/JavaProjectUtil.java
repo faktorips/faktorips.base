@@ -10,6 +10,10 @@
 
 package org.faktorips.abstracttest;
 
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_CONTAINER;
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_LIBRARY;
+import static org.eclipse.jdt.core.IClasspathEntry.CPE_PROJECT;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -153,12 +157,11 @@ public class JavaProjectUtil {
 
     private static String getModuleInfoFileContent(IJavaProject javaProject,
             IPackageFragmentRoot[] packageFragmentRoots)
-            throws CoreException {
+                    throws CoreException {
         HashSet<String> exportedPackages = new HashSet<>();
         for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
             for (IJavaElement child : packageFragmentRoot.getChildren()) {
-                if (child instanceof IPackageFragment) {
-                    IPackageFragment pkgFragment = (IPackageFragment)child;
+                if (child instanceof IPackageFragment pkgFragment) {
                     if (!pkgFragment.isDefaultPackage() && pkgFragment.getCompilationUnits().length != 0) {
                         exportedPackages.add(pkgFragment.getElementName());
                     }
@@ -197,9 +200,9 @@ public class JavaProjectUtil {
         for (int i = 0; i < rawClasspath.length; i++) {
             IClasspathEntry entry = rawClasspath[i];
             switch (entry.getEntryKind()) {
-                case IClasspathEntry.CPE_CONTAINER:
-                case IClasspathEntry.CPE_LIBRARY:
-                case IClasspathEntry.CPE_PROJECT:
+                case CPE_CONTAINER:
+                case CPE_LIBRARY:
+                case CPE_PROJECT:
                     IClasspathAttribute[] newAttributes = addModuleAttributeIfNeeded(entry.getExtraAttributes());
                     if (newAttributes != null) {
                         rawClasspath[i] = addAttributes(entry, newAttributes);
@@ -235,21 +238,15 @@ public class JavaProjectUtil {
     }
 
     private static IClasspathEntry addAttributes(IClasspathEntry entry, IClasspathAttribute[] extraAttributes) {
-        switch (entry.getEntryKind()) {
-            case IClasspathEntry.CPE_CONTAINER:
-                return JavaCore.newContainerEntry(entry.getPath(), entry.getAccessRules(), extraAttributes,
-                        entry.isExported());
-            case IClasspathEntry.CPE_LIBRARY:
-                return JavaCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(),
-                        entry.getSourceAttachmentRootPath(), entry.getAccessRules(), extraAttributes,
-                        entry.isExported());
-            case IClasspathEntry.CPE_PROJECT:
-                return JavaCore.newProjectEntry(entry.getPath(), entry.getAccessRules(), entry.combineAccessRules(),
-                        extraAttributes, entry.isExported());
-            default:
-                // other kinds are not handled
-                return entry;
-        }
+        return switch (entry.getEntryKind()) {
+            case CPE_CONTAINER -> JavaCore.newContainerEntry(entry.getPath(), entry.getAccessRules(), extraAttributes,
+                    entry.isExported());
+            case CPE_LIBRARY -> JavaCore.newLibraryEntry(entry.getPath(), entry.getSourceAttachmentPath(),
+                    entry.getSourceAttachmentRootPath(), entry.getAccessRules(), extraAttributes, entry.isExported());
+            case CPE_PROJECT -> JavaCore.newProjectEntry(entry.getPath(), entry.getAccessRules(),
+                    entry.combineAccessRules(), extraAttributes, entry.isExported());
+            default -> /* other kinds are not handled */ entry;
+        };
     }
 
 }

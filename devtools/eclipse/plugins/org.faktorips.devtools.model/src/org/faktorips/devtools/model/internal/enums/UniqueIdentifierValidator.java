@@ -52,8 +52,7 @@ class UniqueIdentifierValidator {
         container.getIpsModel().addChangeListener(event -> {
             if (isRelevantChangeEvent(event)) {
                 IIpsObjectPartContainer part = event.getPart();
-                if (part instanceof IEnumAttributeValue) {
-                    IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
+                if (part instanceof IEnumAttributeValue enumAttributeValue) {
                     int index = getEnumAttributeIndex(enumAttributeValue);
                     columnAttributeValues.remove(index);
                 } else {

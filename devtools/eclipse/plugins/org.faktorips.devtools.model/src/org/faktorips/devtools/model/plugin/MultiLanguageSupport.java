@@ -181,8 +181,7 @@ public class MultiLanguageSupport implements IMultiLanguageSupport {
         String label = StringUtils.capitalize(labeledElement.getName());
 
         // TODO AW: Awkward hard-coded solution but so far we haven't agreed upon another approach
-        if (labeledElement instanceof IProductCmptTypeMethod) {
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)labeledElement;
+        if (labeledElement instanceof IProductCmptTypeMethod method) {
             if (method.isFormulaSignatureDefinition()) {
                 label = StringUtils.capitalize(method.getFormulaName());
             }

@@ -47,8 +47,7 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
             return null;
         }
 
-        if (adaptableObject instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)adaptableObject;
+        if (adaptableObject instanceof IIpsSrcFile ipsSrcFile) {
             Class<? extends IpsObject> implementingClass = ipsSrcFile.getIpsObjectType().getImplementingClass();
             if (implementingClass != null) {
                 return (T)getAdapterByClass(implementingClass);

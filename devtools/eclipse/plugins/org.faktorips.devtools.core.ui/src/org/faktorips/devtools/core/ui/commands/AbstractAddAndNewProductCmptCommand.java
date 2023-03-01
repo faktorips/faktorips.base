@@ -38,11 +38,10 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
         IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
 
-        if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection)) {
+        if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection structuredSelection)) {
             return;
         }
 
-        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
         Object selectedElement = structuredSelection.getFirstElement();
         if (selectedElement instanceof IProductCmptReference) {
             setBaseEnabled(((IProductCmptReference)selectedElement).hasAssociationChildren());

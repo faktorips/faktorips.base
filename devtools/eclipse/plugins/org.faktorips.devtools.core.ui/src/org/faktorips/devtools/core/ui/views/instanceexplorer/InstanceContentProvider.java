@@ -82,8 +82,7 @@ public class InstanceContentProvider extends DeferredStructuredContentProvider {
 
     @Override
     protected Object[] collectElements(Object inputElement, IProgressMonitor monitor) {
-        if (inputElement instanceof IIpsMetaClass) {
-            IIpsMetaClass ipsMetaClass = (IIpsMetaClass)inputElement;
+        if (inputElement instanceof IIpsMetaClass ipsMetaClass) {
             return collectIpsSrcFileViewItems(ipsMetaClass, monitor);
         }
         return null;

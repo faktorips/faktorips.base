@@ -85,8 +85,7 @@ public class ProductCmptTypeAssociationsSection extends AssociationsSection {
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
-            if (selected instanceof IProductCmptTypeAssociation) {
-                IProductCmptTypeAssociation productCmptTypeAssociation = (IProductCmptTypeAssociation)selected;
+            if (selected instanceof IProductCmptTypeAssociation productCmptTypeAssociation) {
                 IType target = productCmptTypeAssociation.findTarget(type.getIpsProject());
                 IpsUIPlugin.getDefault().openEditor(target);
             }

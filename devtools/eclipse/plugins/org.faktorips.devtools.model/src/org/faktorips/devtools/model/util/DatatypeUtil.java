@@ -53,8 +53,7 @@ public class DatatypeUtil {
         } else if (datatype1.equals(datatype2)) {
             return true;
         } else {
-            if (datatype1 instanceof EnumTypeDatatypeAdapter) {
-                EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)datatype1;
+            if (datatype1 instanceof EnumTypeDatatypeAdapter enumTypeDatatypeAdapter) {
                 return enumTypeDatatypeAdapter.isCovariant(datatype2);
             } else {
                 return false;

@@ -127,8 +127,7 @@ public class TestCaseStructurePage extends WizardPage {
             @Override
             protected MessageList getMessagesFor(Object element) {
                 MessageList result = new MessageList();
-                if (element instanceof IIpsObjectPartContainer) {
-                    IIpsObjectPartContainer part = (IIpsObjectPartContainer)element;
+                if (element instanceof IIpsObjectPartContainer part) {
                     MessageList msgList = part.getIpsObject().validate(ipsProject);
                     collectMessages(result, msgList, part);
                 }

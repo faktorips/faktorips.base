@@ -91,19 +91,14 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
 
         String scopeType = getScopeTypeLabel(countSelectedResources == 1);
 
-        switch (countSelectedResources) {
-            case 1:
-                return Messages.bind(Messages.IpsSearchScope_scopeWithOneSelectedElement, new String[] { scopeType,
-                        namesOfSelectedObjects.get(0) });
-
-            case 2:
-                return Messages.bind(Messages.IpsSearchScope_scopeWithTwoSelectedElements, new String[] { scopeType,
-                        namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
-
-            default:
-                return Messages.bind(Messages.IpsSearchScope_scopeWithMoreThanTwoSelectedElements, new String[] {
-                        scopeType, namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
-        }
+        return switch (countSelectedResources) {
+            case 1 -> Messages.bind(Messages.IpsSearchScope_scopeWithOneSelectedElement, new String[] { scopeType,
+                    namesOfSelectedObjects.get(0) });
+            case 2 -> Messages.bind(Messages.IpsSearchScope_scopeWithTwoSelectedElements, new String[] { scopeType,
+                    namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
+            default -> Messages.bind(Messages.IpsSearchScope_scopeWithMoreThanTwoSelectedElements, new String[] {
+                    scopeType, namesOfSelectedObjects.get(0), namesOfSelectedObjects.get(1) });
+        };
     }
 
     /**
@@ -157,12 +152,11 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
         if (object instanceof IResource) {
             return (IResource)object;
         }
-        if (object instanceof IIpsObjectPart) {
-            object = ((IIpsObjectPart)object).getIpsObject();
+        Object obj = object;
+        if (obj instanceof IIpsObjectPart) {
+            obj = ((IIpsObjectPart)object).getIpsObject();
         }
-        if (object instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable)object;
-
+        if (obj instanceof IAdaptable adaptable) {
             return adaptable.getAdapter(IResource.class);
         }
         return null;
@@ -171,15 +165,12 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
     protected abstract List<?> getSelectedObjects();
 
     private void addSrcFilesOfElement(Set<IIpsSrcFile> srcFiles, IIpsElement element) {
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)element;
+        if (element instanceof IIpsSrcFile srcFile) {
             srcFiles.add(srcFile);
             return;
         }
 
-        if (element instanceof IIpsProject) {
-            IIpsProject ipsProject = (IIpsProject)element;
-
+        if (element instanceof IIpsProject ipsProject) {
             for (AResource resource : ipsProject.getProject()) {
                 addResource(srcFiles, resource.unwrap());
             }
@@ -198,9 +189,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
             return;
         }
 
-        if (element instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot packageFragmentRoot = (IIpsPackageFragmentRoot)element;
-
+        if (element instanceof IIpsPackageFragmentRoot packageFragmentRoot) {
             IIpsPackageFragment[] ipsPackageFragments = packageFragmentRoot.getIpsPackageFragments();
 
             for (IIpsPackageFragment packageFragment : ipsPackageFragments) {
@@ -208,9 +197,7 @@ public abstract class AbstractIpsSearchScope implements IIpsSearchScope {
             }
             return;
         }
-        if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment packageFragment = (IIpsPackageFragment)element;
-
+        if (element instanceof IIpsPackageFragment packageFragment) {
             srcFiles.addAll(Arrays.asList(packageFragment.getIpsSrcFiles()));
         }
     }
