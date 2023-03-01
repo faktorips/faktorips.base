@@ -13,7 +13,7 @@
     <name>Faktor-IPS Build Maven Plugin</name>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <tycho.version>3.0.1</tycho.version>
         <commons-codec.version>1.15</commons-codec.version>
         <commons-io.version>2.11.0</commons-io.version>

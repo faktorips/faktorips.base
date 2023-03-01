@@ -9,6 +9,7 @@ pom.tycho
 .flattened-pom.xml
 
 # Eclipse
+bin
 /.project
 /.settings
 faktorips-*/.classpath
@@ -17,6 +18,9 @@ faktorips-*/.settings/org.eclipse.core.resources.prefs
 faktorips-*/.settings/org.eclipse.m2e.core.prefs
 faktorips-*/.settings/org.eclipse.pde.core.prefs
 faktorips-*/.settings/org.moreunit.prefs
+
+*/.settings/org.eclipse.m2e.core.prefs
+*/.settings/org.eclipse.pde.core.prefs
 
 # IntelliJ
 .idea

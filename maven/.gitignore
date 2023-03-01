@@ -1,9 +1,2 @@
-**/target
-**/.classpath
-**/.project
-**/.settings/org.eclipse.core.resources.prefs
-**/.settings/org.eclipse.m2e.core.prefs
-**/.idea
-**/bin/
-**/.flattened-pom.xml
+# created by site plugin
 faktorips-maven-plugin

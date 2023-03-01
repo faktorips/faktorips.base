@@ -137,7 +137,6 @@ cleanup.use_var=false
 cleanup.useless_continue=false
 cleanup.useless_return=false
 cleanup.valueof_rather_than_instantiation=true
-cleanup_profile=_Faktor-IPS
 cleanup_settings_version=2
 eclipse.preferences.version=1
 editor_save_participant_org.eclipse.jdt.ui.postsavelistener.cleanup=true
