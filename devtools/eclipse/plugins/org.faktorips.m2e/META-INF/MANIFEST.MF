@@ -6,7 +6,9 @@ Bundle-Version: 23.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.m2e.core;bundle-version="2.0.3",
+ org.eclipse.m2e.jdt;bundle-version="2.0.1",
  org.eclipse.m2e.maven.runtime;bundle-version="3.8.601",
+ org.eclipse.m2e.workspace.cli;bundle-version="0.3.1",
  org.eclipse.core.resources;bundle-version="3.13.700",
  org.eclipse.core.runtime;bundle-version="3.17.100",
  org.eclipse.jdt.core;bundle-version="3.21.0"
