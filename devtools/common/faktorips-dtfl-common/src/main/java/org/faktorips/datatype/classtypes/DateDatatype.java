@@ -27,7 +27,8 @@ public class DateDatatype extends ValueClassNameDatatype {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
+    private static ThreadLocal<SimpleDateFormat> formatter = ThreadLocal
+            .withInitial(() -> new SimpleDateFormat(DATE_FORMAT));
 
     /**
      * Creates a new DateDatatype where the name is the short class name.
@@ -45,13 +46,13 @@ public class DateDatatype extends ValueClassNameDatatype {
             if (!DateUtil.isIsoDate(value)) {
                 throw new IllegalArgumentException("Date value must have the format " + DATE_FORMAT); //$NON-NLS-1$
             }
-            return formatter.parse(value);
+            return formatter.get().parse(value);
             // CSOFF: Illegal Catch
         } catch (Exception e) {
             // CSON: Illegal Catch
             IllegalArgumentException ill = new IllegalArgumentException(
                     "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class //$NON-NLS-1$ //$NON-NLS-2$
-                            + " instance"); //$NON-NLS-1$
+                    + " instance"); //$NON-NLS-1$
             ill.initCause(e);
             throw ill;
         }
@@ -67,7 +68,7 @@ public class DateDatatype extends ValueClassNameDatatype {
         if (value == null) {
             return null;
         }
-        return formatter.format(value);
+        return formatter.get().format(value);
     }
 
     /**

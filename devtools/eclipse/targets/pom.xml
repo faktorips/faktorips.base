@@ -14,7 +14,6 @@
     <modules>
         <!-- p2 Repository and product -->
         <module>thirdparty</module>
-        <module>2022-09</module>
         <module>2022-12</module>
     </modules>
 
