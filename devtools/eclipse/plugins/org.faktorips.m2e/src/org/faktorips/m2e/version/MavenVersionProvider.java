@@ -22,10 +22,10 @@ import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.project.IMavenProjectChangedListener;
 import org.eclipse.m2e.core.project.IMavenProjectFacade;
 import org.eclipse.m2e.core.project.MavenProjectChangedEvent;
-import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IVersion;
 import org.faktorips.devtools.model.IVersionProvider;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.plugin.IpsLog;
 
 /**
  * A {@link IVersionProvider} reading the version from a {@link MavenProject}'s {@code pom.xml}.
@@ -56,7 +56,8 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
             // need to use the version with monitor to search the project if it's not in the cache
             return mavenProjectFacade.getMavenProject(new NullProgressMonitor());
         } catch (CoreException e) {
-            throw new IpsException(e);
+            IpsLog.log(e);
+            return null;
         }
     }
 
