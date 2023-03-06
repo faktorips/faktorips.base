@@ -15,6 +15,7 @@
         <!-- p2 Repository and product -->
         <module>thirdparty</module>
         <module>2022-12</module>
+        <module>2023-03</module>
     </modules>
 
     <build>
