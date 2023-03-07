@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.dependency.IDependency;
 import org.faktorips.devtools.model.dependency.IDependencyDetail;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 

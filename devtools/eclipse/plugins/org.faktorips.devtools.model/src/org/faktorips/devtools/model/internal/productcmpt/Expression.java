@@ -182,8 +182,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         IIpsProject ipsProject = getIpsProject();
         Datatype[] datatypes = ipsProject.findDatatypes(true, false);
         for (Datatype datatype : datatypes) {
-            if (datatype instanceof EnumDatatype) {
-                EnumDatatype enumDatatyp = (EnumDatatype)datatype;
+            if (datatype instanceof EnumDatatype enumDatatyp) {
                 nameToTypeMap.put(enumDatatyp.getName(), enumDatatyp);
             }
         }

@@ -15,9 +15,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.model.pctype.persistence.IPersistentAttributeInfo;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

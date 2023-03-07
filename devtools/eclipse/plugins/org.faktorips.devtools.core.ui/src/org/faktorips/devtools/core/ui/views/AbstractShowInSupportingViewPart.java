@@ -80,8 +80,7 @@ public abstract class AbstractShowInSupportingViewPart extends ViewPart implemen
         if (firstElement instanceof Object[]) {
             firstElement = ((Object[])firstElement)[0];
         }
-        if (firstElement instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable)firstElement;
+        if (firstElement instanceof IAdaptable adaptable) {
             return show(adaptable);
         }
         return false;

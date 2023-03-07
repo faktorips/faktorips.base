@@ -52,7 +52,7 @@ import org.faktorips.runtime.MessageList;
  * @author Daniel Hohenberger
  */
 public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
-        implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
     private IWorkbenchWindow window;
     // the last selection
     private ISelection selection;
@@ -126,25 +126,24 @@ public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
     }
 
     /* private */ void addElementToFix(Set<IFixDifferencesToModelSupport> ipsElementsToFix, Object selected) {
-        if (selected instanceof AAbstraction) {
-            addElementToFix(ipsElementsToFix, ((AAbstraction)selected).unwrap());
+        if (selected instanceof AAbstraction abstraction) {
+            addElementToFix(ipsElementsToFix, abstraction.unwrap());
         }
-        if (selected instanceof IJavaProject) {
-            IIpsProject project = getIpsProject((IJavaProject)selected);
+        if (selected instanceof IJavaProject javaProject) {
+            IIpsProject project = getIpsProject(javaProject);
             addIpsElements(project, ipsElementsToFix);
-        } else if (selected instanceof IIpsProject) {
-            addIpsElements((IIpsProject)selected, ipsElementsToFix);
-        } else if (selected instanceof IIpsPackageFragmentRoot) {
-            addIpsElements((IIpsPackageFragmentRoot)selected, ipsElementsToFix);
-        } else if (selected instanceof IIpsPackageFragment) {
-            addIpsElements((IIpsPackageFragment)selected, ipsElementsToFix);
-        } else if (selected instanceof IIpsSrcFile) {
-            addElementToFix(ipsElementsToFix, ((IIpsSrcFile)selected).getIpsObject());
-        } else if (selected instanceof IIpsSrcFileWrapper) {
-            addElementToFix(ipsElementsToFix, ((IIpsSrcFileWrapper)selected).getWrappedIpsSrcFile().getIpsObject());
-        } else if (selected instanceof IFixDifferencesToModelSupport) {
-            IFixDifferencesToModelSupport ipsElementToFix = (IFixDifferencesToModelSupport)selected;
-            addIpsElement(ipsElementToFix, ipsElementsToFix);
+        } else if (selected instanceof IIpsProject ipsProject) {
+            addIpsElements(ipsProject, ipsElementsToFix);
+        } else if (selected instanceof IIpsPackageFragmentRoot ipsPackageFragmentRoot) {
+            addIpsElements(ipsPackageFragmentRoot, ipsElementsToFix);
+        } else if (selected instanceof IIpsPackageFragment ipsPackageFragment) {
+            addIpsElements(ipsPackageFragment, ipsElementsToFix);
+        } else if (selected instanceof IIpsSrcFile ipsSrcFile) {
+            addElementToFix(ipsElementsToFix, ipsSrcFile.getIpsObject());
+        } else if (selected instanceof IIpsSrcFileWrapper ipsSrcFileWrapper) {
+            addElementToFix(ipsElementsToFix, ipsSrcFileWrapper.getWrappedIpsSrcFile().getIpsObject());
+        } else if (selected instanceof IFixDifferencesToModelSupport fixDifferencesToModelSupport) {
+            addIpsElement(fixDifferencesToModelSupport, ipsElementsToFix);
         } else if (selected instanceof IResource) {
             Object objToAdd = IIpsModel.get()
                     .getIpsElement(Wrappers.wrap(selected).as(AResource.class));

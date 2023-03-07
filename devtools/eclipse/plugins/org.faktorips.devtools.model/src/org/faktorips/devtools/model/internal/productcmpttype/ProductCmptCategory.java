@@ -110,25 +110,13 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
 
     @Override
     public boolean isDefaultFor(ProductCmptPropertyType propertyType) {
-        boolean isDefault = false;
-        switch (propertyType) {
-            case POLICY_CMPT_TYPE_ATTRIBUTE:
-                isDefault = isDefaultForPolicyCmptTypeAttributes();
-                break;
-            case PRODUCT_CMPT_TYPE_ATTRIBUTE:
-                isDefault = isDefaultForProductCmptTypeAttributes();
-                break;
-            case VALIDATION_RULE:
-                isDefault = isDefaultForValidationRules();
-                break;
-            case FORMULA_SIGNATURE_DEFINITION:
-                isDefault = isDefaultForFormulaSignatureDefinitions();
-                break;
-            case TABLE_STRUCTURE_USAGE:
-                isDefault = isDefaultForTableStructureUsages();
-                break;
-        }
-        return isDefault;
+        return switch (propertyType) {
+            case POLICY_CMPT_TYPE_ATTRIBUTE -> isDefaultForPolicyCmptTypeAttributes();
+            case PRODUCT_CMPT_TYPE_ATTRIBUTE -> isDefaultForProductCmptTypeAttributes();
+            case VALIDATION_RULE -> isDefaultForValidationRules();
+            case FORMULA_SIGNATURE_DEFINITION -> isDefaultForFormulaSignatureDefinitions();
+            case TABLE_STRUCTURE_USAGE -> isDefaultForTableStructureUsages();
+        };
     }
 
     @Override
@@ -679,20 +667,14 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             String category = ((ProductCmptType)contextType).getCategoryNameFor(property);
             if (IpsStringUtils.isBlank(category)) {
                 IIpsProject ipsProject = contextType.getIpsProject();
-                switch (property.getProductCmptPropertyType()) {
-                    case FORMULA_SIGNATURE_DEFINITION:
-                        return contextType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).getName();
-                    case POLICY_CMPT_TYPE_ATTRIBUTE:
-                        return contextType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).getName();
-                    case PRODUCT_CMPT_TYPE_ATTRIBUTE:
-                        return contextType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).getName();
-                    case TABLE_STRUCTURE_USAGE:
-                        return contextType.findDefaultCategoryForTableStructureUsages(ipsProject).getName();
-                    case VALIDATION_RULE:
-                        return contextType.findDefaultCategoryForValidationRules(ipsProject).getName();
-                    default:
-                        return category;
-                }
+                return switch (property.getProductCmptPropertyType()) {
+                    case FORMULA_SIGNATURE_DEFINITION -> contextType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).getName();
+                    case POLICY_CMPT_TYPE_ATTRIBUTE -> contextType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).getName();
+                    case PRODUCT_CMPT_TYPE_ATTRIBUTE -> contextType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).getName();
+                    case TABLE_STRUCTURE_USAGE -> contextType.findDefaultCategoryForTableStructureUsages(ipsProject).getName();
+                    case VALIDATION_RULE -> contextType.findDefaultCategoryForValidationRules(ipsProject).getName();
+                    default -> category;
+                };
             }
             return category;
         }

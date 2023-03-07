@@ -177,8 +177,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
             Node node = nodeList.item(i);
-            if (node instanceof Element) {
-                Element element = (Element)node;
+            if (node instanceof Element element) {
                 if (Objects.equals(element.getNodeName(), tagName)) {
                     linkElements.add(element);
                 }

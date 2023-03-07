@@ -284,13 +284,11 @@ public class SrcFolderComposite extends DataChangeableComposite {
         if (selection.isEmpty()) {
             return;
         }
-        if (selection instanceof ITreeSelection) {
-            ITreeSelection treeSelection = (ITreeSelection)selection;
+        if (selection instanceof ITreeSelection treeSelection) {
             for (Object next : treeSelection) {
-                if (!(next instanceof IIpsSrcFolderEntry)) {
+                if (!(next instanceof IIpsSrcFolderEntry srcFolderEntry)) {
                     continue;
                 }
-                IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry)next;
                 ipsObjectPath.removeSrcFolderEntry(srcFolderEntry.getSourceFolder());
                 dataChanged = true;
 

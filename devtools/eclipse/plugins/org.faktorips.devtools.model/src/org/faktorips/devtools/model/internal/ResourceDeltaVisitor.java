@@ -87,8 +87,7 @@ public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
 
     private boolean handleOtherResourceChange(AResource resource) {
         final IIpsElement element = ipsModel.findIpsElement(resource);
-        if (element instanceof IIpsSrcFile && ((IIpsSrcFile)element).isContainedInIpsRoot()) {
-            IIpsSrcFile srcFile = (IIpsSrcFile)element;
+        if (element instanceof IIpsSrcFile srcFile && srcFile.isContainedInIpsRoot()) {
             IpsSrcFileContent content = ipsModel.getIpsSrcFileContent(srcFile);
             boolean isInSync = isInSync(srcFile, content);
             traceModelResourceVisited(resource, srcFile, isInSync);
@@ -119,8 +118,8 @@ public class ResourceDeltaVisitor implements AResourceDeltaVisitor {
         if (IpsModel.TRACE_MODEL_MANAGEMENT) {
             System.out.println(
                     "IpsModel.ResourceDeltaVisitor.visit(): Received notification of IpsSrcFile change/delete on disk with modStamp " //$NON-NLS-1$
-                            + resource.getModificationStamp() + ", Sync status=" + isInSync + ", " //$NON-NLS-1$ //$NON-NLS-2$
-                            + srcFile + " Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
+                    + resource.getModificationStamp() + ", Sync status=" + isInSync + ", " //$NON-NLS-1$ //$NON-NLS-2$
+                    + srcFile + " Thread: " + Thread.currentThread().getName()); //$NON-NLS-1$
         }
     }
 

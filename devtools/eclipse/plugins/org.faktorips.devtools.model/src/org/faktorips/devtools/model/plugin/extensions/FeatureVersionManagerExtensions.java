@@ -51,8 +51,7 @@ public class FeatureVersionManagerExtensions extends
     private static void initializeIpsFeatureVersionManager(IConfigurationElement configElement,
             IIpsFeatureVersionManager manager,
             List<IIpsFeatureVersionManager> list) {
-        if (manager instanceof IExtendableVersionManager) {
-            IExtendableVersionManager extendableVersionManager = (IExtendableVersionManager)manager;
+        if (manager instanceof IExtendableVersionManager extendableVersionManager) {
             extendableVersionManager.setContributorName(configElement.getContributor().getName());
         }
         manager.setFeatureId(configElement.getAttribute(ATTRIBUTE_FEATURE_ID));

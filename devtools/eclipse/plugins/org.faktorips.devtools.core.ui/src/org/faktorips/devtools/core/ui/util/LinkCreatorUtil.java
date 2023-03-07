@@ -14,16 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.dialogs.SelectionDialog;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
-import org.faktorips.devtools.core.ui.views.productstructureexplorer.AssociationSelectionDialog;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -55,13 +58,11 @@ public class LinkCreatorUtil {
         try {
             boolean result;
             IIpsSrcFile ipsSrcFile;
-            if (target instanceof IProductCmptReference) {
-                IProductCmptReference cmptReference = (IProductCmptReference)target;
+            if (target instanceof IProductCmptReference cmptReference) {
                 ipsSrcFile = cmptReference.getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processProductCmptReference(droppedCmpts, cmptReference, true);
-            } else if (target instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)target;
+            } else if (target instanceof IProductCmptTypeAssociationReference relationReference) {
                 ipsSrcFile = relationReference.getParent().getWrappedIpsSrcFile();
                 haveToSave &= !ipsSrcFile.isDirty();
                 result = processAssociationReference(droppedCmpts, relationReference, true);
@@ -116,8 +117,7 @@ public class LinkCreatorUtil {
                     Object[] selectedAssociations = selectAssociation(draggedCmpt.getQualifiedName(), possibleAssos);
                     if (selectedAssociations != null) {
                         for (Object object : selectedAssociations) {
-                            if (object instanceof IProductCmptTypeAssociation) {
-                                IProductCmptTypeAssociation association = (IProductCmptTypeAssociation)object;
+                            if (object instanceof IProductCmptTypeAssociation association) {
                                 createLink(association, generation, draggedCmpt.getQualifiedName(),
                                         draggedCmpts.size() == 1);
                             }
@@ -153,8 +153,13 @@ public class LinkCreatorUtil {
             shell = new Shell(Display.getDefault());
         }
         //
-        SelectionDialog dialog = new AssociationSelectionDialog(shell, new ArrayList<IAssociation>(possibleAssos),
-                NLS.bind(Messages.LinkDropListener_selectAssociation, droppedCmptName));
+        ArrayList<IAssociation> copyOfPossibleAssos = new ArrayList<>(possibleAssos);
+        SelectionDialog dialog = ListSelectionDialog.of(copyOfPossibleAssos)
+                .contentProvider(new AssociationSelectionDialogContentProvider(copyOfPossibleAssos))
+                .labelProvider(new WorkbenchLabelProvider())
+                .message(NLS.bind(Messages.LinkDropListener_selectAssociation, droppedCmptName))
+                .create(shell);
+
         dialog.setBlockOnOpen(true);
         dialog.setHelpAvailable(false);
         if (dialog.open() == Window.OK) {
@@ -272,6 +277,31 @@ public class LinkCreatorUtil {
                 .map(IProductCmptLink::getAssociation)
                 .filter(Predicate.isEqual(newLinkAssociation))
                 .count() == 1;
+    }
+
+    private static class AssociationSelectionDialogContentProvider implements IStructuredContentProvider {
+
+        private final Object[] associations;
+
+        public AssociationSelectionDialogContentProvider(List<IAssociation> associations) {
+            this.associations = associations.toArray();
+        }
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            return associations;
+        }
+
+        @Override
+        public void dispose() {
+            // Nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // Nothing to do
+        }
+
     }
 
 }

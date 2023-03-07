@@ -114,8 +114,7 @@ public class Modules {
         @SuppressWarnings("unchecked")
         List<ModuleDirective> moduleStatements = moduleDeclaration.moduleStatements();
         for (ModuleDirective directive : moduleStatements) {
-            if (directive instanceof RequiresDirective) {
-                RequiresDirective requiresDirective = (RequiresDirective)directive;
+            if (directive instanceof RequiresDirective requiresDirective) {
                 Name name = requiresDirective.getName();
                 if (requiredModulesToAdd.remove(name.getFullyQualifiedName())
                         && isTransitive(requiresDirective) != transitive) {

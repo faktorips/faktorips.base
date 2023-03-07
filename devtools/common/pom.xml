@@ -16,7 +16,7 @@
     <description>Defines versions for and configures Maven plugins used to build the Faktor-IPS design-time libraries</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
     </properties>
     
     <modules>

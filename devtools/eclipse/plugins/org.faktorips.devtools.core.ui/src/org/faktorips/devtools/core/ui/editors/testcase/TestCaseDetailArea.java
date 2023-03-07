@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.editors.testcase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -134,9 +133,7 @@ public class TestCaseDetailArea {
      * Resets the color of all detail sections.
      */
     public void resetSectionColors(ScrolledForm form) {
-        Iterator<Section> iter = sectionControls.values().iterator();
-        while (iter.hasNext()) {
-            Section section = iter.next();
+        for (Section section : sectionControls.values()) {
             try {
                 if (!section.isDisposed()) {
                     section.setBackground(form.getBackground());

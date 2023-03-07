@@ -146,7 +146,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         if (!reduced) {
             int leftWidth = computeWidth(leftSections);
             int rightWidth = computeWidth(rightSections);
-            sashForm.setWeights(new int[] { leftWidth, rightWidth });
+            sashForm.setWeights(leftWidth, rightWidth);
         }
     }
 
@@ -461,8 +461,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     @Override
     public void gotoIpsObjectPart(IIpsObjectPart part) {
-        if (part instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)part;
+        if (part instanceof IProductCmptLink link) {
             linksSection.setSelection(Arrays.asList(link));
             getEditor().setActivePage(PAGE_ID);
         }

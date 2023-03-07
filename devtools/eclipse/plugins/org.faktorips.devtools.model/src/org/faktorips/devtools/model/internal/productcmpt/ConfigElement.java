@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.text.MessageFormat;
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsModel;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
 

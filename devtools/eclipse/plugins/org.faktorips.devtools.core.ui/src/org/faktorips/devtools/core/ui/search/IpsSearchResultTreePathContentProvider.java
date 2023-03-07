@@ -55,8 +55,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             ipsElementTree = new HashMap<>();
             return;
         }
-        if (e instanceof MatchEvent) {
-            MatchEvent matchEvent = (MatchEvent)e;
+        if (e instanceof MatchEvent matchEvent) {
             if (matchEvent.getKind() == MatchEvent.ADDED) {
                 addMatches(matchEvent.getMatches());
             }
@@ -95,8 +94,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         if (element instanceof IIpsProject) {
             return null;
         }
-        if (element instanceof IIpsObject) {
-            IIpsObject ipsSrcFile = (IIpsObject)element;
+        if (element instanceof IIpsObject ipsSrcFile) {
             return ipsSrcFile.getIpsPackageFragment();
         }
         return element.getParent();
@@ -155,8 +153,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
 
     @Override
     public Object[] getElements(Object inputElement) {
-        if (inputElement instanceof AbstractTextSearchResult) {
-            AbstractTextSearchResult currentSearchResult = (AbstractTextSearchResult)inputElement;
+        if (inputElement instanceof AbstractTextSearchResult currentSearchResult) {
             return currentSearchResult.getElements();
         }
         // in Eclipse 3.3 this method will always return an empty array because the elementsChanged
@@ -185,8 +182,7 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         Set<Object> toUpdate = new HashSet<>();
         for (Object updatedObject : updatedElements) {
             IIpsElement updatedElement = null;
-            if (updatedObject instanceof Object[]) {
-                Object[] objects = (Object[])updatedObject;
+            if (updatedObject instanceof Object[] objects) {
                 if (objects[0] instanceof IIpsElement) {
                     updatedElement = (IIpsElement)objects[0];
                 }

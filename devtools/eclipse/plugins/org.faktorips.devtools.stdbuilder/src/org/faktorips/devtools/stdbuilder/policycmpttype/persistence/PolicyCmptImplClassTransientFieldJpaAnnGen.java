@@ -39,14 +39,12 @@ public class PolicyCmptImplClassTransientFieldJpaAnnGen extends AbstractJpaAnnot
 
     @Override
     public boolean isGenerateAnnotationForInternal(IIpsElement ipsElement) {
-        if (ipsElement instanceof IPolicyCmptTypeAttribute) {
-            IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)ipsElement;
+        if (ipsElement instanceof IPolicyCmptTypeAttribute attribute) {
             if (!attribute.getPolicyCmptType().isPersistentEnabled()) {
                 return false;
             }
             return attribute.getPersistenceAttributeInfo().isTransient();
-        } else if (ipsElement instanceof IPolicyCmptTypeAssociation) {
-            IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)ipsElement;
+        } else if (ipsElement instanceof IPolicyCmptTypeAssociation association) {
             if (!association.getPolicyCmptType().isPersistentEnabled()) {
                 return false;
             }

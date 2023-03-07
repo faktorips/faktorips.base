@@ -54,8 +54,7 @@ public class ForeignKeyPMO extends IpsObjectPartPmo {
     public IIndex[] getAvailableUniqueKeys() {
         IIpsObject ipsObject;
         ipsObject = getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, getReferenceTable());
-        if (ipsObject != null && ipsObject instanceof ITableStructure) {
-            ITableStructure tableStructure = (ITableStructure)ipsObject;
+        if (ipsObject != null && ipsObject instanceof ITableStructure tableStructure) {
             return tableStructure.getUniqueKeys();
         }
         return EMPTY_ARRAY;

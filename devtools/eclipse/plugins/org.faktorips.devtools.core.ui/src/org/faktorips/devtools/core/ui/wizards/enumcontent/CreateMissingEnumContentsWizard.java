@@ -213,24 +213,19 @@ public class CreateMissingEnumContentsWizard extends Wizard {
          */
         private void setTargetFolderBasedOnSelection(TextButtonField targetFolderField) {
             String sourceFolderName = null;
-            if (preselectedIpsElement instanceof IIpsPackageFragmentRoot) {
-                IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)preselectedIpsElement;
+            if (preselectedIpsElement instanceof IIpsPackageFragmentRoot root) {
                 sourceFolderName = root.getName();
             }
-            if (preselectedIpsElement instanceof IIpsPackageFragment) {
-                IIpsPackageFragment fragment = (IIpsPackageFragment)preselectedIpsElement;
+            if (preselectedIpsElement instanceof IIpsPackageFragment fragment) {
                 sourceFolderName = fragment.getRoot().getName();
             }
-            if (preselectedIpsElement instanceof IIpsObject) {
-                IIpsObject ipsObject = (IIpsObject)preselectedIpsElement;
+            if (preselectedIpsElement instanceof IIpsObject ipsObject) {
                 sourceFolderName = ipsObject.getIpsPackageFragment().getRoot().getName();
             }
-            if (preselectedIpsElement instanceof IIpsObjectPart) {
-                IIpsObjectPart ipsObjectPart = (IIpsObjectPart)preselectedIpsElement;
+            if (preselectedIpsElement instanceof IIpsObjectPart ipsObjectPart) {
                 sourceFolderName = ipsObjectPart.getIpsObject().getIpsPackageFragment().getRoot().getName();
             }
-            if (preselectedIpsElement instanceof IIpsProject) {
-                IIpsProject ipsProject = (IIpsProject)preselectedIpsElement;
+            if (preselectedIpsElement instanceof IIpsProject ipsProject) {
                 IIpsPackageFragmentRoot[] rootsInProject = ipsProject.getIpsPackageFragmentRoots();
                 if (rootsInProject.length > 0) {
                     sourceFolderName = rootsInProject[0].getName();
@@ -350,8 +345,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             @Override
             public String getText(Object element) {
-                if (element instanceof IEnumType) {
-                    IEnumType enumType = (IEnumType)element;
+                if (element instanceof IEnumType enumType) {
                     String enumContentName = enumType.getEnumContentName();
                     return StringUtil.unqualifiedName(enumContentName);
                 }
@@ -452,8 +446,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
 
             @Override
             public Object getParent(Object element) {
-                if (element instanceof IEnumType) {
-                    IEnumType enumType = (IEnumType)element;
+                if (element instanceof IEnumType enumType) {
                     String enumContentName = enumType.getEnumContentName();
                     return StringUtil.getPackageName(enumContentName);
                 }
@@ -507,8 +500,7 @@ public class CreateMissingEnumContentsWizard extends Wizard {
                 if (monitor.isCanceled()) {
                     return;
                 }
-                if (checkedObj instanceof IEnumType) {
-                    IEnumType currentEnumType = (IEnumType)checkedObj;
+                if (checkedObj instanceof IEnumType currentEnumType) {
                     String enumContentQualifiedName = currentEnumType.getEnumContentName();
                     String enumContentPackageName = StringUtil.getPackageName(enumContentQualifiedName);
                     String enumContentName = StringUtil.unqualifiedName(enumContentQualifiedName);

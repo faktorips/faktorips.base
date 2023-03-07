@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.internal.migrationextensions;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.annotation.UtilityClass;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfigModel;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Utility class for common migration steps.

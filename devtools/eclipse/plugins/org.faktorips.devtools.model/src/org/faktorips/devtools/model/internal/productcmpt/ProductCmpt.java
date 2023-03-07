@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -73,6 +72,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -636,8 +636,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         if (part instanceof IProductCmptLink) {
             return linkCollection.addLink((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue) {
-            IPropertyValue propertyValue = (IPropertyValue)part;
+        } else if (part instanceof IPropertyValue propertyValue) {
             return propertyValueCollection.addPropertyValue(propertyValue);
         } else {
             return false;
@@ -651,8 +650,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         if (part instanceof IProductCmptLink) {
             return linkCollection.remove((IProductCmptLink)part);
-        } else if (part instanceof IPropertyValue) {
-            IPropertyValue propertyValue = (IPropertyValue)part;
+        } else if (part instanceof IPropertyValue propertyValue) {
             return propertyValueCollection.removePropertyValue(propertyValue);
         } else {
             return false;

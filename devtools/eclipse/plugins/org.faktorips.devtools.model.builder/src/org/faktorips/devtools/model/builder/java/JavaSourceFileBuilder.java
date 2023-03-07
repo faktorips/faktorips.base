@@ -223,8 +223,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     protected final String getDescriptionInGeneratorLanguage(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
         String description = ""; //$NON-NLS-1$
-        if (ipsObjectPartContainer instanceof IDescribedElement) {
-            IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+        if (ipsObjectPartContainer instanceof IDescribedElement describedElement) {
             IDescription generatorDescription = describedElement.getDescription(getLanguageUsedInGeneratedSourceCode());
             if (generatorDescription != null) {
                 description = generatorDescription.getText();
@@ -776,8 +775,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         AResource destination = getArtefactDestination(ipsSrcFile).getResource();
         if (file.exists()) {
             file.delete(null);
-            if (!parent.equals(destination) && parent instanceof AFolder) {
-                AFolder parentFolder = (AFolder)parent;
+            if (!parent.equals(destination) && parent instanceof AFolder parentFolder) {
                 if (parentFolder.getMembers().size() == 0) {
                     parentFolder.delete(null);
                 }

@@ -37,8 +37,7 @@ public class IpsObjectPartDeleteHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        if (selection instanceof IStructuredSelection structuredSelection) {
             final Set<IIpsSrcFile> srcFilesToSave = new HashSet<>();
             try {
                 for (Object o : structuredSelection.toArray()) {

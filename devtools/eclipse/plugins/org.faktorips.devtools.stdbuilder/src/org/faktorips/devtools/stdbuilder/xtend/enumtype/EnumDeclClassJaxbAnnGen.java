@@ -30,10 +30,9 @@ public class EnumDeclClassJaxbAnnGen implements IAnnotationGenerator {
 
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
-        if (!(modelNode instanceof XEnumType)) {
+        if (!(modelNode instanceof XEnumType xEnumType)) {
             return false;
         } else {
-            XEnumType xEnumType = (XEnumType)modelNode;
             return (xEnumType.isExtensible() && !xEnumType.isAbstract());
         }
     }

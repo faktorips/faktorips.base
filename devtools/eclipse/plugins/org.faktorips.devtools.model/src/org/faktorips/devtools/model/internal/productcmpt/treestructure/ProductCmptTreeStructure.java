@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -40,6 +39,7 @@ import org.faktorips.devtools.model.productcmpt.treestructure.IProductCmptVRuleR
 import org.faktorips.devtools.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.model.type.IAssociation;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -265,8 +265,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
 
         List<IProductCmptStructureReference> children = new ArrayList<>();
 
-        if (element instanceof IProductCmpt) {
-            IProductCmpt cmpt = ((IProductCmpt)element);
+        if (element instanceof IProductCmpt cmpt) {
             IProductCmptGeneration activeGeneration = null;
             if (workingDate != null) {
                 activeGeneration = cmpt.getGenerationEffectiveOn(workingDate);
@@ -425,8 +424,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
             List<IProductCmptTypeAssociationReference> associationReferences = new ArrayList<>();
             IProductCmptStructureReference[] children = ((ProductCmptReference)parent).getChildren();
             for (IProductCmptStructureReference element : children) {
-                if (element instanceof IProductCmptTypeAssociationReference) {
-                    IProductCmptTypeAssociationReference relationReference = (IProductCmptTypeAssociationReference)element;
+                if (element instanceof IProductCmptTypeAssociationReference relationReference) {
                     if (includeEmptyAssociations || getChildProductCmptReferences(relationReference).length > 0) {
                         associationReferences.add(relationReference);
                     }
@@ -454,8 +452,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         List<ProductCmptStructureTblUsageReference> tblUsageReferences = new ArrayList<>();
         IProductCmptStructureReference[] children = getChildren(parent);
         for (IProductCmptStructureReference element : children) {
-            if (element instanceof ProductCmptStructureTblUsageReference) {
-                ProductCmptStructureTblUsageReference tblUsageReference = (ProductCmptStructureTblUsageReference)element;
+            if (element instanceof ProductCmptStructureTblUsageReference tblUsageReference) {
                 if (IpsStringUtils.isNotEmpty(tblUsageReference.getTableContentUsage().getTableContentName())) {
                     tblUsageReferences.add(tblUsageReference);
                 }
@@ -477,8 +474,7 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
         List<ProductCmptVRuleReference> vRuleReferences = new ArrayList<>();
         IProductCmptStructureReference[] children = getChildren(parent);
         for (IProductCmptStructureReference element : children) {
-            if (element instanceof ProductCmptVRuleReference) {
-                ProductCmptVRuleReference vRuleReference = (ProductCmptVRuleReference)element;
+            if (element instanceof ProductCmptVRuleReference vRuleReference) {
                 if (IpsStringUtils.isNotEmpty(vRuleReference.getValidationRuleConfig().getName())) {
                     vRuleReferences.add(vRuleReference);
                 }

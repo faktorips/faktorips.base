@@ -4,7 +4,7 @@ Bundle-Name: Test Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.ant.test;singleton:=true
 Bundle-Version: 23.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Fragment-Host: org.faktorips.devtools.ant
 Require-Bundle: org.apache.ant,
  org.hamcrest;bundle-version="2.2"

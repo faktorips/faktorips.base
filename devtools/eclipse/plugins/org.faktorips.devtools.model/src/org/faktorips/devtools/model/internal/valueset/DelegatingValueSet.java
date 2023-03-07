@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.valueset;
 
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

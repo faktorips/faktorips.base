@@ -251,15 +251,13 @@ public final class LabelEditComposite extends Composite {
 
         @Override
         public Object getValue(Object element, String property) {
-            if (element instanceof ILabel) {
-                ILabel label = (ILabel)element;
-                if (property.equals(ILabel.PROPERTY_LOCALE)) {
-                    return label.getLocale().getLanguage();
-                } else if (property.equals(ILabel.PROPERTY_VALUE)) {
-                    return label.getValue();
-                } else if (property.equals(ILabel.PROPERTY_PLURAL_VALUE)) {
-                    return label.getPluralValue();
-                }
+            if (element instanceof ILabel label) {
+                return switch (property) {
+                    case ILabel.PROPERTY_LOCALE -> label.getLocale().getLanguage();
+                    case ILabel.PROPERTY_VALUE -> label.getValue();
+                    case ILabel.PROPERTY_PLURAL_VALUE -> label.getPluralValue();
+                    default -> null;
+                };
             }
             return null;
         }

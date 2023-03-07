@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.internal.pctype.persistence.PersistentAssociationInfo;
@@ -37,6 +36,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

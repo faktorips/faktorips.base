@@ -33,8 +33,7 @@ public class ValidationRuleDecorator implements IIpsElementDecorator {
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
         String[] overlays = new String[4];
-        if (ipsElement instanceof IValidationRule) {
-            IValidationRule rule = (IValidationRule)ipsElement;
+        if (ipsElement instanceof IValidationRule rule) {
             if (rule.isConfigurableByProductComponent()) {
                 overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_RELEVANT;
                 if (!rule.isChangingOverTime()) {

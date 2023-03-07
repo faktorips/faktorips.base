@@ -40,8 +40,7 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IAssociation) {
-            IAssociation association = (IAssociation)ipsObjectPart;
+        if (ipsObjectPart instanceof IAssociation association) {
             String baseName = getImageBaseName(association);
             String[] overlays = getImageOverlays(association);
             return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(baseName, overlays);
@@ -52,16 +51,12 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
     private String getImageBaseName(IAssociation association) {
         AssociationType associationType = association.getAssociationType();
         if (associationType != null) {
-            switch (associationType) {
-                case AGGREGATION:
-                    return ASSOCIATION_TYPE_AGGREGATION_IMAGE;
-                case ASSOCIATION:
-                    return ASSOCIATION_TYPE_ASSOCIATION_IMAGE;
-                case COMPOSITION_DETAIL_TO_MASTER:
-                    return ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE;
-                case COMPOSITION_MASTER_TO_DETAIL:
-                    return ASSOCIATION_TYPE_COMPOSITION_IMAGE;
-            }
+            return switch (associationType) {
+                case AGGREGATION -> ASSOCIATION_TYPE_AGGREGATION_IMAGE;
+                case ASSOCIATION -> ASSOCIATION_TYPE_ASSOCIATION_IMAGE;
+                case COMPOSITION_DETAIL_TO_MASTER -> ASSOCIATION_TYPE_COMPOSITION_DETAIL_TO_MASTER_IMAGE;
+                case COMPOSITION_MASTER_TO_DETAIL -> ASSOCIATION_TYPE_COMPOSITION_IMAGE;
+            };
         }
         throw new IllegalArgumentException(
                 association + " has unknown " + AssociationType.class.getSimpleName() + ": " + associationType); //$NON-NLS-1$ //$NON-NLS-2$
@@ -69,15 +64,13 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
 
     private String[] getImageOverlays(IAssociation association) {
         String[] overlays = new String[4];
-        if (association instanceof IPolicyCmptTypeAssociation) {
-            IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
+        if (association instanceof IPolicyCmptTypeAssociation polAssociation) {
             if (polAssociation.isConfigurable()
                     && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
                 overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_RELEVANT;
             }
         }
-        if (association instanceof IProductCmptTypeAssociation) {
-            IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
+        if (association instanceof IProductCmptTypeAssociation productAssociation) {
             if (showChangingOverTimeOverlay && !productAssociation.isChangingOverTime()) {
                 overlays[IDecoration.TOP_LEFT] = OverlayIcons.STATIC;
             }
@@ -98,8 +91,7 @@ public class AssociationDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IAssociation) {
-            IAssociation association = (IAssociation)ipsObjectPart;
+        if (ipsObjectPart instanceof IAssociation association) {
             if (association.is1ToMany()) {
                 return association.getTargetRolePlural();
             }

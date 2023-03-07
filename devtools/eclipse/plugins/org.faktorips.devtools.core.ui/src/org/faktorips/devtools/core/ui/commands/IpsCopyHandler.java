@@ -51,11 +51,9 @@ public class IpsCopyHandler extends AbstractCopyPasteHandler {
         IIpsObjectPart part;
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object object = iter.next();
-            if (!(object instanceof IAdaptable)) {
+            if (!(object instanceof IAdaptable adaptable)) {
                 return;
             }
-            IAdaptable adaptable = (IAdaptable)object;
-
             if (adaptable.getAdapter(IIpsObjectPart.class) != null) {
                 part = adaptable.getAdapter(IIpsObjectPart.class);
                 copiedObjects.add(new IpsObjectPartState(part));

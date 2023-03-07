@@ -411,8 +411,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter other = (EnumTypeDatatypeAdapter)obj;
+        if (obj instanceof EnumTypeDatatypeAdapter other) {
             return enumType.equals(other.enumType) && contentsEqual(other);
         }
         return super.equals(obj);

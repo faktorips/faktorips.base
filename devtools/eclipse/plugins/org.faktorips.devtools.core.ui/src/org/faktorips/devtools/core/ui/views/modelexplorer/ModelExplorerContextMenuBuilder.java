@@ -175,15 +175,13 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         manager.add(new Separator("copy")); //$NON-NLS-1$
         // Add copy actions depending on selected ips object type
-        if (selected instanceof IProductCmpt) {
-            IProductCmpt cmpt = (IProductCmpt)selected;
+        if (selected instanceof IProductCmpt cmpt) {
             if (cmpt.isProductTemplate()) {
                 addProductTemplateActions(manager);
             } else {
                 addProductComponentActions(manager);
             }
-        } else if (selected instanceof IProductCmptGeneration) {
-            IProductCmptGeneration gen = (IProductCmptGeneration)selected;
+        } else if (selected instanceof IProductCmptGeneration gen) {
             if (gen.isProductTemplate()) {
                 addProductTemplateActions(manager);
             } else {
@@ -304,8 +302,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     public Object mapIpsSrcFile2IpsObject(Object selected) {
-        if (selected instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selected;
+        if (selected instanceof IIpsSrcFile ipsSrcFile) {
             return ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
         }
         return selected;
@@ -374,8 +371,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     }
 
     protected void createProjectActions(IMenuManager manager, Object selected, IStructuredSelection selection) {
-        if (selected instanceof IIpsProject) {
-            IIpsProject ipsProject = (IIpsProject)selected;
+        if (selected instanceof IIpsProject ipsProject) {
             manager.add(openCloseAction((IProject)ipsProject.getCorrespondingResource().unwrap()));
 
             try {
@@ -384,8 +380,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection);
                 migrateAction.setEnabled(!(migrationOperation.isEmpty()));
                 if (
-                // in model explorer the action is always added
-                modelExplorer.isModelExplorer()
+                        // in model explorer the action is always added
+                        modelExplorer.isModelExplorer()
                         // in product explorer only if it is enabled
                         || !migrationOperation.isEmpty()) {
                     manager.add(migrateAction);
@@ -426,12 +422,11 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 || (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)
                         && selected instanceof IEnumContent)) {
             boolean show = true;
-            if (selected instanceof IEnumType) {
+            if (selected instanceof IEnumType enumType) {
                 /*
                  * The object has not been initialized, we do this now by requesting it again from
                  * the IpsSrcFile.
                  */
-                IEnumType enumType = (IEnumType)selected;
                 enumType = (IEnumType)enumType.getIpsSrcFile().getIpsObject();
                 show = enumType.isCapableOfContainingValues();
             }

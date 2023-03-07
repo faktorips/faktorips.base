@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.pctype.persistence;
 
 import java.text.MessageFormat;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

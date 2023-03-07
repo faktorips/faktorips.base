@@ -63,8 +63,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
     // CSOFF: CyclomaticComplexity
     @Override
     public IStructureComparator getStructure(Object input) {
-        if (input instanceof IAdaptable) {
-            IAdaptable adaptableInput = (IAdaptable)input;
+        if (input instanceof IAdaptable adaptableInput) {
             IResource resource = adaptableInput.getAdapter(IResource.class);
             if (resource != null) {
                 IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
@@ -89,8 +88,7 @@ public abstract class AbstractCompareItemCreator implements IStructureCreator {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-        } else if (input instanceof ISynchronizeModelElement) {
-            ISynchronizeModelElement modelElement = (ISynchronizeModelElement)input;
+        } else if (input instanceof ISynchronizeModelElement modelElement) {
             IResource res = modelElement.getResource();
             if (res instanceof IFile) {
                 IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(res).as(AResource.class));

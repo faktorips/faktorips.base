@@ -29,8 +29,7 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IEnumAttribute) {
-            IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPart;
+        if (ipsObjectPart instanceof IEnumAttribute enumAttribute) {
             String[] overlays = new String[4];
 
             try {
@@ -63,8 +62,7 @@ public class EnumAttributeDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IEnumAttribute) {
-            IEnumAttribute enumAttribute = (IEnumAttribute)ipsObjectPart;
+        if (ipsObjectPart instanceof IEnumAttribute enumAttribute) {
             String label = enumAttribute.getName();
             try {
                 Datatype datatype = enumAttribute.findDatatype(enumAttribute.getIpsProject());

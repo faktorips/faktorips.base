@@ -92,8 +92,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             addMessageIfTargetNotValidOnValidFromDate(association, relations, list);
         }
 
-        if (association instanceof IProductCmptTypeAssociation) {
-            IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
+        if (association instanceof IProductCmptTypeAssociation productAssociation) {
             IPolicyCmptTypeAssociation policyCmptTypeAssociation = productAssociation
                     .findMatchingPolicyCmptTypeAssociation(getIpsProject());
             validateCardinality(policyCmptTypeAssociation, relations, list);

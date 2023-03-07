@@ -190,8 +190,7 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     @Override
     public boolean equals(Object o) {
-        if (o instanceof TableContentsCompareItem) {
-            TableContentsCompareItem otherTableContentsCompareItem = (TableContentsCompareItem)o;
+        if (o instanceof TableContentsCompareItem otherTableContentsCompareItem) {
             if (getIpsElement() instanceof IRow && otherTableContentsCompareItem.getIpsElement() instanceof IRow) {
                 return rowContentStringColumnSeparated
                         .equals(otherTableContentsCompareItem.rowContentStringColumnSeparated);

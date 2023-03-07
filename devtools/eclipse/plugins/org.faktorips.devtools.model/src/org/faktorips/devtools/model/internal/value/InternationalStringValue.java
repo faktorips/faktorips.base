@@ -108,10 +108,9 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof InternationalStringValue)) {
+        if ((obj == null) || !(obj instanceof InternationalStringValue other)) {
             return false;
         }
-        InternationalStringValue other = (InternationalStringValue)obj;
         if (!getContent().equals(other.getContent())) {
             return false;
         }

@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.internal.InternationalString;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 import org.junit.Before;
 import org.junit.Test;

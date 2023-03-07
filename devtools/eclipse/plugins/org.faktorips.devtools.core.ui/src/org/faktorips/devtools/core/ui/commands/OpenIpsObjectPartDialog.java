@@ -72,8 +72,7 @@ public class OpenIpsObjectPartDialog extends AbstractHandler {
 
     private boolean isEditorEditable(IIpsObjectPart ipsObjectPart, ExecutionEvent event) {
         IEditorPart activeEditor = HandlerUtil.getActiveEditor(event);
-        if (activeEditor instanceof IpsObjectEditor) {
-            IpsObjectEditor ipsObjectEditor = (IpsObjectEditor)activeEditor;
+        if (activeEditor instanceof IpsObjectEditor ipsObjectEditor) {
             return ipsObjectEditor.isDataChangeable()
                     && ipsObjectEditor.getIpsSrcFile().equals(ipsObjectPart.getIpsSrcFile());
         }

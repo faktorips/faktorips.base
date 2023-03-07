@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.enums.EnumTypeHierarchyVisitor;
 import org.faktorips.devtools.model.enums.IEnumType;
@@ -23,6 +22,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**

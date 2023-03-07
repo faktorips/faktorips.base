@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
@@ -57,6 +56,7 @@ import org.faktorips.devtools.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.model.type.ITypeHierarchy;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -667,8 +667,7 @@ public class TestCase extends IpsObject implements ITestCase {
      * Removes the given test parameter object from the parameter list
      */
     private void remove(ITestObject testObject) {
-        if (testObject instanceof ITestPolicyCmpt) {
-            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObject;
+        if (testObject instanceof ITestPolicyCmpt testPolicyCmpt) {
             if (testPolicyCmpt.isRoot()) {
                 removeTestObject(testObject);
             } else {

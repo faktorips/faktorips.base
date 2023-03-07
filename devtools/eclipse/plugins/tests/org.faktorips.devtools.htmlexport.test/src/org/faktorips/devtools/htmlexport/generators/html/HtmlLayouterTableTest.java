@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.htmlexport.generators.html;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.RowTablePageElementLayout;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

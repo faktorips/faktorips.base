@@ -28,8 +28,7 @@ public class PolicyCmptImplClassAssociationJaxbAnnGen extends AbstractJaxbAnnota
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        if (generatorModelNode instanceof XPolicyAssociation) {
-            XPolicyAssociation xPolicyAssociation = (XPolicyAssociation)generatorModelNode;
+        if (generatorModelNode instanceof XPolicyAssociation xPolicyAssociation) {
             IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
             String fieldName = xPolicyAssociation.getFieldName();

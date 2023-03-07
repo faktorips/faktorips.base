@@ -33,8 +33,7 @@ public class DescriptionFinder extends TypeHierarchyVisitor<IType> {
     }
 
     public void start(IDescribedElement element) {
-        if (element instanceof IType) {
-            IType type = (IType)element;
+        if (element instanceof IType type) {
             super.start(type);
         } else {
             setDescription(element);

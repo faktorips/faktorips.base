@@ -40,8 +40,7 @@ public class IpsSearchProjectsScope extends AbstractIpsSearchScope {
             List<?> list = ((IStructuredSelection)selection).toList();
 
             for (Object object : list) {
-                if (object instanceof IAdaptable) {
-                    IAdaptable adaptable = (IAdaptable)object;
+                if (object instanceof IAdaptable adaptable) {
                     IResource resource = adaptable.getAdapter(IResource.class);
                     if (resource == null) {
                         continue;

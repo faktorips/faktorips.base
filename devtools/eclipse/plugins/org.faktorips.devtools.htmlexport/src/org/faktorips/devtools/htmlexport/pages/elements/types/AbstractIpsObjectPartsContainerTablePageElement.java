@@ -102,8 +102,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
 
     private List<IPageElement> createRowWithVersion(T rowData) {
         List<IPageElement> values = new ArrayList<>();
-        if (rowData instanceof IVersionControlledElement) {
-            IVersionControlledElement versionControlledElement = (IVersionControlledElement)rowData;
+        if (rowData instanceof IVersionControlledElement versionControlledElement) {
             IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
             if (sinceVersion != null) {
                 values.add(new TextPageElement(versionControlledElement.getSinceVersion().asString(), getContext()));

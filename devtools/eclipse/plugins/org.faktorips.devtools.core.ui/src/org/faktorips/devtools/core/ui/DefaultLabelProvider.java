@@ -47,8 +47,7 @@ public class DefaultLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable)element;
+        if (element instanceof IAdaptable adaptable) {
             Image result = IpsUIPlugin.getImageHandling().getImage(adaptable);
             if (result != null) {
                 return result;
@@ -74,8 +73,7 @@ public class DefaultLabelProvider extends LabelProvider {
         if (element == null) {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)element;
+        if (element instanceof IIpsElement ipsElement) {
             return IpsUIPlugin.getLabel(ipsElement);
         }
         if (element instanceof IpsSrcFileViewItem) {

@@ -324,12 +324,14 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
             }
         }
 
-        private String getBundleFileName(String pluginId, Bundle bundle, boolean sourceBundle) throws IOException {
-            if (sourceBundle) {
-                return getSourceBundlePath(FileLocator.getBundleFile(bundle).getAbsolutePath(), pluginId);
-            } else {
-                return FileLocator.getBundleFile(bundle).getAbsolutePath();
-            }
+        private String getBundleFileName(String pluginId, Bundle bundle, boolean sourceBundle) {
+
+            return FileLocator.getBundleFileLocation(bundle).map(file -> {
+                if (sourceBundle) {
+                    return getSourceBundlePath(file.getAbsolutePath(), pluginId);
+                }
+                return file.getAbsolutePath();
+            }).orElse(null);
         }
 
         /* private */String getSourceBundlePath(String fullPath, String pluginId) {

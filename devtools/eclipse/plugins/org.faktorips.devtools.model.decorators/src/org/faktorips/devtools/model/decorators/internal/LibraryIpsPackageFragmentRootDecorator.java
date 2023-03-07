@@ -23,8 +23,7 @@ public class LibraryIpsPackageFragmentRootDecorator implements IIpsElementDecora
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof ILibraryIpsPackageFragmentRoot) {
-            ILibraryIpsPackageFragmentRoot packageFragmentRoot = (ILibraryIpsPackageFragmentRoot)ipsElement;
+        if (ipsElement instanceof ILibraryIpsPackageFragmentRoot packageFragmentRoot) {
             if (packageFragmentRoot.isContainedInArchive()) {
                 return IIpsDecorators.getImageHandling().getSharedImageDescriptor(IPS_ARCHIVE_IMAGE, true);
             }

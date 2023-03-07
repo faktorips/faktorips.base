@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.internal.ipsproject.properties.IpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsBuilderSetPropertyDef;
 import org.faktorips.devtools.model.ipsproject.IIpsLoggingFrameworkConnector;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.runtime.Message;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This implementation of the {@link IIpsBuilderSetPropertyDef} interface can be used by

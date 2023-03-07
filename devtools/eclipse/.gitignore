@@ -1,2 +1,20 @@
-/.settings/
+!.project
+!.settings
+!.classpath
+!.project
+!org.eclipse.core.resources.prefs
+!org.eclipse.m2e.core.prefs
+!org.eclipse.pde.core.prefs
+# poms
+/.settings
 /.project
+/features/.settings
+/features/.project
+/plugins/.settings
+/plugins/.project
+/plugins/tests/.settings
+/plugins/tests/.project
+/sites/.settings
+/sites/.project
+/targets/.settings
+/targets/.project

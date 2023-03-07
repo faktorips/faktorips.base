@@ -140,10 +140,9 @@ public class IpsObjectDependency implements IDependency, Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof IpsObjectDependency)) {
+        if (!(o instanceof IpsObjectDependency other)) {
             return false;
         }
-        IpsObjectDependency other = (IpsObjectDependency)o;
         return dependencyType.equals(other.getType()) && target.equals(other.getTarget())
                 && source.equals(other.getSource());
     }

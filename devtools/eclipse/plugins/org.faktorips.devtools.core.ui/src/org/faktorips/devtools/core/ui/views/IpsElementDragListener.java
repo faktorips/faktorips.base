@@ -66,8 +66,7 @@ public class IpsElementDragListener implements DragSourceListener {
         Iterator<?> iter = selection.iterator();
         while (iter.hasNext()) {
             Object selected = iter.next();
-            if (selected instanceof Object[]) {
-                Object[] objetcs = (Object[])selected;
+            if (selected instanceof Object[] objetcs) {
                 for (Object objetc : objetcs) {
                     addSelectedObject(list, objetc);
                 }
@@ -86,8 +85,7 @@ public class IpsElementDragListener implements DragSourceListener {
             if (((IIpsElement)selected).getEnclosingResource() != null) {
                 list.add(((IIpsElement)selected).getEnclosingResource().getLocation().toString());
             }
-        } else if (selected instanceof IIpsSrcFileWrapper) {
-            IIpsSrcFileWrapper ipsSrcFileWrapper = (IIpsSrcFileWrapper)selected;
+        } else if (selected instanceof IIpsSrcFileWrapper ipsSrcFileWrapper) {
             list.add(ipsSrcFileWrapper.getWrappedIpsSrcFile().getEnclosingResource().getLocation().toString());
         }
     }

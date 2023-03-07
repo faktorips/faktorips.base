@@ -26,16 +26,12 @@ public class SeverityMapping {
      * instance.
      */
     public static Severity toIps(int eclipseSeverity) {
-        switch (eclipseSeverity) {
-            case IStatus.INFO:
-                return Severity.INFO;
-            case IStatus.WARNING:
-                return Severity.WARNING;
-            case IStatus.ERROR:
-                return Severity.ERROR;
-            default:
-                return Severity.NONE;
-        }
+        return switch (eclipseSeverity) {
+            case IStatus.INFO -> Severity.INFO;
+            case IStatus.WARNING -> Severity.WARNING;
+            case IStatus.ERROR -> Severity.ERROR;
+            default -> Severity.NONE;
+        };
     }
 
 }

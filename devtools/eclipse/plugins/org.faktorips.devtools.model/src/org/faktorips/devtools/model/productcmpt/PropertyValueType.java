@@ -79,8 +79,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IAttributeValue) {
-                    IAttributeValue attributeValue = (IAttributeValue)propertyValue;
+                if (propertyValue instanceof IAttributeValue attributeValue) {
                     return attributeValue.getValueHolder();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -95,8 +94,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if (value instanceof IValueHolder<?> && propertyValue instanceof IAttributeValue) {
-                    IAttributeValue attributeValue = (IAttributeValue)propertyValue;
+                if (value instanceof IValueHolder<?> && propertyValue instanceof IAttributeValue attributeValue) {
                     attributeValue.setValueHolder(((IValueHolder<?>)value).copy(attributeValue));
                 } else {
                     throw new IllegalArgumentException();
@@ -128,8 +126,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof ITableContentUsage) {
-                    ITableContentUsage contentUsage = (ITableContentUsage)propertyValue;
+                if (propertyValue instanceof ITableContentUsage contentUsage) {
                     return contentUsage.getTableContentName();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -144,8 +141,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if ((value == null || value instanceof String) && propertyValue instanceof ITableContentUsage) {
-                    ITableContentUsage element = (ITableContentUsage)propertyValue;
+                if ((value == null || value instanceof String) && propertyValue instanceof ITableContentUsage element) {
                     element.setTableContentName((String)value);
                 } else {
                     throw new IllegalArgumentException();
@@ -177,8 +173,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IFormula) {
-                    IFormula formula = (IFormula)propertyValue;
+                if (propertyValue instanceof IFormula formula) {
                     return formula.getExpression();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -193,8 +188,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if ((value == null || value instanceof String) && propertyValue instanceof IFormula) {
-                    IFormula element = (IFormula)propertyValue;
+                if ((value == null || value instanceof String) && propertyValue instanceof IFormula element) {
                     element.setExpression((String)value);
                 } else {
                     throw new IllegalArgumentException();
@@ -240,8 +234,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IConfiguredValueSet) {
-                    IConfiguredValueSet configuredValueSet = (IConfiguredValueSet)propertyValue;
+                if (propertyValue instanceof IConfiguredValueSet configuredValueSet) {
                     return configuredValueSet.getValueSet();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -269,8 +262,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if (value instanceof IValueSet && propertyValue instanceof IConfiguredValueSet) {
-                    IConfiguredValueSet element = (IConfiguredValueSet)propertyValue;
+                if (value instanceof IValueSet && propertyValue instanceof IConfiguredValueSet element) {
                     element.setValueSet(((IValueSet)value).copy(element, element.getIpsModel().getNextPartId(element)));
                 } else {
                     throw new IllegalArgumentException();
@@ -313,8 +305,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IConfiguredDefault) {
-                    IConfiguredDefault configuredDefault = (IConfiguredDefault)propertyValue;
+                if (propertyValue instanceof IConfiguredDefault configuredDefault) {
                     return configuredDefault.getValue();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -329,8 +320,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if ((value == null || value instanceof String) && propertyValue instanceof IConfiguredDefault) {
-                    IConfiguredDefault element = (IConfiguredDefault)propertyValue;
+                if ((value == null || value instanceof String) && propertyValue instanceof IConfiguredDefault element) {
                     element.setValue((String)value);
                 } else {
                     throw new IllegalArgumentException();
@@ -374,8 +364,7 @@ public enum PropertyValueType {
         @Override
         public Function<IPropertyValue, Object> getValueGetter() {
             return propertyValue -> {
-                if (propertyValue instanceof IValidationRuleConfig) {
-                    IValidationRuleConfig ruleConfig = (IValidationRuleConfig)propertyValue;
+                if (propertyValue instanceof IValidationRuleConfig ruleConfig) {
                     return ruleConfig.isActive();
                 }
                 throw new IllegalArgumentException("Illegal parameter " + propertyValue); //$NON-NLS-1$
@@ -390,8 +379,7 @@ public enum PropertyValueType {
         @Override
         public BiConsumer<IPropertyValue, Object> getValueSetter() {
             return (propertyValue, value) -> {
-                if (value instanceof Boolean && propertyValue instanceof IValidationRuleConfig) {
-                    IValidationRuleConfig ruleConfig = (IValidationRuleConfig)propertyValue;
+                if (value instanceof Boolean && propertyValue instanceof IValidationRuleConfig ruleConfig) {
                     ruleConfig.setActive((Boolean)value);
                 } else {
                     throw new IllegalArgumentException();

@@ -14,7 +14,6 @@ import java.beans.PropertyChangeEvent;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AResource;
 import org.faktorips.devtools.model.ContentChangeEvent;
 import org.faktorips.devtools.model.IIpsModel;
@@ -24,6 +23,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -167,10 +167,9 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof IpsObjectPart)) {
+        if (!(obj instanceof IpsObjectPart other)) {
             return false;
         }
-        IpsObjectPart other = (IpsObjectPart)obj;
         return Objects.equals(id, other.id)
                 && Objects.equals(getParent(), other.getParent());
     }

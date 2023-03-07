@@ -599,11 +599,9 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
     // CSON: AnonInnerLengthCheck
 
     private void installParameterTypeContentAssist(Control control) {
-        if (!(control instanceof Text)) {
+        if (!(control instanceof Text text)) {
             return;
         }
-        Text text = (Text)control;
-
         DatatypeContentProposalProvider provider = new DatatypeContentProposalProvider(ipsProject);
         provider.setValueDatatypesOnly(false);
         provider.setIncludeAbstract(true);
@@ -681,16 +679,12 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
         @Override
         public String getColumnText(Object element, int columnIndex) {
             IParameter info = (IParameter)element;
-            switch (columnIndex) {
-                case MESSAGE_PROP:
-                    return ""; //$NON-NLS-1$
-                case TYPE_PROP:
-                    return info.getDatatype();
-                case NEWNAME_PROP:
-                    return info.getName();
-                default:
-                    throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
-            }
+            return switch (columnIndex) {
+                case MESSAGE_PROP -> ""; //$NON-NLS-1$
+                case TYPE_PROP -> info.getDatatype();
+                case NEWNAME_PROP -> info.getName();
+                default -> throw new RuntimeException("Unknown column " + columnIndex); //$NON-NLS-1$
+            };
         }
     }
 
@@ -725,10 +719,9 @@ public class ParametersEditControl extends Composite implements IDataChangeableR
             if (el instanceof TableItem) {
                 el = ((TableItem)element).getData();
             }
-            if (!(el instanceof IParameter)) {
+            if (!(el instanceof IParameter param)) {
                 return;
             }
-            IParameter param = (IParameter)el;
             if (property.equals(PROPERTIES[NEWNAME_PROP])) {
                 param.setName((String)value);
             } else if (property.equals(PROPERTIES[TYPE_PROP])) {

@@ -82,8 +82,7 @@ public class ProductExplorerFilter extends ViewerFilter {
         if (element instanceof IResource) {
             resource = Wrappers.wrap(element).as(AResource.class);
             ipsProject = IIpsModel.get().getIpsProject(resource.getProject());
-        } else if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = ((IIpsElement)element);
+        } else if (element instanceof IIpsElement ipsElement) {
             resource = ipsElement.getCorrespondingResource();
             ipsProject = ipsElement.getIpsProject();
         } else {

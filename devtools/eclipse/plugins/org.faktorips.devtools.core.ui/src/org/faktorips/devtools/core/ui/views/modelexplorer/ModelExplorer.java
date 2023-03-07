@@ -231,8 +231,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             return;
         }
 
-        if (editorPart instanceof IpsObjectEditor) {
-            IpsObjectEditor ipsEditor = (IpsObjectEditor)editorPart;
+        if (editorPart instanceof IpsObjectEditor ipsEditor) {
             setSelectionInTree(ipsEditor.getIpsSrcFile());
         } else if (editorPart.getEditorInput() instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput)editorPart.getEditorInput()).getFile();
@@ -501,8 +500,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
             // If the IpsObject is not expanded yet, the parts are not loaded in the model explorer.
             // We have to expand the IpsObject (indeed it is the IpsSrcFile) and then select the
             // part again.
-            if (aObject instanceof IIpsObjectPart) {
-                IIpsObjectPart ipsObjectPart = (IIpsObjectPart)aObject;
+            if (aObject instanceof IIpsObjectPart ipsObjectPart) {
                 getTreeViewer().expandToLevel(ipsObjectPart.getIpsSrcFile(), 1);
                 getTreeViewer().setSelection(selection, true);
             }

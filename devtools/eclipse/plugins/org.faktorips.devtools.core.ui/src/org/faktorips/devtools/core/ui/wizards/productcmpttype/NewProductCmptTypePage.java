@@ -62,8 +62,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         super.setDefaults(selectedResource);
 
         IIpsObject ipsObject = getSelectedIpsObject();
-        if (ipsObject instanceof IPolicyCmptType) {
-            IPolicyCmptType selectedPcType = (IPolicyCmptType)ipsObject;
+        if (ipsObject instanceof IPolicyCmptType selectedPcType) {
             if (IpsStringUtils.isEmpty(selectedPcType.getProductCmptType())) {
                 policyCmptTypeField.setValue(selectedPcType.getQualifiedName());
                 getAbstractField().setValue(selectedPcType.isAbstract());

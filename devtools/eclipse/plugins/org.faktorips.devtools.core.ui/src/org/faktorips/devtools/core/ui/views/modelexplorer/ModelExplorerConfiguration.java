@@ -189,15 +189,13 @@ public class ModelExplorerConfiguration {
      * , false otherwise.
      */
     public boolean representsFile(Object item) {
-        if (item instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot root = (IIpsPackageFragmentRoot)item;
+        if (item instanceof IIpsPackageFragmentRoot root) {
             if (root.isBasedOnIpsArchive()) {
                 return true;
             }
         }
 
-        if (item instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)item;
+        if (item instanceof IIpsElement ipsElement) {
             AResource resource = ipsElement.getEnclosingResource();
             if (resource instanceof AFile) {
                 return true;

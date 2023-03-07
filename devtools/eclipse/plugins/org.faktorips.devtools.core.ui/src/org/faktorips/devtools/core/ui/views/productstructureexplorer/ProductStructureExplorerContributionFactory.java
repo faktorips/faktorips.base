@@ -103,8 +103,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
                 getAddNewProductCmptImageDescriptor(), null);
         additions.addContributionItem(menuManager, null);
         for (IProductCmptStructureReference child : children) {
-            if (child instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)child;
+            if (child instanceof IProductCmptTypeAssociationReference associationReference) {
                 CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator,
                         IpsStringUtils.EMPTY, AddNewProductCmptCommand.COMMAND_ID, SWT.PUSH);
                 itemParameter.label = IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(
@@ -160,12 +159,10 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
      */
     private String getLabelForAddExisting(IProductCmptStructureReference reference) {
         IAssociation association = null;
-        if (reference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+        if (reference instanceof IProductCmptTypeAssociationReference associationReference) {
             association = associationReference.getAssociation();
         }
-        if (reference instanceof IProductCmptReference) {
-            IProductCmptReference productCmptRef = (IProductCmptReference)reference;
+        if (reference instanceof IProductCmptReference productCmptRef) {
             IProductCmptTypeAssociationReference[] typeAssociationReferences = productCmptRef.getStructure()
                     .getChildProductCmptTypeAssociationReferences(productCmptRef);
             if (typeAssociationReferences.length == 1) {

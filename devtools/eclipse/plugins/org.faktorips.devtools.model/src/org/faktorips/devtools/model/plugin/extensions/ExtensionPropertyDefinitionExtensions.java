@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.faktorips.devtools.model.extproperties.ExtensionPropertyDefinition;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition.R
 import org.faktorips.devtools.model.plugin.ExtensionPoints;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * {@link IExtensionPropertyDefinition}-by-{@link Class}-{@link Map}-supplier for all

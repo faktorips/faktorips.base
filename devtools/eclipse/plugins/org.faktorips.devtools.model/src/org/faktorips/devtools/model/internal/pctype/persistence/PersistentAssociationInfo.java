@@ -14,7 +14,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.pctype.Messages;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ITableColumnNamingStrategy;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.util.PersistenceUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 

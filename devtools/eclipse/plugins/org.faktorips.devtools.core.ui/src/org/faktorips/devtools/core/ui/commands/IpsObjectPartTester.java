@@ -75,8 +75,7 @@ public class IpsObjectPartTester extends PropertyTester {
     private boolean isPartEditableInEditor(IIpsObjectPart ipsObjectPart) {
         IWorkbenchPart activePart = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
                 .getActivePart();
-        if (activePart instanceof IpsObjectEditor) {
-            IpsObjectEditor ipsEditor = (IpsObjectEditor)activePart;
+        if (activePart instanceof IpsObjectEditor ipsEditor) {
             if (ipsEditor.getIpsSrcFile().equals(ipsObjectPart.getIpsSrcFile()) && ipsEditor.isDataChangeable()) {
                 return true;
             }

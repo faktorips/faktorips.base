@@ -37,20 +37,14 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
         if (!isLinkAvailable()) {
             return null;
         }
-        switch (getTemplateValueStatus()) {
-            case INHERITED:
-                return NLS.bind(Messages.TemplateLinkPmo_Status_Inherited, getLinkLabel(), getTemplateName());
-            case OVERWRITE:
-                return NLS.bind(Messages.TemplateLinkPmo_Status_Override, getLinkLabel(), getTemplateName());
-            case OVERWRITE_EQUAL:
-                return NLS.bind(Messages.TemplateLinkPmo_Status_OverrideEqual, getTemplateName());
-            case UNDEFINED:
-                return NLS.bind(Messages.TemplateLinkPmo_Status_Delete, getLinkLabel(), getTemplateName());
-            case NEWLY_DEFINED:
-                return Messages.TemplateLinkPmo_Status_NewlyDefined;
-            default:
-                return IpsStringUtils.EMPTY;
-        }
+        return switch (getTemplateValueStatus()) {
+            case INHERITED -> NLS.bind(Messages.TemplateLinkPmo_Status_Inherited, getLinkLabel(), getTemplateName());
+            case OVERWRITE -> NLS.bind(Messages.TemplateLinkPmo_Status_Override, getLinkLabel(), getTemplateName());
+            case OVERWRITE_EQUAL -> NLS.bind(Messages.TemplateLinkPmo_Status_OverrideEqual, getTemplateName());
+            case UNDEFINED -> NLS.bind(Messages.TemplateLinkPmo_Status_Delete, getLinkLabel(), getTemplateName());
+            case NEWLY_DEFINED -> Messages.TemplateLinkPmo_Status_NewlyDefined;
+            default -> IpsStringUtils.EMPTY;
+        };
     }
 
     private String getLinkLabel() {

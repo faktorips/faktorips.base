@@ -224,12 +224,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE_PAGE);
 
         Object layoutData = valueSetEditControl.getLayoutData();
-        if (layoutData instanceof GridData) {
-            /*
-             * set the minimum height to show at least the maximum size of the selected
-             * <code>ValueSetEditControl</code>
-             */
-            GridData gd = (GridData)layoutData;
+        if (layoutData instanceof GridData gd) {
+            // set the minimum height to show at least the maximum size of the selected
+            // ValueSetEditControl
             gd.heightHint = 260;
         }
 
@@ -304,21 +301,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     .findOverwrittenAttribute(ipsProject);
             if (overwrittenAttribute != null) {
                 ((IpsModel)IIpsModel.get())
-                        .executeModificationsWithSingleEvent(
-                                new SingleEventModification<>(attribute.getIpsSrcFile()) {
+                .executeModificationsWithSingleEvent(
+                        new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
-                                    @Override
-                                    protected boolean execute() {
-                                        attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                        attribute.setModifier(overwrittenAttribute.getModifier());
-                                        attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                        attribute.setMultiValueAttribute(overwrittenAttribute
-                                                .isMultiValueAttribute());
-                                        attribute.setCategory(overwrittenAttribute.getCategory());
-                                        attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
-                                        return true;
-                                    }
-                                });
+                            @Override
+                            protected boolean execute() {
+                                attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                attribute.setModifier(overwrittenAttribute.getModifier());
+                                attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                attribute.setMultiValueAttribute(overwrittenAttribute
+                                        .isMultiValueAttribute());
+                                attribute.setCategory(overwrittenAttribute.getCategory());
+                                attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
+                                return true;
+                            }
+                        });
             }
         }
         ValueDatatype newDatatype = attribute.findDatatype(ipsProject);

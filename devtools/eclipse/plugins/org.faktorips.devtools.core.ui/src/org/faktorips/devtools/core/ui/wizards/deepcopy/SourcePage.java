@@ -432,8 +432,7 @@ public class SourcePage extends WizardPage {
      * 
      */
     private boolean updateCheckedAndGrayStatus(IProductCmptStructureReference reference) {
-        if (reference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+        if (reference instanceof IProductCmptTypeAssociationReference associationReference) {
             if (associationReference.getChildren().length == 0
                     || associationReference.getAssociation().isAssoziation()) {
                 // these elements are not visible so should never change gray state

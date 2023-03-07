@@ -281,16 +281,12 @@ public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
         DATE_AND_TIME;
 
         public String toJpaTemporalType() {
-            switch (this) {
-                case DATE_ONLY:
-                    return "DATE"; //$NON-NLS-1$
-                case TIME_ONLY:
-                    return "TIME"; //$NON-NLS-1$
-                case DATE_AND_TIME:
-                    return "TIMESTAMP"; //$NON-NLS-1$
-                default:
-                    throw new RuntimeException("Error converting IPS Temporal Datatype to JPA Temporal Type."); //$NON-NLS-1$
-            }
+            return switch (this) {
+                case DATE_ONLY -> "DATE"; //$NON-NLS-1$
+                case TIME_ONLY -> "TIME"; //$NON-NLS-1$
+                case DATE_AND_TIME -> "TIMESTAMP"; //$NON-NLS-1$
+                default -> throw new RuntimeException("Error converting IPS Temporal Datatype to JPA Temporal Type."); //$NON-NLS-1$
+            };
         }
     }
 

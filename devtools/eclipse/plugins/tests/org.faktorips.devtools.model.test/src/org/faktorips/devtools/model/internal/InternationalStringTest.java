@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
 import org.w3c.dom.Document;

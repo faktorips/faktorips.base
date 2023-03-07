@@ -59,8 +59,7 @@ public class DecimalNumberFormat extends AbstractNumberFormat {
     @Override
     protected String formatInternal(String value) {
         Object valueAsObject = datatype.getValue(value);
-        if (valueAsObject instanceof Decimal) {
-            Decimal decimalValue = (Decimal)valueAsObject;
+        if (valueAsObject instanceof Decimal decimalValue) {
             if (decimalValue.isNull()) {
                 return null;
             } else {

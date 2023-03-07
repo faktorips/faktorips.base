@@ -65,9 +65,7 @@ public class ReferenceSearchResult extends AbstractTextSearchResult {
 
         Object[] elements = super.getElements();
         for (Object object : elements) {
-            if (object instanceof IIpsElement) {
-                IIpsElement element = (IIpsElement)object;
-
+            if (object instanceof IIpsElement element) {
                 projects.add(element.getIpsProject());
             } else if (object instanceof Object[] && ((Object[])object)[0] instanceof IIpsElement) {
                 IIpsElement element = (IIpsElement)(((Object[])object)[0]);

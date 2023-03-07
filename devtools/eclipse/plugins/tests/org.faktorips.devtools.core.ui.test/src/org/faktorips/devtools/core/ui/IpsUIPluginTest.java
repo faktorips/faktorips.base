@@ -27,7 +27,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -51,6 +50,7 @@ import org.faktorips.devtools.core.ui.wizards.deepcopy.IAdditionalDeepCopyWizard
 import org.faktorips.devtools.core.ui.wizards.deepcopy.IDeepCopySmartModeBehavior;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

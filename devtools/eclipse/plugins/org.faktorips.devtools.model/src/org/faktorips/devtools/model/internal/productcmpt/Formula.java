@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.model.internal.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptTypeAttribute;
@@ -36,6 +35,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

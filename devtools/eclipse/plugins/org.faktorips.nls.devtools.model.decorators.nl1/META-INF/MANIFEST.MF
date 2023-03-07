@@ -6,4 +6,4 @@ Bundle-Version: 23.6.0.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.devtools.model.decorators
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17

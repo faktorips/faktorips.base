@@ -48,9 +48,8 @@ public final class ModelStructureContentProvider extends AbstractModelStructureC
 
         // get the root elements
         Collection<IType> rootComponents;
-        if (inputElement instanceof IType) {
+        if (inputElement instanceof IType input) {
             // get the root elements if the input is an IType
-            IType input = (IType)inputElement;
             List<IType> projectTypes = getProjectITypes(ipsProject, getCurrentlyNeededIpsObjectType(input));
             progress.worked(50);
 

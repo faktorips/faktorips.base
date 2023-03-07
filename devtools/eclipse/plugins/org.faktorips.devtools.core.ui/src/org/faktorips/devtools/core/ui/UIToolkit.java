@@ -153,8 +153,7 @@ public class UIToolkit {
      * are too long). In that case use its parent to display the content as a tool-tip.
      */
     private void setTooltipIfNecessary(Control c, boolean changeable) {
-        if (c instanceof Combo && !changeable) {
-            Combo combo = (Combo)c;
+        if (c instanceof Combo combo && !changeable) {
             combo.getParent().setToolTipText(combo.getText());
         }
     }
@@ -1112,17 +1111,13 @@ public class UIToolkit {
      * <code>{@link IMessageProvider}</code>.
      */
     public static int convertToJFaceSeverity(Severity severity) {
-        switch (severity) {
-            case ERROR:
-                return IMessageProvider.ERROR;
-            case INFO:
-                return IMessageProvider.INFORMATION;
-            case WARNING:
-                return IMessageProvider.WARNING;
-            case NONE:
-                return IMessageProvider.NONE;
-        }
-        return IMessageProvider.NONE;
+        return switch (severity) {
+            case ERROR -> IMessageProvider.ERROR;
+            case INFO -> IMessageProvider.INFORMATION;
+            case WARNING -> IMessageProvider.WARNING;
+            case NONE -> IMessageProvider.NONE;
+            default -> IMessageProvider.NONE; 
+        };
     }
 
     /**
@@ -1211,8 +1206,7 @@ public class UIToolkit {
                 proposalProvider, ContentProposals.AUTO_COMPLETION_KEY_STROKE, null);
         contentProposalAdapter.setProposalAcceptanceStyle(proposalAcceptanceStyle);
         contentProposalAdapter.setLabelProvider(labelProvider);
-        if (proposalProvider instanceof ICachedContentProposalProvider) {
-            final ICachedContentProposalProvider cachedContentProposalProvider = (ICachedContentProposalProvider)proposalProvider;
+        if (proposalProvider instanceof ICachedContentProposalProvider cachedContentProposalProvider) {
             contentProposalAdapter.addContentProposalListener(new IContentProposalListener2() {
 
                 @Override

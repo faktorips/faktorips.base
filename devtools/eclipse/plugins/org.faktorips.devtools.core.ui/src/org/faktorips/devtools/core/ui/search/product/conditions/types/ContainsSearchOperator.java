@@ -30,8 +30,7 @@ public class ContainsSearchOperator extends AbstractSearchOperator<ContainsSearc
 
     @Override
     protected boolean check(Object searchOperand, IProductPartsContainer productPartsContainer) {
-        if (searchOperand instanceof IMultiValueHolder) {
-            IMultiValueHolder valueHolder = (IMultiValueHolder)searchOperand;
+        if (searchOperand instanceof IMultiValueHolder valueHolder) {
             List<ISingleValueHolder> values = valueHolder.getValue();
             for (ISingleValueHolder value : values) {
                 if (isArgumentEqualTo(value)) {

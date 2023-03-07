@@ -74,8 +74,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
     }
 
     private int findMaxProblemSeverity(Object element) {
-        if (element instanceof IIpsElement) {
-            IIpsElement ipsElement = ((IIpsElement)element);
+        if (element instanceof IIpsElement ipsElement) {
             if (ipsElement instanceof IIpsProject) {
                 return computeAdornmentFlagsProject((IIpsProject)ipsElement);
             } else {
@@ -105,8 +104,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                  * with the problem markers of their package fragments.
                  */
                 int depth = IResource.DEPTH_INFINITE;
-                if (ipsElement instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                if (ipsElement instanceof IIpsPackageFragment packageFragment) {
                     if (packageFragment.isDefaultPackage() || isFlatLayout) {
                         depth = IResource.DEPTH_ONE;
                     }
@@ -117,8 +115,7 @@ public class IpsProblemsLabelDecorator implements ILabelDecorator, ILightweightL
                     throw new IpsException(e);
                 }
             }
-        } else if (element instanceof IResource) {
-            IResource resource = (IResource)element;
+        } else if (element instanceof IResource resource) {
             if (resource.isAccessible()) {
                 try {
                     return resource.findMaxProblemSeverity(IpsBuilder.PROBLEM_MARKER, false, IResource.DEPTH_ONE);

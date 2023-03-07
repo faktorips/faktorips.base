@@ -143,12 +143,10 @@ public class DeepCopyOperation implements ICoreRunnable {
 
             // stores the link or tableUsage which indicates the creation of the new object
             // will be used later to fix the new link target or new table contents if necessary
-            if (element instanceof IProductCmptReference) {
-                IProductCmptReference productCmptReference = (IProductCmptReference)element;
+            if (element instanceof IProductCmptReference productCmptReference) {
                 storeLinkToNewNewProductCmpt(productCmptReference, newIpsObject.getQualifiedName(),
                         linkData2newProductCmptQName);
-            } else if (element instanceof IProductCmptStructureTblUsageReference) {
-                IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)element;
+            } else if (element instanceof IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference) {
                 storeTableUsageToNewTableContents(productCmptStructureTblUsageReference,
                         newIpsObject.getQualifiedName(), tblContentData2newTableContentQName);
             }
@@ -353,8 +351,7 @@ public class DeepCopyOperation implements ICoreRunnable {
     private Set<Object> collectObjectsToRefer() {
         Set<Object> tblContentUsageAndLinkDataRefer = new HashSet<>();
         for (IProductCmptStructureReference productCmptStructureReference : linkElements) {
-            if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference) {
-                final IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference = (IProductCmptStructureTblUsageReference)productCmptStructureReference;
+            if (productCmptStructureReference instanceof IProductCmptStructureTblUsageReference productCmptStructureTblUsageReference) {
                 IProductCmptStructureReference parent = productCmptStructureTblUsageReference.getParent();
                 if (linkElements.contains(parent)) {
                     /*
@@ -596,10 +593,9 @@ public class DeepCopyOperation implements ICoreRunnable {
             if ((this == other)) {
                 return true;
             }
-            if ((other == null) || !(other instanceof TblContentUsageData)) {
+            if ((other == null) || !(other instanceof TblContentUsageData castOther)) {
                 return false;
             }
-            TblContentUsageData castOther = (TblContentUsageData)other;
             return (getProductCmpt() != null && getProductCmpt().equals(castOther.getProductCmpt()))
                     && (getTableUsageName() != null && getTableUsageName().equals(castOther.getTableUsageName()));
         }

@@ -43,14 +43,12 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
 
     @Override
     public MessageList getMessages(Object element) {
-        if (element instanceof AbstractAssociationViewItem) {
-            AbstractAssociationViewItem viewItem = (AbstractAssociationViewItem)element;
+        if (element instanceof AbstractAssociationViewItem viewItem) {
             IProductCmpt productCmpt = viewItem.getProductCmpt();
             MessageList msgList = productCmpt.validate(productCmpt.getIpsProject());
             return msgList.getMessagesFor(viewItem.getAssociationName());
         }
-        if (element instanceof LinkViewItem) {
-            LinkViewItem viewItem = (LinkViewItem)element;
+        if (element instanceof LinkViewItem viewItem) {
             return super.getMessages(viewItem.getLink());
         }
         return super.getMessages(element);

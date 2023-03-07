@@ -30,19 +30,16 @@ public class IntegerValueConverter extends NumberValueConverter {
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
-            String external = (String)externalDataValue;
             try {
-                return Integer.valueOf(external).toString();
+                return Integer.valueOf((String)externalDataValue).toString();
             } catch (NumberFormatException e) {
                 // TODO: scientific notation (exponent + mantissa)
                 // for now fall through to report the error
             }
         }
-        messageList
-                .add(ExtSystemsMessageUtil
-                        .createConvertExtToIntErrorMessage(
-                                "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
-                                getSupportedDatatype().getQualifiedName()));
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
+                getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

@@ -62,8 +62,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof TemplateUsageViewItem) {
-            TemplateUsageViewItem viewItem = (TemplateUsageViewItem)parentElement;
+        if (parentElement instanceof TemplateUsageViewItem viewItem) {
             Collection<ITemplatedValue> values = viewItem.getChildren();
             ITemplatedValue[] children = values.toArray(new ITemplatedValue[values.size()]);
             Arrays.sort(children, new TemplatedValueContainerNameComparator());

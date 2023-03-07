@@ -546,15 +546,13 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
             if (builderTemp instanceof ProductCmptBuilder) {
                 builderTemp = ((ProductCmptBuilder)builder).getGenerationBuilder();
             }
-            if (!(builderTemp instanceof JavaSourceFileBuilder)) {
+            if (!(builderTemp instanceof JavaSourceFileBuilder javaBuilder)) {
                 continue;
             }
-            JavaSourceFileBuilder javaBuilder = (JavaSourceFileBuilder)builderTemp;
             IIpsSrcFile ipsSrcFile = ipsObjectPartContainer.getAdapter(IIpsSrcFile.class);
             if (javaBuilder.isBuilderFor(ipsSrcFile)) {
                 javaElements.addAll(javaBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
-            } else if (javaBuilder instanceof XtendBuilder<?>) {
-                XtendBuilder<?> xtendBuilder = (XtendBuilder<?>)javaBuilder;
+            } else if (javaBuilder instanceof XtendBuilder<?> xtendBuilder) {
                 if (xtendBuilder.isGeneratingArtifactsFor(ipsObjectPartContainer)) {
                     javaElements.addAll(xtendBuilder.getGeneratedJavaElements(ipsObjectPartContainer));
                 }
@@ -653,8 +651,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
-        if (datatype instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter enumtypeadapter = (EnumTypeDatatypeAdapter)datatype;
+        if (datatype instanceof EnumTypeDatatypeAdapter enumtypeadapter) {
             XEnumType enumType = getModelNode(enumtypeadapter.getEnumType(), XEnumType.class);
             return new EnumTypeDatatypeHelper(enumType, (EnumTypeDatatypeAdapter)datatype);
         }
@@ -722,8 +719,7 @@ public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilde
 
             List<Datatype> definedDatatypes = ipsProject.getProperties().getDefinedDatatypes();
             for (Datatype datatype : definedDatatypes) {
-                if (datatype instanceof GenericValueDatatype) {
-                    GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                if (datatype instanceof GenericValueDatatype valueDatatype) {
                     registerHelper(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
                 }
             }

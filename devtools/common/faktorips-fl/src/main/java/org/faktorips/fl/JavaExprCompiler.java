@@ -172,8 +172,7 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
 
     @Override
     protected JavaCodeFragment convertPrimitiveToWrapper(Datatype resultType, JavaCodeFragment codeFragment) {
-        if (resultType instanceof AbstractPrimitiveDatatype) {
-            AbstractPrimitiveDatatype primitiveDatatype = (AbstractPrimitiveDatatype)resultType;
+        if (resultType instanceof AbstractPrimitiveDatatype primitiveDatatype) {
             ValueDatatype wrapperType = primitiveDatatype.getWrapperType();
             return ConversionCodeGenerator.getDefault().getConversionCode(primitiveDatatype, wrapperType, codeFragment);
         } else {

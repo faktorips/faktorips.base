@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.faktorips.devtools.htmlexport.test;singleton:=true
 Bundle-Version: 23.6.0.qualifier
 Fragment-Host: org.faktorips.devtools.htmlexport
 Require-Bundle: org.hamcrest;bundle-version="2.2"
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: junit.framework,
  org.faktorips.abstracttest,
  org.faktorips.devtools.model,

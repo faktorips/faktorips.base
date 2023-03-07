@@ -165,8 +165,7 @@ public abstract class IpsAction extends Action {
         if (selectedObject instanceof IIpsObjectPart) {
             return ((IIpsObjectPart)selectedObject).getIpsObject();
         }
-        if (selectedObject instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable)selectedObject;
+        if (selectedObject instanceof IAdaptable adaptable) {
             IIpsSrcFile adaptedSrcFile = adaptable.getAdapter(IIpsSrcFile.class);
             if (adaptedSrcFile != null) {
                 return adaptedSrcFile.getIpsObject();

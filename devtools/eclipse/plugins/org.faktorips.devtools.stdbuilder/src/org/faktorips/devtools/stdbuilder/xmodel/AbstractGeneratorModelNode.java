@@ -581,13 +581,10 @@ public abstract class AbstractGeneratorModelNode {
                 || !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsObjectPartContainer().getIpsProject())) {
             return getAnnotations(type);
         } else {
-            switch (type) {
-                case POLICY_CMPT_DECL_CLASS:
-                case PRODUCT_CMPT_DECL_CLASS:
-                    return "";
-                default:
-                    return getAnnotations(AnnotatedJavaElementType.DEPRECATION);
-            }
+            return switch (type) {
+                case POLICY_CMPT_DECL_CLASS, PRODUCT_CMPT_DECL_CLASS -> "";
+                default -> getAnnotations(AnnotatedJavaElementType.DEPRECATION);
+            };
         }
     }
 

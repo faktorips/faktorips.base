@@ -234,7 +234,8 @@ public class ImportHandler {
      * @param packageName the package name to test
      */
     private boolean isImplicitPackage(String packageName) {
-        return packageName.equals(JAVA_LANG_PACKAGE) || IpsStringUtils.isEmpty(packageName) || isHomePackage(packageName);
+        return packageName.equals(JAVA_LANG_PACKAGE) || IpsStringUtils.isEmpty(packageName)
+                || isHomePackage(packageName);
     }
 
     private boolean isHomePackage(String packageName) {

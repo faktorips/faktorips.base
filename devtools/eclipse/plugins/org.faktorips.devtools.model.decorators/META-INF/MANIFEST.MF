@@ -16,7 +16,7 @@ Export-Package: org.faktorips.devtools.model.decorators,
    org.faktorips.productvariant.decorators,
    org.faktorips.productvariant.ui"
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Import-Package: edu.umd.cs.findbugs.annotations;resolution:=optional,
  org.faktorips.datatype,
  org.faktorips.devtools.abstraction.exception,

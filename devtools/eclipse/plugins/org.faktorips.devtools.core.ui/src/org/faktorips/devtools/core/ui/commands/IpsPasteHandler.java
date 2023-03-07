@@ -101,16 +101,14 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         this.shell = shell;
         this.forceUseNameSuggestionIfFileExists = forceUseNameSuggestionIfFileExists;
         Object object = selection.getFirstElement();
-        if (!(object instanceof IAdaptable)) {
+        if (!(object instanceof IAdaptable adaptable)) {
             return;
         }
-        IAdaptable adaptable = (IAdaptable)object;
         if (adaptable.getAdapter(IIpsElement.class) != null) {
             IIpsElement selected = adaptable.getAdapter(IIpsElement.class);
             if (selected instanceof IIpsSrcFile) {
                 IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
-                if (ipsObject instanceof IpsObjectPartContainer) {
-                    IpsObjectPartContainer ipsObjectPartContainer = (IpsObjectPartContainer)ipsObject;
+                if (ipsObject instanceof IpsObjectPartContainer ipsObjectPartContainer) {
                     paste(ipsObjectPartContainer);
                 }
             } else if (selected instanceof IpsObjectPartContainer) {
@@ -194,8 +192,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
      */
     private void paste(IContainer parent) {
         Object stored = getTransferedObject();
-        if (stored instanceof IResource[]) {
-            IResource[] res = (IResource[])stored;
+        if (stored instanceof IResource[] res) {
             for (IResource re : res) {
                 try {
                     copy(parent, re);
@@ -280,8 +277,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             for (Object resourceLink : resourceLinks) {
                 if (resourceLink instanceof IIpsObject) {
                     createFile(parent, (IIpsObject)resourceLink);
-                } else if (resourceLink instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLink;
+                } else if (resourceLink instanceof IIpsPackageFragment packageFragment) {
                     createPackageFragmentAndChilds(parent, packageFragment);
                 } else {
                     showPasteNotSupportedError();
@@ -307,8 +303,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
             for (Object resourceLink : resourceLinks) {
                 if (resourceLink instanceof IIpsObject) {
                     createFile(folder, (IIpsObject)resourceLink);
-                } else if (resourceLink instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)resourceLink;
+                } else if (resourceLink instanceof IIpsPackageFragment packageFragment) {
                     createFolderAndFiles(folder, packageFragment);
                 } else {
                     showPasteNotSupportedError();

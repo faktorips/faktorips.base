@@ -37,10 +37,9 @@ public class IpsElementTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if (!(receiver instanceof IIpsElement)) {
+        if (!(receiver instanceof IIpsElement ipsElement)) {
             return false;
         }
-        IIpsElement ipsElement = (IIpsElement)receiver;
         if (PROPERTY_EDITABLE.equals(property)) {
             return isEditable(ipsElement);
         } else if (PROPERTY_CONTAINER_EDITABLE.equals(property)) {
@@ -57,8 +56,7 @@ public class IpsElementTester extends PropertyTester {
         if (ipsElement instanceof IIpsObjectPartContainer) {
             return isEditable(((IIpsObjectPartContainer)ipsElement).getIpsSrcFile());
         }
-        if (ipsElement instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+        if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
             return ipsSrcFile.isMutable();
         }
         IResource resource = ipsElement.getAdapter(IResource.class);

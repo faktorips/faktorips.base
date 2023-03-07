@@ -54,19 +54,12 @@ public final class UiMessage implements IMessage {
      * Converts from Faktor-IPS {@link Message} severity to {@link IMessageProvider} message type.
      */
     private int convertSeverityToMessageType(Severity severity) {
-        switch (severity) {
-            case INFO:
-                return IMessageProvider.INFORMATION;
-
-            case WARNING:
-                return IMessageProvider.WARNING;
-
-            case ERROR:
-                return IMessageProvider.ERROR;
-
-            default:
-                return IMessageProvider.NONE;
-        }
+        return switch (severity) {
+            case INFO -> IMessageProvider.INFORMATION;
+            case WARNING -> IMessageProvider.WARNING;
+            case ERROR -> IMessageProvider.ERROR;
+            default -> IMessageProvider.NONE;
+        };
     }
 
     private Object getFirstObject(List<ObjectProperty> objectProperties) {
@@ -82,8 +75,7 @@ public final class UiMessage implements IMessage {
         if (contextObject instanceof IIpsObject) {
             return IpsStringUtils.EMPTY;
         }
-        if (contextObject instanceof IValueHolder<?>) {
-            IValueHolder<?> holder = (IValueHolder<?>)contextObject;
+        if (contextObject instanceof IValueHolder<?> holder) {
             return getObjectName(holder.getParent());
 
         }
@@ -112,8 +104,7 @@ public final class UiMessage implements IMessage {
         String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(contextObject);
         if (IpsStringUtils.isEmpty(caption)) {
             IIpsElement parent = contextObject.getParent();
-            if (parent instanceof IIpsObjectPartContainer) {
-                IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;
+            if (parent instanceof IIpsObjectPartContainer parentContainer) {
                 return getCaptionName(parentContainer);
             }
         }

@@ -126,8 +126,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         if (super.matchDatatype(datatype)) {
             return true;
         }
-        if (datatype instanceof ListOfTypeDatatype) {
-            ListOfTypeDatatype otherListOfTypeDatatype = (ListOfTypeDatatype)datatype;
+        if (datatype instanceof ListOfTypeDatatype otherListOfTypeDatatype) {
             if (otherListOfTypeDatatype.getBasicDatatype() instanceof AnyDatatype) {
                 return true;
             } else {

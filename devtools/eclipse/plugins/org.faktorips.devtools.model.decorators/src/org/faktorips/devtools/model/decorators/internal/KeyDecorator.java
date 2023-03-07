@@ -29,8 +29,7 @@ public class KeyDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IKey) {
-            IKey key = (IKey)ipsObjectPart;
+        if (ipsObjectPart instanceof IKey key) {
             String name = getImageName(key);
             return IIpsDecorators.getImageHandling().getSharedImageDescriptor(name, true);
         }
@@ -46,8 +45,7 @@ public class KeyDecorator implements IIpsObjectPartDecorator {
     }
 
     private boolean isNonUniqueKey(IKey key) {
-        if (key instanceof IIndex) {
-            IIndex index = (IIndex)key;
+        if (key instanceof IIndex index) {
             if (!index.isUniqueKey()) {
                 return true;
             }

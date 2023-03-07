@@ -136,10 +136,9 @@ public class InternationalString implements IInternationalString {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof InternationalString)) {
+        if ((obj == null) || !(obj instanceof InternationalString other)) {
             return false;
         }
-        InternationalString other = (InternationalString)obj;
         if (localizedStringMap == null) {
             if (other.localizedStringMap != null) {
                 return false;

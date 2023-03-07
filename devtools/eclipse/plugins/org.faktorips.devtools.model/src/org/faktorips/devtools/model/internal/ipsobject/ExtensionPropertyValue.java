@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;

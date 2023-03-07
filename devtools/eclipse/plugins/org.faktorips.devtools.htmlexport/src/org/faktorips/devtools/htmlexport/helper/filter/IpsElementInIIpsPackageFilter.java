@@ -41,8 +41,7 @@ public class IpsElementInIIpsPackageFilter implements IIpsElementFilter {
             IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
             return acceptIpsObject(ipsObject);
         }
-        if (ipsElement instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)ipsElement;
+        if (ipsElement instanceof IIpsObject ipsObject) {
             return acceptIpsObject(ipsObject);
         }
         return false;

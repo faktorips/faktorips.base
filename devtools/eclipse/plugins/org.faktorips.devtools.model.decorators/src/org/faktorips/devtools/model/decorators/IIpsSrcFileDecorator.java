@@ -24,8 +24,7 @@ public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
 
     @Override
     default ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+        if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
             return getImageDescriptor(ipsSrcFile);
         }
         return getDefaultImageDescriptor();
@@ -38,8 +37,7 @@ public interface IIpsSrcFileDecorator extends IIpsElementDecorator {
 
     @Override
     default String getLabel(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+        if (ipsElement instanceof IIpsSrcFile ipsSrcFile) {
             return getLabel(ipsSrcFile);
         }
         return IIpsElementDecorator.super.getLabel(ipsElement);

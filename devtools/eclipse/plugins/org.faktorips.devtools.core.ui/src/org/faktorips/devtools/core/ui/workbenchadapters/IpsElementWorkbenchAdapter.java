@@ -23,8 +23,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     @Override
     public Object[] getChildren(Object o) {
-        if (o instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)o;
+        if (o instanceof IIpsElement ipsElement) {
             try {
                 return ipsElement.getChildren();
             } catch (IpsException e) {
@@ -38,8 +37,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     @Override
     public final ImageDescriptor getImageDescriptor(Object object) {
-        if (object instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)object;
+        if (object instanceof IIpsElement ipsElement) {
             return getImageDescriptor(ipsElement);
         } else {
             return null;
@@ -52,8 +50,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     @Override
     public final String getLabel(Object o) {
-        if (o instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)o;
+        if (o instanceof IIpsElement ipsElement) {
             return getLabel(ipsElement);
         } else {
             return ""; //$NON-NLS-1$
@@ -72,8 +69,7 @@ public abstract class IpsElementWorkbenchAdapter implements IWorkbenchAdapter, I
 
     @Override
     public Object getParent(Object o) {
-        if (o instanceof IIpsElement) {
-            IIpsElement ipsElement = (IIpsElement)o;
+        if (o instanceof IIpsElement ipsElement) {
             return ipsElement.getParent();
         } else {
             return null;

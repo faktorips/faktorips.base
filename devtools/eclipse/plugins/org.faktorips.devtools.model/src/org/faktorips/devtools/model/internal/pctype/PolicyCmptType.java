@@ -19,7 +19,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.DependencyType;
 import org.faktorips.devtools.model.IIpsElement;
@@ -61,6 +60,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Element;
 
@@ -622,10 +622,9 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
          * union
          */
         for (IAssociation candidate : candidateSubsets) {
-            if (!(candidate instanceof IPolicyCmptTypeAssociation)) {
+            if (!(candidate instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation)) {
                 continue;
             }
-            IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)candidate;
             if (!policyCmptTypeAssociation.isCompositionDetailToMaster()) {
                 continue;
             }

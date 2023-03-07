@@ -45,9 +45,7 @@ public class PolicyCmptImplClassJpaAnnGen extends AbstractJpaAnnotationGenerator
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode generatorModelNode) {
         JavaCodeFragmentBuilder fragmentBuilder = new JavaCodeFragmentBuilder();
         IPersistenceProvider persistenceProvider = getPersistenceProvider(generatorModelNode.getIpsProject());
-        if (generatorModelNode instanceof XPolicyCmptClass) {
-            XPolicyCmptClass xPolicyCmptClass = (XPolicyCmptClass)generatorModelNode;
-
+        if (generatorModelNode instanceof XPolicyCmptClass xPolicyCmptClass) {
             IPolicyCmptType pcType = xPolicyCmptClass.getType();
 
             IPersistentTypeInfo persistenceTypeInfo = pcType.getPersistenceTypeInfo();

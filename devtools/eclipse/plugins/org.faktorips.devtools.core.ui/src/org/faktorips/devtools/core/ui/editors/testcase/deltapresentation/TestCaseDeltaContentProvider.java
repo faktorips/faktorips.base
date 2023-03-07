@@ -165,8 +165,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
         } else if (parentElement == TestCaseDeltaType.MISSING_TEST_ATTRIBUTE_VALUE) {
             return TestCaseDeltaWrapperObject.createWrapperObjects(testCaseContentProvider,
                     TestCaseDeltaType.MISSING_TEST_ATTRIBUTE_VALUE, null, testCaseContentProvider.getElements());
-        } else if (parentElement instanceof TestCaseDeltaWrapperObject) {
-            TestCaseDeltaWrapperObject wrapperObject = (TestCaseDeltaWrapperObject)parentElement;
+        } else if (parentElement instanceof TestCaseDeltaWrapperObject wrapperObject) {
             // create new child wrapper objects and return these children, the childs represents the
             // same content tree like the test case
             result.addAll(Arrays.asList(wrapperObject.getChildren(wrapperObject)));
@@ -295,8 +294,7 @@ public class TestCaseDeltaContentProvider implements ITreeContentProvider {
                         }
                     }
                 }
-            } else if (object instanceof TestCaseTypeAssociation) {
-                TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)object;
+            } else if (object instanceof TestCaseTypeAssociation dummyAssociation) {
                 ITestPolicyCmpt parentTestPolicyCmpt = dummyAssociation.getParentTestPolicyCmpt();
                 if (parentTestPolicyCmpt == null) {
                     Object[] children = testCaseContentProvider.getChildren(dummyAssociation);

@@ -135,8 +135,7 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
         IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
         if (element instanceof IIpsSrcFile) {
             IIpsObject ipsObject = ((IIpsSrcFile)element).getIpsObject();
-            if (ipsObject instanceof IEnumType) {
-                IEnumType enumType = (IEnumType)ipsObject;
+            if (ipsObject instanceof IEnumType enumType) {
                 if (!(enumType.isAbstract()) && enumType.isExtensible()) {
                     enumTypeField.setText(enumType.getQualifiedName());
                 }

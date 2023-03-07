@@ -60,8 +60,7 @@ public class NewTableContentsWizard extends NewProductDefinitionWizard {
         getPmo().setIpsPackage(selectedPackage);
         if (selectedIpsObject instanceof ITableStructure) {
             getPmo().setSelectedStructure((ITableStructure)selectedIpsObject);
-        } else if (selectedIpsObject instanceof ITableContents) {
-            ITableContents tableContent = (ITableContents)selectedIpsObject;
+        } else if (selectedIpsObject instanceof ITableContents tableContent) {
             getPmo().setSelectedStructure(tableContent.findTableStructure(tableContent.getIpsProject()));
         }
     }

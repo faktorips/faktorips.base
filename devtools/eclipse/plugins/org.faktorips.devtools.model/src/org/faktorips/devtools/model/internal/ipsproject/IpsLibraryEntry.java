@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.AProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
@@ -21,6 +20,7 @@ import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsLibraryEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
 import org.faktorips.devtools.model.plugin.IpsLog;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

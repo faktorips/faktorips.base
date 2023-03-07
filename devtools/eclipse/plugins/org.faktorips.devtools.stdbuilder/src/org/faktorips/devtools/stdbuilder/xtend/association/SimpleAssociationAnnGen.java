@@ -33,10 +33,9 @@ public class SimpleAssociationAnnGen implements IAnnotationGenerator {
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        if (!(modelNode instanceof XAssociation)) {
+        if (!(modelNode instanceof XAssociation association)) {
             return new JavaCodeFragment();
         } else {
-            XAssociation association = (XAssociation)modelNode;
             return new JavaCodeFragmentBuilder()
                     .annotationLn(annotationClass, "association = \"" + association.getName(false) + "\"")
                     .getFragment();

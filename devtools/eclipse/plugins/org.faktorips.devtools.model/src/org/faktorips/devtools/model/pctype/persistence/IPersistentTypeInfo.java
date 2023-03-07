@@ -359,17 +359,12 @@ public interface IPersistentTypeInfo extends IIpsObjectPart, IDescribedElement {
          *             {@link DiscriminatorDatatype}, <code>false</code> otherwise.
          */
         public boolean isParsableToDiscriminatorDatatype(String value) {
-            switch (this) {
-                case STRING:
-                    return (!IpsStringUtils.isEmpty(value));
-                case CHAR:
-                    return (!IpsStringUtils.isEmpty(value) && value.length() == 1);
-                case INTEGER:
-                    return (!IpsStringUtils.isEmpty(value)) && StringUtils.isNumeric(value);
-
-                default:
-                    return false;
-            }
+            return switch (this) {
+                case STRING -> IpsStringUtils.isNotEmpty(value);
+                case CHAR -> IpsStringUtils.isNotEmpty(value) && value.length() == 1;
+                case INTEGER -> IpsStringUtils.isNotEmpty(value) && StringUtils.isNumeric(value);
+                default -> false;
+            };
         }
     }
 

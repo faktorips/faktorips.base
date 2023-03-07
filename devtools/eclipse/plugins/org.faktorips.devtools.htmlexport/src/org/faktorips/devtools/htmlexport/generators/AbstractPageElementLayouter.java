@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.htmlexport.generators;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Base class of {@link IPageElementLayouter}

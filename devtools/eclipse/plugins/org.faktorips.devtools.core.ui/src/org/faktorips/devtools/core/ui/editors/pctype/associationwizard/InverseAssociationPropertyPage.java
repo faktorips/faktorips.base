@@ -152,7 +152,8 @@ public class InverseAssociationPropertyPage extends WizardPage implements IBlock
         targetRolePluralText.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (IpsStringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
+                if (IpsStringUtils.isEmpty(targetRolePluralText.getText())
+                        && association.isTargetRolePluralRequired()) {
                     association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                 }
             }

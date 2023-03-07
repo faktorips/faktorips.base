@@ -419,10 +419,9 @@ public class IpsPackageSortDefDialog extends TrayDialog {
          */
         @Override
         protected int determineLocation(DropTargetEvent event) {
-            if (!(event.item instanceof Item)) {
+            if (!(event.item instanceof Item item)) {
                 return LOCATION_NONE;
             }
-            Item item = (Item)event.item;
             Point coordinates = new Point(event.x, event.y);
             coordinates = getViewer().getControl().toControl(coordinates);
             if (item != null) {
@@ -460,8 +459,7 @@ public class IpsPackageSortDefDialog extends TrayDialog {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment fragment = (IIpsPackageFragment)element;
+            if (element instanceof IIpsPackageFragment fragment) {
                 String name;
                 if (fragment.isDefaultPackage()) {
                     name = fragment.getRoot().getName();

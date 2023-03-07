@@ -32,11 +32,10 @@ public class TableContentUsageDecorator extends SimpleIpsElementDecorator implem
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (!(ipsObjectPart instanceof ITableContentUsage)) {
+        if (!(ipsObjectPart instanceof ITableContentUsage tableContentUsage)) {
             return super.getLabel(ipsObjectPart);
         }
 
-        ITableContentUsage tableContentUsage = (ITableContentUsage)ipsObjectPart;
         String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(tableContentUsage);
         return caption + ": " + StringUtil.unqualifiedName(tableContentUsage.getTableContentName()); //$NON-NLS-1$
     }

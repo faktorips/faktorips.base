@@ -52,11 +52,9 @@ public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
 
     @Override
     public void setEnabled(Object evaluationContext) {
-        if (evaluationContext instanceof IEvaluationContext) {
-            IEvaluationContext context = (IEvaluationContext)evaluationContext;
+        if (evaluationContext instanceof IEvaluationContext context) {
             Object variable = context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
-            if (variable instanceof ISelection) {
-                ISelection selection = (ISelection)variable;
+            if (variable instanceof ISelection selection) {
                 Collection<ITemplatedValue> selectedValues = DefinedValuesContentProvider
                         .getSelectedTemplatedValues(selection);
                 enabled = SwitchTemplatedValueOperation.isValidSelection(selectedValues);

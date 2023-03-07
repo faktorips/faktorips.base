@@ -30,20 +30,14 @@ public class ProductCmptAssociationAnnGenFactory implements IAnnotationGenerator
 
     @Override
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
-        switch (type) {
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER:
-                return new ProductCmptAssociationAnnGen();
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS:
-                return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationLinks.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER:
-                return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER:
-                return new AssociationWithCardinalityAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER:
-                return new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationRemover.class);
-            default:
-                return null;
-        }
+        return switch (type) {
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER -> new ProductCmptAssociationAnnGen();
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationLinks.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER -> new AssociationWithCardinalityAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationRemover.class);
+            default -> null;
+        };
     }
 
 }

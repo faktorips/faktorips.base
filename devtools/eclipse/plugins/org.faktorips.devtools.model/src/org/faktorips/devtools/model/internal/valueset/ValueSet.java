@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.model.internal.valueset;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.model.valueset.ValueSetType;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;

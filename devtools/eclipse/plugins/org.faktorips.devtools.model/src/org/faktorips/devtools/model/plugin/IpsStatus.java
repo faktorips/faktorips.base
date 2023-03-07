@@ -108,17 +108,12 @@ public class IpsStatus extends Status {
     }
 
     private static int toEclipseSeverity(Severity serverity) {
-        switch (serverity) {
-            case ERROR:
-                return IStatus.ERROR;
-            case WARNING:
-                return IStatus.WARNING;
-            case INFO:
-                return IStatus.INFO;
-            case NONE:
-            default:
-                return IStatus.OK;
-        }
+        return switch (serverity) {
+            case ERROR -> IStatus.ERROR;
+            case WARNING -> IStatus.WARNING;
+            case INFO -> IStatus.INFO;
+            case NONE -> IStatus.OK;
+        };
     }
 
 }

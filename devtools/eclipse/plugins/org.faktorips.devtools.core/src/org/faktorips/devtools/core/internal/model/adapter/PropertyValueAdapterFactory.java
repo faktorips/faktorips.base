@@ -21,11 +21,9 @@ public class PropertyValueAdapterFactory extends AbstractIpsAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (!(adaptableObject instanceof IPropertyValue)) {
+        if (!(adaptableObject instanceof IPropertyValue propertyValue)) {
             return null;
         }
-
-        IPropertyValue propertyValue = (IPropertyValue)adaptableObject;
 
         if (IIpsSrcFile.class.equals(adapterType)) {
             return (T)propertyValue.getIpsSrcFile();

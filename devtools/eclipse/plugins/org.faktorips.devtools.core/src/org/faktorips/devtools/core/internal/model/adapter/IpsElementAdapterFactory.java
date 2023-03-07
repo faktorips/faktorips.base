@@ -38,11 +38,10 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (!(adaptableObject instanceof IIpsElement)) {
+        if (!(adaptableObject instanceof IIpsElement ipsElement)) {
             return null;
         }
 
-        IIpsElement ipsElement = (IIpsElement)adaptableObject;
         if (ipsElement instanceof IIpsObjectPart) {
             return null;
         }
@@ -100,8 +99,7 @@ public class IpsElementAdapterFactory implements IAdapterFactory {
         @Override
         public ResourceTraversal[] getTraversals(ResourceMappingContext context, IProgressMonitor monitor) {
             Object modelObject = getModelObject();
-            if (modelObject instanceof IResource) {
-                final IResource resource = (IResource)modelObject;
+            if (modelObject instanceof IResource resource) {
                 if (resource.getType() == IResource.ROOT) {
                     return new ResourceTraversal[] { new ResourceTraversal(((IWorkspaceRoot)resource).getProjects(),
                             IResource.DEPTH_INFINITE, IResource.NONE) };

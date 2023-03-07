@@ -230,18 +230,15 @@ public abstract class RefactoringParticipantHelper {
      * the refactoring has finished and true is returned.
      */
     public final boolean initialize(IpsRefactoringProcessor processor, Object element) {
-        if (!(element instanceof IIpsObjectPartContainer)) {
+        if (!(element instanceof IIpsObjectPartContainer ipsObjectPartContainer)) {
             return false;
         }
 
-        IIpsObjectPartContainer ipsObjectPartContainer = (IIpsObjectPartContainer)element;
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsObjectPartContainer.getIpsProject()
                 .getIpsArtefactBuilderSet();
-        if (!(ipsArtefactBuilderSet instanceof IJavaBuilderSet)) {
+        if (!(ipsArtefactBuilderSet instanceof IJavaBuilderSet javaBuilderSet)) {
             return false;
         }
-        IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
-
         initializeOriginalJavaElements(ipsObjectPartContainer, javaBuilderSet);
         initializeTargetJavaElements(processor, javaBuilderSet);
 

@@ -96,8 +96,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             if (target instanceof IIpsPackageFragment) {
                 Set<IIpsElement> ipsElements = new LinkedHashSet<>(sources.length);
                 for (Object source : sources) {
-                    if ((source instanceof IIpsSrcFile)) {
-                        IIpsSrcFile ipsSourceFile = (IIpsSrcFile)source;
+                    if ((source instanceof IIpsSrcFile ipsSourceFile)) {
                         if (ipsSourceFile.isDirty()) {
                             return;
                         }

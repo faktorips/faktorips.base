@@ -94,8 +94,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
             return;
         }
         IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile src = (IIpsSrcFile)element;
+        if (element instanceof IIpsSrcFile src) {
             setTargetForImport(src.getIpsObject());
         }
         if (element == null) {
@@ -104,8 +103,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
     }
 
     private void setTargetForImport(IIpsObject ipsObject) {
-        if (ipsObject != null && ipsObject instanceof IEnumValueContainer) {
-            IEnumValueContainer valueContainer = (IEnumValueContainer)ipsObject;
+        if (ipsObject != null && ipsObject instanceof IEnumValueContainer valueContainer) {
             setEnum(valueContainer);
         }
     }
@@ -121,8 +119,7 @@ public class SelectEnumPage extends SelectImportTargetPage {
             setErrorMessage(Messages.SelectEnumPage_msgMissingContent);
             return;
         }
-        if (enumValueContainer instanceof IEnumType) {
-            IEnumType enumType = (IEnumType)enumValueContainer;
+        if (enumValueContainer instanceof IEnumType enumType) {
             if (enumType.isAbstract()) {
                 setErrorMessage(Messages.SelectEnumPage_msgAbstractEnumType);
                 return;

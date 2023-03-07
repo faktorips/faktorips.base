@@ -1,9 +1,2 @@
-**/target
-**/.classpath
-**/.project
-**/.settings/org.eclipse.core.resources.prefs
-**/.settings/org.eclipse.m2e.core.prefs
-**/.idea
-**/bin/
-**/.flattened-pom.xml
+# release build creates the site here
 faktorips-maven-plugin

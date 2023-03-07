@@ -179,16 +179,12 @@ public class BuildTask extends AbstractIpsTask {
             return "";
         }
 
-        switch (severity) {
-            case IMarker.SEVERITY_ERROR:
-                return "ERROR";
-            case IMarker.SEVERITY_WARNING:
-                return "WARNING";
-            case IMarker.SEVERITY_INFO:
-                return "INFO";
-            default:
-                return "Severity-" + severity;
-        }
+        return switch (severity) {
+            case IMarker.SEVERITY_ERROR -> "ERROR";
+            case IMarker.SEVERITY_WARNING -> "WARNING";
+            case IMarker.SEVERITY_INFO -> "INFO";
+            default -> "Severity-" + severity;
+        };
     }
 
     private String getErroneousProjectsAsText(Set<IProject> projectSet) {

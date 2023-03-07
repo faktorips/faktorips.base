@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -46,6 +45,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;

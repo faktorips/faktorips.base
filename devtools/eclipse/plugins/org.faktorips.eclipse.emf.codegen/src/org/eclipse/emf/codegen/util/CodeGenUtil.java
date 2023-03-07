@@ -848,7 +848,7 @@ public class CodeGenUtil {
          * A constant that will always represent the latest language level supported by the version
          * of JDT in the installed runtime. It will determine the
          */
-        private static final int JLS = AST.JLS13;
+        private static final int JLS = AST.JLS18;
 
         /**
          * Return an ASTParser that supports the latest language level in the version of the JDT in

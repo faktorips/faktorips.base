@@ -46,8 +46,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof ComponentNode) {
-            ComponentNode node = (ComponentNode)element;
+        if (element instanceof ComponentNode node) {
             boolean overlayed = false;
             String[] overlayImages = new String[4];
             String imageName;
@@ -98,8 +97,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
     @Override
     public String getText(Object element) {
-        if (element instanceof ComponentNode) {
-            ComponentNode node = (ComponentNode)element;
+        if (element instanceof ComponentNode node) {
             return node.getValue().getName();
         } else if (element instanceof String) {
             return element.toString();
@@ -113,9 +111,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
 
         StyledString styledLabel = new StyledString(label);
 
-        if (element instanceof AssociationComponentNode) {
-            AssociationComponentNode node = ((AssociationComponentNode)element);
-
+        if (element instanceof AssociationComponentNode node) {
             if (showRolenames) {
                 String rolename = node.getTargetRoleSingular();
                 if (node.isDerivedUnion()) {
@@ -226,8 +222,7 @@ public final class ModelStructureLabelProvider extends LabelProvider implements 
     public String getToolTipText(Object element) {
         String text = ""; //$NON-NLS-1$
         if (element instanceof ComponentNode) {
-            if (element instanceof AssociationComponentNode && ((AssociationComponentNode)element).isInherited()) {
-                AssociationComponentNode node = (AssociationComponentNode)element;
+            if (element instanceof AssociationComponentNode node && ((AssociationComponentNode)element).isInherited()) {
                 text += Messages.ModelStructure_tooltipInheritedAssociations
                         + " " + node.getTargetingType().getQualifiedName(); //$NON-NLS-1$
             } else if (((ComponentNode)element).isTargetOfInheritedAssociation()) {

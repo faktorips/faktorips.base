@@ -64,8 +64,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        if (selection instanceof IStructuredSelection structuredSelection) {
             if (structuredSelection.getFirstElement() instanceof IProductCmptStructureReference) {
                 addLinkOnReference(event);
             } else if (structuredSelection.getFirstElement() instanceof AbstractAssociationViewItem) {
@@ -86,11 +85,10 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         }
 
         IEditorPart editor = HandlerUtil.getActiveEditor(event);
-        if (!(editor instanceof ProductCmptEditor)) {
+        if (!(editor instanceof ProductCmptEditor productCmptEditor)) {
             return;
         }
 
-        ProductCmptEditor productCmptEditor = (ProductCmptEditor)editor;
         IProductCmpt productCmpt = productCmptEditor.getProductCmpt();
         AbstractAssociationViewItem associationViewItem = typedSelection.getFirstElement();
         IProductCmptType productCmptType = productCmpt.findProductCmptType(productCmpt.getIpsProject());
@@ -150,8 +148,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
         IpsUIPlugin.getDefault().runWorkspaceModification($ -> {
             for (IIpsElement element : selectedIpsElements) {
-                if (element instanceof IIpsSrcFile) {
-                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
+                if (element instanceof IIpsSrcFile ipsSrcFile) {
                     IProductCmpt targetProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 
                     LinkCreatorUtil util = new LinkCreatorUtil(false);
@@ -194,8 +191,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
             for (IIpsElement selects : selectedResult) {
                 if (selects instanceof IIpsSrcFile) {
                     IIpsObject selectedIpsObject = ((IIpsSrcFile)selects).getIpsObject();
-                    if (selectedIpsObject instanceof IProductCmpt) {
-                        IProductCmpt selectResultCmpt = (IProductCmpt)selectedIpsObject;
+                    if (selectedIpsObject instanceof IProductCmpt selectResultCmpt) {
                         selectedResults.add(selectResultCmpt);
                     }
                 }
@@ -224,8 +220,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
         @Override
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile srcFile = (IIpsSrcFile)element;
+            if (element instanceof IIpsSrcFile srcFile) {
                 return filter.filter(srcFile);
             } else {
                 return false;

@@ -86,7 +86,7 @@ public class IpsSearchResult extends AbstractTextSearchResult {
     public IFileMatchAdapter getFileMatchAdapter() {
         return null;
     }
-    
+
     public Object[] getIpsElements() {
         return super.getElements();
     }

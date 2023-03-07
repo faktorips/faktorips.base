@@ -26,8 +26,7 @@ public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsPackageFragment) {
-            IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+        if (ipsElement instanceof IIpsPackageFragment packageFragment) {
             try {
                 IIpsElement[] children = packageFragment.getChildren();
                 if (children != null && children.length > 0) {
@@ -49,8 +48,7 @@ public class IpsPackageFragmentDecorator implements IIpsElementDecorator {
 
     @Override
     public String getLabel(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsPackageFragment) {
-            IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+        if (ipsElement instanceof IIpsPackageFragment packageFragment) {
             if (IpsStringUtils.isEmpty(packageFragment.getName())) {
                 return Messages.DefaultLabelProvider_labelDefaultPackage;
             }

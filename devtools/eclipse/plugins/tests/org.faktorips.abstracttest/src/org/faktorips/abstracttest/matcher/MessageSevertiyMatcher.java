@@ -56,10 +56,9 @@ public class MessageSevertiyMatcher extends BaseMatcher<Message> {
 
     @Override
     public boolean matches(Object item) {
-        if (!(item instanceof Message)) {
+        if (!(item instanceof Message message)) {
             return false;
         }
-        Message message = (Message)item;
         return message.getSeverity() == severity;
     }
 }

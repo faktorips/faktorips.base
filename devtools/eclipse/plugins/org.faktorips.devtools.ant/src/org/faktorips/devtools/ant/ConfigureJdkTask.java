@@ -125,9 +125,7 @@ public class ConfigureJdkTask extends AbstractIpsTask {
                 String name = location.getName();
                 vm.setName(name);
                 vm.setInstallLocation(location);
-                if (type instanceof AbstractVMInstallType) {
-                    // set default java doc location
-                    AbstractVMInstallType abs = (AbstractVMInstallType)type;
+                if (type instanceof AbstractVMInstallType abs) {
                     vm.setJavadocLocation(abs.getDefaultJavadocLocation(location));
                     vm.setVMArgs(abs.getDefaultVMArguments(location));
                 }

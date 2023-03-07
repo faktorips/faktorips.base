@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.model.internal.ipsproject;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.util.PathUtil;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;

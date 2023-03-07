@@ -26,8 +26,7 @@ public abstract class AbstractTypeDeclClassAnnGen implements IAnnotationGenerato
 
     @Override
     public JavaCodeFragment createAnnotation(AbstractGeneratorModelNode modelNode) {
-        if (modelNode instanceof XType) {
-            XType type = (XType)modelNode;
+        if (modelNode instanceof XType type) {
             return new JavaCodeFragmentBuilder().append(createAnnType(type)).append(createAnnAttributes(type))
                     .append(createAnnAssociations(type)).getFragment();
         } else {

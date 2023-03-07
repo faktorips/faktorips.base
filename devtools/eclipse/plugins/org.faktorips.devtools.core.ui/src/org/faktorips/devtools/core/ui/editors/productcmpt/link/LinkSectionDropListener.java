@@ -212,8 +212,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private String getAssociationName(Object target) {
         String associationName = null;
-        if (target instanceof IProductCmptLink) {
-            IProductCmptLink targetCmptLink = (IProductCmptLink)target;
+        if (target instanceof IProductCmptLink targetCmptLink) {
             associationName = targetCmptLink.getAssociation();
         } else if (target instanceof ILinkSectionViewItem) {
             associationName = ((ILinkSectionViewItem)target).getAssociationName();
@@ -329,8 +328,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 return moveResult;
             } else if (target instanceof LinkViewItem) {
                 return moveLink(link, ((LinkViewItem)target).getLink());
-            } else if (target instanceof IProductCmptLink) {
-                IProductCmptLink targetLink = (IProductCmptLink)target;
+            } else if (target instanceof IProductCmptLink targetLink) {
                 IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
                 boolean before = getCurrentLocation() == LOCATION_BEFORE;
                 return linkContainer.moveLink(link, targetLink, before);

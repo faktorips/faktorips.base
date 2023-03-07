@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.ipsobject.Description;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;

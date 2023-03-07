@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.htmlexport.generators.html.elements;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -179,7 +179,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             @Override
             public void focusGained(FocusEvent e) {
-                if (IpsStringUtils.isEmpty(targetRolePluralText.getText()) && association.isTargetRolePluralRequired()) {
+                if (IpsStringUtils.isEmpty(targetRolePluralText.getText())
+                        && association.isTargetRolePluralRequired()) {
                     association.setTargetRolePlural(association.getDefaultTargetRolePlural());
                 }
             }
@@ -329,7 +330,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(c);
             getToolkit().createLabel(labelEditColumnComposite, Messages.AssociationEditDialog_label_foundAssociation);
-            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite, IpsStringUtils.EMPTY);
+            Label matchingAssociationInfoLabel = getToolkit().createLabel(labelEditColumnComposite,
+                    IpsStringUtils.EMPTY);
             getBindingContext().bindContent(matchingAssociationInfoLabel, pmoAssociation,
                     PmoAssociation.PROPERTY_INFO_LABEL);
             getToolkit().createVerticalSpacer(labelEditColumnComposite, 3);
@@ -503,8 +505,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         @Override
         public String getText(Object element) {
             StringBuilder result = new StringBuilder();
-            if (element instanceof IPolicyCmptTypeAssociation) {
-                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)element;
+            if (element instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
                 String associationName = policyCmptTypeAssociation.getName();
                 String pcType = policyCmptTypeAssociation.getPolicyCmptType().getName();
                 result.append(NLS.bind(Messages.AssociationEditDialog_associationLabel_AssociationNameInPolicyCmptType,

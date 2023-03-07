@@ -24,8 +24,7 @@ public interface IIpsObjectPartDecorator extends IIpsElementDecorator {
 
     @Override
     default ImageDescriptor getImageDescriptor(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsObjectPart) {
-            IIpsObjectPart ipsObjectPart = (IIpsObjectPart)ipsElement;
+        if (ipsElement instanceof IIpsObjectPart ipsObjectPart) {
             return getImageDescriptor(ipsObjectPart);
         }
         return getDefaultImageDescriptor();
@@ -38,8 +37,7 @@ public interface IIpsObjectPartDecorator extends IIpsElementDecorator {
 
     @Override
     default String getLabel(IIpsElement ipsElement) {
-        if (ipsElement instanceof IIpsObjectPart) {
-            IIpsObjectPart ipsObjectPart = (IIpsObjectPart)ipsElement;
+        if (ipsElement instanceof IIpsObjectPart ipsObjectPart) {
             return getLabel(ipsObjectPart);
         }
         return IpsStringUtils.EMPTY;

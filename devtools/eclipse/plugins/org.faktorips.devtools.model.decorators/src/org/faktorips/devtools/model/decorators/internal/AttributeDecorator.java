@@ -30,9 +30,7 @@ public class AttributeDecorator implements IIpsObjectPartDecorator {
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
 
-        if (ipsObjectPart instanceof IAttribute) {
-            IAttribute attribute = (IAttribute)ipsObjectPart;
-
+        if (ipsObjectPart instanceof IAttribute attribute) {
             String baseImage = attribute.getModifier().isPublished() ? PUBLISHED_BASE_IMAGE : PUBLIC_BASE_IMAGE;
 
             String[] overlays = new String[4];
@@ -63,8 +61,7 @@ public class AttributeDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IAttribute) {
-            IAttribute attribute = (IAttribute)ipsObjectPart;
+        if (ipsObjectPart instanceof IAttribute attribute) {
             String label = attribute.getName();
             if (attribute.isDerived()) {
                 label = "/ " + label; //$NON-NLS-1$

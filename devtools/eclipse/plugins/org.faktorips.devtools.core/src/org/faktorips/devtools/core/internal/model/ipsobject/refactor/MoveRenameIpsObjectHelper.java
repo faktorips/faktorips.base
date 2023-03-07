@@ -180,8 +180,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
 
     private void rememberTargetJavaElementsForRefactoringParticipants(IIpsObjectPartContainer copiedIpsObject) {
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = copiedIpsObject.getIpsProject().getIpsArtefactBuilderSet();
-        if (ipsArtefactBuilderSet instanceof IJavaBuilderSet) {
-            IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
+        if (ipsArtefactBuilderSet instanceof IJavaBuilderSet javaBuilderSet) {
             targetJavaElements = javaBuilderSet.getGeneratedJavaElements(copiedIpsObject);
         }
     }
@@ -200,8 +199,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
             modifications.setTargetElement(targetSrcFile.getIpsObject());
 
-            if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt) {
-                IProductCmpt productCmpt = (IProductCmpt)toBeRefactored;
+            if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt productCmpt) {
                 IIpsProject ipsProject = productCmpt.getIpsProject();
                 IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
                 String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);

@@ -53,14 +53,12 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
     public String getText(Object element) {
         String text = super.getText(element);
 
-        if (element instanceof IIpsSrcFolderEntry) {
-            IIpsSrcFolderEntry entry = (IIpsSrcFolderEntry)element;
+        if (element instanceof IIpsSrcFolderEntry entry) {
             text = entry.getIpsProject().getName() + IPath.SEPARATOR
                     + entry.getSourceFolder().getProjectRelativePath().toString();
         } else if (element instanceof IIpsProjectRefEntry) {
             text = ((IIpsProjectRefEntry)element).getReferencedIpsProject().getName();
-        } else if (element instanceof IIpsArchiveEntry) {
-            IIpsArchiveEntry entry = (IIpsArchiveEntry)element;
+        } else if (element instanceof IIpsArchiveEntry entry) {
             IPath archivePath = PathMapping.toEclipsePath(entry.getArchiveLocation());
             IFile archiveFileInWorkspace = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(archivePath);
 
@@ -70,8 +68,7 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
                             + (archiveFileInWorkspace != null
                                     ? archiveFileInWorkspace.getParent().getFullPath().toString()
                                     : archivePath.removeLastSegments(1).toString());
-        } else if (element instanceof IIpsObjectPathEntryAttribute) {
-            IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
+        } else if (element instanceof IIpsObjectPathEntryAttribute att) {
             String label = getLabelFromAttributeType(att);
             String content = getContentFromAttribute(att);
             return label + ": " + content; //$NON-NLS-1$
@@ -92,8 +89,7 @@ public class IpsObjectPathLabelProvider extends LabelProvider {
             ImageDescriptor imageDescriptor = IIpsDecorators
                     .getDefaultImageDescriptor(LibraryIpsPackageFragmentRoot.class);
             return (Image)resourceManager.get(imageDescriptor);
-        } else if (element instanceof IIpsObjectPathEntryAttribute) {
-            IIpsObjectPathEntryAttribute att = (IIpsObjectPathEntryAttribute)element;
+        } else if (element instanceof IIpsObjectPathEntryAttribute att) {
             if (att.isTocPath()) {
                 ImageDescriptor imageDescriptor = IIpsDecorators.getDefaultImageDescriptor(TableContents.class);
                 return (Image)resourceManager.get(imageDescriptor);

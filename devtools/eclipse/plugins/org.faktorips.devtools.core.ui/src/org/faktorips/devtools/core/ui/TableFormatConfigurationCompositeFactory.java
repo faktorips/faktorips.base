@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.tableconversion.ITableFormat;
@@ -81,9 +80,8 @@ public abstract class TableFormatConfigurationCompositeFactory implements ValueC
 
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
-        Iterator<ValueChangeListener> iterator = listeners.iterator();
-        while (iterator.hasNext()) {
-            iterator.next().valueChanged(e);
+        for (ValueChangeListener listener : listeners) {
+            listener.valueChanged(e);
         }
     }
 

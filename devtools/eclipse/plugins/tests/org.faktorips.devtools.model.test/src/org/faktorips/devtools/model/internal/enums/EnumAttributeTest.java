@@ -523,16 +523,16 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         overwritingAttr.setName("attr");
         overwritingAttr.setInherited(true);
 
-        //Inherit description from parent class
+        // Inherit description from parent class
         attr.setDescriptionText(Locale.ENGLISH, "english Description");
         assertEquals("english Description", overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
 
-        //Overwrite description from parent class
+        // Overwrite description from parent class
         overwritingAttr.setDescriptionText(Locale.ENGLISH, "overwritten english Description");
         assertEquals("overwritten english Description",
                 overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
-        
-        //Inherit description via inherit tag
+
+        // Inherit description via inherit tag
         overwritingAttr.setDescriptionText(Locale.ENGLISH, Documentation.INHERIT_DESCRIPTION_TAG + " foo");
         assertEquals("english Description foo", overwritingAttr.getDescriptionTextFromThisOrSuper(Locale.ENGLISH));
     }
@@ -550,11 +550,11 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         overwritingAttr.setName("attr");
         overwritingAttr.setInherited(true);
 
-        //Inherit label from parent class
+        // Inherit label from parent class
         attr.setLabelValue(Locale.ENGLISH, "english label");
         assertEquals("english label", overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));
 
-        //Overwrite label from parent class
+        // Overwrite label from parent class
         overwritingAttr.setLabelValue(Locale.ENGLISH, "overwritten english Label");
         assertEquals("overwritten english Label",
                 overwritingAttr.getLabelValueFromThisOrSuper(Locale.ENGLISH));

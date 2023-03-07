@@ -88,8 +88,7 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof TestPolicyCmpt) {
-            TestPolicyCmpt component = (TestPolicyCmpt)element;
+        if (element instanceof TestPolicyCmpt component) {
             try {
                 ITestCase testCase = component.getTestCase();
                 IProductCmpt productComponent = component.findProductCmpt(testCase.getIpsProject());
@@ -174,21 +173,17 @@ public class TestCaseLabelProvider extends StyledCellLabelProvider implements IL
 
     @Override
     public String getText(Object element) {
-        if (element instanceof ITestPolicyCmpt) {
-            ITestPolicyCmpt tstPolicyCmpt = (ITestPolicyCmpt)element;
+        if (element instanceof ITestPolicyCmpt tstPolicyCmpt) {
             String name = tstPolicyCmpt.getName();
             return name + getLabelExtensionForTestPolicyCmpt(tstPolicyCmpt);
-        } else if (element instanceof ITestPolicyCmptLink) {
-            ITestPolicyCmptLink testPcTypeLink = (ITestPolicyCmptLink)element;
+        } else if (element instanceof ITestPolicyCmptLink testPcTypeLink) {
             return TestCaseHierarchyPath.unqualifiedName(testPcTypeLink.getTestPolicyCmptTypeParameter());
-        } else if (element instanceof ITestRule) {
-            ITestRule testRule = (ITestRule)element;
+        } else if (element instanceof ITestRule testRule) {
             String extForPolicyCmptForValidationRule = getLabelExtensionForTestRule(testRule);
             return testRule.getValidationRule() + extForPolicyCmptForValidationRule;
         } else if (element instanceof ITestObject) {
             return ((ITestObject)element).getTestParameterName();
-        } else if (element instanceof TestCaseTypeAssociation) {
-            TestCaseTypeAssociation dummyAssociation = (TestCaseTypeAssociation)element;
+        } else if (element instanceof TestCaseTypeAssociation dummyAssociation) {
             return dummyAssociation.getName();
         } else if (element instanceof IIpsObjectPart) {
             // e.g. tree node element for test rule parameters

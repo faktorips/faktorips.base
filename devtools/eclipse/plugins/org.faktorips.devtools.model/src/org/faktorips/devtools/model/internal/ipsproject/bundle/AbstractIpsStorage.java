@@ -13,10 +13,10 @@ package org.faktorips.devtools.model.internal.ipsproject.bundle;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsStorage;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**

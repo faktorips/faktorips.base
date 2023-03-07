@@ -322,12 +322,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         boolean removed = super.removePartThis(part);
-        if (removed && part instanceof IEnumValue) {
+        if (removed && part instanceof IEnumValue enumValue) {
             /*
              * If the removed part was an enum value we need to also remove it from the enum values
              * by identifier map.
              */
-            IEnumValue enumValue = (IEnumValue)part;
             for (String identifier : enumValuesByIdentifier.keySet()) {
                 IEnumValue storedEnumValue = enumValuesByIdentifier.get(identifier);
                 if (storedEnumValue == enumValue) {

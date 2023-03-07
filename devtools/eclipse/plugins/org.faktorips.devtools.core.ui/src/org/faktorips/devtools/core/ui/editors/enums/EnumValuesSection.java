@@ -598,8 +598,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
 
     private void contentsChangedUpdateLiteralNameColumn(ContentChangeEvent event) {
         IIpsObjectPartContainer part = event.getPart();
-        if (part instanceof IEnumAttributeValue) {
-            IEnumAttributeValue changedAttributeValue = (IEnumAttributeValue)part;
+        if (part instanceof IEnumAttributeValue changedAttributeValue) {
             IEnumAttribute changedEnumAttribute;
             changedEnumAttribute = changedAttributeValue.findEnumAttribute(ipsProject);
             if (changedEnumAttribute != null) {

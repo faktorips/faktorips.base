@@ -72,8 +72,7 @@ public class EnumExportPage extends IpsObjectExportPage {
             return;
         }
 
-        if (enumValueContainer instanceof IEnumType) {
-            IEnumType enumType = (IEnumType)enumValueContainer;
+        if (enumValueContainer instanceof IEnumType enumType) {
             if (enumType.isAbstract()) {
                 setErrorMessage(Messages.EnumExportPage_msgAbstractEnumType);
                 return;

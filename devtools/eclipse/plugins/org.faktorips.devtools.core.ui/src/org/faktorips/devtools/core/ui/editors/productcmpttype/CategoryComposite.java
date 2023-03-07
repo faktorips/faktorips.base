@@ -390,11 +390,10 @@ class CategoryComposite extends ViewerButtonComposite {
     private class PropertyLabelProvider extends LocalizedLabelProvider implements IStyledLabelProvider {
         @Override
         public Image getImage(Object element) {
-            if (!(element instanceof IProductCmptProperty)) {
+            if (!(element instanceof IProductCmptProperty property)) {
                 return super.getImage(element);
             }
 
-            IProductCmptProperty property = (IProductCmptProperty)element;
             Image baseImage = getImageForPropertyOfContextType(property);
             return isPropertyOfContextType(property) ? baseImage : getImageForPropertyOfSupertypeHierarchy(property);
         }
@@ -567,11 +566,10 @@ class CategoryComposite extends ViewerButtonComposite {
          */
         @Override
         protected int determineLocation(DropTargetEvent event) {
-            if (!(event.item instanceof Item)) {
+            if (!(event.item instanceof Item item)) {
                 return LOCATION_NONE;
             }
 
-            Item item = (Item)event.item;
             Rectangle bounds = getBounds(item);
             if (bounds == null) {
                 return LOCATION_NONE;
@@ -654,10 +652,9 @@ class CategoryComposite extends ViewerButtonComposite {
             IType type = (IType)ipsProject.findIpsObject(typeObjectType, typeQualifiedName);
             IProductCmptProperty property = null;
             for (IIpsElement child : type.getChildren()) {
-                if (!(child instanceof IProductCmptProperty)) {
+                if (!(child instanceof IProductCmptProperty potentialProperty)) {
                     continue;
                 }
-                IProductCmptProperty potentialProperty = (IProductCmptProperty)child;
                 if (partId.equals(potentialProperty.getId())) {
                     property = potentialProperty;
                     break;

@@ -54,15 +54,13 @@ public class OpenCreateMissingEnumContentsWizardAction implements IObjectActionD
             return;
         }
 
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection sel = (IStructuredSelection)selection;
+        if (selection instanceof IStructuredSelection sel) {
             for (Object selected : sel) {
                 if (selected instanceof IJavaProject) {
                     preselectedIpsElement = IIpsModel.get()
                             .getIpsProject(Wrappers.wrap(((IJavaProject)selected).getProject()).as(AProject.class));
                     break;
-                } else if (selected instanceof IResource) {
-                    IResource resource = (IResource)selected;
+                } else if (selected instanceof IResource resource) {
                     preselectedIpsElement = IIpsModel.get()
                             .getIpsProject(Wrappers.wrap(resource.getProject()).as(AProject.class));
                     break;

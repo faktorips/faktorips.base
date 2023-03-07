@@ -137,8 +137,7 @@ public class ValidationRuleEditingUI {
         localeComboField.setLabelProvider(new LabelProvider() {
             @Override
             public String getText(Object element) {
-                if (element instanceof Locale) {
-                    Locale locale = (Locale)element;
+                if (element instanceof Locale locale) {
                     return locale.getDisplayLanguage();
                 }
                 return super.getText(element);

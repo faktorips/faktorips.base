@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * JavaGenerator for an {@link AttributeNode}. Supports both policy- and product-attributes.
@@ -197,8 +197,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     private boolean isChanginOverTimeContext(Datatype contextDatatype) {
-        if (expression instanceof IFormula) {
-            IFormula formula = (IFormula)expression;
+        if (expression instanceof IFormula formula) {
             IProductCmptType productCmptType = formula.findProductCmptType(getIpsProject());
             if (productCmptType != null && productCmptType.equals(contextDatatype)) {
                 return formula.getPropertyValueContainer().isChangingOverTimeContainer();

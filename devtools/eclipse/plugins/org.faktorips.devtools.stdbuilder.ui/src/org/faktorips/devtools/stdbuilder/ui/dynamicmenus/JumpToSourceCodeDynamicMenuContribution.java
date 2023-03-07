@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -53,6 +52,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IJavaNamingConvention;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A dynamic menu contribution that consists of commands that allow the user to directly jump to the

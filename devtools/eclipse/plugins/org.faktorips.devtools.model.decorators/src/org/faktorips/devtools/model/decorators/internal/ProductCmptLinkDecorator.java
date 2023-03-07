@@ -28,8 +28,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
+        if (ipsObjectPart instanceof IProductCmptLink link) {
             try {
                 IProductCmpt target = link.findTarget(ipsObjectPart.getIpsProject());
                 return IIpsDecorators.getImageHandling().getSharedOverlayImageDescriptor(
@@ -50,8 +49,7 @@ public class ProductCmptLinkDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (ipsObjectPart instanceof IProductCmptLink) {
-            IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
+        if (ipsObjectPart instanceof IProductCmptLink link) {
             try {
                 IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
                 if (findTarget == null) {

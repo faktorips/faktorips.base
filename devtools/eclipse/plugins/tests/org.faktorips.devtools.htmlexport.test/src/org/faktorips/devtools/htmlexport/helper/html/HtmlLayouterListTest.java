@@ -12,10 +12,10 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import java.util.Arrays;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

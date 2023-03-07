@@ -258,14 +258,12 @@ public class TemplatePropertyUsageView {
         public String getText(Object element) {
             if (element instanceof ITemplatedValue) {
                 ITemplatedValueContainer container = ((ITemplatedValue)element).getTemplatedValueContainer();
-                if (container instanceof IProductCmptGeneration) {
-                    IProductCmptGeneration generation = (IProductCmptGeneration)container;
+                if (container instanceof IProductCmptGeneration generation) {
                     return super.getText(generation.getProductCmpt()) + " (" + super.getText(generation) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     return super.getText(container);
                 }
-            } else if (element instanceof TemplateUsageViewItem) {
-                TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
+            } else if (element instanceof TemplateUsageViewItem viewItem) {
                 return viewItem.getText();
             }
             return super.getText(element);
@@ -273,8 +271,7 @@ public class TemplatePropertyUsageView {
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof ITemplatedValue) {
-                ITemplatedValue value = (ITemplatedValue)element;
+            if (element instanceof ITemplatedValue value) {
                 return super.getImage(value.getTemplatedValueContainer().getProductCmpt());
             }
             return super.getImage(element);
@@ -282,8 +279,7 @@ public class TemplatePropertyUsageView {
 
         @Override
         public Color getForeground(Object element) {
-            if (element instanceof TemplateUsageViewItem) {
-                TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
+            if (element instanceof TemplateUsageViewItem viewItem) {
                 if (viewItem.isSameValueAsTemplateValue()) {
                     return IpsColor.TEMPLATE_BLUE.getColor();
                 }

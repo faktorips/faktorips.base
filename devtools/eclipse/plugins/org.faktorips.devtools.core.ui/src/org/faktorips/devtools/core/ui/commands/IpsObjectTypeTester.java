@@ -57,24 +57,20 @@ public class IpsObjectTypeTester extends PropertyTester {
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)receiver;
-        switch (property) {
-            case PROPERTY_IS_IPS_OBJECT_TYPE:
-                String expectedIpsObjectType = (String)expectedValue;
-                return ipsSrcFile.getIpsObjectType().getId().equalsIgnoreCase(expectedIpsObjectType);
-            case PROPERTY_IS_TYPE:
-                return ipsSrcFile.getIpsObjectType().isEntityType();
-            case PROPERTY_IS_PRODUCT_TYPE:
-                return ipsSrcFile.getIpsObjectType().isProductDefinitionType();
-            case PROPERTY_IS_MODEL_TYPE:
-                return !ipsSrcFile.getIpsObjectType().isProductDefinitionType();
-            case PROPERTY_IS_META_TYPE:
+        return switch (property) {
+            case PROPERTY_IS_IPS_OBJECT_TYPE -> ipsSrcFile.getIpsObjectType().getId()
+            .equalsIgnoreCase((String)expectedValue);
+            case PROPERTY_IS_TYPE -> ipsSrcFile.getIpsObjectType().isEntityType();
+            case PROPERTY_IS_PRODUCT_TYPE -> ipsSrcFile.getIpsObjectType().isProductDefinitionType();
+            case PROPERTY_IS_MODEL_TYPE -> !ipsSrcFile.getIpsObjectType().isProductDefinitionType();
+            case PROPERTY_IS_META_TYPE -> {
                 IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
-                return ipsObjectType.getId().equals(IpsObjectType.PRODUCT_CMPT_TYPE.getId())
-                        || ipsObjectType.getId().equals(IpsObjectType.ENUM_TYPE.getId())
-                        || ipsObjectType.getId().equals(IpsObjectType.TABLE_STRUCTURE.getId())
-                        || ipsObjectType.getId().equals(IpsObjectType.TEST_CASE_TYPE.getId());
-            default:
-                return false;
-        }
+                yield ipsObjectType.getId().equals(IpsObjectType.PRODUCT_CMPT_TYPE.getId())
+                || ipsObjectType.getId().equals(IpsObjectType.ENUM_TYPE.getId())
+                || ipsObjectType.getId().equals(IpsObjectType.TABLE_STRUCTURE.getId())
+                || ipsObjectType.getId().equals(IpsObjectType.TEST_CASE_TYPE.getId());
+            }
+            default -> false;
+        };
     }
 }

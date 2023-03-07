@@ -86,8 +86,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
                 continue;
             } else {
                 LinkStatus status = getStatus(reference);
-                if (reference instanceof IProductCmptReference) {
-                    IProductCmptReference cmptReference = (IProductCmptReference)reference;
+                if (reference instanceof IProductCmptReference cmptReference) {
                     IProductCmptTypeAssociationReference parent = cmptReference.getParent();
                     if (parent != null && parent.getAssociation().isAssoziation()) {
                         // default for associated product components is linked, not copy
@@ -267,8 +266,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             } else {
                 return getStatus(reference).isChecked();
             }
-        } else if (reference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+        } else if (reference instanceof IProductCmptTypeAssociationReference associationReference) {
             for (IProductCmptReference child : associationReference.getStructure()
                     .getChildProductCmptReferences(associationReference)) {
                 if (isChecked(child)) {
@@ -293,8 +291,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         boolean oldValue;
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
             oldValue = setCheckedInternal(reference, value);
-        } else if (reference instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
+        } else if (reference instanceof IProductCmptTypeAssociationReference associationReference) {
             oldValue = false;
             for (IProductCmptReference child : associationReference.getStructure()
                     .getChildProductCmptReferences(associationReference)) {

@@ -60,8 +60,7 @@ public class CopyLinkEditingSupport extends EditingSupport {
 
     @Override
     protected void setValue(Object element, Object value) {
-        if (element instanceof IProductCmptStructureReference) {
-            IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
+        if (element instanceof IProductCmptStructureReference reference) {
             treeStatus.setCopyOrLink(reference, (CopyOrLink)value);
         }
     }

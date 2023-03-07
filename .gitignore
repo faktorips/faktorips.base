@@ -9,14 +9,19 @@ pom.tycho
 .flattened-pom.xml
 
 # Eclipse
-/.project
+bin
+.project
 /.settings
-faktorips-*/.classpath
-faktorips-*/.project
-faktorips-*/.settings/org.eclipse.core.resources.prefs
-faktorips-*/.settings/org.eclipse.m2e.core.prefs
-faktorips-*/.settings/org.eclipse.pde.core.prefs
-faktorips-*/.settings/org.moreunit.prefs
+.classpath
+.project
+org.eclipse.core.resources.prefs
+org.eclipse.m2e.core.prefs
+org.eclipse.pde.core.prefs
+org.moreunit.prefs
+
+**/OSGI-INF/*.xml
+**/ant_tasks_bin
+**/ant-tasks.jar
 
 # IntelliJ
 .idea

@@ -28,8 +28,7 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
     @Override
     // eclipse does not use generics in IAdapterFactory
     public Object getAdapter(Object adaptableObject, @SuppressWarnings("rawtypes") Class adapterType) {
-        if (adaptableObject instanceof IProductCmptReference) {
-            IProductCmptReference cmptReference = (IProductCmptReference)adaptableObject;
+        if (adaptableObject instanceof IProductCmptReference cmptReference) {
             if (adapterType.isAssignableFrom(IProductCmptGeneration.class)) {
                 return getGeneration(cmptReference);
             }
@@ -46,8 +45,7 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
             } else {
                 return null;
             }
-        } else if (adaptableObject instanceof IProductCmptTypeAssociationReference) {
-            IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)adaptableObject;
+        } else if (adaptableObject instanceof IProductCmptTypeAssociationReference associationReference) {
             if (adapterType.isAssignableFrom(IProductCmptGeneration.class)) {
                 IProductCmptStructureReference parent = associationReference.getParent();
                 if (parent instanceof IProductCmptReference) {
@@ -60,8 +58,7 @@ public class ProductCmptStructureAdapterFactory implements IAdapterFactory {
             } else {
                 return null;
             }
-        } else if (adaptableObject instanceof IProductCmptVRuleReference) {
-            IProductCmptVRuleReference vruleReference = (IProductCmptVRuleReference)adaptableObject;
+        } else if (adaptableObject instanceof IProductCmptVRuleReference vruleReference) {
             if (adapterType.isAssignableFrom(IProductCmptGeneration.class)) {
                 IProductCmptStructureReference parent = vruleReference.getParent();
                 if (parent instanceof IProductCmptReference) {

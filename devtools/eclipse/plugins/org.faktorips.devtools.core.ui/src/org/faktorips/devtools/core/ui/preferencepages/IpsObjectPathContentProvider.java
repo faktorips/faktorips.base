@@ -100,9 +100,8 @@ public class IpsObjectPathContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(Object inputElement) {
         Object[] returnedElements = null;
-        if (inputElement instanceof IIpsObjectPath) {
+        if (inputElement instanceof IIpsObjectPath ipsObjectPath) {
             // must preserve the order of elements even if some types of entries are filtered
-            IIpsObjectPath ipsObjectPath = (IIpsObjectPath)inputElement;
             IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
 
             if (includedClasses == null) {

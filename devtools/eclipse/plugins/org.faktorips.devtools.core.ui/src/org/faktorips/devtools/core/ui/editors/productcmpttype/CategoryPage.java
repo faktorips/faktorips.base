@@ -461,10 +461,9 @@ public class CategoryPage extends IpsObjectEditorPage {
                 if (obj == this) {
                     return true;
                 }
-                if (!(obj instanceof CategoryState)) {
+                if (!(obj instanceof CategoryState categoryWrapper)) {
                     return false;
                 }
-                CategoryState categoryWrapper = (CategoryState)obj;
                 boolean idEqual = id.equals(categoryWrapper.id);
                 boolean positionEqual = position.equals(categoryWrapper.position);
                 return idEqual && positionEqual;

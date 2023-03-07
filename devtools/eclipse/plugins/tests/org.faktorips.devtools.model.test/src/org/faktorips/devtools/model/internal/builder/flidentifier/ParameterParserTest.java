@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.model.internal.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -30,6 +29,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

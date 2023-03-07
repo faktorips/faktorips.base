@@ -12,7 +12,6 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 
 import java.util.Collection;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -41,6 +40,7 @@ import org.faktorips.devtools.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * <p>

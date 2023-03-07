@@ -181,8 +181,7 @@ public enum PlainJavaImplementation implements AImplementation {
                 resourceChangeListeners.forEach(listener -> listener.accept(change));
             }
             PlainJavaResource changedResource = change.getChangedResource();
-            if (changedResource instanceof PlainJavaContainer) {
-                PlainJavaContainer container = (PlainJavaContainer)changedResource;
+            if (changedResource instanceof PlainJavaContainer container) {
                 container.getMembers().stream()
                         .map(r -> new PlainJavaResourceChange(r, change.getType()))
                         .forEach(this::notifyResourceChangeListeners);

@@ -223,19 +223,13 @@ public abstract class IpsCompositeRefactoring extends Refactoring implements IIp
     }
 
     private int getEclipseSeverityFromLtkSeverity(int ltkSeverity) {
-        switch (ltkSeverity) {
-            case RefactoringStatus.OK:
-                return IStatus.OK;
-            case RefactoringStatus.INFO:
-                return IStatus.INFO;
-            case RefactoringStatus.WARNING:
-                return IStatus.WARNING;
-            case RefactoringStatus.ERROR:
-            case RefactoringStatus.FATAL:
-                return IStatus.ERROR;
-            default:
-                throw new RuntimeException("Unknown status severity."); //$NON-NLS-1$
-        }
+        return switch (ltkSeverity) {
+            case RefactoringStatus.OK -> IStatus.OK;
+            case RefactoringStatus.INFO -> IStatus.INFO;
+            case RefactoringStatus.WARNING -> IStatus.WARNING;
+            case RefactoringStatus.ERROR, RefactoringStatus.FATAL -> IStatus.ERROR;
+            default -> throw new RuntimeException("Unknown status severity."); //$NON-NLS-1$
+        };
     }
 
     @Override

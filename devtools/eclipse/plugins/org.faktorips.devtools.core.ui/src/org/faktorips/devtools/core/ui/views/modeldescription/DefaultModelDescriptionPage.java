@@ -132,8 +132,7 @@ public abstract class DefaultModelDescriptionPage extends Page implements IIpsSr
 
     private String createLabel(IDescribedElement describedElement) {
         String label;
-        if (describedElement instanceof IAssociation) {
-            IAssociation association = (IAssociation)describedElement;
+        if (describedElement instanceof IAssociation association) {
             if (association.is1ToMany()) {
                 label = IIpsModel.get().getMultiLanguageSupport()
                         .getLocalizedPluralLabel(((ILabeledElement)describedElement));

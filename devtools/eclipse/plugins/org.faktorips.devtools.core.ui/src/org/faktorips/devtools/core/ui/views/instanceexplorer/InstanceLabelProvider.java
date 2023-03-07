@@ -49,8 +49,7 @@ public class InstanceLabelProvider extends StyledCellLabelProvider implements IL
     public void update(ViewerCell cell) {
         Object element = cell.getElement();
         try {
-            if (element instanceof InstanceIpsSrcFileViewItem) {
-                InstanceIpsSrcFileViewItem item = (InstanceIpsSrcFileViewItem)element;
+            if (element instanceof InstanceIpsSrcFileViewItem item) {
                 updateCell(cell, item);
             } else if (element instanceof String) {
                 cell.setText((String)element);

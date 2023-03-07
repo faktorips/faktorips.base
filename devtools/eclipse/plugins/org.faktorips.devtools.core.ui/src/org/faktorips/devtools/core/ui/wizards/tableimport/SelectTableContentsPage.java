@@ -95,8 +95,7 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
             return;
         }
         IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(selectedResource).as(AResource.class));
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile src = (IIpsSrcFile)element;
+        if (element instanceof IIpsSrcFile src) {
             setTargetForImport(src.getIpsObject());
         }
         if (element == null) {

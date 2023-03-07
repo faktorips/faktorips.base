@@ -38,8 +38,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
         ISelection selection = HandlerUtil.getCurrentSelection(event);
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+        if (selection instanceof IStructuredSelection structuredSelection) {
             Object firstElement = structuredSelection.getFirstElement();
             if (firstElement instanceof AbstractAssociationViewItem) {
                 addNewLinkInEditor(event);
@@ -119,8 +118,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
     }
 
     private IProductCmptGeneration getGenerationFromActiveEditor(IEditorPart activeEditor) {
-        if (activeEditor instanceof ProductCmptEditor) {
-            ProductCmptEditor prodCmptEditor = (ProductCmptEditor)activeEditor;
+        if (activeEditor instanceof ProductCmptEditor prodCmptEditor) {
             return (IProductCmptGeneration)prodCmptEditor.getActiveGeneration();
         } else {
             return null;

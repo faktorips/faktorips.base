@@ -174,8 +174,7 @@ public class PlainJavaIpsModel extends IpsModel {
 
             List<Datatype> definedDatatypes = project.getProperties().getDefinedDatatypes();
             for (Datatype datatype : definedDatatypes) {
-                if (datatype instanceof GenericValueDatatype) {
-                    GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                if (datatype instanceof GenericValueDatatype valueDatatype) {
                     datatypeHelperRegistry.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
                 }
             }

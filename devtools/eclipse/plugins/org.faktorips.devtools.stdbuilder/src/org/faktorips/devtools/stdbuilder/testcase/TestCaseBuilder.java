@@ -22,7 +22,6 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -50,6 +49,7 @@ import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;

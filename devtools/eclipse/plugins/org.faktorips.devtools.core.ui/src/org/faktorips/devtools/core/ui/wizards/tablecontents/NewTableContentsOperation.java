@@ -30,8 +30,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
     @Override
     protected void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
         IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-        if (ipsObject instanceof ITableContents) {
-            ITableContents table = (ITableContents)ipsObject;
+        if (ipsObject instanceof ITableContents table) {
             table.setTableStructure(getPmo().getSelectedStructure().getQualifiedName());
             ITableRows tabeleRows = table.newTableRows();
             ITableStructure structure = getPmo().getSelectedStructure();

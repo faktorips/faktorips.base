@@ -38,8 +38,7 @@ public class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
 
     @Override
     public String getText(Object element) {
-        if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        if (element instanceof IIpsBuilderSetPropertyDef propertyDef) {
             String propertyValue = model.getPropertyValue(propertyDef.getName());
             if (propertyValue == null || "".equals(propertyValue)) { //$NON-NLS-1$
                 // value not set in .ipsproject file, use disabled value
@@ -59,8 +58,7 @@ public class BuilderSetPropertyLabelProvider extends ColumnLabelProvider {
     @Override
     public Color getBackground(Object element) {
         Color bgColor = Display.getDefault().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
-        if (element instanceof IIpsBuilderSetPropertyDef) {
-            IIpsBuilderSetPropertyDef propertyDef = (IIpsBuilderSetPropertyDef)element;
+        if (element instanceof IIpsBuilderSetPropertyDef propertyDef) {
             if (!propertyDef.isAvailable(ipsProject)) {
                 bgColor = Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW);
             }

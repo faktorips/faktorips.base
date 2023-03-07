@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

@@ -88,8 +88,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
             return createImageNameByTestParameter((ITestParameter)element);
         }
 
-        if (element instanceof IProductCmptTypeAssociation) {
-            IProductCmptTypeAssociation assoc = (IProductCmptTypeAssociation)element;
+        if (element instanceof IProductCmptTypeAssociation assoc) {
             if (assoc.isAssoziation()) {
                 return "association"; //$NON-NLS-1$
             }
@@ -106,8 +105,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (element instanceof ITestValueParameter) {
             return "datatype"; //$NON-NLS-1$
         }
-        if (element instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter cmptTypeParameter = (ITestPolicyCmptTypeParameter)element;
+        if (element instanceof ITestPolicyCmptTypeParameter cmptTypeParameter) {
             if (cmptTypeParameter.isRequiresProductCmpt()) {
                 return IpsObjectType.PRODUCT_CMPT.getFileExtension();
             }
@@ -120,8 +118,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
         if (element instanceof ITestRule) {
             return "testrule"; //$NON-NLS-1$
         }
-        if (element instanceof ITestPolicyCmpt) {
-            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)element;
+        if (element instanceof ITestPolicyCmpt testPolicyCmpt) {
             if (testPolicyCmpt.isProductRelevant()) {
                 return "testpolicycmptproductrelevant"; //$NON-NLS-1$
             }

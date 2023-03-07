@@ -37,11 +37,9 @@ public class ProductCmptLinkAdapterFactory extends AbstractIpsAdapterFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getAdapter(Object adaptableObject, Class<T> adapterType) {
-        if (!(adaptableObject instanceof IProductCmptLink)) {
+        if (!(adaptableObject instanceof IProductCmptLink link)) {
             return null;
         }
-
-        IProductCmptLink link = (IProductCmptLink)adaptableObject;
 
         try {
             IProductCmpt target = link.findTarget(link.getIpsProject());

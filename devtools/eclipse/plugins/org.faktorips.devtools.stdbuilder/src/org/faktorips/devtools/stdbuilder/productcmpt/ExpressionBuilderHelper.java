@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.ConversionCodeGenerator;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -24,6 +23,7 @@ import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.JavaExprCompiler;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * A class that provides the

@@ -830,7 +830,7 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("overwritten label",
                 subAssociation.getLabelValueFromThisOrSuper(Locale.ENGLISH));
     }
-    
+
     @Test
     public void testGetPluralLabelValueFromThisOrSuper() {
         IAssociation association = builder.createComposition().from(A).to(B).withCardinality(1, 5).build();
@@ -845,7 +845,6 @@ public class AssociationTest extends AbstractIpsPluginTest {
         assertEquals("overwritten plural label",
                 subAssociation.getPluralLabelValueFromThisOrSuper(Locale.ENGLISH));
     }
-
 
     @Test
     public void testToXml() {

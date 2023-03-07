@@ -36,8 +36,7 @@ public class ParameterCollector extends AbstractProductCmptCollector {
     @Override
     protected Set<IProductCmpt> getContextProductCmpts() {
         Datatype datatype = getNode().getDatatype();
-        if (datatype instanceof IPolicyCmptType) {
-            IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
+        if (datatype instanceof IPolicyCmptType policyCmptType) {
             IProductCmptGeneration productCmptGeneration = getOriginGeneration();
             if (isMatchingPolicyCmptType(productCmptGeneration, policyCmptType)) {
                 return new LinkedHashSet<>(Arrays.asList(productCmptGeneration.getProductCmpt()));

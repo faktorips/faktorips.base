@@ -27,8 +27,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (hierarchy != null && parentElement instanceof IType) {
-            IType type = (IType)parentElement;
+        if (hierarchy != null && parentElement instanceof IType type) {
             return hierarchy.getSubtypes(type).toArray();
         } else {
             return new Object[0];
@@ -37,8 +36,7 @@ public class HierarchyContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        if (hierarchy != null && element instanceof IType) {
-            IType type = (IType)element;
+        if (hierarchy != null && element instanceof IType type) {
             return hierarchy.getSupertype(type);
         } else {
             return null;

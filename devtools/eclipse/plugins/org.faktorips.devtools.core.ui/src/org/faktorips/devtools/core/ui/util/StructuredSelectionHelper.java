@@ -55,8 +55,7 @@ public class StructuredSelectionHelper {
      */
     public <T extends IIpsObject> T getFirstElementAsIpsObject(Class<T> clazz) {
         Object selectedObject = selection.getFirstElement();
-        if (selectedObject instanceof IResource) {
-            IResource resource = (IResource)selectedObject;
+        if (selectedObject instanceof IResource resource) {
             IIpsElement ipsElement = IIpsModel.get().getIpsElement(Wrappers.wrap(resource).as(AResource.class));
             return adaptToIpsObjectType(ipsElement, clazz);
         } else if (selectedObject instanceof IAdaptable) {

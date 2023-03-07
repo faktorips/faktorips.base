@@ -60,8 +60,7 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
         if (draggedCmpts.isEmpty()) {
             return true;
         }
-        if (target instanceof IProductCmptStructureReference) {
-            IProductCmptStructureReference structureReference = (IProductCmptStructureReference)target;
+        if (target instanceof IProductCmptStructureReference structureReference) {
             return canCreateLinks(draggedCmpts, structureReference);
         } else {
             return false;
@@ -86,8 +85,7 @@ public class LinkDropListener extends IpsFileTransferViewerDropAdapter {
         if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
             List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
             Object target = getCurrentTarget();
-            if (target instanceof IProductCmptStructureReference) {
-                IProductCmptStructureReference structureReference = (IProductCmptStructureReference)target;
+            if (target instanceof IProductCmptStructureReference structureReference) {
                 return linkCreator.createLinks(droppedCmpts, structureReference);
             } else {
                 return false;

@@ -266,8 +266,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
             ITestObject[] testObjects = sourceTestCase.getTestObjects();
             ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
             for (int i = 0; i < testObjects.length; i++) {
-                if (testObjects[i] instanceof ITestPolicyCmpt) {
-                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
+                if (testObjects[i] instanceof ITestPolicyCmpt testPolicyCmpt) {
                     ITestPolicyCmptTypeParameter parameter = testPolicyCmpt
                             .findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
                     if (parameter == null || !parameter.isRequiresProductCmpt()) {

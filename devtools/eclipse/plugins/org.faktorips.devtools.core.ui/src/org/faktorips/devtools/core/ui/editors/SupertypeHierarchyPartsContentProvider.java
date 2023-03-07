@@ -50,8 +50,7 @@ public abstract class SupertypeHierarchyPartsContentProvider implements ITreeCon
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof IIpsObject) {
-            IIpsObject ipsObject = (IIpsObject)parentElement;
+        if (parentElement instanceof IIpsObject ipsObject) {
             List<IIpsObjectPart> parts = new ArrayList<>();
             for (IIpsObjectPart providedObjectPart : providedObjectParts) {
                 if (providedObjectPart.getIpsObject().equals(ipsObject)) {

@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -46,6 +45,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.QNameUtil;
 import org.faktorips.devtools.model.util.RefactorUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 
 /**

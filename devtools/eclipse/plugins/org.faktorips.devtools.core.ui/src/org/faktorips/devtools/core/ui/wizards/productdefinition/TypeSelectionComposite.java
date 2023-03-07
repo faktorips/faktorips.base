@@ -77,8 +77,7 @@ public class TypeSelectionComposite extends ElementSelectionComposite<IIpsObject
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof IProductCmptType) {
-                IProductCmptType productCmptType = (IProductCmptType)element;
+            if (element instanceof IProductCmptType productCmptType) {
                 ImageDescriptor descriptorForInstancesOf = productCmptDecorator
                         .getImageDescriptorForInstancesOf(productCmptType);
                 return JFaceResources.getResources().createImage(descriptorForInstancesOf);

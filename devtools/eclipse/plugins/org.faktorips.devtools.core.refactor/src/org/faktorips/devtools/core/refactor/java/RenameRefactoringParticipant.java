@@ -93,22 +93,13 @@ public final class RenameRefactoringParticipant extends RenameParticipant {
                 return null;
             }
 
-            String javaRefactoringContributionId;
-            switch (originalJavaElement.getElementType()) {
-                case IJavaElement.FIELD:
-                    javaRefactoringContributionId = IJavaRefactorings.RENAME_FIELD;
-                    break;
-                case IJavaElement.METHOD:
-                    javaRefactoringContributionId = IJavaRefactorings.RENAME_METHOD;
-                    break;
-                case IJavaElement.TYPE:
-                    javaRefactoringContributionId = IJavaRefactorings.RENAME_TYPE;
-                    break;
-                default:
-                    throw new RuntimeException(
-                            "This kind of Java element is not supported by the rename refactoring participant."); //$NON-NLS-1$
-            }
-
+            String javaRefactoringContributionId = switch (originalJavaElement.getElementType()) {
+                case IJavaElement.FIELD -> IJavaRefactorings.RENAME_FIELD;
+                case IJavaElement.METHOD -> IJavaRefactorings.RENAME_METHOD;
+                case IJavaElement.TYPE -> IJavaRefactorings.RENAME_TYPE;
+                default -> throw new RuntimeException(
+                        "This kind of Java element is not supported by the rename refactoring participant."); //$NON-NLS-1$
+            };
             RefactoringContribution contribution = RefactoringCore
                     .getRefactoringContribution(javaRefactoringContributionId);
             RenameJavaElementDescriptor descriptor = (RenameJavaElementDescriptor)contribution.createDescriptor();

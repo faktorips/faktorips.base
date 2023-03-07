@@ -126,9 +126,8 @@ public abstract class IpsElementDropListener implements IIpsElementDropListener 
          * Moving package fragment roots does not make sense, so in this case the default package is
          * meant to be moved.
          */
-        if (element instanceof IIpsPackageFragmentRoot) {
-            IIpsPackageFragmentRoot packRoot = (IIpsPackageFragmentRoot)element;
-            element = packRoot.getDefaultIpsPackageFragment();
+        if (element instanceof IIpsPackageFragmentRoot packRoot) {
+            return packRoot.getDefaultIpsPackageFragment();
         }
         return element;
     }

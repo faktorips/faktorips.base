@@ -46,8 +46,7 @@ public class VisibleBinding extends ControlPropertyBinding {
             Boolean value = (Boolean)getProperty().getReadMethod().invoke(getObject());
             getControl().setVisible(value.booleanValue());
             Object layoutData = getControl().getLayoutData();
-            if (excludeWhenInvisible && layoutData instanceof GridData) {
-                GridData gridData = (GridData)layoutData;
+            if (excludeWhenInvisible && layoutData instanceof GridData gridData) {
                 gridData.exclude = !value;
             }
             if (spanningControl != null && !spanningControl.isDisposed()

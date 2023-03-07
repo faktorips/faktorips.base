@@ -60,7 +60,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
         }
     }
 
-    private void mavenProjectChanged(MavenProjectChangedEvent[] events) {
+    private void mavenProjectChanged(List<MavenProjectChangedEvent> events) {
         List<MavenProjectChangedEvent> eventsForThisProject = getEventsForThisProject(events);
 
         if (!eventsForThisProject.isEmpty()) {
@@ -72,7 +72,7 @@ public class MavenVersionProvider implements IVersionProvider<MavenVersion> {
         }
     }
 
-    private List<MavenProjectChangedEvent> getEventsForThisProject(MavenProjectChangedEvent[] events) {
+    private List<MavenProjectChangedEvent> getEventsForThisProject(List<MavenProjectChangedEvent> events) {
         ArrayList<MavenProjectChangedEvent> updateEventsForThisProject = new ArrayList<>();
         for (MavenProjectChangedEvent event : events) {
             IMavenProjectFacade changedMavenProject = event.getMavenProject();

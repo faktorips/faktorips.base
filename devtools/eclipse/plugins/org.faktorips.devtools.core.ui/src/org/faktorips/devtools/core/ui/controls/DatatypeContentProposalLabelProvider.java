@@ -36,8 +36,7 @@ public class DatatypeContentProposalLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {
-        if (element instanceof DatatypeContentProposal) {
-            DatatypeContentProposal proposal = (DatatypeContentProposal)element;
+        if (element instanceof DatatypeContentProposal proposal) {
             return internalLabelProvider.getImage(proposal.getDataype());
         } else {
             return super.getImage(element);

@@ -45,10 +45,9 @@ public class StaticImportStatement extends AbstractImportStatement {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof StaticImportStatement)) {
+        if (!(obj instanceof StaticImportStatement other)) {
             return false;
         }
-        StaticImportStatement other = (StaticImportStatement)obj;
         return Objects.equals(getClassName(), other.getClassName())
                 && Objects.equals(getPackageName(), other.getPackageName())
                 && Objects.equals(getElement(), other.getElement());

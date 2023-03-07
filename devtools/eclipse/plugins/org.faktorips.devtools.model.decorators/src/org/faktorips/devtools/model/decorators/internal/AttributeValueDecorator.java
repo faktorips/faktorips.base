@@ -36,11 +36,9 @@ public class AttributeValueDecorator implements IIpsObjectPartDecorator {
 
     @Override
     public String getLabel(IIpsObjectPart ipsObjectPart) {
-        if (!(ipsObjectPart instanceof IAttributeValue)) {
+        if (!(ipsObjectPart instanceof IAttributeValue attributeValue)) {
             return IIpsObjectPartDecorator.super.getLabel(ipsObjectPart);
         }
-
-        IAttributeValue attributeValue = (IAttributeValue)ipsObjectPart;
 
         String caption = IIpsModel.get().getMultiLanguageSupport().getLocalizedCaption(attributeValue);
 

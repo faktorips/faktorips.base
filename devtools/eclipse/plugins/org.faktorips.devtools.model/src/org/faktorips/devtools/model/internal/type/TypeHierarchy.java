@@ -121,8 +121,7 @@ public class TypeHierarchy implements ITypeHierarchy {
             String candidateSuperTypeName = candidateSrcFile.getPropertyValue(IType.PROPERTY_SUPERTYPE);
             if (type.getQualifiedName().equals(candidateSuperTypeName)) {
                 IIpsObject candidateObject = candidateSrcFile.getIpsObject();
-                if (candidateObject instanceof IType) {
-                    IType candidateType = (IType)candidateObject;
+                if (candidateObject instanceof IType candidateType) {
                     if (!subtypes.contains(candidateObject)) {
                         if (contains(candidateType)) {
                             containsCycle = true;

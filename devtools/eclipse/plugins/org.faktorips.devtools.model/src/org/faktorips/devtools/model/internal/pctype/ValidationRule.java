@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.internal.InternationalStringXmlHelper;
 import org.faktorips.devtools.model.internal.ValidationUtils;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;

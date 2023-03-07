@@ -17,8 +17,7 @@ public class LocalizedLabelProvider extends DefaultLabelProvider {
 
     @Override
     public String getText(Object element) {
-        if (element instanceof ILabeledElement) {
-            ILabeledElement labeledElement = (ILabeledElement)element;
+        if (element instanceof ILabeledElement labeledElement) {
             return IIpsModel.get().getMultiLanguageSupport().getLocalizedLabel(labeledElement);
         }
         return super.getText(element);

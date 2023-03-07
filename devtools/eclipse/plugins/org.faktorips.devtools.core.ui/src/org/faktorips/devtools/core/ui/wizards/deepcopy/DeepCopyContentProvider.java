@@ -102,8 +102,7 @@ public class DeepCopyContentProvider implements ITreeContentProvider {
         // filter association targets from the list
         List<Object> result = new ArrayList<>();
         for (Object productCmptReferencesOrType : productCmptReferencesOrTypes) {
-            if (productCmptReferencesOrType instanceof IProductCmptTypeAssociationReference) {
-                IProductCmptTypeAssociationReference productCmptTypeRelationReference = (IProductCmptTypeAssociationReference)productCmptReferencesOrType;
+            if (productCmptReferencesOrType instanceof IProductCmptTypeAssociationReference productCmptTypeRelationReference) {
                 if (productCmptTypeRelationReference.getAssociation().isAssoziation()) {
                     continue;
                 }

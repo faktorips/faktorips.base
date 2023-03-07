@@ -91,8 +91,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     private IResource getSelectedResource(Object selectedObject) {
         if (selectedObject instanceof IIpsElement) {
             return ((IIpsElement)selectedObject).getEnclosingResource().unwrap();
-        } else if (selectedObject instanceof IAdaptable) {
-            IAdaptable adaptable = (IAdaptable)selectedObject;
+        } else if (selectedObject instanceof IAdaptable adaptable) {
             return adaptable.getAdapter(IResource.class);
         } else {
             return null;
@@ -183,8 +182,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
             }
         } else if (element instanceof IIpsPackageFragmentRoot) {
             setIpsPackageFragment(((IIpsPackageFragmentRoot)element).getDefaultIpsPackageFragment());
-        } else if (element instanceof IIpsPackageFragment) {
-            IIpsPackageFragment pack = (IIpsPackageFragment)element;
+        } else if (element instanceof IIpsPackageFragment pack) {
             setIpsPackageFragment(pack);
         } else if (element instanceof IIpsSrcFile) {
             IIpsPackageFragment pack = (IIpsPackageFragment)element.getParent();
@@ -210,8 +208,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     public String getIpsPackagePath() {
         ISelection selection = treeViewer.getSelection();
-        if (selection instanceof ITreeSelection) {
-            ITreeSelection treeSelection = (ITreeSelection)selection;
+        if (selection instanceof ITreeSelection treeSelection) {
             Object selectionElement = treeSelection.getFirstElement();
             if (selectionElement instanceof IpsPackageFragment) {
                 IIpsPackageFragment iIpsPackageFragment = (IIpsPackageFragment)selectionElement;
@@ -420,8 +417,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
         @Override
         public Object[] getChildren(Object parentElement) {
-            if (parentElement instanceof IIpsPackageFragment) {
-                IIpsPackageFragment ipsPackageFragment = (IIpsPackageFragment)parentElement;
+            if (parentElement instanceof IIpsPackageFragment ipsPackageFragment) {
                 try {
                     return ipsPackageFragment.getChildIpsPackageFragments();
                 } catch (IpsException e) {
@@ -433,8 +429,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
         @Override
         public Object getParent(Object element) {
-            if (element instanceof IIpsPackageFragment) {
-                IIpsPackageFragment ipsPackageFragment = (IIpsPackageFragment)element;
+            if (element instanceof IIpsPackageFragment ipsPackageFragment) {
                 return ipsPackageFragment.getParentIpsPackageFragment();
             }
             return null;

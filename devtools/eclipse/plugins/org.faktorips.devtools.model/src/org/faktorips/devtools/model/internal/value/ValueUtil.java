@@ -13,11 +13,11 @@ package org.faktorips.devtools.model.internal.value;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.value.IValue;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.LocalizedString;
 
 /**

@@ -46,9 +46,7 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
      */
     @Override
     public String getText(Object element) {
-        if (element instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)element;
-
+        if (element instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
             String targetExtension = testPolicyCmptTypeParam.getPolicyCmptType() == null ? "" //$NON-NLS-1$
                     : StringUtil.unqualifiedName(testPolicyCmptTypeParam.getPolicyCmptType());
 
@@ -63,8 +61,7 @@ public class TestCaseTypeLabelProvider extends DefaultLabelProvider {
 
             return testPolicyCmptTypeParam.getName() + targetExtension
                     + getTypeExtension(testPolicyCmptTypeParam.getTestParameterType()) + productExt;
-        } else if (element instanceof ITestParameter) {
-            ITestParameter testParam = (ITestParameter)element;
+        } else if (element instanceof ITestParameter testParam) {
             return testParam.getName() + getTypeExtension(testParam.getTestParameterType());
         } else if (element instanceof ITestAttribute) {
             String text = super.getText(element);

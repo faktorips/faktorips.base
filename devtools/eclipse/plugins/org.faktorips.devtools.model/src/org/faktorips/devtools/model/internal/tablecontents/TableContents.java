@@ -24,7 +24,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -57,6 +56,7 @@ import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

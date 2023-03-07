@@ -736,8 +736,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         @Override
         public String getColumnText(Object element, int columnIndex) {
-            if (element instanceof ITestAttribute) {
-                ITestAttribute testAttribute = (ITestAttribute)element;
+            if (element instanceof ITestAttribute testAttribute) {
                 switch (columnIndex) {
                     case 0:
                         // test attribute name (used in test case)
@@ -945,8 +944,7 @@ public class TestCaseTypeSection extends IpsSection {
         @Override
         public void run(IStructuredSelection selection) {
             Object firstElement = selection.getFirstElement();
-            if (firstElement instanceof ITestPolicyCmptTypeParameter) {
-                ITestPolicyCmptTypeParameter param = (ITestPolicyCmptTypeParameter)firstElement;
+            if (firstElement instanceof ITestPolicyCmptTypeParameter param) {
                 if (IpsStringUtils.isNotEmpty(param.getPolicyCmptType())) {
                     IPolicyCmptType cmptType = param.findPolicyCmptType(param.getIpsProject());
                     IpsUIPlugin.getDefault().openEditor(cmptType);
@@ -1068,7 +1066,7 @@ public class TestCaseTypeSection extends IpsSection {
 
         configureToolBar(detailsSection);
 
-        sashForm.setWeights(new int[] { 50, 50 });
+        sashForm.setWeights(50, 50);
         redrawForm();
     }
 
@@ -1161,8 +1159,7 @@ public class TestCaseTypeSection extends IpsSection {
     private void createDetailsForAllTestParams(ITestParameter[] testParams) {
         for (ITestParameter testParam : testParams) {
             createDetailsForTestParam(testParam);
-            if (testParam instanceof ITestPolicyCmptTypeParameter) {
-                ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
+            if (testParam instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
                 createDetailsForAllTestParams(testPolicyCmptTypeParam.getTestPolicyCmptTypeParamChilds());
             }
         }
@@ -1208,9 +1205,7 @@ public class TestCaseTypeSection extends IpsSection {
         createTestParamDetails(editFieldsComposite, testParam, bindingContext);
 
         // create details depending on the test parameter
-        if (testParam instanceof ITestPolicyCmptTypeParameter) {
-            ITestPolicyCmptTypeParameter testPolicyCmptTypeParam = (ITestPolicyCmptTypeParameter)testParam;
-
+        if (testParam instanceof ITestPolicyCmptTypeParameter testPolicyCmptTypeParam) {
             createTestPolicyCmptTypeParamDetails(editFieldsComposite, testPolicyCmptTypeParam, bindingContext);
 
             // Spacer between test policy cmpt type param and test attribute
@@ -1300,8 +1295,7 @@ public class TestCaseTypeSection extends IpsSection {
         }
         if (errorMessageText.length() > 0) {
             FormText formText = toolkit.getFormToolkit().createFormText(section, false);
-            if (testParam instanceof ITestPolicyCmptTypeParameter) {
-                ITestPolicyCmptTypeParameter pcTypeParameter = (ITestPolicyCmptTypeParameter)testParam;
+            if (testParam instanceof ITestPolicyCmptTypeParameter pcTypeParameter) {
                 IPolicyCmptType pcType = pcTypeParameter.findPolicyCmptType(pcTypeParameter.getIpsProject());
                 Image baseImage = IpsUIPlugin.getImageHandling().getImage(pcType);
                 ImageDescriptor overlayedImage = IpsProblemOverlayIcon.createOverlayIcon(baseImage,
@@ -1897,11 +1891,10 @@ public class TestCaseTypeSection extends IpsSection {
      */
     private void removeClicked() {
         Object selObject = getSelectedObjectInTree();
-        if (!(selObject instanceof ITestParameter)) {
+        if (!(selObject instanceof ITestParameter testParameter)) {
             return;
         }
 
-        ITestParameter testParameter = (ITestParameter)selObject;
         testParameter.delete();
 
         // try to obtain the previous tree item and if exists use this item as new selected object
@@ -1976,8 +1969,7 @@ public class TestCaseTypeSection extends IpsSection {
         TableViewer attributeTable = objectCache.getAttributeTable(param);
         if (attributeTable != null) {
             ISelection selection = attributeTable.getSelection();
-            if (selection instanceof IStructuredSelection) {
-                IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+            if (selection instanceof IStructuredSelection structuredSelection) {
                 for (Object element : structuredSelection) {
                     if (element instanceof ITestAttribute) {
                         testAttributesSelected.add((ITestAttribute)element);

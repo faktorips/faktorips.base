@@ -85,11 +85,10 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection selection = HandlerUtil.getCurrentSelectionChecked(event);
         final Shell shell = HandlerUtil.getActiveShell(event);
-        if (!(selection instanceof IStructuredSelection)) {
+        if (!(selection instanceof IStructuredSelection structuredSelection)) {
             return null;
         }
 
-        IStructuredSelection structuredSelection = (IStructuredSelection)selection;
         Set<IIpsElement> selectedIpsElements = new LinkedHashSet<>(structuredSelection.size());
         for (Object selectedElement : structuredSelection.toArray()) {
             if (!(selectedElement instanceof IAdaptable)) {

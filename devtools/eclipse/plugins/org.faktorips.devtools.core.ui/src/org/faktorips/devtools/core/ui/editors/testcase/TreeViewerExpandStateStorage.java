@@ -90,11 +90,9 @@ public class TreeViewerExpandStateStorage {
 
     @SuppressWarnings("deprecation")
     private void restoreCheckedStatus() {
-        if (!(treeViewer instanceof CheckboxTreeViewer)) {
+        if (!(treeViewer instanceof CheckboxTreeViewer checkboxTreeViewer)) {
             return;
         }
-        CheckboxTreeViewer checkboxTreeViewer = (CheckboxTreeViewer)treeViewer;
-
         // 1. get all element
         checkboxTreeViewer.setAllChecked(true);
         List<Object> elementsToUncheck = new ArrayList<>();

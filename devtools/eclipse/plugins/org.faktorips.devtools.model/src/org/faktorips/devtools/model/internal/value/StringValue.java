@@ -90,10 +90,9 @@ public class StringValue extends AbstractValue<String> {
         if (this == obj) {
             return true;
         }
-        if ((obj == null) || !(obj instanceof StringValue)) {
+        if ((obj == null) || !(obj instanceof StringValue other)) {
             return false;
         }
-        StringValue other = (StringValue)obj;
         if (getContent() == null) {
             if (other.getContent() != null) {
                 return false;

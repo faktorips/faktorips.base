@@ -14,8 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.internal.builder.flidentifier.IdentifierParser.IdentifierMatcher;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Test;
 
 public class IdentifierMatcherTest {

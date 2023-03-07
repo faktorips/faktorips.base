@@ -61,8 +61,7 @@ public class OpenIpsObjectContext extends CachingOpenIpsObjectContext {
 
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
-                if (element instanceof IIpsSrcFile) {
-                    IIpsSrcFile srcFile = (IIpsSrcFile)element;
+                if (element instanceof IIpsSrcFile srcFile) {
                     return isAllowedSrcFile(srcFile);
                 }
                 return false;

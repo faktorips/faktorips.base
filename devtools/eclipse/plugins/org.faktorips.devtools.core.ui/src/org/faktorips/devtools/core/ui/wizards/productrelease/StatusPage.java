@@ -137,8 +137,7 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof Message) {
-                Message msg = (Message)element;
+            if (element instanceof Message msg) {
                 switch (msg.getSeverity()) {
                     case ERROR:
                         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
@@ -154,8 +153,7 @@ public class StatusPage extends WizardPage implements PropertyChangeListener {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof Message) {
-                Message msg = (Message)element;
+            if (element instanceof Message msg) {
                 return msg.getText();
             }
             return super.getText(element);

@@ -31,19 +31,16 @@ public class LongValueConverter extends AbstractValueConverter {
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
         if (externalDataValue instanceof String) {
-            String external = (String)externalDataValue;
             try {
-                return Long.valueOf(external).toString();
+                return Long.valueOf((String)externalDataValue).toString();
             } catch (NumberFormatException e) {
                 // TODO: scientific notation (exponent + mantissa)
                 // for now fall through to report the error
             }
         }
-        messageList
-                .add(ExtSystemsMessageUtil
-                        .createConvertExtToIntErrorMessage(
-                                "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
-                                getSupportedDatatype().getQualifiedName()));
+        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
+                "" + externalDataValue, externalDataValue.getClass().getName(), //$NON-NLS-1$
+                getSupportedDatatype().getQualifiedName()));
         return externalDataValue.toString();
     }
 

@@ -155,8 +155,7 @@ public class PolicyCmptTypeAssociationsSection extends AssociationsSection {
         @Override
         public void run(IStructuredSelection selection) {
             Object selected = selection.getFirstElement();
-            if (selected instanceof IPolicyCmptTypeAssociation) {
-                IPolicyCmptTypeAssociation policyCmptTypeAssociation = (IPolicyCmptTypeAssociation)selected;
+            if (selected instanceof IPolicyCmptTypeAssociation policyCmptTypeAssociation) {
                 IType target = policyCmptTypeAssociation.findTarget(type.getIpsProject());
                 IpsUIPlugin.getDefault().openEditor(target);
             }

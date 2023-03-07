@@ -13,7 +13,6 @@ package org.faktorips.devtools.model.internal.builder.flidentifier;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IMultiLanguageSupport;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IExpression;
 import org.faktorips.devtools.model.util.TextRegion;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * This is the abstract class for all identifier parsers. An identifier parser tries to parse an

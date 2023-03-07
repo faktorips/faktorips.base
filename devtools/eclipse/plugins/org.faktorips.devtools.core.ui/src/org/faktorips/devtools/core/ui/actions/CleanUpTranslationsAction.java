@@ -207,14 +207,12 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             private void cleanUp(IIpsObjectPartContainer ipsObjectPartContainer, Set<Locale> supportedLocales) {
                 cleanUpChildren(ipsObjectPartContainer, supportedLocales);
 
-                if (ipsObjectPartContainer instanceof IDescribedElement) {
-                    IDescribedElement describedElement = (IDescribedElement)ipsObjectPartContainer;
+                if (ipsObjectPartContainer instanceof IDescribedElement describedElement) {
                     deleteObsoleteDescriptions(describedElement, supportedLocales);
                     addMissingDescriptions(describedElement, supportedLocales);
                 }
 
-                if (ipsObjectPartContainer instanceof ILabeledElement) {
-                    ILabeledElement labeledElement = (ILabeledElement)ipsObjectPartContainer;
+                if (ipsObjectPartContainer instanceof ILabeledElement labeledElement) {
                     deleteObsoleteLabels(labeledElement, supportedLocales);
                     addMissingLabels(labeledElement, supportedLocales);
                 }

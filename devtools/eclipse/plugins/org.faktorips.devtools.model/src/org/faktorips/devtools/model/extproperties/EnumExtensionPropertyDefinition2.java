@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.model.extproperties;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.w3c.dom.Element;
 
 /**

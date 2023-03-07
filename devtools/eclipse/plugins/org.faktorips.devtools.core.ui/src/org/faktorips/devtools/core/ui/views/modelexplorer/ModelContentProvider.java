@@ -387,9 +387,7 @@ public class ModelContentProvider implements ITreeContentProvider {
                 if (configuration.isAllowedIpsElement((IIpsElement)actualElement)) {
                     filtered.add(actualElement);
                 }
-            } else if (actualElement instanceof IResource) {
-                IResource resource = (IResource)actualElement;
-
+            } else if (actualElement instanceof IResource resource) {
                 // filter out hidden files and folders, except the ".ipsproject"-file and
                 // ".sortorder"-file
                 if (resource instanceof IFile || resource instanceof IFolder) {

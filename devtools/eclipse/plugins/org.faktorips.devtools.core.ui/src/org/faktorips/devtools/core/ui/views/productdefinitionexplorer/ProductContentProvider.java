@@ -63,8 +63,7 @@ public class ProductContentProvider extends ModelContentProvider {
     @Override
     protected Object[] getUnfilteredChildren(Object parentElement) {
         // exclude all non ips project definition projects
-        if (parentElement instanceof IIpsProject) {
-            IIpsProject ipsProject = (IIpsProject)parentElement;
+        if (parentElement instanceof IIpsProject ipsProject) {
             if (!ipsProject.isProductDefinitionProject()) {
                 return EMPTY_ARRAY;
             }

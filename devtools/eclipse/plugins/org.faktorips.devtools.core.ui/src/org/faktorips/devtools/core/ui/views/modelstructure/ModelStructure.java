@@ -792,8 +792,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
     @Override
     protected boolean show(IAdaptable adaptable) {
         IIpsObject ipsObject = adaptable.getAdapter(IIpsObject.class);
-        if (ipsObject instanceof IType) {
-            IType type = (IType)ipsObject;
+        if (ipsObject instanceof IType type) {
             showStructure(type);
             return true;
         } else if (ipsObject != null) {
@@ -843,8 +842,7 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
                 }
                 return;
             }
-            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
+            if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile ipsSrcFile) {
                 IIpsObject selected = ipsSrcFile.getIpsObject();
                 if (InstanceExplorer.supports(selected)) {
                     event.detail = DND.DROP_LINK;

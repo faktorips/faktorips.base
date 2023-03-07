@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablecontents.ITableRows;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.junit.Before;
 import org.junit.Test;
 

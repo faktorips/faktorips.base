@@ -39,11 +39,9 @@ public class ExtensionPropertyMatcher implements IMatcher<IIpsElement> {
 
     @Override
     public boolean isMatching(IIpsElement element) {
-        if (!(element instanceof IExtensionPropertyAccess)) {
+        if (!(element instanceof IExtensionPropertyAccess access)) {
             return false;
         }
-
-        IExtensionPropertyAccess access = (IExtensionPropertyAccess)element;
 
         for (IExtensionPropertyDefinition extensionPropertyDefinition : getExtensionProperties(access)) {
             if (isMatchingExtensionProperty(access, extensionPropertyDefinition)) {
