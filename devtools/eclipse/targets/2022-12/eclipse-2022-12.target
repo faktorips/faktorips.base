@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target includeMode="feature" name="Target for Faktor-IPS Base (2022-12)" sequenceNumber="5">
+<target includeMode="feature" name="Target for Faktor-IPS Base (2022-12)" sequenceNumber="6">
   <locations>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="com.google.inject" version="0.0.0"/>
@@ -72,7 +72,7 @@
       <unit id="org.eclipse.babel.nls_technology.egit_de.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.babel.nls_technology.jgit_de.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.babel.nls_tools.gef_de.feature.group" version="0.0.0"/>
-      <repository location="https://update.faktorzehn.org/p2repositories/babel/2021-12"/>
+      <repository location="https://update.faktorzehn.org/p2repositories/babel/2022-12"/>
     </location>
       <location type="Target" uri="mvn:org.faktorips:thirdparty:23.6.0-SNAPSHOT:target"/>
   </locations>
