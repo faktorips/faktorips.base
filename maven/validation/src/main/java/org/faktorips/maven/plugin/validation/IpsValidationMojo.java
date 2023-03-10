@@ -188,23 +188,26 @@ public class IpsValidationMojo extends AbstractMojo {
     private Set<IpsDependency> findIpsJars(MavenProject project, Set<IpsDependency> upstreamProjects) {
         Set<IpsDependency> dependencies = new HashSet<>();
         ArtifactRepository repository = session.getLocalRepository();
-        for (Artifact artifact : project.getArtifacts()) {
-            File originalFile = null;
-            try {
-                originalFile = artifact.getFile();
-                // find sets the artifact's file to the one expected in the repository,
-                // even if it does not exist, so we have to reset this afterwards
-                File fileFromRepository = repository.find(artifact).getFile();
-                if (upstreamProjects.stream().anyMatch(d -> d.artifactId().equals(artifact.getArtifactId())
-                        && d.groupId().equals(artifact.getGroupId())
-                        && d.version().equals(artifact.getVersion()))) {
-                    // already a local dependency
-                    getLog().info("Using upstream project for " + artifact);
-                } else if (fileFromRepository.exists() && isFipsProjectFromManifest(fileFromRepository)) {
-                    dependencies.add(IpsDependency.create(artifact));
+        // don't let multiple runs of the validation plugin do this concurrently
+        synchronized (repository) {
+            for (Artifact artifact : project.getArtifacts()) {
+                File originalFile = null;
+                try {
+                    originalFile = artifact.getFile();
+                    // find sets the artifact's file to the one expected in the repository,
+                    // even if it does not exist, so we have to reset this afterwards
+                    File fileFromRepository = repository.find(artifact).getFile();
+                    if (upstreamProjects.stream().anyMatch(d -> d.artifactId().equals(artifact.getArtifactId())
+                            && d.groupId().equals(artifact.getGroupId())
+                            && d.version().equals(artifact.getVersion()))) {
+                        // already a local dependency
+                        getLog().info("Using upstream project for " + artifact);
+                    } else if (fileFromRepository.exists() && isFipsProjectFromManifest(fileFromRepository)) {
+                        dependencies.add(IpsDependency.create(artifact));
+                    }
+                } finally {
+                    artifact.setFile(originalFile);
                 }
-            } finally {
-                artifact.setFile(originalFile);
             }
         }
         return dependencies;
