@@ -329,7 +329,7 @@ def private static setterMethodCode(String methodName, XPolicyAssociation it) ''
                 «synchronizeInverseCompositionIfNecessaryForSet(true, "newObject", "this", it)»
             }
         «ENDIF»
-        «fieldName» = «castToImplementation(targetClassName)» newObject;
+        «fieldName» = «castToImplementation(targetModelNode, targetClassName)» newObject;
         «synchronizeInverseAssociationIfNecessary(fieldName, it)»
     «ELSEIF typeAssociation»
         if (newObject == «fieldName») {
@@ -340,7 +340,7 @@ def private static setterMethodCode(String methodName, XPolicyAssociation it) ''
             «fieldName» = null;
             «cleanupOldReference("oldRefObject", it)»
         «ENDIF»
-        «fieldName» = «castToImplementation(targetClassName)» newObject;
+        «fieldName» = «castToImplementation(targetModelNode, targetClassName)» newObject;
         «synchronizeInverseAssociationIfNecessary(fieldName, it)»
     «ENDIF»
 '''
@@ -630,7 +630,7 @@ def package static createTargetFromXmlMethod (XPolicyAssociation it) '''
             «IF abstractTarget»
                 throw new RuntimeException(childEl.toString() + ": Attribute className is missing.");
             «ELSE»
-                return «castToImplementation(AbstractModelObject())»«methodNameNew»();
+                return «castToImplementation(targetPolicyCmptClass, AbstractModelObject())»«methodNameNew»();
             «ENDIF»
         }
     «ENDIF»

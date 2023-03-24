@@ -18,7 +18,6 @@ import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -144,27 +143,17 @@ public class GeneratorConfig {
     /**
      * Returns <code>true</code> if the given project is configured to generate published
      * interfaces, <code>false</code> else.
-     * <p>
-     * If the given project differs from this context's project, this method always asks the current
-     * {@link IIpsArtefactBuilderSet} for its {@link IIpsArtefactBuilderSetConfig} and retrieves the
-     * value of the generate-published-interfaces setting.
-     * <p>
-     * If, however, the given project is equal to the project of this context, this method uses the
-     * context's own {@link IIpsArtefactBuilderSetConfig}. This is important as the project's
-     * {@link IIpsArtefactBuilderSetConfig config} may not be available during initialization of the
-     * builder set.
+     * 
+     * This method uses the context's own {@link IIpsArtefactBuilderSetConfig}. This is important as
+     * the project's {@link IIpsArtefactBuilderSetConfig config} may not be available during
+     * initialization of the builder set.
      * 
      * @param ipsProject The project in which the property is configured
      * @return <code>true</code> if the project is configured to generate published interfaces,
      *             <code>false</code> if not.
      */
     public boolean isGeneratePublishedInterfaces(IIpsProject ipsProject) {
-        if (this.ipsProject.equals(ipsProject)) {
-            return isGeneratePublishedInterfaces(config);
-        } else {
-            IIpsArtefactBuilderSetConfig configuration = ipsProject.getIpsArtefactBuilderSet().getConfig();
-            return isGeneratePublishedInterfaces(configuration);
-        }
+        return isGeneratePublishedInterfaces(config);
     }
 
     private boolean isGeneratePublishedInterfaces(IIpsArtefactBuilderSetConfig config) {
@@ -208,9 +197,9 @@ public class GeneratorConfig {
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
         return IpsStringUtils.isBlank(baseClass)
                 ? JaxbSupportVariant.None == getJaxbSupport()
-                        ? AbstractModelObject.class.getName()
+                ? AbstractModelObject.class.getName()
                         : IpsXmlAdapters.AbstractJaxbModelObject.qualifiedNameFrom(getJaxbSupport())
-                : baseClass;
+                        : baseClass;
     }
 
     public String getBaseClassProductCmptType() {

@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.builder.JaxbSupportVariant;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -55,23 +54,23 @@ public class GeneratorConfigTest {
     @Test
     public void testGetBaseClassPolicyCmptType() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("org.faktorips.FooBar");
+        .thenReturn("org.faktorips.FooBar");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(), is("org.faktorips.FooBar"));
     }
 
     @Test
     public void testGetBaseClassPolicyCmptType_default() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("");
+        .thenReturn("");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(), is(AbstractModelObject.class.getName()));
     }
 
     @Test
     public void testGetBaseClassPolicyCmptType_defaultJaxb() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("");
+        .thenReturn("");
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("true");
+        .thenReturn("true");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(),
                 is("org.faktorips.runtime.xml.javax.AbstractJaxbModelObject"));
     }
@@ -79,9 +78,9 @@ public class GeneratorConfigTest {
     @Test
     public void testGetBaseClassPolicyCmptType_Jakarta() {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE))
-                .thenReturn("");
+        .thenReturn("");
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("jakartaxmlbinding");
+        .thenReturn("jakartaxmlbinding");
         assertThat(generatorConfig.getBaseClassPolicyCmptType(),
                 is("org.faktorips.runtime.xml.jakarta.AbstractJaxbModelObject"));
     }
@@ -90,7 +89,7 @@ public class GeneratorConfigTest {
     public void testGetChangesOverTimeNamingConvention() {
         String id = "FIPS";
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION))
-                .thenReturn(id);
+        .thenReturn(id);
         IIpsModel ipsModel = mock(IIpsModel.class);
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
         IChangesOverTimeNamingConvention convention = mock(IChangesOverTimeNamingConvention.class);
@@ -103,21 +102,8 @@ public class GeneratorConfigTest {
     @Test
     public void testIsGeneratePublishedInterfaces_OwnProject() throws Exception {
         when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES))
-                .thenReturn(true);
+        .thenReturn(true);
         assertThat(generatorConfig.isGeneratePublishedInterfaces(ipsProject), is(true));
-    }
-
-    @Test
-    public void testIsGeneratePublishedInterfaces_OtherProject() throws Exception {
-        IIpsArtefactBuilderSetConfig otherConfig = mock(IIpsArtefactBuilderSetConfig.class);
-        when(otherConfig.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES))
-                .thenReturn(false);
-        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
-        when(builderSet.getConfig()).thenReturn(otherConfig);
-        IIpsProject otherProject = mock(IIpsProject.class);
-        when(otherProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
-
-        assertThat(generatorConfig.isGeneratePublishedInterfaces(otherProject), is(false));
     }
 
     @Test
@@ -138,7 +124,7 @@ public class GeneratorConfigTest {
     @Test
     public void testGetJaxbSupport_OldValue_True() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("true");
+        .thenReturn("true");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
@@ -147,7 +133,7 @@ public class GeneratorConfigTest {
     @Test
     public void testGetJaxbSupport_OldValue_False() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("false");
+        .thenReturn("false");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
     }
@@ -156,7 +142,7 @@ public class GeneratorConfigTest {
     @Test
     public void testGetJaxbSupport_None() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("none");
+        .thenReturn("none");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.None));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(false));
     }
@@ -165,7 +151,7 @@ public class GeneratorConfigTest {
     @Test
     public void testGetJaxbSupport_ClassicJAXB() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("ClassicJAXB");
+        .thenReturn("ClassicJAXB");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.ClassicJAXB));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
@@ -174,7 +160,7 @@ public class GeneratorConfigTest {
     @Test
     public void testGetJaxbSupport_JakartaXmlBinding() throws Exception {
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_JAXB_SUPPORT))
-                .thenReturn("JakartaXmlBinding");
+        .thenReturn("JakartaXmlBinding");
         assertThat(generatorConfig.getJaxbSupport(), is(JaxbSupportVariant.JakartaXmlBinding));
         assertThat(generatorConfig.isGenerateJaxbSupport(), is(true));
     }
