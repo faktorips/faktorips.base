@@ -250,7 +250,7 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
         return getClassName(xClass);
     }
 
-    protected XClass getTargetModelNode() {
+    public XClass getTargetModelNode() {
         IType target = getTargetType();
         return getModelNode(target, getModelNodeType(false));
     }

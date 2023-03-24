@@ -150,7 +150,7 @@ class CopySupportTmpl {
                 «ELSE»
                     «IF oneToMany»
                         for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) { ««« TODO cast ohne published interfaces nicht noetig
-                        «targetClassName» «copySupportLoopVarName» = «castToImplementation(targetClassName)» it.next();
+                        «targetClassName» «copySupportLoopVarName» = «castToImplementation(targetModelNode, targetClassName)» it.next();
                             «targetClassName» «copySupportCopyVarName» = «copySupportLoopVarName».newCopyInternal(copyMap);
                             «IF setInverseAssociationInCopySupport»
                                 «copySupportCopyVarName».«inverseAssociation.methodNameSetOrAddInternal»(concreteCopy);
@@ -189,7 +189,7 @@ class CopySupportTmpl {
                 «IF oneToMany»
                     for («targetInterfaceName» «copySupportLoopVarNameInternal» : «fieldName») {
                         «targetClassName» «copySupportCopyVarName» = («targetClassName»)copyMap.get(«copySupportLoopVarNameInternal»);
-                        «castToImplementation(targetClassName, copySupportLoopVarNameInternal)».copyAssociationsInternal(«copySupportCopyVarName», copyMap);
+                        «castToImplementation(targetModelNode, targetClassName, copySupportLoopVarNameInternal)».copyAssociationsInternal(«copySupportCopyVarName», copyMap);
                     }
                 «ELSE»
                     if («fieldName» != null) {

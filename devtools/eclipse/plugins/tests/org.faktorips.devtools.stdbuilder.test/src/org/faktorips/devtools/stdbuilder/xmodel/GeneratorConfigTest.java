@@ -19,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -94,19 +93,6 @@ public class GeneratorConfigTest {
         when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES))
                 .thenReturn(true);
         assertThat(generatorConfig.isGeneratePublishedInterfaces(ipsProject), is(true));
-    }
-
-    @Test
-    public void testIsGeneratePublishedInterfaces_OtherProject() throws Exception {
-        IIpsArtefactBuilderSetConfig otherConfig = mock(IIpsArtefactBuilderSetConfig.class);
-        when(otherConfig.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES))
-                .thenReturn(false);
-        IIpsArtefactBuilderSet builderSet = mock(IIpsArtefactBuilderSet.class);
-        when(builderSet.getConfig()).thenReturn(otherConfig);
-        IIpsProject otherProject = mock(IIpsProject.class);
-        when(otherProject.getIpsArtefactBuilderSet()).thenReturn(builderSet);
-
-        assertThat(generatorConfig.isGeneratePublishedInterfaces(otherProject), is(false));
     }
 
     @Test
