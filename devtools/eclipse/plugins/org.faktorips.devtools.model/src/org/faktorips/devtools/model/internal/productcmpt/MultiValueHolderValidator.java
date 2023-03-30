@@ -12,7 +12,9 @@ package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder.MSGCODE_CONTAINS_DUPLICATE_VALUE;
 import static org.faktorips.devtools.model.internal.productcmpt.MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE;
+import static org.faktorips.devtools.model.productcmpt.IAttributeValue.MSGCODE_MANDATORY_VALUE_NOT_DEFINED;
 
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 
@@ -59,6 +62,7 @@ public class MultiValueHolderValidator implements IValueHolderValidator {
                     new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
                     new ObjectProperty(valueHolder, IValueHolder.PROPERTY_VALUE));
         }
+        validateEmptyMultiValue(messages, values);
         return messages;
     }
 
@@ -73,6 +77,21 @@ public class MultiValueHolderValidator implements IValueHolderValidator {
             }
         }
         return duplicates;
+    }
+
+    private void validateEmptyMultiValue(MessageList messages, List<ISingleValueHolder> values) {
+        if (parent.findAttribute(ipsProject) != null) {
+            IValueSet valueSet = parent.findAttribute(ipsProject).getValueSet();
+            if (valueSet != null) {
+                if (values.isEmpty() && (!valueSet.isContainsNull())) {
+                    String text = MessageFormat.format(Messages.AttributeValue_MultiValueMustNotBeEmpty,
+                            parent.getName().toString());
+                    messages.newError(MSGCODE_MANDATORY_VALUE_NOT_DEFINED, text,
+                            new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
+                            new ObjectProperty(valueHolder, IValueHolder.PROPERTY_VALUE));
+                }
+            }
+        }
     }
 
 }

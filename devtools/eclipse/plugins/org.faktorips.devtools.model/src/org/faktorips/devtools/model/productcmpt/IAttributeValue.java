@@ -64,6 +64,11 @@ public interface IAttributeValue extends IPropertyValue {
      */
     String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
 
+    /**
+     * Validation message code to indicate that a mandatory attribute value is empty or null.
+     */
+    String MSGCODE_MANDATORY_VALUE_NOT_DEFINED = MSGCODE_PREFIX + "MandatoryValueNotDefined"; //$NON-NLS-1$
+
     @Override
     String getPropertyValue();
 

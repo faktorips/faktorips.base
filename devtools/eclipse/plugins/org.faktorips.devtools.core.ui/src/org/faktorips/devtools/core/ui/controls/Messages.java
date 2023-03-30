@@ -140,4 +140,6 @@ public class Messages extends NLS {
 
     public static String MultiValueEditTableControl_ColumnName;
 
+    public static String ValueSetSpecificationControl_allowEmpty;
+
 }

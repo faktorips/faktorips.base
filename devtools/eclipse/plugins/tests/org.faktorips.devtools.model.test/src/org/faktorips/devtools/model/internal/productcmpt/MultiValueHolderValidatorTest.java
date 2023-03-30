@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.ISingleValueHolder;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
@@ -42,13 +43,19 @@ public class MultiValueHolderValidatorTest {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
+        IValueSet valueSet = mock(IValueSet.class);
 
         when(attributeValue.getIpsProject()).thenReturn(project);
         when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+        when(attributeValue.getName()).thenReturn("a");
+
         MultiValueHolder valueHolder = new MultiValueHolder(attributeValue, null);
         MultiValueHolderValidator validator = new MultiValueHolderValidator(valueHolder, attributeValue, project);
+        MessageList messageList = validator.validate();
 
-        assertThat(validator.validate().size(), is(0));
+        assertThat(messageList.size(), is(1));
+        assertThat(messageList, hasMessageCode(IAttributeValue.MSGCODE_MANDATORY_VALUE_NOT_DEFINED));
     }
 
     @Test
@@ -56,13 +63,19 @@ public class MultiValueHolderValidatorTest {
         IAttributeValue attributeValue = mock(IAttributeValue.class);
         IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
         IIpsProject project = mock(IIpsProject.class);
+        IValueSet valueSet = mock(IValueSet.class);
 
         when(attributeValue.getIpsProject()).thenReturn(project);
         when(attributeValue.findAttribute(project)).thenReturn(attribute);
+        when(attribute.getValueSet()).thenReturn(valueSet);
+        when(attributeValue.getName()).thenReturn("a");
+
         MultiValueHolder valueHolder = new MultiValueHolder(attributeValue);
         MultiValueHolderValidator validator = new MultiValueHolderValidator(valueHolder, attributeValue, project);
+        MessageList messageList = validator.validate();
 
-        assertThat(validator.validate().size(), is(0));
+        assertThat(messageList.size(), is(1));
+        assertThat(messageList, hasMessageCode(IAttributeValue.MSGCODE_MANDATORY_VALUE_NOT_DEFINED));
     }
 
     @Test

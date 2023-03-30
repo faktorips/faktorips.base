@@ -32,6 +32,7 @@ public class Messages extends NLS {
     public static String AttributeValue_ValueEmptyOrNull;
     public static String AttributeValue_ValueNotAllowed;
     public static String AttributeValue_HiddenAttributeMismatch;
+    public static String AttributeValue_MultiValueMustNotBeEmpty;
 
     public static String ConfiguredValueSet_error_msg_abstractValueSet;
     public static String ConfigElement_msgTypeMismatch;
@@ -107,5 +108,4 @@ public class Messages extends NLS {
     public static String AttributeValue_MultiLingual;
     public static String ProductCmpt_Error_DifferencesToModel0;
     public static String ProductCmpt_Error_IdsNotUnique;
-
 }
