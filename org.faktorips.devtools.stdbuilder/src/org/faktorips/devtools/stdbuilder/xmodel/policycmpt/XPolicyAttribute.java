@@ -21,6 +21,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.exception.CoreRuntimeException;
+import org.faktorips.devtools.model.internal.datatype.DynamicEnumDatatype;
 import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -260,6 +261,10 @@ public class XPolicyAttribute extends XAttribute {
      */
     public boolean isIpsEnum() {
         return getDatatype() instanceof EnumTypeDatatypeAdapter;
+    }
+
+    public boolean isJavaEnum() {
+        return getDatatype().isEnum();
     }
 
     public boolean isRangeSupported() {
@@ -637,6 +642,15 @@ public class XPolicyAttribute extends XAttribute {
             javaCodeFragment.append(repositoryExpression).append(".").append("getEnumValues(")
                     .append(getJavaClassName()).append(".class)");
         }
+        addImport(javaCodeFragment.getImportDeclaration());
+        return javaCodeFragment.getSourcecode();
+    }
+
+    public String getAllJavaEnumValuesCode() {
+        DynamicEnumDatatype datatype = (DynamicEnumDatatype)getDatatype();
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
+        javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
+                .append("." + datatype.getAllValuesMethodName() + "())");
         addImport(javaCodeFragment.getImportDeclaration());
         return javaCodeFragment.getSourcecode();
     }
