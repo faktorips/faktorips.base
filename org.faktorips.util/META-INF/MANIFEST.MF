@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Util
 Bundle-SymbolicName: org.faktorips.util
-Bundle-Version: 22.6.6.qualifier
+Bundle-Version: 22.6.7.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Export-Package: org.faktorips.util,
  org.faktorips.util.collections,

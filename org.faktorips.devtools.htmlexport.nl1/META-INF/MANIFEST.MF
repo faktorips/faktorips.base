@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Export Internationalisierung
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport.nl1
-Bundle-Version: 22.6.6.qualifier
+Bundle-Version: 22.6.7.qualifier
 Bundle-Vendor: Faktor Zehn GmbH
 Fragment-Host: org.faktorips.devtools.htmlexport.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-11
