@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.NetUtil;
+import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.ErrorHandler;
@@ -62,7 +63,8 @@ public class XsdValidatorHolder extends ThreadLocal<Validator> {
 
         Schema schema;
         try {
-            if (NetUtil.isSchemaReachable(ipsObjectType)) {
+            if (NetUtil.isSchemaReachable(ipsObjectType)
+                    && NetUtil.isUrlReachable("https://www.w3.org/2009/01/xml.xsd")) { //$NON-NLS-1$
                 schema = factory.newSchema();
             } else {
                 // offline developers need to copy the content of
@@ -80,19 +82,20 @@ public class XsdValidatorHolder extends ThreadLocal<Validator> {
     }
 
     private StreamSource loadIpsSchemaFileFromClasspath() {
-        String resource = "/xsd-schema/" + ipsObjectType.getXmlElementName() + ".xsd"; //$NON-NLS-1$//$NON-NLS-2$
-        InputStream xsdSchemaStream = getClass().getClassLoader().getResourceAsStream(resource);
+        String resource = "xsd-schema/" + ipsObjectType.getXmlElementName() + ".xsd"; //$NON-NLS-1$//$NON-NLS-2$
+        InputStream xsdSchemaStream = ipsObjectType.getClass().getClassLoader().getResourceAsStream(resource);
         return new StreamSource(new InputStreamReader(xsdSchemaStream));
     }
 
     private InputStreamReader loadDependendSchemaFilesFromClasspath(String systemId) {
         String path;
         if (systemId.endsWith("xml.xsd")) { //$NON-NLS-1$
-            path = "/xsd-schema/xml.xsd"; //$NON-NLS-1$
+            path = "xsd-schema/xml.xsd"; //$NON-NLS-1$
             // $NON-NLS-1$
         } else if (systemId.endsWith("ips-global.xsd")) { //$NON-NLS-1$
-            path = "/xsd-schema/ips-global.xsd"; //$NON-NLS-1$
-            // $NON-NLS-1$
+            path = "xsd-schema/ips-global.xsd"; //$NON-NLS-1$
+        } else if (systemId.startsWith(XmlUtil.FAKTOR_IPS_SCHEMA_URL)) {
+            path = "xsd-schema/" + systemId.substring(systemId.lastIndexOf('/') + 1); //$NON-NLS-1$
         } else {
             throw new IllegalArgumentException("Unknown dependent schema file: " + systemId); //$NON-NLS-1$
         }
