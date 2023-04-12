@@ -36,6 +36,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -170,7 +171,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
         when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
-                .thenReturn(productComponentGeneration);
+        .thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
     }
@@ -396,7 +397,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
      * is used instead of {@link TestProductComponent} because the method
      * {@link #writePropertiesToXml(Element)} has to be overridden for some tests here.
      */
-    public static class ProductComponentTestClass extends ProductComponent {
+    public static class ProductComponentTestClass extends ProductComponent implements IToXmlSupport {
 
         public ProductComponentTestClass(IRuntimeRepository repository) {
             super(repository, "id", "productKindId", "versionId");
@@ -408,7 +409,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         }
 
         @Override
-        protected void writePropertiesToXml(Element element) {
+        public void writePropertiesToXml(Element element) {
             /*
              * Nothing to be done. This method is overridden to avoid throwing
              * UnsupportedOperationException in super class implementation.

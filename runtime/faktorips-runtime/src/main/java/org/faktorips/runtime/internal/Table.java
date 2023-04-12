@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.xml.parsers.SAXParser;
@@ -21,6 +22,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
+import org.faktorips.runtime.xml.IToXmlSupport;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
+import org.faktorips.values.LocalizedString;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
@@ -44,12 +50,23 @@ import org.xml.sax.InputSource;
  */
 public abstract class Table<R> implements ITable<R> {
 
+    private static final String XML_ELEMENT_TABLE_CONTENTS = "TableContents";
+
+    private static final String ATTRIBUTE_LOCALE = "locale";
+
+    private static final String XML_ELEMENT_DESCRIPTION = "Description";
+
     /**
      * Contains all rows of this table.
      */
     // CSOFF: VisibilityModifierCheck
     // directly written to from generated subclasses
     protected List<R> rows;
+
+    /**
+     * The description for this table in all configured languages.
+     */
+    protected InternationalString description;
     // CSON: VisibilityModifierCheck
 
     /**
@@ -59,7 +76,7 @@ public abstract class Table<R> implements ITable<R> {
 
     /**
      * Is used by the generated class to retrieve the values for a single row.
-     * 
+     *
      * @param columns List of objects that contain the values.
      */
     protected abstract void addRow(List<String> columns, IRuntimeRepository productRepository);
@@ -77,6 +94,7 @@ public abstract class Table<R> implements ITable<R> {
             throws Exception {
         rows = new ArrayList<>(200);
         name = qualifiedTableName;
+
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
         ((ArrayList<R>)rows).trimToSize();
@@ -101,7 +119,7 @@ public abstract class Table<R> implements ITable<R> {
 
     /**
      * Is used by generated classes within the initKeyMaps() method to identify a null values.
-     * 
+     *
      * @param valueElement the element that contains the value for a field within a row
      * @return true if the the <em>isNull</em> attribute contains <em>true</em> otherwise false
      */
@@ -125,9 +143,38 @@ public abstract class Table<R> implements ITable<R> {
         return name;
     }
 
+    public String getDescription(Locale locale) {
+        String string = description.get(locale);
+        if (string == null) {
+            return IpsStringUtils.EMPTY;
+        } else {
+            return string;
+        }
+    }
+
     @Override
     public List<R> getAllRows() {
         return Collections.unmodifiableList(rows);
+    }
+
+    private void writeDescriptionToXml(Element tableElement) {
+        if (description != null) {
+            for (LocalizedString localizedString : ((DefaultInternationalString)description).getLocalizedStrings()) {
+                Element descriptionElement = tableElement.getOwnerDocument().createElement(XML_ELEMENT_DESCRIPTION);
+                descriptionElement.setAttribute(ATTRIBUTE_LOCALE, localizedString.getLocale().toString());
+                descriptionElement.setTextContent(localizedString.getValue());
+                tableElement.appendChild(descriptionElement);
+            }
+        }
+    }
+
+    @Override
+    public Element toXml(Document document) {
+        IToXmlSupport.check(this);
+        Element tableElement = document.createElement(XML_ELEMENT_TABLE_CONTENTS);
+        writeDescriptionToXml(tableElement);
+        ((IToXmlSupport)this).writePropertiesToXml(tableElement);
+        return tableElement;
     }
 
 }

@@ -166,6 +166,15 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns the QualifiedName of the {@link IIpsObject}
+     * 
+     * @return the getQualifiedName of the {@link IIpsObject}
+     */
+    public String getQualifiedName() {
+        return getIpsObjectPartContainer().getIpsObject().getQualifiedName();
+    }
+
+    /**
      * Returns the description of this {@link IIpsObjectPartContainer} in the language of the code
      * generator.
      * <p>
@@ -410,7 +419,7 @@ public abstract class AbstractGeneratorModelNode {
     public String localizedJDoc(String key, Object... replacements) {
         String text = getGeneratorConfig().isGenerateMinimalJavadoc()
                 ? Arrays.toString(replacements).contains(getDescription()) ? getDescription() : ""
-                : getLocalizedText(key + "_JAVADOC", replacements);
+                    : getLocalizedText(key + "_JAVADOC", replacements);
 
         return removeEmptyLines(text);
     }

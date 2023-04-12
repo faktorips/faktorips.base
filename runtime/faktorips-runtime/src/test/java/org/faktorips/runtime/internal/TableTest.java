@@ -15,7 +15,9 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
+import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.values.Decimal;
@@ -45,11 +47,7 @@ public class TableTest extends XmlAbstractTestCase {
 
     @Test
     public void testInitFromXmlViaSax() throws Exception {
-        String className = getClass().getName();
-        int index = className.lastIndexOf('.');
-        if (index > -1) {
-            className = className.substring(index + 1);
-        }
+        String className = getClass().getSimpleName();
         String resourceName = className + ".xml";
         InputStream is = getClass().getResourceAsStream(resourceName);
         if (is == null) {
@@ -73,7 +71,10 @@ public class TableTest extends XmlAbstractTestCase {
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.35"), row.getRate());
 
+        assertEquals("TestBeschreibung", table.getDescription(Locale.GERMAN));
+        assertEquals("TestDescription", table.getDescription(Locale.ENGLISH));
+        assertEquals(StringUtils.EMPTY, table.getDescription(Locale.FRENCH));
+
         assertEquals(getClass().getName(), table.getName());
     }
-
 }

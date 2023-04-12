@@ -12,6 +12,7 @@ package org.faktorips.runtime.internal;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.w3c.dom.Element;
 
 /**
@@ -19,7 +20,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class TestProductComponent extends ProductComponent {
+public class TestProductComponent extends ProductComponent implements IToXmlSupport {
 
     public TestProductComponent(IRuntimeRepository repository, String id, String productKindId, String versionId) {
         super(repository, id, productKindId, versionId);
@@ -40,7 +41,7 @@ public class TestProductComponent extends ProductComponent {
     }
 
     @Override
-    protected void writePropertiesToXml(Element element) {
+    public void writePropertiesToXml(Element element) {
         // not implemented, but overwrites the super-implementation that throws an exception to
         // allow testing of other parts written to XML.
     }

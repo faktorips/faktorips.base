@@ -13,8 +13,11 @@ package org.faktorips.runtime.internal;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.LocalizedString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -32,6 +35,10 @@ public class TableSaxHandler extends DefaultHandler {
     private static final String ROW = "Row";
     private static final String ROWS = "Rows";
     private static final String PROPERTY_FORMAT = "format";
+    private static final String DESCRIPTION = "Description";
+    private static final String PROPERTY_LOCALE = "locale";
+
+    private final List<LocalizedString> descriptions = new ArrayList<>();
 
     // the table which will be filled
     private Table<?> table;
@@ -54,6 +61,11 @@ public class TableSaxHandler extends DefaultHandler {
     // true if the current value node represents the null value
     private boolean nullValue;
 
+    // true if the parser is inside the description node
+    private boolean insideDescriptionNode;
+
+    private String currentDescriptionLocale;
+
     // the product repository to get product information from
     private IRuntimeRepository productRepository;
 
@@ -75,7 +87,18 @@ public class TableSaxHandler extends DefaultHandler {
             insideValueNode = false;
             columns.add(getText());
             textBuilder = null;
+        } else if (DESCRIPTION.equals(qName)) {
+            insideDescriptionNode = false;
+            handleDescription();
         }
+    }
+
+    private void handleDescription() {
+        if (!(IpsStringUtils.isEmpty(currentDescriptionLocale))) {
+            Locale locale = new Locale(currentDescriptionLocale);
+            descriptions.add(new LocalizedString(locale, getText()));
+        }
+        textBuilder = null;
     }
 
     private String getText() {
@@ -95,6 +118,9 @@ public class TableSaxHandler extends DefaultHandler {
         } else if (isColumnValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.parseBoolean(attributes.getValue("isNull"));
+        } else if (DESCRIPTION.equals(qName)) {
+            insideDescriptionNode = true;
+            currentDescriptionLocale = attributes.getValue(PROPERTY_LOCALE);
         }
     }
 
@@ -105,7 +131,7 @@ public class TableSaxHandler extends DefaultHandler {
 
     @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
-        if (!insideValueNode && !insideCsvContent) {
+        if (!insideValueNode && !insideCsvContent && !insideDescriptionNode) {
             // ignore characters which are not inside a value node
             return;
         }
@@ -115,6 +141,18 @@ public class TableSaxHandler extends DefaultHandler {
         } else {
             textBuilder.append(s);
         }
+    }
+
+    @Override
+    public void endDocument() throws SAXException {
+        Locale locale;
+        if (descriptions.isEmpty()) {
+            // without a description no way to know what the correct locale may be, see FIPS-5152
+            locale = Locale.getDefault();
+        } else {
+            locale = descriptions.get(0).getLocale();
+        }
+        table.description = new DefaultInternationalString(descriptions, locale);
     }
 
     /*
@@ -135,5 +173,4 @@ public class TableSaxHandler extends DefaultHandler {
             CsvTableReader.readCsv(stringReader, table, productRepository);
         }
     }
-
 }

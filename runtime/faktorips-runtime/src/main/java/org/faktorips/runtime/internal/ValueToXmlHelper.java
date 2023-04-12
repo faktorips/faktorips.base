@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.w3c.dom.Text;
 
 /**
  * Helper class to write values to XML and retrieve them from XML.
- * 
+ *
  * @author Jan Ortmann
  */
 public enum ValueToXmlHelper {
@@ -62,6 +62,8 @@ public enum ValueToXmlHelper {
     public static final String XML_TAG_TABLE_CONTENT_NAME = "TableContentName"; //$NON-NLS-1$
     public static final String XML_TAG_TABLE_CONTENT_USAGE = "TableContentUsage"; //$NON-NLS-1$
     public static final String XML_TAG_MAXIMUM_LENGTH = "MaximumLength"; //$NON-NLS-1$
+    public static final String XML_TAG_ROW = "Row"; //$NON-NLS-1$
+    public static final String XML_TAG_ROWS = "Rows"; //$NON-NLS-1$
 
     public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
@@ -71,7 +73,7 @@ public enum ValueToXmlHelper {
     /**
      * Adds the value to the given xml element. Takes care of proper null handling. By value we mean
      * a value of a datatype, e.g. 42EUR is a value of the datatype money.
-     * 
+     *
      * @param value the string representation of the value
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value
@@ -83,7 +85,7 @@ public enum ValueToXmlHelper {
     /**
      * Adds the {@link DefaultInternationalString} to the given xml element. Takes care of proper
      * null handling.
-     * 
+     *
      * @param value the {@link DefaultInternationalString} to be added.
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value.
@@ -94,7 +96,7 @@ public enum ValueToXmlHelper {
 
     /**
      * Adds the value to the given xml element. The value is inserted inside a CDATA section.
-     * 
+     *
      * @param value the string representation of the value
      * @param el the xml element.
      * @param tagName the tag name for the element that stored the value
@@ -106,7 +108,7 @@ public enum ValueToXmlHelper {
     /**
      * Adds the value to the given xml element as does
      * {@link #addValueToElement(String, Element, String)}. The created element then is returned.
-     * 
+     *
      * @param value the string representation of the value
      * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value
@@ -125,7 +127,7 @@ public enum ValueToXmlHelper {
      * Adds the {@link DefaultInternationalString} to the given xml element as does
      * {@link #addInternationalStringToElement(DefaultInternationalString, Element, String)}. The
      * created element then is returned.
-     * 
+     *
      * @param value the {@link DefaultInternationalString} to be added.
      * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value.
@@ -170,7 +172,7 @@ public enum ValueToXmlHelper {
     /**
      * Adds the value to the given xml element as does
      * {@link #addValueToElement(String, Element, String)}. The created element then is returned.
-     * 
+     *
      * @param value the string representation of the value
      * @param el the XML element to add the value to.
      * @param tagName the tag name for the element that stored the value
@@ -182,7 +184,7 @@ public enum ValueToXmlHelper {
 
     /**
      * Adds a table usage to the XML element.
-     * 
+     *
      * @param el the XML element to add the value to.
      * @param structureUsage the value for the structureUsage XML attribute
      * @param tableContentName the name of the used table content
@@ -198,13 +200,13 @@ public enum ValueToXmlHelper {
      * Returns the string representation of the value stored in the child element of the given
      * element with the indicated name. Returns <code>null</code> if the value is null or no such
      * child element exists.
-     * 
+     *
      * <pre>
      *     &lt;Parent&gt;
      *         &lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
      *     &lt;/Parent&gt;
      * </pre>
-     * 
+     *
      * @param el The xml element that is the parent of the element storing the value.
      * @param tagName The name of the child
      */
@@ -216,7 +218,7 @@ public enum ValueToXmlHelper {
      * Returns the {@link DefaultInternationalString} stored in the child element of the given
      * element with the indicated name. Returns an empty DefaultInternationalString if the value is
      * null or no such child element exists.
-     * 
+     *
      * @param el The xml element that is the parent of the element storing the international string.
      * @param tagName The name of the child
      */
@@ -230,11 +232,11 @@ public enum ValueToXmlHelper {
      * Returns the string representation of the value stored in given value element. Returns
      * <code>null</code> if the value is null, the attribute isNull is <code>true</code> or no such
      * child element exists.
-     * 
+     *
      * <pre>
      *         &lt;Property isNull=&quot;false&quot;&gt;42&lt;/Property&gt;
      * </pre>
-     * 
+     *
      * @param valueEl The xml value element containing the value.
      */
     public static String getValueFromElement(Element valueEl) {
@@ -259,7 +261,7 @@ public enum ValueToXmlHelper {
     /**
      * Returns the {@link DefaultInternationalString} stored in the given element. Returns an empty
      * DefaultInternationalString if the value is null.
-     * 
+     *
      * @param el The xml element storing the international string.
      */
     public static DefaultInternationalString getInternationalStringFromElement(Element el) {

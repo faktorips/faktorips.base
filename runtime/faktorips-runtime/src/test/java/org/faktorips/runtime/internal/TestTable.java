@@ -87,5 +87,4 @@ public class TestTable extends Table<TestTableRow> {
     public static final TestTable getInstance(IRuntimeRepository repository, String qualifiedTableName) {
         return (TestTable)repository.getTable(qualifiedTableName);
     }
-
 }

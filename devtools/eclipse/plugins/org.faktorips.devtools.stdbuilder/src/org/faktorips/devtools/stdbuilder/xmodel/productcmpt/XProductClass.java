@@ -35,6 +35,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.Gene
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.xml.IToXmlSupport;
 
 public abstract class XProductClass extends XType {
 
@@ -157,6 +158,17 @@ public abstract class XProductClass extends XType {
             }
         }
         return Set.of();
+    }
+
+    @Override
+    protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
+        LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<>();
+        if(!hasSupertype()) {
+            if (getGeneratorConfig().isGenerateToXmlSupport()) {
+                extendedInterfaces.add(addImport(IToXmlSupport.class));
+            }
+        }
+        return extendedInterfaces;
     }
 
     /**

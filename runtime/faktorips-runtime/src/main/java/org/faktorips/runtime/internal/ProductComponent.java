@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
@@ -101,13 +102,13 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Creates a new product component with the indicate id, kind id and version id.
-     * 
+     *
      * @param repository The component registry the component uses to resolve references to other
      *            components.
      * @param id The component's runtime id.
      * @param productKindId The component's kind id
      * @param versionId The component's version id
-     * 
+     *
      * @throws NullPointerException if repository, id, productKindId, or versionId is
      *             <code>null</code>.
      */
@@ -194,10 +195,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * equal to the valid from date of the product component itself. Therefore, if clients call this
      * method, then to achieve data consistency clients must set the valid from date of the first
      * generation, too.
-     * 
+     *
      * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository this
      *             product component belongs to does not allow to modify its contents
-     * 
+     *
      * @see ProductComponentGeneration#setValidFrom(DateTime)
      */
     public void setValidFrom(DateTime validfrom) {
@@ -259,7 +260,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Initializes the generation with the data from the xml element.
-     * 
+     *
      * @throws NullPointerException if cmptElement is <code>null</code>.
      */
     @Override
@@ -289,7 +290,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Initializes the properties with the data in the map.
-     * 
+     *
      * @param map the map of property elements
      */
     protected void doInitPropertiesFromXml(Map<String, Element> map) {
@@ -302,7 +303,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * Initializes the table content usages with the data in the map. The map contains the table
      * structure usage roles as key and the qualified table content name as value.
-     * 
+     *
      * @param map the map of property elements
      */
     protected void doInitTableUsagesFromXml(Map<String, Element> map) {
@@ -342,7 +343,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * Creates a map containing the validation rule configurations found in the indicated XML
      * element. For each validation rule configuration the map contains an entry with the rule name
      * as a key and an {@link ValidationRuleConfiguration} instance as value.
-     * 
+     *
      * @param element an XML element containing a product component's data
      * @throws NullPointerException if element is <code>null</code>.
      * @since 3.22
@@ -375,7 +376,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
      * Support") is not activated in the FIPS standard builder.
-     * 
+     *
      * @param document a document, that can be used to create XML elements.
      */
     @Override
@@ -388,17 +389,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml ("Generate toXml
      * Support") is not activated in the FIPS standard builder.
-     * 
+     *
      * @param document a document, that can be used to create XML elements.
      * @param includeGenerations <code>true</code> if the created XML element should include the
      *            data of all the product component's generations, <code>false</code> if generations
      *            should be ignored when creating the XML output.
      */
     public Element toXml(Document document, boolean includeGenerations) {
+        IToXmlSupport.check(this);
         Element prodCmptElement = document.createElement("ProductComponent");
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
-        writePropertiesToXml(prodCmptElement);
+        ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
         writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
@@ -433,23 +435,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * Subclasses override this method to write their properties into the given XML element.
-     * <p>
-     * The standard implementation throws an {@link UnsupportedOperationException} if the support
-     * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
-     * classes override but do <em>NOT</em> call super.
-     * 
-     * @param element the XML element to write the properties to
-     */
-    protected void writePropertiesToXml(Element element) {
-        throw new UnsupportedOperationException(
-                "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
-    }
-
-    /**
      * This is a utility method called by generated code. The given {@link Element} is the element
      * representing this {@link ProductComponent}.
-     * 
+     *
      * @param element the element all table usages should be added to
      */
     protected void writeTableUsagesToXml(Element element) {
@@ -461,7 +449,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * This method is used for writing a table usage to the XML of the given {@link Element}.
-     * 
+     *
      * @param element the element where the table usage will be added to
      * @param structureUsage the value for the structureUsage XML attribute
      * @param tableContentName the name of the used table content
@@ -495,7 +483,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     /**
      * This is a utility method called by generated code. The given {@link Element} is the element
      * representing this {@link ProductComponentGeneration}.
-     * 
+     *
      * @param element the element all table usages should be added to
      * @since 3.8
      */

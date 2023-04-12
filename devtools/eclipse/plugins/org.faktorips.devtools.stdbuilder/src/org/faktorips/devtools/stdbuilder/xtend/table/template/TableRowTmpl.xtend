@@ -1,17 +1,21 @@
 package org.faktorips.devtools.stdbuilder.xtend.table.template
+
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 import org.faktorips.devtools.stdbuilder.xmodel.table.XColumn
 import org.faktorips.devtools.stdbuilder.xmodel.table.XTableRow
 
 import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
+import static extension org.faktorips.devtools.stdbuilder.xtend.table.template.ColumnAttributeExtensionTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
 
 class TableRowTmpl {
 
     def static String body(XTableRow it) '''
-
-
+        
         /**
          *«localizedJDoc("CLASS_DESCRIPTION")»
          *
@@ -20,13 +24,14 @@ class TableRowTmpl {
          * @generated
          */
         «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
-        public class «name» {
+        public class «name»«IF generateToXmlSupport» implements «IToXmlSupport»«ENDIF»{
             «nullrowconstant»
             «attributes»
             «constructors»
             «methods»
+            «writeToXmlMethod»
         }
-
+        
     '''
 
     def private static nullrowconstant(XTableRow it) '''
@@ -37,9 +42,9 @@ class TableRowTmpl {
     '''
 
     def private static attributes(XTableRow it) '''
-
-           «FOR it : validColumns» «attribute» «ENDFOR»
-
+        
+        «FOR it : validColumns» «attribute» «ENDFOR»
+        
     '''
 
     def private static attribute(XColumn it) '''
@@ -95,6 +100,24 @@ class TableRowTmpl {
         public String «method("toString")»{
             return «attributeNames»;
         }
+    '''
+
+    def package static writeToXmlMethod(XTableRow it) '''
+        «IF generateToXmlSupport»
+            /**
+             *«inheritDoc»
+             *
+             * @generated
+             */
+            @Override
+            public void «writePropertiesToXml(Element + " element")» {
+                Element rowElement = element.getOwnerDocument().createElement("«XML_TAG_ROW»");
+                «FOR column : it.validColumns»
+                    «ValueToXmlHelper».«column.addToElement(column.getToStringExpression(column.attributeName) , "rowElement", "\""+XML_TAG_VALUE+"\"")»;
+                «ENDFOR»
+                element.appendChild(rowElement);
+            }
+        «ENDIF»
     '''
 
 }

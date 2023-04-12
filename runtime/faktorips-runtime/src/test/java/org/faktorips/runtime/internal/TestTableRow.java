@@ -79,5 +79,4 @@ public class TestTableRow {
     public String toString() {
         return "" + company + "|" + gender + "|" + rate;
     }
-
 }

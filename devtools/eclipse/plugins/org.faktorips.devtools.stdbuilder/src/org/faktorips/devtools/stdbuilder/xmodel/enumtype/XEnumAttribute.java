@@ -23,6 +23,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
 
 public class XEnumAttribute extends AbstractGeneratorModelNode {
@@ -188,4 +189,17 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
     public String getMethodNameIsValueBy() {
         return "isValueBy" + StringUtils.capitalize(getName());
     }
+
+    public String getToStringExpression(String memberVarName) {
+        DatatypeHelper datatypeHelper = getDatatypeHelper(true);
+        JavaCodeFragment fragment = datatypeHelper.getToStringExpression(memberVarName);
+        addImport(fragment.getImportDeclaration());
+        if (datatypeHelper instanceof InternationalStringDatatypeHelper) {
+            JavaCodeFragment cast = new JavaCodeFragment().append("(").appendClassName(DefaultInternationalString.class).append(")");
+            addImport(cast.getImportDeclaration());
+            return cast.append(fragment).getSourcecode();
+        }
+        return fragment.getSourcecode();
+    }
+
 }

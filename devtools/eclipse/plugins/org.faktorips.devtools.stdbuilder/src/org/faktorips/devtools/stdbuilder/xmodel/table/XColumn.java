@@ -13,6 +13,7 @@ package org.faktorips.devtools.stdbuilder.xmodel.table;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.InternationalStringDatatype;
 import org.faktorips.devtools.model.tablestructure.IColumn;
 import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
@@ -63,6 +64,10 @@ public class XColumn extends AbstractGeneratorModelNode {
         return enumHelper.getEnumType().isExtensible();
     }
 
+    public boolean isMultilingual() {
+        return getDatatypeHelper().getDatatype() instanceof InternationalStringDatatype;
+    }
+
     public String getMethodNameGetter() {
         return getJavaNamingConvention().getGetterMethodName(getAttributeName());
     }
@@ -89,6 +94,12 @@ public class XColumn extends AbstractGeneratorModelNode {
                 getDatatypeHelper(), expression, repositoryExpression);
         addImport(newInstanceFromExpression.getImportDeclaration());
         return newInstanceFromExpression.getSourcecode();
+    }
+
+    public String getToStringExpression(String memberVarName) {
+        JavaCodeFragment fragment = getDatatypeHelper().getToStringExpression(memberVarName);
+        addImport(fragment.getImportDeclaration());
+        return fragment.getSourcecode();
     }
 
 }

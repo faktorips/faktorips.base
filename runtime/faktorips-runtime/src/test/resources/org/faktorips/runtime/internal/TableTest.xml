@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="WINDOWS-1252"?>
-<TableContents description="" tableStructure="tables.TableWithNoRange" numOfColumns="3">
-    <ExtensionProperties>
-        <Value id="id" isNull="false"><![CDATA[XYZ]]></Value>
-    </ExtensionProperties>     
-    <Generation description="" validFrom="2005-01-01">
+<?xml version="1.0" encoding="UTF-8"?>
+<TableContents xmlns="http://www.faktorzehn.org" numOfColumns="3" tableStructure="tables.TestTable" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/23.6/TableContents.xsd" xml:space="preserve">
+    <Description locale="en">TestDescription</Description>
+    <Description locale="fr"/>
+    <Description locale="de">TestBeschreibung</Description>
+    <ColumnTableReference name="company"/>
+    <ColumnTableReference name="Gender"/>
+    <ColumnTableReference name="rate"/>
+    <Rows>
         <Row>
             <Value isNull="true"></Value>
             <Value>0</Value>
@@ -34,6 +37,6 @@
             <Value isNull="false">1</Value>
             <Value isNull="false">0.35</Value>
         </Row>
-    </Generation>
+    </Rows>
 </TableContents>
 

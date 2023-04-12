@@ -34,7 +34,7 @@ class ProductCommonsTmpl {
              * @generated
              */
             @Override
-            protected void «writePropertiesToXml(Element + " element")» {
+            public void «writePropertiesToXml(Element + " element")» {
                 «IF hasSupertype»
                     super.«writePropertiesToXml("element")»;
                 «ELSEIF attributes.size == 0 && configuredAttributes.size == 0»

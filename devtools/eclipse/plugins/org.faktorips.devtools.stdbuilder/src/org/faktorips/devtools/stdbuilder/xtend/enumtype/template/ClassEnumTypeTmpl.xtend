@@ -5,18 +5,21 @@ import org.faktorips.devtools.stdbuilder.xmodel.enumtype.XEnumValue
 import org.faktorips.devtools.stdbuilder.xtend.template.CommonDefinitions
 
 import static org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType.*
+import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.enumtype.template.CommonEnumTypeTmpl.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.enumtype.template.EnumAttributeExtensionTmpl.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
+import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 
 class ClassEnumTypeTmpl {
 
     def static String body(XEnumType it) '''
-
+        
         /**
          «IF described»
-         *  «description»
-         *
+             *  «description»
+             *
          «ENDIF»
         «getAnnotations(ELEMENT_JAVA_DOC)»
          *
@@ -24,7 +27,7 @@ class ClassEnumTypeTmpl {
          */
         «getAnnotations(ENUM_CLASS)»
         public final class «name» «CommonDefinitions::extendedInterfaces(it)» «CommonDefinitions::implementedInterfaces(it)»{
-
+        
             «serialVersionUID»
             «messageHelperVar»
             «FOR it : enumValues» «enumValue» «ENDFOR»
@@ -39,16 +42,17 @@ class ClassEnumTypeTmpl {
             «hashCode(it)»
             «enumValueId»
             «compareTo»
+            «writeToXmlMethod»
             «serialization»
         }
     '''
-    
+
     def private static repo(XEnumType it) '''
-      /**
-       * @generated
-       */
-      private final «IRuntimeRepository» «varnameProductRepository»;
-      
+        /**
+         * @generated
+         */
+        private final «IRuntimeRepository» «varnameProductRepository»;
+        
     '''
 
     def private static compareTo(XEnumType it) '''
@@ -177,7 +181,6 @@ class ClassEnumTypeTmpl {
                 «memberVarNameLiteralNameAttribute»
             «ENDFOR»
             );
-
         «ENDIF»
     '''
 
@@ -193,60 +196,85 @@ class ClassEnumTypeTmpl {
     '''
 
     def private static serialization(XEnumType it) '''
-      /**
-       * @generated
-       */
-      private Object writeReplace() {
-        return new SerializationProxy(«identifierAttribute.name», getRepositoryLookup());
-      }
-
-      /**
-       * @generated
-       */
-      private «IRuntimeRepositoryLookup» getRepositoryLookup() {
-        if («varnameProductRepository» != null) {
-          «IRuntimeRepositoryLookup» runtimeRepositoryLookup = «varnameProductRepository».getRuntimeRepositoryLookup();
-          if (runtimeRepositoryLookup == null) {
-            throw new «IllegalStateException»(
-                "For serialization of «name» instances you need to set an «IRuntimeRepositoryLookup» in your runtime repository.");
+        /**
+         * @generated
+         */
+        private Object writeReplace() {
+          return new SerializationProxy(«identifierAttribute.name», getRepositoryLookup());
+        }
+        
+        /**
+         * @generated
+         */
+        private «IRuntimeRepositoryLookup» getRepositoryLookup() {
+          if («varnameProductRepository» != null) {
+            «IRuntimeRepositoryLookup» runtimeRepositoryLookup = «varnameProductRepository».getRuntimeRepositoryLookup();
+            if (runtimeRepositoryLookup == null) {
+              throw new «IllegalStateException»(
+                  "For serialization of «name» instances you need to set an «IRuntimeRepositoryLookup» in your runtime repository.");
+            }
+            return runtimeRepositoryLookup;
+          } else {
+            return null;
           }
-          return runtimeRepositoryLookup;
-        } else {
-          return null;
         }
-      }
-
-      /**
-       * @generated
-       */
-      private void readObject(@«SuppressWarnings»("unused") «ObjectInputStream» s) throws «IOException» {
-        throw new «InvalidObjectException»("SerializationProxy required");
-      }
-
-      /**
-       * @generated
-       */
-      private static class SerializationProxy implements «Serializable» {
-        private static final long serialVersionUID = 1L;
-
-        private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name»;
-        private final «IRuntimeRepositoryLookup» runtimeRepositoryLookup;
-
+        
         /**
          * @generated
          */
-        SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
-          this.«identifierAttribute.name» = «identifierAttribute.name»;
-          this.runtimeRepositoryLookup = runtimeRepositoryLookup;
+        private void readObject(@«SuppressWarnings»("unused") «ObjectInputStream» s) throws «IOException» {
+          throw new «InvalidObjectException»("SerializationProxy required");
         }
-
+        
         /**
          * @generated
          */
-        private Object readResolve() {
-          return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.name»);
+        private static class SerializationProxy implements «Serializable» {
+          private static final long serialVersionUID = 1L;
+        
+          private final «identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name»;
+          private final «IRuntimeRepositoryLookup» runtimeRepositoryLookup;
+        
+          /**
+         * @generated
+         */
+          SerializationProxy(«identifierAttribute.datatypeNameForConstructor» «identifierAttribute.name», «IRuntimeRepositoryLookup» runtimeRepositoryLookup) {
+            this.«identifierAttribute.name» = «identifierAttribute.name»;
+            this.runtimeRepositoryLookup = runtimeRepositoryLookup;
+          }
+        
+          /**
+         * @generated
+         */
+          private Object readResolve() {
+            return runtimeRepositoryLookup.getRuntimeRepository().getEnumValue(«name».class, «identifierAttribute.name»);
+          }
         }
-      }
+    '''
+    def package static writeToXmlMethod(XEnumType it) '''
+        «IF generateToXmlSupport»
+            /**
+             *«inheritDoc»
+             *
+             * @generated
+             */
+            @Override
+            public void «writePropertiesToXml(Element + " element")» {
+                if ("EnumContent".equals(element.getTagName())) {
+                    element.setAttribute("enumType", "«qualifiedIpsObjectName»");
+                    element.appendChild(element.getOwnerDocument().createElement("Description"));
+                    «FOR attribute : it.allAttributesWithoutLiteralName»
+                        Element attribute_«attribute.name» = element.getOwnerDocument().createElement("EnumAttributeReference");
+                        attribute_«attribute.name».setAttribute("name", "«attribute.name»");
+                    «ENDFOR»
+                } else if ("EnumValue".equals(element.getTagName())) {
+                    element.appendChild(element.getOwnerDocument().createElement("Description"));
+                    «FOR attribute : it.allAttributesWithoutLiteralName»
+                        «ValueToXmlHelper».«attribute.addToElement(attribute.getToStringExpression(attribute.name) , "element", "\"EnumAttributeValue\"")»;
+                    «ENDFOR»
+                }
+            }
+        «ENDIF»
     '''
 
 }

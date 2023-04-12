@@ -41,6 +41,8 @@ import org.faktorips.sample.model.TestAbstractEnum;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * 
@@ -532,6 +534,11 @@ public class AbstractRuntimeRepositoryTest {
         @Override
         public List<Void> getAllRows() {
             return Collections.emptyList();
+        }
+
+        @Override
+        public Element toXml(Document document) {
+            return null;
         }
     }
 

@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.xmodel.XClass;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.util.ArgumentCheck;
 
 public class XEnumType extends XClass {
@@ -96,6 +97,10 @@ public class XEnumType extends XClass {
 
         if (isMarkerEnum()) {
             interfaces.add(addImport(IMarker.class));
+        }
+        // is not abstract needed because of FIPS-10047
+        if (getGeneratorConfig().isGenerateToXmlSupport() && !isAbstract() && isExtensible()) {
+            interfaces.add(addImport(IToXmlSupport.class));
         }
 
         return interfaces;
@@ -456,7 +461,7 @@ public class XEnumType extends XClass {
 
         for (XEnumAttribute attribute : getAllAttributesWithField()) {
             parameters
-                    .add(new MethodParameter(attribute.getDatatypeNameForConstructor(), attribute.getMemberVarName()));
+            .add(new MethodParameter(attribute.getDatatypeNameForConstructor(), attribute.getMemberVarName()));
         }
 
         return parameters;

@@ -10,11 +10,22 @@
 
 package org.faktorips.runtime.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.CDATASection;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -205,4 +216,43 @@ public enum XmlUtil {
         return result;
     }
 
+    /**
+     * Writes an XML document to a file.
+     * <p>
+     * See also the
+     * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * example</a>.
+     */
+    public static void writeXMLtoFile(File file, Document doc, String doctype, int indentWidth, String encoding)
+            throws TransformerException {
+        writeXMLtoResult(new StreamResult(file), doc, doctype, indentWidth, encoding);
+    }
+
+    /**
+     * Writes an XML document to a DOM result object.
+     * <p>
+     * See also the
+     * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
+     * example</a>.
+     */
+    private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
+            throws TransformerException {
+        Source src = new DOMSource(doc);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
+        // workaround to avoid linebreak after xml declaration
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, ""); //$NON-NLS-1$
+        if (encoding != null) {
+            transformer.setOutputProperty(OutputKeys.ENCODING, encoding);
+        }
+        if (doctype != null) {
+            transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctype);
+        }
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
+        if (indentWidth > 0) {
+            // both settings are necessary, to accommodate versions in Java 1.4 and 1.5
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indentWidth)); //$NON-NLS-1$
+        }
+        transformer.transform(src, res);
+    }
 }

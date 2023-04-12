@@ -38,7 +38,7 @@ class ProductComponentTmpl {
         */
         «getAnnotations(PRODUCT_CMPT_IMPL_CLASS)»
         «getAnnotationsForPublishedInterface(PRODUCT_CMPT_DECL_CLASS, genInterface)»
-       public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)» {
+       public «isAbstract(it)» class «implClassName» extends «superclassName» «implementedInterfaces(it)»{
 
              «FOR it : associations» «privateConstants»«ENDFOR»
 

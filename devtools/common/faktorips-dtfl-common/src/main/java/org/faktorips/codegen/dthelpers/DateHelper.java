@@ -44,6 +44,19 @@ public class DateHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        if (IpsStringUtils.isEmpty(fieldName)) {
+            return nullExpression();
+        }
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(DateUtil.class);
+        fragment.append(".dateToIsoDateString("); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append(')');
+        return fragment;
+    }
+
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         if (IpsStringUtils.isEmpty(expression)) {
             return nullExpression();

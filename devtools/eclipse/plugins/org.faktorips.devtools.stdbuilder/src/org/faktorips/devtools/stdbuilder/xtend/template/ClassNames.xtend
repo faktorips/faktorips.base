@@ -1,7 +1,12 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
 import java.beans.PropertyChangeEvent
 import java.beans.PropertyChangeListener
+import java.io.IOException
+import java.io.InvalidObjectException
+import java.io.ObjectInputStream
+import java.io.Serializable
 import java.util.Arrays
 import java.util.Calendar
 import java.util.Collections
@@ -11,6 +16,7 @@ import java.util.LinkedHashMap
 import java.util.Locale
 import java.util.Map
 import java.util.NoSuchElementException
+import java.util.Objects
 import java.util.TimeZone
 import org.faktorips.devtools.stdbuilder.xmodel.AbstractGeneratorModelNode
 import org.faktorips.runtime.AssociationChangedEvent
@@ -28,6 +34,7 @@ import org.faktorips.runtime.IProductComponent
 import org.faktorips.runtime.IProductComponentGeneration
 import org.faktorips.runtime.IProductComponentLink
 import org.faktorips.runtime.IRuntimeRepository
+import org.faktorips.runtime.IRuntimeRepositoryLookup
 import org.faktorips.runtime.IUnresolvedReference
 import org.faktorips.runtime.IValidationContext
 import org.faktorips.runtime.IllegalRepositoryModificationException
@@ -45,11 +52,14 @@ import org.faktorips.runtime.internal.ModelObjectDelta
 import org.faktorips.runtime.internal.MultiValueXmlHelper
 import org.faktorips.runtime.internal.ProductComponentLink
 import org.faktorips.runtime.internal.ProductConfiguration
+import org.faktorips.runtime.internal.Range
 import org.faktorips.runtime.internal.Table
 import org.faktorips.runtime.internal.ValueToXmlHelper
 import org.faktorips.runtime.internal.XmlCallback
 import org.faktorips.runtime.util.MessagesHelper
+import org.faktorips.runtime.util.ProductComponentLinks
 import org.faktorips.runtime.validation.GenericRelevanceValidation
+import org.faktorips.runtime.xml.IToXmlSupport
 import org.faktorips.values.DefaultInternationalString
 import org.faktorips.values.InternationalString
 import org.faktorips.values.ListUtil
@@ -57,20 +67,10 @@ import org.faktorips.values.LocalizedString
 import org.faktorips.values.ObjectUtil
 import org.faktorips.valueset.IntegerRange
 import org.faktorips.valueset.OrderedValueSet
-
+import org.faktorips.valueset.StringLengthValueSet
 import org.faktorips.valueset.UnrestrictedValueSet
 import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
-import org.faktorips.runtime.internal.Range
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings
-import org.faktorips.runtime.util.ProductComponentLinks
-import org.faktorips.valueset.StringLengthValueSet
-import java.util.Objects
-import org.faktorips.runtime.IRuntimeRepositoryLookup
-import java.io.InvalidObjectException
-import java.io.Serializable
-import java.io.IOException
-import java.io.ObjectInputStream
 
 @SuppressFBWarnings
 class ClassNames {
@@ -113,7 +113,9 @@ class ClassNames {
 
     def static AssociationChangedEvent(AbstractGeneratorModelNode it) { addImport(typeof(AssociationChangedEvent)) }
 
-    def static GenericRelevanceValidation(AbstractGeneratorModelNode it) { addImport(typeof(GenericRelevanceValidation)) }
+    def static GenericRelevanceValidation(AbstractGeneratorModelNode it) {
+        addImport(typeof(GenericRelevanceValidation))
+    }
 
     // Collection is a reserved type. Thats why we have to use the underscore in the name and the string reference in addImport
     def static Collection_(AbstractGeneratorModelNode it, String genericType) {
@@ -201,7 +203,7 @@ class ClassNames {
     def static OrderedValueSet(AbstractGeneratorModelNode it, String genericType) {
         addImport(typeof(OrderedValueSet)) + "<" + genericType + ">"
     }
-    
+
     def static StringLengthValueSet(AbstractGeneratorModelNode it) {
         addImport(typeof(StringLengthValueSet))
     }
@@ -284,9 +286,11 @@ class ClassNames {
     def static InstantiationException(AbstractGeneratorModelNode it) { addImport("java.lang.InstantiationException") }
 
     def static GregorianCalendar(AbstractGeneratorModelNode it) { addImport("java.util.GregorianCalendar") }
-    
+
     def static Serializable(AbstractGeneratorModelNode it) { addImport(typeof(Serializable)) }
-    
+
     def static SuppressWarnings(AbstractGeneratorModelNode it) { addImport(typeof(SuppressWarnings)) }
+
+    def static IToXmlSupport(AbstractGeneratorModelNode it) { addImport(typeof(IToXmlSupport)) }
 
 }
