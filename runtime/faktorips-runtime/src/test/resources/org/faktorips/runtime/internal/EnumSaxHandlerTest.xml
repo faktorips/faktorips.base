@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnumContent enumType="Enum" referencedEnumAttributesCount="2">
-    <Description/>
+    <Description locale="de">deutsch</Description>
+    <Description locale="en">english</Description>
     <EnumValue id="0">
         <EnumAttributeValue id="0" isNull="false">a</EnumAttributeValue>
         <EnumAttributeValue id="1" isNull="false">an</EnumAttributeValue>

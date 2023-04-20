@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnumContent enumType="Enum" referencedEnumAttributesCount="2">
-    <Description locale="de">deutsch</Description>
-    <Description locale="en">english</Description>
+    <Description />
     <EnumValue id="0">
+        <Description locale="de">sollte nicht gelesen werden</Description>
+        <Description locale="en">should not be parsed</Description>
         <EnumAttributeValue id="0" isNull="false">a</EnumAttributeValue>
         <EnumAttributeValue id="1" isNull="false">
             <InternationalString>

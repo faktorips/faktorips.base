@@ -10,9 +10,11 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -62,17 +64,23 @@ public class EnumSaxHandlerTest {
     public void testCorrectContent() throws Exception {
         is = createInputStream(null);
         saxParser.parse(is, handler);
-        List<List<Object>> enumValueList = handler.getEnumValueList();
-        assertEquals(3, enumValueList.size());
+
+        EnumContent enumContent = handler.getEnumContent();
+        List<List<Object>> enumValueList = enumContent.getEnumValues();
+
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is("english"));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is("deutsch"));
+        assertThat(enumValueList.size(), is(3));
         List<Object> enumAttributeValues = enumValueList.get(0);
-        assertEquals("a", enumAttributeValues.get(0));
-        assertEquals("an", enumAttributeValues.get(1));
+        assertThat(enumAttributeValues.get(0), is("a"));
+        assertThat(enumAttributeValues.get(1), is("an"));
         enumAttributeValues = enumValueList.get(1);
-        assertEquals("b", enumAttributeValues.get(0));
-        assertEquals("bn", enumAttributeValues.get(1));
+        assertThat(enumAttributeValues.get(0), is("b"));
+        assertThat(enumAttributeValues.get(1), is("bn"));
         enumAttributeValues = enumValueList.get(2);
-        assertEquals("c", enumAttributeValues.get(0));
-        assertEquals("cn", enumAttributeValues.get(1));
+        assertThat(enumAttributeValues.get(0), is("c"));
+        assertThat(enumAttributeValues.get(1), is("cn"));
     }
 
     @Test
@@ -91,12 +99,18 @@ public class EnumSaxHandlerTest {
     public void testNullContent() throws Exception {
         is = createInputStream("WithNull.xml");
         saxParser.parse(is, handler);
-        List<List<Object>> enumValueList = handler.getEnumValueList();
-        assertEquals(1, enumValueList.size());
+
+        EnumContent enumContent = handler.getEnumContent();
+        List<List<Object>> enumValueList = enumContent.getEnumValues();
+
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is("english"));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is("deutsch"));
+        assertThat(enumValueList.size(), is(1));
         List<Object> values = enumValueList.get(0);
-        assertEquals(2, values.size());
-        assertNull(values.get(0));
-        assertEquals("", values.get(1));
+        assertThat(values.size(), is(2));
+        assertThat(values.get(0), is(nullValue()));
+        assertThat(values.get(1), is(""));
     }
 
     /**
@@ -108,12 +122,18 @@ public class EnumSaxHandlerTest {
     public void testCRContent() throws Exception {
         is = createInputStream("WithCRContent.xml");
         saxParser.parse(is, handler);
-        List<List<Object>> enumValueList = handler.getEnumValueList();
-        assertEquals(1, enumValueList.size());
+
+        EnumContent enumContent = handler.getEnumContent();
+        List<List<Object>> enumValueList = enumContent.getEnumValues();
+
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is("english"));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is("deutsch"));
+        assertThat(enumValueList.size(), is(1));
         List<Object> values = enumValueList.get(0);
-        assertEquals(1, values.size());
+        assertThat(values.size(), is(1));
         Object value = values.get(0);
-        assertEquals("a\rb\rc", value);
+        assertThat(value, is("a\rb\rc"));
     }
 
     @Test
@@ -121,27 +141,33 @@ public class EnumSaxHandlerTest {
         is = createInputStream("International.xml");
         saxParser.parse(is, handler);
 
-        List<List<Object>> enumValueList = handler.getEnumValueList();
-        assertEquals(2, enumValueList.size());
-        List<Object> values = enumValueList.get(0);
-        assertEquals(2, values.size());
-        assertEquals("a", values.get(0));
-        assertTrue(values.get(1) instanceof DefaultInternationalString);
-        DefaultInternationalString i11lString = (DefaultInternationalString)values.get(1);
-        assertEquals(Locale.GERMAN, i11lString.getDefaultLocale());
-        assertEquals("deText", i11lString.get(Locale.GERMAN));
-        assertEquals("enText", i11lString.get(Locale.ENGLISH));
-        assertEquals("deText", i11lString.get(Locale.CHINESE));
+        EnumContent enumContent = handler.getEnumContent();
+        List<List<Object>> enumValueList = enumContent.getEnumValues();
 
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is("english"));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is("deutsch"));
+        assertThat(enumContent.getDescription(), is(instanceOf(DefaultInternationalString.class)));
+        assertThat(((DefaultInternationalString)enumContent.getDescription()).getDefaultLocale(), is(Locale.GERMAN));
+        assertThat(enumValueList.size(), is(2));
+        List<Object> values = enumValueList.get(0);
+        assertThat(values.size(), is(2));
+        assertThat(values.get(0), is("a"));
+        assertThat(values.get(1), is(instanceOf(DefaultInternationalString.class)));
+        DefaultInternationalString i11lString = (DefaultInternationalString)values.get(1);
+        assertThat(i11lString.getDefaultLocale(), is(Locale.GERMAN));
+        assertThat(i11lString.get(Locale.GERMAN), is("deText"));
+        assertThat(i11lString.get(Locale.ENGLISH), is("enText"));
+        assertThat(i11lString.get(Locale.CHINESE), is("deText"));
         values = enumValueList.get(1);
-        assertEquals(2, values.size());
-        assertEquals("b", values.get(0));
-        assertTrue(values.get(1) instanceof DefaultInternationalString);
+        assertThat(values.size(), is(2));
+        assertThat(values.get(0), is("b"));
+        assertThat(values.get(1), is(instanceOf(DefaultInternationalString.class)));
         i11lString = (DefaultInternationalString)values.get(1);
-        assertEquals(Locale.ENGLISH, i11lString.getDefaultLocale());
-        assertEquals("deText2", i11lString.get(Locale.GERMAN));
-        assertEquals("enText2", i11lString.get(Locale.ENGLISH));
-        assertEquals("enText2", i11lString.get(Locale.JAPANESE));
+        assertThat(i11lString.getDefaultLocale(), is(Locale.ENGLISH));
+        assertThat(i11lString.get(Locale.GERMAN), is("deText2"));
+        assertThat(i11lString.get(Locale.ENGLISH), is("enText2"));
+        assertThat(i11lString.get(Locale.JAPANESE), is("enText2"));
     }
 
     @Test
@@ -149,15 +175,32 @@ public class EnumSaxHandlerTest {
         is = createInputStream("InternationalWithoutDefaultLocale.xml");
         saxParser.parse(is, handler);
 
-        List<List<Object>> enumValueList = handler.getEnumValueList();
-        assertTrue(enumValueList.get(0).get(1) instanceof DefaultInternationalString);
+        EnumContent enumContent = handler.getEnumContent();
+        List<List<Object>> enumValueList = enumContent.getEnumValues();
+
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is("english"));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is("deutsch"));
+        assertThat(enumValueList.get(0).get(1), is(instanceOf(DefaultInternationalString.class)));
         DefaultInternationalString i11lString = (DefaultInternationalString)enumValueList.get(0).get(1);
-        assertEquals(Locale.getDefault(), i11lString.getDefaultLocale());
+        assertThat(i11lString.getDefaultLocale(), is(Locale.getDefault()));
         // defect xml -> use default locale. All we test here is that we can still read it and get
         // an international string with a default locale.
-
-        assertTrue(enumValueList.get(1).get(1) instanceof DefaultInternationalString);
+        assertThat(enumValueList.get(1).get(1), is(instanceOf(DefaultInternationalString.class)));
         i11lString = (DefaultInternationalString)enumValueList.get(1).get(1);
-        assertEquals(Locale.getDefault(), i11lString.getDefaultLocale());
+        assertThat(i11lString.getDefaultLocale(), is(Locale.getDefault()));
+    }
+
+    @Test
+    public void testEmptyDescription() throws Exception {
+        is = createInputStream("NoDescription.xml");
+        saxParser.parse(is, handler);
+
+        EnumContent enumContent = handler.getEnumContent();
+        enumContent.getEnumValues();
+
+        assertThat(enumContent.getDescription(), is(notNullValue()));
+        assertThat(enumContent.getDescription().get(Locale.ENGLISH), is(""));
+        assertThat(enumContent.getDescription().get(Locale.GERMAN), is(""));
     }
 }

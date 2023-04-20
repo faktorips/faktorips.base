@@ -55,7 +55,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<String, IProductComponent> productCmptCache;
     private volatile IComputable<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
     private volatile IComputable<String, ITable<?>> tableCacheByQName;
-    private volatile IComputable<Class<?>, List<?>> enumValuesCacheByClass;
+    private volatile IComputable<Class<?>, IpsEnum<?>> enumValuesCacheByClass;
     private List<IIpsXmlAdapter<?, ?>> enumXmlAdapters;
     private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<>();
 
@@ -69,14 +69,14 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         try {
             @SuppressWarnings("unchecked")
             Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl
-                    .loadClass(IProductComponent.class.getName());
+            .loadClass(IProductComponent.class.getName());
             IComputable<String, IProductComponent> productCmptComputer = IComputable.of(productCmptClass,
                     this::getNotCachedProductComponent);
             productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
 
             @SuppressWarnings("unchecked")
             Class<IProductComponentGeneration> productCmptGenClass = (Class<IProductComponentGeneration>)cl
-                    .loadClass(IProductComponentGeneration.class.getName());
+            .loadClass(IProductComponentGeneration.class.getName());
             productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(IComputable
                     .of(productCmptGenClass, this::getNotCachedProductComponentGeneration));
 
@@ -85,7 +85,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             tableCacheByQName = cacheFactory.createTableCache(IComputable.of(tableClass, this::getNotCachedTable));
 
             enumValuesCacheByClass = cacheFactory
-                    .createEnumCache(IComputable.of(List.class, this::getNotCachedEnumValues));
+                    .createIpsEnumCache(IComputable.of(IpsEnum.class, this::getNotCachedEnumValues));
 
             enumXmlAdapters = new ArrayList<>();
         } catch (ClassNotFoundException e) {
@@ -118,7 +118,8 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     @Override
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
         try {
-            return cast((List<?>)enumValuesCacheByClass.compute(clazz));
+            IpsEnum<?> ipsEnum = enumValuesCacheByClass.compute(clazz);
+            return cast(ipsEnum != null ? (List<?>)ipsEnum.getEnums() : new ArrayList<>());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -129,7 +130,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         return (List<T>)enumValues;
     }
 
-    protected abstract <T> List<T> getNotCachedEnumValues(Class<T> clazz);
+    protected abstract <T> IpsEnum<T> getNotCachedEnumValues(Class<T> clazz);
 
     @Override
     protected ITable<?> getTableInternal(String qualifiedTableName) {

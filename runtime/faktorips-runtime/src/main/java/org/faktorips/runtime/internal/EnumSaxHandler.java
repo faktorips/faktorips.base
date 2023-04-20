@@ -29,6 +29,10 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class EnumSaxHandler extends DefaultHandler {
 
+    private static final String XML_TAG_DESCRIPTION = "Description";
+
+    private static final String XML_ATTRIBUTE_LOCALE = "locale";
+
     private static final String XML_ATTR_IS_NULL = "isNull";
 
     private static final String ENUM_VALUE_NAME = "EnumValue";
@@ -49,6 +53,10 @@ public class EnumSaxHandler extends DefaultHandler {
 
     private boolean isNull;
 
+    private Locale descriptionLocale;
+
+    private List<LocalizedString> descriptions = new ArrayList<>();
+
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (ENUM_VALUE_NAME.equals(qName)) {
@@ -66,6 +74,12 @@ public class EnumSaxHandler extends DefaultHandler {
             Locale locale = new Locale(attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_LOCALE));
             String text = attributes.getValue(InternationalStringXmlReaderWriter.XML_ATTR_TEXT);
             localizedStrings.add(new LocalizedString(locale, text));
+        } else if (XML_TAG_DESCRIPTION.equals(qName)) {
+            String language = attributes.getValue(XML_ATTRIBUTE_LOCALE);
+            if (language != null) {
+                descriptionLocale = new Locale(language);
+            }
+            stringBuilder = new StringBuilder();
         }
     }
 
@@ -92,6 +106,10 @@ public class EnumSaxHandler extends DefaultHandler {
         } else if (InternationalStringXmlReaderWriter.XML_TAG.equals(qName)) {
             internationalString = new DefaultInternationalString(localizedStrings, ObjectUtil.defaultIfNull(
                     defaultLocale, Locale.getDefault()));
+        } else if (XML_TAG_DESCRIPTION.equals(qName)) {
+            if (enumValue == null) {
+                descriptions.add(new LocalizedString(descriptionLocale, stringBuilder.toString()));
+            }
         }
     }
 
@@ -104,8 +122,15 @@ public class EnumSaxHandler extends DefaultHandler {
         }
     }
 
-    public List<List<Object>> getEnumValueList() {
-        return enumValues;
+    public EnumContent getEnumContent() {
+        Locale locale;
+        if (descriptions.isEmpty()) {
+            // without a description no way to know what the correct locale may be, see FIPS-5152
+            locale = Locale.getDefault();
+        } else {
+            locale = descriptions.get(0).getLocale();
+        }
+        DefaultInternationalString description = new DefaultInternationalString(descriptions, locale);
+        return new EnumContent(enumValues, description);
     }
-
 }

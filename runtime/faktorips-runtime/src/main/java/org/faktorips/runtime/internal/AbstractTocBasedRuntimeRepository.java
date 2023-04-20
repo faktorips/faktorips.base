@@ -65,7 +65,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
         return toc;
     }
 
-    protected abstract <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz);
+    protected abstract <T> IpsEnum<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz);
 
     @Override
     protected final IProductComponent getProductComponentInternal(String kindId, String versionId) {
@@ -302,7 +302,7 @@ public abstract class AbstractTocBasedRuntimeRepository extends AbstractCachingR
     }
 
     @Override
-    protected <T> List<T> getNotCachedEnumValues(Class<T> clazz) {
+    protected <T> IpsEnum<T> getNotCachedEnumValues(Class<T> clazz) {
         EnumContentTocEntry tocEntries = toc.getEnumContentTocEntry(clazz.getName());
         if (tocEntries == null) {
             return null;

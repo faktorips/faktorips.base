@@ -26,7 +26,12 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
     }
 
     @Override
-    public IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
+    public final IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
+        return createCache(computable);
+    }
+
+    @Override
+    public IComputable<Class<?>, IpsEnum<?>> createIpsEnumCache(IComputable<Class<?>, IpsEnum<?>> computable) {
         return createCache(computable);
     }
 

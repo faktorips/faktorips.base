@@ -13,6 +13,7 @@ package org.faktorips.runtime;
 import java.util.List;
 
 import org.faktorips.runtime.caching.IComputable;
+import org.faktorips.runtime.internal.IpsEnum;
 
 /**
  * A factory for creating caches used by the repository.
@@ -34,6 +35,11 @@ public interface ICacheFactory {
 
     IComputable<String, ITable<?>> createTableCache(IComputable<String, ITable<?>> computable);
 
+    /**
+     * @deprecated use {@link #createIpsEnumCache(IComputable)} instead.
+     */
+    @Deprecated
     IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable);
 
+    IComputable<Class<?>, IpsEnum<?>> createIpsEnumCache(IComputable<Class<?>, IpsEnum<?>> computable);
 }

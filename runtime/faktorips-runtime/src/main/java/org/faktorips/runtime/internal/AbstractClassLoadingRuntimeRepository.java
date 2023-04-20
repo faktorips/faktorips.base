@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -116,26 +115,26 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     }
 
     @Override
-    protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
-        List<List<Object>> enumValueList = getEnumValueListFromSaxHandler(tocEntry);
-        if (enumValueList.isEmpty()) {
-            return Collections.emptyList();
+    protected <T> IpsEnum<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
+        EnumContent enumContent = getEnumContentFromSaxHandler(tocEntry);
+        if (enumContent == null || enumContent.getEnumValues().isEmpty()) {
+            return null;
         } else {
             Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
-                    getParameterSize(enumValueList));
-            return getCreatedEnumValueList(tocEntry, enumValueList, constructor,
+                    getParameterSize(enumContent.getEnumValues()));
+            return getCreatedEnumValueList(tocEntry, enumContent, constructor,
                     getEnumValuesDefinedInType(enumClass).size());
         }
     }
 
-    private <T> List<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
-            List<List<Object>> enumValueList,
+    private <T> IpsEnum<T> getCreatedEnumValueList(EnumContentTocEntry tocEntry,
+            EnumContent enumContent,
             Constructor<T> constructor,
             int startIndex) {
         T enumValue = null;
-        ArrayList<T> enumValues = new ArrayList<>();
+        List<T> enumValues = new ArrayList<>();
         int valueCounterForIndexParameter = startIndex;
-        for (List<Object> enumValueAsStrings : enumValueList) {
+        for (List<Object> enumValueAsStrings : enumContent.getEnumValues()) {
             constructor.setAccessible(true);
             Object[] enumAttributeValues = enumValueAsStrings.toArray();
             Object[] parameters = new Object[enumAttributeValues.length + 2];
@@ -144,7 +143,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             enumValues.add(enumValue);
             valueCounterForIndexParameter++;
         }
-        return enumValues;
+        return new IpsEnum<>(enumValues, enumContent.getDescription());
     }
 
     private void setValuesForParamters(int valueCounterForIndexParameter,
@@ -171,12 +170,12 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         return constructor;
     }
 
-    private List<List<Object>> getEnumValueListFromSaxHandler(EnumContentTocEntry tocEntry) {
+    private EnumContent getEnumContentFromSaxHandler(EnumContentTocEntry tocEntry) {
         InputStream xmlAsStream = getXmlAsStream(tocEntry);
         if (isAvailable(xmlAsStream)) {
             return parseEnumValues(tocEntry, xmlAsStream);
         } else {
-            return Collections.emptyList();
+            return null;
         }
     }
 
@@ -189,7 +188,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         return false;
     }
 
-    private static List<List<Object>> parseEnumValues(EnumContentTocEntry tocEntry, InputStream xmlAsStream) {
+    private static EnumContent parseEnumValues(EnumContentTocEntry tocEntry, InputStream xmlAsStream) {
         EnumSaxHandler saxhandler = new EnumSaxHandler();
         try {
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
@@ -197,7 +196,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         } catch (SAXException | ParserConfigurationException | IOException e) {
             throwCantParseEnumContentException(tocEntry, e);
         }
-        return saxhandler.getEnumValueList();
+        return saxhandler.getEnumContent();
     }
 
     private static void throwCantParseEnumContentException(EnumContentTocEntry tocEntry, Exception e) {

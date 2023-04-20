@@ -116,7 +116,7 @@ public class AbstractTocBasedRuntimeRepositoryTest {
         }
 
         @Override
-        protected <T> List<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz) {
+        protected <T> IpsEnum<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> clazz) {
             return null;
         }
 

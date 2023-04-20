@@ -11,10 +11,10 @@
 package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -143,9 +143,9 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         // input stream may be created nonetheless
         doReturn(EnumSaxHandlerTest.class.getClassLoader()
                 .getResourceAsStream("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml")).when(repo)
-                        .getXmlAsStream(tocEntry);
-        List<TestEnum> enumValues = repo.createEnumValues(tocEntry, TestEnum.class);
-
+        .getXmlAsStream(tocEntry);
+        IpsEnum<TestEnum> enumContent = repo.createEnumValues(tocEntry, TestEnum.class);
+        List<TestEnum> enumValues = enumContent.getEnums();
         assertThat(enumValues.size(), is(3));
         for (int i = 0; i < enumValues.size(); i++) {
             // repo.createEnumValues only creates extend values, the two static values are not
@@ -158,9 +158,9 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     public void testCreateEnumValues_NoXml() throws Exception {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
 
-        List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
+        IpsEnum<Object> enumContent = repo.createEnumValues(tocEntry, Object.class);
 
-        assertTrue(enumValues.isEmpty());
+        assertThat(enumContent, is(nullValue()));
     }
 
     @Test
@@ -168,9 +168,9 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
         when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EmptyEnum.xml");
 
-        List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
+        IpsEnum<Object> enumContent = repo.createEnumValues(tocEntry, Object.class);
 
-        assertTrue(enumValues.isEmpty());
+        assertThat(enumContent, is(nullValue()));
     }
 
     @Test
@@ -178,7 +178,8 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         EnumContentTocEntry tocEntry = mock(EnumContentTocEntry.class);
         when(tocEntry.getXmlResourceName()).thenReturn("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml");
 
-        List<TestEnum> enumValues = repo.createEnumValues(tocEntry, TestEnum.class);
+        IpsEnum<TestEnum> enumContent = repo.createEnumValues(tocEntry, TestEnum.class);
+        List<TestEnum> enumValues = enumContent.getEnums();
 
         assertThat(enumValues.size(), is(3));
         for (int i = 0; i < enumValues.size(); i++) {
