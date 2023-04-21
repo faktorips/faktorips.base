@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,7 +74,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     /**
      * Creates a new attribute.
-     * 
+     *
      * @param pcType The type the attribute belongs to.
      * @param id The attribute's unique id within the type.
      */
@@ -308,11 +308,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                         }
                     }
                 }
-            }
-            if (getValueSet().isDerived()) {
-                String text = Messages.PolicyCmptTypeAttribute_msg_ProductRelevantAttributeCanNotHaveDerivedValueSet;
-                result.add(new Message(MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET, text,
-                        Message.ERROR, this, productRelevantProperties(PROPERTY_VALUE_SET)));
             }
         }
     }

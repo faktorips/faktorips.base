@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -88,13 +88,6 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     String MSGCODE_ILLEGAL_VALUESET_TYPE = IAttribute.MSGCODE_PREFIX + "IllegalValueSetType"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a derived value set is not allowed for a product
-     * relevant attribute.
-     */
-    String MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET = IAttribute.MSGCODE_PREFIX
-            + "ProductRelevantAttributeCanNotHaveDerivedValueSet"; //$NON-NLS-1$ ;
-
-    /**
      * Validation message code to indicate that a constant attribute can't use an abstract datatype.
      */
     String MSGCODE_CONSTANT_CANT_BE_ABSTRACT = IAttribute.MSGCODE_PREFIX + "ConstantCantBeAbstract"; //$NON-NLS-1$
@@ -169,7 +162,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
      * <p>
      * How this configuration happens depends on {@link #isValueSetConfiguredByProduct()} and
      * {@link #isRelevanceConfiguredByProduct()}.
-     * 
+     *
      * @see IPolicyCmptType#getProductCmptType()
      */
     boolean isProductRelevant();
@@ -190,7 +183,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
 
     /**
      * Sets whether this attribute is product relevant or not.
-     * 
+     *
      * @deprecated since 20.6 use {@link #setValueSetConfiguredByProduct(boolean)} and/or
      *                 {@link #setRelevanceConfiguredByProduct(boolean)} instead
      */
@@ -226,9 +219,9 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     /**
      * If this is a derived attribute which value is derived by a method defined in the product
      * component type, this method is search and returned.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used to search.
-     * 
+     *
      * @throws IpsException if an error occurs while searching.
      */
     IProductCmptTypeMethod findComputationMethod(IIpsProject ipsProject) throws IpsException;
@@ -236,12 +229,12 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     /**
      * This method is defined in {@link IValueSetOwner}. It is also added to this interface to
      * provide more detailed documentation.
-     * 
+     *
      * For policy component type attributes the allowed values set types are the types returned by
      * {@link IIpsProject#getValueSetTypes(org.faktorips.datatype.ValueDatatype)} using the
      * attribute's data type. However if the data type is defined by an {@link IEnumType} with
      * values stored in a separate content, then only {@link ValueSetType#UNRESTRICTED} is allowed.
-     * 
+     *
      * @throws IpsException if an error occurs.
      */
     @Override
@@ -255,10 +248,10 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
     /**
      * Returns the object containing information about how to persist this policy component type
      * attribute into a relational database table.
-     * 
+     *
      * @return <code>null</code> if the persistence information is not available, e.g. when the
      *             corresponding IPS project this type belongs to does not support persistence.
-     * 
+     *
      * @see org.faktorips.devtools.model.ipsproject.IIpsProject#isPersistenceSupportEnabled
      */
     IPersistentAttributeInfo getPersistenceAttributeInfo();

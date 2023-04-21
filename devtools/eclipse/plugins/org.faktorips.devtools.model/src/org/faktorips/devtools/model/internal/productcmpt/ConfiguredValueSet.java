@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
@@ -181,7 +182,7 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
         List<ValueSetType> types = new ArrayList<>();
         if (attribute == null) {
             types.add(valueSet.getValueSetType());
-        } else if (attribute.getValueSet().isUnrestricted()) {
+        } else if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()) {
             List<ValueSetType> valueSetTypes = ipsProject.getValueSetTypes(attribute.findDatatype(ipsProject));
             valueSetTypes.remove(ValueSetType.STRINGLENGTH);
             types.addAll(valueSetTypes);
@@ -333,12 +334,23 @@ public class ConfiguredValueSet extends ConfigElement implements IConfiguredValu
 
     @Override
     public String getCaption(Locale locale) {
-        return MessageFormat.format(Messages.ConfiguredValueSet_caption, getAttributeLabel(locale));
+        return MessageFormat.format(Messages.ConfiguredValueSet_caption, isDerivedAttribute() ? "/ " : "",
+                getAttributeLabel(locale));
     }
 
     @Override
     public String getLastResortCaption() {
-        return MessageFormat.format(Messages.ConfiguredValueSet_caption, getAttributeLabel(null));
+        return MessageFormat.format(Messages.ConfiguredValueSet_caption, isDerivedAttribute() ? "/ " : "",
+                getAttributeLabel(null));
+    }
+
+    private boolean isDerivedAttribute() {
+        IAttribute attribute = findPcTypeAttribute(getIpsProject());
+        if (attribute != null) {
+            IValueSet attributeValueSet = attribute.getValueSet();
+            return attributeValueSet != null && attributeValueSet.isDerived();
+        }
+        return false;
     }
 
 }

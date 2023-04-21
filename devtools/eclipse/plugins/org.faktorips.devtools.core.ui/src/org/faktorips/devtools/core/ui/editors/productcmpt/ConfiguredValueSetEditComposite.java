@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,9 +31,9 @@ import org.faktorips.devtools.model.valueset.IValueSet;
 /**
  * Provides controls that allow the user to edit the value set and the default value of an
  * {@link IConfigElement}.
- * 
+ *
  * @since 3.19
- * 
+ *
  * @see IConfigElement
  * @see IValueSet
  */
@@ -69,6 +69,15 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
         String datatype = getProperty() == null ? null : getProperty().getDatatype();
         return datatype != null ? datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName())
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
+    }
+
+    @Override
+    protected void createLabel(String valueSetLabel) {
+        if (getProperty().getValueSet() != null && getProperty().getValueSet().isDerived()) {
+            super.createLabel("/ " + valueSetLabel);
+        } else {
+            super.createLabel(valueSetLabel);
+        }
     }
 
     private BooleanValueSetField createValueSetEditFieldForBoolean() {

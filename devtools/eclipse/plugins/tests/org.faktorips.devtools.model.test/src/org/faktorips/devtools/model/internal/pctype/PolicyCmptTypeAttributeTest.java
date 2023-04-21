@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,14 +11,12 @@
 package org.faktorips.devtools.model.internal.pctype;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -89,12 +87,14 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         method.setDatatype(Datatype.STRING.getQualifiedName());
 
         MessageList result = attribute.validate(ipsProject);
-        assertNotNull(
-                result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
+
+        assertThat(result, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
 
         method.setDatatype(attribute.getDatatype());
         result = attribute.validate(ipsProject);
-        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
+
+        assertThat(result,
+                lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE));
     }
 
     @Test
@@ -105,11 +105,13 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
 
         MessageList result = attribute.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
+
+        assertThat(result, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
 
         attribute.setComputationMethodSignature("calc()");
         result = attribute.validate(ipsProject);
-        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
+
+        assertThat(result, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED));
     }
 
     @Test
@@ -120,11 +122,12 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
 
         MessageList result = attribute.validate(ipsProject);
-        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+        assertThat(result, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
 
         attribute.setComputationMethodSignature("calcPremium(TestPolicy)");
         result = attribute.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+
+        assertThat(result, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
 
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
         pcType.setConfigurableByProductCmptType(true);
@@ -132,16 +135,18 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IMethod method = productType.newMethod();
         method.setName("calcPremium");
         result = attribute.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+
+        assertThat(result, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
 
         method.newParameter("TestPolicy", "policy");
         result = attribute.validate(ipsProject);
-        assertNull(result.getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
+
+        assertThat(result, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST));
     }
 
     @Test
     public void testFindComputationMethodSignature() {
-        assertNull(attribute.findComputationMethod(ipsProject));
+        assertThat(attribute.findComputationMethod(ipsProject), is(nullValue()));
 
         attribute.setAttributeType(AttributeType.DERIVED_ON_THE_FLY);
         attribute.setName("premium");
@@ -150,15 +155,17 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IProductCmptType productType = newProductCmptType(ipsProject, "TestProduct");
         pcType.setConfigurableByProductCmptType(true);
         pcType.setProductCmptType(productType.getQualifiedName());
-        assertNull(attribute.findComputationMethod(ipsProject));
+
+        assertThat(attribute.findComputationMethod(ipsProject), is(nullValue()));
 
         IMethod method = productType.newMethod();
         method.setName("calcPremium");
-        assertNull(attribute.findComputationMethod(ipsProject));
+
+        assertThat(attribute.findComputationMethod(ipsProject), is(nullValue()));
 
         method.newParameter("TestPolicy", "policy");
 
-        assertEquals(method, attribute.findComputationMethod(ipsProject));
+        assertThat(attribute.findComputationMethod(ipsProject), is(method));
     }
 
     @Test
@@ -175,41 +182,46 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
         supertype.setSupertype(supersupertype.getQualifiedName());
 
-        assertNull(attribute.findOverwrittenAttribute(ipsProject));
+        assertThat(attribute.findOverwrittenAttribute(ipsProject), is(nullValue()));
 
         IPolicyCmptTypeAttribute aInSupertype = supersupertype.newPolicyCmptTypeAttribute();
         aInSupertype.setName("a");
 
-        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
+        assertThat(attribute.findOverwrittenAttribute(ipsProject), is(aInSupertype));
 
         // cycle in type hierarchy
         supersupertype.setSupertype(pcType.getQualifiedName());
-        assertEquals(aInSupertype, attribute.findOverwrittenAttribute(ipsProject));
+
+        assertThat(attribute.findOverwrittenAttribute(ipsProject), is(aInSupertype));
 
         aInSupertype.delete();
-        assertNull(attribute.findOverwrittenAttribute(ipsProject));
+
+        assertThat(attribute.findOverwrittenAttribute(ipsProject), is(nullValue()));
         // this should not return a itself!
     }
 
     @Test
     public void testRemove() {
         attribute.delete();
-        assertEquals(0, pcType.getPolicyCmptTypeAttributes().size());
-        assertTrue(ipsSrcFile.isDirty());
+
+        assertThat(pcType.getPolicyCmptTypeAttributes().size(), is(0));
+        assertThat(ipsSrcFile.isDirty(), is(true));
     }
 
     @Test
     public void testSetDatatype() {
         attribute.setDatatype("Money");
-        assertEquals("Money", attribute.getDatatype());
-        assertTrue(ipsSrcFile.isDirty());
+
+        assertThat(attribute.getDatatype(), is("Money"));
+        assertThat(ipsSrcFile.isDirty(), is(true));
     }
 
     @Test
     public void testSetComputed() {
         attribute.setValueSetConfiguredByProduct(true);
-        assertEquals(true, attribute.isProductRelevant());
-        assertTrue(ipsSrcFile.isDirty());
+
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(ipsSrcFile.isDirty(), is(true));
     }
 
     @Test
@@ -218,53 +230,54 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         Element root = doc.getDocumentElement();
         NodeList nl = root.getElementsByTagName("Attribute");
         attribute.initFromXml((Element)nl.item(0));
-        assertEquals("42", attribute.getId());
-        assertEquals("premium", attribute.getName());
-        assertEquals("computePremium", attribute.getComputationMethodSignature());
-        assertEquals("money", attribute.getDatatype());
-        assertFalse(attribute.isProductRelevant());
-        assertEquals(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL, attribute.getAttributeType());
-        assertEquals("42EUR", attribute.getDefaultValue());
-        assertNotNull(attribute.getValueSet());
-        assertFalse(attribute.isOverwrite());
-        assertTrue(attribute.isChangingOverTime());
+
+        assertThat(attribute.getId(), is("42"));
+        assertThat(attribute.getName(), is("premium"));
+        assertThat(attribute.getComputationMethodSignature(), is("computePremium"));
+        assertThat(attribute.getDatatype(), is("money"));
+        assertThat(attribute.isProductRelevant(), is(false));
+        assertThat(attribute.getAttributeType(), is(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL));
+        assertThat(attribute.getDefaultValue(), is("42EUR"));
+        assertThat(attribute.getValueSet(), is(not(nullValue())));
+        assertThat(attribute.isOverwrite(), is(false));
+        assertThat(attribute.isChangingOverTime(), is(true));
 
         attribute.initFromXml((Element)nl.item(1));
-        assertEquals("2", attribute.getId());
-        assertNull(attribute.getDefaultValue());
-        assertNotNull(attribute.getValueSet());
-        assertEquals(EnumValueSet.class, attribute.getValueSet().getClass());
-        assertFalse(attribute.isChangingOverTime());
+        assertThat(attribute.getId(), is("2"));
+        assertThat(attribute.getDefaultValue(), is(nullValue()));
+        assertThat(attribute.getValueSet(), is(not(nullValue())));
+        assertThat(attribute.getValueSet().getClass(), is(EnumValueSet.class));
+        assertThat(attribute.isChangingOverTime(), is(false));
 
         attribute.initFromXml((Element)nl.item(2));
-        assertTrue(attribute.isOverwrite());
-        assertTrue(attribute.isChangingOverTime());
+        assertThat(attribute.isOverwrite(), is(true));
+        assertThat(attribute.isChangingOverTime(), is(true));
 
         // legacy productRelevant
         attribute.initFromXml((Element)nl.item(3));
-        assertTrue(attribute.isProductRelevant());
-        assertTrue(attribute.isValueSetConfiguredByProduct());
-        assertFalse(attribute.isRelevanceConfiguredByProduct());
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(attribute.isValueSetConfiguredByProduct(), is(true));
+        assertThat(attribute.isRelevanceConfiguredByProduct(), is(false));
 
         attribute.initFromXml((Element)nl.item(4));
-        assertTrue(attribute.isProductRelevant());
-        assertTrue(attribute.isValueSetConfiguredByProduct());
-        assertFalse(attribute.isRelevanceConfiguredByProduct());
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(attribute.isValueSetConfiguredByProduct(), is(true));
+        assertThat(attribute.isRelevanceConfiguredByProduct(), is(false));
 
         attribute.initFromXml((Element)nl.item(5));
-        assertTrue(attribute.isProductRelevant());
-        assertFalse(attribute.isValueSetConfiguredByProduct());
-        assertTrue(attribute.isRelevanceConfiguredByProduct());
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(attribute.isValueSetConfiguredByProduct(), is(false));
+        assertThat(attribute.isRelevanceConfiguredByProduct(), is(true));
 
         attribute.initFromXml((Element)nl.item(6));
-        assertTrue(attribute.isProductRelevant());
-        assertTrue(attribute.isValueSetConfiguredByProduct());
-        assertTrue(attribute.isRelevanceConfiguredByProduct());
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(attribute.isValueSetConfiguredByProduct(), is(true));
+        assertThat(attribute.isRelevanceConfiguredByProduct(), is(true));
 
-        assertFalse(attribute.isGenericValidationEnabled());
+        assertThat(attribute.isGenericValidationEnabled(), is(false));
 
         attribute.initFromXml((Element)nl.item(7));
-        assertTrue(attribute.isGenericValidationEnabled());
+        assertThat(attribute.isGenericValidationEnabled(), is(true));
     }
 
     @Test
@@ -287,25 +300,26 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         set.setStep("step");
         Element element = attribute.toXml(newDocument());
 
-        assertFalse(element.hasAttribute(IPolicyCmptTypeAttribute.PROPERTY_GENERIC_VALIDATION));
+        assertThat(element.hasAttribute(IPolicyCmptTypeAttribute.PROPERTY_GENERIC_VALIDATION), is(false));
         IPolicyCmptTypeAttribute copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
-        assertEquals(attribute.getId(), copy.getId());
-        assertEquals("age", copy.getName());
-        assertEquals("decimal", copy.getDatatype());
-        assertEquals("computePremium", copy.getComputationMethodSignature());
-        assertTrue(copy.isProductRelevant());
-        assertTrue(copy.isValueSetConfiguredByProduct());
-        assertFalse(copy.isRelevanceConfiguredByProduct());
-        assertFalse(copy.isOverwrite());
-        assertFalse(copy.isGenericValidationEnabled());
-        assertEquals(AttributeType.CONSTANT, copy.getAttributeType());
-        assertEquals("18", copy.getDefaultValue());
-        assertEquals("unten", ((IRangeValueSet)copy.getValueSet()).getLowerBound());
-        assertEquals("oben", ((IRangeValueSet)copy.getValueSet()).getUpperBound());
-        assertEquals("step", ((IRangeValueSet)copy.getValueSet()).getStep());
-        assertEquals("foo", copy.getCategory());
-        assertFalse(copy.isChangingOverTime());
+
+        assertThat(copy.getId(), is(attribute.getId()));
+        assertThat(copy.getName(), is("age"));
+        assertThat(copy.getDatatype(), is("decimal"));
+        assertThat(copy.getComputationMethodSignature(), is("computePremium"));
+        assertThat(copy.isProductRelevant(), is(true));
+        assertThat(copy.isValueSetConfiguredByProduct(), is(true));
+        assertThat(copy.isRelevanceConfiguredByProduct(), is(false));
+        assertThat(copy.isOverwrite(), is(false));
+        assertThat(copy.isGenericValidationEnabled(), is(false));
+        assertThat(copy.getAttributeType(), is(AttributeType.CONSTANT));
+        assertThat(copy.getDefaultValue(), is("18"));
+        assertThat(((IRangeValueSet)copy.getValueSet()).getLowerBound(), is("unten"));
+        assertThat(((IRangeValueSet)copy.getValueSet()).getUpperBound(), is("oben"));
+        assertThat(((IRangeValueSet)copy.getValueSet()).getStep(), is("step"));
+        assertThat(copy.getCategory(), is("foo"));
+        assertThat(copy.isChangingOverTime(), is(false));
 
         // Nun ein Attribut mit GenericEnumvalueset testen.
         attribute.setName("age");
@@ -324,25 +338,25 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         element = attribute.toXml(newDocument());
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
-        assertEquals("age", attribute.getName());
-        assertEquals("decimal", attribute.getDatatype());
-        assertTrue(attribute.isProductRelevant());
-        assertFalse(copy.isValueSetConfiguredByProduct());
-        assertTrue(copy.isRelevanceConfiguredByProduct());
-        assertTrue(copy.isGenericValidationEnabled());
-        assertEquals(AttributeType.CONSTANT, attribute.getAttributeType());
-        assertEquals("18", attribute.getDefaultValue());
+        assertThat(attribute.getName(), is("age"));
+        assertThat(attribute.getDatatype(), is("decimal"));
+        assertThat(attribute.isProductRelevant(), is(true));
+        assertThat(copy.isValueSetConfiguredByProduct(), is(false));
+        assertThat(copy.isRelevanceConfiguredByProduct(), is(true));
+        assertThat(copy.isGenericValidationEnabled(), is(true));
+        assertThat(attribute.getAttributeType(), is(AttributeType.CONSTANT));
+        assertThat(attribute.getDefaultValue(), is("18"));
         String[] vekt = ((IEnumValueSet)copy.getValueSet()).getValues();
-        assertEquals("a", vekt[0]);
-        assertEquals("b", vekt[1]);
-        assertEquals("x", vekt[2]);
+        assertThat(vekt[0], is("a"));
+        assertThat(vekt[1], is("b"));
+        assertThat(vekt[2], is("x"));
 
         // and now an attribute which overwrites
         attribute.setOverwrite(true);
         element = attribute.toXml(newDocument());
         copy = pcType.newPolicyCmptTypeAttribute();
         copy.initFromXml(element);
-        assertTrue(attribute.isOverwrite());
+        assertThat(attribute.isOverwrite(), is(true));
     }
 
     @Test
@@ -351,13 +365,15 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+
+        assertThat(ml,
+                lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
 
         pcType.setConfigurableByProductCmptType(false);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+
+        assertThat(ml,
+                hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
     @Test
@@ -366,31 +382,33 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setRelevanceConfiguredByProduct(true);
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+
+        assertThat(ml,
+                lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
 
         pcType.setConfigurableByProductCmptType(false);
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
+
+        assertThat(ml,
+                hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT));
     }
 
     @Test
     public void testValidateProductRelevant_DerivedValueSet_ValueSetConfiguredByProduct() throws Exception {
         pcType.setConfigurableByProductCmptType(true);
         attribute.setValueSetType(ValueSetType.DERIVED);
+        attribute.setName("derived");
+        attribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(
-                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+
+        assertThat(ml, isEmpty());
 
         attribute.setValueSetConfiguredByProduct(true);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(
-                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -401,16 +419,14 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setDatatype(Datatype.STRING.getQualifiedName());
 
         MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(
-                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+
+        assertThat(ml, isEmpty());
 
         attribute.setRelevanceConfiguredByProduct(true);
 
         ml = attribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(
-                        IPolicyCmptTypeAttribute.MSGCODE_PRODUCT_RELEVANT_ATTRIBUTE_CAN_NOT_HAVE_DERIVED_VALUE_SET));
+
+        assertThat(ml, isEmpty());
     }
 
     @Test
@@ -418,10 +434,12 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("name");
 
         MessageList ml = attribute.validate(ipsProject);
+
         assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
 
         attribute.setOverwrite(true);
         ml = attribute.validate(ipsProject);
+
         assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
 
         IPolicyCmptType supertype = newPolicyCmptType(ipsProject, "sup.SuperType");
@@ -430,6 +448,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         pcType.setSupertype(supertype.getQualifiedName());
 
         ml = attribute.validate(ipsProject);
+
         assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_NOTHING_TO_OVERWRITE));
     }
 
@@ -451,16 +470,18 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         superAttr.setAttributeType(AttributeType.DERIVED_BY_EXPLICIT_METHOD_CALL);
 
         ml = attribute.validate(ipsProject);
+
         assertThat(ml, hasMessageCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
 
         attribute.setAttributeType(superAttr.getAttributeType());
         ml = attribute.validate(ipsProject);
+
         assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE));
     }
 
     @Test
     public void testIsPolicyCmptTypeProperty() {
-        assertTrue(attribute.isPolicyCmptTypeProperty());
+        assertThat(attribute.isPolicyCmptTypeProperty(), is(true));
     }
 
     @Test
@@ -475,14 +496,13 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration();
         IPropertyValue propertyValue = generation.newPropertyValue(attribute, IConfiguredDefault.class);
 
-        assertTrue(attribute.isPropertyFor(propertyValue));
+        assertThat(attribute.isPropertyFor(propertyValue), is(true));
     }
 
     @Test
     public void testValidateDefaultValue() {
         EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
         enumType.setExtensible(true);
-
         attribute.setName("name");
         attribute.setDatatype(enumType.getQualifiedName());
         attribute.setOverwrite(false);
@@ -491,8 +511,9 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(ipsProject);
 
-        assertFalse(ml.isEmpty());
-        assertTrue(ml.getText().contains(Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType));
+        assertThat(ml.isEmpty(), is(false));
+        assertThat(ml.getText().contains(Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType),
+                is(true));
     }
 
     @Test
@@ -503,10 +524,11 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetConfiguredByProduct(true);
         attribute.setDatatype(enumType.getQualifiedName());
 
-        assertTrue(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM));
+        assertThat(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM), is(true));
 
         attribute.setValueSetConfiguredByProduct(false);
-        assertFalse(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM));
+
+        assertThat(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM), is(false));
     }
 
     @Test
@@ -520,19 +542,21 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         attribute.setValueSetConfiguredByProduct(true);
         MessageList messageList = attribute.validate(ipsProject);
-        assertEquals(0, messageList.size());
+
+        assertThat(messageList.size(), is(0));
 
         attribute.setValueSetConfiguredByProduct(false);
         messageList = attribute.validate(ipsProject);
-        assertEquals(1, messageList.size());
-        assertEquals(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
+
+        assertThat(messageList.size(), is(1));
+        assertThat(messageList.getMessage(0).getCode(), is(IPolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE));
     }
 
     @Test
     public void testInitChangingOverTimeDefault_Attribute_ChangingOverTimeSettingIsUnchanged_IfProductCmptType_IsNull() {
         IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
 
-        assertTrue(attribute.isChangingOverTime());
+        assertThat(attribute.isChangingOverTime(), is(true));
     }
 
     @Test
@@ -543,7 +567,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
 
-        assertTrue(attribute.isChangingOverTime());
+        assertThat(attribute.isChangingOverTime(), is(true));
     }
 
     @Test
@@ -554,7 +578,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
 
-        assertFalse(attribute.isChangingOverTime());
+        assertThat(attribute.isChangingOverTime(), is(false));
     }
 
     @Test
@@ -563,8 +587,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("attributeName");
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -575,8 +599,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -589,8 +613,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -623,8 +647,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -637,8 +661,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -651,8 +675,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                lacksMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -665,8 +689,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
-        assertNotNull(
-                ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertThat(ml,
+                hasMessageCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -678,12 +702,12 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setName("name");
         attribute.setValueSetConfiguredByProduct(true);
 
-        assertTrue(attribute.isChangingOverTime());
+        assertThat(attribute.isChangingOverTime(), is(true));
 
         productCmptType.setChangingOverTime(false);
         attribute = pcType.newPolicyCmptTypeAttribute();
 
-        assertFalse(attribute.isChangingOverTime());
+        assertThat(attribute.isChangingOverTime(), is(false));
     }
 
     @Test
@@ -795,5 +819,56 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         MessageList ml = attribute.validate(ipsProject);
 
         assertThat(ml, lacksMessageCode(IPolicyCmptTypeAttribute.MSGCODE_ABSTRACT_CANT_BE_PRODUCT_RELEVANT));
+    }
+
+    @Test
+    public void testValidate_isMarkedDynamicAndRelevance() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("isDynamic");
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.DERIVED);
+        attribute.setRelevanceConfiguredByProduct(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
+    public void testValidate_isMarkedDynamicAndValueSetConfiguredProduct() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("isDynamic");
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.DERIVED);
+        attribute.setValueSetConfiguredByProduct(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
+    public void testValidate_isMarkedDynamicButNotProductRelevant() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("isDynamic");
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.DERIVED);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
+    }
+
+    @Test
+    public void testValidate_isMarkedDynamicAndValueSetNotDerived() throws Exception {
+        pcType.setConfigurableByProductCmptType(true);
+        attribute.setName("isDynamic");
+        attribute.setDatatype("String");
+        attribute.setValueSetType(ValueSetType.UNRESTRICTED);
+        attribute.setValueSetConfiguredByProduct(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+
+        assertThat(ml, isEmpty());
     }
 }

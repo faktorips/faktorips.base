@@ -169,7 +169,7 @@ class DefaultAndAllowedValuesTmpl {
             }
             Element valueSetElement = configMap.get(«CONFIGURED_VALUE_SET_PREFIX»+«policyCmptNode.implClassName».«constantNamePropertyName»);
             if (valueSetElement != null) {
-                «IF valueSetUnrestricted»
+                «IF valueSetUnrestricted || valueSetConfiguredDynamic »
                     «IF ipsEnum»
                         «UnrestrictedValueSet("?")» unrestrictedValueSet = «ValueToXmlHelper()».«getUnrestrictedValueSet("valueSetElement", XML_TAG_VALUE_SET())»;
                         «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "unrestrictedValueSet.containsNull()")»;
@@ -187,7 +187,7 @@ class DefaultAndAllowedValuesTmpl {
                 		return;
                 	}
                 «ENDIF»
-                «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported)»
+                «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength || valueSetConfiguredDynamic) && enumValueSetSupported)»
                     «EnumValues» values = «ValueToXmlHelper».«getEnumValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (values != null) {
                         «List_(javaClassUsedForValueSet)» enumValues = new «ArrayList»();
@@ -198,7 +198,7 @@ class DefaultAndAllowedValuesTmpl {
                                 .containsNull()")»;
                     }
                 «ENDIF»
-                «IF valueSetRange || (valueSetUnrestricted && rangeSupported)»
+                «IF valueSetRange || ((valueSetUnrestricted || valueSetConfiguredDynamic) && rangeSupported)»
                     «Range» range = «ValueToXmlHelper».«getRangeFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
                     if (range != null) {
                         if (range.isEmpty()) {

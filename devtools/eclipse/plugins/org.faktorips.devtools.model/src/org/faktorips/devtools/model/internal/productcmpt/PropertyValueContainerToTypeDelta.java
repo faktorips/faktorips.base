@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,7 +55,7 @@ import org.faktorips.util.ArgumentCheck;
 
 /**
  * Implementation of IProductCmptToTypeDelta.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite
@@ -142,7 +142,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     /**
      * Adding additional entries or children to this delta element. This method is called at the end
      * of the constructor.
-     * 
+     *
      * @throws IpsException May throw any core exception
      */
     protected abstract void createAdditionalEntriesAndChildren() throws IpsException;
@@ -199,7 +199,8 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfiguredValueSet element) {
-        if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isStringLength()
+        if (attribute.getValueSet().isUnrestricted() || attribute.getValueSet().isDerived()
+                || attribute.getValueSet().isStringLength()
                 || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
@@ -231,7 +232,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
 
     /**
      * Adding the {@link IDeltaEntry} to the list of delta entries.
-     * 
+     *
      * @param newEntry The {@link IDeltaEntry} you want to add to this delta container
      */
     protected void addEntry(IDeltaEntry newEntry) {

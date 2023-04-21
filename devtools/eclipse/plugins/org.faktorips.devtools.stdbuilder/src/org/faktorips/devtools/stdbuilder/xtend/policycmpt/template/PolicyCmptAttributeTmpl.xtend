@@ -233,7 +233,13 @@ class PolicyCmptAttributeTmpl {
       public «IF isAbstract()»abstract «getValueSetJavaClassNameWithWildcard(rule.fromMethod)»«ELSE»«getValueSetJavaClassName(rule.fromMethod)»«ENDIF» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
       «IF genInterface() || isAbstract()»;«ELSE» {
           «IF productRelevant && !rule.isDelegate»
-            return «getPropertyValueContainer(published)».«getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
+            «IF valueSetConfiguredDynamic»
+                // begin-user-code
+                    «allowedValuesFromProductMethod(rule)»
+                // end-user-code
+            «ELSE»
+                «allowedValuesFromProductMethod(rule)»
+            «ENDIF»
           «ELSEIF isValueSetDerived»
             // begin-user-code
             «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»
@@ -259,7 +265,11 @@ class PolicyCmptAttributeTmpl {
       «ENDIF»
     «ENDIF»
   '''
- 
+  
+  def package static allowedValuesFromProductMethod(XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
+    return «getPropertyValueContainer(published)».«getMethodNameGetAllowedValuesFor(rule.fromMethod)»(«allowedValuesMethodParameter(rule.fromMethod, rule.fromMethod)»);
+  '''
+  
   def package static allowedValuesMethodWithMoreConcreteTypeForByType(XPolicyAttribute it) '''
   
     «IF generateAllowedValuesMethodWithMoreConcreteTypeForByType && generateGetAllowedValuesForAndGetDefaultValue && overwritingValueSetWithMoreConcreteTypeForByType»

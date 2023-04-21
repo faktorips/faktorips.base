@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -129,12 +129,12 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
         assertEquals(1, types.size());
         assertTrue(types.contains(ValueSetType.RANGE));
 
-        // case 5: attribute is not product relevant because the value set is derived
-        // => there should not be a configuredValueSet, but if the model was changed and differences
-        // ignored, it might still exist
+        // case 5: attribute is derived, but still product relevant
         a1.setValueSetType(ValueSetType.DERIVED);
         types = configuredValueSet.getAllowedValueSetTypes(ipsProject);
-        assertEquals(1, types.size());
+        assertEquals(3, types.size());
+        assertTrue(types.contains(ValueSetType.ENUM));
+        assertTrue(types.contains(ValueSetType.RANGE));
         assertTrue(types.contains(ValueSetType.UNRESTRICTED));
     }
 
@@ -670,14 +670,24 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
     public void testGetCaption() {
         attribute.setLabelValue(Locale.US, "Attribute Label");
 
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "Attribute Label"),
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "", "Attribute Label"),
+                configuredValueSet.getCaption(Locale.US));
+
+        attribute.setValueSetType(ValueSetType.DERIVED);
+
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "Attribute Label"),
                 configuredValueSet.getCaption(Locale.US));
     }
 
     @Test
     public void testGetLastResortCaption() {
-        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "attribute"),
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "", "attribute"),
                 configuredValueSet.getLastResortCaption());
+
+        attribute.setValueSetType(ValueSetType.DERIVED);
+
+        assertEquals(NLS.bind(Messages.ConfiguredValueSet_caption, "/ ", "attribute"),
+                configuredValueSet.getCaption(null));
     }
 
     @Test
