@@ -160,7 +160,7 @@ class TableTmpl {
     '''
 
     def private static getInstanceForSingleContent(XTable it) '''
-        /**
+        /**XML_TAG_COLUMN_TABLE_REFERENCE
          *«localizedJDoc("METHOD_GET_INSTANCE")»
          *
          * @generated
@@ -254,11 +254,11 @@ class TableTmpl {
                 element.setAttribute("numOfColumns", "«validColumns.size»");
                 element.setAttribute("tableStructure", "«qualifiedName»");
                 «FOR column : validColumns»
-                    Element column_«column.name» = element.getOwnerDocument().createElement("ColumnTableReference");
+                    Element column_«column.name» = element.getOwnerDocument().createElement(«XML_TAG_COLUMN_TABLE_REFERENCE»);
                     column_«column.name».setAttribute("name", "«column.name»");
                     element.appendChild(column_«column.name»);
                 «ENDFOR»
-                Element rowsElement = element.getOwnerDocument().createElement("«XML_TAG_ROWS»");
+                Element rowsElement = element.getOwnerDocument().createElement(«XML_TAG_ROWS»);
                 for(«tableRowName» row : rows){
                     row.«writePropertiesToXml("rowsElement")»;
                 }

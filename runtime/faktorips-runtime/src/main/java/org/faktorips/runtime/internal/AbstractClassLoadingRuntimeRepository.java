@@ -117,8 +117,10 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     @Override
     protected <T> IpsEnum<T> createEnumValues(EnumContentTocEntry tocEntry, Class<T> enumClass) {
         EnumContent enumContent = getEnumContentFromSaxHandler(tocEntry);
-        if (enumContent == null || enumContent.getEnumValues().isEmpty()) {
+        if (enumContent == null) {
             return null;
+        } else if (enumContent.getEnumValues().isEmpty()) {
+            return new IpsEnum<>(new ArrayList<>(), enumContent.getDescription());
         } else {
             Constructor<T> constructor = getCandidateConstructorThrowRuntimeException(tocEntry, enumClass,
                     getParameterSize(enumContent.getEnumValues()));

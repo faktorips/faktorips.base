@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnumContent xmlns="http://www.faktorzehn.org" enumType="produkt.SuperExtensibleEnumWithModell" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/23.6/EnumContent.xsd" xml:space="preserve">
+ <Description locale="en">The Description</Description>
+ <Description locale="de">Die Beschreibung</Description>
+ <EnumValue>
+  <Description locale="en"/>
+  <Description locale="de"/>
+  <EnumAttributeValue isNull="false">2</EnumAttributeValue>
+  <EnumAttributeValue isNull="false">super_extensible_enum_2</EnumAttributeValue>
+ </EnumValue>
+ <EnumAttributeReference name="id"/>
+ <EnumAttributeReference name="name"/>
+</EnumContent>

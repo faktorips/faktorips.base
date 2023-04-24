@@ -235,7 +235,7 @@ public enum XmlUtil {
      * <a href='http://developers.sun.com/sw/building/codesamples/dom/doc/DOMUtil.java'>DOMUtil.java
      * example</a>.
      */
-    private static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
+    public static void writeXMLtoResult(Result res, Document doc, String doctype, int indentWidth, String encoding)
             throws TransformerException {
         Source src = new DOMSource(doc);
         Transformer transformer = TransformerFactory.newInstance().newTransformer();

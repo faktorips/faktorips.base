@@ -260,19 +260,9 @@ class ClassEnumTypeTmpl {
              */
             @Override
             public void «writePropertiesToXml(Element + " element")» {
-                if ("EnumContent".equals(element.getTagName())) {
-                    element.setAttribute("enumType", "«qualifiedIpsObjectName»");
-                    element.appendChild(element.getOwnerDocument().createElement("Description"));
-                    «FOR attribute : it.allAttributesWithoutLiteralName»
-                        Element attribute_«attribute.name» = element.getOwnerDocument().createElement("EnumAttributeReference");
-                        attribute_«attribute.name».setAttribute("name", "«attribute.name»");
-                    «ENDFOR»
-                } else if ("EnumValue".equals(element.getTagName())) {
-                    element.appendChild(element.getOwnerDocument().createElement("Description"));
-                    «FOR attribute : it.allAttributesWithoutLiteralName»
-                        «ValueToXmlHelper».«attribute.addToElement(attribute.getToStringExpression(attribute.name) , "element", "\"EnumAttributeValue\"")»;
-                    «ENDFOR»
-                }
+                «FOR attribute : it.allAttributesWithoutLiteralName»
+                    «ValueToXmlHelper».«attribute.addToElement(attribute.getToStringExpression(attribute.name) , "element", IpsEnumToXmlWriter+".XML_ELEMENT_ENUMATTRIBUTEVALUE")»;
+                «ENDFOR»
             }
         «ENDIF»
     '''

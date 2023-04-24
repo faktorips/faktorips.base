@@ -64,6 +64,7 @@ public enum ValueToXmlHelper {
     public static final String XML_TAG_MAXIMUM_LENGTH = "MaximumLength"; //$NON-NLS-1$
     public static final String XML_TAG_ROW = "Row"; //$NON-NLS-1$
     public static final String XML_TAG_ROWS = "Rows"; //$NON-NLS-1$
+    public static final String XML_TAG_COLUMN_TABLE_REFERENCE = "ColumnTableReference"; //$NON-NLS-1$
 
     public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$

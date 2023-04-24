@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,13 +42,13 @@ import org.xml.sax.SAXParseException;
 /**
  * A runtime repository that loads the resources by calling
  * {@link ClassLoader#getResourceAsStream(String)}
- * 
+ *
  * @author Jan Ortmann
  */
 public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRepository {
 
     /**
-     * Name of the xml element representing the product component registry.
+     * Name of the XML element representing the product component registry.
      */
     public static final String REPOSITORY_XML_ELEMENT = "ProductComponentRegistry";
 
@@ -74,14 +75,14 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     /**
      * Creates a new repository that loads its contents from the given classloader and the given
-     * package. Uses the default toc resource name. Uses the default document builder available via
-     * <code>DocumentBuilderFactory.newInstance()</code> to parse the xml files.
-     * 
+     * package. Uses the default ToC resource name. Uses the default document builder available via
+     * <code>DocumentBuilderFactory.newInstance()</code> to parse the XML files.
+     *
      * @throws NullPointerException if cl or basePackage are <code>null</code>.
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
      * @throws RuntimeException if the registry's table of contents file can't be read.
-     * 
+     *
      * @see #TABLE_OF_CONTENTS_FILE
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage) {
@@ -90,13 +91,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     /**
      * Creates a new repository that loads its contents from the given classloader and the given
-     * package and toc resource using the default document builder.
-     * 
+     * package and ToC resource using the default document builder.
+     *
      * @param cl The classloader to use.
      * @param basePackage The name of the base package that contains the data.
      * @param pathToToc Path from the base package to the resource containing the toc, e.g.
      *            "faktorips-repository-toc.xml" or "motor/motor-repository-toc.xml"
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
@@ -108,13 +109,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     /**
      * Creates a new repository that loads its contents from the given classloader and the given
-     * package using the given xml document builder.
-     * 
+     * package using the given XML document builder.
+     *
      * @param cl The classloader to use.
      * @param basePackage The name of the base package that contains the data.
      * @param pathToToc Path from the base package to the resource containing the toc, e.g.
      *            "faktorips-repository-toc.xml" or "motor/motor-repository-toc.xml"
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the basePackage does not contain the table of contents
      *             file.
@@ -122,10 +123,8 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      */
     public ClassloaderRuntimeRepository(ClassLoader cl, String basePackage, String pathToToc,
             ICacheFactory cacheFactory) {
-        super(basePackage, cacheFactory, cl);
-        if ((cl == null) || (basePackage == null) || (pathToToc == null)) {
-            throw new NullPointerException();
-        }
+        super(Objects.requireNonNull(basePackage), cacheFactory, Objects.requireNonNull(cl));
+        Objects.requireNonNull(pathToToc);
         if ("".equals(basePackage)) {
             tocResourcePath = pathToToc;
         } else {
@@ -136,31 +135,28 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
 
     /**
      * Creates a new repository that loads it's contents from the given classloader and and toc
-     * resource using the given docuemnt builder to parse the xml data.
-     * 
+     * resource using the given document builder to parse the XML data.
+     *
      * @param cl The classloader to use.
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws IllegalArgumentException if the tocResource does not contain a valid table of
      *             contents.
      * @throws RuntimeException if the table of contents can't be read.
      */
     private ClassloaderRuntimeRepository(String tocResource, ClassLoader cl, ICacheFactory cacheFactory) {
-        super(tocResource, cacheFactory, cl);
-        if ((tocResource == null) || (cl == null)) {
-            throw new NullPointerException();
-        }
+        super(Objects.requireNonNull(tocResource), cacheFactory, Objects.requireNonNull(cl));
         tocResourcePath = tocResource;
         initialize();
     }
 
     /**
-     * Creates a new repository that loads it's contents from the given toc resource using this
-     * class' classloader and the default xml document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
+     * Creates a new repository that loads it's contents from the given ToC resource using this
+     * class' classloader and the default XML document builder to parse the XML data.
+     *
+     * @param tocResource Path to the resource containing the ToC file. E.g.
      *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
@@ -170,13 +166,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     }
 
     /**
-     * Creates a new repository that loads it's contents from the given toc resource using this
-     * class' classloader and the default xml document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
+     * Creates a new repository that loads it's contents from the given ToC resource using this
+     * class' classloader and the default XML document builder to parse the XML data.
+     *
+     * @param tocResource Path to the resource containing the ToC file. E.g.
      *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
      * @param cacheFactory The CacheFactory used to create the cache objects in the repository
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
@@ -185,13 +181,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     }
 
     /**
-     * Creates a new repository that loads it's contents from the given toc resource and classloader
-     * using the default document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
+     * Creates a new repository that loads it's contents from the given ToC resource and classloader
+     * using the default document builder to parse the XML data.
+     *
+     * @param tocResource Path to the resource containing the ToC file. E.g.
      *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
      * @param cl The classloader to use.
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
@@ -200,14 +196,14 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     }
 
     /**
-     * Creates a new repository that loads it's contents from the given toc resource and classloader
-     * using the default document builder to parse the xml data.
-     * 
-     * @param tocResource Path to the resource containing the toc file. E.g.
+     * Creates a new repository that loads it's contents from the given ToC resource and classloader
+     * using the default document builder to parse the XML data.
+     *
+     * @param tocResource Path to the resource containing the ToC file. E.g.
      *            "org/faktorips/sample/internal/faktorips-repository-toc.xml"
      * @param cl The classloader to use.
      * @param cacheFactory The CacheFactory used to create the cache objects in the repository
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      * @throws RuntimeException if the registry's table of contents file can't be read.
      */
@@ -250,7 +246,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             return toc;
         } catch (Exception e) {
             // CSON: IllegalCatch
-            throw new RuntimeException("Error creating toc from xml.", e);
+            throw new RuntimeException("Error creating ToC from XML.", e);
         }
     }
 
@@ -278,7 +274,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
                 }
             }
         }
-        throw new RuntimeException("Can't find the generation for the toc entry " + tocEntry);
+        throw new RuntimeException("Can't find the generation for the ToC entry " + tocEntry);
     }
 
     @Override
@@ -304,7 +300,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         String resource = tocEntry.getXmlResourceName();
         InputStream is = getClassLoader().getResourceAsStream(resource);
         if (is == null) {
-            throw new RuntimeException("Can't find resource " + resource + " for toc entry " + tocEntry);
+            throw new RuntimeException("Can't find resource " + resource + " for ToC entry " + tocEntry);
         }
         Document doc;
         try {
@@ -312,7 +308,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             // CSON: IllegalCatch
-            throw new RuntimeException("Can't parse xml resource " + resource, e);
+            throw new RuntimeException("Can't parse XML resource " + resource, e);
         } finally {
             try {
                 is.close();
@@ -365,7 +361,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
         if (is == null) {
             throw new RuntimeException(
-                    "Can't find resource " + tocEntry.getXmlResourceName() + " for toc entry " + tocEntry);
+                    "Can't find resource " + tocEntry.getXmlResourceName() + " for ToC entry " + tocEntry);
         }
         return is;
     }

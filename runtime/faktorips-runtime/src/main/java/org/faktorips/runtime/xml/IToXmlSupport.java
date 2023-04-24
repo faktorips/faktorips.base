@@ -38,7 +38,18 @@ public interface IToXmlSupport {
      *             {@link IToXmlSupport}.
      */
     static void check(Object runtimeObject) {
-        if (!(runtimeObject instanceof IToXmlSupport)) {
+        check(runtimeObject.getClass());
+    }
+
+    /**
+     * This method may be used to write a check in a default toXml implementation.
+     *
+     * @param runtimeObjectClass a class that might be assignable from {@link IToXmlSupport}
+     * @throws UnsupportedOperationException if the given {@code runtimeObject} is no instance of
+     *             {@link IToXmlSupport}.
+     */
+    static void check(Class<?> runtimeObjectClass) {
+        if (!(IToXmlSupport.class.isAssignableFrom(runtimeObjectClass))) {
             throw new UnsupportedOperationException(
                     "The method toXml is currently not supported, as the required writePropertiesToXml-methods were not generated. "
                             + "To activate toXml() please check your Faktor-IPS Builder settings and make sure \"Generate toXml Support\" is set to true.");

@@ -66,6 +66,10 @@ class Constants {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_ROWS"
     }
 
+    def static XML_TAG_COLUMN_TABLE_REFERENCE(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_TAG_COLUMN_TABLE_REFERENCE"
+    }
+
     def static XML_ATTRIBUTE_ATTRIBUTE(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_ATTRIBUTE"
     }
@@ -93,5 +97,4 @@ class Constants {
     def static STOP_VALIDATION(AbstractGeneratorModelNode it) {
         addStaticImport(IModelObject.name, "STOP_VALIDATION");
     }
-
 }

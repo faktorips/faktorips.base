@@ -13,6 +13,7 @@ package org.faktorips.runtime.internal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,6 +25,8 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.caching.IComputable;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 
 /**
  * This abstract runtime repository handles the caching for already loaded instances. The caching
@@ -183,4 +186,15 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
     protected abstract <T> T getNotCachedCustomObject(Class<T> type, String ipsObjectQualifiedName);
 
+    public <T> InternationalString getEnumDescription(Class<T> type) {
+        try {
+            IpsEnum<?> ipsEnum = enumValuesCacheByClass.compute(type);
+            if (ipsEnum != null) {
+                return ipsEnum.getDescription();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return new DefaultInternationalString(new ArrayList<>(), Locale.getDefault());
+    }
 }

@@ -73,7 +73,7 @@ public class LocalizeHelper {
         LinkedHashMap content = new LinkedHashMap();
 
         @Override
-        public String getProperty(String arg0) {
+        public synchronized String getProperty(String arg0) {
             return (String)content.get(arg0);
         }
 
@@ -219,7 +219,7 @@ public class LocalizeHelper {
         }
 
         @Override
-        public String getProperty(String arg0, String arg1) {
+        public synchronized String getProperty(String arg0, String arg1) {
             throw new UnsupportedOperationException();
         }
 
@@ -317,8 +317,10 @@ public class LocalizeHelper {
         if (!dir.isDirectory()) {
             return;
         }
-
         File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
         for (File file : files) {
             if (file.getName().equalsIgnoreCase("messages" + langPostfix + ".properties")) {
                 String name = file.getAbsolutePath().substring(ignorePathPrefixLength);

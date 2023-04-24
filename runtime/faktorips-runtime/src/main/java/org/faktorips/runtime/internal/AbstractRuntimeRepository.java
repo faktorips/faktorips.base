@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -74,10 +75,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     private IRuntimeRepositoryLookup runtimeRepositoryLookup;
 
     public AbstractRuntimeRepository(String name) {
-        if (name == null) {
-            throw new NullPointerException();
-        }
-        this.name = name;
+        this.name = Objects.requireNonNull(name);
     }
 
     /**

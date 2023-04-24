@@ -111,9 +111,9 @@ class TableRowTmpl {
              */
             @Override
             public void «writePropertiesToXml(Element + " element")» {
-                Element rowElement = element.getOwnerDocument().createElement("«XML_TAG_ROW»");
+                Element rowElement = element.getOwnerDocument().createElement(«XML_TAG_ROW»);
                 «FOR column : it.validColumns»
-                    «ValueToXmlHelper».«column.addToElement(column.getToStringExpression(column.attributeName) , "rowElement", "\""+XML_TAG_VALUE+"\"")»;
+                    «ValueToXmlHelper».«column.addToElement(column.getToStringExpression(column.attributeName) , "rowElement", XML_TAG_VALUE)»;
                 «ENDFOR»
                 element.appendChild(rowElement);
             }

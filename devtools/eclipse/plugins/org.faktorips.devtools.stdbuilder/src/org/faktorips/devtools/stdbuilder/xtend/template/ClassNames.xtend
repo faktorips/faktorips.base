@@ -71,6 +71,7 @@ import org.faktorips.valueset.StringLengthValueSet
 import org.faktorips.valueset.UnrestrictedValueSet
 import org.faktorips.valueset.ValueSet
 import org.w3c.dom.Element
+import org.faktorips.runtime.IpsEnumToXmlWriter
 
 @SuppressFBWarnings
 class ClassNames {
@@ -292,5 +293,7 @@ class ClassNames {
     def static SuppressWarnings(AbstractGeneratorModelNode it) { addImport(typeof(SuppressWarnings)) }
 
     def static IToXmlSupport(AbstractGeneratorModelNode it) { addImport(typeof(IToXmlSupport)) }
+
+    def static IpsEnumToXmlWriter(AbstractGeneratorModelNode it) { addImport(typeof(IpsEnumToXmlWriter)) }
 
 }

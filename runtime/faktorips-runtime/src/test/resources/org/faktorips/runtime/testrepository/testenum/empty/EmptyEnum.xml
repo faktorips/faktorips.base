@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EnumContent xmlns="http://www.faktorzehn.org" enumType="empty.EmptyEnum" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.faktorzehn.org https://doc.faktorzehn.org/schema/faktor-ips/23.6/EnumContent.xsd" xml:space="preserve">
+ <Description locale="en"/>
+ <Description locale="de"/>
+ <EnumAttributeReference name="id"/>
+ <EnumAttributeReference name="name"/>
+</EnumContent>

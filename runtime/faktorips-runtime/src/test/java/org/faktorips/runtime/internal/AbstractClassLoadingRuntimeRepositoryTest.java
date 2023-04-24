@@ -170,7 +170,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
 
         IpsEnum<Object> enumContent = repo.createEnumValues(tocEntry, Object.class);
 
-        assertThat(enumContent, is(nullValue()));
+        assertThat(enumContent.getEnums().isEmpty(), is(true));
     }
 
     @Test

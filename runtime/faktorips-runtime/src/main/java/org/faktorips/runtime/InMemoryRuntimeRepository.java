@@ -221,9 +221,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * @see IRuntimeRepository#isModifiable()
      */
     public void putProductComponent(IProductComponent productCmpt) {
-        if (productCmpt == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(productCmpt);
         productCmpts.put(productCmpt.getId(), productCmpt);
     }
 
@@ -260,9 +258,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * @see IRuntimeRepository#isModifiable()
      */
     public void putProductCmptGeneration(IProductComponentGeneration generation) {
-        if (generation == null) {
-            throw new NullPointerException();
-        }
+        Objects.requireNonNull(generation);
         getGenerationSortedSet(generation.getProductComponent().getId()).add(generation);
         putProductComponent(generation.getProductComponent());
     }
@@ -346,9 +342,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
 
     @Override
     protected IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt) {
-        if (productCmpt == null) {
-            throw new NullPointerException("The parameter productCmpt cannot be null.");
-        }
+        Objects.requireNonNull(productCmpt);
         SortedSet<IProductComponentGeneration> genSet = getLoadedProductCmptGenerations(productCmpt.getId());
         return genSet.last();
     }
