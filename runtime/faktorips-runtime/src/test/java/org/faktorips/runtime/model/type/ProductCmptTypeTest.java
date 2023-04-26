@@ -12,11 +12,8 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IRuntimeRepository;
@@ -103,10 +100,10 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetDeclaredAttribute() {
-        assertEquals("attr", productCmptType.getDeclaredAttribute("attr").getName());
-        assertEquals("attr", productCmptType.getDeclaredAttribute("Attr").getName());
-        assertEquals("BigAttr", productCmptType.getDeclaredAttribute("BigAttr").getName());
-        assertEquals("BigAttr", productCmptType.getDeclaredAttribute("bigAttr").getName());
+        assertThat(productCmptType.getDeclaredAttribute("attr").getName(), is("attr"));
+        assertThat(productCmptType.getDeclaredAttribute("Attr").getName(), is("attr"));
+        assertThat(productCmptType.getDeclaredAttribute("BigAttr").getName(), is("BigAttr"));
+        assertThat(productCmptType.getDeclaredAttribute("bigAttr").getName(), is("BigAttr"));
     }
 
     @Test
@@ -122,11 +119,11 @@ public class ProductCmptTypeTest {
 
     @Test
     public void testGetAttribute() {
-        assertEquals("attr", productCmptType.getAttribute("attr").getName());
-        assertEquals("attr", productCmptType.getAttribute("Attr").getName());
-        assertEquals("BigAttr", productCmptType.getAttribute("BigAttr").getName());
-        assertEquals("BigAttr", productCmptType.getAttribute("bigAttr").getName());
-        assertEquals("supAttr", productCmptType.getAttribute("supAttr").getName());
+        assertThat(productCmptType.getAttribute("attr").getName(), is("attr"));
+        assertThat(productCmptType.getAttribute("Attr").getName(), is("attr"));
+        assertThat(productCmptType.getAttribute("BigAttr").getName(), is("BigAttr"));
+        assertThat(productCmptType.getAttribute("bigAttr").getName(), is("BigAttr"));
+        assertThat(productCmptType.getAttribute("supAttr").getName(), is("supAttr"));
     }
 
     @Test
@@ -156,7 +153,7 @@ public class ProductCmptTypeTest {
         assertThat(association.getNamePlural(), is(IpsStringUtils.EMPTY));
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
-        assertSame(superAssoInSuper, superAssoInSuperLowerCase);
+        assertThat(superAssoInSuperLowerCase, is(sameInstance(superAssoInSuper)));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -171,7 +168,7 @@ public class ProductCmptTypeTest {
 
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
-        assertSame(superAssoInSuper, superAssoInSuperLowerCase);
+        assertThat(superAssoInSuperLowerCase, is(sameInstance(superAssoInSuper)));
     }
 
     @Test
@@ -187,7 +184,7 @@ public class ProductCmptTypeTest {
         assertThat(superAsso.getNamePlural(), is("SupAssos"));
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
-        assertSame(superAssoInSuper, superAssoInSuperLowerCase);
+        assertThat(superAssoInSuperLowerCase, is(sameInstance(superAssoInSuper)));
     }
 
     @Test
@@ -200,19 +197,34 @@ public class ProductCmptTypeTest {
         assertThat(superAsso.getNamePlural(), is("SupAssos"));
         assertThat(superAssoInSuper.getName(), is("SupAsso"));
         assertThat(superAssoInSuper.getNamePlural(), is("SupAssos"));
-        assertSame(superAssoInSuper, superAssoInSuperLowerCase);
+        assertThat(superAssoInSuperLowerCase, is(sameInstance(superAssoInSuper)));
     }
 
     @Test
     public void testIsAttributePresent() {
-        assertTrue(productCmptType.isAttributePresent("supAttr"));
-        assertFalse(productCmptType.isAttributeDeclared("supAttr"));
+        assertThat(productCmptType.isAttributePresent("supAttr"), is(true));
+        assertThat(productCmptType.isAttributeDeclared("supAttr"), is(false));
 
-        assertTrue(productCmptType.isAttributePresent("overwrittenAttr"));
-        assertTrue(productCmptType.isAttributeDeclared("overwrittenAttr"));
+        assertThat(productCmptType.isAttributePresent("overwrittenAttr"), is(true));
+        assertThat(productCmptType.isAttributeDeclared("overwrittenAttr"), is(true));
 
-        assertTrue(productCmptType.isAttributePresent("BigAttr"));
-        assertTrue(productCmptType.isAttributeDeclared("BigAttr"));
+        assertThat(productCmptType.isAttributePresent("BigAttr"), is(true));
+        assertThat(productCmptType.isAttributeDeclared("BigAttr"), is(true));
+    }
+
+    @Test
+    public void isSameOrSub_Same() {
+        assertThat(IpsModel.getProductCmptType(Product.class).isSameOrSub(productCmptType), is(true));
+    }
+
+    @Test
+    public void isSameOrSub_Sub() {
+        assertThat(productCmptType.isSameOrSub(IpsModel.getProductCmptType(SuperProduct.class)), is(true));
+    }
+
+    @Test
+    public void isSameOrSub_NoSubOrSame() {
+        assertThat(IpsModel.getProductCmptType(SuperProduct.class).isSameOrSub(productCmptType), is(false));
     }
 
     @IpsProductCmptType(name = "MyProduct")

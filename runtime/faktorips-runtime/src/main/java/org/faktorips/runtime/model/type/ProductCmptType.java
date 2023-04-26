@@ -51,7 +51,7 @@ public class ProductCmptType extends Type {
         super(name, annotatedDeclaration);
         generationDeclaration = isChangingOverTime()
                 ? AnnotatedDeclaration.from(annotatedDeclaration.get(IpsChangingOverTime.class).value())
-                : null;
+                        : null;
 
         ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
         ProductAssociationCollector associationCollector = new ProductAssociationCollector();
@@ -105,6 +105,20 @@ public class ProductCmptType extends Type {
      */
     public boolean isConfigurationForPolicyCmptType() {
         return getAnnotatedDeclaration().is(IpsConfigures.class);
+    }
+
+    /***
+     * Returns whether this {@link ProductCmptType} is the same or sub-type compared to a reference
+     * {@link ProductCmptType}.
+     * 
+     * @param reference the {@link ProductCmptType} to compare to
+     * @return <code>true</code> if this type is the same or sub-type of the reference.
+     */
+    public boolean isSameOrSub(ProductCmptType reference) {
+        if (reference.equals(this)) {
+            return true;
+        }
+        return findSuperType().map(s -> s.isSameOrSub(reference)).orElse(false);
     }
 
     /**
@@ -219,7 +233,7 @@ public class ProductCmptType extends Type {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isProductCmptType(superclass)
                 ? Optional.of(IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class)))
-                : Optional.empty();
+                        : Optional.empty();
     }
 
     @Override
