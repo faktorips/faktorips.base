@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -107,7 +107,7 @@ public enum IpsModel {
      * Returns whether the given class is a generated product type and can be given to
      * {@link #getProductCmptType(Class)} as an argument without getting an
      * {@link IllegalArgumentException}.
-     * 
+     *
      * @param productModelClass the class to check
      * @return <code>true</code> if the given class is a product model class
      */
@@ -120,11 +120,21 @@ public enum IpsModel {
      *            implementation class of a published interface.
      * @return the product model object for the given product model class
      * @throws IllegalArgumentException if the given class is not a valid model type
-     * 
+     *
      * @see #isProductCmptType(Class)
      */
     public static ProductCmptType getProductCmptType(Class<? extends IProductComponent> productModelClass) {
-        return get(PRODUCT_MODEL_CACHE, AnnotatedDeclaration.from(productModelClass));
+        AnnotatedDeclaration annotatedDeclaration = AnnotatedDeclaration.from(productModelClass);
+        // handle subclasses generated for formulas
+        Class<?> implementationClass = annotatedDeclaration.getImplementationClass();
+        if (IProductComponent.class.isAssignableFrom(implementationClass)
+                && !(annotatedDeclaration.getPublishedInterface() == null
+                        ? implementationClass.isAnnotationPresent(IpsProductCmptType.class)
+                        : annotatedDeclaration.getPublishedInterface().isAnnotationPresent(IpsProductCmptType.class))
+                && implementationClass.getSuperclass() != null) {
+            annotatedDeclaration = AnnotatedDeclaration.from(implementationClass.getSuperclass());
+        }
+        return get(PRODUCT_MODEL_CACHE, annotatedDeclaration);
     }
 
     /**
@@ -140,7 +150,7 @@ public enum IpsModel {
      * Returns whether the given class is a generated policy type and can be given to
      * {@link #getPolicyCmptType(Class)} as an argument without getting an
      * {@link IllegalArgumentException}.
-     * 
+     *
      * @param policyModelClass the class to check
      * @return <code>true</code> if the given class is a policy model class
      */
@@ -153,7 +163,7 @@ public enum IpsModel {
      *            implementation class of a published interface.
      * @return the policy model object for the given policy model class
      * @throws IllegalArgumentException if the given class is not a valid model type
-     * 
+     *
      * @see #isPolicyCmptType(Class)
      */
     public static PolicyCmptType getPolicyCmptType(Class<? extends IModelObject> policyModelClass) {
@@ -192,7 +202,7 @@ public enum IpsModel {
      * Returns whether the given class is a generated enum type and can be given to
      * {@link #getEnumType(Class)} as an argument without getting an
      * {@link IllegalArgumentException}.
-     * 
+     *
      * @param enumObjectClass the class to check
      * @return <code>true</code> if the given class is an enum model class
      */
@@ -204,7 +214,7 @@ public enum IpsModel {
      * @param enumObjectClass a generated Faktor-IPS enum class
      * @return an {@link EnumType} describing the attributes of the given Faktor-IPS enum
      * @throws IllegalArgumentException if the given class is not a valid model type
-     * 
+     *
      * @see #isEnumType(Class)
      */
     public static EnumType getEnumType(Class<?> enumObjectClass) {

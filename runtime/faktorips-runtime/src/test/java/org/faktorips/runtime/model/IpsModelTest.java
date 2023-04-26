@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,6 +18,7 @@ import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +27,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.FormulaExecutionException;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
@@ -318,6 +320,20 @@ public class IpsModelTest {
             // nothing to do
         }
 
+        /** to be overwritten in subclass */
+        @SuppressWarnings("unused")
+        public int computeAFormula() throws FormulaExecutionException {
+            return -1;
+        }
+
+    }
+
+    private abstract static class TestFormulaSubclass extends TestProduct {
+
+        @Override
+        public int computeAFormula() throws FormulaExecutionException {
+            return 42;
+        }
     }
 
     private abstract static class TestProductWithoutAnnotation implements IProductComponent {
@@ -389,6 +405,24 @@ public class IpsModelTest {
         assertEquals("MyProduct", model.getName());
     }
 
+    @Test
+    public void testGetProductCmptType_onFormulaSubclass() {
+        Type model = IpsModel.getProductCmptType(TestFormulaSubclass.class);
+
+        assertNotNull(model);
+        assertEquals("MyProduct", model.getName());
+        assertSame(IpsModel.getProductCmptType(TestProduct.class), model);
+    }
+
+    @Test
+    public void testGetProductCmptType_onFormulaSubclassWithInterface() {
+        Type model = IpsModel.getProductCmptType(MyProductFormulaSubclass.class);
+
+        assertNotNull(model);
+        assertEquals("MyProduct", model.getName());
+        assertSame(IpsModel.getProductCmptType(MyProduct.class), model);
+    }
+
     @IpsPolicyCmptType(name = "MyPolicy")
     @IpsPublishedInterface(implementation = MyPolicy.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model", defaultLocale = "de")
@@ -409,7 +443,8 @@ public class IpsModelTest {
     @IpsPublishedInterface(implementation = MyProduct.class)
     @IpsDocumented(bundleName = "org.faktorips.runtime.model", defaultLocale = "de")
     private interface IMyProduct extends IProductComponent {
-        // a product
+
+        int computeAFormula() throws FormulaExecutionException;
     }
 
     private static class MyProduct extends ProductComponent implements IMyProduct {
@@ -426,6 +461,25 @@ public class IpsModelTest {
         @Override
         public boolean isChangingOverTime() {
             return false;
+        }
+
+        @Override
+        public int computeAFormula() throws FormulaExecutionException {
+            return -1;
+        }
+
+    }
+
+    private static class MyProductFormulaSubclass extends MyProduct {
+
+        public MyProductFormulaSubclass(IRuntimeRepository repository, String id, String productKindId,
+                String versionId) {
+            super(repository, id, productKindId, versionId);
+        }
+
+        @Override
+        public int computeAFormula() throws FormulaExecutionException {
+            return 2;
         }
 
     }
