@@ -21,7 +21,7 @@
         <groovy.version>3.0.12</groovy.version>
         <javax.activation.version>1.2.0</javax.activation.version>
         <jaxb-api.version>2.4.0-b180830.0359</jaxb-api.version>
-        <jakarta-xml-api.version>3.0.1</jakarta-xml-api.version>
+        <jakarta-xml-api.version>4.0.0</jakarta-xml-api.version>
         <joda.version>2.11.1</joda.version>
         <opencsv.version>5.6</opencsv.version>
         <spotbugs-annotations.version>4.7.1</spotbugs-annotations.version>
