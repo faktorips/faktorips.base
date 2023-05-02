@@ -119,7 +119,8 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
         try {
             IpsEnum<?> ipsEnum = enumValuesCacheByClass.compute(clazz);
-            return cast(ipsEnum != null ? (List<?>)ipsEnum.getEnums() : new ArrayList<>());
+            // null is needed to search in referenced repositories
+            return cast(ipsEnum != null ? (List<?>)ipsEnum.getEnums() : null);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
