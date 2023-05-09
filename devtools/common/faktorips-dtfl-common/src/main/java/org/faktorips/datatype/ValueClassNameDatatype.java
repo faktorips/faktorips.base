@@ -10,8 +10,10 @@
 
 package org.faktorips.datatype;
 
+import java.util.Comparator;
 import java.util.Objects;
 
+import org.faktorips.values.NullObjectComparator;
 import org.faktorips.values.NullObjectSupport;
 
 /**
@@ -129,25 +131,26 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         return Objects.equals(getValue(valueA), getValue(valueB));
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
     public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
-                    + " does not support comparison of values"); //$NON-NLS-1$
+            + " does not support comparison of values"); //$NON-NLS-1$
         }
-        if (areValuesEqual(valueA, valueB)) {
-            return 0;
+        Comparable<?> valA = (Comparable<Object>)getValue(valueA);
+        Comparable<?> valB = (Comparable<Object>)getValue(valueB);
+        if (hasNullObject()) {
+            return compareNullObjects(valA, valB);
+        } else {
+            return Comparator.nullsFirst(Comparator.<Comparable> naturalOrder()).compare(valA, valB);
         }
-        @SuppressWarnings("unchecked")
-        Comparable<Object> valA = (Comparable<Object>)getValue(valueA);
-        if (valA == null) {
-            return -1;
-        }
-        Object valB = getValue(valueB);
-        if (valB == null) {
-            return 1;
-        }
-        return valA.compareTo(valB);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <C extends NullObjectSupport & Comparable<C>> int compareNullObjects(Comparable<?> valA,
+            Comparable<?> valB) {
+        return NullObjectComparator.<C> nullsFirst().compare((C)valA, (C)valB);
     }
 
     /**
@@ -167,5 +170,4 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
      */
     @Override
     public abstract Object getValue(String value);
-
 }
