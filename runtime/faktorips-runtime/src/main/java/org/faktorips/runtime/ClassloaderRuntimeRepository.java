@@ -16,28 +16,16 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
-import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
-import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
-import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.TocEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /**
  * A runtime repository that loads the resources by calling
@@ -56,17 +44,6 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
      * The default name of the file describing the registry's contents.
      */
     public static final String TABLE_OF_CONTENTS_FILE = "faktorips-repository-toc.xml";
-
-    /**
-     * This is a thread local variable because the document builder is not thread safe. For every
-     * thread the method {@link #createDocumentBuilder()} is called automatically
-     */
-    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
-        @Override
-        protected DocumentBuilder initialValue() {
-            return createDocumentBuilder();
-        }
-    };
 
     private static final InputStream EMPTY_INPUT_STREAM = new EmptyInputStream();
 
@@ -213,32 +190,18 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return new ClassloaderRuntimeRepository(tocResource, cl, cacheFactory);
     }
 
-    protected DocumentBuilder getDocumentBuilder() {
-        return docBuilderHolder.get();
-    }
-
     @Override
     protected ReadonlyTableOfContents loadTableOfContents() {
-        InputStream is = null;
         Document doc;
-        try {
-            is = getClassLoader().getResourceAsStream(tocResourcePath);
+        try (InputStream is = getClassLoader().getResourceAsStream(tocResourcePath)) {
             if (is == null) {
                 throw new IllegalArgumentException("Can't find table of contents file " + tocResourcePath);
             }
-            doc = getDocumentBuilder().parse(is);
+            doc = XmlUtil.getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException("Error loading table of contents from " + tocResourcePath, e);
-        } finally {
-            if (is != null) {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+        } 
         try {
             Element tocElement = doc.getDocumentElement();
             ReadonlyTableOfContents toc = new ReadonlyTableOfContents(getClassLoader());
@@ -256,30 +219,13 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
     }
 
     @Override
-    protected Element getDocumentElement(ProductCmptTocEntry tocEntry) {
-        return getDocumentElementInternal(tocEntry);
-    }
-
-    @Override
-    protected Element getDocumentElement(GenerationTocEntry tocEntry) {
-        Element docElement = getDocumentElement(tocEntry.getParent());
-        NodeList nl = docElement.getChildNodes();
-        DateTime validFrom = tocEntry.getValidFrom();
-        for (int i = 0; i < nl.getLength(); i++) {
-            if ("Generation".equals(nl.item(i).getNodeName())) {
-                Element genElement = (Element)nl.item(i);
-                DateTime generationValidFrom = DateTime.parseIso(genElement.getAttribute("validFrom"));
-                if (validFrom.equals(generationValidFrom)) {
-                    return genElement;
-                }
-            }
+    protected InputStream getXmlAsStream(TableContentTocEntry tocEntry) {
+        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
+        if (is == null) {
+            throw new RuntimeException(
+                    "Can't find resource " + tocEntry.getXmlResourceName() + " for ToC entry " + tocEntry);
         }
-        throw new RuntimeException("Can't find the generation for the ToC entry " + tocEntry);
-    }
-
-    @Override
-    protected Element getDocumentElement(TestCaseTocEntry tocEntry) {
-        return getDocumentElementInternal(tocEntry);
+        return is;
     }
 
     @Override
@@ -296,79 +242,9 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return is;
     }
 
-    private Element getDocumentElementInternal(TocEntry tocEntry) {
-        String resource = tocEntry.getXmlResourceName();
-        InputStream is = getClassLoader().getResourceAsStream(resource);
-        if (is == null) {
-            throw new RuntimeException("Can't find resource " + resource + " for ToC entry " + tocEntry);
-        }
-        Document doc;
-        try {
-            doc = getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
-            // CSOFF: IllegalCatch
-        } catch (Exception e) {
-            // CSON: IllegalCatch
-            throw new RuntimeException("Can't parse XML resource " + resource, e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Unable to close the input stream of the resource: " + resource, e);
-            }
-        }
-        Element element = doc.getDocumentElement();
-        if (element == null) {
-            throw new RuntimeException("Xml resource " + resource + " hasn't got a document element.");
-        }
-        return element;
-    }
-
-    private static final DocumentBuilder createDocumentBuilder() {
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setNamespaceAware(false);
-        DocumentBuilder builder;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e1) {
-            throw new RuntimeException("Error creating document builder.", e1);
-        }
-        builder.setErrorHandler(new ErrorHandler() {
-            @Override
-            public void error(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void fatalError(SAXParseException e) throws SAXException {
-                throw e;
-            }
-
-            @Override
-            public void warning(SAXParseException e) throws SAXException {
-                throw e;
-            }
-        });
-        return builder;
-    }
-
     @Override
     public boolean isModifiable() {
         return false;
-    }
-
-    @Override
-    protected InputStream getXmlAsStream(TableContentTocEntry tocEntry) {
-        InputStream is = getClassLoader().getResourceAsStream(tocEntry.getXmlResourceName());
-        if (is == null) {
-            throw new RuntimeException(
-                    "Can't find resource " + tocEntry.getXmlResourceName() + " for ToC entry " + tocEntry);
-        }
-        return is;
-    }
-
-    @Override
-    protected <T> Element getDocumentElement(CustomTocEntryObject<T> tocEntry) {
-        return getDocumentElementInternal(tocEntry);
     }
 
     private static final class EmptyInputStream extends InputStream {

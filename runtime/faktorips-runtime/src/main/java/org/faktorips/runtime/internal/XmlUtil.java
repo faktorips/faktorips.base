@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -30,6 +33,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * A collection of utility methods for XML DOM handling.
@@ -38,6 +44,17 @@ import org.w3c.dom.Text;
  */
 public enum XmlUtil {
     /* no instances */;
+
+    /**
+     * This is a thread local variable because the document builder is not thread safe. For every
+     * thread the method {@link #createDocumentBuilder()} is called automatically
+     */
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
+        @Override
+        protected DocumentBuilder initialValue() {
+            return createDocumentBuilder();
+        }
+    };
 
     XmlUtil() {
         // Utility class not to be instantiated.
@@ -254,5 +271,40 @@ public enum XmlUtil {
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", Integer.toString(indentWidth)); //$NON-NLS-1$
         }
         transformer.transform(src, res);
+    }
+
+    /**
+     * @return a {@link DocumentBuilder} in a thread safe manner ({@link ThreadLocal}).
+     */
+    public static final DocumentBuilder getDocumentBuilder() {
+        return docBuilderHolder.get();
+    }
+
+    private static final DocumentBuilder createDocumentBuilder() {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        DocumentBuilder builder;
+        try {
+            builder = factory.newDocumentBuilder();
+        } catch (ParserConfigurationException e1) {
+            throw new RuntimeException("Error creating document builder.", e1);
+        }
+        builder.setErrorHandler(new ErrorHandler() {
+            @Override
+            public void error(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            @Override
+            public void fatalError(SAXParseException e) throws SAXException {
+                throw e;
+            }
+
+            @Override
+            public void warning(SAXParseException e) throws SAXException {
+                throw e;
+            }
+        });
+        return builder;
     }
 }
