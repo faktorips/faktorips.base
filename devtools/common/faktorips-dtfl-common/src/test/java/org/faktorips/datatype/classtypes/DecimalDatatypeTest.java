@@ -12,33 +12,20 @@ package org.faktorips.datatype.classtypes;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-/**
- *
- * @author Thorsten Guenther
- */
-public class MoneyDatatypeTest {
-
-    @Test
-    public void testDivisibleWithoutRemainder() {
-        MoneyDatatype datatype = new MoneyDatatype();
-        assertTrue(datatype.divisibleWithoutRemainder("10 EUR", "2 EUR")); //$NON-NLS-1$ //$NON-NLS-2$
-        assertFalse(datatype.divisibleWithoutRemainder("10 EUR", "3 EUR")); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+public class DecimalDatatypeTest {
 
     @Test
     public void testCompare() {
-        MoneyDatatype datatype = new MoneyDatatype();
+        DecimalDatatype datatype = new DecimalDatatype();
         assertThat(datatype.compare(null, null), is(0));
         assertThat(datatype.compare(null, ""), is(0));
-        assertThat(datatype.compare(null, "10 EUR"), is(-1));
-        assertThat(datatype.compare("10 EUR", null), is(1));
-        assertThat(datatype.compare("10 EUR", "20 EUR"), is(-1));
-        assertThat(datatype.compare("30 EUR", "20 EUR"), is(1));
+        assertThat(datatype.compare(null, "1.23"), is(-1));
+        assertThat(datatype.compare("1.0", null), is(1));
+        assertThat(datatype.compare("1.0", "1.01"), is(-1));
+        assertThat(datatype.compare("2", "1.99"), is(1));
     }
 
 }
