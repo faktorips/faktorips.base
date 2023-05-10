@@ -110,7 +110,11 @@ Export-Package: org.faktorips.devtools.model,
    org.faktorips.devtools.multiediting,
    org.faktorips.devtools.multiediting.test,
    org.faktorips.devtools.model.eclipse",
- org.faktorips.devtools.model.internal.ipsproject.bundle;x-friends:="org.faktorips.devtools.stdbuilder,org.faktorips.devtools.stdbuilder.test,org.faktorips.devtools.model.eclipse",
+ org.faktorips.devtools.model.internal.ipsproject.bundle;
+  x-friends:="org.faktorips.devtools.model.eclipse,
+   org.faktorips.devtools.stdbuilder,
+   org.faktorips.devtools.stdbuilder.test,
+   org.faktorips.m2e",
  org.faktorips.devtools.model.internal.ipsproject.cache;x-friends:="org.faktorips.devtools.core,org.faktorips.devtools.core.test",
  org.faktorips.devtools.model.internal.ipsproject.properties;
   x-friends:="org.faktorips.devtools.stdbuilder,
