@@ -1,67 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<merge:options
-  braceStyle="matching"  
-  redirect="GeneratedRedirection"
-  block="\s*@\s*generated\s*NOT\s*(?:\n\r?|\r\n?)"
-  xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
+<merge:options 
+    braceStyle="matching"
+    redirect="GeneratedRedirection"
+    block="\s*@\s*generated\s*NOT\s*(?:\R)"
+    xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
 
-	<merge:dictionaryPattern name="generatedUnmodifiableMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^(?:\n\r?|\r\n?)]*)*(?:\n\r?|\r\n?| \*/)"/>
-	<merge:dictionaryPattern name="generatedRestrainedModifableMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n"/>
+    <merge:dictionaryPattern name="generatedUnmodifiableMembers" select="Member/getComment" match="@\s*(gen)erated\s*(This field/method[^\r\n]*)*(?:\R| \*/)" />
+    <merge:dictionaryPattern name="generatedRestrainedModifableMember" select="Member/getComment" match="\s*@\s*(restrained)modifiable\s*\n" />
 
-	<merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags"/>
-	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
-	<merge:pull sourceGet="Type/getSuperclass" targetMarkup="^gen$" targetPut="Type/setSuperclass"/>
-	<merge:pull sourceGet="Initializer/getBody" targetMarkup="^gen$" targetPut="Initializer/setBody"/>
-	<merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody"/>
-  <merge:pull sourceGet="Method/getBody" sourceMarkup="^gen$" targetMarkup="^restrained$" targetPut="Method/setBody"/>
-  <merge:pull sourceGet="Method/getReturnType" targetMarkup="^(gen|restrained)$" targetPut="Method/setReturnType"/>
-	<merge:pull sourceGet="Method/getParameters" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameters"/>
-	<merge:pull sourceGet="Method/getParameterNames" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameterNames"/>
-	<merge:pull sourceGet="Method/getExceptions" targetMarkup="^(gen|restrained)$" targetPut="Method/addException"/>
-	<merge:pull sourceGet="Field/getType" targetMarkup="^gen$" targetPut="Field/setType"/>
-	<merge:pull sourceGet="Field/getInitializer" targetMarkup="^gen$" targetPut="Field/setInitializer"/>
-	<merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody"/>
-	<merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface"/>
-	<merge:pull sourceGet="EnumConstant/getArguments" targetMarkup="^gen$" targetPut="EnumConstant/setArguments"/>
-	<merge:pull sourceGet="EnumConstant/getBody" targetMarkup="^gen$" targetPut="EnumConstant/setBody"/>
-	<!-- This is only for annotation type declarations - as far we do not generate our own annotations it is not really needed -->
-	<merge:pull sourceGet="AnnotationTypeMember/getType" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setType"/>
-  <merge:pull sourceGet="AnnotationTypeMember/getDefaultValue" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setDefaultValue"/>
+    <merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags" />
+    <merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\R|\*/))" targetMarkup="^gen$" targetPut="Type/addSuperInterface" />
+    <merge:pull sourceGet="Type/getSuperclass" targetMarkup="^gen$" targetPut="Type/setSuperclass" />
+    <merge:pull sourceGet="Initializer/getBody" targetMarkup="^gen$" targetPut="Initializer/setBody" />
+    <merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody" />
+    <merge:pull sourceGet="Method/getBody" sourceMarkup="^gen$" targetMarkup="^restrained$" targetPut="Method/setBody" />
+    <merge:pull sourceGet="Method/getReturnType" targetMarkup="^(gen|restrained)$" targetPut="Method/setReturnType" />
+    <merge:pull sourceGet="Method/getParameters" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameters" />
+    <merge:pull sourceGet="Method/getParameterNames" targetMarkup="^(gen|restrained)$" targetPut="Method/setParameterNames" />
+    <merge:pull sourceGet="Method/getExceptions" targetMarkup="^(gen|restrained)$" targetPut="Method/addException" />
+    <merge:pull sourceGet="Field/getType" targetMarkup="^gen$" targetPut="Field/setType" />
+    <merge:pull sourceGet="Field/getInitializer" targetMarkup="^gen$" targetPut="Field/setInitializer" />
+    <merge:pull targetMarkup="^restrained$" sourceTransfer="(\s*//\s*begin-user-code.*?//\s*end-user-code\s*)\n" sourceGet="Method/getBody" targetPut="Method/setBody" />
+    <merge:pull sourceGet="Enum/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?(?:,\s*\R\s*\*\s*[^@/]*?)*)(?:&lt;!--|(?:\R|\*/))" targetMarkup="^gen$" targetPut="Enum/addSuperInterface" />
+    <merge:pull sourceGet="EnumConstant/getArguments" targetMarkup="^gen$" targetPut="EnumConstant/setArguments" />
+    <merge:pull sourceGet="EnumConstant/getBody" targetMarkup="^gen$" targetPut="EnumConstant/setBody" />
+    <!-- This is only for annotation type declarations - as long as we do not generate our own annotations it is not really needed -->
+    <merge:pull sourceGet="AnnotationTypeMember/getType" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setType" />
+    <merge:pull sourceGet="AnnotationTypeMember/getDefaultValue" targetMarkup="^gen$" targetPut="AnnotationTypeMember/setDefaultValue" />
 
-	<!-- These are the settings for merging annotations -->
-	<!-- Defining the custom tag to keep custom annotations:
-	does match any @generated or @restrainedmodifiable that is not followed by @customizedAnnotations -->
-	<merge:dictionaryPattern name="customizedAnnotationsCONTENT" select="Member/getComment" match="@\s*(g(e)nerated|r(e)strainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(CONTENT\-CHANGED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<merge:dictionaryPattern name="customizedAnnotationsADDED" select="Member/getComment" match="@\s*(gener(a)ted|restr(a)inedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(ADDED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	<!-- Rule for annotations that start with @Ips...
-		We cannot use getQualifiedName because this would be the qualified name of the annotation instance not the annotation class,
-		that means it starts with the qualified name of the generated element -->
-	<merge:dictionaryPattern name="ipsAnnoations" select="Annotation/getName" match="@Ips.*"/>
-	
-	
-	<!-- overwrite the content of annotations -->
-	<merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^e$" targetPut="Annotation/setContents"/>
-	<!-- only write the annotation if the parent is maked as generated -->
-	<merge:push targetParentMarkup="^d$" select="Annotation" />
-	<!-- Remove annotations of generated target nodes if the annotation is not in the source -->
-	<merge:sweep parentMarkup="^a$" select="Annotation" />	
+    <!-- These are the settings for merging annotations -->
+    <!-- Defining the custom tag to keep custom annotations: 
+        does match any @generated or @restrainedmodifiable that is not followed by @customizedAnnotations -->
+    <merge:dictionaryPattern name="customizedAnnotationsCONTENT" select="Member/getComment" match="@\s*(g(e)nerated|r(e)strainedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(CONTENT\-CHANGED|ALL).*|\s*)(\R)*(\*/))" />
+    <merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\R)*(\*/))" />
+    <merge:dictionaryPattern name="customizedAnnotationsADDED" select="Member/getComment" match="@\s*(gener(a)ted|restr(a)inedmodifiable)(?![\s\S]*@\s*customizedAnnotations(.*(ADDED|ALL).*|\s*)(\R)*(\*/))" />
+    <!-- Rule for annotations that start with @Ips... 
+        We cannot use getQualifiedName because this would be the qualified name of the annotation instance not the annotation class,
+        that means it starts with the qualified name of the generated element -->
+    <merge:dictionaryPattern name="ipsAnnoations" select="Annotation/getName" match="@Ips.*" />
 
-	<!-- Always push/pull/sweep @Ips... annotations, overwrite previous rule for customized annotations 
-	-->
-	<merge:pull sourceGet="Annotation/getContents" sourceMarkup="ipsAnnoations" targetPut="Annotation/setContents"/>
-	<merge:push markup="ipsAnnoations" select="Annotation" />
-	<merge:sweep markup="ipsAnnoations" select="Annotation" />
 
-	<merge:sweep markup="^gen$" select="Member"/>
+    <!-- overwrite the content of annotations -->
+    <merge:pull sourceGet="Annotation/getContents" targetParentMarkup="^e$" targetPut="Annotation/setContents" />
+    <!-- only write the annotation if the parent is marked as generated -->
+    <merge:push targetParentMarkup="^d$" select="Annotation" />
+    <!-- Remove annotations of generated target nodes if the annotation is not in the source -->
+    <merge:sweep parentMarkup="^a$" select="Annotation" />
 
-	<!--
-	This would be the code to comment out not used restraintmodifiable - however we decided to let them in 
-	<merge:sweep markup="^restrained$" action="comment" select="Member"/>
-	 -->
+    <!-- Always push/pull/sweep @Ips... annotations, overwrite previous rule for customized annotations -->
+    <merge:pull sourceGet="Annotation/getContents" sourceMarkup="ipsAnnoations" targetPut="Annotation/setContents" />
+    <merge:push markup="ipsAnnoations" select="Annotation" />
+    <merge:sweep markup="ipsAnnoations" select="Annotation" />
 
-	<!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated--> 
-	<merge:pull targetMarkup="^(gen|restrained)$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\n)?(.*)?" targetPut="Member/setComment"/>
+    <merge:sweep markup="^gen$" select="Member" />
+
+    <!-- This would be the code to comment out not used restrainedmodifiable - however we decided to let them in 
+        <merge:sweep markup="^restrained$" action="comment" select="Member"/> 
+        -->
+
+    <!-- Overwrite the java doc comment before @generated or @restrainedmodifiable and use the customized java doc comment after @generated -->
+    <merge:pull targetMarkup="^(gen|restrained)$" sourceGet="Member/getComment" sourceTransfer="@\s*(?:generated|restrainedmodifiable)(.*\R.*)?(\*/)" targetPut="Member/setComment" />
 
 </merge:options>
 
@@ -83,20 +81,19 @@ Documentation:
 http://www.ibm.com/developerworks/library/os-ecemf3/
 
 merge:pull:
-	Overwrite node (method, field, ...) from generated code (source) in target (customized code) if it exists in both. 
+    Overwrite node (method, field, ...) from generated code (source) in target (customized code) if it exists in both. 
 
 merge:push
-	Write generated code (source) into target source code if it does not already exist there. 
-	When the element is in the generated source but not in the target, the element is pushed by default.
-	By setting a merge:push rule you could limit the pushing for example to only push the element if the pattern matches.
-	For example:
-	<merge:push targetParentMarkup="^d$" select="Annotation"/>
-	Push Annotations only if they are NOT marked as deleted. Because the pattern
-	<merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
-	matches ^d$ if the element is marked as "@generated" but NOT with "@customizedAnnotations REMOVED"
-	
+    Write generated code (source) into target source code if it does not already exist there. 
+    When the element is in the generated source but not in the target, the element is pushed by default.
+    By setting a merge:push rule you could limit the pushing for example to only push the element if the pattern matches.
+    For example:
+    <merge:push targetParentMarkup="^d$" select="Annotation"/>
+    Push Annotations only if they are NOT marked as deleted. Because the pattern
+    <merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\R))"/>
+    matches ^d$ if the element is marked as "@generated" but NOT with "@customizedAnnotations REMOVED"
+    
 
 merge:sweep
-	Removes members that are not generated.
-
+    Removes members that are not generated.
 -->
