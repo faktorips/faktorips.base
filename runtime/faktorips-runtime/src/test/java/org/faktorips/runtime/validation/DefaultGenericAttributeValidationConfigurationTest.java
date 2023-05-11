@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ListResourceBundle;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -615,6 +616,45 @@ public class DefaultGenericAttributeValidationConfigurationTest {
         assertThat(message.getInvalidObjectProperties().get(0).getProperty(),
                 is(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.hasMarker(MandatoryMarker.INSTANCE), is(true));
+    }
+
+    @Test
+    public void testOverwrittenGetMessages() throws Exception {
+
+        IGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
+                Locale.US) {
+
+            class SimpleResourceBundle extends ListResourceBundle {
+                @Override
+                public Locale getLocale() {
+                    return Locale.US;
+                }
+
+                @Override
+                protected Object[][] getContents() {
+                    return new Object[][] {
+                            { ERROR_MANDATORY_MSG_CODE_PREFIX, "Overwritten Message for %s" }
+                    };
+                }
+            }
+
+            @Override
+            public ResourceBundle getMessages() {
+                return new SimpleResourceBundle();
+            }
+        };
+        PolicyAttribute policyAttribute = IpsModel.getPolicyCmptType(TestPolicyWithVisitor.class)
+                .getAttribute(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE);
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+
+        Message message = config.createMessageForMissingMandatoryValue(policyAttribute, modelObject,
+                TestPolicyWithVisitor.class);
+
+        assertNotNull(message);
+        assertThat(message.getCode(),
+                startsWith(GenericRelevanceValidation.Error.MandatoryValueMissing.getId().toUpperCase()));
+        assertThat(message.getText(),
+                is("Overwritten Message for \"Integer Attribute\""));
     }
 
     private static final class CustomGenericAttributeValidationConfiguration

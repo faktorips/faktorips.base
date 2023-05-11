@@ -174,7 +174,7 @@ public class DefaultGenericAttributeValidationConfiguration implements IGenericA
      *            {@link String#format(String, Object...)}
      */
     protected String format(String msgKey, Object... replacementParameters) {
-        return String.format(messages.getString(msgKey), replacementParameters);
+        return String.format(getMessages().getString(msgKey), replacementParameters);
     }
 
     /**
