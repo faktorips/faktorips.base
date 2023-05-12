@@ -141,8 +141,10 @@ public enum Relevance {
     private static <T> ValueSet<T> asEnum(Class<T> datatype, boolean containsNull, ValueSet<T> values) {
         if (values != null) {
             return new OrderedValueSet<>(values.getValues(true), containsNull, nullValue(datatype));
-        } else {
+        } else if (!IpsModel.isExtensibleEnumType(datatype)) {
             return new OrderedValueSet<>(containsNull, nullValue(datatype), datatype.getEnumConstants());
+        } else {
+            return new UnrestrictedValueSet<>(false);
         }
     }
 

@@ -13,6 +13,7 @@ package org.faktorips.runtime.validation;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.faktorips.runtime.IModelObject;
@@ -31,6 +32,7 @@ import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.runtime.model.type.ValueSetKind;
+import org.faktorips.sample.model.TestConcreteExtensibleEnum;
 import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.IntegerRange;
@@ -620,6 +622,24 @@ public class RelevanceTest {
                 is(MoneyRange.valueOf((Money)null, null, null, true)));
     }
 
+    @Test
+    public void testAsValueSetFor_Mandatory_ExtensibleEnum() {
+        assertThat(
+                Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                        TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE),
+                is(new UnrestrictedValueSet<>(false)));
+
+        assertThat(Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE,
+                new ArrayList<>()),
+                is(new OrderedValueSet<>(new ArrayList<>(), false, null)));
+
+        assertThat(Relevance.MANDATORY.asValueSetFor(new TestPolicyWithUnrestrictedEnum(),
+                TestPolicyWithUnrestrictedEnum.PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE,
+                TestConcreteExtensibleEnum.VALUES),
+                is(new OrderedValueSet<>(TestConcreteExtensibleEnum.VALUES, false, null)));
+    }
+
     @IpsPolicyCmptType(name = "TestPolicyWithDerivedMandatoryValueSet")
     @IpsAttributes({ "IntegerAttribute" })
     public static class TestPolicyWithDerivedMandatoryValueSet extends TestPolicyWithVisitor {
@@ -835,21 +855,26 @@ public class RelevanceTest {
     }
 
     @IpsPolicyCmptType(name = "TestPolicyWithUnrestrictedEnum")
-    @IpsAttributes({ "NonIpsEnumAttribute", "IpsEnumAttribute" })
+    @IpsAttributes({ "NonIpsEnumAttribute", "IpsEnumAttribute", "IpsExtensibleEnumAttribute" })
     @IpsAssociations({})
     static class TestPolicyWithUnrestrictedEnum implements IModelObject {
 
         public static final String PROPERTY_NON_IPS_ENUM_ATTRIBUTE = "NonIpsEnumAttribute";
         public static final String PROPERTY_IPS_ENUM_ATTRIBUTE = "IpsEnumAttribute";
+        public static final String PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE = "IpsExtensibleEnumAttribute";
 
         private TestEnum nonIpsEnumAttribute;
         private TestConcreteJavaEnum ipsEnumAttribute;
+        private TestConcreteExtensibleEnum ipsExtensibleEnumAttribute;
 
         private ValueSet<TestEnum> setOfAllowedValuesNonIpsEnumAttribute = new OrderedValueSet<>(true, null,
                 TestEnum.values());
 
         private ValueSet<TestConcreteJavaEnum> setOfAllowedValuesIpsEnumAttribute = new OrderedValueSet<>(true, null,
                 TestConcreteJavaEnum.values());
+
+        private ValueSet<TestConcreteExtensibleEnum> setOfAllowedValuesipsExtensibleEnumAttribute = new OrderedValueSet<>(
+                TestConcreteExtensibleEnum.VALUES, true, null);
 
         @IpsAllowedValues(PROPERTY_NON_IPS_ENUM_ATTRIBUTE)
         public ValueSet<TestEnum> getSetOfAllowedValuesForNonIpsEnumAttribute() {
@@ -896,6 +921,27 @@ public class RelevanceTest {
         @Override
         public MessageList validate(IValidationContext context) {
             return new MessageList();
+        }
+
+        @IpsAttribute(name = PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE, kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        public TestConcreteExtensibleEnum getIpsExtensibleEnumAttribute() {
+            return ipsExtensibleEnumAttribute;
+        }
+
+        @IpsAttributeSetter(PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE)
+        public void setIpsExtensibleEnumAttribute(TestConcreteExtensibleEnum ipsExtensibleEnumAttribute) {
+            this.ipsExtensibleEnumAttribute = ipsExtensibleEnumAttribute;
+        }
+
+        @IpsAllowedValues(PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE)
+        public ValueSet<TestConcreteExtensibleEnum> getSetOfAllowedValuesipsExtensibleEnumAttribute() {
+            return setOfAllowedValuesipsExtensibleEnumAttribute;
+        }
+
+        @IpsAllowedValuesSetter(PROPERTY_IPS_EXTENSIBLE_ENUM_ATTRIBUTE)
+        public void setSetOfAllowedValuesipsExtensibleEnumAttribute(
+                ValueSet<TestConcreteExtensibleEnum> setOfAllowedValuesipsExtensibleEnumAttribute) {
+            this.setOfAllowedValuesipsExtensibleEnumAttribute = setOfAllowedValuesipsExtensibleEnumAttribute;
         }
     }
 }
