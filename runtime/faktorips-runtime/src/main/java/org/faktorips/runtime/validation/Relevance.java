@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -208,6 +208,15 @@ public enum Relevance {
     }
 
     /**
+     * Returns whether the given {@link ValueSet} is considered {@link #IRRELEVANT}.
+     *
+     * @since 23.6
+     */
+    public static boolean isIrrelevant(ValueSet<?> valueSet) {
+        return IRRELEVANT == Relevance.of(valueSet);
+    }
+
+    /**
      * Returns whether the attribute with the given property name is considered {@link #MANDATORY}
      * for the given model object.
      */
@@ -221,6 +230,15 @@ public enum Relevance {
      */
     public static boolean isMandatory(IModelObject modelObject, PolicyAttribute policyAttribute) {
         return MANDATORY == Relevance.of(modelObject, policyAttribute);
+    }
+
+    /**
+     * Returns whether the given {@link ValueSet} is considered {@link #MANDATORY}.
+     *
+     * @since 23.6
+     */
+    public static boolean isMandatory(ValueSet<?> valueSet) {
+        return MANDATORY == Relevance.of(valueSet);
     }
 
     /**
@@ -240,6 +258,15 @@ public enum Relevance {
     }
 
     /**
+     * Returns whether the given {@link ValueSet} is considered {@link #OPTIONAL}.
+     *
+     * @since 23.6
+     */
+    public static boolean isOptional(ValueSet<?> valueSet) {
+        return OPTIONAL == Relevance.of(valueSet);
+    }
+
+    /**
      * Returns whether the attribute with the given property name is considered relevant for the
      * given model object.
      */
@@ -255,6 +282,15 @@ public enum Relevance {
     }
 
     /**
+     * Returns whether the given {@link ValueSet} is considered relevant.
+     *
+     * @since 23.6
+     */
+    public static boolean isRelevant(ValueSet<?> valueSet) {
+        return !isIrrelevant(valueSet);
+    }
+
+    /**
      * Returns the {@link Relevance} of the {@link PolicyAttribute} identified by the given property
      * name for the given model object.
      */
@@ -267,7 +303,15 @@ public enum Relevance {
      * object.
      */
     public static Relevance of(IModelObject modelObject, PolicyAttribute policyAttribute) {
-        ValueSet<?> valueSet = policyAttribute.getValueSet(modelObject);
+        return of(policyAttribute.getValueSet(modelObject));
+    }
+
+    /**
+     * Returns the {@link Relevance} as interpretation of the given {@link ValueSet}.
+     *
+     * @since 23.6
+     */
+    public static Relevance of(ValueSet<?> valueSet) {
         if (valueSet == null || valueSet.isEmpty()) {
             return Relevance.IRRELEVANT;
         } else if (valueSet.containsNull()) {

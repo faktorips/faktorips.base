@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,6 +34,7 @@ public class GenericRelevanceValidation {
     private final PolicyAttribute policyAttribute;
     private final Class<? extends IModelObject> definingModelObjectClass;
     private final IGenericAttributeValidationConfiguration config;
+    private ValueSet<?> valueSet;
 
     public GenericRelevanceValidation(IModelObject modelObject,
             Class<? extends IModelObject> definingModelObjectClass,
@@ -85,8 +86,8 @@ public class GenericRelevanceValidation {
      */
     public MessageList validate() {
         MessageList messages = new MessageList();
-
         if (config.shouldValidate(policyAttribute, modelObject)) {
+            valueSet = config.getValueSet(policyAttribute, modelObject);
             messages.add(validateValuePresentIfMandatory());
             messages.add(validateValueNullIfIrrelevant());
             messages.add(validateValueContainedIfPresent());
@@ -112,7 +113,7 @@ public class GenericRelevanceValidation {
     private Message validateValueContainedIfPresent() {
         if (isInvalidNotContained()) {
             return config.createMessageForValueNotInAllowedValueSet(policyAttribute, modelObject,
-                    definingModelObjectClass);
+                    definingModelObjectClass, valueSet);
         }
         return null;
     }
@@ -122,7 +123,7 @@ public class GenericRelevanceValidation {
      * mandatory field, the value must be != {@code null}.
      */
     private boolean isInvalidMandatory() {
-        return !isValuePresent() && Relevance.isMandatory(modelObject, policyAttribute);
+        return !isValuePresent() && Relevance.isMandatory(getValueSet());
     }
 
     /**
@@ -130,7 +131,7 @@ public class GenericRelevanceValidation {
      * irrelevant, the value must be {@code null}.
      */
     private boolean isInvalidIrrelevance() {
-        return isValuePresent() && Relevance.isIrrelevant(modelObject, policyAttribute);
+        return isValuePresent() && Relevance.isIrrelevant(getValueSet());
     }
 
     /**
@@ -138,9 +139,8 @@ public class GenericRelevanceValidation {
      * is relevant, the value must be in the value range.
      */
     private boolean isInvalidNotContained() {
-        ValueSet<Object> valueSet = getValueSet();
-        return Relevance.isRelevant(modelObject, policyAttribute) && isValuePresent() && valueSet != null
-                && !valueSet.contains(getValue());
+        return Relevance.isRelevant(getValueSet()) && isValuePresent() && getValueSet() != null
+                && !getValueSet().contains(getValue());
     }
 
     /**
@@ -155,13 +155,13 @@ public class GenericRelevanceValidation {
                 || (value instanceof CharSequence && IpsStringUtils.isBlank(((CharSequence)value).toString())));
     }
 
-    private Object getValue() {
-        return policyAttribute.getValue(modelObject);
+    @SuppressWarnings("unchecked")
+    private <T> T getValue() {
+        return (T)policyAttribute.getValue(modelObject);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> ValueSet<T> getValueSet() {
-        return (ValueSet<T>)policyAttribute.getValueSet(modelObject);
+    private ValueSet<?> getValueSet() {
+        return valueSet;
     }
 
     public enum Error {
