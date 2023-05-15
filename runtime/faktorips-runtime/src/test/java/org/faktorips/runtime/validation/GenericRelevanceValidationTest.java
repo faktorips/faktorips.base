@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,9 +14,13 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.Message;
@@ -24,6 +28,10 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.data.TestPolicyWithVisitor;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsAssociations;
+import org.faktorips.runtime.model.annotation.IpsAttributes;
+import org.faktorips.runtime.model.annotation.IpsDocumented;
+import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.type.PolicyAttribute;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -36,7 +44,7 @@ public class GenericRelevanceValidationTest {
     public void testOf() {
         DefaultGenericAttributeValidationConfiguration config = new DefaultGenericAttributeValidationConfiguration(
                 Locale.GERMANY);
-        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        TestPolicyWithVisitor modelObject = spy(new TestPolicyWithVisitor());
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
@@ -51,6 +59,7 @@ public class GenericRelevanceValidationTest {
         assertThat(message.getCode(), containsString("TestPolicyWithVisitor"));
         assertThat(message.getCode(), containsString(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(message.getText(), is("Das Feld \"Integer-Attribut\" muss einen Wert enthalten."));
+        verify(modelObject).getSetOfAllowedValuesForIntegerAttribute();
     }
 
     @Test
@@ -199,7 +208,13 @@ public class GenericRelevanceValidationTest {
                 return false;
             }
         };
-        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
+        TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor() {
+            @Override
+            public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
+                fail("getter for ValueSet should not be called");
+                return null;
+            }
+        };
         ValueSet<Integer> valueSet = new UnrestrictedValueSet<>(false);
         modelObject.setAllowedValuesForIntegerAttribute(valueSet);
 
@@ -212,5 +227,24 @@ public class GenericRelevanceValidationTest {
         MessageList messageList = relevanceValidation.validate();
         assertThat(messageList.isEmpty(), is(true));
         assertThat(called.get(), is(true));
+    }
+
+    @IpsPolicyCmptType(name = "TestPolicy")
+    @IpsAttributes({ "IntegerAttribute", "DecimalAttribute", "MoneyAttribute", "StringAttribute", "BooleanAttribute",
+            "EnumAttribute", "RangeAttribute", "onTheFly" })
+    @IpsAssociations({ "TestDeckung" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.validation.TestPolicy", defaultLocale = "en")
+    private static final class TestPolicyWithVisitorAndCallCount extends TestPolicyWithVisitor {
+        private final AtomicInteger callCount;
+
+        private TestPolicyWithVisitorAndCallCount(AtomicInteger callCount) {
+            this.callCount = callCount;
+        }
+
+        @Override
+        public ValueSet<Integer> getSetOfAllowedValuesForIntegerAttribute() {
+            callCount.incrementAndGet();
+            return super.getSetOfAllowedValuesForIntegerAttribute();
+        }
     }
 }

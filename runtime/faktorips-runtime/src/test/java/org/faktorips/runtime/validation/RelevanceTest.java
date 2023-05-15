@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -103,6 +103,17 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testIsIrrelevantValueSet() {
+        assertThat(Relevance.isIrrelevant(null), is(true));
+        assertThat(Relevance.isIrrelevant(OrderedValueSet.empty()), is(true));
+        assertThat(Relevance.isIrrelevant(OrderedValueSet.of(1, 2, 3)), is(false));
+        assertThat(Relevance.isIrrelevant(OrderedValueSet.of(1, null, 3)), is(false));
+        assertThat(Relevance.isIrrelevant(new UnrestrictedValueSet<>()), is(false));
+        assertThat(Relevance.isIrrelevant(IntegerRange.valueOf(0, 10)), is(false));
+        assertThat(Relevance.isIrrelevant(IntegerRange.empty()), is(true));
+    }
+
+    @Test
     public void testIsMandatoryIModelObjectString() {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
 
@@ -166,6 +177,19 @@ public class RelevanceTest {
 
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isMandatory(modelObject, policyAttribute), is(false));
+    }
+
+    @Test
+    public void testIsMandatoryValueSet() {
+        assertThat(Relevance.isMandatory(null), is(false));
+        assertThat(Relevance.isMandatory(OrderedValueSet.empty()), is(false));
+        assertThat(Relevance.isMandatory(OrderedValueSet.of(1, 2, 3)), is(true));
+        assertThat(Relevance.isMandatory(OrderedValueSet.of(1, null, 3)), is(false));
+        assertThat(Relevance.isMandatory(new UnrestrictedValueSet<>()), is(false));
+        assertThat(Relevance.isMandatory(new UnrestrictedValueSet<>(false)), is(true));
+        assertThat(Relevance.isMandatory(IntegerRange.valueOf(0, 10)), is(true));
+        assertThat(Relevance.isMandatory(IntegerRange.valueOf(0, 10, 2, true)), is(false));
+        assertThat(Relevance.isMandatory(IntegerRange.empty()), is(false));
     }
 
     @Test
@@ -235,6 +259,19 @@ public class RelevanceTest {
     }
 
     @Test
+    public void testIsOptionalValueSet() {
+        assertThat(Relevance.isOptional(null), is(false));
+        assertThat(Relevance.isOptional(OrderedValueSet.empty()), is(false));
+        assertThat(Relevance.isOptional(OrderedValueSet.of(1, 2, 3)), is(false));
+        assertThat(Relevance.isOptional(OrderedValueSet.of(1, null, 3)), is(true));
+        assertThat(Relevance.isOptional(new UnrestrictedValueSet<>()), is(true));
+        assertThat(Relevance.isOptional(new UnrestrictedValueSet<>(false)), is(false));
+        assertThat(Relevance.isOptional(IntegerRange.valueOf(0, 10)), is(false));
+        assertThat(Relevance.isOptional(IntegerRange.valueOf(0, 10, 2, true)), is(true));
+        assertThat(Relevance.isOptional(IntegerRange.empty()), is(false));
+    }
+
+    @Test
     public void testIsRelevantIModelObjectString() {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
 
@@ -286,6 +323,17 @@ public class RelevanceTest {
 
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.isRelevant(modelObject, policyAttribute), is(false));
+    }
+
+    @Test
+    public void testIsRelevantValueSet() {
+        assertThat(Relevance.isRelevant(null), is(false));
+        assertThat(Relevance.isRelevant(OrderedValueSet.empty()), is(false));
+        assertThat(Relevance.isRelevant(OrderedValueSet.of(1, 2, 3)), is(true));
+        assertThat(Relevance.isRelevant(OrderedValueSet.of(1, null, 3)), is(true));
+        assertThat(Relevance.isRelevant(new UnrestrictedValueSet<>()), is(true));
+        assertThat(Relevance.isRelevant(IntegerRange.valueOf(0, 10)), is(true));
+        assertThat(Relevance.isRelevant(IntegerRange.empty()), is(false));
     }
 
     @Test
@@ -358,6 +406,19 @@ public class RelevanceTest {
 
         modelObject.setAllowedValuesForIntegerAttribute(IntegerRange.empty());
         assertThat(Relevance.of(modelObject, policyAttribute), is(Relevance.IRRELEVANT));
+    }
+
+    @Test
+    public void testOfValueSet() {
+        assertThat(Relevance.of(null), is(Relevance.IRRELEVANT));
+        assertThat(Relevance.of(OrderedValueSet.empty()), is(Relevance.IRRELEVANT));
+        assertThat(Relevance.of(OrderedValueSet.of(1, 2, 3)), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(OrderedValueSet.of(1, null, 3)), is(Relevance.OPTIONAL));
+        assertThat(Relevance.of(new UnrestrictedValueSet<>()), is(Relevance.OPTIONAL));
+        assertThat(Relevance.of(new UnrestrictedValueSet<>(false)), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(IntegerRange.valueOf(0, 10)), is(Relevance.MANDATORY));
+        assertThat(Relevance.of(IntegerRange.valueOf(0, 10, 2, true)), is(Relevance.OPTIONAL));
+        assertThat(Relevance.of(IntegerRange.empty()), is(Relevance.IRRELEVANT));
     }
 
     @Test
