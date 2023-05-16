@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -198,6 +198,13 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot packRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         AFolder rootFolder = (AFolder)packRoot.getCorrespondingResource();
         assertEquals(packRoot, model.getIpsElement(rootFolder));
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        AFolder deepRoot = project.getFolder("a").getFolder("deep").getFolder("root");
+        ipsObjectPath.newSourceFolderEntry(deepRoot);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        IIpsPackageFragmentRoot packDeepRoot = ipsProject.getIpsPackageFragmentRoots()[1];
+        assertEquals(packDeepRoot, model.getIpsElement(deepRoot));
 
         AFolder folderA = rootFolder.getFolder("a");
         IIpsPackageFragment packA = packRoot.getIpsPackageFragment("a");

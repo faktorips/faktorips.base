@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -87,7 +87,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class TocFileBuilder extends AbstractArtefactBuilder {
@@ -138,7 +138,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * The toc file builder has to remember the modification stamp for each toc before the build
      * process starts.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -165,7 +165,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
     /**
      * Saves the tocs that have been modified during the build.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -182,7 +182,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Saves the repository's table of contents to a file. The table of contents file is needed by
      * the FaktorIPS runtime to load the product components and table data.
-     * 
+     *
      * @throws IpsException if an error occurs while writing the toc to the file.
      */
     private void saveToc(IIpsPackageFragmentRoot root) {
@@ -250,7 +250,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     /**
      * Returns the product component registry's table of contents for the indicated ips package
      * fragment root.
-     * 
+     *
      * @throws IpsException if an error occurs while accessing the toc file.
      */
     public TableOfContent getToc(IIpsPackageFragmentRoot root) {

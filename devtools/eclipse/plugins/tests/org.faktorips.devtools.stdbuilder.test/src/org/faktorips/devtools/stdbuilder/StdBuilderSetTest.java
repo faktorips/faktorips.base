@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -155,7 +155,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         assertTrue(fragment.exists());
         // TODO little dirty here. Better to ask the builder for its package
         IFile productFile = ((IFolder)packageFragmentRoot.getResource())
-                .getFile(new Path("/org/faktorips/sample/model/internal/Product.xml"));
+                .getFile(new Path("/org/faktorips/sample/model/internal/Product.ipsproduct"));
         assertTrue(productFile.exists());
 
         // a clean build is expected to remove the base directory and the product xml file.

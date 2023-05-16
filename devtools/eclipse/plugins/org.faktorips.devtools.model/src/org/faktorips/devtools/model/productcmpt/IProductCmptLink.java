@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,12 +25,13 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * A link between two product components. A link is an instance of an association between product
  * component types.
- * 
+ *
  * @see IProductCmptTypeAssociation
  */
 public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     String PROPERTY_TARGET = "target"; //$NON-NLS-1$
+    String PROPERTY_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
     String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
     String PROPERTY_CARDINALITY = "cardinality"; //$NON-NLS-1$
     String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
@@ -87,7 +88,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      * component type association. A message with this message code is added if this link is part of
      * a container that changes over time but the product component type association is defined as
      * static (not changing over time), et vice versa.
-     * 
+     *
      * @since 3.8
      */
     String MSGCODE_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX + "ChangingOverTimeMismatch"; //$NON-NLS-1$
@@ -99,7 +100,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     /**
      * Returns the {@link IProductCmptLinkContainer link container} this link is a part of.
-     * 
+     *
      * @since 3.8
      * @see IProductCmptLinkContainer
      */
@@ -117,14 +118,14 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     /**
      * Finds the product component type association this link is an instance of. Note that the
-     * method searches not only the direct product component type this product component is based
-     * on, but also it's super type hierarchy.
-     * 
+     * method searches not only the direct product component type this product component
+     * is based on, but also it's super type hierarchy.
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
+     *
      * @return the association or <code>null</code> if no such association exists.
-     * 
+     *
      * @throws IpsException if an exception occurs while searching the relation.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
@@ -143,14 +144,28 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Returns the product component which is the target of this association or <code>null</code>,
      * if no (valid) target name is set.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this component is part of.
-     * 
+     *
      * @throws IpsException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is <code>null</code>.
      */
     IProductCmpt findTarget(IIpsProject ipsProject) throws IpsException;
+
+    /**
+     * Returns the runtime ID of the target product component.
+     *
+     * @since 23.6
+     */
+    String getTargetRuntimeId();
+
+    /**
+     * Sets the runtime ID of the target product component.
+     *
+     * @since 23.6
+     */
+    void setTargetRuntimeId(String newTargetRuntimeId);
 
     /**
      * Returns the cardinality of target instances in this link
@@ -197,7 +212,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Returns true if the association this link is an instance of does constrains a policy
      * component type association
-     * 
+     *
      * @see IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)
      */
     boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
@@ -211,7 +226,7 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Returns whether this Relation is optional. A Relation is optional if the minimum cardinality
      * equals 0 and the maximum cardinality equals 1.
-     * 
+     *
      * @return <code>true</code> if this Relation is optional, else <code>false</code>.
      */
     boolean isOptional();
@@ -225,12 +240,12 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
     /**
      * Checks if this link is a link of the given association. This includes the search for derived
      * union associations if the link's is a subset of a derived union.
-     * 
+     *
      * @param association The association that should be checked
      * @param ipsProject The project used to find the associations
      * @return true if this link is a link instance of the given association including search for
      *             derived unions.
-     * 
+     *
      * @throws IpsException Throws a core exception if there occurs exception during finding other
      *             objects
      */

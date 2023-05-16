@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IpsSrcFolderEntry.
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
@@ -173,7 +173,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public String getIpsPackageFragmentRootName() {
-        return sourceFolder.getName();
+        return sourceFolder.getProjectRelativePath().toString();
     }
 
     @Override
@@ -326,14 +326,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         MessageList result = new MessageList();
         // the sourceFolder will never be null (see this#initFromXml)
         result.add(validateIfFolderExists(sourceFolder));
-        if (sourceFolder.getProjectRelativePath().getNameCount() > 1) {
-            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject,
-                    PathUtil.toPortableString(sourceFolder
-                            .getProjectRelativePath()));
-            Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROHECT, text, Message.ERROR,
-                    this);
-            result.add(msg);
-        }
         if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
             result.add(validateOutputFolder());
         }
@@ -370,7 +362,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private MessageList validateIfFolderExists(AFolder folder) {
         MessageList result = new MessageList();
         if (!folder.exists()) {
-            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_msgMissingFolder, folder.getName());
+            String text = MessageFormat.format(Messages.IpsSrcFolderEntry_msgMissingFolder,
+                    folder.getProjectRelativePath().toString());
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }

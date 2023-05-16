@@ -44,7 +44,7 @@ public interface IIpsObjectGeneration extends IIpsObjectPart {
      * Validation message code to indicate that the valid-from date of this generation has a invalid
      * format.
      */
-    String MSGCODE_INVALID_FORMAT_VALID_FROM = MSGCODE_PREFIX + "InvalidValidFormatFromDate"; //$NON-NLS-1$
+    String MSGCODE_INVALID_FORMAT_VALID_FROM = MSGCODE_PREFIX + "InvalidFormatValidFromDate"; //$NON-NLS-1$
 
     /**
      * Returns the object this is a generation of.

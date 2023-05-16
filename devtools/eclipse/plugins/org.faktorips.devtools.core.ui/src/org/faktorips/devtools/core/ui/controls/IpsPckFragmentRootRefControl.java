@@ -17,12 +17,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.abstraction.AResource;
-import org.faktorips.devtools.abstraction.Wrappers;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsPackageFragmentRootSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 
@@ -51,17 +48,17 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
     public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
         IWorkspaceRoot wpRoot = ResourcesPlugin.getWorkspace().getRoot();
         String pathString = IPath.SEPARATOR + getText();
+        IIpsPackageFragmentRoot root = null;
         try {
             Path path = new Path(pathString);
             IFolder folder = wpRoot.getFolder(path);
-            IIpsElement element = IIpsModel.get().getIpsElement(Wrappers.wrap(folder).as(AResource.class));
-            if (element instanceof IIpsPackageFragmentRoot) {
-                return (IIpsPackageFragmentRoot)element;
-            }
+            root = IIpsModel.get().getIpsProject(folder.getProject().getName())
+                    .findIpsPackageFragmentRoot(
+                            folder.getProjectRelativePath().toOSString());
         } catch (IllegalArgumentException e) {
             // string is not a valid path
         }
-        return null;
+        return root;
     }
 
     @Override

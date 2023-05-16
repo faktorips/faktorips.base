@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.model.internal.ipsproject.Messages;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 
@@ -104,14 +103,14 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     public boolean isFolderForDerivedSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_DERIVED_SOURCES.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_DERIVED_SOURCES
-                        .equals(type));
+                .equals(type));
     }
 
     @Override
     public boolean isFolderForMergableSources() {
         return (IIpsObjectPathEntryAttribute.DEFAULT_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES.equals(type)
                 || IIpsObjectPathEntryAttribute.SPECIFIC_OUTPUT_FOLDER_FOR_MERGABLE_SOURCES
-                        .equals(type));
+                .equals(type));
     }
 
     @Override
@@ -147,14 +146,6 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
             }
 
             result.add(validateIfFolderExists(sourceFolder));
-
-            if (sourceFolder.getProjectRelativePath().segmentCount() > 1) {
-                String text = NLS.bind(Messages.IpsSrcFolderEntry_srcFolderMustBeADirectChildOfTheProject, sourceFolder
-                        .getProjectRelativePath().toString());
-                Message msg = new Message(MSGCODE_SRCFOLDER_MUST_BE_A_DIRECT_CHILD_OF_THE_PROJECT, text, Message.ERROR,
-                        this);
-                result.add(msg);
-            }
         }
 
         return result;
@@ -166,7 +157,7 @@ public class IpsObjectPathEntryAttribute implements IIpsObjectPathEntryAttribute
     private MessageList validateIfFolderExists(IFolder folder) {
         MessageList result = new MessageList();
         if (!folder.exists()) {
-            String text = NLS.bind("The folder \"{0}\" does not exist.", folder.getName()); //$NON-NLS-1$
+            String text = NLS.bind("The folder \"{0}\" does not exist.", folder.getProjectRelativePath().toString()); //$NON-NLS-1$
             Message msg = new Message(MSGCODE_MISSING_FOLDER, text, Message.ERROR, this);
             result.add(msg);
         }

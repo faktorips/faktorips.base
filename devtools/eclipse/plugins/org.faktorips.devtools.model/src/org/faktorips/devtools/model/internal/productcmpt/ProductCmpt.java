@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,14 +15,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.model.IInternationalString;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IIpsModelExtensions;
@@ -44,6 +47,7 @@ import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.model.pctype.IValidationRule;
@@ -58,6 +62,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmptKind;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.model.productcmpt.IValidationRuleConfig;
@@ -73,6 +78,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.values.DateUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -80,10 +86,12 @@ import org.w3c.dom.NodeList;
 
 /**
  * Implementation of product component.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
+
+    public static final String XML_ATTRIBUTE_VALID_FROM = "validFrom"; //$NON-NLS-1$
 
     private final ProductCmptLinkCollection linkCollection = new ProductCmptLinkCollection();
 
@@ -382,6 +390,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (IpsStringUtils.isNotEmpty(template)) {
             element.setAttribute(PROPERTY_TEMPLATE, template);
         }
+        element.setAttribute(XML_ATTRIBUTE_VALID_FROM, DateUtil.gregorianCalendarToIsoDateString(getValidFrom()));
     }
 
     @Override
@@ -556,7 +565,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      * Creates a link without a corresponding association name. The association thus remains
      * undefined. Moreover the association must not be set as this method is used for XML
      * initialization which in turn must not trigger value changes (and setAssociation() would).
-     * 
+     *
      * @param id the future part id of the new link
      */
     private IProductCmptLink createAndAddNewLinkInternal(String id) {
@@ -595,17 +604,73 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public Element toXml(Document doc) {
         Element xmlElement = super.toXml(doc);
-        if (!allowGenerations()) {
-            writeDummyGeneration(doc, xmlElement);
-        }
+        updateInternationalStringDefaultLocale(getDefaultLocale(), xmlElement);
+        updateGenerations(doc, xmlElement);
+        compileFormulas(this, doc, xmlElement);
         return xmlElement;
+    }
+
+    private Locale getDefaultLocale() {
+        return getIpsProject().getReadOnlyProperties().getDefaultLanguage().getLocale();
+    }
+
+    private void updateInternationalStringDefaultLocale(Locale defaultLocale, Element root) {
+        Set<String> supportedLanguages = getIpsProject().getReadOnlyProperties()
+                .getSupportedLanguages().stream()
+                .map(ISupportedLanguage::getLocale)
+                .map(Locale::toLanguageTag)
+                .collect(Collectors.toSet());
+        NodeList internationalStrings = root.getElementsByTagName(IInternationalString.XML_TAG);
+        for (int i = 0; i < internationalStrings.getLength(); i++) {
+            Element internationalString = (Element)internationalStrings.item(i);
+            internationalString.setAttribute(IInternationalString.XML_ATTR_DEFAULT_LOCALE, defaultLocale.getLanguage());
+
+            for (String language : findMissingLocalizedStringsForEachInternationalString(supportedLanguages,
+                    internationalString)) {
+                Element localizedString = internationalString.getOwnerDocument()
+                        .createElement(IInternationalString.XML_ELEMENT_LOCALIZED_STRING);
+                localizedString.setAttribute(IInternationalString.XML_ATTR_LOCALE, language);
+                localizedString.setAttribute(IInternationalString.XML_ATTR_TEXT, "");
+                internationalString.appendChild(localizedString);
+            }
+        }
+    }
+
+    private Set<String> findMissingLocalizedStringsForEachInternationalString(Set<String> supportedLanguages,
+            Element internationalString) {
+        NodeList localizedStrings = internationalString
+                .getElementsByTagName(IInternationalString.XML_ELEMENT_LOCALIZED_STRING);
+        Set<String> missingLanguages = new LinkedHashSet<>(supportedLanguages);
+        for (int m = 0; m < localizedStrings.getLength(); m++) {
+            Element localizedString = (Element)localizedStrings.item(m);
+            String language = localizedString.getAttribute(IInternationalString.XML_ATTR_LOCALE);
+            if (missingLanguages.contains(language)) {
+                missingLanguages.remove(language);
+            }
+        }
+        return missingLanguages;
+    }
+
+    private void updateGenerations(Document document, Element root) {
+        List<Element> generationNodes = org.faktorips.runtime.internal.XmlUtil.getElements(root,
+                IIpsObjectGeneration.TAG_NAME);
+        if (allowGenerations()) {
+            IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
+            for (int i = 0; i < generations.length && i < generationNodes.size(); i++) {
+                IProductCmptGeneration generation = (IProductCmptGeneration)generations[i];
+                Element generationElement = generationNodes.get(i);
+                compileFormulas(generation, document, generationElement);
+            }
+        } else {
+            writeDummyGeneration(document, root);
+        }
     }
 
     /**
      * For compatibility reasons we always keep one generation also if the type does not support
      * generations (is not changing over time). In the {@link #getChildrenThis()} method we hide
      * this dummy generation. Hence the toXml framework methods do not write it automatically.
-     * 
+     *
      * Try to add the generation after the last {@link Description} element of this
      * {@link ProductCmpt}.
      */
@@ -627,6 +692,10 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             // if XSD validation is on, this will lead to a validation error
             rootElement.appendChild(generationElement);
         }
+    }
+
+    private void compileFormulas(IPropertyValueContainer propertyValueContainer, Document document, Element node) {
+        IIpsModelExtensions.get().getFormulaCompiler().compileFormulas(propertyValueContainer, document, node);
     }
 
     @Override

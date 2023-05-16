@@ -10,7 +10,9 @@
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -35,6 +37,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     private final List<IIpsObjectGeneration> generations = new ArrayList<>();
 
+    private GregorianCalendar validFrom;
     private GregorianCalendar validTo;
 
     public TimedIpsObject(IIpsSrcFile file) {
@@ -262,12 +265,19 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
     @Override
     public GregorianCalendar getValidFrom() {
+        if (getFirstGeneration() == null) {
+            return validFrom;
+        }
         return getFirstGeneration().getValidFrom();
     }
 
     @Override
     public void setValidFrom(GregorianCalendar validFrom) {
-        getFirstGeneration().setValidFrom(validFrom);
+        if (getFirstGeneration() == null) {
+            this.validFrom = validFrom;
+        } else {
+            getFirstGeneration().setValidFrom(validFrom);
+        }
     }
 
     @Override
@@ -290,14 +300,23 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     /**
-     * This method ensures the validation of the valid from date which is stored on the first
-     * generation. This won't happen automatically if the object does not allow generations, because
-     * the first generation won't be included in the children of the object.
+     * This method ensures the validation of the valid from date.
      */
     private void validateValidFrom(MessageList list) {
-        if (!allowGenerations()) {
-            ((IpsObjectGeneration)getFirstGeneration()).validateValidFromFormat(list, this);
+        if (getValidFrom() == null) {
+            list.add(Message.newError(MSGCODE_INVALID_FORMAT_VALID_FROM,
+                    Messages.IpsObjectGeneration_msgInvalidFormatFromDate + getDefaultDateFormat(), this,
+                    PROPERTY_VALID_FROM));
         }
+    }
+
+    public static String getDefaultDateFormat() {
+        DateFormat dateFormat = IIpsModelExtensions.get().getModelPreferences().getDateFormat();
+        String formatDescription = dateFormat.format(new GregorianCalendar().getTime());
+        if (dateFormat instanceof SimpleDateFormat) {
+            formatDescription = ((SimpleDateFormat)dateFormat).toPattern();
+        }
+        return formatDescription;
     }
 
     private void validateValidTo(MessageList list) {

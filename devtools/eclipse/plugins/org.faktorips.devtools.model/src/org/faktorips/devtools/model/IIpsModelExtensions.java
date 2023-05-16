@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,6 +28,7 @@ import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.IpsObjectPathContainerFactory;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -66,7 +67,7 @@ public interface IIpsModelExtensions {
     /**
      * Returns the manager for the feature with the given id or <code>null</code> if no manager was
      * found.
-     * 
+     *
      * @param featureId The id of the feature the manager has to be returned.
      */
     default IIpsFeatureVersionManager getIpsFeatureVersionManager(String featureId) {
@@ -81,7 +82,7 @@ public interface IIpsModelExtensions {
     /**
      * Returns the <code>IIpsLoggingFrameworkConnector</code> that are registered at the according
      * extension-point.
-     * 
+     *
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
@@ -91,7 +92,7 @@ public interface IIpsModelExtensions {
      * Returns the <code>IIpsLoggingFrameworkConnector</code> for the provided id. If no
      * <code>IIpsLoggingFrameworkConnector</code> with the provided id is found <code>null</code>
      * will be returned.
-     * 
+     *
      * @deprecated since 21.12.
      */
     @Deprecated(since = "21.12")
@@ -110,10 +111,10 @@ public interface IIpsModelExtensions {
     /**
      * Get all registered migration operations for a specified contributor name. The contributor
      * name is the symbolic name of the bundle that provides the registered migration operations.
-     * 
+     *
      * @param contributorName The name of the contributor which provides the requested migration
      *            operations
-     * 
+     *
      * @return A map containing all registered migration operations. The key of the map is the
      *             target version of the operation
      */
@@ -157,6 +158,13 @@ public interface IIpsModelExtensions {
      * Returns fix-ups that should be applied after a {@link DeepCopyOperation}.
      */
     List<IDeepCopyOperationFixup> getDeepCopyOperationFixups();
+
+    /**
+     * Returns the {@link IFormulaCompiler}.
+     *
+     * @since 23.6
+     */
+    IFormulaCompiler getFormulaCompiler();
 
     /**
      * Returns a map of {@link IExtensionPropertyDefinition extension property definitions} by the
@@ -203,14 +211,14 @@ public interface IIpsModelExtensions {
     /**
      * Returns all registered {@link IProductCmptNamingStrategyFactory product component naming
      * strategy factories}.
-     * 
+     *
      * @since 22.12
      */
     List<IProductCmptNamingStrategyFactory> getProductCmptNamingStrategyFactories();
 
     /**
      * Returns all registered {@link ICustomValidation custom validations}.
-     * 
+     *
      * @since 22.12
      */
     List<ICustomValidation<?>> getCustomValidations();
@@ -218,21 +226,21 @@ public interface IIpsModelExtensions {
     /**
      * Returns all registered additional {@link IpsObjectType IPS object types} (beyond those
      * defined in {@link IpsObjectType} itself).
-     * 
+     *
      * @since 22.12
      */
     List<IpsObjectType> getAdditionalIpsObjectTypes();
 
     /**
      * Returns all registered {@link ReleaseExtension ReleaseExtensions}.
-     * 
+     *
      * @since 22.12
      */
     List<ReleaseExtension> getReleaseExtensions();
 
     /**
      * Returns a registry for looking up helpers for data types.
-     * 
+     *
      * @since 23.1
      */
     Supplier<Map<Datatype, DatatypeHelper>> getDatatypeHelperRegistry();
@@ -240,9 +248,9 @@ public interface IIpsModelExtensions {
     /**
      * Returns the {@link ReleaseExtension} registered for the given {@link IIpsProject}, if one is
      * configured, otherwise {@link Optional#empty()}.
-     * 
+     *
      * @param ipsProject the Faktor-IPS project for which the release extension is requested
-     * 
+     *
      * @since 22.12
      */
     default Optional<ReleaseExtension> getReleaseExtension(IIpsProject ipsProject) {

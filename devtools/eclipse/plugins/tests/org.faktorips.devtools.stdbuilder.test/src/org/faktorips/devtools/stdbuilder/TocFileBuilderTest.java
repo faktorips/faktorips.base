@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -51,7 +51,7 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class TocFileBuilderTest extends AbstractStdBuilderTest {
@@ -99,7 +99,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
         assertFalse(entry.getGenerationEntries().isEmpty());
         assertEquals("org.faktorips.sample.model.internal.test.ProductCmptGen", entry.getGenerationImplClassName());
-        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.xml", entry.getXmlResourceName());
+        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.ipsproduct", entry.getXmlResourceName());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         assertEquals("ProductCmpt", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
         assertTrue(entry.getGenerationEntries().isEmpty());
-        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.xml", entry.getXmlResourceName());
+        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.ipsproduct", entry.getXmlResourceName());
     }
 
     @Test

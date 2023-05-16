@@ -22,7 +22,7 @@ public class TableContentBuilder extends XmlContentFileCopyBuilder {
 
     @Override
     public String getName() {
-        return "TableContentBuilde";
+        return "TableContentBuilder";
     }
 
 }

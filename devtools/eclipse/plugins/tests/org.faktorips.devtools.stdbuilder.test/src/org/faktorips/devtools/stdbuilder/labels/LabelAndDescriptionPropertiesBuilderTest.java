@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,6 +34,21 @@ public class LabelAndDescriptionPropertiesBuilderTest {
 
         assertThat(labelAndDesc.getResourceBundleBaseName(entry),
                 is("org.faktorips.test.UniqueQualifier.Model-Folder-label-and-descriptions"));
+    }
+
+    @Test
+    public void testGetResourceBundleBaseName_Deep() {
+        IIpsSrcFolderEntry entry = mock(IpsSrcFolderEntry.class);
+        when(entry.getUniqueQualifier()).thenReturn("UniqueQualifier");
+        when(entry.getBasePackageNameForDerivedJavaClasses()).thenReturn("org.faktorips.test");
+        when(entry.getIpsPackageFragmentRootName()).thenReturn("a/deep/model/folder");
+        when(entry.getUniqueBasePackageNameForDerivedArtifacts()).thenCallRealMethod();
+
+        LabelAndDescriptionPropertiesBuilder labelAndDesc = new LabelAndDescriptionPropertiesBuilder(
+                new StandardBuilderSet());
+
+        assertThat(labelAndDesc.getResourceBundleBaseName(entry),
+                is("org.faktorips.test.UniqueQualifier.a.deep.model.folder-label-and-descriptions"));
     }
 
     @Test

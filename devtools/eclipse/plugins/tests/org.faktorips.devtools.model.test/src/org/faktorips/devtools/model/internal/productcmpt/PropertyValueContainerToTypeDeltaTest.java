@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -65,7 +65,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 @RunWith(MockitoJUnitRunner.StrictStubs.class)
@@ -212,6 +212,27 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         IDeltaEntry[] entries = delta.getEntries();
         assertEquals(1, entries.length);
         assertTrue(entries[0] instanceof LinkWithoutAssociationEntry);
+    }
+
+    @Test
+    public void testWrongRuntimeIdForLink() {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        IProductCmptGeneration generation = productCmpt.getFirstGeneration();
+        IProductCmptLink link = generation.newLink(association.getName());
+        link.setTarget(productCmpt.getQualifiedName());
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertTrue(delta.isEmpty());
+
+        productCmpt.setRuntimeId("changedID");
+        delta = productCmpt.computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(0, entries.length);
+        entries = ((IPropertyValueContainerToTypeDelta)delta.getChildren().get(0)).getEntries();
+        assertEquals(1, entries.length);
+
+        delta.fixAllDifferencesToModel();
+        assertEquals("changedID", link.getTargetRuntimeId());
     }
 
     @Test

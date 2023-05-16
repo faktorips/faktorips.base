@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import org.faktorips.devtools.model.IPreSaveProcessor;
 import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -74,7 +75,7 @@ public interface TestIpsModelExtensions extends IIpsModelExtensions, AutoCloseab
     /**
      * Sets the {@link IIpsProjectConfigurator project-configurators}. This method overwrites the
      * configurators registered via extension points.
-     * 
+     *
      * @param ipsProjectConfigurators The passed IPS project-configurators
      */
     void setIpsProjectConfigurators(List<IIpsProjectConfigurator> ipsProjectConfigurators);
@@ -102,5 +103,7 @@ public interface TestIpsModelExtensions extends IIpsModelExtensions, AutoCloseab
     void setPredefinedDatatypes(Map<String, Datatype> predefinedDatatypes);
 
     void addPredefinedDatatype(Datatype datatype);
+
+    void setFormulaCompiler(IFormulaCompiler formulaCompiler);
 
 }

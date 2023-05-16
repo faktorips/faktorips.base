@@ -577,6 +577,17 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
+    public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(java.nio.file.Path path) {
+        IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
+        for (IIpsPackageFragmentRoot root : roots) {
+            if (path.toString().contains(root.getName())) {
+                return root;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public AResource[] getNonIpsResources() {
         AContainer cont = (AContainer)getCorrespondingResource();
         if (!cont.isAccessible()) {

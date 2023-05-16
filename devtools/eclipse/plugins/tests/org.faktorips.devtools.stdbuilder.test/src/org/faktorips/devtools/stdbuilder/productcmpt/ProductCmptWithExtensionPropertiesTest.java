@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -83,7 +83,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
             assertThat(fileContent.replaceAll(" id=\"[a-f0-9-]+\"", ""), is(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                            + "<ProductCmpt productCmptType=\"ProductType\" runtimeId=\"Product\" xml:space=\"preserve\">\n"
+                            + "<ProductCmpt productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
                             + " <validTo isNull=\"true\"/>\n"
                             + " <Description locale=\"de\"/>\n"
                             + " <Description locale=\"en\"/>\n"

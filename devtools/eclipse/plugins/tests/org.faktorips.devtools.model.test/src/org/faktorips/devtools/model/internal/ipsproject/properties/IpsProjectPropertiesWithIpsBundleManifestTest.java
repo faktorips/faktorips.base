@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -60,6 +61,7 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
         when(ipsProject.getProject()).thenReturn(spiedProject);
 
         AFolder folder = mock(AFolder.class);
+        when(folder.getProjectRelativePath()).thenReturn(Path.of("anyfolder"));
         doReturn(folder).when(spiedProject).getFolder(anyString());
 
         AFile file = mock(AFile.class);

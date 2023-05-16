@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -24,6 +24,7 @@ import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.eclipse.internal.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -73,6 +74,8 @@ public class TestEclipseIpsModelExtensions extends IpsModelExtensionsViaEclipseP
     private Map<IpsObjectType, List<IPreSaveProcessor>> preSaveProcessors;
 
     private Map<String, Datatype> predefinedDatatypes;
+
+    private IFormulaCompiler formulaCompiler;
 
     public TestEclipseIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -244,6 +247,16 @@ public class TestEclipseIpsModelExtensions extends IpsModelExtensionsViaEclipseP
     public void addPredefinedDatatype(Datatype datatype) {
         getPredefinedDatatypes();
         predefinedDatatypes.put(datatype.getName(), datatype);
+    }
+
+    @Override
+    public IFormulaCompiler getFormulaCompiler() {
+        return formulaCompiler != null ? formulaCompiler : super.getFormulaCompiler();
+    }
+
+    @Override
+    public void setFormulaCompiler(IFormulaCompiler formulaCompiler) {
+        this.formulaCompiler = formulaCompiler;
     }
 
 }

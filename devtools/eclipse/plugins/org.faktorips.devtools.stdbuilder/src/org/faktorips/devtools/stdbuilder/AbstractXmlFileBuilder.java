@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -59,10 +59,10 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Writes the new XML content to the output file for the given {@link IIpsSrcFile} creating it
      * if necessary and keeping the old version in the local history otherwise.
-     * 
+     *
      * @param ipsSrcFile The source file to process
      * @param newContent The content of the source file to process. Must not be <code>null</code>
-     * 
+     *
      * @throws IpsException if any errors occur during the build
      * @throws NullPointerException when <code>newContent</code> is <code>null</code>
      */
@@ -76,10 +76,10 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
     /**
      * Writes the new XML content to the output file for the given {@link IIpsSrcFile} creating it
      * if necessary and keeping the old version in the local history otherwise.
-     * 
+     *
      * @param ipsSrcFile The source file to process
      * @param newContent The content of the source file to process. Must not be <code>null</code>
-     * 
+     *
      * @throws IpsException if any errors occur during the build
      * @throws NullPointerException when <code>newContent</code> is <code>null</code>
      */
@@ -99,7 +99,7 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
 
     /**
      * Returns the relative path to the generated XML file.
-     * 
+     *
      * @param ipsSrcFile The {@link IIpsSrcFile} you want to generate
      * @return the relative path to the generated XML file
      */
@@ -107,7 +107,8 @@ public abstract class AbstractXmlFileBuilder extends AbstractArtefactBuilder {
         String packageString = getBuilderSet().getPackageName(ipsSrcFile, isBuildingInternalArtifacts(),
                 !buildsDerivedArtefacts());
         Path pathToPack = Path.of(packageString.replace('.', '/'));
-        return pathToPack.resolve(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + ".xml");
+        return pathToPack.resolve(StringUtil.getFilenameWithoutExtension(ipsSrcFile.getName()) + "."
+                + ipsSrcFile.getIpsObjectType().getFileExtension());
     }
 
     /**
