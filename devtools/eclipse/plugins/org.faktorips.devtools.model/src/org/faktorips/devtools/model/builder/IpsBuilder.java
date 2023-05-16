@@ -222,7 +222,7 @@ public class IpsBuilder {
             } else {
                 createMarkersForIpsProjectProperties(list, ipsProject);
             }
-
+            // TODO: Hooky here add marker for .ipsProject
             if (list.containsErrorMsg()) {
                 AMarker marker = markedResource.createMarker(IpsBuilder.PROBLEM_MARKER);
                 String msg = Messages.IpsBuilder_msgInvalidProperties;
@@ -577,7 +577,7 @@ public class IpsBuilder {
                     .collectDependenciesForIncrementalBuild(visitor.changedAndAddedIpsSrcFiles,
                             visitor.removedIpsSrcFiles);
             int numberOfBuildCandidates = dependenciesForProjectsMap.count() + visitor.removedIpsSrcFiles.size()
-                    + visitor.changedAndAddedIpsSrcFiles.size();
+            + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
             buildRemovedIpsSrcFiles(ipsArtefactBuilderSet, buildStatus, monitor, visitor);
 

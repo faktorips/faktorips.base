@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.productcmpt;
 
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -50,6 +51,7 @@ import org.faktorips.devtools.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -102,12 +104,14 @@ public class ConfiguredDefaultTest extends AbstractIpsPluginTest {
         // no data type given
         MessageList ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE), hasSeverity(Severity.WARNING));
 
         // unknown data type
         attribute.setDatatype("HopefullyNoExistingDatatype");
         policyCmptType.getIpsSrcFile().save(null);
         ml = configuredDefaultValue.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE), hasSeverity(Severity.WARNING));
 
         // valid data type
         attribute.setDatatype("Decimal");

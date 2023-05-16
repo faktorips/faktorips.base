@@ -60,7 +60,7 @@
 <!-- 
   Markers
 -->
-   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="%problemmarker.name"> 
+   <extension point="org.eclipse.core.resources.markers" id="problemmarker" name="Faktor-IPS Problem"> 
       <persistent value="true"/> 
       <super type="org.eclipse.core.resources.problemmarker"/> 
    </extension> 
