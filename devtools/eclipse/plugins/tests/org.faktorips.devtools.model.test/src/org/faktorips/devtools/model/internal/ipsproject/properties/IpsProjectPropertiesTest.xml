@@ -63,6 +63,7 @@
         <Setting enabled="false" name="changingOverTimeDefault" />
         <Setting name="duplicateProductComponentSeverity" value="ERROR" />
         <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR" />
+        <Setting name="missingDatatypeSeverity" value="ERROR" />
         <Setting name="tableContentFormat" value="CSV" />
         <Setting name="genericValidationDefault" value="true" />
     </AdditionalSettings>

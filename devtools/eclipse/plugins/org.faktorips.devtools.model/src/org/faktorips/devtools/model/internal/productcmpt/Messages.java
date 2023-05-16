@@ -41,7 +41,7 @@ public class Messages extends NLS {
     public static String ConfigElement_stringTooLong;
     public static String ConfigElement_msgAttrNotDefined;
     public static String FormulaElement_msgDatatypeMissing;
-    public static String ConfigElement_msgUndknownDatatype;
+    public static String ConfigElement_msgUnknownDatatype;
     public static String ConfigElement_msgInvalidDatatype;
     public static String ConfiguredDefault_msgValueNotParsable;
     public static String ConfiguredDefault_msgValueNotInValueset;

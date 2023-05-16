@@ -141,7 +141,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         Object[] params = { attribute.getDatatype(), attribute.getName(), attribute.getPolicyCmptType().getName() };
 
         if (valueDatatype == null) {
-            String text = MessageFormat.format(Messages.ConfigElement_msgUndknownDatatype, params);
+            String text = MessageFormat.format(Messages.ConfigElement_msgUnknownDatatype, params);
             list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;

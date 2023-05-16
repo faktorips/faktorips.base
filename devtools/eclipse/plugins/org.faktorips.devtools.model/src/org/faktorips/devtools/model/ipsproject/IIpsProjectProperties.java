@@ -771,4 +771,16 @@ public interface IIpsProjectProperties {
      * @see #isValidateIpsSchema()
      */
     void setValidateIpsSchema(boolean validateIpsSchema);
+
+    /**
+     * Returns the severity for validation messages when a datatype is used but not added to
+     * {@code this} project configuration.
+     */
+    Severity getMissingDatatypeSeverity();
+
+    /**
+     * @see #getMissingDatatypeSeverity()
+     */
+    void setMissingDatatypeSeverity(Severity missingDatatypeSeverity);
+
 }

@@ -644,4 +644,14 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     public void setValidateIpsSchema(boolean enabled) {
         throw new RuntimeException(ERROR_READ_ONLY);
     }
+
+    @Override
+    public Severity getMissingDatatypeSeverity() {
+        return propertiesInternal.getMissingDatatypeSeverity();
+    }
+
+    @Override
+    public void setMissingDatatypeSeverity(Severity missingDatatypeSeverity) {
+        throw new RuntimeException(ERROR_READ_ONLY);
+    }
 }
