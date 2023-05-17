@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,7 +55,7 @@ public class Migration_21_6_0Test extends AbstractIpsPluginTest {
         assertFalse(EclipseProjectUtil.hasIpsNature(project));
         Migration_21_6_0 migration_21_6_0 = new Migration_21_6_0(ipsProject, "irrelevant");
 
-        MessageList messageList = migration_21_6_0.migrate(monitor);
+        MessageList messageList = migration_21_6_0.canMigrate();
 
         assertFalse(messageList.isEmpty());
         assertTrue(messageList.containsErrorMsg());

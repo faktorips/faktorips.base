@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,7 +42,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
 
     public static final String MSGCODE_IPS_VERSION_TOO_OLD = "IPS_VERSION_TOO_OLD"; //$NON-NLS-1$
 
-    private static final String VERSION = "21.6.0"; //$NON-NLS-1$
+    public static final String VERSION = "21.6.0"; //$NON-NLS-1$
 
     public Migration_21_6_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
@@ -58,7 +58,7 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
     }
 
     @Override
-    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
+    public MessageList canMigrate() {
         String minRequiredVersionNumber = getIpsProject().getProperties()
                 .getMinRequiredVersionNumber(EmptyIpsFeatureVersionManager.INSTANCE.getFeatureId());
         int majorVersion = Integer
@@ -69,6 +69,11 @@ public class Migration_21_6_0 extends MarkAsDirtyMigration {
                             Messages.Migration_21_6_0_IpsVersionTooOld,
                             minRequiredVersionNumber, getIpsProject().getName(), VERSION)));
         }
+        return super.canMigrate();
+    }
+
+    @Override
+    public MessageList migrate(IProgressMonitor monitor) throws IpsException, InvocationTargetException {
         updatePluginId(".project", monitor); //$NON-NLS-1$
         updatePluginId(".classpath", monitor); //$NON-NLS-1$
         updatePluginId(".ipsproject", monitor); //$NON-NLS-1$

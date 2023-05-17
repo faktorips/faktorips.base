@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,7 +37,7 @@ import org.faktorips.runtime.MessageList;
 /**
  * Operation to migrate the content created with one version of FaktorIps to match the needs of
  * another version.
- * 
+ *
  * @author Thorsten Guenther
  */
 public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOperation {
@@ -71,15 +71,22 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
 
     private void executeInternal(SubMonitor monitor) throws IpsException, InvocationTargetException,
             InterruptedException {
-
         try {
             monitor.worked(10);
             result = new MessageList();
-            for (AbstractIpsProjectMigrationOperation operation : operations) {
-                if (monitor.isCanceled()) {
-                    throw new InterruptedException();
+            if (canMigrate(monitor)) {
+                for (AbstractIpsProjectMigrationOperation operation : operations) {
+                    if (monitor.isCanceled()) {
+                        throw new InterruptedException();
+                    }
+                    result.add(operation.migrate(monitor.split(1000)));
+                    if (result.containsErrorMsg()) {
+                        rollback();
+                        return;
+                    }
                 }
-                result.add(operation.migrate(monitor.split(1000)));
+            } else {
+                return;
             }
         } catch (IpsException | InvocationTargetException | InterruptedException e) {
             rollback();
@@ -91,12 +98,16 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             // CSON: IllegalCatch
         }
 
+        saveDirtyFiles(monitor);
+        updateIpsProject();
+    }
+
+    private void saveDirtyFiles(SubMonitor monitor) {
         monitor.subTask(Messages.IpsContentMigrationOperation_labelSaveChanges);
         ArrayList<IIpsSrcFile> files = new ArrayList<>();
         projectToMigrate.findAllIpsSrcFiles(files);
         IProgressMonitor saveMonitor = monitor.split(1000);
         saveMonitor.beginTask(Messages.IpsContentMigrationOperation_labelSaveChanges, files.size());
-
         // at this point, we do not allow the user to cancel this operation any more because
         // we now start to save all the modifications - which has to be done atomically.
         monitor.setCanceled(false);
@@ -107,7 +118,19 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             }
             saveMonitor.worked(1);
         }
-        updateIpsProject();
+    }
+
+    private boolean canMigrate(SubMonitor monitor) throws InterruptedException {
+        for (AbstractIpsProjectMigrationOperation operation : operations) {
+            if (monitor.isCanceled()) {
+                throw new InterruptedException();
+            }
+            result.add(operation.canMigrate());
+            if (result.containsErrorMsg()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void rollback() {

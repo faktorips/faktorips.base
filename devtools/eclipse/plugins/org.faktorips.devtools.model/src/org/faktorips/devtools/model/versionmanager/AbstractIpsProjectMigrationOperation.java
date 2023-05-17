@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,7 @@ import org.faktorips.runtime.MessageList;
  * Also note that it is essential <strong>NOT TO SAVE ANY CHANGES</strong> made by this migration
  * operation. This is because we need the ability to rollback all changes if any error occurs later
  * on in the migration process. This might change if we start to support working copies.
- * 
+ *
  * @author Thorsten Guenther
  */
 public abstract class AbstractIpsProjectMigrationOperation {
@@ -85,7 +85,7 @@ public abstract class AbstractIpsProjectMigrationOperation {
      * <p>
      * A list of messages describing any problems occurred during migration. If this list is empty,
      * migration was successful. If this list contains a message with severity error, it was not.
-     * 
+     *
      * @param monitor Progress monitor to report progress to, can be <code>null</code>.
      */
     // CSOFF: ThrowsCount
@@ -99,6 +99,16 @@ public abstract class AbstractIpsProjectMigrationOperation {
      */
     public Collection<IpsMigrationOption<?>> getOptions() {
         return Collections.emptySet();
+    }
+
+    /**
+     * Checks whether this migration's preconditions are fulfilled.
+     *
+     * @return a {@link MessageList} - either empty or containing an error message explaining why
+     *             the migration can't be executed.
+     */
+    public MessageList canMigrate() {
+        return MessageList.of();
     }
 
 }
