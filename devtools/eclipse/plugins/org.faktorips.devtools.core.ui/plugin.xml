@@ -297,7 +297,7 @@
       <command
             description="%addTableContents_description"
             id="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents"
-            name="%addTableContents_labe">
+            name="%addTableContents_label">
          <commandParameter
                id="org.faktorips.devtools.core.ui.wizards.tablecontents.addTableContents.tableUsage"
                name="tableUsage"
