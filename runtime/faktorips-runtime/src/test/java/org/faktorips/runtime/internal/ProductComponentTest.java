@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -146,6 +148,14 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testWriteImplementationClassToXml() {
+        Element prodCmptElement = pc.toXml(XmlUtil.getDocumentBuilder().newDocument());
+
+        assertThat(prodCmptElement.getAttribute(ProductComponent.PROPERTY_IMPLEMENTATION_CLASS),
+                is(TestProductComponent.class.getName()));
+    }
+
+    @Test
     public void testIsFormulaAvailable() {
         Element genElement = getTestDocument().getDocumentElement();
         pc.initFromXml(genElement);
@@ -171,7 +181,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
         when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
-        .thenReturn(productComponentGeneration);
+                .thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
     }

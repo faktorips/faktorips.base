@@ -78,6 +78,7 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.values.DateUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -386,6 +387,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
+        if (IpsStringUtils.isNotBlank(productCmptType)) {
+            element.setAttribute(ProductComponent.PROPERTY_IMPLEMENTATION_CLASS,
+                    IIpsModelExtensions.get().getImplementationClassProvider()
+                            .getImplementationClassQualifiedName(this));
+        }
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
         if (IpsStringUtils.isNotEmpty(template)) {
             element.setAttribute(PROPERTY_TEMPLATE, template);

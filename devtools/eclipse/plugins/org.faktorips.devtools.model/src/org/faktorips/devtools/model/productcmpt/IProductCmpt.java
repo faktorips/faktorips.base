@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,9 +33,7 @@ import org.faktorips.devtools.model.type.IProductCmptProperty;
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
         IPropertyValueContainer, IValidationRuleConfigContainer {
 
-    /**
-     * The name of the product component type property
-     */
+    /** The name of the product component type property */
     String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
@@ -102,7 +100,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Returns the product component's generation at the specified index.
-     * 
+     *
      * @throws IndexOutOfBoundsException if the index is out of bounds.
      */
     IProductCmptGeneration getProductCmptGeneration(int index);
@@ -124,7 +122,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * Returns the product component's version id. The version id is extracted from the components
      * name with the product component naming strategy defined in the project.
-     * 
+     *
      * @throws IpsException if an exception occurs while accessing the project properties to get the
      *             naming strategy or the version id can't be derived from the component's name.
      */
@@ -132,7 +130,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Searches the policy component type that is configured by this product component.
-     * 
+     *
      * @return The policy component type this product component configures or <code>null</code> if
      *             the policy component type can't be found or this product component does not
      *             configure a product component.
@@ -142,20 +140,20 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Sets the qualified name of the product component type this product component is based on.
-     * 
+     *
      * @throws NullPointerException if newType is <code>null</code>.
      */
     void setProductCmptType(String newType);
 
     /**
      * Searches the product component type this product component is based on.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
-     * 
+     *
      * @return The product component type this product component is based on or <code>null</code> if
      *             the product component type can't be found.
-     * 
+     *
      */
     @Override
     IProductCmptType findProductCmptType(IIpsProject ipsProject);
@@ -169,13 +167,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * Returns the product component structure representing the structure defined by relations. The
      * relations are evaluated for the given data. The structure is rooted at this product.
-     * 
+     *
      * @param date The date the structure has to be valid for. That means that the relations between
      *            the product components represented by this structure are valid for the given date.
-     * 
+     *
      * @param ipsProject The project which IPS object path is used for the searched. This is not
      *            necessarily the project this component is part of.
-     * 
+     *
      * @throws CycleInProductStructureException If a circle is detected.
      */
     IProductCmptTreeStructure getStructure(GregorianCalendar date, IIpsProject ipsProject)
@@ -188,7 +186,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Sets the given runtimeId for this product component.
-     * 
+     *
      * Be aware of the problems that can be caused by setting a new runtime id to an object where
      * already data with references to the old runtime id exists...
      */
@@ -197,7 +195,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * Returns <code>true</code> if the given policy component type is used as target in at least
      * one generation of this product component.
-     * 
+     *
      * @since FIPS 3.0.0
      */
     boolean isReferencingProductCmpt(IIpsProject ipsProjectToSearch, IProductCmpt productCmptCandidate);
@@ -217,7 +215,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * Overrides the original {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)}
      * method for using covariant return type {@link IPropertyValueContainerToTypeDelta}
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
@@ -225,7 +223,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Returns this {@link IProductCmpt}'s generations in a type safe list.
-     * 
+     *
      * @return this {@link IProductCmpt}'s generations as a type safe list.
      */
     List<IProductCmptGeneration> getProductCmptGenerations();
@@ -237,13 +235,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Furthermore, all {@link IPropertyValue property values} of the {@link IProductCmptGeneration
      * generation} corresponding to the given effective date, belonging to the indicated
      * {@link IProductCmptCategory category} are returned as well.
-     * 
+     *
      * @param category the {@link IProductCmptCategory category} for which to retrieve the
      *            {@link IPropertyValue property values} or {@code null} if the
      *            {@link IProductCmptCategory category} is of no relevance
      * @param effectiveDate the effective date for which to retrieve the {@link IPropertyValue
      *            property values}
-     * 
+     *
      * @throws IpsException if an error occurs while searching for the {@link IProductCmptType
      *             product component type} this {@link IProductCmpt product component} is an
      *             instance of, or while searching for the {@link IProductCmptProperty product
@@ -266,7 +264,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     /**
      * Returns a list containing all links defined in this product component including all links of
      * every generation.
-     * 
+     *
      * @return A list containing every link of this product component and its generations
      */
     List<IProductCmptLink> getLinksIncludingGenerations();
@@ -297,7 +295,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Returns <code>true</code> if this object represents a product template.
-     * 
+     *
      * @return <code>true</code> if this is a template, <code>false</code> if not
      */
     @Override
@@ -307,7 +305,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Set the name of the template that should be used by this product component. Set
      * <code>null</code> to disable the template and tell the product component to specify every
      * value by its own.
-     * 
+     *
      * @param template The name of the template that should be used by this product component or
      *            <code>null</code> to not use any template.
      */
@@ -317,10 +315,10 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * Returns the template object that is used by this product component if this product component
      * has specified a template. Returns <code>null</code> if no template is specified or the
      * specified template was not found.
-     * 
+     *
      * @see #getTemplate()
      * @see #setTemplate(String)
-     * 
+     *
      * @param ipsProject The project that should be used to search for the template
      * @return The product component that is specified as the template of this product component
      */

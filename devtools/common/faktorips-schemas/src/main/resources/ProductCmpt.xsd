@@ -21,6 +21,7 @@
                 <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="productCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="implementationClass" type="qualifiedName" use="optional" />
             <xsd:attribute name="runtimeId" type="xsd:string" use="required" />
             <xsd:attribute name="template" type="qualifiedProductName" use="optional" />
             <xsd:attribute name="validFrom" type="date" use="required" />

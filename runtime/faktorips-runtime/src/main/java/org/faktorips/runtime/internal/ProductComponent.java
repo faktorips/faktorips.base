@@ -24,6 +24,7 @@ import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
+import org.faktorips.runtime.internal.toc.TocEntry;
 import org.faktorips.runtime.xml.IToXmlSupport;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.InternationalString;
@@ -39,6 +40,8 @@ import org.w3c.dom.Element;
  * undesired.
  */
 public abstract class ProductComponent extends RuntimeObject implements IProductComponent, IXmlPersistenceSupport {
+
+    public static final String PROPERTY_IMPLEMENTATION_CLASS = TocEntry.PROPERTY_IMPLEMENTATION_CLASS;
 
     protected static final String ATTRIBUTE_NAME_VARIED_PRODUCT_CMPT = "variedProductCmpt";
 
@@ -398,6 +401,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     public Element toXml(Document document, boolean includeGenerations) {
         IToXmlSupport.check(this);
         Element prodCmptElement = document.createElement("ProductComponent");
+        prodCmptElement.setAttribute(PROPERTY_IMPLEMENTATION_CLASS, getClass().getName());
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
         ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);

@@ -29,6 +29,7 @@ import org.faktorips.devtools.model.internal.IpsObjectPathContainerFactory;
 import org.faktorips.devtools.model.internal.productcmpt.DeepCopyOperation;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
+import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -261,5 +262,12 @@ public interface IIpsModelExtensions {
                         .filter(e -> e.getId().equals(releaseExtensionId))
                         .findFirst();
     }
+
+    /**
+     * Returns the {@link IImplementationClassProvider} to be used.
+     *
+     * @since 23.6
+     */
+    IImplementationClassProvider getImplementationClassProvider();
 
 }

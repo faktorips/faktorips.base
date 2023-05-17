@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.eclipse.internal.IpsModelExtensionsViaEclips
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
+import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -76,6 +77,8 @@ public class TestEclipseIpsModelExtensions extends IpsModelExtensionsViaEclipseP
     private Map<String, Datatype> predefinedDatatypes;
 
     private IFormulaCompiler formulaCompiler;
+
+    private IImplementationClassProvider implementationClassProvider;
 
     public TestEclipseIpsModelExtensions() {
         super(Platform.getExtensionRegistry());
@@ -257,6 +260,18 @@ public class TestEclipseIpsModelExtensions extends IpsModelExtensionsViaEclipseP
     @Override
     public void setFormulaCompiler(IFormulaCompiler formulaCompiler) {
         this.formulaCompiler = formulaCompiler;
+    }
+
+    @Override
+    public IImplementationClassProvider getImplementationClassProvider() {
+        return implementationClassProvider != null ? implementationClassProvider
+                : super.getImplementationClassProvider();
+    }
+
+    @Override
+    public void setImplementationClassProvider(IImplementationClassProvider implementationClassProvider) {
+        this.implementationClassProvider = implementationClassProvider;
+
     }
 
 }

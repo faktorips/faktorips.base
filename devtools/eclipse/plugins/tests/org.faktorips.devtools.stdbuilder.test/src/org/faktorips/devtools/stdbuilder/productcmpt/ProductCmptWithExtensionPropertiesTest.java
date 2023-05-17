@@ -83,7 +83,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
 
             assertThat(fileContent.replaceAll(" id=\"[a-f0-9-]+\"", ""), is(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                            + "<ProductCmpt productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
+                            + "<ProductCmpt implementationClass=\"org.faktorips.sample.model.internal.ProductType\" productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
                             + " <validTo isNull=\"true\"/>\n"
                             + " <Description locale=\"de\"/>\n"
                             + " <Description locale=\"en\"/>\n"
@@ -105,7 +105,7 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
             fileContent = getFileContent(xmlContentFile);
             assertThat(fileContent.replaceAll(" id=\"[a-f0-9-]+\"", ""), is(
                     "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                            + "<ProductCmpt productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
+                            + "<ProductCmpt implementationClass=\"org.faktorips.sample.model.internal.ProductType\" productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
                             + " <validTo isNull=\"true\"/>\n"
                             + " <Description locale=\"de\"/>\n"
                             + " <Description locale=\"en\"/>\n"

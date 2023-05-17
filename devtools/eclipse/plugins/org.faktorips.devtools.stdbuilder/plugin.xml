@@ -266,6 +266,12 @@
             class="org.faktorips.devtools.stdbuilder.StdBuilderFormulaCompiler">
       </formulaCompiler>
    </extension>
+   <extension
+         point="org.faktorips.devtools.model.implementationClassProvider">
+      <implementationClassProvider
+            class="org.faktorips.devtools.stdbuilder.StdBuilderImplementationClassProvider">
+      </implementationClassProvider>
+   </extension>
 
 <!-- 
     Datatype Helper Factories

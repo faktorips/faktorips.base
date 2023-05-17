@@ -106,6 +106,7 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -914,6 +915,18 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
             ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
             copy.initFromXml(xml);
             assertEquals(1, productCmpt.getFormulas().length);
+        }
+    }
+
+    @Test
+    public void testToXml_ImplClass() {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            testIpsModelExtensions.setImplementationClassProvider(p -> "my.Impl");
+            Document document = newDocument();
+            productCmpt.setProductCmptType("foo.Bar");
+            Element xml = productCmpt.toXml(document);
+
+            assertThat(xml.getAttribute(ProductComponent.PROPERTY_IMPLEMENTATION_CLASS), is("my.Impl"));
         }
     }
 

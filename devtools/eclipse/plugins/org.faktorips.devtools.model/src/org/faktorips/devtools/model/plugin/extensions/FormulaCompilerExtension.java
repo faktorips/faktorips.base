@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,8 @@ import org.faktorips.devtools.model.plugin.ExtensionPoints;
 /**
  * {@link IFormulaCompiler}-supplier collecting all implementations of the extension point
  * {@value #EXTENSION_POINT_ID_FORMULA_COMPILER}.
+ *
+ * @since 23.6
  */
 public class FormulaCompilerExtension extends SimpleSingleLazyExtension<IFormulaCompiler> {
 

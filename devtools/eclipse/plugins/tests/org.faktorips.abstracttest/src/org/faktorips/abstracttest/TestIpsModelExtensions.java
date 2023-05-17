@@ -23,6 +23,7 @@ import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
 import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
+import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -105,5 +106,7 @@ public interface TestIpsModelExtensions extends IIpsModelExtensions, AutoCloseab
     void addPredefinedDatatype(Datatype datatype);
 
     void setFormulaCompiler(IFormulaCompiler formulaCompiler);
+
+    void setImplementationClassProvider(IImplementationClassProvider implementationClassProvider);
 
 }

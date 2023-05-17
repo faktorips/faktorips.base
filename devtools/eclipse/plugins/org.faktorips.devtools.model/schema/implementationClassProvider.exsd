@@ -3,10 +3,10 @@
 <schema targetNamespace="org.faktorips.devtools.model" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.faktorips.devtools.model" id="formulaCompiler" name="Formula Compiler"/>
+         <meta.schema plugin="org.faktorips.devtools.model" id="implementationClassProvider" name="Implementation Class Provider"/>
       </appInfo>
       <documentation>
-         Find and compile formulas in the xml representation of a product component.
+         Determines the name of the class used at runtime for a product component.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="formulaCompiler"/>
+            <element ref="implementationClassProvider"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,7 +47,7 @@
       </complexType>
    </element>
 
-   <element name="formulaCompiler">
+   <element name="implementationClassProvider">
       <complexType>
          <attribute name="class" type="string">
             <annotation>
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider"/>
                </appInfo>
             </annotation>
          </attribute>
