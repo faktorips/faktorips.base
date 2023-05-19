@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -18,14 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.faktorips.runtime.IRuntimeObject;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.table.TableStructure;
+import org.faktorips.runtime.model.table.TableStructureKind;
 import org.w3c.dom.Element;
 
 /**
  * Default implementation of <code>ReadonlyTableOfContents</code>.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
@@ -41,8 +46,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
      */
     private Map<String, ProductCmptTocEntry> pcNameTocEntryMap;
 
-    /** A map that contains per kindId the list of product component IDs that are of the kind. */
-    private Map<String, List<VersionIdTocEntry>> kindIdTocEntryListMap;
+    /**
+     * A map that contains per kindId a map with versionId and product components that are of the
+     * kind.
+     */
+    private Map<String, Map<String, ProductCmptTocEntry>> kindIdTocEntryListMap;
 
     /**
      * Maps a table class to the TOC entry that contains information about a table object
@@ -88,7 +96,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     /**
      * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
      * implementations via {@link ServiceLoader}.
-     * 
+     *
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
      */
@@ -126,17 +134,15 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             ProductCmptTocEntry prodEntry = (ProductCmptTocEntry)entry;
             pcIdTocEntryMap.put(prodEntry.getIpsObjectId(), prodEntry);
             pcNameTocEntryMap.put(prodEntry.getIpsObjectQualifiedName(), prodEntry);
-            List<VersionIdTocEntry> versions = getVersionList(prodEntry.getKindId());
-            versions.add(new VersionIdTocEntry(prodEntry.getVersionId(), prodEntry));
+            Map<String, ProductCmptTocEntry> versions = getVersions(prodEntry.getKindId());
+            versions.put(prodEntry.getVersionId(), prodEntry);
             return;
         }
 
         if (entry instanceof TableContentTocEntry) {
-            /*
-             * TODO store the first or last entry of multiple toc entries with the same class name?
-             * This stores only the last found toc entry.
-             */
-            tableImplClassTocEntryMap.put(entry.getImplementationClassName(), (TableContentTocEntry)entry);
+            TableContentTocEntry previousTocEntry = tableImplClassTocEntryMap.put(entry.getImplementationClassName(),
+                    (TableContentTocEntry)entry);
+            removePreviousSingleContent(entry, previousTocEntry);
             tableContentNameTocEntryMap.put(entry.getIpsObjectQualifiedName(), (TableContentTocEntry)entry);
             return;
         }
@@ -172,6 +178,21 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         throw new IllegalArgumentException("Unknown entry type " + entry);
     }
 
+    private void removePreviousSingleContent(TocEntryObject entry, TableContentTocEntry previousTocEntry) {
+        if (previousTocEntry != null) {
+            try {
+                @SuppressWarnings("unchecked")
+                TableStructure tableStructure = IpsModel.getTableStructure(
+                        (Class<? extends ITable<?>>)getClassLoader().loadClass(entry.getImplementationClassName()));
+                if (tableStructure.getKind().equals(TableStructureKind.SINGLE_CONTENT)) {
+                    tableContentNameTocEntryMap.remove(previousTocEntry.getIpsObjectQualifiedName());
+                }
+            } catch (ClassNotFoundException e) {
+                // don't know the table class, treat it as MULTIPLE_CONTENTS
+            }
+        }
+    }
+
     private void addEnumContentTocEntry(TocEntryObject entry) {
         EnumContentTocEntry previousEntry = enumContentImplClassTocEntryMap.get(entry.getImplementationClassName());
         if (previousEntry == null || IpsStringUtils.isEmpty(previousEntry.getXmlResourceName())) {
@@ -203,27 +224,16 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         if (versionId == null) {
             throw new RuntimeException("VersionId must not be null!");
         }
-        List<VersionIdTocEntry> versions = getVersionList(kindId);
-        for (VersionIdTocEntry each : versions) {
-            if (versionId.equals(each.versionId)) {
-                return each.tocEntry;
-            }
-        }
-        return null;
+        return getVersions(kindId).get(versionId);
     }
 
     @Override
     public List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId) {
-        List<ProductCmptTocEntry> result = new ArrayList<>();
-        List<VersionIdTocEntry> versionList = getVersionList(kindId);
-        for (VersionIdTocEntry each : versionList) {
-            result.add(each.tocEntry);
-        }
-        return result;
+        return new ArrayList<>(getVersions(kindId).values());
     }
 
-    private List<VersionIdTocEntry> getVersionList(String kindId) {
-        return kindIdTocEntryListMap.computeIfAbsent(kindId, $ -> new ArrayList<>(1));
+    private Map<String, ProductCmptTocEntry> getVersions(String kindId) {
+        return kindIdTocEntryListMap.computeIfAbsent(kindId, $ -> new TreeMap<>());
     }
 
     @Override
@@ -314,18 +324,6 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
             }
         }
         return list;
-    }
-
-    private static class VersionIdTocEntry {
-
-        private String versionId;
-        private ProductCmptTocEntry tocEntry;
-
-        public VersionIdTocEntry(String versionId, ProductCmptTocEntry entry) {
-            this.versionId = versionId;
-            tocEntry = entry;
-        }
-
     }
 
 }

@@ -42,7 +42,7 @@ public enum IpsModel {
                     return new TableStructure(tableObjectClass);
                 } else {
                     throw new IllegalArgumentException(
-                            "The class " + tableObjectClass.getName() + "is not annotated as IpsTableStructure.");
+                            "The class " + tableObjectClass.getName() + " is not annotated as IpsTableStructure.");
                 }
             });
 

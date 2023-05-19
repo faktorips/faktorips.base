@@ -55,6 +55,10 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         this.classLoader = classLoader;
     }
 
+    ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
     private Map<String, ITocEntryFactory<?>> getTocEntryFactoriesByXmlTag() {
         Map<String, ITocEntryFactory<?>> result = tocEntryFactoriesByXmlTag;
         if (tocEntryFactoriesByXmlTag != null) {
@@ -91,7 +95,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      */
     @SuppressWarnings("rawtypes")
     private void loadExtendedTocEntryFactories(Map<String, ITocEntryFactory<?>> newTocEntryFactoriesByXmlTag) {
-        ServiceLoader<ITocEntryFactory> serviceLoader = ServiceLoader.load(ITocEntryFactory.class, classLoader);
+        ServiceLoader<ITocEntryFactory> serviceLoader = ServiceLoader.load(ITocEntryFactory.class, getClassLoader());
         for (ITocEntryFactory<?> tocEntryFactory : serviceLoader) {
             newTocEntryFactoriesByXmlTag.put(tocEntryFactory.getXmlTag(), tocEntryFactory);
         }

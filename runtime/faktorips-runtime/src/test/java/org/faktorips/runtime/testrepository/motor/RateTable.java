@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,11 +14,14 @@ import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.Table;
+import org.faktorips.runtime.model.annotation.IpsTableStructure;
+import org.faktorips.runtime.model.table.TableStructureKind;
 
 /**
- * 
+ *
  * @author Peter Erzberger
  */
+@IpsTableStructure(name = "motor.RateTable", columns = {}, type = TableStructureKind.MULTIPLE_CONTENTS)
 public class RateTable extends Table<Object> {
 
     @Override

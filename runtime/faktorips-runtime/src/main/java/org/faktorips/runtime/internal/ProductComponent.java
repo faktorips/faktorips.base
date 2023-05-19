@@ -424,14 +424,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     private void writeValidToToXml(Element prodCmptElement) {
-        Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
         if (validTo != null) {
+            Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
             validToElement.setAttribute(IS_NULL, Boolean.FALSE.toString());
             validToElement.setTextContent(validTo.toIsoFormat());
             prodCmptElement.appendChild(validToElement);
-        } else {
-            validToElement.setAttribute(IS_NULL, Boolean.TRUE.toString());
-        }
+        } 
     }
 
     /**

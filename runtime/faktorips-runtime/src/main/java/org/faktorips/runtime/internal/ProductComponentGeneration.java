@@ -39,6 +39,11 @@ import org.w3c.dom.NodeList;
 public abstract class ProductComponentGeneration extends RuntimeObject
         implements IProductComponentGeneration, IXmlPersistenceSupport {
 
+
+    private static final String XML_TAG_GENERATION = "Generation";
+    
+    private static final String VALID_FROM = "validFrom";
+
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
 
@@ -291,7 +296,8 @@ public abstract class ProductComponentGeneration extends RuntimeObject
      */
     @Override
     public Element toXml(Document document) {
-        Element genElement = document.createElement("ProductComponentGeneration");
+        Element genElement = document.createElement(XML_TAG_GENERATION);
+        writeValidFromToXml(genElement);
         writePropertiesToXml(genElement);
         writeTableUsagesToXml(genElement);
         writeReferencesToXml(genElement);
@@ -299,6 +305,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject
         writeValidationRuleConfigsToXml(genElement);
         writeExtensionPropertiesToXml(genElement);
         return genElement;
+    }
+
+    private void writeValidFromToXml(Element genElement) {
+        if (validFrom != null) {
+            genElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+        }
     }
 
     /**
