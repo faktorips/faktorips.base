@@ -92,7 +92,7 @@ public class IpsEnumToXmlWriterTest {
     }
 
     @Test
-    public void testExtensibleEnumWithModell() throws Exception {
+    public void testExtensibleEnumWithModel() throws Exception {
         Document doc = builder.newDocument();
 
         Element enumXml = new IpsEnumToXmlWriter(repository, ExtensibleEnumWithModell.class).toXml(doc);

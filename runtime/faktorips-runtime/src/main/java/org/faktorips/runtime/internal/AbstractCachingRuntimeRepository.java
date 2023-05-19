@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -49,7 +49,7 @@ import org.faktorips.values.InternationalString;
  * <p>
  * There is still potentially more performance by synchronizing for different keys instead of
  * blocking for every cache instance. This would be more complicated and should be well-considered.
- * 
+ *
  * @author dirmeier
  */
 public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRepository {
@@ -59,7 +59,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
     private volatile IComputable<GenerationId, IProductComponentGeneration> productCmptGenerationCache;
     private volatile IComputable<String, ITable<?>> tableCacheByQName;
     private volatile IComputable<Class<?>, IpsEnum<?>> enumValuesCacheByClass;
-    private List<IIpsXmlAdapter<?, ?>> enumXmlAdapters;
+    private volatile List<IIpsXmlAdapter<?, ?>> enumXmlAdapters;
     private volatile Map<Class<?>, IComputable<String, Object>> customRuntimeObjectsByTypeCache = new HashMap<>();
 
     public AbstractCachingRuntimeRepository(String name, ICacheFactory cacheFactory, ClassLoader cl) {
@@ -72,14 +72,14 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
         try {
             @SuppressWarnings("unchecked")
             Class<IProductComponent> productCmptClass = (Class<IProductComponent>)cl
-            .loadClass(IProductComponent.class.getName());
+                    .loadClass(IProductComponent.class.getName());
             IComputable<String, IProductComponent> productCmptComputer = IComputable.of(productCmptClass,
                     this::getNotCachedProductComponent);
             productCmptCache = cacheFactory.createProductCmptCache(productCmptComputer);
 
             @SuppressWarnings("unchecked")
             Class<IProductComponentGeneration> productCmptGenClass = (Class<IProductComponentGeneration>)cl
-            .loadClass(IProductComponentGeneration.class.getName());
+                    .loadClass(IProductComponentGeneration.class.getName());
             productCmptGenerationCache = cacheFactory.createProductCmptGenerationCache(IComputable
                     .of(productCmptGenClass, this::getNotCachedProductComponentGeneration));
 
@@ -87,8 +87,10 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             Class<ITable<?>> tableClass = (Class<ITable<?>>)cl.loadClass(ITable.class.getName());
             tableCacheByQName = cacheFactory.createTableCache(IComputable.of(tableClass, this::getNotCachedTable));
 
+            @SuppressWarnings("unchecked")
+            Class<IpsEnum<?>> enumClass = (Class<IpsEnum<?>>)cl.loadClass(IpsEnum.class.getName());
             enumValuesCacheByClass = cacheFactory
-                    .createIpsEnumCache(IComputable.of(IpsEnum.class, this::getNotCachedEnumValues));
+                    .createIpsEnumCache(IComputable.of(enumClass, this::getNotCachedEnumValues));
 
             enumXmlAdapters = new ArrayList<>();
         } catch (ClassNotFoundException e) {

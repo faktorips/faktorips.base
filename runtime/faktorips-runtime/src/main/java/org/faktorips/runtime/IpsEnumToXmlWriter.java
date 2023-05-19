@@ -42,6 +42,7 @@ public class IpsEnumToXmlWriter {
 
     private final IRuntimeRepository repository;
     private final Class<?> enumClass;
+    private List<?> enumValues;
 
     /**
      * To save an extensible enum to XML, all instances need to be loaded from the
@@ -51,8 +52,21 @@ public class IpsEnumToXmlWriter {
      * @param enumClass the enum class
      */
     public IpsEnumToXmlWriter(IRuntimeRepository repository, Class<?> enumClass) {
+        this(repository, enumClass, repository.getEnumValues(enumClass));
+    }
+
+    /**
+     * To save an extensible enum to XML, all instances need to be loaded from the
+     * {@link IRuntimeRepository} therefore we require <strong>non</strong>-{@code null} parameters.
+     *
+     * @param repository the repository
+     * @param enumClass the enum class
+     * @param enumValues the value of the enum type as list
+     */
+    public IpsEnumToXmlWriter(IRuntimeRepository repository, Class<?> enumClass, List<?> enumValues) {
         this.repository = Objects.requireNonNull(repository);
         this.enumClass = Objects.requireNonNull(enumClass);
+        this.enumValues = Objects.requireNonNull(enumValues);
     }
 
     /**
@@ -72,7 +86,7 @@ public class IpsEnumToXmlWriter {
     }
 
     private void writeValuesToXml(Element element) {
-        for (Object enumValue : repository.getEnumValues(enumClass)) {
+        for (Object enumValue : enumValues) {
             if (isModelValue(enumValue)) {
                 continue;
             }

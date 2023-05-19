@@ -75,6 +75,23 @@ public abstract class Table<R> implements ITable<R> {
     private String name;
 
     /**
+     * Default constructor for tables initialized from XML.
+     * 
+     * @since 23.6
+     */
+    public Table() {
+    }
+
+    /**
+     * Constructor for tables created from code.
+     * 
+     * @since 23.6
+     */
+    public Table(String qualifiedTableName) {
+        this.name = qualifiedTableName;
+    }
+
+    /**
      * Is used by the generated class to retrieve the values for a single row.
      *
      * @param columns List of objects that contain the values.

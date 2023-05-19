@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -66,7 +66,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
 
     /**
      * Returns the XML data for the specified {@link EnumContentTocEntry} as {@link InputStream}
-     * 
+     *
      * @param tocEntry Specifying the requested EnumContent
      * @return An InputStream containing the XML data - should not return null!
      * @throws RuntimeException in case of any exception do not return null but an accurate
@@ -76,7 +76,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
 
     /**
      * Returns the XML data for the specified {@link TableContentTocEntry} as {@link InputStream}
-     * 
+     *
      * @param tocEntry Specifying the requested TableContent
      * @return An InputStream containing the XML data - should not return null!
      * @throws RuntimeException in case of any exception do not return null but an accurate
@@ -86,7 +86,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
 
     /**
      * Returns the XML data for the specified {@link TocEntry} as {@link InputStream}
-     * 
+     *
      * @param tocEntry Specifying the requested ips object
      * @return An InputStream containing the XML data - should not return null!
      * @throws RuntimeException in case of any exception do not return null but an accurate
@@ -150,7 +150,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
     }
 
     @Override
-    public ITable<?> createTable(TableContentTocEntry tocEntry) {
+    protected ITable<?> createTable(TableContentTocEntry tocEntry) {
         Class<?> implClass = getClass(tocEntry.getImplementationClassName(), getClassLoader());
         Table<?> table;
         try {
@@ -244,7 +244,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
         return getDocumentElementInternal(tocEntry);
     }
 
-    public ProductComponentGeneration createProductComponentGenerationInstance(GenerationTocEntry tocEntry,
+    protected ProductComponentGeneration createProductComponentGenerationInstance(GenerationTocEntry tocEntry,
             ProductComponent productCmpt) {
         ProductComponentGeneration productCmptGen;
         // CSOFF: IllegalCatch
@@ -260,7 +260,7 @@ public abstract class AbstractXmlInputStreamRepository extends AbstractTocBasedR
         return productCmptGen;
     }
 
-    public ProductComponent createProductComponentInstance(String implementationClassName,
+    protected ProductComponent createProductComponentInstance(String implementationClassName,
             String ipsObjectId,
             String kindId,
             String versionId) {

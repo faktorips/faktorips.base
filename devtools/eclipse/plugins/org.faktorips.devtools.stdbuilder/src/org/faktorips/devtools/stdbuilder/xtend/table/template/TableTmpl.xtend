@@ -79,6 +79,17 @@ class TableTmpl {
             rows = new «ArrayList»(content);
             «init()»;
         }
+        
+        /**
+         *«localizedJDoc("CONSTRUCTOR_WITH_ROWS_AND_NAME")»
+         *
+         * @generated
+         */
+        public «method(name, List_(tableRowName), "content", "String", "qualifiedTableName")»{
+            super(qualifiedTableName);
+            rows = new «ArrayList»(content);
+            «init()»;
+        }
     '''
 
     def private static addRow(XTable it) '''
