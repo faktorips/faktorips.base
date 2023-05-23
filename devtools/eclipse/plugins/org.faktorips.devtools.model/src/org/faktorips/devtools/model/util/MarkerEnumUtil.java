@@ -30,44 +30,77 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 public class MarkerEnumUtil {
 
     private IIpsProject ipsProject;
-    private IEnumType markerDefinition;
-    private ValueDatatype enumDatatype;
+    private List<IEnumType> markerDefinitions;
+    private List<ValueDatatype> enumDatatypes;
 
     public MarkerEnumUtil(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
-        markerDefinition = getMarkerEnumFromProject();
-        if (markerDefinition != null) {
-            enumDatatype = ipsProject.findValueDatatype(markerDefinition.getQualifiedName());
+        markerDefinitions = getMarkerEnumsFromProject();
+        enumDatatypes = new ArrayList<>();
+
+        if (markerDefinitions != null) {
+            for (IEnumType markerDefinition : markerDefinitions) {
+                ValueDatatype datatype = ipsProject.findValueDatatype(markerDefinition.getQualifiedName());
+                enumDatatypes.add(datatype);
+            }
         }
+
     }
 
-    private IEnumType getMarkerEnumFromProject() {
+    /**
+     * Returns a list of {@link IEnumType marker enum}. defined in the .ipsproject file.
+     */
+    public List<IEnumType> getMarkerEnumsFromProject() {
         List<IIpsSrcFile> enumSrcFiles = new ArrayList<>(ipsProject.getMarkerEnums());
+
         if (!enumSrcFiles.isEmpty()) {
-            return (IEnumType)enumSrcFiles.get(0).getIpsObject();
-        } else {
-            return null;
+            List<IEnumType> markerEnums = new ArrayList<>();
+            for (IIpsSrcFile enumSrcFile : enumSrcFiles) {
+                IEnumType enumType = (IEnumType)enumSrcFile.getIpsObject();
+                markerEnums.add(enumType);
+            }
+            return markerEnums;
         }
+        return Collections.emptyList();
     }
 
     /**
      * Returns all marker ids that are defined in the {@link IEnumType marker enum}.
+     * 
+     * @param markerDefinitions List of {@link IEnumType}.
+     * @return The set of defined marker ids.
      */
-    public Set<String> getDefinedMarkerIds() {
-        List<IEnumValue> allDefinedMarkerIds = getAllMarkers();
+    public Set<String> getDefinedMarkerIds(List<IEnumType> markerDefinitions) {
         Set<String> definedMarkerIds = new LinkedHashSet<>();
-        for (IEnumValue marker : allDefinedMarkerIds) {
-            definedMarkerIds.add(getIdFor(marker));
+
+        for (IEnumType markerDefinition : markerDefinitions) {
+            List<IEnumValue> allDefinedMarkerIds = getAllMarkers(markerDefinition);
+            for (IEnumValue marker : allDefinedMarkerIds) {
+                definedMarkerIds.add(getIdFor(marker, markerDefinition));
+            }
         }
+
         return definedMarkerIds;
     }
 
     /**
-     * Returns a list of all defined markers in the {@link IEnumType} that is used to define
-     * markers.
+     * Returns all marker ids that are defined in the {@link IEnumType marker enum}.
+     * 
+     * @return The set of defined marker ids.
      */
-    private List<IEnumValue> getAllMarkers() {
-        if (hasAvailableMarkers()) {
+    public Set<String> getDefinedMarkerIds() {
+        return getDefinedMarkerIds(markerDefinitions);
+    }
+
+    /**
+     * Returns a list of all defined markers in the {@link IEnumType marker enum} that is used to
+     * define markers.
+     * 
+     * @param markerDefinition {@link IEnumType}.
+     * @return The list of all defined markers.
+     */
+    private List<IEnumValue> getAllMarkers(IEnumType markerDefinition) {
+        if (hasAvailableMarkers(markerDefinition)) {
             return markerDefinition.getEnumValues();
         } else {
             return Collections.emptyList();
@@ -75,43 +108,64 @@ public class MarkerEnumUtil {
     }
 
     /**
-     * Checks if a {@link IEnumType marker enum} exists.
+     * Checks if {@link IEnumType marker enums} exists.
+     * 
+     * @param markerDefinition {@link IEnumType}
+     */
+    public boolean hasAvailableMarkers(IEnumType markerDefinition) {
+        return !markerDefinitions.isEmpty();
+    }
+
+    /**
+     * Checks if {@link IEnumType marker enums} exists.
      */
     public boolean hasAvailableMarkers() {
-        return markerDefinition != null;
+        return !markerDefinitions.isEmpty();
     }
 
-    private String getIdFor(IEnumValue enumValue) {
-        return enumValue.getEnumAttributeValue(findIdAttribute()).getStringValue();
+    private String getIdFor(IEnumValue enumValue, IEnumType markerDefinition) {
+        return enumValue.getEnumAttributeValue(findIdAttribute(markerDefinition)).getStringValue();
     }
 
-    private IEnumAttribute findIdAttribute() {
+    private IEnumAttribute findIdAttribute(IEnumType markerDefinition) {
         return markerDefinition.findIdentiferAttribute(ipsProject);
     }
 
-    /**
-     * Returns the {@link IEnumType marker enum}.
-     */
-    public IEnumType getMarkerEnumType() {
-        return markerDefinition;
+    public List<IEnumType> getMarkerEnums() {
+        if (hasAvailableMarkers()) {
+            return markerDefinitions;
+        }
+        return Collections.emptyList();
     }
 
     /**
-     * Returns the {@link IEnumType marker enum}.
+     * Returns the {@link IEnumType marker enum} names.
+     */
+    public List<String> getMarkerEnumTypeNames() {
+        List<String> enumTypeNames = new ArrayList<>();
+        for (IEnumType markerDefinition : markerDefinitions) {
+            enumTypeNames.add(markerDefinition.getQualifiedName());
+        }
+        return enumTypeNames;
+    }
+
+    /**
+     * Returns the {@link IEnumType marker enum} name.
      */
     public String getMarkerEnumTypeName() {
-        if (markerDefinition != null) {
-            return markerDefinition.getQualifiedName();
+        if (!markerDefinitions.isEmpty()) {
+            return markerDefinitions.get(0).getQualifiedName();
         } else {
             return Messages.MarkerEnumUtil_invalidMarkerEnum;
         }
     }
 
     /**
-     * Return the {@link ValueDatatype} of the {@link IEnumType marker enum}.
+     * Return the {@link ValueDatatype} with the corresponding id of the {@link IEnumType marker
+     * enum}.
      */
-    public ValueDatatype getEnumDatatype() {
-        return enumDatatype;
+    public ValueDatatype getEnumDatatype(String id) {
+        return enumDatatypes.stream().filter(e -> e.isParsable(id)).findFirst().orElse(null);
     }
 
 }

@@ -1,17 +1,22 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -92,23 +97,65 @@ public class XValidationRuleTest {
 
     @Test
     public void testGetMarkerSourceCodes() {
-        DatatypeHelper datahelper = mock(DatatypeHelper.class);
-        IEnumType enumType = mock(IEnumType.class);
-        IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
         List<String> values = new ArrayList<>();
         LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
-        values.add("id");
-        srcFiles.add(enumTypeSrcFile);
+
+        mockMarkerEnum(values, srcFiles, "EnumType", "id", "EnumType.VALUE");
 
         when(validationRule.getMarkers()).thenReturn(values);
-        when(enumTypeSrcFile.getIpsObject()).thenReturn(enumType);
         when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
-        when(ipsProject.findDatatypeHelper(enumType.getQualifiedName())).thenReturn(datahelper);
-        when(datahelper.newInstance("id")).thenReturn(new JavaCodeFragment("EnumType.VALUE"));
 
         List<String> markers = xValidationRule.getMarkers();
 
-        assertEquals(1, markers.size());
-        assertEquals(markers.get(0), "EnumType.VALUE");
+        assertThat(markers, contains("EnumType.VALUE"));
+    }
+
+    private void mockMarkerEnum(List<String> values,
+            LinkedHashSet<IIpsSrcFile> srcFiles,
+            String qName,
+            String id,
+            String sourcecode) {
+        IEnumType enumType = mock(IEnumType.class);
+        when(enumType.getQualifiedName()).thenReturn(qName);
+        when(enumType.findAllIdentifierAttributeValues(any(IIpsProject.class))).thenReturn(List.of(id));
+        IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
+        when(enumTypeSrcFile.getIpsObject()).thenReturn(enumType);
+        DatatypeHelper datahelper = mock(DatatypeHelper.class);
+        when(datahelper.newInstance(id)).thenReturn(new JavaCodeFragment(sourcecode));
+        when(ipsProject.findDatatypeHelper(qName)).thenReturn(datahelper);
+        values.add(id);
+        srcFiles.add(enumTypeSrcFile);
+    }
+
+    @Test
+    public void testGetMarkerSourceCodesMultipleMarkers() {
+        List<String> values = new ArrayList<>();
+        LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
+
+        mockMarkerEnum(values, srcFiles, "BaseMarkers", "a", "BaseMarkers.A");
+        mockMarkerEnum(values, srcFiles, "LobMarkers", "b", "LobMarkers.B");
+
+        when(validationRule.getMarkers()).thenReturn(values);
+        when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
+
+        List<String> markers = xValidationRule.getMarkers();
+
+        assertThat(markers, contains("BaseMarkers.A", "LobMarkers.B"));
+    }
+
+    @Test
+    public void testGetMarkerSourceCodesUnknownMarker() {
+        List<String> values = new ArrayList<>();
+        LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<>();
+
+        mockMarkerEnum(values, srcFiles, "BaseMarkers", "a", "BaseMarkers.A");
+        values.add("unknownId");
+
+        when(validationRule.getMarkers()).thenReturn(values);
+        when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
+
+        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class,
+                xValidationRule::getMarkers);
+        assertThat(illegalStateException.getMessage(), containsString("unknownId"));
     }
 }

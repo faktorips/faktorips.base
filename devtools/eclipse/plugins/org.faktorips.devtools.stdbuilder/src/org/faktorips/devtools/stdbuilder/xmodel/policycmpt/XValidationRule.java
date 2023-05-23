@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,8 +11,11 @@
 package org.faktorips.devtools.stdbuilder.xmodel.policycmpt;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
@@ -164,7 +167,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
      * Converts the parameters found in the list of parameters to be java compatible variable names.
      * If any parameter is no valid java identifier we add the prefix 'p' (for parameter). If there
      * is already another parameter with this name we add as much 'p' as needed to be unique.
-     * 
+     *
      */
     LinkedHashSet<String> convertToJavaParameters(LinkedHashSet<String> parameters) {
         LinkedHashSet<String> result = new LinkedHashSet<>();
@@ -184,14 +187,21 @@ public class XValidationRule extends AbstractGeneratorModelNode {
 
     public List<String> getMarkers() {
         List<String> result = new ArrayList<>();
-        List<String> markerIds = getValidationRule().getMarkers();
+        Set<String> markerIds = new LinkedHashSet<>(getValidationRule().getMarkers());
         LinkedHashSet<IIpsSrcFile> markerEnums = getIpsProject().getMarkerEnums();
-        if (markerEnums.size() > 0) {
-            IIpsSrcFile markerEnumSrcFile = markerEnums.iterator().next();
+        for (IIpsSrcFile markerEnumSrcFile : markerEnums) {
             IEnumType enumType = (IEnumType)markerEnumSrcFile.getIpsObject();
-            for (String id : markerIds) {
-                result.add(getMarkerSourceCode(enumType, id));
+            Set<String> ids = new HashSet<>(enumType.findAllIdentifierAttributeValues(getIpsProject()));
+            for (Iterator<String> iterator = markerIds.iterator(); iterator.hasNext();) {
+                String id = iterator.next();
+                if (ids.contains(id)) {
+                    result.add(getMarkerSourceCode(enumType, id));
+                    iterator.remove();
+                }
             }
+        }
+        if (!markerIds.isEmpty()) {
+            throw new IllegalStateException("No marker enum values found for id(s) " + markerIds.toString());
         }
         return result;
     }
