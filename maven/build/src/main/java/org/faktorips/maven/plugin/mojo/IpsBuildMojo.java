@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -118,7 +118,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * runtime.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * {@code
      * <additionalPlugins>
@@ -129,7 +129,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * </additionalPlugins>
      * }
      * </pre>
-     * 
+     *
      * If JUnit is integrated as an Eclipse library, one of the following two dependencies must be
      * added:
      *
@@ -145,7 +145,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * </pre>
      *
      * or
-     * 
+     *
      * <pre>
      * {@code
      * <additionalPlugins>
@@ -164,7 +164,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * List of JVM arguments set on the command line.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * {@code
      * <jvmArgs>
@@ -209,7 +209,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * {@code repository.eclipse}.
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * {@code
      * <repositories>
@@ -226,7 +226,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * </repositories>
      * }
      * </pre>
-     * 
+     *
      * @see #additionalRepositories
      */
     @Parameter
@@ -236,7 +236,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * repositories (for which the {@link #repositories} parameter must remain unused).
      * <p>
      * Example:
-     * 
+     *
      * <pre>
      * {@code
      * <additionalRepositories>
@@ -362,7 +362,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Path to the update site to install Eclipse.
      */
-    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.15/")
+    @Parameter(property = "repository.eclipse", defaultValue = "https://download.eclipse.org/eclipse/updates/4.26/")
     private String eclipseRepository;
 
     /**
@@ -441,7 +441,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * <strong>perThreadFiltered:</strong> additionally to the {@code perThread} mode this mode will
      * filter the thread's output for well known exceptions e.g. FileNotFoundException of the junit
      * eclipse plugin.
-     * 
+     *
      * <p>
      * The fastest mode is obviously the {@code original} mode while the slowest is the
      * {@code perThreadFiltered} one. The overhead added to the build time by the
@@ -488,7 +488,7 @@ public class IpsBuildMojo extends AbstractMojo {
      * the same as seen in eclipse. For example in the project or package explorer.
      * <p>
      * The variable used in the ant script is {@code -DprojectName=Project_Name}
-     * 
+     *
      * @return the name of the project
      */
     public String getProjectName() {
@@ -530,7 +530,7 @@ public class IpsBuildMojo extends AbstractMojo {
 
     /**
      * Gets the P2-repository containing the Faktor-IPS plugins.
-     * 
+     *
      * @return the Faktor-IPS repository
      */
     public String getFipsRepository() {
@@ -540,7 +540,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Either returns the custom path to the ant script or the standard ant script configured with
      * the correct default values.
-     * 
+     *
      * @return the path to the ant script
      */
     public String getPathToAntScript() {
@@ -660,7 +660,7 @@ public class IpsBuildMojo extends AbstractMojo {
     /**
      * Either returns the custom path to the JDK, the JDK with the {@link #jdkId} configured in the
      * ~/.m2/toolchains.xml or {@code null} if nothing is found.
-     * 
+     *
      * @return the path to the JDK or {@code null}
      * @throws MojoExecutionException - if the toolchains are misconfigured
      */
