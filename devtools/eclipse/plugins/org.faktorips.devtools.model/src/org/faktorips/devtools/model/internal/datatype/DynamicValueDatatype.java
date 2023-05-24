@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ import org.w3c.dom.Element;
  * Java class. If the Java class' source belongs to the IpsProject/JavaProject, than this class (the
  * byte code) might exist for some time and than be unavailable or incomplete, e.g. if the class has
  * compile errors.
- * 
+ *
  * @author Jan Ortmann
  */
 public class DynamicValueDatatype extends GenericValueDatatype implements IDynamicValueDatatype {
@@ -174,7 +174,7 @@ public class DynamicValueDatatype extends GenericValueDatatype implements IDynam
         if (element.hasAttribute("valueToStringMethod")) { //$NON-NLS-1$
             datatype.setToStringMethodName(element.getAttribute("valueToStringMethod")); //$NON-NLS-1$
         } else {
-            datatype.setToStringMethodName(null);
+            datatype.setToStringMethodName("toString");
         }
         if (element.hasAttribute("getNameMethod")) { //$NON-NLS-1$
             datatype.setGetNameMethodName(element.getAttribute("getNameMethod")); //$NON-NLS-1$
