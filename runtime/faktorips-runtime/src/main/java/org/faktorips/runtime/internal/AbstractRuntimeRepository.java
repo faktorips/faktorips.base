@@ -666,6 +666,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public final <T> T getEnumValue(Class<T> clazz, Object id) {
         if (id == null) {
@@ -675,23 +676,34 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         if (lookup != null) {
             return lookup.getEnumValue(id);
         }
-        List<T> enumValues = getEnumValues(clazz);
+        String methodName = "";
+
         try {
-            Method enumValueIdMethod = clazz.getDeclaredMethod("getEnumValueId"); //$NON-NLS-1$
-            enumValueIdMethod.setAccessible(true);
-            for (T enumValue : enumValues) {
-                Object idValue = enumValueIdMethod.invoke(enumValue);
-                if (id.equals(idValue)) {
-                    return enumValue;
+            if (!clazz.isEnum()) {
+                methodName = "getEnumValueId";
+                List<T> enumValues = getEnumValues(clazz);
+                Method enumValueIdMethod = clazz.getDeclaredMethod(methodName); // $NON-NLS-1$
+                enumValueIdMethod.setAccessible(true);
+                for (T enumValue : enumValues) {
+                    Object idValue = enumValueIdMethod.invoke(enumValue);
+                    if (id.equals(idValue)) {
+                        return enumValue;
+                    }
                 }
+            } else {
+                methodName = "getValueById";
+                Method valueByIdMethod = clazz.getDeclaredMethod(methodName, String.class); // $NON-NLS-1$
+                Object value = valueByIdMethod.invoke(null, id);
+                return (T)value;
             }
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
-                    "The provided enumeration class doesn't provide an identifying method getEnumValueId.", e); //$NON-NLS-1$
+                    "The provided enumeration class doesn't provide an identifying method " + methodName + ".", e); //$NON-NLS-1$
         } catch (SecurityException | IllegalAccessException | InvocationTargetException e) {
             throwUnableToCallMethodException(e);
         }
         return null;
+
     }
 
     @Override

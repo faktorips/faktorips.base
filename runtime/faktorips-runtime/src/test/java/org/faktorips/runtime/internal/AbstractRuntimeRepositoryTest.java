@@ -10,11 +10,10 @@
 
 package org.faktorips.runtime.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -39,6 +38,7 @@ import org.faktorips.runtime.testrepository.test.TestPremiumCalculation;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
 import org.faktorips.sample.model.TestAbstractEnum;
 import org.faktorips.sample.model.TestConcreteExtensibleEnum;
+import org.faktorips.sample.model.TestConcreteJavaEnum;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -120,199 +120,199 @@ public class AbstractRuntimeRepositoryTest {
         InMemoryRuntimeRepository r2 = new InMemoryRuntimeRepository();
 
         mainRepository.addDirectlyReferencedRepository(r1);
-        assertEquals(1, mainRepository.getDirectlyReferencedRepositories().size());
-        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories().get(0));
+        assertThat(mainRepository.getDirectlyReferencedRepositories().size(), is(1));
+        assertThat(mainRepository.getDirectlyReferencedRepositories().get(0), is(r1));
 
         mainRepository.addDirectlyReferencedRepository(r2);
-        assertEquals(2, mainRepository.getDirectlyReferencedRepositories().size());
-        assertEquals(r1, mainRepository.getDirectlyReferencedRepositories().get(0));
-        assertEquals(r2, mainRepository.getDirectlyReferencedRepositories().get(1));
+        assertThat(mainRepository.getDirectlyReferencedRepositories().size(), is(2));
+        assertThat(mainRepository.getDirectlyReferencedRepositories().get(0), is(r1));
+        assertThat(mainRepository.getDirectlyReferencedRepositories().get(1), is(r2));
     }
 
     @Test
     public void testGetAllReferencedRepositories() {
         List<IRuntimeRepository> result = baseRepository.getAllReferencedRepositories();
-        assertEquals(0, result.size());
+        assertThat(result.size(), is(0));
 
         result = inBetweenRepositoryA.getAllReferencedRepositories();
-        assertEquals(1, result.size());
-        assertEquals(baseRepository, result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is(baseRepository));
 
         result = mainRepository.getAllReferencedRepositories();
-        assertEquals(3, result.size());
-        assertEquals(inBetweenRepositoryA, result.get(0));
-        assertEquals(inBetweenRepositoryB, result.get(1));
-        assertEquals(baseRepository, result.get(2));
+        assertThat(result.size(), is(3));
+        assertThat(result.get(0), is(inBetweenRepositoryA));
+        assertThat(result.get(1), is(inBetweenRepositoryB));
+        assertThat(result.get(2), is(baseRepository));
     }
 
     @Test
     public void testGetProductComponent_ById() {
-        assertEquals(mainPc, mainRepository.getProductComponent("mainPc"));
-        assertEquals(inAPc, mainRepository.getProductComponent("inAPc"));
-        assertEquals(inBPc, mainRepository.getProductComponent("inBPc"));
-        assertEquals(basePc, mainRepository.getProductComponent("basePc"));
+        assertThat(mainRepository.getProductComponent("mainPc"), is(mainPc));
+        assertThat(mainRepository.getProductComponent("inAPc"), is(inAPc));
+        assertThat(mainRepository.getProductComponent("inBPc"), is(inBPc));
+        assertThat(mainRepository.getProductComponent("basePc"), is(basePc));
 
-        assertNull(mainRepository.getProductComponent("unknown"));
+        assertThat(mainRepository.getProductComponent("unknown"), is(nullValue()));
     }
 
     @Test
     public void testGetExistingProductComponent_ById() {
-        assertEquals(mainPc, mainRepository.getProductComponent("mainPc"));
-        assertEquals(inAPc, mainRepository.getProductComponent("inAPc"));
-        assertEquals(inBPc, mainRepository.getProductComponent("inBPc"));
-        assertEquals(basePc, mainRepository.getProductComponent("basePc"));
+        assertThat(mainRepository.getExistingProductComponent("mainPc"), is(mainPc));
+        assertThat(mainRepository.getExistingProductComponent("inAPc"), is(inAPc));
+        assertThat(mainRepository.getExistingProductComponent("inBPc"), is(inBPc));
+        assertThat(mainRepository.getExistingProductComponent("basePc"), is(basePc));
 
         try {
             mainRepository.getExistingProductComponent("unknown");
             fail();
         } catch (ProductCmptNotFoundException e) {
-            assertEquals("unknown", e.getProductCmptId());
-            assertEquals(mainRepository.getName(), e.getRepositoryName());
+            assertThat(e.getProductCmptId(), is("unknown"));
+            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
         }
     }
 
     @Test
     public void testGetProductComponentGeneration() {
-        assertEquals(mainPcGen, mainRepository.getProductComponentGeneration("mainPc", effectiveDate));
-        assertEquals(inAPcGen, mainRepository.getProductComponentGeneration("inAPc", effectiveDate));
-        assertEquals(inBPcGen, mainRepository.getProductComponentGeneration("inBPc", effectiveDate));
-        assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
+        assertThat(mainRepository.getProductComponentGeneration("mainPc", effectiveDate), is(mainPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("inAPc", effectiveDate), is(inAPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("inBPc", effectiveDate), is(inBPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("basePc", effectiveDate), is(basePcGen));
 
-        assertNull(mainRepository.getProductComponentGeneration("unknown", effectiveDate));
-        assertNull(mainRepository.getProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1)));
+        assertThat(mainRepository.getProductComponentGeneration("unknown", effectiveDate), is(nullValue()));
+        assertThat(mainRepository.getProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1)), is(nullValue()));
     }
 
     @Test
     public void testGetExistingProductComponentGeneration() {
-        assertEquals(mainPcGen, mainRepository.getExistingProductComponentGeneration("mainPc", effectiveDate));
-        assertEquals(inAPcGen, mainRepository.getExistingProductComponentGeneration("inAPc", effectiveDate));
-        assertEquals(inBPcGen, mainRepository.getExistingProductComponentGeneration("inBPc", effectiveDate));
-        assertEquals(basePcGen, mainRepository.getExistingProductComponentGeneration("basePc", effectiveDate));
+        assertThat(mainRepository.getExistingProductComponentGeneration("mainPc", effectiveDate), is(mainPcGen));
+        assertThat(mainRepository.getExistingProductComponentGeneration("inAPc", effectiveDate), is(inAPcGen));
+        assertThat(mainRepository.getExistingProductComponentGeneration("inBPc", effectiveDate), is(inBPcGen));
+        assertThat(mainRepository.getExistingProductComponentGeneration("basePc", effectiveDate), is(basePcGen));
 
         try {
             mainRepository.getExistingProductComponentGeneration("unknown", effectiveDate);
             fail();
         } catch (ProductCmptGenerationNotFoundException e) {
-            assertEquals(mainRepository.getName(), e.getRepositoryName());
-            assertEquals("unknown", e.getProductCmptId());
-            assertEquals(effectiveDate, e.getEffetiveDate());
-            assertFalse(e.productCmptWasFound());
+            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
+            assertThat(e.getProductCmptId(), is("unknown"));
+            assertThat(e.getEffetiveDate(), is(effectiveDate));
+            assertThat(e.productCmptWasFound(), is(false));
         }
 
         try {
             mainRepository.getExistingProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1));
             fail();
         } catch (ProductCmptGenerationNotFoundException e) {
-            assertEquals(mainRepository.getName(), e.getRepositoryName());
-            assertEquals("mainPc", e.getProductCmptId());
-            assertEquals(new GregorianCalendar(2000, 0, 1), e.getEffetiveDate());
-            assertTrue(e.productCmptWasFound());
+            assertThat(e.getRepositoryName(), is(mainRepository.getName()));
+            assertThat(e.getProductCmptId(), is("mainPc"));
+            assertThat(e.getEffetiveDate(), is(new GregorianCalendar(2000, 0, 1)));
+            assertThat(e.productCmptWasFound(), is(true));
         }
     }
 
     @Test
     public void testGetProductComponent_ByKindIdVersionId() {
-        assertEquals(mainPc, mainRepository.getProductComponent("mainKind", "mainVersion"));
-        assertEquals(inAPc, mainRepository.getProductComponent("inAKind", "inAVersion"));
-        assertEquals(inBPc, mainRepository.getProductComponent("inBKind", "inBVersion"));
-        assertEquals(basePc, mainRepository.getProductComponent("baseKind", "baseVersion"));
+        assertThat(mainRepository.getProductComponent("mainKind", "mainVersion"), is(mainPc));
+        assertThat(mainRepository.getProductComponent("inAKind", "inAVersion"), is(inAPc));
+        assertThat(mainRepository.getProductComponent("inBKind", "inBVersion"), is(inBPc));
+        assertThat(mainRepository.getProductComponent("baseKind", "baseVersion"), is(basePc));
     }
 
     @Test
     public void testGetAllProductComponents_ByKindId() {
-        assertEquals(1, mainRepository.getAllProductComponents("mainKind").size());
-        assertEquals(mainPc, mainRepository.getAllProductComponents("mainKind").get(0));
+        assertThat(mainRepository.getAllProductComponents("mainKind").size(), is(1));
+        assertThat(mainRepository.getAllProductComponents("mainKind").get(0), is(mainPc));
 
-        assertEquals(1, mainRepository.getAllProductComponents("baseKind").size());
-        assertEquals(basePc, mainRepository.getAllProductComponents("baseKind").get(0));
+        assertThat(mainRepository.getAllProductComponents("baseKind").size(), is(1));
+        assertThat(mainRepository.getAllProductComponents("baseKind").get(0), is(basePc));
     }
 
     @Test
     public void testGetProductComponentGeneration_ByIdAndEffectiveDate() {
-        assertEquals(mainPcGen, mainRepository.getProductComponentGeneration("mainPc", effectiveDate));
-        assertEquals(inAPcGen, mainRepository.getProductComponentGeneration("inAPc", effectiveDate));
-        assertEquals(inBPcGen, mainRepository.getProductComponentGeneration("inBPc", effectiveDate));
-        assertEquals(basePcGen, mainRepository.getProductComponentGeneration("basePc", effectiveDate));
+        assertThat(mainRepository.getProductComponentGeneration("mainPc", effectiveDate), is(mainPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("inAPc", effectiveDate), is(inAPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("inBPc", effectiveDate), is(inBPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("basePc", effectiveDate), is(basePcGen));
         // Tests with validTo
-        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc", effectiveDate));
-        assertEquals(validToPcGen, mainRepository.getProductComponentGeneration("validToPc",
-                validTo.toGregorianCalendar(effectiveDate.getTimeZone())));
+        assertThat(mainRepository.getProductComponentGeneration("validToPc", effectiveDate), is(validToPcGen));
+        assertThat(mainRepository.getProductComponentGeneration("validToPc",
+                validTo.toGregorianCalendar(effectiveDate.getTimeZone())), is(validToPcGen));
         GregorianCalendar tooLate = validTo.toGregorianCalendar(effectiveDate.getTimeZone());
         tooLate.add(Calendar.MILLISECOND, 1);
-        assertNull(mainRepository.getProductComponentGeneration("validToPc", tooLate));
+        assertThat(mainRepository.getProductComponentGeneration("validToPc", tooLate), is(nullValue()));
     }
 
     @Test
     public void testGetAllProductComponents_ByClass() {
         List<TestProductComponent> result = mainRepository.getAllProductComponents(TestProductComponent.class);
-        assertEquals(5, result.size());
-        assertTrue(mainPc + " not exists", result.contains(mainPc));
-        assertTrue(validToPc + " not exists", result.contains(validToPc));
-        assertTrue(inAPc + " not exists", result.contains(inAPc));
-        assertTrue(inBPc + " not exists", result.contains(inBPc));
-        assertTrue(basePc + " not exists", result.contains(basePc));
+        assertThat(result.size(), is(5));
+        assertThat(mainPc + " not exists", result.contains(mainPc), is(true));
+        assertThat(validToPc + " not exists", result.contains(validToPc), is(true));
+        assertThat(inAPc + " not exists", result.contains(inAPc), is(true));
+        assertThat(inBPc + " not exists", result.contains(inBPc), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc), is(true));
 
         result = inBetweenRepositoryA.getAllProductComponents(TestProductComponent.class);
-        assertEquals(2, result.size());
-        assertTrue(inAPc + " not exists", result.contains(inAPc));
-        assertTrue(basePc + " not exists", result.contains(basePc));
+        assertThat(result.size(), is(2));
+        assertThat(inAPc + " not exists", result.contains(inAPc), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc), is(true));
 
         result = baseRepository.getAllProductComponents(TestProductComponent.class);
-        assertEquals(1, result.size());
-        assertEquals(basePc, result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is(basePc));
     }
 
     @Test
     public void testGetAllProductComponents() {
         List<IProductComponent> result = mainRepository.getAllProductComponents();
-        assertEquals(5, result.size());
-        assertTrue(mainPc + " not exists", result.contains(mainPc));
-        assertTrue(validToPc + " not exists", result.contains(validToPc));
-        assertTrue(inAPc + " not exists", result.contains(inAPc));
-        assertTrue(inBPc + " not exists", result.contains(inBPc));
-        assertTrue(basePc + " not exists", result.contains(basePc));
+        assertThat(result.size(), is(5));
+        assertThat(mainPc + " not exists", result.contains(mainPc), is(true));
+        assertThat(validToPc + " not exists", result.contains(validToPc), is(true));
+        assertThat(inAPc + " not exists", result.contains(inAPc), is(true));
+        assertThat(inBPc + " not exists", result.contains(inBPc), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc), is(true));
 
         result = inBetweenRepositoryA.getAllProductComponents();
-        assertEquals(2, result.size());
-        assertTrue(inAPc + " not exists", result.contains(inAPc));
-        assertTrue(basePc + " not exists", result.contains(basePc));
+        assertThat(result.size(), is(2));
+        assertThat(inAPc + " not exists", result.contains(inAPc), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc), is(true));
 
         result = baseRepository.getAllProductComponents();
-        assertEquals(1, result.size());
-        assertEquals(basePc, result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is(basePc));
     }
 
     @Test
     public void testGetAllProductComponentIds() {
         List<String> result = mainRepository.getAllProductComponentIds();
-        assertEquals(5, result.size());
-        assertTrue(mainPc + " not exists", result.contains(mainPc.getId()));
-        assertTrue(validToPc + " not exists", result.contains(validToPc.getId()));
-        assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
-        assertTrue(inBPc + " not exists", result.contains(inBPc.getId()));
-        assertTrue(basePc + " not exists", result.contains(basePc.getId()));
+        assertThat(result.size(), is(5));
+        assertThat(mainPc + " not exists", result.contains(mainPc.getId()), is(true));
+        assertThat(validToPc + " not exists", result.contains(validToPc.getId()), is(true));
+        assertThat(inAPc + " not exists", result.contains(inAPc.getId()), is(true));
+        assertThat(inBPc + " not exists", result.contains(inBPc.getId()), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc.getId()), is(true));
 
         result = inBetweenRepositoryA.getAllProductComponentIds();
-        assertEquals(2, result.size());
-        assertTrue(inAPc + " not exists", result.contains(inAPc.getId()));
-        assertTrue(basePc + " not exists", result.contains(basePc.getId()));
+        assertThat(result.size(), is(2));
+        assertThat(inAPc + " not exists", result.contains(inAPc.getId()), is(true));
+        assertThat(basePc + " not exists", result.contains(basePc.getId()), is(true));
 
         result = baseRepository.getAllProductComponentIds();
-        assertEquals(1, result.size());
-        assertEquals(basePc.getId(), result.get(0));
+        assertThat(result.size(), is(1));
+        assertThat(result.get(0), is(basePc.getId()));
     }
 
     @Test
     public void testGetProductComponentGenerations() {
-        assertEquals(1, mainRepository.getProductComponentGenerations(mainPc).size());
-        assertEquals(mainPcGen, mainRepository.getProductComponentGenerations(mainPc).get(0));
-        assertEquals(basePcGen, mainRepository.getProductComponentGenerations(basePc).get(0));
+        assertThat(mainRepository.getProductComponentGenerations(mainPc).size(), is(1));
+        assertThat(mainRepository.getProductComponentGenerations(mainPc).get(0), is(mainPcGen));
+        assertThat(mainRepository.getProductComponentGenerations(basePc).get(0), is(basePcGen));
     }
 
     @Test
     public void testGetTable() {
-        assertEquals(testTable, mainRepository.getTable(TestTable.class));
-        assertEquals(testTable, baseRepository.getTable(TestTable.class));
+        assertThat(mainRepository.getTable(TestTable.class), is(testTable));
+        assertThat(baseRepository.getTable(TestTable.class), is(testTable));
     }
 
     @Test
@@ -334,24 +334,24 @@ public class AbstractRuntimeRepositoryTest {
         mainRepository.putIpsTestCase(test7);
 
         IpsTestSuite suite = mainRepository.getIpsTestSuite("myPack");
-        assertEquals("myPack", suite.getQualifiedName());
+        assertThat(suite.getQualifiedName(), is("myPack"));
 
         suite = mainRepository.getIpsTestSuite("pack");
         List<IpsTest2> tests = suite.getTests();
-        assertEquals(5, tests.size());
-        assertNotNull(suite.getTest("Test1"));
-        assertNotNull(suite.getTest("Test2"));
-        assertNotNull(suite.getTest("a"));
-        assertNotNull(suite.getTest("b"));
-        assertNotNull(suite.getTest("x"));
+        assertThat(tests.size(), is(5));
+        assertThat(suite.getTest("Test1"), is(notNullValue()));
+        assertThat(suite.getTest("Test2"), is(notNullValue()));
+        assertThat(suite.getTest("a"), is(notNullValue()));
+        assertThat(suite.getTest("b"), is(notNullValue()));
+        assertThat(suite.getTest("x"), is(notNullValue()));
 
         IpsTestSuite suiteA = (IpsTestSuite)suite.getTest("a");
         tests = suiteA.getTests();
-        assertEquals(3, tests.size());
+        assertThat(tests.size(), is(3));
 
         IpsTestSuite suiteX = (IpsTestSuite)suite.getTest("x");
         IpsTestSuite suiteY = (IpsTestSuite)suiteX.getTest("y");
-        assertNotNull(suiteY.getTest("Test7"));
+        assertThat(suiteY.getTest("Test7"), is(notNullValue()));
     }
 
     @Test
@@ -364,12 +364,12 @@ public class AbstractRuntimeRepositoryTest {
         mainRepository.putIpsTestCase(test2);
         mainRepository.putIpsTestCase(test3);
 
-        assertEquals(test1, mainRepository.getIpsTest("pack.Test1"));
+        assertThat(mainRepository.getIpsTest("pack.Test1"), is(test1));
         IpsTestSuite suite = (IpsTestSuite)mainRepository.getIpsTest("pack");
-        assertEquals(3, suite.size());
+        assertThat(suite.size(), is(3));
 
         suite = (IpsTestSuite)mainRepository.getIpsTest("unknown");
-        assertEquals(0, suite.size());
+        assertThat(suite.size(), is(0));
 
         try {
             mainRepository.getIpsTest(null);
@@ -383,11 +383,11 @@ public class AbstractRuntimeRepositoryTest {
     public void testAddEnumValueLookup() {
         Lookup lookup = new Lookup();
         mainRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(lookup));
 
         Lookup lookup2 = new Lookup();
         mainRepository.addEnumValueLookupService(lookup2);
-        assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(lookup2));
     }
 
     @Test
@@ -396,11 +396,11 @@ public class AbstractRuntimeRepositoryTest {
 
         Lookup lookup = new Lookup();
         mainRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(lookup));
 
         Lookup lookup2 = new Lookup();
         mainRepository.addEnumValueLookupService(lookup2);
-        assertEquals(lookup2, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(lookup2));
     }
 
     @Test
@@ -421,37 +421,36 @@ public class AbstractRuntimeRepositoryTest {
         mainRepository.removeEnumValueLookupService(lookup);
 
         mainRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup, mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(lookup));
         mainRepository.removeEnumValueLookupService(lookup);
-        assertNull(mainRepository.getEnumValueLookupService(TestEnumValue.class));
+        assertThat(mainRepository.getEnumValueLookupService(TestEnumValue.class), is(nullValue()));
     }
 
     @Test
     public void testGetEnumValueFromLookup() {
         Lookup lookup = new Lookup();
-        assertNull(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()), is(nullValue()));
 
         baseRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup.value1, baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-        assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-        assertNull(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"));
-        assertNull(baseRepository.getEnumValue(null, null));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()), is(lookup.value1));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()), is(lookup.value2));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, "unknownId"), is(nullValue()));
+        assertThat(baseRepository.getEnumValue(null, null), is(nullValue()));
     }
 
     @Test
     public void testGetEnumValueFromReferencedLookup() {
         ConcreteLookup lookup = new ConcreteLookup();
-        assertNull(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()));
+        assertThat(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()), is(nullValue()));
 
         // test if the search through referenced repositories works
         baseRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup.extendedValue1,
-                mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()));
-        assertEquals(TestConcreteExtensibleEnum.CLASS_VALUE_2,
-                mainRepository.getEnumValue(TestConcreteExtensibleEnum.class,
-                        TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()));
-        assertNull(mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, "unknownId"));
-        assertNull(mainRepository.getEnumValue(null, null));
+        assertThat(mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()),
+                is(lookup.extendedValue1));
+        assertThat(mainRepository.getEnumValue(TestConcreteExtensibleEnum.class,
+                TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()), is(TestConcreteExtensibleEnum.CLASS_VALUE_2));
+        assertThat(mainRepository.getEnumValue(TestConcreteExtensibleEnum.class, "unknownId"), is(nullValue()));
+        assertThat(mainRepository.getEnumValue(null, null), is(nullValue()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -460,16 +459,30 @@ public class AbstractRuntimeRepositoryTest {
     }
 
     @Test
+    public void testGetEnumValueWithoutLookup_ExtensibleEnum() {
+        assertThat(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class,
+                TestConcreteExtensibleEnum.CLASS_VALUE_1.getId()),
+                is(TestConcreteExtensibleEnum.CLASS_VALUE_1));
+    }
+
+    @Test
+    public void testGetEnumValueWithoutLookup_JavaEnum() {
+        assertThat(baseRepository.getEnumValue(TestConcreteJavaEnum.class, TestConcreteJavaEnum.JAVA_VALUE_1.getId()),
+                is(TestConcreteJavaEnum.JAVA_VALUE_1));
+    }
+
+    @Test
     public void testGetEnumValueFromReferencedLookup_WithAbstractBaseEnum() {
         // test if the search through referenced repositories works
         AbstractLookup lookup = new AbstractLookup();
         baseRepository.addEnumValueLookupService(lookup);
-        assertEquals(lookup.extendedValue1,
-                mainRepository.getEnumValue(TestAbstractEnum.class, lookup.extendedValue1.getId()));
-        assertEquals(TestConcreteExtensibleEnum.CLASS_VALUE_2,
-                mainRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()));
-        assertNull(mainRepository.getEnumValue(TestAbstractEnum.class, "unknownId"));
-        assertNull(mainRepository.getEnumValue(null, null));
+        assertThat(mainRepository.getEnumValue(TestAbstractEnum.class, lookup.extendedValue1.getId()),
+                is(lookup.extendedValue1));
+        assertThat(
+                mainRepository.getEnumValue(TestAbstractEnum.class, TestConcreteExtensibleEnum.CLASS_VALUE_2.getId()),
+                is(TestConcreteExtensibleEnum.CLASS_VALUE_2));
+        assertThat(mainRepository.getEnumValue(TestAbstractEnum.class, "unknownId"), is(nullValue()));
+        assertThat(mainRepository.getEnumValue(null, null), is(nullValue()));
     }
 
     @Test
@@ -477,14 +490,14 @@ public class AbstractRuntimeRepositoryTest {
         Lookup lookup = new Lookup();
         baseRepository.addEnumValueLookupService(lookup);
 
-        assertEquals(lookup.value1, baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-        assertEquals(lookup.value2, baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-        assertNull(baseRepository.getEnumValue(null, null));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()), is(lookup.value1));
+        assertThat(baseRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()), is(lookup.value2));
+        assertThat(baseRepository.getEnumValue(null, null), is(nullValue()));
 
         // test if the search through referenced repositories works
-        assertEquals(lookup.value1, mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()));
-        assertEquals(lookup.value2, mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()));
-        assertNull(mainRepository.getEnumValue(null, null));
+        assertThat(mainRepository.getEnumValue(TestEnumValue.class, lookup.value1.getEnumValueId()), is(lookup.value1));
+        assertThat(mainRepository.getEnumValue(TestEnumValue.class, lookup.value2.getEnumValueId()), is(lookup.value2));
+        assertThat(mainRepository.getEnumValue(null, null), is(nullValue()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -503,16 +516,16 @@ public class AbstractRuntimeRepositoryTest {
     @Test
     public void testGetEnumValuesFromLookup() {
         Lookup lookup = new Lookup();
-        assertTrue(baseRepository.getEnumValues(TestEnumValue.class).isEmpty());
+        assertThat(baseRepository.getEnumValues(TestEnumValue.class).isEmpty(), is(true));
 
         baseRepository.addEnumValueLookupService(lookup);
         List<TestEnumValue> values = baseRepository.getEnumValues(TestEnumValue.class);
-        assertEquals(lookup.value1, values.get(0));
-        assertEquals(lookup.value2, values.get(1));
+        assertThat(values.get(0), is(lookup.value1));
+        assertThat(values.get(1), is(lookup.value2));
 
         values = mainRepository.getEnumValues(TestEnumValue.class);
-        assertEquals(lookup.value1, values.get(0));
-        assertEquals(lookup.value2, values.get(1));
+        assertThat(values.get(0), is(lookup.value1));
+        assertThat(values.get(1), is(lookup.value2));
 
         // test if list is unmodifiable
         try {
