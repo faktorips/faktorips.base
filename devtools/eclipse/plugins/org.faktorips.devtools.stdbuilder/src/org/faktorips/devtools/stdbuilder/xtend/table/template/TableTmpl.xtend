@@ -171,7 +171,7 @@ class TableTmpl {
     '''
 
     def private static getInstanceForSingleContent(XTable it) '''
-        /**XML_TAG_COLUMN_TABLE_REFERENCE
+        /**
          *«localizedJDoc("METHOD_GET_INSTANCE")»
          *
          * @generated
