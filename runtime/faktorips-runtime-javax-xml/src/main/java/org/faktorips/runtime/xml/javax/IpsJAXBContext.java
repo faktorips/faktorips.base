@@ -52,6 +52,7 @@ public class IpsJAXBContext extends JAXBContext {
         xmlAdapters.add(new LocalTimeAdapter());
         xmlAdapters.add(new MonthDayAdapter());
         xmlAdapters.add(new MonthAdapter());
+        xmlAdapters.add(new YearAdapter());
         xmlAdapters.add(new DecimalAdapter());
         xmlAdapters.add(new MoneyAdapter());
         enumXmlAdapters.stream()

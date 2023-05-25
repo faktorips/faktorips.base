@@ -101,6 +101,7 @@ public class JaxbAnnGenFactory implements IAnnotationGeneratorFactory {
         LocalTimeAdapter,
         MoneyAdapter,
         MonthAdapter,
+        YearAdapter,
         MonthDayAdapter;
 
         /**
