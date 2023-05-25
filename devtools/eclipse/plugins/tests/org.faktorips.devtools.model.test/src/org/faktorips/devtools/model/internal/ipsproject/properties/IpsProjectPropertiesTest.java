@@ -21,7 +21,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -581,13 +580,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveSupportedLanguageNullPointer() {
-        try {
-            properties.removeSupportedLanguage((ISupportedLanguage)null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        properties.removeSupportedLanguage((ISupportedLanguage)null);
     }
 
     @Test
@@ -597,13 +592,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.getSupportedLanguages().contains(new SupportedLanguage(Locale.ENGLISH)));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveSupportedLanguageUsingLocaleNullPointer() {
-        try {
-            properties.removeSupportedLanguage((Locale)null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        properties.removeSupportedLanguage((Locale)null);
     }
 
     @Test
@@ -614,13 +605,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(englishLanguage, properties.getDefaultLanguage());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetDefaultLanguageNullPointer() {
-        try {
-            properties.setDefaultLanguage((ISupportedLanguage)null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        properties.setDefaultLanguage((ISupportedLanguage)null);
     }
 
     @Test
@@ -629,22 +616,14 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(properties.getSupportedLanguage(Locale.ENGLISH), properties.getDefaultLanguage());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetDefaultLanguageUsingLocaleNullPointer() {
-        try {
-            properties.setDefaultLanguage((Locale)null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        properties.setDefaultLanguage((Locale)null);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testSetDefaultLanguageUsingLocaleIllegalLocale() {
-        try {
-            properties.setDefaultLanguage(Locale.TAIWAN);
-            fail();
-        } catch (IllegalArgumentException e) {
-        }
+        properties.setDefaultLanguage(Locale.TAIWAN);
     }
 
     @Test
@@ -654,13 +633,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertFalse(properties.isSupportedLanguage(Locale.JAPANESE));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testIsSupportedLanguageNullPointer() {
-        try {
-            properties.isSupportedLanguage(null);
-            fail();
-        } catch (NullPointerException e) {
-        }
+        properties.isSupportedLanguage(null);
     }
 
     @Test
@@ -691,6 +666,12 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void ignoreIncompleteSettings() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
+    }
+
+    @Test
+    public void readMissingDatatypeSeverityFromAdditionalSettings() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+        assertEquals(Severity.ERROR, props.getMissingDatatypeSeverity());
     }
 
     protected IpsProjectProperties initPropertiesWithDocumentElement() {

@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.productcmpt;
 import static org.faktorips.abstracttest.matcher.ValueSetMatchers.contains;
 import static org.faktorips.abstracttest.matcher.ValueSetMatchers.empty;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasSeverity;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -61,6 +62,7 @@ import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.IValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -156,6 +158,7 @@ public class ConfiguredValueSetTest extends AbstractIpsPluginTest {
 
         MessageList ml = configuredValueSet.validate(ipsProject);
         assertThat(ml, hasMessageCode(IConfigElement.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(ml.getMessageByCode(IConfiguredDefault.MSGCODE_UNKNOWN_DATATYPE), hasSeverity(Severity.WARNING));
 
         attribute.setDatatype("Decimal");
 

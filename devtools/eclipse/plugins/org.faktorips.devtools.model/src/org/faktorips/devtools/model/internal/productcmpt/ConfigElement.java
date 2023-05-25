@@ -31,6 +31,7 @@ import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.type.IProductCmptProperty;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Element;
@@ -141,8 +142,9 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
         Object[] params = { attribute.getDatatype(), attribute.getName(), attribute.getPolicyCmptType().getName() };
 
         if (valueDatatype == null) {
-            String text = MessageFormat.format(Messages.ConfigElement_msgUndknownDatatype, params);
-            list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, Message.WARNING, this,
+            String text = MessageFormat.format(Messages.ConfigElement_msgUnknownDatatype, params);
+            Severity severity =  ipsProject.getReadOnlyProperties().getMissingDatatypeSeverity();
+            list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, severity, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;
         }

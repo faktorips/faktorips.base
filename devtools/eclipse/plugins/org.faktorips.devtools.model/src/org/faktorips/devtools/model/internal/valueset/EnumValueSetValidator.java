@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.valueset.IValueSetOwner;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
+import org.faktorips.runtime.Severity;
 
 public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSet> {
 
@@ -77,7 +78,8 @@ public class EnumValueSetValidator extends AbstractValueSetValidator<EnumValueSe
     private boolean isValidDatatype() {
         if (getDatatype() == null) {
             String msg = MessageFormat.format(Messages.EnumValueSet_msgDatatypeUnknown, getOwner().getName());
-            list.add(new Message(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, getParentOp()));
+            Severity severity = getValueSet().getIpsProject().getReadOnlyProperties().getMissingDatatypeSeverity();
+            list.add(new Message(IEnumValueSet.MSGCODE_UNKNOWN_DATATYPE, msg, severity, getParentOp()));
             return false;
         }
         return true;
