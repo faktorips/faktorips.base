@@ -11,15 +11,18 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 
 class ProductBuilderTmpl{
 
     def static String body (XProductBuilder it) '''
         /**
         *«localizedJDoc("CLASS",implClassName,productName)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         *
         * @generated
         */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public «isAbstract(it)» class «implClassName» «extendSuperclass»{
             «variableDeclaration»
 
@@ -115,9 +118,11 @@ def private static variableDeclaration (XProductBuilder it) '''
 def private static constructors (XProductBuilder it) '''
     /**
     *«localizedJDoc("CONSTRUCTOR_INTERNAL", implClassName)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
     *
     * @generated
     */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     «IF changingOverTime»
         protected «method(implClassName, typeImplClassName, "product", InMemoryRuntimeRepository, "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
     «ELSE»
@@ -142,9 +147,11 @@ def private static constructors (XProductBuilder it) '''
 def private static attributeSetter(XProductBuilder builder, XProductAttribute it, boolean overrideSuper) '''
     /**
     *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
     *
     * @generated
     */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     «IF overrideSuper || (overwrite && !overwrittenAttribute.isAbstract)» @Override «ENDIF»
     public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
         «IF changingOverTime»
@@ -159,9 +166,11 @@ def private static attributeSetter(XProductBuilder builder, XProductAttribute it
 def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
     *«localizedJDoc("METHOD_SET_DEFAULTVALUE", name, descriptionForJDoc)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
     *
     * @generated
     */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
         && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
         && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»
@@ -178,9 +187,11 @@ def private static defaultSetter(XProductBuilder builder, XPolicyAttribute it, b
 def private static allowedValuesSetter(XProductBuilder builder, XPolicyAttribute it, boolean overrideSuper) '''
     /**
     *«localizedJDoc("METHOD_SET_VALUESET", name, descriptionForJDoc)»
+    «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
     *
     * @generated
     */
+    «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
     «IF overrideSuper || (overwrite && !overwrittenAttribute.abstract 
         && overwrittenAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy 
         && builder.hasSupertype && builder.supertype.configurationForPolicyCmptType)» @Override «ENDIF»

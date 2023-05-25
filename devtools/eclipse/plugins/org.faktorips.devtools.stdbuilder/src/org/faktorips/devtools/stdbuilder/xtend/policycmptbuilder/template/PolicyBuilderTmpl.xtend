@@ -7,6 +7,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.builder.template
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType
 
 class PolicyBuilderTmpl {
 
@@ -14,9 +15,11 @@ class PolicyBuilderTmpl {
         
         /**
         *«localizedJDoc("CLASS", policyName)»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         *
         * @generated
         */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         public «isAbstract(it)» class «implClassName» «extendSuperclass» {
             «variableDeclaration»
         
@@ -78,9 +81,11 @@ class PolicyBuilderTmpl {
         /**
         *«localizedJDoc("CONSTRUCTOR_WITH_REPO", implClassName)»
         *«localizedJDoc("CONSTRUCTOR_INTERNAL")»
+        «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
         *
         * @generated
         */
+        «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
         protected «method(implClassName, typeImplClassName, "policy", IRuntimeRepository, "runtimeRepository")»{
             «IF hasSupertype»
                 super(policy, runtimeRepository);
@@ -112,9 +117,11 @@ class PolicyBuilderTmpl {
         «IF !derived && !constant»
             /**
             *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
             *
             * @generated
             */
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
             «IF overwrite && !overwrittenAttribute.derived && !overwrittenAttribute.constant»@Override«ENDIF»
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «IF overwrite && overwrittenAttribute.abstract»«method(fieldName, overwrittenAttribute.javaClassName, parameterName)»«ELSE»«method(fieldName, javaClassName, parameterName)»«ENDIF»{
@@ -129,9 +136,11 @@ class PolicyBuilderTmpl {
         «IF !derived && !constant»
             /**
             *«localizedJDoc("METHOD_SETVALUE", name, descriptionForJDoc)»
+            «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
             *
             * @generated
             */
+            «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
             @Override
             «val parameterName = "new" + fieldName.toFirstUpper»
             public «builder.implClassName» «method(fieldName, javaClassName, parameterName)»{
