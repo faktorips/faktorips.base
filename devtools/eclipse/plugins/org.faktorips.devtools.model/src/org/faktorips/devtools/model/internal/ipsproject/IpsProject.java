@@ -17,12 +17,16 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.xml.transform.TransformerException;
 
@@ -1340,8 +1344,27 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private void validateMarkerEnums(MessageList messageList) {
         IIpsProjectProperties properties = getReadOnlyProperties();
         Set<String> markerEnumQNames = properties.getMarkerEnums();
+        Set<String> checkedIds = new HashSet<>();
+
         for (String enumQName : markerEnumQNames) {
             validateEnumQName(messageList, enumQName);
+        }
+        String duplicateIds = markerEnumQNames.stream()
+                .map(this::findEnumType)
+                .filter(Objects::nonNull)
+                .peek(enumType -> validateEnumQName(messageList, enumType.getQualifiedName()))
+                .flatMap(enumType -> enumType.findAllIdentifierAttributeValues(getIpsProject()).stream())
+                .flatMap(id -> {
+                    if (!checkedIds.add(id)) {
+                        return Stream.of(id);
+                    } else {
+                        return Stream.empty();
+                    }
+                }).collect(Collectors.joining("; "));
+        if (!duplicateIds.isEmpty()) {
+            String msg = MessageFormat.format(Messages.IpsProjectProperties_msgUniqueMarkerIds, duplicateIds);
+            messageList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg,
+                    Message.ERROR, getIpsProjectPropertiesFile()));
         }
     }
 
@@ -1497,19 +1520,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
 
             runtimeIdCache
-                    .findProductCmptByRuntimeId(cmptToCheck.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))
-                    .stream()
-                    .filter(p -> !p.equals(cmptToCheck))
-                    .forEach(p -> {
-                        ObjectProperty[] invalidObjectProperties = new ObjectProperty[1];
-                        invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
-                                IProductCmpt.PROPERTY_RUNTIME_ID);
+            .findProductCmptByRuntimeId(cmptToCheck.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))
+            .stream()
+            .filter(p -> !p.equals(cmptToCheck))
+            .forEach(p -> {
+                ObjectProperty[] invalidObjectProperties = new ObjectProperty[1];
+                invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
+                        IProductCmpt.PROPERTY_RUNTIME_ID);
 
-                        String msg = MessageFormat.format(Messages.IpsProject_msgRuntimeIDCollision,
-                                cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName());
-                        result.add(
-                                new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
-                    });
+                String msg = MessageFormat.format(Messages.IpsProject_msgRuntimeIDCollision,
+                        cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName());
+                result.add(
+                        new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
+            });
         }
         return result;
     }

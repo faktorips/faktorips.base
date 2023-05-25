@@ -11,7 +11,12 @@
 package org.faktorips.devtools.model.internal.ipsproject;
 
 import static org.faktorips.devtools.abstraction.eclipse.mapping.PathMapping.toEclipsePath;
+import static org.faktorips.testsupport.IpsMatchers.containsErrorMessage;
+import static org.faktorips.testsupport.IpsMatchers.containsNoErrorMessage;
+import static org.faktorips.testsupport.IpsMatchers.containsText;
+import static org.faktorips.testsupport.IpsMatchers.hasErrorMessage;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
+import static org.faktorips.testsupport.IpsMatchers.hasMessageThat;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -81,6 +86,7 @@ import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.model.enums.IEnumAttribute;
 import org.faktorips.devtools.model.enums.IEnumContent;
 import org.faktorips.devtools.model.enums.IEnumType;
+import org.faktorips.devtools.model.enums.IEnumValue;
 import org.faktorips.devtools.model.internal.DefaultVersionProvider;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.enums.EnumType;
@@ -110,6 +116,7 @@ import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.util.Tree;
 import org.faktorips.devtools.model.util.Tree.Node;
+import org.faktorips.devtools.model.value.ValueFactory;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.runtime.Message;
@@ -2291,6 +2298,81 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProjectProperties.addMarkerEnum(markerString);
         ipsProject.setProperties(ipsProjectProperties);
         return enumType;
+    }
+
+    @Test
+    public void testValidateMarkerEnums_DuplicateIds() {
+        EnumType markerEnumType1 = newEnumType(ipsProject, "MarkerEnum1");
+        EnumType markerEnumType2 = newEnumType(ipsProject, "MarkerEnum2");
+
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum("MarkerEnum1;MarkerEnum2");
+        ipsProject.setProperties(ipsProjectProperties);
+
+        IEnumAttribute idAttribute1 = createIdAttribute(markerEnumType1);
+        IEnumAttribute idAttribute2 = createIdAttribute(markerEnumType2);
+
+        createIdValue(markerEnumType1, idAttribute1, "1");
+        createIdValue(markerEnumType1, idAttribute1, "2");
+        createIdValue(markerEnumType1, idAttribute1, "3");
+        createIdValue(markerEnumType2, idAttribute2, "2");
+        createIdValue(markerEnumType2, idAttribute2, "3");
+
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(2, markerEnums.size());
+        assertTrue(markerEnums.contains(markerEnumType1.getIpsSrcFile()));
+        assertTrue(markerEnums.contains(markerEnumType2.getIpsSrcFile()));
+        assertThat(msgList, containsErrorMessage());
+        assertThat(msgList, hasErrorMessage(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS));
+        assertThat(msgList, hasMessageThat(containsText("2; 3")));
+    }
+
+    @Test
+    public void testValidateMarkerEnums_UniqueIds() {
+        EnumType markerEnumType1 = newEnumType(ipsProject, "MarkerEnum1");
+        EnumType markerEnumType2 = newEnumType(ipsProject, "MarkerEnum2");
+        EnumType markerEnumType3 = newEnumType(ipsProject, "MarkerEnum3");
+
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum("MarkerEnum1;MarkerEnum2;MarkerEnum3");
+        ipsProject.setProperties(ipsProjectProperties);
+
+        IEnumAttribute idAttribute1 = createIdAttribute(markerEnumType1);
+        IEnumAttribute idAttribute2 = createIdAttribute(markerEnumType2);
+        IEnumAttribute idAttribute3 = createIdAttribute(markerEnumType3);
+
+        createIdValue(markerEnumType1, idAttribute1, "1");
+        createIdValue(markerEnumType1, idAttribute1, "2");
+        createIdValue(markerEnumType2, idAttribute2, "3");
+        createIdValue(markerEnumType2, idAttribute2, "4");
+        createIdValue(markerEnumType3, idAttribute3, "5");
+        createIdValue(markerEnumType3, idAttribute3, "6");
+
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(3, markerEnums.size());
+        assertTrue(markerEnums.contains(markerEnumType1.getIpsSrcFile()));
+        assertTrue(markerEnums.contains(markerEnumType2.getIpsSrcFile()));
+        assertTrue(markerEnums.contains(markerEnumType3.getIpsSrcFile()));
+        assertThat(msgList, containsNoErrorMessage());
+    }
+
+    private void createIdValue(EnumType markerEnumType1, IEnumAttribute idAttribute1, String value) {
+        IEnumValue value1 = markerEnumType1.newEnumValue();
+        value1.setEnumAttributeValue(idAttribute1, ValueFactory.createStringValue(value));
+    }
+
+    private IEnumAttribute createIdAttribute(EnumType markerEnumType1) {
+        IEnumAttribute idAttribute1 = markerEnumType1.newEnumAttribute();
+        idAttribute1.setName("id");
+        idAttribute1.setDatatype(Datatype.STRING.getQualifiedName());
+        idAttribute1.setIdentifier(true);
+        idAttribute1.setUnique(true);
+        idAttribute1.setUsedAsNameInFaktorIpsUi(true);
+        return idAttribute1;
     }
 
     @Test

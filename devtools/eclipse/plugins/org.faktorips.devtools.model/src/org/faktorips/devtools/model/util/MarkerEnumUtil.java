@@ -44,7 +44,6 @@ public class MarkerEnumUtil {
                 enumDatatypes.add(datatype);
             }
         }
-
     }
 
     /**
