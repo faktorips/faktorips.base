@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,7 +36,8 @@ public class BuildLogPrintStreamTest {
     @BeforeEach
     public void setup() throws IOException {
         stream = new BuildLogPrintStream("testLogger", List.of(
-                "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)"));
+                "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator\\/bundles\\.info \\(No such file or directory\\)",
+                "java\\.lang\\.Exception: stack trace\\R(?:\\s+at org\\.apache\\.felix.*)"));
     }
 
     @AfterEach
@@ -61,6 +62,20 @@ public class BuildLogPrintStreamTest {
     }
 
     @Test
+    public void testFilteringAntLoggingWithFelixException() throws IOException {
+
+        String toFilter = IOUtils.toString(new FileInputStream(
+                new File("./src/test/resources/buildOutputFelixException.txt")), Charset.forName("UTF-8"));
+
+        String filtered = stream.filter(toFilter);
+
+        assertThat(filtered, is(sizeLessThan(toFilter)));
+        assertThat(filtered, not(containsString(
+                "org.apache.felix.scr.impl.ComponentRegistry.enterCreate(ComponentRegistry.java:493)")));
+        stream.cleanUp();
+    }
+
+    @Test
     public void testFilteringAntLoggingWithOutException() throws IOException {
 
         String toFilter = IOUtils.toString(new FileInputStream(
@@ -77,7 +92,7 @@ public class BuildLogPrintStreamTest {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("the expected sting length is not smaller");
+                description.appendText("the expected String is not shorter");
             }
 
             @Override

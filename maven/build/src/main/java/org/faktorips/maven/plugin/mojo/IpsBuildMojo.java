@@ -910,7 +910,10 @@ public class IpsBuildMojo extends AbstractMojo {
             getLog().info("Well known exceptions that do not affect the build are filtered.");
 
             exceptionTexts = List.of(
-                    "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator/bundles\\.info \\(No such file or directory\\)");
+                    "java\\.io\\.FileNotFoundException: org\\.eclipse\\.equinox\\.simpleconfigurator\\/bundles\\.info \\(No such file or directory\\)",
+                    /* see https://github.com/eclipse-m2e/m2e-core/issues/1210 */
+                    "java\\.lang\\.Exception: stack trace\\R(?:\\s+at org\\.apache\\.felix.*)",
+                    "java.lang.IllegalStateException: m2e is shut down!");
         } else {
             // perThread
             exceptionTexts = List.of();
