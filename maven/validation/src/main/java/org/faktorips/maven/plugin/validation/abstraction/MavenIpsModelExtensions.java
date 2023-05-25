@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.project.MavenProject;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IClassLoaderProvider;
 import org.faktorips.devtools.model.IClassLoaderProviderFactory;
@@ -58,8 +59,6 @@ public class MavenIpsModelExtensions extends PlainJavaIpsModelExtensions {
     }
 
     private static final class MavenClassLoaderProvider implements IClassLoaderProvider {
-        // currently not really needed, but interesting for debugging
-        @SuppressWarnings("unused")
         private final IIpsProject ipsProject;
         private final ClassLoader parent;
         private final MavenSession session;
@@ -77,15 +76,21 @@ public class MavenIpsModelExtensions extends PlainJavaIpsModelExtensions {
         @Override
         public ClassLoader getClassLoader() {
             try {
-                // do we need to find the MavenProject corresponding to the given IpsProject?
-                List<String> compileClasspathElements = session.getCurrentProject().getCompileClasspathElements();
-                URL[] urls = compileClasspathElements.stream().map(s -> {
-                    try {
-                        return new File(s).toURI().toURL();
-                    } catch (MalformedURLException e) {
-                        throw new IpsException(e.getMessage(), e);
-                    }
-                }).toArray(URL[]::new);
+                List<MavenProject> projects = session.getProjects();
+                MavenProject currentProject = projects.stream()
+                        .filter(mavenproject -> ipsProject.getName()
+                                .equals(mavenproject.getGroupId() + '.' + mavenproject.getArtifactId()))
+                        .findFirst()
+                        .orElseGet(session::getCurrentProject);
+
+                URL[] urls = currentProject == null ? new URL[0]
+                        : currentProject.getCompileClasspathElements().stream().map(s -> {
+                            try {
+                                return new File(s).toURI().toURL();
+                            } catch (MalformedURLException e) {
+                                throw new IpsException(e.getMessage(), e);
+                            }
+                        }).toArray(URL[]::new);
                 return parent == null ? new URLClassLoader(urls) : new URLClassLoader(urls, parent);
             } catch (DependencyResolutionRequiredException e) {
                 throw new IpsException(e.getMessage(), e);
