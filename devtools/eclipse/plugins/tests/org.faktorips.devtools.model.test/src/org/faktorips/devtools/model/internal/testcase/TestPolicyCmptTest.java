@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.testcase;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -670,7 +671,7 @@ public class TestPolicyCmptTest extends AbstractIpsPluginTest {
         assertNull(testAttrValueCoverage.getValue());
         attribute.setDatatype("String");
         testAttrValueCoverage.updateDefaultTestAttributeValue();
-        assertNull(testAttrValueCoverage.getValue());
+        assertThat(testAttrValueCoverage.getValue(), is(""));
     }
 
     @Test

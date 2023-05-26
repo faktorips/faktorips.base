@@ -3050,6 +3050,12 @@
                   class="org.faktorips.datatype.joda.MonthDayDatatype">
             </datatype>
          </inputformat>
+         <inputformat
+               class="org.faktorips.devtools.core.ui.inputformat.StringInputFormatFactory">
+            <datatype
+                  class="org.faktorips.datatype.classtypes.StringDatatype">
+            </datatype>
+         </inputformat>
    </extension>
  <extension
        point="org.faktorips.devtools.model.workspaceInteractions">

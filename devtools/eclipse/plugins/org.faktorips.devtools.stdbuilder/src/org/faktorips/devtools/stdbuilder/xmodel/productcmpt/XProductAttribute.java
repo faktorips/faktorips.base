@@ -133,7 +133,12 @@ public class XProductAttribute extends XAttribute {
         String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
         List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
         for (String defaultValue : defaultValues) {
-            JavaCodeFragment fragment = super.getDatatypeHelper().newInstance(defaultValue);
+            JavaCodeFragment fragment;
+            if (isMultilingual() && defaultValue == null) {
+                fragment = new JavaCodeFragment("null"); //$NON-NLS-1$
+            } else {
+                fragment = super.getDatatypeHelper().newInstance(defaultValue);
+            }
             addImport(fragment.getImportDeclaration());
             defaultValueCodes.add(fragment.getSourcecode());
         }

@@ -14,6 +14,7 @@ import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -48,11 +49,22 @@ public class IsEmpty extends AbstractFlFunction {
             code.append(".equals(");
             code.append(argResults[0].getCodeFragment());
             code.append(")");
+        } else if (argType instanceof StringDatatype) {
+            code.append(compileIsEmptyForStrings(argResults[0].getCodeFragment()));
         } else {
             code.append(argResults[0].getCodeFragment());
             code.append("==null");
         }
         return new CompilationResultImpl(code, Datatype.PRIMITIVE_BOOLEAN);
+    }
+
+    private JavaCodeFragment compileIsEmptyForStrings(JavaCodeFragment paramName) {
+        return new JavaCodeFragment()
+                .append(paramName)
+                .append("==null")
+                .append("||")
+                .append(paramName)
+                .append(".isEmpty()");
     }
 
 }

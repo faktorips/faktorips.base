@@ -769,7 +769,7 @@ public class TestCaseTest extends AbstractDependencyTest {
 
         public void assertInputValues(boolean empty) {
             if (empty) {
-                assertEquals(null, paramInput.getValue());
+                assertEquals("", paramInput.getValue());
                 // if the type is input then the default value of the model attribute will be set
                 assertEquals("99", attributeValueInput.getValue());
             } else {
