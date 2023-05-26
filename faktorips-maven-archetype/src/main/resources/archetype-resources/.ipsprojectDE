@@ -368,7 +368,7 @@
             <!- - Severity for validation messages when model and persistence constraints don't match.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="persistenceColumnSizeChecksSeverity" value="ERROR"/>
-            <!-- Severity for validation messages when a custom datatype is used in an dependend project but is not configured in this project.
+            <!- - Severity for validation messages when a custom datatype is used in an dependend project but is not configured in this project.
                 Possible values are ERROR, WARNING, INFO, and NONE. - ->
             <Setting name="missingDatatypeSeverity" value="ERROR"/>
             <!- - Format for table content data.
