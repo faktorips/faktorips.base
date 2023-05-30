@@ -10,6 +10,7 @@ import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
 
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.model.valueset.ValueSetType
 
 class ValidationRuleTmpl {
 
@@ -89,6 +90,11 @@ def private static execRuleMethod (XValidationRule it, String modelObject) '''
             «val attribute = checkedAttribute»
             «val valueSetMethods = generatorConfig.valueSetMethods»
             «val valueSetType = GenerateValueSetType.mapFromSettings(valueSetMethods, GenerateValueSetType.GENERATE_UNIFIED)»
+            «IF !attribute.datatype.primitive && (attribute.valueSetType == ValueSetType.RANGE || attribute.valueSetType == ValueSetType.ENUM)»
+                if («modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).isEmpty() && «modelObject»«attribute.methodNameGetter»() == «attribute.datatypeHelper.nullExpression.sourcecode») {
+                    return «CONTINUE_VALIDATION»;
+                }
+            «ENDIF»
             if (!«modelObject»«attribute.getMethodNameGetAllowedValuesFor(valueSetType)»(«attribute.allowedValuesMethodParameter(GenerateValueSetType.GENERATE_BY_TYPE,valueSetType)»).contains(«modelObject»«attribute.methodNameGetter»())) {
                 // begin-user-code
                 ml.add(«methodNameCreateMessage»(context «FOR param : replacementParameters», null«ENDFOR»));
