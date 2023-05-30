@@ -34,7 +34,7 @@
         <site>
             <id>doc</id>
             <name>Faktor-IPS documentation</name>
-            <url>https://doc.faktorzehn.org/faktorips-maven-plugin/${project.version}/</url>
+            <url>https://doc.faktorzehn.org/faktorips-maven-plugin/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}/</url>
         </site>
     </distributionManagement>
 
@@ -131,6 +131,19 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>parse-version</id>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-plugin-plugin</artifactId>

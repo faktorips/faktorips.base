@@ -5,9 +5,9 @@ def jdkVersion = 'AdoptiumJDK17'
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
 def mavenDocFolder = './maven/faktorips-maven-plugin'
-def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
+def mavenDocDeployFolderTmpl = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin/{0}.{1}'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
 def archiveZipFileTmpl = 'org.faktorips.p2repository-{0}.zip'
 def archiveDeployDirTmpl = '/var/www/update.faktorzehn.org/faktorips/v{0}_{1}/downloads/faktorips-{0}.{1}'
@@ -49,6 +49,7 @@ pipeline {
                     // parse the version
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/)[0]
                     relaseVersion = params.RELEASE_VERSION
+                    mavenDocFolderVersion = 
                     
                     def xmlfile = readFile 'pom.xml'
                     oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
@@ -212,7 +213,8 @@ pipeline {
                     }
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
-                        replaceOnServer(docServer, '2004', "${mavenDocFolder}/${relaseVersion}", "${mavenDocDeployFolder}/${relaseVersion}")
+                        def mavenDocDeployFolder = MessageFormat.format(mavenDocDeployFolderTmpl, major, minor)
+                        replaceOnServer(docServer, '2004', "${mavenDocFolder}/${relaseVersion}", mavenDocDeployFolder)
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
                         replaceOnServer(docServer, '2004', xsdFolder, xsdDeployFolder)
