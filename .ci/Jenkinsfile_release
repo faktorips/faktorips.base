@@ -49,7 +49,6 @@ pipeline {
                     // parse the version
                     (_,major,minor,patch,kind) = (params.RELEASE_VERSION =~ /^(\d+)\.(\d+)\.(\d+)\.(rc\d\d|m\d\d|a\d{8}-\d\d|release)$/)[0]
                     relaseVersion = params.RELEASE_VERSION
-                    mavenDocFolderVersion = 
                     
                     def xmlfile = readFile 'pom.xml'
                     oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
