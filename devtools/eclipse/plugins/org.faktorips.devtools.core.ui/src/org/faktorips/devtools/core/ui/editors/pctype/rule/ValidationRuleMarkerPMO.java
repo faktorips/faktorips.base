@@ -74,8 +74,8 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         }
     }
 
-    public ValueDatatype getEnumDatatype() {
-        return markerUtil.getEnumDatatype();
+    public ValueDatatype getEnumDatatype(String id) {
+        return markerUtil.getEnumDatatype(id);
     }
 
     public boolean hasAvailableMarkers() {
@@ -142,7 +142,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
             if (illegalEntry) {
                 return NLS.bind(Messages.ValidationRuleMarkerPMO_Label_illegalEntry, id);
             } else if (pmo.hasAvailableMarkers()) {
-                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumDatatype(), getId());
+                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumDatatype(id), getId());
             } else {
                 return id;
             }
@@ -159,6 +159,11 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
         public String getLabel() {
             return label;
+        }
+
+        public String getLabelAndMarkerEnumName() {
+            String markerEnumName = pmo.getEnumDatatype(id).getName();
+            return label + " - " + markerEnumName;
         }
 
         public String getId() {
