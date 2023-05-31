@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.groovy.feature"
       label="%label"
-      version="22.12.12.qualifier"
+      version="22.12.12.release"
       provider-name="Faktor Zehn GmbH"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
