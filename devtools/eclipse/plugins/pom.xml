@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.faktorips</groupId>
         <artifactId>faktorips-devtools-eclipse</artifactId>
-        <version>22.12.12.release</version>
+        <version>22.12.13-SNAPSHOT</version>
     </parent>
 
     <artifactId>faktorips-devtools-eclipse-plugins</artifactId>
