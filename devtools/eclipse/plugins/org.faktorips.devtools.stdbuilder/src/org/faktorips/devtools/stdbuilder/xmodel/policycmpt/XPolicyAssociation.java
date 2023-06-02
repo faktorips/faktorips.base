@@ -60,7 +60,7 @@ public class XPolicyAssociation extends XAssociation {
                     IPolicyCmptTypeAssociation sharedAssociationHost = getAssociation()
                             .findSharedAssociationHost(getIpsProject());
                     resultingAssociations
-                            .add(getModelNode(sharedAssociationHost, XDetailToMasterDerivedUnionAssociation.class));
+                    .add(getModelNode(sharedAssociationHost, XDetailToMasterDerivedUnionAssociation.class));
                     resultingNames.add(sharedAssociationHost.getName());
                 }
             } else {
@@ -377,15 +377,6 @@ public class XPolicyAssociation extends XAssociation {
             throw new NullPointerException(
                     NLS.bind("PolicyCmptTypeAssociation {0} has no inverse association.", getAssociation()));
         }
-    }
-
-    /**
-     * Returns <code>true</code> if an inverse association is defined or if this association is a
-     * valid composition ( {@link #isMasterToDetail()} )
-     */
-    public boolean isGenerateCodeToSynchronizeInverseCompositionForRemove() {
-        return (hasInverseAssociation()
-                || getAssociation().isComposition() && ((IPolicyCmptType)getTargetType()).isDependantType());
     }
 
     /**

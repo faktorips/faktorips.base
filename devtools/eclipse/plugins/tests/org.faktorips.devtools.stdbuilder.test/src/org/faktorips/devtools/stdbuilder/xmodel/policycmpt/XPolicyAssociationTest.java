@@ -79,21 +79,6 @@ public class XPolicyAssociationTest {
         assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForAdd());
     }
 
-    @Test
-    public void testGenerateSynchronizeForRemove() {
-        doReturn(false).when(assoc).hasInverseAssociation();
-        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
-
-        // TODO fix with FIPS-1141
-        // assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
-
-        doReturn(false).when(assoc).hasInverseAssociation();
-        assertFalse(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
-
-        doReturn(true).when(assoc).hasInverseAssociation();
-        assertTrue(assoc.isGenerateCodeToSynchronizeInverseCompositionForRemove());
-    }
-
     public static <T> T myMock(Class<T> classToMock, String name, Answer<?> defaultAnswer) {
         return mock(classToMock, withSettings().defaultAnswer(defaultAnswer).name(name));
     }
@@ -142,7 +127,7 @@ public class XPolicyAssociationTest {
             XDetailToMasterDerivedUnionAssociation xDetailToMasterDerivedUnionAssociation = myMock(
                     XDetailToMasterDerivedUnionAssociation.class, inverseName, myAnswer);
             when(modelService.getModelNode(inverseAssociation, XDetailToMasterDerivedUnionAssociation.class, context))
-                    .thenReturn(xDetailToMasterDerivedUnionAssociation);
+            .thenReturn(xDetailToMasterDerivedUnionAssociation);
         }
 
         if (subsettedDU != null) {

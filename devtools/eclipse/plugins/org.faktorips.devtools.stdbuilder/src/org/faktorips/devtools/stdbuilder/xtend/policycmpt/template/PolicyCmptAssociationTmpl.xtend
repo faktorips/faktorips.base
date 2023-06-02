@@ -546,7 +546,7 @@ def private static remove (XPolicyAssociation it) '''
 '''
 
 def private static removeAndDetach (XPolicyAssociation it) '''
-    «IF generateCodeToSynchronizeInverseCompositionForRemove»
+    «IF hasInverseAssociation»
         if («fieldName».remove(objectToRemove)) {
             «detachRemovedObject(it)»
         }
@@ -555,19 +555,16 @@ def private static removeAndDetach (XPolicyAssociation it) '''
     «ENDIF»
 '''
 
-//TODO FIPS-1141 (7): delete the «IF hasInverseAssociation()» clause when fixed
 def private static detachRemovedObject (XPolicyAssociation it) '''
-    «IF hasInverseAssociation()»
-        «IF inverseAssociation.oneToMany»
-                objectToRemove.«inverseAssociation.methodNameRemove»(this);
+    «IF inverseAssociation.oneToMany»
+            objectToRemove.«inverseAssociation.methodNameRemove»(this);
+    «ELSE»
+        «IF inverseAssociation.typeAssociation»
+            if («castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameGetter»() == this) {
+                «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
+            }
         «ELSE»
-            «IF inverseAssociation.typeAssociation»
-                if («castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameGetter»() == this) {
-                    «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAdd»(null);
-                }
-            «ELSE»
-                «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
-            «ENDIF»
+            «castToImplementation(targetClassName, "objectToRemove")».«inverseAssociation.methodNameSetOrAddInternal»(null);
         «ENDIF»
     «ENDIF»
 '''
