@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -41,7 +41,7 @@ public abstract class AbstractConfigElementEditComposite<V extends IConfigElemen
     /**
      * Creates a {@link Label} whose width corresponds to the width of the broadest label of this
      * section.
-     * 
+     *
      * @param text The text for the label
      */
     protected void createLabel(String text) {
@@ -54,7 +54,11 @@ public abstract class AbstractConfigElementEditComposite<V extends IConfigElemen
         try {
             gc = new GC(this);
             int widthDefault = gc.stringExtent(Messages.ConfigElementEditComposite_defaultValue).x;
-            int widthValueSet = gc.stringExtent(Messages.ConfigElementEditComposite_valueSet).x;
+            String valueSetLabel = Messages.ConfigElementEditComposite_valueSet;
+            if (getProperty().getValueSet() != null && getProperty().getValueSet().isDerived()) {
+                valueSetLabel = ConfiguredValueSetEditComposite.PREFIX_DERIVED_VALUE_SET + valueSetLabel;
+            }
+            int widthValueSet = gc.stringExtent(valueSetLabel).x;
             return Math.max(widthDefault, widthValueSet);
         } finally {
             if (gc != null) {

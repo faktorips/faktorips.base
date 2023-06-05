@@ -39,6 +39,7 @@ import org.faktorips.devtools.model.valueset.IValueSet;
  */
 public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditComposite<IConfiguredValueSet> {
 
+    static final String PREFIX_DERIVED_VALUE_SET = "/ ";
     private AnyValueSetControl valueSetControl;
 
     public ConfiguredValueSetEditComposite(IPolicyCmptTypeAttribute property, IConfiguredValueSet propertyValue,
@@ -74,7 +75,7 @@ public class ConfiguredValueSetEditComposite extends AbstractConfigElementEditCo
     @Override
     protected void createLabel(String valueSetLabel) {
         if (getProperty().getValueSet() != null && getProperty().getValueSet().isDerived()) {
-            super.createLabel("/ " + valueSetLabel);
+            super.createLabel(PREFIX_DERIVED_VALUE_SET + valueSetLabel);
         } else {
             super.createLabel(valueSetLabel);
         }
