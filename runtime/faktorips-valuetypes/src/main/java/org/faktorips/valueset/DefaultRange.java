@@ -249,7 +249,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         return (isEmpty() && otherRange.isEmpty())
                 || (equals(lowerBound, otherRange.getLowerBound())
                         && equals(upperBound, otherRange.getUpperBound())
-                        && equals(step, otherRange.getStep()));
+                        && equals(step, otherRange.getStep())
+                        && equals(containsNull, otherRange.containsNull()));
     }
 
     /**
@@ -274,7 +275,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             int result = 17;
             result = result * 37 + lowerBound.hashCode();
             result = result * 37 + upperBound.hashCode();
-            return (step == null) ? result : result * 37 + step.hashCode();
+            result = (step == null) ? result : result * 37 + step.hashCode();
+            return result * 37 + (containsNull() ? 1 : 0);
         }
     }
 

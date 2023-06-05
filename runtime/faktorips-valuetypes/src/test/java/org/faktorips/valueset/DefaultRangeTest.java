@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -95,6 +96,22 @@ public class DefaultRangeTest {
         TestRange emptyLegacyRangeWithStep = new TestRange(10, 0, 1);
 
         assertThat(emptytRange.hashCode(), is(emptyLegacyRangeWithStep.hashCode()));
+    }
+
+    @Test
+    public void testEquals_WithAndWithoutNull() {
+        TestRange rangeWithNull = new TestRange(1, 5, 2, true);
+        TestRange rangeWithoutNull = new TestRange(1, 5, 2, false);
+
+        assertThat(rangeWithNull, is(not(rangeWithoutNull)));
+    }
+
+    @Test
+    public void testHashCode_WithAndWithoutNull() {
+        TestRange rangeWithNull = new TestRange(1, 5, 2, true);
+        TestRange rangeWithoutNull = new TestRange(1, 5, 2, false);
+
+        assertThat(rangeWithNull.hashCode(), is(not(rangeWithoutNull.hashCode())));
     }
 
     @Test
