@@ -34,7 +34,7 @@
         <site>
             <id>doc</id>
             <name>Faktor-IPS documentation</name>
-            <url>https://doc.faktorzehn.org/faktorips-maven-plugin/${parsedVersion.majorVersion}.${parsedVersion.minorVersion}${parsedVersion.qualifier?}/</url>
+            <url>https://doc.faktorzehn.org/faktorips-maven-plugin/</url>
         </site>
     </distributionManagement>
 
