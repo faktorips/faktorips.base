@@ -213,7 +213,7 @@ pipeline {
                     // deploy maven plugin doc
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         def mavenDocDeployFolder = MessageFormat.format(mavenDocDeployFolderTmpl, major, minor)
-                        replaceOnServer(docServer, '2004', "${mavenDocFolder}/${relaseVersion}", mavenDocDeployFolder)
+                        replaceOnServer(docServer, '2004', mavenDocFolder, mavenDocDeployFolder)
                         // deploy xsd schemas
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
                         replaceOnServer(docServer, '2004', xsdFolder, xsdDeployFolder)
