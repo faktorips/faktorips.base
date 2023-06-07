@@ -38,6 +38,14 @@ class Constants {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_ENUM"
     }
 
+    def static XML_TAG_STRINGLENGTH(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_TAG_STRINGLENGTH"
+    }
+
+    def static XML_TAG_MAXIMUM_LENGTH(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_TAG_MAXIMUM_LENGTH"
+    }
+
     def static XML_TAG_RANGE(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_RANGE"
     }

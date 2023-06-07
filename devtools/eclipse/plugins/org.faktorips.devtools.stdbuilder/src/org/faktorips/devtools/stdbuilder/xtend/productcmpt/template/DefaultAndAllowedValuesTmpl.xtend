@@ -238,7 +238,7 @@ class DefaultAndAllowedValuesTmpl {
                         valueSetElement.appendChild(valueElement);
                     }
                 «ENDIF»
-                «IF valueSetUnrestricted && rangeSupported»
+                «IF (valueSetUnrestricted || valueSetStringLength) && rangeSupported»
                     if («fieldNameValueSet» instanceof «qnameRange("?")») {
                         «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
                         «writeRange("range", it)»
@@ -246,12 +246,17 @@ class DefaultAndAllowedValuesTmpl {
                 «ELSEIF valueSetRange»
                         «writeRange(fieldNameValueSet, it)»
                 «ENDIF»
-                «IF valueSetUnrestricted && enumValueSetSupported»
+                «IF (valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported»
                     if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
                         «writeEnumValueSet»
                     }
                 «ELSEIF valueSetEnum»
                            «writeEnumValueSet»
+                «ENDIF»
+                «IF valueSetStringLength»
+                    if («fieldNameValueSet» instanceof «StringLengthValueSet») {
+                        «writeStringLengthValueSet»
+                    }
                 «ENDIF»
                 configuredValueSetElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE», «policyCmptNode.implClassName».«constantNamePropertyName»);
                 configuredValueSetElement.appendChild(valueSetElement);
@@ -279,6 +284,13 @@ class DefaultAndAllowedValuesTmpl {
             valueSetValuesElement.appendChild(valueElement);
         }
         valueSetElement.appendChild(valueSetValuesElement);
+    '''
+
+    def private static writeStringLengthValueSet (XPolicyAttribute it) '''
+        Element stringLengthElement = element.getOwnerDocument().createElement(«XML_TAG_STRINGLENGTH»);
+        stringLengthElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
+        «ValueToXmlHelper».«addValueToElement("Integer.toString((("+StringLengthValueSet+")"+fieldNameValueSet+").getMaximumLength())","stringLengthElement", XML_TAG_MAXIMUM_LENGTH)»;
+        valueSetElement.appendChild(stringLengthElement);
     '''
 
 }

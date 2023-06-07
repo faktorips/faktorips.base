@@ -39,7 +39,6 @@
         <setEntry value="com.ibm.icu@default:default"/>
         <setEntry value="com.jcraft.jsch@default:default"/>
         <setEntry value="com.opencsv@default:default"/>
-        <setEntry value="com.sun.activation.jakarta.activation@default:default"/>
         <setEntry value="com.sun.activation.javax.activation@default:default"/>
         <setEntry value="com.sun.jna.platform@default:default"/>
         <setEntry value="com.sun.jna@default:default"/>
@@ -361,6 +360,8 @@
         <setEntry value="org.faktorips.devtools.core.refactor@default:default"/>
         <setEntry value="org.faktorips.devtools.core.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.core@default:default"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:false"/>
+        <setEntry value="org.faktorips.devtools.htmlexport.ui.nl1@default:false"/>
         <setEntry value="org.faktorips.devtools.htmlexport.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.htmlexport@default:default"/>
         <setEntry value="org.faktorips.devtools.model.builder@default:default"/>
@@ -370,6 +371,7 @@
         <setEntry value="org.faktorips.devtools.model@1:true"/>
         <setEntry value="org.faktorips.devtools.stdbuilder.ui@default:default"/>
         <setEntry value="org.faktorips.devtools.stdbuilder@default:default"/>
+        <setEntry value="org.faktorips.devtools.tableconversion.nl1@default:false"/>
         <setEntry value="org.faktorips.devtools.tableconversion@default:default"/>
         <setEntry value="org.faktorips.dtflcommon@default:default"/>
         <setEntry value="org.faktorips.eclipse.emf.codegen@default:default"/>
@@ -381,9 +383,6 @@
         <setEntry value="org.faktorips.nls.devtools.model.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.nl1@default:false"/>
         <setEntry value="org.faktorips.nls.devtools.stdbuilder.ui.nl1@default:false"/>
-        <setEntry value="org.faktorips.devtools.htmlexport.ui.nl1@default:default"/>
-        <setEntry value="org.faktorips.devtools.htmlexport.nl1@default:default"/>
-        <setEntry value="org.faktorips.devtools.tableconversion.nl1@default:default"/>
         <setEntry value="org.faktorips.runtime.groovy@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.jakarta@default:default"/>
         <setEntry value="org.faktorips.runtime.xml.javax@default:default"/>
