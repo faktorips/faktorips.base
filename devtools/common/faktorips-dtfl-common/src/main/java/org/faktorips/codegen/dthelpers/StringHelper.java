@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ public class StringHelper extends AbstractDatatypeHelper {
 
     /**
      * Constructs a new helper for the given string datatype.
-     * 
+     *
      * @throws IllegalArgumentException if datatype is <code>null</code>.
      */
     public StringHelper(StringDatatype datatype) {
@@ -75,5 +75,10 @@ public class StringHelper extends AbstractDatatypeHelper {
     @Override
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("\"\"");
+    }
+
+    @Override
+    protected JavaCodeFragment nullExpressionForEnumValueSet() {
+        return new JavaCodeFragment("null");
     }
 }
