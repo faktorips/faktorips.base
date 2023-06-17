@@ -16,6 +16,7 @@
         <module>thirdparty</module>
         <module>2022-12</module>
         <module>2023-03</module>
+        <module>2023-06</module>
     </modules>
 
     <build>
