@@ -11,7 +11,6 @@
 package org.faktorips.datatype.classtypes;
 
 import org.faktorips.datatype.ValueClassNameDatatype;
-import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Datatype for Strings.
@@ -37,15 +36,5 @@ public class StringDatatype extends ValueClassNameDatatype {
     @Override
     public boolean supportsCompare() {
         return true;
-    }
-
-    @Override
-    public String getDefaultValue() {
-        return IpsStringUtils.EMPTY;
-    }
-
-    @Override
-    public boolean isNull(String value) {
-        return value == null || value.isEmpty();
     }
 }

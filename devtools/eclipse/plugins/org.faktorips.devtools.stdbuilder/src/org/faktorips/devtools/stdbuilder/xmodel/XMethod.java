@@ -28,7 +28,6 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.model.type.IMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet.FormulaCompiling;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
-import org.faktorips.runtime.internal.IpsStringUtils;
 
 public class XMethod extends AbstractGeneratorModelNode {
 
@@ -124,8 +123,6 @@ public class XMethod extends AbstractGeneratorModelNode {
             // getDefaultValue returns null if the default value should be "null"
             if (defaultValue == null) {
                 return "null";
-            } else if (IpsStringUtils.EMPTY.equals(defaultValue)) {
-                return "\"\"";
             } else {
                 return defaultValue;
             }

@@ -72,13 +72,4 @@ public class StringHelper extends AbstractDatatypeHelper {
         return new JavaCodeFragment(fieldName);
     }
 
-    @Override
-    public JavaCodeFragment nullExpression() {
-        return new JavaCodeFragment("\"\"");
-    }
-
-    @Override
-    protected JavaCodeFragment nullExpressionForEnumValueSet() {
-        return new JavaCodeFragment("null");
-    }
 }

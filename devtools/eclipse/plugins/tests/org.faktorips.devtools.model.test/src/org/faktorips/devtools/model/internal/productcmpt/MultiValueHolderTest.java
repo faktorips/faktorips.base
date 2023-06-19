@@ -14,7 +14,6 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -70,8 +69,7 @@ public class MultiValueHolderTest {
 
         ArrayList<ISingleValueHolder> splitMultiDefaultValues = factory.splitMultiDefaultValues(parent, defaultValue);
 
-        assertEquals(1, splitMultiDefaultValues.size());
-        assertThat(splitMultiDefaultValues.get(0).getValue().getContent(), is(nullValue()));
+        assertEquals(0, splitMultiDefaultValues.size());
     }
 
     @Test
@@ -118,8 +116,7 @@ public class MultiValueHolderTest {
     public void testGetSplitMultiValue_empty() throws Exception {
         String[] multiValue = MultiValueHolder.Factory.getSplitMultiValue("");
 
-        assertEquals(1, multiValue.length);
-        assertThat(multiValue[0], is(nullValue()));
+        assertEquals(0, multiValue.length);
     }
 
     @Test

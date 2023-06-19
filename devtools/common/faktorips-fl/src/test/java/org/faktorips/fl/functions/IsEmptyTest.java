@@ -10,10 +10,7 @@
 
 package org.faktorips.fl.functions;
 
-import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,23 +48,6 @@ public class IsEmptyTest extends FunctionAbstractTest {
     }
 
     @Test
-    public void testStringEmpty() throws Exception {
-        execAndTestSuccessfull("ISEMPTY(\"\")", true);
-    }
-
-    public void testStringNull() throws Exception {
-        registerFunction(new AbstractBaseFlFunction<>("STRINGNULL", "a null string", Datatype.STRING, new Datatype[0]) {
-
-            @Override
-            public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
-                return new CompilationResultImpl("((String)null)", Datatype.STRING);
-            }
-
-        });
-        execAndTestSuccessfull("ISEMPTY(STRINGNULL())", true);
-    }
-
-    @Test
     public void testInt() throws Exception {
         execAndTestSuccessfull("ISEMPTY(1)", false);
     }
@@ -89,9 +69,8 @@ public class IsEmptyTest extends FunctionAbstractTest {
     public void testParameter() throws Exception {
         execAndTestSuccessfull("ISEMPTY(param)", true, new String[] { "param" }, new Datatype[] { Datatype.STRING },
                 new Object[] { null }, Datatype.PRIMITIVE_BOOLEAN);
-        execAndTestSuccessfull("ISEMPTY(param)", true, new String[] { "param" }, new Datatype[] { Datatype.STRING },
-                new Object[] { "" }, Datatype.PRIMITIVE_BOOLEAN);
         execAndTestSuccessfull("ISEMPTY(param)", false, new String[] { "param" }, new Datatype[] { Datatype.STRING },
                 new Object[] { "Foo" }, Datatype.PRIMITIVE_BOOLEAN);
     }
+
 }
