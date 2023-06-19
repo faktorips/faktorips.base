@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.ButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.MultiValueTextField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
@@ -289,7 +289,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      */
     private void createMultiValueDefaultField() {
         Text multiValueText = getToolkit().createText(defaultEditFieldPlaceholder);
-        defaultValueField = new MultiValueTextField(multiValueText);
+        defaultValueField = new TextField(multiValueText);
         multiValueText.setToolTipText(Messages.AttributeEditDialog_hint_multiValueDefault);
     }
 
@@ -301,21 +301,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     .findOverwrittenAttribute(ipsProject);
             if (overwrittenAttribute != null) {
                 ((IpsModel)IIpsModel.get())
-                        .executeModificationsWithSingleEvent(
-                                new SingleEventModification<>(attribute.getIpsSrcFile()) {
+                .executeModificationsWithSingleEvent(
+                        new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
-                                    @Override
-                                    protected boolean execute() {
-                                        attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                        attribute.setModifier(overwrittenAttribute.getModifier());
-                                        attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                        attribute.setMultiValueAttribute(overwrittenAttribute
-                                                .isMultiValueAttribute());
-                                        attribute.setCategory(overwrittenAttribute.getCategory());
-                                        attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
-                                        return true;
-                                    }
-                                });
+                            @Override
+                            protected boolean execute() {
+                                attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                attribute.setModifier(overwrittenAttribute.getModifier());
+                                attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                attribute.setMultiValueAttribute(overwrittenAttribute
+                                        .isMultiValueAttribute());
+                                attribute.setCategory(overwrittenAttribute.getCategory());
+                                attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
+                                return true;
+                            }
+                        });
             }
         }
         ValueDatatype newDatatype = attribute.findDatatype(ipsProject);

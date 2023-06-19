@@ -98,12 +98,6 @@ public class UnrestrictedValueSetTest {
         assertThat(new UnrestrictedValueSet<Integer>(true).toString(), is("UnrestrictedValueSet"));
     }
 
-    @Test
-    public void testContainsEmptyString() throws Exception {
-        assertThat(new UnrestrictedValueSet<String>(false).contains(""), is(false));
-        assertThat(new UnrestrictedValueSet<String>(true).contains(""), is(true));
-    }
-
     private enum TestEnum {
         TEST_A,
         TEST_B,

@@ -46,21 +46,16 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
     }
 
     /**
-     * Returns {@code true} if the given value is not {@code null}, a {@link NullObject} or in case
-     * of a {@link String} data type not empty. The return value for {@code null} is dependent on
-     * the {@code containsNull} constructor parameter.
+     * Returns {@code true} if the given value is not {@code null} or a {@link NullObject}. The
+     * return value for {@code null} is dependent on the {@code containsNull} constructor parameter.
      */
     @Override
     public boolean contains(T value) {
-        if (value == null || value instanceof NullObject || isStringDatatypeAndEmpty(value)) {
+        if (value == null || value instanceof NullObject) {
             return containsNull;
         } else {
             return true;
         }
-    }
-
-    private boolean isStringDatatypeAndEmpty(T value) {
-        return value instanceof String && ((String)value).isEmpty();
     }
 
     @Override

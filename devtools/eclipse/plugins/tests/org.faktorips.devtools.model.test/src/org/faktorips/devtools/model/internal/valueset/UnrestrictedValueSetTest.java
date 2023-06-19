@@ -324,15 +324,6 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         assertThat(u2.compareTo(u1), is(1));
     }
 
-    @Test
-    public void testStringDatatypeEmpty() {
-        IUnrestrictedValueSet u1 = createUnrestricted(true);
-        IUnrestrictedValueSet u2 = createUnrestricted(false);
-
-        assertThat(u1.containsValue("", ipsProject), is(true));
-        assertThat(u2.containsValue("", ipsProject), is(false));
-    }
-
     private IUnrestrictedValueSet createUnrestricted(boolean containsNull) {
         return new UnrestrictedValueSet(attr, "1", containsNull);
     }

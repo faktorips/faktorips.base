@@ -304,10 +304,12 @@ public class MultiValueHolder extends AbstractValueHolder<List<ISingleValueHolde
         }
 
         public static String[] getSplitMultiValue(String content) {
-            if (content == null || IpsStringUtils.isBlank(content)) {
+            if (content == null) {
                 return new String[] { null };
             }
-
+            if (IpsStringUtils.isBlank(content)) {
+                return new String[0];
+            }
             String nullPresentation = IIpsModelExtensions.get().getModelPreferences().getNullPresentation();
             return Arrays.stream(content.split(MULTI_VALUE_SPLIT_REGEX))
                     .map(s -> nullPresentation.equalsIgnoreCase(s.trim()) ? null : s.trim()).toArray(String[]::new);
