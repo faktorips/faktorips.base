@@ -18,8 +18,7 @@
     <properties>
         <bsh.version>2.0b4</bsh.version>
         <apache-extras-bsh.version>2.0b6</apache-extras-bsh.version>
-        <commons-io.version>2.11.0</commons-io.version>
-        <guava.version>31.1-jre</guava.version>
+        <commons-io.version>2.13.0</commons-io.version>
         <osgi-framework.version>1.9.0</osgi-framework.version>
         <osgi-util-tracker.version>1.5.4</osgi-util-tracker.version>
     </properties>
@@ -75,11 +74,6 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.osgi</groupId>
