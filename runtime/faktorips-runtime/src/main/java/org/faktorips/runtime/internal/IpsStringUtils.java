@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -66,9 +66,9 @@ public final class IpsStringUtils {
     /**
      * Trims the parameters, if the are not {@code null} and checks for equality using
      * {@link Objects#equals(Object, Object)}.
-     * 
-     * @param s1 an string
-     * @param s2 an string to be compared with a for equality
+     *
+     * @param s1 a string
+     * @param s2 another string to be compared with a for equality
      * @return {@code true} if the arguments are equal to each other and {@code false} otherwise
      */
     public static boolean trimEquals(String s1, String s2) {
@@ -78,9 +78,20 @@ public final class IpsStringUtils {
     }
 
     /**
+     * Compares two strings, treating {@code null} as {@link #EMPTY}.
+     *
+     * @param s1 a string
+     * @param s2 another string
+     * @return whether both strings are equal
+     */
+    public static boolean equalsNullAsEmpty(String s1, String s2) {
+        return Objects.equals(s1 == null ? EMPTY : s1, s2 == null ? EMPTY : s2);
+    }
+
+    /**
      * Joins the elements of the provided {@link Collection} into a single String containing the
      * provided elements with the given separator. No delimiter is added before or after the list.
-     * 
+     *
      * @param collection the Collection of values to join together, may be {@code null}
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
@@ -92,7 +103,7 @@ public final class IpsStringUtils {
     /**
      * Joins the elements of the provided {@link Iterable} into a single String containing the
      * provided elements with the given separator. No delimiter is added before or after the list.
-     * 
+     *
      * @param iterable the Collection of values to join together, may be {@code null}
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
@@ -108,7 +119,7 @@ public final class IpsStringUtils {
      * Joins the elements of the provided {@link Iterable} into a single String containing the
      * provided elements with the default separator {@value StringBuilderJoiner#DEFAULT_SEPARATOR}.
      * No delimiter is added before or after the list.
-     * 
+     *
      * @param iterable the Collection of values to join together, may be {@code null}
      * @return the joined String, empty if the collection is {@code null}
      */
@@ -120,7 +131,7 @@ public final class IpsStringUtils {
      * Joins the elements of the provided array into a single String containing the provided
      * elements with the default separator {@value StringBuilderJoiner#DEFAULT_SEPARATOR}. No
      * delimiter is added before or after the list.
-     * 
+     *
      * @param objectArray the array of values to join together, may be {@code null}
      * @return the joined String, empty if the collection is {@code null}
      */
@@ -131,7 +142,7 @@ public final class IpsStringUtils {
     /**
      * Joins the elements of the provided array into a single String containing the provided
      * elements with the given separator. No delimiter is added before or after the list.
-     * 
+     *
      * @param objectArray the array of values to join together, may be {@code null}
      * @param separator the separator to use, {@code null} treated as ""
      * @return the joined String, empty if the collection is {@code null}
@@ -145,7 +156,7 @@ public final class IpsStringUtils {
      * provided elements, converted to String with the given {@code toString} {@link Function}, with
      * the default separator {@value StringBuilderJoiner#DEFAULT_SEPARATOR}. No delimiter is added
      * before or after the list.
-     * 
+     *
      * @param iterable the Collection of values to join together, may be {@code null}
      * @param toString the {@link Function} to convert an element from the {@link Iterable} to a
      *            String
@@ -162,7 +173,7 @@ public final class IpsStringUtils {
      * Joins the elements of the provided {@link Iterable} into a single String containing the
      * provided elements, converted to String with the given {@code toString} {@link Function}, with
      * the given separator. No delimiter is added before or after the list.
-     * 
+     *
      * @param iterable the Collection of values to join together, may be {@code null}
      * @param separator the separator to use, {@code null} treated as ""
      * @param toString the {@link Function} to convert an element from the {@link Iterable} to a
