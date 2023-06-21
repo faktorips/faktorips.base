@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
 
 /**
  * Default implementation of {@link IBaseMethod}
- * 
+ *
  * @author frank
  */
 public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
@@ -182,6 +182,12 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
             msgList.add(new Message(IBaseMethod.MSGCODE_MULTIPLE_USE_OF_SAME_PARAMETER_NAME, text, Message.ERROR,
                     objectProperties));
         }
+    }
+
+    @Override
+    public void initFromXml(Element element) {
+        super.initFromXml(element);
+        removeDeprecationWithoutChangeEvent();
     }
 
     @Override

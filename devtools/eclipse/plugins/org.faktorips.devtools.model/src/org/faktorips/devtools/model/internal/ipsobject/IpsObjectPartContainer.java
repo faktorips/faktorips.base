@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,6 +37,8 @@ import org.faktorips.devtools.model.internal.IpsElement;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ValidationResultCache;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
+import org.faktorips.devtools.model.internal.method.BaseMethod;
+import org.faktorips.devtools.model.internal.method.Method;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -72,9 +74,9 @@ import org.w3c.dom.NodeList;
  * This base class provides the implementations required by the interfaces {@link IDescribedElement}
  * and {@link ILabeledElement}. Therefore, subclasses are able to receive multi-language support
  * just by implementing the corresponding interfaces.
- * 
+ *
  * @see IIpsObjectPartContainer
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class IpsObjectPartContainer extends IpsElement implements IIpsObjectPartContainer {
@@ -232,10 +234,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Informs the entire system that this model object has been changed. Subclasses should fire
      * this event if any property of the object changes.
-     * 
+     *
      * @param oldValue The old value of the property.
      * @param newValue The new value of the property.
-     * 
+     *
      * @return A flag indicating whether the valueChanged event has been fired successfully (it does
      *             not if the old value and new value are considered to be equal).
      */
@@ -251,10 +253,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Informs the entire system that this model object has been changed. Subclasses should fire
      * this event if any property of the object changes.
-     * 
+     *
      * @param oldValue The old value of the property.
      * @param newValue The new value of the property.
-     * 
+     *
      * @return A flag indicating whether the valueChanged event has been fired successfully (it does
      *             not if the old value and new value are considered to be equal).
      */
@@ -298,7 +300,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Called when the object's state has changed to inform about this.
-     * 
+     *
      * @param propertyChangeEvent the propertyChangeEvent details the change.
      */
     protected abstract void objectHasChanged(PropertyChangeEvent propertyChangeEvent);
@@ -346,9 +348,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Transforms the parts this container contains to XML elements and adds them to the given XML
      * element.
-     * 
+     *
      * @param doc XML document used to create new elements
-     * 
+     *
      * @param element the element to which the part elements should be added
      */
     protected void partsToXml(Document doc, Element element) {
@@ -367,7 +369,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * <strong>Subclassing:</strong><br>
      * The default implementation always returns true.
-     * 
+     *
      * @param part the {@link IIpsObjectPart} in question to save
      */
     protected boolean isPartSavedToXml(IIpsObjectPart part) {
@@ -429,7 +431,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * The method is called by the initFromXml() method, so that subclasses can load their
      * properties from the XML element passed as parameter.
-     * 
+     *
      * @param id The value for the id-property of the IPS object part or null, if the id should be
      *            generated automatically (preferred).
      */
@@ -452,7 +454,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * Note: Better do not use this method. The extension property should be initialized by
      * {@link ExtensionPropertyHandler#initFromXml(Element)}.
-     * 
+     *
      * @param propertyId id of the extension property
      * @param extPropertyValue extension property value
      */
@@ -474,7 +476,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * The initialization also validates that there is no duplicate ID within any
      * {@link IpsObjectPartContainer}. If a duplicated ID is recognized it throws a
      * {@link RuntimeException}.
-     * 
+     *
      */
     protected void initPartContainersFromXml(Element element) {
         Map<String, IIpsObjectPart> idPartMap = createIdPartMap();
@@ -566,7 +568,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * part of the parent before the XML initialization and is still found in the XML file (the
      * part's id is found in the XML file). To avoid a StackOverflow it is important NOT to call the
      * {@link #objectHasChanged()} method after adding a part!
-     * 
+     *
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
     protected final boolean addPart(IIpsObjectPart part) {
@@ -590,7 +592,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This method is called by {@link #addPart(IIpsObjectPart)} which is called during XML
      * initialization. It is important NOT to call the {@link #objectHasChanged()} method after
      * adding a part!
-     * 
+     *
      * @param part The {@link IIpsObjectPart} to add to this container.
      */
     protected abstract boolean addPartThis(IIpsObjectPart part);
@@ -601,7 +603,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * <p>
      * Subclasses may extend this method by using the method
      * {@link #removePartThis(IIpsObjectPart)}.
-     * 
+     *
      * @param part The {@link IIpsObjectPart} to remove from this container.
      */
     protected final boolean removePart(IIpsObjectPart part) {
@@ -619,7 +621,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Subclass implementation that can be used to extend the method
      * {@link #removePart(IIpsObjectPart)}.
-     * 
+     *
      * @param part The {@link IIpsObjectPart} to remove from this container.
      */
     protected abstract boolean removePartThis(IIpsObjectPart part);
@@ -627,7 +629,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * This method is called during the process of initialization from XML to create a new part
      * object for the given element with the given id.
-     * 
+     *
      * @param xmlTag The XML tag that describes the part to create.
      * @param id The unique id for the new part.
      */
@@ -657,7 +659,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * necessary to notify any change listener about the newly added part!
      * <p>
      * Should return <code>null</code> if the XML tag is unknown.
-     * 
+     *
      * @param xmlTag The XML tag that describes the part to create.
      * @param id The unique id for the new part.
      */
@@ -666,7 +668,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Creates a new {@link IIpsObjectPart} of the given type. If the type is not supported,
      * <code>null</code> is returned.
-     * 
+     *
      * @param partType The published interface of the IPS object part that should be created.
      */
     @SuppressWarnings("unchecked")
@@ -690,7 +692,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * This class is not type safe because it was to late to implement generics correctly. However
      * the implementer needs to ensure that the returned object could safely casted to
      * <code>partType</code>.
-     * 
+     *
      * @param partType The published interface of the IPS object part that should be created.
      */
     protected abstract IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType);
@@ -727,7 +729,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * This method returns the number of supported languages which the <em>IpsProject</em> of this
      * {@link IpsObjectPartContainer} supports.
-     * 
+     *
      * @return the number of supported languages.
      */
     private int getLanguageCount() {
@@ -783,7 +785,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Unsafe cast required. We only use the casted object for calling
      * {@link ICustomValidation#validate(IIpsObjectPartContainer, IIpsProject)}.
-     * 
+     *
      * The {@link CustomValidationsResolver} can only provide custom validations of arbitrary type
      * ("?"). This is due to the fact, that it would require a type parameter that is both a
      * subclass of IIpsObjectPartContainer and at the same time a superclass of the requested class.
@@ -856,7 +858,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
      * Returns true if this <code>IpsObjectPartContainer</code> is part of an
      * <code>IIpsSrcFile</code> that is marked as historic. If no {@link IIpsSrcFile} can be found,
      * false is returned.
-     * 
+     *
      * @return True only if the corresponding {@link IIpsSrcFile} is located in an existing IPS
      *             Root, false otherwise.
      */
@@ -874,14 +876,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Validates the object and reports invalid states by adding validation messages to the list.
      * This is an application of the collecting parameter pattern.
-     * 
+     *
      * @param list The message list containing all validation messages - if you overwrite this
      *            method you must add your validation messages to this list.
      * @param ipsProject The context IPS project. The validation might be called from a different
      *            IPS project than the actual instance of this validatable belongs to. In this case
      *            it is necessary to use the IPS project of the caller for finder-methods that are
      *            used within the implementation of this method.
-     * 
+     *
      * @throws IpsException Subclasses may wrap any occurring exceptions into a CoreException and
      *             propagate it trough this method.
      * @throws NullPointerException if list is <code>null</code>.
@@ -918,7 +920,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Helper to easily add details to the given map.
-     * 
+     *
      * @param details The map of dependencies to the list of details.
      * @param dependency The dependency to add the details for
      * @param part The details part
@@ -934,7 +936,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     /**
      * Helper to easily add details to the given map.
-     * 
+     *
      * @param details The map of dependencies to the list of details.
      * @param dependency The dependency to add the details for
      * @param newDependencyDetail The new dependency detail that should be added
@@ -1188,9 +1190,9 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Sets the Version since which this part is available in the model using a version string
      * representation.
-     * 
+     *
      * @param version The version-string that should be set as since-version
-     * 
+     *
      * @see IVersionControlledElement#setSinceVersionString(String)
      */
     public void setSinceVersionString(String version) {
@@ -1206,10 +1208,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Returns the version since which this part is available as a string. The version was set by
      * {@link #setSinceVersionString(String)}.
-     * 
+     *
      * @return the version since which this element is available
      * @see #getSinceVersion()
-     * 
+     *
      * @see IVersionControlledElement#getSinceVersionString()
      */
     public String getSinceVersionString() {
@@ -1219,10 +1221,10 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Returns <code>true</code> if the version set by {@link #setSinceVersionString(String)} is a
      * valid version according to the configured {@link IVersionProvider}.
-     * 
+     *
      * @return <code>true</code> if the version is correct and {@link #getSinceVersion()} would
      *             return a valid version. Otherwise <code>false</code>.
-     * 
+     *
      * @see IVersionControlledElement#isValidSinceVersion()
      */
     public boolean isValidSinceVersion() {
@@ -1237,11 +1239,11 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     /**
      * Returns the version since which this part is available. The version was set by
      * {@link #setSinceVersionString(String)}. Returns <code>null</code> if no since version is set.
-     * 
+     *
      * @return the version since which this element is available
      * @throws IllegalArgumentException if the current since version is no valid version according
      *             to the configured {@link IVersionProvider}
-     * 
+     *
      * @see #isValidSinceVersion()
      * @see IVersionControlledElement#getSinceVersion()
      */
@@ -1274,6 +1276,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         if (isDeprecated && deprecation == null) {
             newDeprecation();
         }
+    }
+
+    /**
+     * Removes deprecation without creating a change event. This method is intended to be used when
+     * initializing a {@link BaseMethod}, so that it does not contain the parent {@link Method}'s
+     * deprecation.
+     */
+    protected void removeDeprecationWithoutChangeEvent() {
+        deprecated = false;
+        deprecation = null;
     }
 
 }
