@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,6 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -241,6 +243,59 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(copy.isOverloadsFormula());
         assertEquals("foo", copy.getCategory());
         assertFalse(copy.isChangingOverTime());
+    }
+
+    @Test
+    public void testToXmlDeprecation() {
+        method = productCmptType.newProductCmptTypeMethod(); // => id=1, because it's the second
+        // method
+        method.setName("getAge");
+        method.setModifier(Modifier.PUBLIC);
+        method.setDatatype("Decimal");
+        method.setFormulaSignatureDefinition(true);
+        method.setFormulaMandatory(false);
+        method.setAbstract(true);
+        method.setFormulaName("Premium");
+        IParameter param = method.newParameter();
+        param.setName("p");
+        param.setDatatype("Decimal");
+        method.setOverloadsFormula(false);
+        method.setCategory("foo");
+        method.setChangingOverTime(false);
+        ((ProductCmptTypeMethod)method).setDeprecated(true);
+        method.getDeprecation().setSinceVersionString("1.2.3");
+        method.getDeprecation().setDescriptionText(Locale.ENGLISH, "test deprecation");
+
+        Element element = method.toXml(newDocument());
+
+        IProductCmptTypeMethod copy = productCmptType.newProductCmptTypeMethod();
+        copy.initFromXml(element);
+        assertTrue(copy.isFormulaSignatureDefinition());
+        assertFalse(copy.isFormulaMandatory());
+        assertEquals("Premium", copy.getFormulaName());
+        IParameter[] copyParams = copy.getParameters();
+        assertEquals(method.getId(), copy.getId());
+        assertEquals("getAge", copy.getName());
+        assertEquals("Decimal", copy.getDatatype());
+        assertEquals(Modifier.PUBLIC, copy.getModifier());
+        assertTrue(copy.isAbstract());
+        assertEquals(1, copyParams.length);
+        assertEquals("p", copyParams[0].getName());
+        assertEquals("Decimal", copyParams[0].getDatatype());
+        assertFalse(copy.isOverloadsFormula());
+        assertEquals("foo", copy.getCategory());
+        assertFalse(copy.isChangingOverTime());
+        assertTrue(copy.isDeprecated());
+        assertEquals("1.2.3", copy.getDeprecation().getSinceVersionString());
+        assertEquals("test deprecation", copy.getDeprecation().getDescriptionText(Locale.ENGLISH));
+        copy.getDeprecation().setDescriptionText(Locale.ENGLISH, "test deprecation again");
+
+        Element element2 = copy.toXml(newDocument());
+
+        IProductCmptTypeMethod copy2 = productCmptType.newProductCmptTypeMethod();
+        copy2.initFromXml(element2);
+        assertEquals("1.2.3", copy2.getDeprecation().getSinceVersionString());
+        assertEquals("test deprecation again", copy2.getDeprecation().getDescriptionText(Locale.ENGLISH));
     }
 
     @Test
