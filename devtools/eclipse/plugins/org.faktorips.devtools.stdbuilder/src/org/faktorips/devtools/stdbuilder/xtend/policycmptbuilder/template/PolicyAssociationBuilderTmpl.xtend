@@ -110,14 +110,14 @@ class PolicyAssociationBuilderTmpl{
         «ENDIF»
     '''
 
-    def private static standardAssociationSetter(XPolicyBuilder builder, XPolicyBuilderAssociation association, boolean isSuper, XPolicyBuilder it) '''
+    def private static standardAssociationSetter(XPolicyBuilder it, XPolicyBuilderAssociation association, boolean isSuper, XPolicyBuilder targetBuilder) '''
         /**
-        *«localizedJDoc("METHOD_ASS_STD", policyName, association.name)»
+        *«localizedJDoc("METHOD_ASS_STD", targetBuilder.policyName, association.name)»
         *
         * @generated
         */
         «IF isSuper || association.needOverrideForConstrainNewChildMethod && association.targetSameAsOverwrittenAssociationsTarget»@Override«ENDIF»
-        public «builder.implClassName» «association.method(association.methodName, policyPublishedInterfaceName, "targetPolicy")»{
+        public «implClassName» «association.method(association.methodName, targetBuilder.policyPublishedInterfaceName, "targetPolicy")»{
             «IF isSuper»
                 super.«association.methodName»(targetPolicy);
             «ELSE»
@@ -128,54 +128,54 @@ class PolicyAssociationBuilderTmpl{
     '''
 
     //Association target setter for generic subtype of the target. see associationEvaluation. super:wether this is for inherited associations
-    def private static associationSetterWithType(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder it) '''
+    def private static associationSetterWithType(XPolicyBuilder it, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder targetBuilder) '''
         /**
-        *«localizedJDoc("METHOD_ASS_TYPE", policyName,  association.name)»
+        *«localizedJDoc("METHOD_ASS_TYPE", targetBuilder.policyName,  association.name)»
         *
         * @generated
         */
         «IF isSuper || association.needOverrideForConstrainNewChildMethod && association.targetSameAsOverwrittenAssociationsTarget»@Override«ENDIF»
-        public «returnType(sourceBuilder, multi, true, it)» «association.methodName»(«targetBuilderType(multi, it)» targetBuilder){
+        public «returnType(it, multi, true, targetBuilder)» «association.methodName»(«targetBuilderType(multi, targetBuilder)» targetBuilder){
             «IF isSuper»
                 super.«association.methodName»(targetBuilder);
             «ELSE»
                 «getResult()».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»);
             «ENDIF»
-            return «returnValue(multi, it)»;
+            return «returnValue(multi, targetBuilder)»;
         }
     '''
 
     // Create and set association target for non abstract targets
-    def private static associationSetter(XPolicyBuilder sourceBuilder, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder it) '''
+    def private static associationSetter(XPolicyBuilder it, XPolicyBuilderAssociation association, boolean multi, boolean isSuper, XPolicyBuilder targetBuilder) '''
         /**
-        *«localizedJDoc("METHOD_ASS", policyName, association.name)»
+        *«localizedJDoc("METHOD_ASS", targetBuilder.policyName, association.name)»
         *
         * @generated
         */
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.overwrittenTargetNotAbstract)» @Override «ENDIF»
-        public «returnType(sourceBuilder, multi, false, it)» «association.method(association.methodName)»{
+        public «returnType(it, multi, false, targetBuilder)» «association.method(association.methodName)»{
             «IF isSuper»
                 super.«association.methodName»();
                 return done();
             «ELSE»
-                «IF generatePublishedInterfaces»
-                    «implClassName» targetBuilder = new «factoryImplClassName»().«builder()»;
+                «IF targetBuilder.generatePublishedInterfaces»
+                    «targetBuilder.implClassName» targetBuilder = new «targetBuilder.factoryImplClassName»().«builder()»;
                 «ELSE»
-                    «implClassName» targetBuilder = «typeImplClassName».«builder()»;
+                    «targetBuilder.implClassName» targetBuilder = «targetBuilder.typeImplClassName».«builder()»;
                 «ENDIF»
                 «getResult()».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»);
-                return «returnValue(multi, it)»;
+                return «returnValue(multi, targetBuilder)»;
             «ENDIF»
         }
 
-        «IF configured»
+        «IF targetBuilder.configured»
             /**
-            *«localizedJDoc("METHOD_ASS_PROD", policyName, association.name)»
+            *«localizedJDoc("METHOD_ASS_PROD", targetBuilder.policyName, association.name)»
             *
             * @generated
             */
             «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.overwrittenNotAbstractConfigured)» @Override «ENDIF»
-            public «returnType(sourceBuilder, multi, false, it)» «association.method(association.methodName, "String", "productCmptId")»{
+            public «returnType(it, multi, false, targetBuilder)» «association.method(association.methodName, "String", "productCmptId")»{
                 «IF isSuper»
                     super.«association.methodName»(productCmptId);
                     return done();
@@ -183,36 +183,36 @@ class PolicyAssociationBuilderTmpl{
                     if(«getRepository» == null) {
                         throw new «RuntimeException»("«localizedText("EXCEPTION_NO_REPOSITORY")»");
                     }
-                    «implClassName» targetBuilder = null;
-                    «IF sourceBuilder.configured && productCmptNode.changingOverTime»
+                    «targetBuilder.implClassName» targetBuilder = null;
+                    «IF configured && targetBuilder.productCmptNode.changingOverTime»
                         if(«getResult».getEffectiveFromAsCalendar() != null){
-                            «IF generatePublishedInterfaces»
-                                targetBuilder = new «factoryImplClassName»().«builder(getRepository, "productCmptId", getResult + ".getEffectiveFromAsCalendar()")»;
+                            «IF targetBuilder.generatePublishedInterfaces»
+                                targetBuilder = new «targetBuilder.factoryImplClassName»().«builder(getRepository, "productCmptId", getResult + ".getEffectiveFromAsCalendar()")»;
                             «ELSE»
-                                targetBuilder = «typeImplClassName».«builder(getRepository, "productCmptId", getResult + ".getEffectiveFromAsCalendar()")»;
+                                targetBuilder = «targetBuilder.typeImplClassName».«builder(getRepository, "productCmptId", getResult + ".getEffectiveFromAsCalendar()")»;
                             «ENDIF»
                         } else{
                     «ENDIF»
-                        «IF generatePublishedInterfaces»
-                            targetBuilder = new «factoryImplClassName»().«builder(getRepository, "productCmptId")»;
+                        «IF targetBuilder.generatePublishedInterfaces»
+                            targetBuilder = new «targetBuilder.factoryImplClassName»().«builder(getRepository, "productCmptId")»;
                         «ELSE»
-                            targetBuilder = «typeImplClassName».«builder(getRepository, "productCmptId")»;
+                            targetBuilder = «targetBuilder.typeImplClassName».«builder(getRepository, "productCmptId")»;
                         «ENDIF»
-                    «IF sourceBuilder.configured && productCmptNode.changingOverTime»
+                    «IF configured && targetBuilder.productCmptNode.changingOverTime»
                         }
                     «ENDIF»
                     «getResult».«association.methodNameSetOrAdd»(targetBuilder.«getResult»);
-                    return «returnValue(multi, it)»;
+                    return «returnValue(multi, targetBuilder)»;
                 «ENDIF»
             }
         «ENDIF»
     '''
 
     //Associtionbuilder returns the target policy builder while associatonSbuilder returns the origin builder again.
-    def private static returnType(XPolicyBuilder builder, boolean multi, boolean generic, XPolicyBuilder it) '''
-        «IF multi» «builder.implClassName»
-        «ELSEIF generic»<T extends «implClassName»> T
-        «ELSE»«implClassName»
+    def private static returnType(XPolicyBuilder it, boolean multi, boolean generic, XPolicyBuilder targetBuilder) '''
+        «IF multi» «implClassName»
+        «ELSEIF generic»<T extends «targetBuilder.implClassName»> T
+        «ELSE»«targetBuilder.implClassName»
         «ENDIF»
     '''
 
