@@ -76,7 +76,7 @@ public class ProductFinderResult {
      * @return a {@link ProductFinderResult} indicating that no replacement was found
      */
     public static ProductFinderResult empty(String message) {
-        return new ProductFinderResult(message, true);
+        return new ProductFinderResult(message, false);
     }
 
     /**

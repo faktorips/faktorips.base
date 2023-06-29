@@ -33,6 +33,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentLink;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAssociation;
 import org.faktorips.runtime.model.annotation.IpsAssociationAdder;
@@ -44,9 +45,11 @@ import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsConfiguredBy;
 import org.faktorips.runtime.model.annotation.IpsConfigures;
+import org.faktorips.runtime.model.annotation.IpsDerivedUnion;
 import org.faktorips.runtime.model.annotation.IpsMatchingAssociation;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.runtime.model.annotation.IpsSubsetOfDerivedUnion;
 import org.faktorips.runtime.model.type.AssociationKind;
 import org.faktorips.runtime.model.type.AttributeKind;
 import org.faktorips.runtime.model.type.PolicyAssociation;
@@ -55,6 +58,7 @@ import org.faktorips.runtime.model.type.ValueSetKind;
 import org.faktorips.runtime.productswitch.ProductSwitchResults.FailedProductSwitch;
 import org.faktorips.runtime.productswitch.ProductSwitchResults.ProductSwitchResult;
 import org.faktorips.runtime.productswitch.ProductSwitchResults.SuccessfulProductSwitch;
+import org.faktorips.runtime.util.ProductComponentLinks;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -408,6 +412,79 @@ public class ProductSwitchTest {
         assertThat(asMap.get(child), isSuccessfulSwitch(childProduct1, childProduct2));
         assertThat(asMap.get(grandChild), isFailedSwitch());
         assertThat(switchResult.containsFailures(), is(true));
+    }
+
+    @Test
+    public void testTo_DerivedUnion() {
+        InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
+        TestChildProduct f1 = new TestChildProduct(repository, "f 1", "f", "1");
+        repository.putProductComponent(f1);
+        TestChildProduct f2 = new TestChildProduct(repository, "f 2", "f", "2");
+        repository.putProductComponent(f2);
+        TestChildProduct o1 = new TestChildProduct(repository, "o 1", "o", "1");
+        repository.putProductComponent(o1);
+        TestChildProduct o2 = new TestChildProduct(repository, "o 2", "o", "2");
+        repository.putProductComponent(o2);
+        DerivedUnionParentType p1 = new DerivedUnionParentType(repository, "p 1", "p", "1");
+        p1.setFirstChildType(f1);
+        p1.addOtherChildType(o1);
+        repository.putProductComponent(p1);
+        DerivedUnionParentType p2 = new DerivedUnionParentType(repository, "p 2", "p", "2");
+        p2.setFirstChildType(f2);
+        p2.addOtherChildType(o2);
+        repository.putProductComponent(p2);
+
+        DerivedUnionParent parent = p1.createDerivedUnionParent();
+        parent.newFirstChild(f1);
+        parent.newOtherChild(o1);
+
+        ProductSwitchResults results = ProductSwitch.from(parent).to(p2);
+
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent)).getOldProduct(), is(p1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent)).getNewProduct(), is(p2));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getFirstChild())).getOldProduct(), is(f1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getFirstChild())).getNewProduct(), is(f2));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getOtherChild(0))).getOldProduct(), is(o1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getOtherChild(0))).getNewProduct(), is(o2));
+    }
+
+    @Test
+    public void testTo_DerivedUnion_Advanced() {
+        InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository();
+        TestChildProduct f1 = new TestChildProduct(repository, "f 1", "f", "1");
+        repository.putProductComponent(f1);
+        TestChildProduct f2 = new TestChildProduct(repository, "f 2", "f", "2");
+        repository.putProductComponent(f2);
+        TestChildProduct o1 = new TestChildProduct(repository, "o 1", "o", "1");
+        repository.putProductComponent(o1);
+        TestChildProduct o2 = new TestChildProduct(repository, "o 2", "o", "2");
+        repository.putProductComponent(o2);
+        DerivedUnionParentType p1 = new DerivedUnionParentType(repository, "p 1", "p", "1");
+        p1.setFirstChildType(f1);
+        p1.addOtherChildType(o1);
+        repository.putProductComponent(p1);
+        DerivedUnionParentType p2 = new DerivedUnionParentType(repository, "p 2", "p", "2");
+        p2.setFirstChildType(f2);
+        p2.addOtherChildType(o2);
+        repository.putProductComponent(p2);
+
+        DerivedUnionParent parent = p1.createDerivedUnionParent();
+        parent.newFirstChild(f1);
+        parent.newOtherChild(o1);
+
+        ProductSwitchResults results = ProductSwitch.from(parent)
+                .with(
+                        ((AdvancedProductFinder)(__, ___, ____, _____) -> ProductFinderResult
+                                .empty("just to trigger the AdvancedProductFinderSwitch"))
+                                        .or(AdvancedProductFinder.BY_KIND_ID))
+                .to(p2);
+
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent)).getOldProduct(), is(p1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent)).getNewProduct(), is(p2));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getFirstChild())).getOldProduct(), is(f1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getFirstChild())).getNewProduct(), is(f2));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getOtherChild(0))).getOldProduct(), is(o1));
+        assertThat(((SuccessfulProductSwitch)results.getResultFor(parent.getOtherChild(0))).getNewProduct(), is(o2));
     }
 
     public static Matcher<ProductSwitchResult> isSuccessfulSwitch(IProductComponent from, IProductComponent to) {
@@ -831,6 +908,247 @@ public class ProductSwitchTest {
             this.switchType = switchType;
         }
 
+    }
+
+    @IpsPolicyCmptType(name = "DerivedUnionParent")
+    @IpsAssociations({ "Child", "FirstChild", "OtherChild" })
+    @IpsConfiguredBy(DerivedUnionParentType.class)
+    public class DerivedUnionParent implements IConfigurableModelObject {
+        public static final String ASSOCIATION_CHILDREN = "children";
+        public static final String ASSOCIATION_FIRST_CHILD = "firstChild";
+        public static final String ASSOCIATION_OTHER_CHILDREN = "otherChildren";
+
+        private ProductConfiguration productConfiguration;
+        private TestChild firstChild = null;
+        private List<TestChild> otherChildren = new ArrayList<>();
+
+        public DerivedUnionParent(DerivedUnionParentType productCmpt) {
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        @IpsAssociation(name = "FirstChild", pluralName = "", kind = AssociationKind.Composition, targetClass = TestChild.class, min = 0, max = 1)
+        @IpsSubsetOfDerivedUnion("Child")
+        @IpsMatchingAssociation(source = DerivedUnionParentType.class, name = "FirstChildType")
+        public TestChild getFirstChild() {
+            return firstChild;
+        }
+
+        @IpsAssociationAdder(association = "FirstChild")
+        public void setFirstChild(TestChild newObject) {
+            firstChild = newObject;
+        }
+
+        public TestChild newFirstChild(TestChildProduct childType) {
+            TestChild newFirstChild = childType.createPolicyComponent();
+            setFirstChild(newFirstChild);
+            newFirstChild.initialize();
+            return newFirstChild;
+        }
+
+        @IpsAssociation(name = "OtherChild", pluralName = "OtherChildren", kind = AssociationKind.Composition, targetClass = TestChild.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsSubsetOfDerivedUnion("Child")
+        @IpsMatchingAssociation(source = DerivedUnionParentType.class, name = "OtherChildType")
+        public List<? extends TestChild> getOtherChildren() {
+            return Collections.unmodifiableList(otherChildren);
+        }
+
+        public TestChild getOtherChild(int index) {
+            return otherChildren.get(index);
+        }
+
+        @IpsAssociationAdder(association = "OtherChild")
+        public void addOtherChild(TestChild objectToAdd) {
+            if (objectToAdd == null) {
+                throw new NullPointerException("Can't add null to association OtherChild of " + this);
+            }
+            if (otherChildren.contains(objectToAdd)) {
+                return;
+            }
+            otherChildren.add(objectToAdd);
+        }
+
+        public TestChild newOtherChild(TestChildProduct childType) {
+            TestChild newOtherChild = childType.createPolicyComponent();
+            addOtherChild(newOtherChild);
+            newOtherChild.initialize();
+            return newOtherChild;
+        }
+
+        public int getNumOfOtherChildren() {
+            return otherChildren.size();
+        }
+
+        @IpsAssociation(name = "Child", pluralName = "Children", kind = AssociationKind.Composition, targetClass = TestChild.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsDerivedUnion
+        @IpsMatchingAssociation(source = DerivedUnionParentType.class, name = "ChildType")
+        public List<TestChild> getChildren() {
+            List<TestChild> result = new ArrayList<>(getNumOfChildrenInternal());
+            if (getFirstChild() != null) {
+                result.add(getFirstChild());
+            }
+            result.addAll(getOtherChildren());
+            return result;
+        }
+
+        public int getNumOfChildren() {
+            return getNumOfChildrenInternal();
+        }
+
+        private int getNumOfChildrenInternal() {
+            int num = 0;
+            num += firstChild == null ? 0 : 1;
+            num += getNumOfOtherChildren();
+            return num;
+        }
+
+        @Override
+        public void initialize() {
+            // begin-user-code
+            // end-user-code
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return Calendar.getInstance();
+        }
+
+        @Override
+        public MessageList validate(IValidationContext context) {
+            return MessageLists.emptyMessageList();
+        }
+
+    }
+
+    @IpsProductCmptType(name = "DerivedUnionParentType")
+    @IpsAssociations({ "ChildType", "FirstChildType", "OtherChildType" })
+    @IpsConfigures(DerivedUnionParent.class)
+    public class DerivedUnionParentType extends ProductComponent {
+
+        private IProductComponentLink<TestChildProduct> firstChildType = null;
+        private Map<String, IProductComponentLink<TestChildProduct>> otherChildTypes = new LinkedHashMap<>(0);
+
+        public DerivedUnionParentType(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @IpsAssociation(name = "FirstChildType", pluralName = "", kind = AssociationKind.Composition, targetClass = TestChildProduct.class, min = 0, max = 1)
+        @IpsSubsetOfDerivedUnion("ChildType")
+        @IpsMatchingAssociation(source = DerivedUnionParent.class, name = "FirstChild")
+        public TestChildProduct getFirstChildType() {
+            return firstChildType != null ? firstChildType.getTarget() : null;
+        }
+
+        @IpsAssociationAdder(association = "FirstChildType")
+        public void setFirstChildType(TestChildProduct target) {
+            firstChildType = (target == null ? null : new ProductComponentLink<>(this, target, "FirstChildType"));
+        }
+
+        @IpsAssociationAdder(association = "FirstChildType", withCardinality = true)
+        public void setFirstChildType(TestChildProduct target, CardinalityRange cardinality) {
+            firstChildType = (target == null ? null
+                    : new ProductComponentLink<>(this, target, cardinality, "FirstChildType"));
+        }
+
+        @IpsAssociationLinks(association = "FirstChildType")
+        public IProductComponentLink<TestChildProduct> getLinkForFirstChildType() {
+            return firstChildType;
+        }
+
+        @IpsAssociation(name = "OtherChildType", pluralName = "OtherChildTypes", kind = AssociationKind.Composition, targetClass = TestChildProduct.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsSubsetOfDerivedUnion("ChildType")
+        @IpsMatchingAssociation(source = DerivedUnionParent.class, name = "OtherChild")
+        public List<? extends TestChildProduct> getOtherChildTypes() {
+            List<TestChildProduct> result = new ArrayList<>(otherChildTypes.size());
+            for (IProductComponentLink<TestChildProduct> otherChildType : otherChildTypes.values()) {
+                if (!otherChildType.getCardinality().isEmpty()) {
+                    result.add(otherChildType.getTarget());
+                }
+            }
+            return result;
+        }
+
+        public TestChildProduct getOtherChildType(int index) {
+            return ProductComponentLinks.getTarget(index, otherChildTypes);
+        }
+
+        @IpsAssociationAdder(association = "OtherChildType")
+        public void addOtherChildType(TestChildProduct target) {
+            otherChildTypes.put(target.getId(), new ProductComponentLink<>(this, target, "OtherChildType"));
+        }
+
+        @IpsAssociationAdder(association = "OtherChildType", withCardinality = true)
+        public void addOtherChildType(TestChildProduct target, CardinalityRange cardinality) {
+            otherChildTypes.put(target.getId(),
+                    new ProductComponentLink<>(this, target, cardinality, "OtherChildType"));
+        }
+
+        @IpsAssociationLinks(association = "OtherChildType")
+        public Collection<IProductComponentLink<TestChildProduct>> getLinksForOtherChildTypes() {
+            return Collections.unmodifiableCollection(otherChildTypes.values());
+        }
+
+        public int getNumOfOtherChildTypes() {
+            return otherChildTypes.size();
+        }
+
+        @IpsAssociation(name = "ChildType", pluralName = "ChildTypes", kind = AssociationKind.Composition, targetClass = TestChildProduct.class, min = 0, max = Integer.MAX_VALUE)
+        @IpsDerivedUnion
+        @IpsMatchingAssociation(source = DerivedUnionParent.class, name = "Child")
+        public List<TestChildProduct> getChildTypes() {
+            List<TestChildProduct> result = new ArrayList<>(getNumOfChildTypesInternal());
+            if (firstChildType != null) {
+                result.add(getFirstChildType());
+            }
+            result.addAll(getOtherChildTypes());
+            return result;
+        }
+
+        public int getNumOfChildTypes() {
+            return getNumOfChildTypesInternal();
+        }
+
+        private int getNumOfChildTypesInternal() {
+            int num = 0;
+            num += firstChildType == null ? 0 : 1;
+            num += getNumOfOtherChildTypes();
+            return num;
+        }
+
+        public DerivedUnionParent createDerivedUnionParent() {
+            DerivedUnionParent policy = new DerivedUnionParent(this);
+            policy.initialize();
+            return policy;
+        }
+
+        @Override
+        public DerivedUnionParent createPolicyComponent() {
+            return createDerivedUnionParent();
+        }
+
+        @Override
+        public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
+            List<IProductComponentLink<? extends IProductComponent>> list = new ArrayList<>();
+            if (getLinkForFirstChildType() != null) {
+                list.add(getLinkForFirstChildType());
+            }
+            list.addAll(getLinksForOtherChildTypes());
+            return list;
+        }
     }
 
 }
