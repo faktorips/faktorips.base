@@ -461,7 +461,7 @@ public class XEnumType extends XClass {
 
         for (XEnumAttribute attribute : getAllAttributesWithField()) {
             parameters
-            .add(new MethodParameter(attribute.getDatatypeNameForConstructor(), attribute.getMemberVarName()));
+                    .add(new MethodParameter(attribute.getDatatypeNameForConstructor(), attribute.getMemberVarName()));
         }
 
         return parameters;

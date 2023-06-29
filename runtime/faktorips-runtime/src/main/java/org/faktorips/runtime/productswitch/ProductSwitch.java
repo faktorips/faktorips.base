@@ -114,7 +114,7 @@ public class ProductSwitch {
             List<IProductComponent> matchingProductComponents) {
         String message = MessageFormat.format("Target {0} has multiple replacements {1}", modelObject.toString(),
                 matchingProductComponents.stream().map(IProductComponent::toString)
-                .collect(Collectors.joining(" ", ", ", ".")));
+                        .collect(Collectors.joining(" ", ", ", ".")));
         return ProductFinderResult.error(message);
     }
 
@@ -456,18 +456,18 @@ public class ProductSwitch {
                     List<IProductComponent> newChildProducts = productAssociation.getTargetObjects(newProduct,
                             effectiveDate);
                     policyAssociation.getTargetObjects(modelObject).stream()
-                    .filter(IConfigurableModelObject.class::isInstance)
-                    .map(IConfigurableModelObject.class::cast)
-                    .forEach(child -> {
-                        ProductFinderResult match = findMatchingProduct(modelObject, child, oldChildProducts,
-                                newChildProducts, oldProduct, policyAssociation);
-                        if (match.isError() || match.isEmpty()) {
-                            result.put(child, new FailedProductSwitch(modelObject, policyAssociation,
-                                    match.getMessage()));
-                        } else {
-                            switchProduct(child, match.getProductComponent(), result);
-                        }
-                    });
+                            .filter(IConfigurableModelObject.class::isInstance)
+                            .map(IConfigurableModelObject.class::cast)
+                            .forEach(child -> {
+                                ProductFinderResult match = findMatchingProduct(modelObject, child, oldChildProducts,
+                                        newChildProducts, oldProduct, policyAssociation);
+                                if (match.isError() || match.isEmpty()) {
+                                    result.put(child, new FailedProductSwitch(modelObject, policyAssociation,
+                                            match.getMessage()));
+                                } else {
+                                    switchProduct(child, match.getProductComponent(), result);
+                                }
+                            });
                 }
             });
         }

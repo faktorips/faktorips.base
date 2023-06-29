@@ -136,7 +136,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
     public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
-            + " does not support comparison of values"); //$NON-NLS-1$
+                    + " does not support comparison of values"); //$NON-NLS-1$
         }
         Comparable<?> valA = (Comparable<Object>)getValue(valueA);
         Comparable<?> valB = (Comparable<Object>)getValue(valueB);

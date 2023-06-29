@@ -127,7 +127,7 @@ public class XPolicyAssociationTest {
             XDetailToMasterDerivedUnionAssociation xDetailToMasterDerivedUnionAssociation = myMock(
                     XDetailToMasterDerivedUnionAssociation.class, inverseName, myAnswer);
             when(modelService.getModelNode(inverseAssociation, XDetailToMasterDerivedUnionAssociation.class, context))
-            .thenReturn(xDetailToMasterDerivedUnionAssociation);
+                    .thenReturn(xDetailToMasterDerivedUnionAssociation);
         }
 
         if (subsettedDU != null) {

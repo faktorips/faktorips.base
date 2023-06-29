@@ -714,8 +714,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
-            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }
@@ -729,7 +729,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         ValueSetType currentValueSetType = valueSetSpecificationControl.getValueSetType();
         try {
             valueSetSpecificationControl
-            .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
+                    .setAllowedValueSetTypes(attribute.getAllowedValueSetTypes(attribute.getIpsProject()));
         } catch (IpsException e) {
             IpsPlugin.log(e);
             valueSetSpecificationControl.setAllowedValueSetTypes(new ArrayList<ValueSetType>());
@@ -823,32 +823,32 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (genericValidation != null) {
             getBindingContext().bindContent(genericValidation.getButton(), ruleModel, RuleUIModel.PROPERTY_GENERIC);
             getBindingContext()
-            .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_GENERIC, null) {
-                @Override
-                public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                    if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
-                        if (attribute.isGenericValidationEnabled() && attribute.isOverwrite()
-                                && ((IPolicyCmptTypeAttribute)attribute
-                                        .findOverwrittenAttribute(ipsProject))
-                                .isGenericValidationEnabled()) {
-                            genericValidation.setEnabled(false);
+                    .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_GENERIC, null) {
+                        @Override
+                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                            if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
+                                if (attribute.isGenericValidationEnabled() && attribute.isOverwrite()
+                                        && ((IPolicyCmptTypeAttribute)attribute
+                                                .findOverwrittenAttribute(ipsProject))
+                                                        .isGenericValidationEnabled()) {
+                                    genericValidation.setEnabled(false);
+                                }
+                            }
                         }
-                    }
-                }
-            });
+                    });
         }
         getBindingContext()
-        .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
-                    getToolkit().setDataChangeable(getControl(), ruleModel.isEnabled());
-                    if (allowMarkerEditing()) {
-                        ruleMarkerUI.getMarkerTableControl().setEnabled(ruleModel.isEnabled());
+                .add(new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
+                            getToolkit().setDataChangeable(getControl(), ruleModel.isEnabled());
+                            if (allowMarkerEditing()) {
+                                ruleMarkerUI.getMarkerTableControl().setEnabled(ruleModel.isEnabled());
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
         if (allowMarkerEditing()) {
             Table markerTable = ruleMarkerUI.getMarkerTableControl();

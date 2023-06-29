@@ -1116,7 +1116,7 @@ public class UIToolkit {
             case INFO -> IMessageProvider.INFORMATION;
             case WARNING -> IMessageProvider.WARNING;
             case NONE -> IMessageProvider.NONE;
-            default -> IMessageProvider.NONE; 
+            default -> IMessageProvider.NONE;
         };
     }
 

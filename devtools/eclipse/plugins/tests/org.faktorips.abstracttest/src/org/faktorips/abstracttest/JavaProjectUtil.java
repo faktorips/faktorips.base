@@ -157,7 +157,7 @@ public class JavaProjectUtil {
 
     private static String getModuleInfoFileContent(IJavaProject javaProject,
             IPackageFragmentRoot[] packageFragmentRoots)
-                    throws CoreException {
+            throws CoreException {
         HashSet<String> exportedPackages = new HashSet<>();
         for (IPackageFragmentRoot packageFragmentRoot : packageFragmentRoots) {
             for (IJavaElement child : packageFragmentRoot.getChildren()) {

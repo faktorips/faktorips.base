@@ -197,9 +197,9 @@ public class GeneratorConfig {
                 .getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_BASE_CLASS_POLICY_CMPT_TYPE);
         return IpsStringUtils.isBlank(baseClass)
                 ? JaxbSupportVariant.None == getJaxbSupport()
-                ? AbstractModelObject.class.getName()
+                        ? AbstractModelObject.class.getName()
                         : IpsXmlAdapters.AbstractJaxbModelObject.qualifiedNameFrom(getJaxbSupport())
-                        : baseClass;
+                : baseClass;
     }
 
     public String getBaseClassProductCmptType() {

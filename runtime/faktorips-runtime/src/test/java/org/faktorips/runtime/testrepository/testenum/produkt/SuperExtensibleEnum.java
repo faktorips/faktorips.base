@@ -25,7 +25,7 @@ import org.w3c.dom.Element;
 @IpsEnumType(name = "produkt.SuperExtensibleEnum", attributeNames = { "id", "name" })
 @IpsExtensibleEnum(enumContentName = "produkt.SuperExtensibleEnum")
 public final class SuperExtensibleEnum
-implements AbstractExtensibleEnum, Serializable, Comparable<SuperExtensibleEnum>, IToXmlSupport {
+        implements AbstractExtensibleEnum, Serializable, Comparable<SuperExtensibleEnum>, IToXmlSupport {
 
     /**
      * Die SerialVersionUID.

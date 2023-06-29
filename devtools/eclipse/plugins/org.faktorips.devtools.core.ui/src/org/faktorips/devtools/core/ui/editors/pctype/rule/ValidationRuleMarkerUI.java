@@ -63,7 +63,7 @@ public class ValidationRuleMarkerUI {
         GridData tableGD = new GridData(GridData.FILL, GridData.FILL, true, true);
         tableGD.heightHint = visibleTableLines == SWT.DEFAULT ? visibleTableLines
                 : TABLE_LINE_HEIGHT
-                * visibleTableLines - 7;
+                        * visibleTableLines - 7;
         table.setLayoutData(tableGD);
 
         getMarkerTable().setContentProvider(new ArrayContentProvider());

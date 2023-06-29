@@ -60,7 +60,7 @@ public class XPolicyAssociation extends XAssociation {
                     IPolicyCmptTypeAssociation sharedAssociationHost = getAssociation()
                             .findSharedAssociationHost(getIpsProject());
                     resultingAssociations
-                    .add(getModelNode(sharedAssociationHost, XDetailToMasterDerivedUnionAssociation.class));
+                            .add(getModelNode(sharedAssociationHost, XDetailToMasterDerivedUnionAssociation.class));
                     resultingNames.add(sharedAssociationHost.getName());
                 }
             } else {

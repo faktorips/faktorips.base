@@ -38,7 +38,8 @@ public abstract class AbstractAddAndNewProductCmptCommand extends AbstractHandle
         IWorkbenchWindow activeWorkbenchWindow = IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         ISelection selection = activeWorkbenchWindow.getSelectionService().getSelection();
 
-        if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection structuredSelection)) {
+        if (selection == null || selection.isEmpty()
+                || !(selection instanceof IStructuredSelection structuredSelection)) {
             return;
         }
 

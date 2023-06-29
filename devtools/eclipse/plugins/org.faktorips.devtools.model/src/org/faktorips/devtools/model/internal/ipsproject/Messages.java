@@ -81,7 +81,6 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgUnknownFeatureIdForConfiguration;
     public static String VersionProviderExtensionPoint_error_invalidVersionProvider;
 
-
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }

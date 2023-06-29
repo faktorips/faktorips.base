@@ -52,7 +52,7 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
     private void setupMarkerDefinition() {
         markerDefinitions = new ArrayList<>();
 
-        //Create first marker Enum
+        // Create first marker Enum
         String qNameEnum1 = "qualified.markerEnum";
         markerDefinition1 = newEnumType(ipsProject, qNameEnum1);
         IEnumAttribute idAttribute = markerDefinition1.newEnumAttribute();
@@ -67,7 +67,7 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
         value2.setEnumAttributeValue(idAttribute, ValueFactory.createStringValue("id2"));
         value2.setEnumAttributeValue(labelAttribute, ValueFactory.createStringValue("label2"));
 
-        //Create second marker Enum
+        // Create second marker Enum
         String qNameEnum2 = "qualified.markerEnum2";
         markerDefinition2 = newEnumType(ipsProject, qNameEnum2);
         IEnumAttribute idAttribute2 = markerDefinition2.newEnumAttribute();
@@ -82,12 +82,12 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
         value4.setEnumAttributeValue(idAttribute2, ValueFactory.createStringValue("id4"));
         value4.setEnumAttributeValue(labelAttribute2, ValueFactory.createStringValue("label4"));
 
-        //Add MarkerEnums to ipsProject
+        // Add MarkerEnums to ipsProject
         markerDefinitions.add(markerDefinition1);
         markerDefinitions.add(markerDefinition2);
 
         initMarkerEnumInProjectSettings(qNameEnum1);
-        initMarkerEnumInProjectSettings(qNameEnum2);   
+        initMarkerEnumInProjectSettings(qNameEnum2);
     }
 
     private void initMarkerEnumInProjectSettings(String markerEnumName) {
@@ -149,6 +149,5 @@ public class MarkerEnumUtilTest extends AbstractIpsPluginTest {
         ValueDatatype enumDatatype2 = markerEnumUtil.getEnumDatatype("invalidId");
         assertNull(enumDatatype2);
     }
-
 
 }

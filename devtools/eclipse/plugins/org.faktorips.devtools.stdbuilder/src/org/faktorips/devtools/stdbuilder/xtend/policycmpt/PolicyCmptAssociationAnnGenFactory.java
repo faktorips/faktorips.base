@@ -30,8 +30,10 @@ public class PolicyCmptAssociationAnnGenFactory implements IAnnotationGeneratorF
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         return switch (type) {
             case POLICY_CMPT_DECL_CLASS_ASSOCIATION_GETTER -> new PolicyCmptAssociationGetterAnnGen();
-            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationAdder.class);
-            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XPolicyAssociation.class, IpsAssociationRemover.class);
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(
+                    XPolicyAssociation.class, IpsAssociationAdder.class);
+            case POLICY_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XPolicyAssociation.class,
+                    IpsAssociationRemover.class);
             default -> null;
         };
     }

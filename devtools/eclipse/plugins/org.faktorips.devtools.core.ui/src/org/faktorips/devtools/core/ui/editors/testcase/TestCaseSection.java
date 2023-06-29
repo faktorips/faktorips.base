@@ -2542,7 +2542,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             ITestPolicyCmptTypeParameter param = parentTestPolicyCmpt
                     .findTestPolicyCmptTypeParameter(getTestCase().getIpsProject());
             TestCaseTypeAssociation[] dummyAssociations = new TestCaseTypeAssociation[param
-                                                                                      .getTestPolicyCmptTypeParamChilds().length];
+                    .getTestPolicyCmptTypeParamChilds().length];
             ITestPolicyCmptTypeParameter[] childParams = param.getTestPolicyCmptTypeParamChilds();
             for (int i = 0; i < childParams.length; i++) {
                 TestCaseTypeAssociation association = new TestCaseTypeAssociation(childParams[i], parentTestPolicyCmpt);
@@ -2757,7 +2757,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                              * all old / invalid objects are visible again
                              */
                             getTestCaseContentProvider()
-                            .clearChildDummyObjectsInCache((ITestPolicyCmpt)currElement);
+                                    .clearChildDummyObjectsInCache((ITestPolicyCmpt)currElement);
                         } else {
                             throw new RuntimeException("Remove object with type " //$NON-NLS-1$
                                     + currElement.getClass().getName() + " is not supported!"); //$NON-NLS-1$

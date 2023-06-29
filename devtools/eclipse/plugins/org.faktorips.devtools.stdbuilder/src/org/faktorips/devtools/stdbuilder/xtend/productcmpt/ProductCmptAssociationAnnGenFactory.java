@@ -32,10 +32,14 @@ public class ProductCmptAssociationAnnGenFactory implements IAnnotationGenerator
     public IAnnotationGenerator createAnnotationGenerator(AnnotatedJavaElementType type) {
         return switch (type) {
             case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_GETTER -> new ProductCmptAssociationAnnGen();
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationLinks.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER -> new AssociationWithCardinalityAnnGen(XProductAssociation.class, IpsAssociationAdder.class);
-            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XProductAssociation.class, IpsAssociationRemover.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_LINKS -> new SimpleAssociationAnnGen(XProductAssociation.class,
+                    IpsAssociationLinks.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_SETTER_ADDER -> new SimpleAssociationAnnGen(
+                    XProductAssociation.class, IpsAssociationAdder.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_WITH_CARDINALITY_SETTER_ADDER -> new AssociationWithCardinalityAnnGen(
+                    XProductAssociation.class, IpsAssociationAdder.class);
+            case PRODUCT_CMPT_DECL_CLASS_ASSOCIATION_REMOVER -> new SimpleAssociationAnnGen(XProductAssociation.class,
+                    IpsAssociationRemover.class);
             default -> null;
         };
     }

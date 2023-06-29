@@ -59,16 +59,16 @@ public class IpsObjectTypeTester extends PropertyTester {
         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)receiver;
         return switch (property) {
             case PROPERTY_IS_IPS_OBJECT_TYPE -> ipsSrcFile.getIpsObjectType().getId()
-            .equalsIgnoreCase((String)expectedValue);
+                    .equalsIgnoreCase((String)expectedValue);
             case PROPERTY_IS_TYPE -> ipsSrcFile.getIpsObjectType().isEntityType();
             case PROPERTY_IS_PRODUCT_TYPE -> ipsSrcFile.getIpsObjectType().isProductDefinitionType();
             case PROPERTY_IS_MODEL_TYPE -> !ipsSrcFile.getIpsObjectType().isProductDefinitionType();
             case PROPERTY_IS_META_TYPE -> {
                 IpsObjectType ipsObjectType = ipsSrcFile.getIpsObjectType();
                 yield ipsObjectType.getId().equals(IpsObjectType.PRODUCT_CMPT_TYPE.getId())
-                || ipsObjectType.getId().equals(IpsObjectType.ENUM_TYPE.getId())
-                || ipsObjectType.getId().equals(IpsObjectType.TABLE_STRUCTURE.getId())
-                || ipsObjectType.getId().equals(IpsObjectType.TEST_CASE_TYPE.getId());
+                        || ipsObjectType.getId().equals(IpsObjectType.ENUM_TYPE.getId())
+                        || ipsObjectType.getId().equals(IpsObjectType.TABLE_STRUCTURE.getId())
+                        || ipsObjectType.getId().equals(IpsObjectType.TEST_CASE_TYPE.getId());
             }
             default -> false;
         };

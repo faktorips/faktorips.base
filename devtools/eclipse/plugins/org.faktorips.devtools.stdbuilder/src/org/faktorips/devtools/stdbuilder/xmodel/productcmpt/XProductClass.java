@@ -163,7 +163,7 @@ public abstract class XProductClass extends XType {
     @Override
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<>();
-        if(!hasSupertype()) {
+        if (!hasSupertype()) {
             if (getGeneratorConfig().isGenerateToXmlSupport()) {
                 extendedInterfaces.add(addImport(IToXmlSupport.class));
             }

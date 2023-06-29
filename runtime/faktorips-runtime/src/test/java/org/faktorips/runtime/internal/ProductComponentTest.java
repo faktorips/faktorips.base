@@ -171,7 +171,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
         when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
-        .thenReturn(productComponentGeneration);
+                .thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
     }

@@ -51,7 +51,7 @@ public class ProductCmptType extends Type {
         super(name, annotatedDeclaration);
         generationDeclaration = isChangingOverTime()
                 ? AnnotatedDeclaration.from(annotatedDeclaration.get(IpsChangingOverTime.class).value())
-                        : null;
+                : null;
 
         ProductAttributeCollector attributeCollector = new ProductAttributeCollector();
         ProductAssociationCollector associationCollector = new ProductAssociationCollector();
@@ -233,7 +233,7 @@ public class ProductCmptType extends Type {
         Class<?> superclass = getJavaClass().getSuperclass();
         return IpsModel.isProductCmptType(superclass)
                 ? Optional.of(IpsModel.getProductCmptType(superclass.asSubclass(IProductComponent.class)))
-                        : Optional.empty();
+                : Optional.empty();
     }
 
     @Override

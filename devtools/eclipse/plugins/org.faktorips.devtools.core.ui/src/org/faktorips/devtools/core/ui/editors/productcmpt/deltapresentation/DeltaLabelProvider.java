@@ -51,14 +51,22 @@ public class DeltaLabelProvider extends LabelProvider {
 
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
         return switch (deltaType) {
-            case MISSING_PROPERTY_VALUE, VALUE_HOLDER_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
-            case VALUE_WITHOUT_PROPERTY -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
-            case PROPERTY_TYPE_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
-            case VALUE_SET_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
-            case LINK_WITHOUT_ASSOCIATION -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-            case HIDDEN_ATTRIBUTE_MISMATCH -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
-            case INVALID_GENERATIONS -> IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
-            case LINK_CHANGING_OVER_TIME_MISMATCH, MISSING_TEMPLATE_LINK, REMOVED_TEMPLATE_LINK -> IIpsDecorators.getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
+            case MISSING_PROPERTY_VALUE, VALUE_HOLDER_MISMATCH -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
+            case VALUE_WITHOUT_PROPERTY -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
+            case PROPERTY_TYPE_MISMATCH -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
+            case VALUE_SET_MISMATCH -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
+            case LINK_WITHOUT_ASSOCIATION -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
+            case HIDDEN_ATTRIBUTE_MISMATCH -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
+            case INVALID_GENERATIONS -> IpsUIPlugin.getImageHandling()
+                    .createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
+            case LINK_CHANGING_OVER_TIME_MISMATCH, MISSING_TEMPLATE_LINK, REMOVED_TEMPLATE_LINK -> IIpsDecorators
+                    .getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
             default -> null;
         };
     }

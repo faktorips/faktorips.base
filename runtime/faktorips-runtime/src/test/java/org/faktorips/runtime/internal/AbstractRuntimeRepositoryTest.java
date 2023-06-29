@@ -179,7 +179,8 @@ public class AbstractRuntimeRepositoryTest {
         assertThat(mainRepository.getProductComponentGeneration("basePc", effectiveDate), is(basePcGen));
 
         assertThat(mainRepository.getProductComponentGeneration("unknown", effectiveDate), is(nullValue()));
-        assertThat(mainRepository.getProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1)), is(nullValue()));
+        assertThat(mainRepository.getProductComponentGeneration("mainPc", new GregorianCalendar(2000, 0, 1)),
+                is(nullValue()));
     }
 
     @Test
@@ -441,7 +442,8 @@ public class AbstractRuntimeRepositoryTest {
     @Test
     public void testGetEnumValueFromReferencedLookup() {
         ConcreteLookup lookup = new ConcreteLookup();
-        assertThat(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()), is(nullValue()));
+        assertThat(baseRepository.getEnumValue(TestConcreteExtensibleEnum.class, lookup.extendedValue1.getId()),
+                is(nullValue()));
 
         // test if the search through referenced repositories works
         baseRepository.addEnumValueLookupService(lookup);

@@ -570,7 +570,7 @@ public class JMerger {
                                         }
                                         for (boolean match = sourceMatcher.find(sourceStart)
                                                 && targetMatcher.find(targetStart); match; match = sourceMatcher.find()
-                                                && targetMatcher.find()) {
+                                                        && targetMatcher.find()) {
                                             result.append(stringValue.substring(index, sourceMatcher.start(1)));
                                             String group1 = targetMatcher.group(1);
                                             if (group1 != null) {
@@ -621,7 +621,7 @@ public class JMerger {
                             if (sourceGetMethod.getName().equals("getReturnType")
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null && getControlModel().getBlockPattern()
-                                    .matcher(((JMethod)targetNode).getComment()).find()) {
+                                            .matcher(((JMethod)targetNode).getComment()).find()) {
                                 continue;
                             }
 
@@ -946,7 +946,7 @@ public class JMerger {
         } else {
             for (JNode sourceChild = facadeHelper.getFirstChild(sourceNode), targetChild = facadeHelper
                     .getFirstChild(targetNode); sourceChild != null; sourceChild = facadeHelper
-                    .getNext(sourceChild), targetChild = facadeHelper.getNext(targetChild)) {
+                            .getNext(sourceChild), targetChild = facadeHelper.getNext(targetChild)) {
                 mapChildren(sourceChild, targetChild);
             }
         }

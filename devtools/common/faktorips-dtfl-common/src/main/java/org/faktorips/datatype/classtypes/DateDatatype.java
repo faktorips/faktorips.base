@@ -52,7 +52,7 @@ public class DateDatatype extends ValueClassNameDatatype {
             // CSON: Illegal Catch
             IllegalArgumentException ill = new IllegalArgumentException(
                     "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class //$NON-NLS-1$ //$NON-NLS-2$
-                    + " instance"); //$NON-NLS-1$
+                            + " instance"); //$NON-NLS-1$
             ill.initCause(e);
             throw ill;
         }

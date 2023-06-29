@@ -419,7 +419,7 @@ public abstract class AbstractGeneratorModelNode {
     public String localizedJDoc(String key, Object... replacements) {
         String text = getGeneratorConfig().isGenerateMinimalJavadoc()
                 ? Arrays.toString(replacements).contains(getDescription()) ? getDescription() : ""
-                    : getLocalizedText(key + "_JAVADOC", replacements);
+                : getLocalizedText(key + "_JAVADOC", replacements);
 
         return removeEmptyLines(text);
     }

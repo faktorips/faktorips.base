@@ -195,7 +195,8 @@ public class XEnumAttribute extends AbstractGeneratorModelNode {
         JavaCodeFragment fragment = datatypeHelper.getToStringExpression(memberVarName);
         addImport(fragment.getImportDeclaration());
         if (datatypeHelper instanceof InternationalStringDatatypeHelper) {
-            JavaCodeFragment cast = new JavaCodeFragment().append("(").appendClassName(DefaultInternationalString.class).append(")");
+            JavaCodeFragment cast = new JavaCodeFragment().append("(").appendClassName(DefaultInternationalString.class)
+                    .append(")");
             addImport(cast.getImportDeclaration());
             return cast.append(fragment).getSourcecode();
         }

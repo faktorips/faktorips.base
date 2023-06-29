@@ -63,7 +63,7 @@ public enum IpsModel {
                     return new ProductCmptType(name, annotatedDeclaration);
                 } else {
                     throw new IllegalArgumentException("The class " + annotatedDeclaration.getDeclarationClassName()
-                    + " is not annotated as product component type.");
+                            + " is not annotated as product component type.");
                 }
             });
 
@@ -74,7 +74,7 @@ public enum IpsModel {
                     return new PolicyCmptType(name, annotatedModelType);
                 } else {
                     throw new IllegalArgumentException("The class " + annotatedModelType.getDeclarationClassName()
-                    + " is not annotated as policy component type.");
+                            + " is not annotated as policy component type.");
                 }
             });
 
@@ -130,7 +130,7 @@ public enum IpsModel {
         Class<?> implementationClass = annotatedDeclaration.getImplementationClass();
         if (IProductComponent.class.isAssignableFrom(implementationClass)
                 && !(annotatedDeclaration.getPublishedInterface() == null
-                ? implementationClass.isAnnotationPresent(IpsProductCmptType.class)
+                        ? implementationClass.isAnnotationPresent(IpsProductCmptType.class)
                         : annotatedDeclaration.getPublishedInterface().isAnnotationPresent(IpsProductCmptType.class))
                 && implementationClass.getSuperclass() != null) {
             annotatedDeclaration = AnnotatedDeclaration.from(implementationClass.getSuperclass());
@@ -210,7 +210,6 @@ public enum IpsModel {
     public static boolean isEnumType(Class<?> enumObjectClass) {
         return AnnotatedDeclaration.from(enumObjectClass).is(IpsEnumType.class);
     }
-
 
     /**
      * Returns whether the given class is a generated extensible enum type and can be given to

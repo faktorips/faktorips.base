@@ -197,11 +197,12 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             if (is == null) {
                 throw new IllegalArgumentException("Can't find table of contents file " + tocResourcePath);
             }
-            doc = XmlUtil.getDocumentBuilder().parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
+            doc = XmlUtil.getDocumentBuilder()
+                    .parse(new InputSource(new InputStreamReader(is, StandardCharsets.UTF_8)));
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             throw new RuntimeException("Error loading table of contents from " + tocResourcePath, e);
-        } 
+        }
         try {
             Element tocElement = doc.getDocumentElement();
             ReadonlyTableOfContents toc = new ReadonlyTableOfContents(getClassLoader());

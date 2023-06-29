@@ -1520,19 +1520,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
 
             runtimeIdCache
-            .findProductCmptByRuntimeId(cmptToCheck.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))
-            .stream()
-            .filter(p -> !p.equals(cmptToCheck))
-            .forEach(p -> {
-                ObjectProperty[] invalidObjectProperties = new ObjectProperty[1];
-                invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
-                        IProductCmpt.PROPERTY_RUNTIME_ID);
+                    .findProductCmptByRuntimeId(cmptToCheck.getPropertyValue(IProductCmpt.PROPERTY_RUNTIME_ID))
+                    .stream()
+                    .filter(p -> !p.equals(cmptToCheck))
+                    .forEach(p -> {
+                        ObjectProperty[] invalidObjectProperties = new ObjectProperty[1];
+                        invalidObjectProperties[0] = new ObjectProperty(cmptToCheck.getIpsObject(),
+                                IProductCmpt.PROPERTY_RUNTIME_ID);
 
-                String msg = MessageFormat.format(Messages.IpsProject_msgRuntimeIDCollision,
-                        cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName());
-                result.add(
-                        new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
-            });
+                        String msg = MessageFormat.format(Messages.IpsProject_msgRuntimeIDCollision,
+                                cmptToCheck.getQualifiedNameType().getName(), p.getQualifiedNameType().getName());
+                        result.add(
+                                new Message(MSGCODE_RUNTIME_ID_COLLISION, msg, Message.ERROR, invalidObjectProperties));
+                    });
         }
         return result;
     }

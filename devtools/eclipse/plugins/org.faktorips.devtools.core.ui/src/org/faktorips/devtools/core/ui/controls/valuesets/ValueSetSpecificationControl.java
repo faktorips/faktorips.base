@@ -208,7 +208,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, bindingContext,
                 valueSetOwner.getIpsProject(), valueSetPmo.sourceSet);
         valueSetEditControl.getComposite()
-        .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
+                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
     }
 
@@ -303,7 +303,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private String getIncludeNullMessage() {
         return (valueSetOwner instanceof IProductCmptTypeAttribute
                 && ((IProductCmptTypeAttribute)valueSetOwner).isMultiValueAttribute())
-                ? Messages.ValueSetSpecificationControl_allowEmpty
+                        ? Messages.ValueSetSpecificationControl_allowEmpty
                         : Messages.ValueSetSpecificationControl_containsNull;
     }
 
@@ -316,7 +316,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL_ENABLED);
         bindingContext.bindProblemMarker(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
         bindingContext
-        .add(new ButtonTextBinding(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_RELEVANCE_TEXT));
+                .add(new ButtonTextBinding(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_RELEVANCE_TEXT));
     }
 
     @Override

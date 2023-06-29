@@ -143,7 +143,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         // input stream may be created nonetheless
         doReturn(EnumSaxHandlerTest.class.getClassLoader()
                 .getResourceAsStream("org/faktorips/runtime/internal/EnumSaxHandlerTest.xml")).when(repo)
-        .getXmlAsStream(tocEntry);
+                        .getXmlAsStream(tocEntry);
         IpsEnum<TestEnum> enumContent = repo.createEnumValues(tocEntry, TestEnum.class);
         List<TestEnum> enumValues = enumContent.getEnums();
         assertThat(enumValues.size(), is(3));

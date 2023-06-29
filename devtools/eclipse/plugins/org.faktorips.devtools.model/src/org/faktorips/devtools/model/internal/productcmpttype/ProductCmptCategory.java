@@ -668,10 +668,14 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             if (IpsStringUtils.isBlank(category)) {
                 IIpsProject ipsProject = contextType.getIpsProject();
                 return switch (property.getProductCmptPropertyType()) {
-                    case FORMULA_SIGNATURE_DEFINITION -> contextType.findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).getName();
-                    case POLICY_CMPT_TYPE_ATTRIBUTE -> contextType.findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).getName();
-                    case PRODUCT_CMPT_TYPE_ATTRIBUTE -> contextType.findDefaultCategoryForProductCmptTypeAttributes(ipsProject).getName();
-                    case TABLE_STRUCTURE_USAGE -> contextType.findDefaultCategoryForTableStructureUsages(ipsProject).getName();
+                    case FORMULA_SIGNATURE_DEFINITION -> contextType
+                            .findDefaultCategoryForFormulaSignatureDefinitions(ipsProject).getName();
+                    case POLICY_CMPT_TYPE_ATTRIBUTE -> contextType
+                            .findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject).getName();
+                    case PRODUCT_CMPT_TYPE_ATTRIBUTE -> contextType
+                            .findDefaultCategoryForProductCmptTypeAttributes(ipsProject).getName();
+                    case TABLE_STRUCTURE_USAGE -> contextType.findDefaultCategoryForTableStructureUsages(ipsProject)
+                            .getName();
                     case VALIDATION_RULE -> contextType.findDefaultCategoryForValidationRules(ipsProject).getName();
                     default -> category;
                 };

@@ -380,8 +380,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                 MigrateProjectAction migrateAction = new MigrateProjectAction(viewSite.getWorkbenchWindow(), selection);
                 migrateAction.setEnabled(!(migrationOperation.isEmpty()));
                 if (
-                        // in model explorer the action is always added
-                        modelExplorer.isModelExplorer()
+                // in model explorer the action is always added
+                modelExplorer.isModelExplorer()
                         // in product explorer only if it is enabled
                         || !migrationOperation.isEmpty()) {
                     manager.add(migrateAction);

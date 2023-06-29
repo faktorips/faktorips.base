@@ -122,7 +122,8 @@ public class DeltaContentProvider implements ITreeContentProvider {
         if (a instanceof ProductCmptGenerationsDeltaViewItem) {
             a = ((ProductCmptGenerationsDeltaViewItem)a).getDelta();
         }
-        if (!(a instanceof IPropertyValueContainerToTypeDelta aDelta) || !(b instanceof IPropertyValueContainerToTypeDelta bDelta)) {
+        if (!(a instanceof IPropertyValueContainerToTypeDelta aDelta)
+                || !(b instanceof IPropertyValueContainerToTypeDelta bDelta)) {
             return false;
         }
         IDeltaEntry[] aDeltaEntries = aDelta.getEntries();

@@ -89,7 +89,7 @@ public class GeneratorConfigTest {
     public void testGetChangesOverTimeNamingConvention() {
         String id = "FIPS";
         when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_CHANGES_OVER_TIME_NAMING_CONVENTION))
-        .thenReturn(id);
+                .thenReturn(id);
         IIpsModel ipsModel = mock(IIpsModel.class);
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
         IChangesOverTimeNamingConvention convention = mock(IChangesOverTimeNamingConvention.class);

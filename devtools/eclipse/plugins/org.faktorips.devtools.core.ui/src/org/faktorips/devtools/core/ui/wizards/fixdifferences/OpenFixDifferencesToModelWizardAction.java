@@ -52,7 +52,7 @@ import org.faktorips.runtime.MessageList;
  * @author Daniel Hohenberger
  */
 public class OpenFixDifferencesToModelWizardAction extends ActionDelegate
-implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
+        implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
     private IWorkbenchWindow window;
     // the last selection
     private ISelection selection;

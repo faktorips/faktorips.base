@@ -74,7 +74,8 @@ public final class MoveRefactoringParticipant extends MoveParticipant {
                 RefactoringStatus status,
                 IProgressMonitor progressMonitor) throws CoreException {
 
-            if (!(originalJavaElement instanceof IType originalJavaType && targetJavaElement instanceof IType targetJavaType)) {
+            if (!(originalJavaElement instanceof IType originalJavaType
+                    && targetJavaElement instanceof IType targetJavaType)) {
                 return null;
             }
 

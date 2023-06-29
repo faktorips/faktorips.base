@@ -143,7 +143,7 @@ public abstract class ConfigElement extends AbstractSimplePropertyValue implemen
 
         if (valueDatatype == null) {
             String text = MessageFormat.format(Messages.ConfigElement_msgUnknownDatatype, params);
-            Severity severity =  ipsProject.getReadOnlyProperties().getMissingDatatypeSeverity();
+            Severity severity = ipsProject.getReadOnlyProperties().getMissingDatatypeSeverity();
             list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE, text, severity, this,
                     IConfigElement.PROPERTY_POLICY_CMPT_TYPE_ATTRIBUTE));
             return false;

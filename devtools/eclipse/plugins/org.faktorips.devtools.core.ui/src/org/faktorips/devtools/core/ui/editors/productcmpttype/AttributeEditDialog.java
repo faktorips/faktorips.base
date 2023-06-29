@@ -301,21 +301,21 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     .findOverwrittenAttribute(ipsProject);
             if (overwrittenAttribute != null) {
                 ((IpsModel)IIpsModel.get())
-                .executeModificationsWithSingleEvent(
-                        new SingleEventModification<>(attribute.getIpsSrcFile()) {
+                        .executeModificationsWithSingleEvent(
+                                new SingleEventModification<>(attribute.getIpsSrcFile()) {
 
-                            @Override
-                            protected boolean execute() {
-                                attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                attribute.setModifier(overwrittenAttribute.getModifier());
-                                attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                attribute.setMultiValueAttribute(overwrittenAttribute
-                                        .isMultiValueAttribute());
-                                attribute.setCategory(overwrittenAttribute.getCategory());
-                                attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
-                                return true;
-                            }
-                        });
+                                    @Override
+                                    protected boolean execute() {
+                                        attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                        attribute.setModifier(overwrittenAttribute.getModifier());
+                                        attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                        attribute.setMultiValueAttribute(overwrittenAttribute
+                                                .isMultiValueAttribute());
+                                        attribute.setCategory(overwrittenAttribute.getCategory());
+                                        attribute.setCategoryPosition(overwrittenAttribute.getCategoryPosition());
+                                        return true;
+                                    }
+                                });
             }
         }
         ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
