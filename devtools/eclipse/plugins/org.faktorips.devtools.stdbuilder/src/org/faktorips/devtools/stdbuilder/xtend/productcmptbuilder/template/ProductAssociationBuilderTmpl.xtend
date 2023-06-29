@@ -118,99 +118,99 @@ class ProductAssociationBuilderTmpl {
         «ENDIF»
     '''
 
-    def private static standardAssociationSetter(XProductBuilder builder, XProductBuilderAssociation association,
-        boolean isSuper, XProductBuilder it, boolean withCardinality) '''
+    def private static standardAssociationSetter(XProductBuilder it, XProductBuilderAssociation association,
+        boolean isSuper, XProductBuilder targetBuilder, boolean withCardinality) '''
         /**
-        *«localizedJDoc("METHOD_ASS_STD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_STD", targetBuilder.productName, association.name)»
         *
         * @generated
         */
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.getAssociation.target==association.getAssociation.findSuperAssociationWithSameName(association.ipsProject).target)» @Override «ENDIF»
-        public «builder.implClassName» «IF withCardinality»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct", CardinalityRange, "cardinality" )»«ELSE»«association.method(association.methodName, productPublishedInterfaceName, "targetProduct")»«ENDIF»{
+        public «implClassName» «IF withCardinality»«association.method(association.methodName, targetBuilder.productPublishedInterfaceName, "targetProduct", CardinalityRange, "cardinality" )»«ELSE»«association.method(association.methodName, targetBuilder.productPublishedInterfaceName, "targetProduct")»«ENDIF»{
             «IF isSuper»
                 super.«association.methodName»(targetProduct«IF withCardinality», cardinality«ENDIF»);
             «ELSE»
-                «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetProduct«IF withCardinality», cardinality«ENDIF»);
+                «getProdOrGen(it, association.changingOverTime, targetBuilder)».«association.methodNameSetOrAdd»(targetProduct«IF withCardinality», cardinality«ENDIF»);
             «ENDIF»
             return done();
         }
     '''
 
-    def private static associationSetterWithType(XProductBuilder builder, XProductBuilderAssociation association,
-        boolean multi, boolean isSuper, XProductBuilder it, boolean withCardinality) '''
+    def private static associationSetterWithType(XProductBuilder it, XProductBuilderAssociation association,
+        boolean multi, boolean isSuper, XProductBuilder targetBuilder, boolean withCardinality) '''
         /**
-        *«localizedJDoc("METHOD_ASS_TYPE_PROD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_TYPE_PROD", targetBuilder.productName, association.name)»
         *
         * @generated
         */
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod && association.getAssociation.target==association.getAssociation.findSuperAssociationWithSameName(association.ipsProject).target)»@Override«ENDIF»
-        public «returnType(builder, multi, true, it)» «association.methodName»(«targetBuilderType(multi, it)» targetBuilder«IF withCardinality», «CardinalityRange» cardinality«ENDIF») {
+        public «returnType(it, multi, true, targetBuilder)» «association.methodName»(«targetBuilderType(multi, targetBuilder)» targetBuilder«IF withCardinality», «CardinalityRange» cardinality«ENDIF») {
             «IF isSuper»
                 super.«association.methodName»(targetBuilder«IF withCardinality», cardinality«ENDIF»);
             «ELSE»
-                «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
+                «getProdOrGen(it, association.changingOverTime, targetBuilder)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
             «ENDIF»
-            return «returnValue(multi, it)»;
+            return «returnValue(multi, targetBuilder)»;
         }
     '''
 
-    def private static getProdOrGen(XProductBuilder builder, boolean changingOverTime, XProductBuilder it) '''
+    def private static getProdOrGen(XProductBuilder it, boolean changingOverTime, XProductBuilder targetBuilder) '''
         «IF changingOverTime»
-            «castToImplementation(builder.prodGenImplClassName, "getCurrentGeneration()")»
+            «castToImplementation(prodGenImplClassName, "getCurrentGeneration()")»
         «ELSE»
-            «castToImplementation(builder.typeImplClassName, getResult)»
+            «castToImplementation(typeImplClassName, getResult)»
         «ENDIF»
     '''
 
-    def private static associationSetter(XProductBuilder builder, XProductBuilderAssociation association, boolean multi,
-        boolean isSuper, XProductBuilder it, boolean withCardinality) '''
+    def private static associationSetter(XProductBuilder it, XProductBuilderAssociation association, boolean multi,
+        boolean isSuper, XProductBuilder targetBuilder, boolean withCardinality) '''
         /**
-        *«localizedJDoc("METHOD_ASS_PROD", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_PROD", targetBuilder.productName, association.name)»
         *
         * @generated
         */
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod)» @Override «ENDIF»
-        public «returnType(builder, multi, false, it)» «IF withCardinality»«association.method(association.methodName, "String", "productCmptId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName, "String", "productCmptId")»«ENDIF» {
+        public «returnType(it, multi, false, targetBuilder)» «IF withCardinality»«association.method(association.methodName, "String", "productCmptId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName, "String", "productCmptId")»«ENDIF» {
             «IF isSuper»
                 super.«association.methodName»(productCmptId«IF withCardinality», cardinality«ENDIF»);
                 return done();
             «ELSE»
-                «IF generatePublishedInterfaces»
-                    «implClassName» targetBuilder = new «factoryImplClassName»().«builder(getRepository, "productCmptId")»;
+                «IF targetBuilder.generatePublishedInterfaces»
+                    «targetBuilder.implClassName» targetBuilder = new «targetBuilder.factoryImplClassName»().«builder(getRepository, "productCmptId")»;
                 «ELSE»
-                    «implClassName» targetBuilder = «typeImplClassName».«builder(getRepository, "productCmptId")»;
+                    «targetBuilder.implClassName» targetBuilder = «targetBuilder.typeImplClassName».«builder(getRepository, "productCmptId")»;
                 «ENDIF»
-                «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
-                return «returnValue(multi, it)»;
+                «getProdOrGen(it, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
+                return «returnValue(multi, targetBuilder)»;
             «ENDIF»
         }
         
         /**
-        *«localizedJDoc("METHOD_ASS_IDS", productName, association.name)»
+        *«localizedJDoc("METHOD_ASS_IDS", targetBuilder.productName, association.name)»
         *
         * @generated
         */
         «IF isSuper || (association.needOverrideForConstrainNewChildMethod)» @Override «ENDIF»
-        public «returnType(builder, multi, false, it)» «IF withCardinality»«association.method(association.methodName,"String","id","String","kindId","String","versionId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName,"String","id","String","kindId","String","versionId")»«ENDIF»{
+        public «returnType(it, multi, false, targetBuilder)» «IF withCardinality»«association.method(association.methodName,"String","id","String","kindId","String","versionId", CardinalityRange, "cardinality")»«ELSE»«association.method(association.methodName,"String","id","String","kindId","String","versionId")»«ENDIF»{
             «IF isSuper»
                 super.«association.methodName»(id, kindId, versionId«IF withCardinality», cardinality«ENDIF»);
                 return done();
             «ELSE»
-                «IF generatePublishedInterfaces»
-                    «implClassName» targetBuilder = new «factoryImplClassName»().«builder(getRepository(), "id", "kindId", "versionId")»;
+                «IF targetBuilder.generatePublishedInterfaces»
+                    «targetBuilder.implClassName» targetBuilder = new «targetBuilder.factoryImplClassName»().«builder(getRepository(), "id", "kindId", "versionId")»;
                 «ELSE»
-                    «implClassName» targetBuilder = «typeImplClassName».«builder(getRepository(), "id", "kindId", "versionId")»;
+                    «targetBuilder.implClassName» targetBuilder = «targetBuilder.typeImplClassName».«builder(getRepository(), "id", "kindId", "versionId")»;
                 «ENDIF»
-                «getProdOrGen(builder, association.changingOverTime, it)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
-                return «returnValue(multi, it)»;
+                «getProdOrGen(it, association.changingOverTime, targetBuilder)».«association.methodNameSetOrAdd»(targetBuilder.«getResult()»«IF withCardinality», cardinality«ENDIF»);
+                return «returnValue(multi, targetBuilder)»;
             «ENDIF»
         }
     '''
 
-    def private static returnType(XProductBuilder sourceBuilder, boolean multi, boolean gen, XProductBuilder it) '''
-        «IF multi» «sourceBuilder.implClassName»
-        «ELSEIF gen»<T extends «implClassName»> T
-        «ELSE»«implClassName»
+    def private static returnType(XProductBuilder it, boolean multi, boolean gen, XProductBuilder targetBuilder) '''
+        «IF multi» «implClassName»
+        «ELSEIF gen»<T extends «targetBuilder.implClassName»> T
+        «ELSE»«targetBuilder.implClassName»
         «ENDIF»
     '''
 
