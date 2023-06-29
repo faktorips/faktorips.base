@@ -131,6 +131,11 @@ public class ProductSwitch {
         return ProductFinderResult.empty(message);
     }
 
+    private static boolean isProductConfiguredComposition(PolicyAssociation policyAssociation) {
+        return policyAssociation.getAssociationKind() == AssociationKind.Composition
+                && policyAssociation.getType().isConfiguredByProductCmptType();
+    }
+
     /**
      * This builder class configures the conditions used for finding the correct replacement
      * {@link IProductComponent}.
@@ -145,8 +150,8 @@ public class ProductSwitch {
         }
 
         /**
-         * This method will return a {@link MatchingProductFinderSwitch} that uses the given predicate if
-         * more than one suitable replacement is found in the product configuration.
+         * This method will return a {@link MatchingProductFinderSwitch} that uses the given
+         * predicate if more than one suitable replacement is found in the product configuration.
          *
          * @param howToMatch the predicate how the {@link IProductComponent IProductComponents}
          *            determine if they are suitable for a switch e.g. a configured enum that is
@@ -158,9 +163,9 @@ public class ProductSwitch {
         }
 
         /**
-         * This method will return a {@link MatchingProductFinderSwitch} that uses the given attribute
-         * name of a {@link ProductComponent} if more than one suitable replacement is found in the
-         * product configuration.
+         * This method will return a {@link MatchingProductFinderSwitch} that uses the given
+         * attribute name of a {@link ProductComponent} if more than one suitable replacement is
+         * found in the product configuration.
          *
          * @param attributeName the attribute with the given name declared in a
          *            {@link ProductCmptType}
@@ -266,8 +271,8 @@ public class ProductSwitch {
         }
 
         /**
-         * This method uses the given {@link AdvancedProductFinder} for all
-         * {@link PolicyAssociation PolicyAssociations}.
+         * This method uses the given {@link AdvancedProductFinder} for all {@link PolicyAssociation
+         * PolicyAssociations}.
          *
          * @param finder the {@link AdvancedProductFinder} to use
          * @return the {@link AdvancedProductFinderSwitch AdvancedProductFinderSwitchBuilder}
@@ -337,68 +342,33 @@ public class ProductSwitch {
      * {@link IProductComponent}
      *
      */
-    public static class AdvancedProductFinderSwitch {
+    public static class AdvancedProductFinderSwitch extends AbstractProductFinderSwitch {
 
-        private final IConfigurableModelObject rootModelObject;
         private final Map<PolicyAssociation, AdvancedProductFinder> finders = new HashMap<>();
 
         private AdvancedProductFinderSwitch(IConfigurableModelObject modelObject,
                 Map<PolicyAssociation, AdvancedProductFinder> finders) {
-            rootModelObject = modelObject;
+            super(modelObject);
             this.finders.putAll(finders);
         }
 
         private AdvancedProductFinderSwitch(IConfigurableModelObject modelObject, AdvancedProductFinder finder) {
-            rootModelObject = modelObject;
+            super(modelObject);
             finders.put(null, finder);
         }
 
-        /**
-         * The new {@link IProductComponent} that should be used for the switch.
-         *
-         * @param newProduct the new {@link IProductComponent}
-         * @return an {@link Map} with all switched {@link IConfigurableModelObject
-         *             IConfigurableModelObjects} and their status determined by either
-         *             {@link FailedProductSwitch} or {@link SuccessfulProductSwitch}.
-         */
-        public ProductSwitchResults to(IProductComponent newProduct) {
-            Map<IConfigurableModelObject, ProductSwitchResult> result = new LinkedHashMap<>();
-            switchProduct(rootModelObject, newProduct, result);
-            return new ProductSwitchResults(result);
-        }
-
-        private void switchProduct(IConfigurableModelObject modelObject,
-                IProductComponent newProduct,
-                Map<IConfigurableModelObject, ProductSwitchResult> result) {
-
-            IProductComponent oldProduct = modelObject.getProductComponent();
-            modelObject.setProductComponent(newProduct);
-            result.put(modelObject, new SuccessfulProductSwitch(oldProduct, newProduct));
-            PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(modelObject);
-            modelObject.getEffectiveFromAsCalendar();
-            for (PolicyAssociation policyAssociation : policyCmptType.getAssociations()) {
-                ProductAssociation productAssociation = policyAssociation.getMatchingAssociation();
-                if (productAssociation != null) {
-
-                    policyAssociation.getTargetObjects(modelObject).stream()
-                    .filter(IConfigurableModelObject.class::isInstance)
-                    .map(IConfigurableModelObject.class::cast)
-                    .forEach(child -> {
-                        AdvancedProductFinder productFinder = finders.get(policyAssociation);
-                        if (productFinder == null) {
-                            productFinder = finders.get(null);
-                        }
-                        ProductFinderResult match = productFinder.findMatchingProduct(modelObject,
-                                oldProduct, child, policyAssociation);
-                        if (match.isError() || match.isEmpty()) {
-                            result.put(child, new FailedProductSwitch(modelObject, policyAssociation,
-                                    match.getMessage()));
-                        } else if (match.isPresent()) {
-                            switchProduct(child, match.getProductComponent(), result);
-                        }
-                    });
-                }
+        @Override
+        ProductFinderResult findMatchingProduct(IConfigurableModelObject parent,
+                IConfigurableModelObject child,
+                List<IProductComponent> oldChildProducts,
+                List<IProductComponent> newChildProducts,
+                IProductComponent oldParentProduct,
+                PolicyAssociation policyAssociation) {
+            AdvancedProductFinder productFinder = finders.get(policyAssociation);
+            if (productFinder == null) {
+                productFinder = finders.get(null);
             }
+            return productFinder.findMatchingProduct(parent, oldParentProduct, child, policyAssociation);
         }
     }
 
@@ -407,15 +377,13 @@ public class ProductSwitch {
      * {@link IProductComponent}
      *
      */
-    public static class MatchingProductFinderSwitch {
+    public static class MatchingProductFinderSwitch extends AbstractProductFinderSwitch {
 
-        private final IConfigurableModelObject rootModelObject;
         private final MatchingProductFinder productFinder;
 
         private MatchingProductFinderSwitch(IConfigurableModelObject modelObject,
                 BiPredicate<IProductComponent, IProductComponent> howToMatch) {
-            rootModelObject = modelObject;
-            productFinder = (childModel, oldChildProducts, newChildProducts) -> {
+            this(modelObject, (childModel, oldChildProducts, newChildProducts) -> {
                 if (oldChildProducts.size() == 1 && newChildProducts.size() == 1) {
                     return ProductFinderResult.of(newChildProducts.get(0));
                 }
@@ -430,12 +398,31 @@ public class ProductSwitch {
                     return ProductFinderResult.of(matching.get(0));
                 }
                 return ProductSwitch.createErrorResult(childModel, matching);
-            };
+            });
         }
 
         private MatchingProductFinderSwitch(IConfigurableModelObject modelObject, MatchingProductFinder productFinder) {
-            rootModelObject = modelObject;
+            super(modelObject);
             this.productFinder = productFinder;
+        }
+
+        @Override
+        ProductFinderResult findMatchingProduct(IConfigurableModelObject parent,
+                IConfigurableModelObject child,
+                List<IProductComponent> oldChildProducts,
+                List<IProductComponent> newChildProducts,
+                IProductComponent oldParentProduct,
+                PolicyAssociation policyAssociation) {
+            return productFinder.findMatchingProduct(child, oldChildProducts, newChildProducts);
+        }
+    }
+
+    public abstract static class AbstractProductFinderSwitch {
+
+        private final IConfigurableModelObject rootModelObject;
+
+        private AbstractProductFinderSwitch(IConfigurableModelObject modelObject) {
+            rootModelObject = modelObject;
         }
 
         /**
@@ -472,8 +459,8 @@ public class ProductSwitch {
                     .filter(IConfigurableModelObject.class::isInstance)
                     .map(IConfigurableModelObject.class::cast)
                     .forEach(child -> {
-                        ProductFinderResult match = productFinder.findMatchingProduct(child,
-                                oldChildProducts, newChildProducts);
+                        ProductFinderResult match = findMatchingProduct(modelObject, child, oldChildProducts,
+                                newChildProducts, oldProduct, policyAssociation);
                         if (match.isError() || match.isEmpty()) {
                             result.put(child, new FailedProductSwitch(modelObject, policyAssociation,
                                     match.getMessage()));
@@ -485,9 +472,11 @@ public class ProductSwitch {
             });
         }
 
-        private boolean isProductConfiguredComposition(PolicyAssociation policyAssociation) {
-            return policyAssociation.getAssociationKind() == AssociationKind.Composition
-                    && policyAssociation.getType().isConfiguredByProductCmptType();
-        }
+        abstract ProductFinderResult findMatchingProduct(IConfigurableModelObject parent,
+                IConfigurableModelObject child,
+                List<IProductComponent> oldChildProducts,
+                List<IProductComponent> newChildProducts,
+                IProductComponent oldParentProduct,
+                PolicyAssociation policyAssociation);
     }
 }
