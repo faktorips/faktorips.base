@@ -9,7 +9,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_NAME = 'FaktorIPS'
+        PROJECT_NAME = 'FaktorIPS_CI'
         PROJECT_ID = "${PROJECT_NAME}"
     }
 

@@ -7,7 +7,7 @@ pipeline {
 
 
     environment {
-        PROJECT_NAME = 'FaktorIPS'
+        PROJECT_NAME = 'FaktorIPS_Review'
         BUILD_NAME = "${env.GERRIT_CHANGE_NUMBER}"
         PROJECT_ID = "${PROJECT_NAME}-${BUILD_NAME}"
     }

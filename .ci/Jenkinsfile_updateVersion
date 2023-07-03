@@ -7,7 +7,7 @@ pipeline {
     agent any
 
     environment {
-        PROJECT_NAME = 'Faktor-IPS Update Versions'
+        PROJECT_NAME = 'Faktor-IPS_Update_Versions'
         PROJECT_ID = "${PROJECT_NAME}-${params.NEW_VERSION}"
     }
 

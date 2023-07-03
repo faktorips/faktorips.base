@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        PROJECT_NAME = 'FaktorIPS nightly'
+        PROJECT_NAME = 'FaktorIPS_Nightly'
         PROJECT_ID = "${PROJECT_NAME}"
     }
 
@@ -32,7 +32,7 @@ pipeline {
                                 sh 'rm -rf $HOME/.m2/repository/p2'
                             }
 
-                            withMaven() {
+                            withMaven( publisherStrategy: 'EXPLICIT') {
                                 configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
                                     sh 'mvn -U -V clean verify -s "$MAVEN_SETTINGS" -t "$TOOLCHAINS"'
                                 }
