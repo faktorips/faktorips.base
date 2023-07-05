@@ -21,8 +21,10 @@
                 <xsd:element ref="Link" minOccurs="0" maxOccurs="unbounded" />
             </xsd:sequence>
             <xsd:attribute name="productCmptType" type="qualifiedName" use="required" />
+            <xsd:attribute name="implementationClass" type="qualifiedName" use="optional" />
             <xsd:attribute name="runtimeId" type="xsd:string" use="required" />
             <xsd:attribute name="template" type="qualifiedProductName" use="optional" />
+            <xsd:attribute name="validFrom" type="date" use="required" />
             <xsd:attribute ref="xml:space" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInProductCmpt">
@@ -102,8 +104,9 @@
         <xsd:complexType>
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
-                <xsd:element name="Expression" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="Expression" type="string" minOccurs="1" maxOccurs="1" />
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
+                <xsd:element name="compiledExpression" type="string" minOccurs="1" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="formulaSignature" type="string" use="required" />
             <xsd:attributeGroup ref="id" />
@@ -119,7 +122,7 @@
         <xsd:complexType>
             <xsd:sequence minOccurs="1" maxOccurs="1">
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
-                <xsd:element name="TableContentName" type="xsd:string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="TableContentName" type="string" minOccurs="1" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attributeGroup ref="id" />
             <xsd:attribute name="structureUsage" type="string" use="required" />
@@ -150,7 +153,8 @@
             <xsd:attribute name="defaultCardinality" type="int" use="required" />
             <xsd:attributeGroup ref="id" />
             <xsd:attributeGroup ref="cardinality" />
-            <xsd:attribute name="target" type="qualifiedProductName" use="required" />
+            <xsd:attribute name="target" type="qualifiedProductName" use="required" />            
+            <xsd:attribute name="targetRuntimeId" type="qualifiedProductName" use="required" />
             <xsd:attributeGroup ref="templateValueStatus" />
         </xsd:complexType>
         <xsd:unique name="UniqueIdInLink">

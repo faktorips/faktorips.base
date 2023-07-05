@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -65,7 +65,7 @@ import org.xml.sax.SAXParseException;
 
 /**
  * A collection of utility methods for XML handling.
- * 
+ *
  * @author Jan Ortmann
  */
 public class XmlUtil {
@@ -261,7 +261,7 @@ public class XmlUtil {
 
     /**
      * Transforms the given node to a String.
-     * 
+     *
      * @param node the node
      * @param encoding the used encoding
      * @param escapeBlanks if non standard blanks should be escaped
@@ -289,7 +289,7 @@ public class XmlUtil {
      * distinguish whether the space is a meaningful content or just an indentation, so the
      * serializer regards the spaces as XML data content. This leads to spurious empty lines when
      * reading pretty printed XML files.
-     * 
+     *
      * <p>
      * For Example:
      * </p>
@@ -310,7 +310,7 @@ public class XmlUtil {
      * extension property. Here, we don't want any indentation around the value, as it might be a
      * String with leading and/or trailing whitespace.
      * </p>
-     * 
+     *
      * @return the XML without spurious empty lines
      */
     private static String noIndentationToXmlDataContent(String xml) {
@@ -349,7 +349,7 @@ public class XmlUtil {
      * <li>medium mathematical space</li>
      * <li>ideographic space</li>
      * </ul>
-     * 
+     *
      * @param xml the XML to replace
      * @param escapeBlanks whether to escape non standard blanks
      * @return the replaced XML
@@ -389,7 +389,7 @@ public class XmlUtil {
      * Java 9+ respects {@code xml:space="preserve"} even when writing and ignores indentation
      * settings. We remove the attribute before the transformation and add it to the String
      * afterwards to prevent other tools from formatting the XML.
-     * 
+     *
      * @return whether {@code xml:space="preserve"} was found on the node
      */
     private static boolean removePreserveSpace(Node node) {
@@ -454,7 +454,7 @@ public class XmlUtil {
     /**
      * Creates a {@link Validator} for {@link Schema} validation. Per default the validator will log
      * XSD errors and warnings and only throws a {@link RuntimeException} if a fatal error occurs.
-     * 
+     *
      * @param ipsObjectType the IPS object type for loading the XSD schema file
      * @return an XSD validator
      */
@@ -571,13 +571,13 @@ public class XmlUtil {
      * element considering all child elements with the given tag name. In contrast to
      * {@link Element#getElementsByTagName(String)} this method returns only the direct children,
      * not all descendants.
-     * 
+     *
      * @param parent The parent node.
      * @param tagName the element tag name.
      * @param index The 0 based position of the child.
      * @return The element at the specified index
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
-     * 
+     *
      * @see Element#getElementsByTagName(java.lang.String)
      */
     public static final Element getElement(Node parent, String tagName, int index) {
@@ -600,10 +600,10 @@ public class XmlUtil {
     /**
      * Returns the child element at the given index. The index is the position of the element
      * considering all child nodes of type element.
-     * 
+     *
      * @param parent The parent node.
      * @param index The 0 based position of the child.
-     * 
+     *
      * @throws IndexOutOfBoundsException if no element exists at the specified index.
      */
     public static final Element getElement(Node parent, int index) {
@@ -708,14 +708,14 @@ public class XmlUtil {
     /**
      * Returns the value for the given property from the given parent element. The parent XML
      * element must have the following format:
-     * 
+     *
      * <pre>
      * {@code <Parent>
      *   <Property isNull="false">value</Property>
      * </Parent>
      * }
      * </pre>
-     * 
+     *
      * @throws NullPointerException if parent or propertyName is <code>null</code> or the parent
      *             element does not contain an element with the given propertyName.
      * @deprecated use {@link ValueToXmlHelper#getValueFromElement(Element, String)} instead

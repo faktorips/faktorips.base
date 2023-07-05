@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.ipsproject;
 
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -169,7 +170,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
      * build path. The parent of the new class loader is the System class loader.
-     * 
+     *
      * @see ClassLoader#getSystemClassLoader()
      */
     ClassLoader getClassLoaderForJavaProject();
@@ -177,11 +178,11 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
      * build path. The parent of the new class loader is the System class loader.
-     * 
+     *
      * @param parent The parent class loader.
-     * 
+     *
      * @throws NullPointerException if <code>parent</code> is <code>null</code>.
-     * 
+     *
      * @since 3.1.0
      */
     ClassLoader getClassLoaderForJavaProject(ClassLoader parent);
@@ -192,10 +193,10 @@ public interface IIpsProject extends IIpsElement {
      * contain any problem marker indicating that the Java sourcecode couldn't be compiled. Returns
      * <code>null</code> if either the corresponding platform project is closed, the corresponding
      * Java project doesn't exist or it hasn't been build yet. Returns <code>false</code> otherwise.
-     * 
+     *
      * @param checkRequiredJavaProjects <code>true</code> if the Java project's required by this
      *            Java project are also checked.
-     * 
+     *
      * @throws IpsException if an error occurs while checking the Java project.
      */
     Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws IpsException;
@@ -203,7 +204,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns all {@link IIpsProject IpsProjects} that are directly or indirectly referenced in the
      * project's {@link IIpsObjectPath} to this IPS project.
-     * 
+     *
      * @see IIpsObjectPath
      */
     List<IIpsProject> getAllReferencedIpsProjects();
@@ -212,7 +213,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns all direct {@link IIpsProject IIpsProjects} referenced in the project's
      * {@link IIpsObjectPath} to this IPS project. For all referenced IPS projects @see
      * {@link #getAllReferencedIpsProjects()} .
-     * 
+     *
      * @see IIpsObjectPath
      */
     List<IIpsProject> getDirectlyReferencedIpsProjects();
@@ -221,18 +222,18 @@ public interface IIpsProject extends IIpsElement {
      * Returns <code>true</code> if this project is referenced by the other project. Returns
      * <code>false</code> if the other project is <code>null</code> or the other project is this
      * project.
-     * 
+     *
      * @param considerIndirect <code>true</code> if the method should return <code>true</code> for
      *            indirect references.
-     * 
+     *
      */
     boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect);
 
     /**
      * Returns all IPS projects that reference this one in their IPS object path.
-     * 
+     *
      * @param includeIndirect <code>true</code> if also indirect references should
-     * 
+     *
      */
     IIpsProject[] findReferencingProjects(boolean includeIndirect);
 
@@ -257,8 +258,8 @@ public interface IIpsProject extends IIpsElement {
      * the usage of this method. The problem is, you get two projects, both referencing
      * <em>ipsProject</em>. If you add all results of search in project <em>RefProject1</em> and
      * <em>RefProject2</em> you found the <code>ProductCmpt</code> in <em>ipsProject</em> twice.
-     * 
-     * 
+     *
+     *
      * @return The IPS projects referencing this project excluding projects that are referenced by
      *             another result
      */
@@ -269,7 +270,7 @@ public interface IIpsProject extends IIpsElement {
      * referenced <strong>directly or indirectly</strong> in the project's object path. Returns
      * <code>false</code>, if otherProject is <code>null</code>. Returns <code>false</code> if
      * otherProject equals this project.
-     * 
+     *
      * @see IIpsObjectPath
      */
     boolean isReferencing(IIpsProject otherProject);
@@ -281,7 +282,7 @@ public interface IIpsProject extends IIpsElement {
      * <p>
      * The dependency graph is updated by the builder. It is persisted to disk to not create the
      * whole graph after every restart. It is fully rebuild in clean builds.
-     * 
+     *
      * @return The {@link IDependencyGraph} for this project.
      * @see IDependencyGraph
      */
@@ -312,7 +313,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Sets the project's properties and stores the properties in the project's property file
      * (".ipsproject").
-     * 
+     *
      * @throws IpsException if an error occurs while saving the properties to the file.
      */
     void setProperties(IIpsProjectProperties properties) throws IpsException;
@@ -336,7 +337,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns an {@link ExtendedExprCompiler} instance that is configured with the default set
      * operations and functions. Functions that are added via the FunctionResolver extension point
      * are also included.
-     * 
+     *
      */
     ExtendedExprCompiler newExpressionCompiler();
 
@@ -418,7 +419,7 @@ public interface IIpsProject extends IIpsElement {
      * <p>
      * The {@link IIpsPackageFragmentRoot package fragment roots} of referenced projects are not
      * resolved.
-     * 
+     *
      */
     IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots();
 
@@ -439,12 +440,18 @@ public interface IIpsProject extends IIpsElement {
 
     /**
      * Searches and returns the root folder by the indicated name.<br>
-     * Returns <code>null</code> if the root doesn't exists or an error occurs during search.
+     * Returns <code>null</code> if the root doesn't exist or an error occurs during search.
      */
     IIpsPackageFragmentRoot findIpsPackageFragmentRoot(String name);
 
     /**
-     * Returns all <code>IResource</code> objects that do not correspond to
+     * Searches and returns the root folder by the indicated path.<br>
+     * Returns <code>null</code> if the root doesn't exist or an error occurs during search.
+     */
+    IIpsPackageFragmentRoot findIpsPackageFragmentRoot(Path relativePath);
+
+    /**
+     * Returns all <code>AResource</code> objects that do not correspond to
      * <code>IpsPackageFragmentRoots</code> contained in this Project. Returns an empty array if no
      * such resources are found.
      * <p>
@@ -474,7 +481,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns the first policy component type with the given qualified name found on the path.
      * Returns <code>null</code> if no such type is found. Returns <code>null</code> if the
      * qualified name is <code>null</code>.
-     * 
+     *
      */
     IPolicyCmptType findPolicyCmptType(String qualifiedName);
 
@@ -487,12 +494,12 @@ public interface IIpsProject extends IIpsElement {
      * Returns the product component with the given qualified name or <code>null</code> if no such
      * product component exists. If more than one product component with the given name exists, the
      * first one found is returned.
-     * 
+     *
      * @param qualifiedName The qualified name to find the product component for.
-     * 
+     *
      * @return The first product component identified by the given qualified name that has been
      *             found.
-     * 
+     *
      * @throws IpsException If an error occurs during the search.
      */
     IProductCmpt findProductCmpt(String qualifiedName) throws IpsException;
@@ -501,19 +508,19 @@ public interface IIpsProject extends IIpsElement {
      * Returns the product template with the given qualified name or <code>null</code> if no such
      * product template exists. If more than one product template with the given name exists, the
      * first one found is returned.
-     * 
+     *
      * @param qualifiedName The qualified name to find the product template for.
-     * 
+     *
      * @return The first product component identified by the given qualified name that has been
      *             found.
-     * 
+     *
      */
     IProductCmpt findProductTemplate(String qualifiedName);
 
     /**
      * Returns a collection of ipsSrcfiles containing product components with the given unqualified
      * name or an empty collection if no such product component exists.
-     * 
+     *
      * @param unqualifiedName The unqualified name to find the ipsSrcFiles of product components
      *            for.
      * @return A collection containing ipsSrcfiles which names match the given unqualified name.
@@ -524,12 +531,12 @@ public interface IIpsProject extends IIpsElement {
      * Returns the enumeration type with the given qualified name or <code>null</code> if no such
      * enumeration type exists. If more than one enumeration type with the given name exists, the
      * first one found is returned.
-     * 
+     *
      * @param qualifiedName The qualified name to find the enumeration type for.
-     * 
+     *
      * @return The first enumeration type identified by the given qualified name that has been
      *             found.
-     * 
+     *
      * @throws NullPointerException If qualifiedName is <code>null</code>.
      */
     IEnumType findEnumType(String qualifiedName);
@@ -543,7 +550,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns the first enumeration content that is found within this IPS project that references
      * the provided enumeration type.
-     * 
+     *
      * @throws NullPointerException if the provided parameter is <code>null</code>
      */
     IEnumContent findEnumContent(IEnumType enumType);
@@ -552,7 +559,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns the product component with the given runtime id or <code>null</code> if no such
      * product component exists. If more than one product component with the given id exists, the
      * first one found is returned.
-     * 
+     *
      * @param runtimeId The runtime-id to find the product component for.
      * @throws IpsException if an error occurs during search.
      */
@@ -563,7 +570,7 @@ public interface IIpsProject extends IIpsElement {
      * on the given <code>TableStructure</code> in this and all referenced projects. If the
      * <code>structure</code> is null, the method returns all TableContentsSrcFiles found in the
      * class path.
-     * 
+     *
      * @param structure The product components type product component will be searched for.
      * @throws IpsException if an error occurs while searching
      */
@@ -586,7 +593,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
      * name type is found on the path. Returns <code>false</code> if no such object is found or just
      * one {@link IIpsSrcFile} was found.
-     * 
+     *
      * @param qNameType representing the {@link QualifiedNameType} of the searched
      *            {@link IIpsSrcFile}
      */
@@ -596,7 +603,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
      * name type is found on the path. Returns <code>false</code> if no such object is found or just
      * one {@link IIpsSrcFile} was found.
-     * 
+     *
      * @param type representing the {@link IpsObjectType} of the searched {@link IIpsSrcFile}
      * @param qualifiedName representing the qualified name of the searched {@link IIpsSrcFile}
      */
@@ -616,7 +623,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
      * and match the given filter (object type list).
-     * 
+     *
      * @throws IpsException if an error occurs while searching
      */
     List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
@@ -632,11 +639,11 @@ public interface IIpsProject extends IIpsElement {
      * product component type (either directly or because they are based on a sub type of the given
      * type) in this and all referenced projects. If productCmptType is null, the method returns all
      * source files (product components) found on the class path.
-     * 
+     *
      * @param includeSubtypes If <code>true</code> is passed also product component that are based
      *            on sub types of the given product components type are returned, otherwise only
      *            product components that are directly based on the given type are returned.
-     * 
+     *
      */
     IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
             throws IpsException;
@@ -644,7 +651,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns all templates which are based on the given {@link IProductCmptType}. If the parameter
      * includeTemplatesForSubtypes is true also templates based on subtypes will be returned.
-     * 
+     *
      * @param productCmptType The product component type that should that is used by the templates
      * @param includeTemplatesForSubtypes <code>true</code> to include subtypes while searching for
      *            templates
@@ -658,7 +665,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns all templates that are compatible to the given product component type. A template is
      * compatible if it is based on the same product component type or on any supertype of the
      * specified one.
-     * 
+     *
      * @param productCmptType The product component type to which the returned templates are
      *            compatible to
      * @return A list of all templates found from this project (including referenced projects) that
@@ -671,7 +678,7 @@ public interface IIpsProject extends IIpsElement {
      * <code>ITestCaseType</code> in this and all referenced projects. If the
      * <code>testCaseType</code> is null, the method returns all TestCaseSrcFiles found in the class
      * path.
-     * 
+     *
      * @param testCaseType The <code>TestCaseType</code> to search the <code>TestCase</code>s for
      * @throws IpsException if an exception occurs while searching
      */
@@ -682,7 +689,7 @@ public interface IIpsProject extends IIpsElement {
      * on the given <code>IEnumType</code> in this and all referenced projects. You could specify
      * whether to include all sub types of <code>enumType</code> or not If the <code>enumType</code>
      * is null, the method returns all EnumContentSrcFiles found in the class path.
-     * 
+     *
      * @param includingSubtypes <code>true</code> if sub types of <code>enumType</code> should be
      *            included in the search
      * @throws IpsException if an exception occurs while searching
@@ -692,7 +699,7 @@ public interface IIpsProject extends IIpsElement {
 
     /**
      * Returns all data types accessible on the project's path.
-     * 
+     *
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      */
@@ -700,7 +707,7 @@ public interface IIpsProject extends IIpsElement {
 
     /**
      * Returns all data types accessible on the project's path.
-     * 
+     *
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
@@ -709,7 +716,7 @@ public interface IIpsProject extends IIpsElement {
 
     /**
      * Returns all data types accessible on the project's path.
-     * 
+     *
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
@@ -723,7 +730,7 @@ public interface IIpsProject extends IIpsElement {
 
     /**
      * Returns all data types accessible on the project's path.
-     * 
+     *
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
@@ -764,7 +771,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Returns the code generation helper for the given data type or <code>null</code> if no helper
      * is available for the given data type.
-     * 
+     *
      * @param qName The qualified data type name.
      */
     DatatypeHelper findDatatypeHelper(String qName);
@@ -773,7 +780,7 @@ public interface IIpsProject extends IIpsElement {
      * Returns the value set types that are allowed for the given data type. The type
      * {@link ValueSetType#UNRESTRICTED} is always returned and is the first element in the array.
      * If data type is <code>null</code> then an array with <code>UNRESTRICTED</code> is returned.
-     * 
+     *
      * @throws IpsException if an error occurs while retrieving the value set types, possible
      *             reasons are that the data types files can't be read or the XML can't be parsed.
      */
@@ -784,7 +791,7 @@ public interface IIpsProject extends IIpsElement {
      * type. Returns <code>false</code> otherwise. Returns <code>false</code> if
      * <code>valueSetType</code> is <code>null</code>. If <code>datatype</code> is <code>null</code>
      * and the <code>valueSetType</code> is unrestricted, this method returns <code>true</code>.
-     * 
+     *
      * If this method returns <code>true</code>, it is guaranteed that the value set type is
      * returned by {@link #getValueSetTypes(ValueDatatype)}.
      */
@@ -838,13 +845,13 @@ public interface IIpsProject extends IIpsElement {
     /**
      * Checks all given product components against all product components in the IPS object path for
      * duplicate runtime IDs.
-     * 
+     *
      * @param cmptsToCheck List of product components to check
-     * 
+     *
      * @return A list of messages. For each combination of two product components with duplicate
      *             runtime id a new message is created. This message has only one invalid object
      *             property, containing the product component given to this method.
-     * 
+     *
      * @throws IpsException if an error occurs during search.
      */
     MessageList checkForDuplicateRuntimeIds(IIpsSrcFile... cmptsToCheck) throws IpsException;
@@ -860,7 +867,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * This method checks whether this project has a resource with the specified path. The path is
      * relative to the project's object path entries.
-     * 
+     *
      * @param path The path of the requested resource
      * @return <code>true</code> if the resource could be found in this project's entries,
      *             <code>false</code> if not
@@ -881,7 +888,7 @@ public interface IIpsProject extends IIpsElement {
      * {@code DefaultVersionProvider} reading the version directly from
      * {@link IIpsProjectProperties#getVersion()}. In case of extended {@link IVersionProvider} the
      * one configured in {@link IIpsProjectProperties#getVersionProviderId()} is used.
-     * 
+     *
      * @return The version provider that is configured to use by this project. If none is configured
      *             the {@code DefaultVersionProvider} is returned.
      */
@@ -903,7 +910,7 @@ public interface IIpsProject extends IIpsElement {
     /**
      * This method is called when the project internal caches should be cleaned up. For example when
      * the IPS object path has changed.
-     * 
+     *
      */
     void clearCaches();
 
@@ -913,7 +920,7 @@ public interface IIpsProject extends IIpsElement {
      * templates that (directly or indirectly) reference the given template are nodes in that tree.
      * Returns an empty tree if no template is given or the given product component is not a
      * template.
-     * 
+     *
      * @param template the template whose hierarchy is returned
      * @return a tree with the hierarchy of the given template. The tree is empty if no template or
      *             a non-template product component is given.

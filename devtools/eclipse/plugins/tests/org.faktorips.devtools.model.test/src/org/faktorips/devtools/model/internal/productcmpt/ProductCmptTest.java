@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,6 +30,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.beans.PropertyDescriptor;
@@ -43,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.abstracttest.TestIpsModelExtensions;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.IIpsModel;
@@ -104,9 +106,11 @@ import org.faktorips.devtools.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class ProductCmptTest extends AbstractIpsPluginTest {
@@ -678,7 +682,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * 
+     *
      * <strong>Scenario:</strong><br>
      * The {@link IPropertyValue property values} are requested but no
      * {@link IProductCmptGeneration} exists for the indicated effective date.
@@ -703,7 +707,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * 
+     *
      * <strong>Scenario:</strong><br>
      * The {@link IPropertyValue property values} are requested but no
      * {@link IProductCmptGeneration} exists for the indicated effective date.
@@ -898,14 +902,32 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml_Formula() {
-        IFormula newFormula = productCmpt
-                .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
-        newFormula.setExpression("anyExpression");
-        Element xml = productCmpt.toXml(newDocument());
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            IFormulaCompiler formulaCompiler = mock(IFormulaCompiler.class);
+            testIpsModelExtensions.setFormulaCompiler(formulaCompiler);
+            IFormula newFormula = productCmpt
+                    .newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"), IFormula.class);
+            newFormula.setExpression("anyExpression");
+            Document document = newDocument();
+            Element xml = productCmpt.toXml(document);
+            verify(formulaCompiler).compileFormulas(productCmpt, document, xml);
 
-        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
-        copy.initFromXml(xml);
-        assertEquals(1, productCmpt.getFormulas().length);
+            ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
+            copy.initFromXml(xml);
+            assertEquals(1, productCmpt.getFormulas().length);
+        }
+    }
+
+    @Test
+    public void testToXml_ImplClass() {
+        try (TestIpsModelExtensions testIpsModelExtensions = TestIpsModelExtensions.get()) {
+            testIpsModelExtensions.setImplementationClassProvider(p -> "my.Impl");
+            Document document = newDocument();
+            productCmpt.setProductCmptType("foo.Bar");
+            Element xml = productCmpt.toXml(document);
+
+            assertThat(xml.getAttribute(ProductComponent.PROPERTY_IMPLEMENTATION_CLASS), is("my.Impl"));
+        }
     }
 
     @Test
@@ -913,6 +935,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         attr2.setChangingOverTime(false);
         IProductCmptLink newLink = productCmpt.newLink("newLink");
         newLink.setTarget("target");
+        newLink.setTargetRuntimeId("targetID");
         Element xml = productCmpt.toXml(newDocument());
 
         ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
@@ -921,6 +944,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(linksCopy);
         assertEquals(1, linksCopy.size());
         assertEquals(newLink.getTarget(), linksCopy.get(0).getTarget());
+        assertEquals(newLink.getTargetRuntimeId(), linksCopy.get(0).getTargetRuntimeId());
     }
 
     @Test

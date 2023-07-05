@@ -39,7 +39,6 @@ public class Messages extends NLS {
     public static String AddIpsNatureDialog_ProjectType;
     public static String AddIpsNatureDialog_runtimeIdPrefix;
     public static String AddIpsNatureDialog_sourceFolderName;
-    public static String AddIpsNatureDialog_TheSourceFolderMustBeADirectChildOfTheProject;
     public static String AddIpsNatureDialog_noJavaProject;
     public static String AddIpsNatureDialog_errorTitle;
     public static String AddIpsNatureDialog_NamingGroup;

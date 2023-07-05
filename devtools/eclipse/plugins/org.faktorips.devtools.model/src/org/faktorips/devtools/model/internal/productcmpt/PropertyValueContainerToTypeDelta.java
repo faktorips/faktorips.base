@@ -30,6 +30,7 @@ import org.faktorips.devtools.model.internal.productcmpt.deltaentries.RemovedTem
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.model.internal.productcmpt.deltaentries.ValueWithoutPropertyEntry;
+import org.faktorips.devtools.model.internal.productcmpt.deltaentries.WrongRuntimeIdForLinkEntry;
 import org.faktorips.devtools.model.internal.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
@@ -37,6 +38,7 @@ import org.faktorips.devtools.model.productcmpt.DeltaType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IConfiguredValueSet;
 import org.faktorips.devtools.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.model.productcmpt.IPropertyValue;
@@ -98,6 +100,11 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 addEntry(linkWithoutAssociationEntry);
             } else if (!link.getProductCmptLinkContainer().isContainerFor(association)) {
                 LinkChangingOverTimeMismatchEntry entry = new LinkChangingOverTimeMismatchEntry(association, link);
+                addEntry(entry);
+            }
+            IProductCmpt target = link.findTarget(ipsProject);
+            if (target != null && !Objects.equals(link.getTargetRuntimeId(), target.getRuntimeId())) {
+                WrongRuntimeIdForLinkEntry entry = new WrongRuntimeIdForLinkEntry(link);
                 addEntry(entry);
             }
         }

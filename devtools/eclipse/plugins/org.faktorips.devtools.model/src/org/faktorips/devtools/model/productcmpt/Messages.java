@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -29,6 +29,8 @@ public class Messages extends NLS {
     public static String DeltaType_valueHolderMismatch;
 
     public static String DeltaType_LinksWithWrongParent;
+
+    public static String DeltaType_LinksWithWrongTargetRuntimeId;
 
     public static String DeltaType_LinksNotFoundInTheModel;
     public static String DeltaType_missingTemplateLink;

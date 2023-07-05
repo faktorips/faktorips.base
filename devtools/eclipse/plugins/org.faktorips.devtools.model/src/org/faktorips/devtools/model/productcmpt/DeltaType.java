@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,7 +16,7 @@ import org.faktorips.devtools.model.IIpsModelExtensions;
 
 /**
  * Type of a delta.
- * 
+ *
  * @author Jan Ortmann
  */
 public enum DeltaType {
@@ -30,6 +30,7 @@ public enum DeltaType {
     MULTILINGUAL_MISMATCH(Messages.DeltaType_multilingualMismatch, Kind.MODIFY),
     LINK_WITHOUT_ASSOCIATION(Messages.DeltaType_LinksNotFoundInTheModel, Kind.DELETE),
     LINK_CHANGING_OVER_TIME_MISMATCH(Messages.DeltaType_LinksWithWrongParent, Kind.MODIFY),
+    LINK_TARGET_RUNTIME_ID_MISMATCH(Messages.DeltaType_LinksWithWrongTargetRuntimeId, Kind.MODIFY),
     MISSING_TEMPLATE_LINK(Messages.DeltaType_missingTemplateLink, Kind.ADD),
     REMOVED_TEMPLATE_LINK(Messages.DeltaType_removedTemplateLink, Kind.DELETE),
     INVALID_GENERATIONS(MessageFormat.format(Messages.DeltaType_invalidGenerations,

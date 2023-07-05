@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -161,6 +161,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     public void testFindIpsPackageFragmentRoot() throws Exception {
         assertEquals(root, ipsProject.findIpsPackageFragmentRoot(root.getName()));
         assertNull(ipsProject.findIpsPackageFragmentRoot("Unknown"));
+
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        AFolder deepFolder = ipsProject.getProject().getFolder("a").getFolder("deep").getFolder("root");
+        ipsObjectPath.newSourceFolderEntry(deepFolder);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        assertEquals(ipsProject.getIpsPackageFragmentRoots()[1],
+                ipsProject.findIpsPackageFragmentRoot(deepFolder.getProjectRelativePath().toString()));
+
     }
 
     @Test

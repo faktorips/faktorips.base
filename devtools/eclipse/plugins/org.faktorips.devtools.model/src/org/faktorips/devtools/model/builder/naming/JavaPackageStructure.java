@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 /**
  * Implements the old interface {@link IJavaPackageStructure} containing a lot of static util
  * methods to get the correct package name for generated artifacts
- * 
+ *
  * @author widmaier
  */
 public class JavaPackageStructure implements IJavaPackageStructure {
@@ -29,9 +29,9 @@ public class JavaPackageStructure implements IJavaPackageStructure {
     /**
      * Returns the name of the package the generated artifacts for the given IPS source file will be
      * placed in.
-     * 
+     *
      * @param ipsSrcFile The source file to get the package from
-     * 
+     *
      */
     @Override
     public String getPackageName(IIpsSrcFile ipsSrcFile, boolean internalArtifacts, boolean mergableArtifacts) {
@@ -49,7 +49,7 @@ public class JavaPackageStructure implements IJavaPackageStructure {
     /**
      * Returns the name of the (Java) package that contains the artifacts specified by the
      * parameters generated for the given ips source file.
-     * 
+     *
      * @param internalArtifacts <code>true</code> if the artifacts are internal <code>false</code>
      *            if they are published (usable by clients).
      * @param mergableArtifacts <code>true</code> if the generated artifact is mergable (at the

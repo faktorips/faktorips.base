@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,6 @@ import static org.faktorips.devtools.abstraction.Wrappers.wrap;
 import java.util.LinkedHashMap;
 import java.util.stream.Stream;
 
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
@@ -243,7 +242,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
     /**
      * Validates the current variable name, and updates this dialog's message.
-     * 
+     *
      * @return true if the name is valid, false otherwise
      */
     private boolean validateSourceFolder() {
@@ -264,9 +263,6 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
             // the source folder name is empty
             newValidationStatus = IMessageProvider.ERROR;
             message = Messages.AddIpsNatureDialog_ErrorNoSourceFolderName;
-        } else if (!(new Path("").isValidSegment(sourceFolderName))) { //$NON-NLS-1$
-            newValidationStatus = IMessageProvider.ERROR;
-            message = Messages.AddIpsNatureDialog_TheSourceFolderMustBeADirectChildOfTheProject;
         } else {
             allowFinish = true;
         }
@@ -284,7 +280,7 @@ public final class AddIpsNatureDialog extends TitleAreaDialog {
 
     /**
      * Validates the current variable name, and updates this dialog's message.
-     * 
+     *
      * @return true if the name is valid, false otherwise
      */
     private boolean validateBasePackage() {

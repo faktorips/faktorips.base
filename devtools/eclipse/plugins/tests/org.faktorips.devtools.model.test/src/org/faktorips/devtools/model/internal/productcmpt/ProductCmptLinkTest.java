@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -106,8 +106,20 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testSetTarget() {
+        newProductCmptType(ipsProject, "my.TargetType");
+        ProductCmpt targetProductCmpt = newProductCmpt(productCmptType, "my.Target");
+        targetProductCmpt.setRuntimeId("my.target.runtime.id");
+        link.setTarget("my.Target");
+        assertEquals("my.Target", link.getTarget());
+        assertEquals("my.target.runtime.id", link.getTargetRuntimeId());
+        assertTrue(ipsSrcFile.isDirty());
+    }
+
+    @Test
+    public void testSetTarget_DoesNotExist() {
         link.setTarget("newTarget");
         assertEquals("newTarget", link.getTarget());
+        assertNull(link.getTargetRuntimeId());
         assertTrue(ipsSrcFile.isDirty());
     }
 

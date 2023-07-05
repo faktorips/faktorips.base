@@ -803,6 +803,7 @@ public class IpsBuilder {
         IIpsObject ipsObject = file.getIpsObject();
         MultiStatus newStatus = createInitialMultiStatus();
         applyBuildCommand(ipsArtefactBuilderSet, newStatus, new BuildArtefactBuildCommand(file), monitor);
+
         if (!newStatus.isOK()) {
             fillMultiStatusWithMessageList(newStatus, ipsObject.validate(ipsProject));
             buildStatus.add(newStatus);

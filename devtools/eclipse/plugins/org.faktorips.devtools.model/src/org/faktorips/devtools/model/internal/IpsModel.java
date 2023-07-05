@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -102,7 +102,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Implementation of <code>IIpsModel</code>.
- * 
+ *
  * @see IIpsModel
  */
 public class IpsModel extends IpsElement implements IIpsModel {
@@ -469,15 +469,18 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         IIpsProject ipsProject = getIpsProject(project.getName());
         Path relativePath = resource.getProjectRelativePath();
-        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(relativePath.subpath(0, 1).toString());
+        IIpsPackageFragmentRoot root = ipsProject.findIpsPackageFragmentRoot(relativePath);
         if (root == null) {
             return getExternalIpsSrcFile(resource);
         }
-        if (relativePath.getNameCount() == 1) {
+
+        int rootNameCount = Path.of(root.getName()).getNameCount();
+
+        if (relativePath.getNameCount() == rootNameCount) {
             return root;
         }
         StringBuilder folderName = new StringBuilder();
-        for (int i = 1; i < relativePath.getNameCount() - 1; i++) {
+        for (int i = rootNameCount; i < relativePath.getNameCount() - 1; i++) {
             if (i > 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
             }
@@ -503,7 +506,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Returns an IpsElement of an IPS project that is not categorized as such (For example the
      * parent folder of an IPS project).
-     * 
+     *
      * @param resource the input file
      * @return the respective IPS file or <code>null</code> if the resource isn't an IPS SRC File
      */
@@ -830,7 +833,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * provided IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code>
      * <code>null</code> will be returned by this method. This method is not part of the published
      * interface.
-     * 
+     *
      * @throws NullPointerException if the argument is null
      */
     // TODO the resource change listener method of this IpsModel needs to update
@@ -897,7 +900,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Clears caches for a given project. Affects only caches whose objects depend on project
      * settings, e.g. IPS project properties or manifest files.
-     * 
+     *
      * @param ipsProject whose properties and or settings changed
      */
     public void clearProjectSpecificCaches(IIpsProject ipsProject) {
@@ -974,7 +977,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * set the modification stamp invalid and force a reload on next access.
      * <p>
      * Only alternative would be to use a soft reference cache.
-     * 
+     *
      * @param srcFile The {@link IIpsSrcFile} you want to release from the cache.
      */
     protected void releaseInCache(IIpsSrcFile srcFile) {
@@ -1100,9 +1103,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Returns the ClassLoaderProvider for the given IPS project. Uses the System class loader as
      * parent of the class loader that is provided by the returned provider.
-     * 
+     *
      * @throws NullPointerException if ipsProject is <code>null</code>.
-     * 
+     *
      * @see ClassLoader#getSystemClassLoader()
      */
     public IClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
@@ -1121,7 +1124,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     /**
      * Returns the cache for all function resolvers (registered via extension point) for the given
      * IPS project.
-     * 
+     *
      * @param ipsProject the project to return a cache for
      */
     public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject) {
@@ -1162,9 +1165,9 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
      * <code>true</code> then the complete content will be read from the source file, if
      * <code>false</code> then only the properties of the IPS object will be read.
-     * 
+     *
      * @param file the file to read
-     * 
+     *
      * @param loadCompleteContent <code>true</code> if the completely file should be read,
      *            <code>false</code> if only the properties will be read
      */
@@ -1371,7 +1374,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * {@link SingleEventModification} and makes sure that only the {@link ContentChangeEvent} that
      * is provided by the {@link SingleEventModification} is fired. No events are fired during the
      * method execution.
-     * 
+     *
      * @throws IpsException delegates the exceptions from the
      *             {@link SingleEventModification#execute() execute()} method of the
      *             {@link SingleEventModification}
@@ -1410,7 +1413,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
      * Returns the {@link IIpsSrcFile IPS source files} of the markers that are configured in the
      * given {@link IIpsProject}. This method only handles the caching in the project data. Always
      * call {@link IIpsProject#getMarkerEnums()} directly.
-     * 
+     *
      * @see IIpsProject#getMarkerEnums()
      */
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums(IpsProject ipsProject) {
@@ -1500,7 +1503,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
 
     /**
      * Helper to validate the IPS project settings file.
-     * 
+     *
      */
     private static class IpsProjectType extends IpsObjectType {
 

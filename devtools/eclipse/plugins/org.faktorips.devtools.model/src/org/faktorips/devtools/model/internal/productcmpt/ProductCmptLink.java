@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,6 +55,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     private String association = ""; //$NON-NLS-1$
 
     private String target = ""; //$NON-NLS-1$
+
+    private String targetRuntimeId = ""; //$NON-NLS-1$
 
     private Cardinality cardinality = DEFAULT_CARDINALITY;
 
@@ -121,6 +123,24 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         String oldTarget = target;
         target = newTarget;
         valueChanged(oldTarget, target);
+        IProductCmpt targetProductCmpt = findTarget(getIpsProject());
+        if (targetProductCmpt != null) {
+            setTargetRuntimeId(targetProductCmpt.getRuntimeId());
+        } else {
+            setTargetRuntimeId(null);
+        }
+    }
+
+    @Override
+    public String getTargetRuntimeId() {
+        return targetRuntimeId;
+    }
+
+    @Override
+    public void setTargetRuntimeId(String newTargetRuntimeId) {
+        String oldTargetRuntimeId = targetRuntimeId;
+        targetRuntimeId = newTargetRuntimeId;
+        valueChanged(oldTargetRuntimeId, targetRuntimeId);
     }
 
     @Override
@@ -274,6 +294,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         super.initPropertiesFromXml(element, id);
         association = element.getAttribute(PROPERTY_ASSOCIATION);
         target = element.getAttribute(PROPERTY_TARGET);
+        targetRuntimeId = element.getAttribute(PROPERTY_TARGET_RUNTIME_ID);
         int minCardinality;
         int maxCardinality;
         int defaultCardinality;
@@ -311,6 +332,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         Cardinality card = getCardinality();
         element.setAttribute(PROPERTY_ASSOCIATION, association);
         element.setAttribute(PROPERTY_TARGET, target);
+        element.setAttribute(PROPERTY_TARGET_RUNTIME_ID, targetRuntimeId);
         element.setAttribute(PROPERTY_MIN_CARDINALITY, Integer.toString(card.getMin()));
         element.setAttribute(PROPERTY_DEFAULT_CARDINALITY, Integer.toString(card.getDefault()));
 
@@ -398,7 +420,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
      * @param ipsProject The ips project which ips object path is used.
      * @return <code>true</code> if it is possible to create a valid relation with the given
      *             parameters at this time, <code>false</code> otherwise.
-     * 
+     *
      * @throws IpsException if an error occurs during supertype-evaluation
      */
     private boolean willBeValid(IProductCmpt target, IAssociation association, IIpsProject ipsProject) {

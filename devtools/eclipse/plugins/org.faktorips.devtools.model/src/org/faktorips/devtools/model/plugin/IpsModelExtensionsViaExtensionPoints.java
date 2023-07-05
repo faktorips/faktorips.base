@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,6 +30,8 @@ import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.fl.IdentifierFilter;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
+import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -39,8 +41,10 @@ import org.faktorips.devtools.model.plugin.extensions.DatatypeHelperRegistry;
 import org.faktorips.devtools.model.plugin.extensions.DeepCopyOperationFixupExtensions;
 import org.faktorips.devtools.model.plugin.extensions.ExtensionPropertyDefinitionExtensions;
 import org.faktorips.devtools.model.plugin.extensions.FeatureVersionManagerExtensions;
+import org.faktorips.devtools.model.plugin.extensions.FormulaCompilerExtension;
 import org.faktorips.devtools.model.plugin.extensions.FunctionResolverFactoryExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IdentifierFilterExtensions;
+import org.faktorips.devtools.model.plugin.extensions.ImplementationClassProviderExtension;
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectPathContainerTypesExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsObjectTypeExtensions;
 import org.faktorips.devtools.model.plugin.extensions.IpsProjectConfigurerExtension;
@@ -109,6 +113,12 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     /** @since 23.1 */
     private final Supplier<Map<Datatype, DatatypeHelper>> datatypeHelperRegistry;
 
+    /** @since 23.6 */
+    private final Supplier<IFormulaCompiler> formulaCompiler;
+
+    /** @since 23.6 */
+    private final Supplier<IImplementationClassProvider> implementationClassProvider;
+
     @SuppressWarnings("deprecation")
     protected IpsModelExtensionsViaExtensionPoints(IExtensionRegistry extensionRegistry) {
         ExtensionPoints extensionPoints = new ExtensionPoints(extensionRegistry, IpsModelActivator.PLUGIN_ID);
@@ -136,6 +146,8 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
         ipsObjectTypes = new IpsObjectTypeExtensions(extensionPoints);
         releaseExtensions = new ReleaseExtensions(extensionPoints);
         datatypeHelperRegistry = new DatatypeHelperRegistry(extensionPoints);
+        formulaCompiler = new FormulaCompilerExtension(extensionPoints);
+        implementationClassProvider = new ImplementationClassProviderExtension(extensionPoints);
     }
 
     @Override
@@ -239,5 +251,15 @@ public abstract class IpsModelExtensionsViaExtensionPoints implements IIpsModelE
     @Override
     public Supplier<Map<Datatype, DatatypeHelper>> getDatatypeHelperRegistry() {
         return datatypeHelperRegistry;
+    }
+
+    @Override
+    public IFormulaCompiler getFormulaCompiler() {
+        return formulaCompiler.get();
+    }
+
+    @Override
+    public IImplementationClassProvider getImplementationClassProvider() {
+        return implementationClassProvider.get();
     }
 }

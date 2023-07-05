@@ -377,7 +377,7 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         MessageList messageList = productCmpt.validate(ipsProject);
 
         // Verify
-        Message message = messageList.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_FORMAT_VALID_FROM);
+        Message message = messageList.getMessageByCode(ITimedIpsObject.MSGCODE_INVALID_FORMAT_VALID_FROM);
         assertEquals(productCmpt, message.getInvalidObjectProperties().get(0).getObject());
     }
 

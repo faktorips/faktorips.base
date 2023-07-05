@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,6 +25,8 @@ import org.faktorips.devtools.model.IVersionProviderFactory;
 import org.faktorips.devtools.model.eclipse.internal.IpsModelExtensionsViaEclipsePlugins;
 import org.faktorips.devtools.model.extproperties.IExtensionPropertyDefinition;
 import org.faktorips.devtools.model.internal.productcmpt.IDeepCopyOperationFixup;
+import org.faktorips.devtools.model.internal.productcmpt.IFormulaCompiler;
+import org.faktorips.devtools.model.internal.productcmpt.IImplementationClassProvider;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsproject.IIpsObjectPathContainerType;
@@ -74,6 +76,10 @@ public class TestPlainJavaIpsModelExtensions extends PlainJavaIpsModelExtensions
     private Map<IpsObjectType, List<IPreSaveProcessor>> preSaveProcessors;
 
     private Map<String, Datatype> predefinedDatatypes;
+
+    private IFormulaCompiler formulaCompiler;
+
+    private IImplementationClassProvider implementationClassProvider;
 
     public TestPlainJavaIpsModelExtensions() {
         super();
@@ -150,7 +156,7 @@ public class TestPlainJavaIpsModelExtensions extends PlainJavaIpsModelExtensions
     /**
      * Sets the {@link IIpsProjectConfigurator project-configurators}. This method overwrites the
      * configurators registered via extension points.
-     * 
+     *
      * @param ipsProjectConfigurators The passed IPS project-configurators
      */
     @Override
@@ -242,6 +248,28 @@ public class TestPlainJavaIpsModelExtensions extends PlainJavaIpsModelExtensions
         predefinedDatatypes = new LinkedHashMap<>(getPredefinedDatatypes());
         predefinedDatatypes.put(datatype.getName(), datatype);
         predefinedDatatypes = Collections.unmodifiableMap(predefinedDatatypes);
+    }
+
+    @Override
+    public IFormulaCompiler getFormulaCompiler() {
+        return formulaCompiler != null ? formulaCompiler : super.getFormulaCompiler();
+    }
+
+    @Override
+    public void setFormulaCompiler(IFormulaCompiler formulaCompiler) {
+        this.formulaCompiler = formulaCompiler;
+    }
+
+    @Override
+    public IImplementationClassProvider getImplementationClassProvider() {
+        return implementationClassProvider != null ? implementationClassProvider
+                : super.getImplementationClassProvider();
+    }
+
+    @Override
+    public void setImplementationClassProvider(IImplementationClassProvider implementationClassProvider) {
+        this.implementationClassProvider = implementationClassProvider;
+
     }
 
 }

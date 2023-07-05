@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,8 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
 
 import org.eclipse.osgi.util.ManifestElement;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -64,7 +66,7 @@ public class IpsObjectPathManifestReaderTest {
     public void mockIpsProjectAndFolders() {
         AProject project = mock(AProject.class);
         when(ipsProject.getProject()).thenReturn(project);
-        when(myObjectDir.getName()).thenReturn(MY_OBJECT_DIR);
+        when(myObjectDir.getProjectRelativePath()).thenReturn(Path.of(MY_OBJECT_DIR));
         when(project.getFolder(MY_OBJECT_DIR)).thenReturn(myObjectDir);
         when(project.getFolder(MY_SRC_OUT)).thenReturn(mySrcOut);
         when(project.getFolder(MY_RESOURCE_OUT)).thenReturn(myResourceOut);

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ProductCmpt productCmptType="product.StdBuilderFormulaCompilerTest" runtimeId="StdBuilderFormulaCompilerTest 2023-05" xml:space="preserve">
+    <validTo isNull="true"/>
+    <Formula formulaSignature="formulaA">
+        <Expression isNull="false">"foo" + "bar"</Expression>
+        <Description locale="en"/>
+    </Formula>
+    <Formula formulaSignature="formulaB">
+        <Expression isNull="false">5.0 / 2</Expression>
+        <Description locale="en"/>
+    </Formula>
+</ProductCmpt>

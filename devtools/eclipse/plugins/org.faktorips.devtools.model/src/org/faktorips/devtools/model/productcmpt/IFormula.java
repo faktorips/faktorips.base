@@ -14,8 +14,8 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
 
 /**
- * A {@link IFormula} is a {@link IExpression} use by a {@link IPropertyValueContainer}. It provides
- * additional testing capabilities.
+ * A {@link IFormula} is a {@link IExpression} used by a {@link IPropertyValueContainer}. It
+ * provides additional testing capabilities.
  * 
  * @author Jan Ortmann
  */

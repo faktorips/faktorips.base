@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -40,6 +40,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.util.RefactorUtil;
 import org.faktorips.runtime.Message;
@@ -49,7 +50,7 @@ import org.faktorips.util.ArgumentCheck;
 /**
  * Bundles common functionality of the {@link RenameIpsObjectProcessor} and
  * {@link MoveIpsObjectProcessor} classes.
- * 
+ *
  * @author Alexander Weickmann
  */
 public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectProcessor {
@@ -191,7 +192,17 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             IProgressMonitor pm) {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(toBeRefactored);
         try {
-            modifications.append(updateDependencies(targetIpsPackageFragment, newName));
+            String newRuntimeId = null;
+            if (toBeRefactored instanceof IProductCmpt productCmpt) {
+                if (adaptRuntimeId) {
+                    IIpsProject ipsProject = productCmpt.getIpsProject();
+                    IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
+                    newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
+                } else {
+                    newRuntimeId = productCmpt.getRuntimeId();
+                }
+            }
+            modifications.append(updateDependencies(targetIpsPackageFragment, newName, newRuntimeId));
             modifications.addRenameModification(
                     toBeRefactored.getIpsSrcFile(),
                     targetIpsPackageFragment.getIpsSrcFile((RefactorUtil.getTargetFileName(
@@ -199,10 +210,7 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             IIpsSrcFile targetSrcFile = moveSourceFileToTargetFile(targetIpsPackageFragment, newName, pm);
             modifications.setTargetElement(targetSrcFile.getIpsObject());
 
-            if (adaptRuntimeId && toBeRefactored instanceof IProductCmpt productCmpt) {
-                IIpsProject ipsProject = productCmpt.getIpsProject();
-                IProductCmptNamingStrategy productCmptNamingStrategy = ipsProject.getProductCmptNamingStrategy();
-                String newRuntimeId = productCmptNamingStrategy.getUniqueRuntimeId(ipsProject, newName);
+            if (newRuntimeId != null) {
                 ((IProductCmpt)targetSrcFile.getIpsObject()).setRuntimeId(newRuntimeId);
             }
             return modifications;
@@ -213,7 +221,8 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
     }
 
     private IpsRefactoringModificationSet updateDependencies(IIpsPackageFragment targetIpsPackageFragment,
-            String newName) {
+            String newName,
+            String newRuntimeId) {
         IpsRefactoringModificationSet modifications = new IpsRefactoringModificationSet(null);
         for (IDependency dependency : getDependencies()) {
             if (!isMatching(dependency)) {
@@ -226,6 +235,10 @@ public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectP
             modifications.addBeforeChanged(ipsProject.findIpsSrcFile(dependency.getSource()));
             for (IDependencyDetail detail : details) {
                 detail.refactorAfterRename(targetIpsPackageFragment, newName);
+                if (newRuntimeId != null
+                        && IProductCmptLink.PROPERTY_TARGET.equals(detail.getPropertyName())) {
+                    ((IProductCmptLink)detail.getPart()).setTargetRuntimeId(newRuntimeId);
+                }
             }
         }
         return modifications;

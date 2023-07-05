@@ -25,7 +25,8 @@
    <extension-point id="workspaceInteractions" name="Workspace Interactions" schema="schema/workspaceInteractions.exsd"/>
    <extension-point id="addIpsNature" name="Add IPS-Nature" schema="schema/addIpsNature.exsd"/>
    <extension-point id="productReleaseExtension" name="Release Deployment Extension" schema="schema/productReleaseExtension.exsd"/>
- 
+   <extension-point id="formulaCompiler" name="Formula Compiler" schema="schema/formulaCompiler.exsd"/>
+   <extension-point id="implementationClassProvider" name="Implementation Class Provider" schema="schema/implementationClassProvider.exsd"/>
 
     
 <!-- 

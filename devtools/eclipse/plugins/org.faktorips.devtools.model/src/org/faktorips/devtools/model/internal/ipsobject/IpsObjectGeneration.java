@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.faktorips.devtools.model.internal.ipsobject;
 
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -205,14 +204,15 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     /**
      * Validates whether the valid from of this generation is given in correct date format.
-     * 
+     *
      * @param list the message list error messages are added to
      * @param invalidObject the object that should be rendered invalid in case of an error
      */
     public void validateValidFromFormat(MessageList list, Object invalidObject) {
         if (getValidFrom() == null) {
             list.add(Message.newError(MSGCODE_INVALID_FORMAT_VALID_FROM,
-                    Messages.IpsObjectGeneration_msgInvalidFormatFromDate + getDefaultDateFormat(), invalidObject,
+                    Messages.IpsObjectGeneration_msgInvalidFormatFromDate + TimedIpsObject.getDefaultDateFormat(),
+                    invalidObject,
                     PROPERTY_VALID_FROM));
         }
     }
@@ -239,14 +239,5 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
                             .getGenerationConceptNameSingular());
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this, PROPERTY_VALID_FROM));
         }
-    }
-
-    private String getDefaultDateFormat() {
-        DateFormat dateFormat = IIpsModelExtensions.get().getModelPreferences().getDateFormat();
-        String formatDescription = dateFormat.format(new GregorianCalendar().getTime());
-        if (dateFormat instanceof SimpleDateFormat) {
-            formatDescription = ((SimpleDateFormat)dateFormat).toPattern();
-        }
-        return formatDescription;
     }
 }
