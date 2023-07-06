@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.ICoreRunnable;
@@ -91,7 +92,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * {@link IIpsPackageFragment IIpsPackageFragments} are always returned, whether they are output
      * locations of the {@link AJavaProject} corresponding to this package fragment's
      * {@link IpsProject} or not.
@@ -246,6 +247,10 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
         Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
         Element element = ipsObject.toXml(doc);
+        // Newly created objects may not yet be valid, so remove validation information. It will be
+        // re-added when the finalized object is saved.
+        element.removeAttribute(XMLConstants.XMLNS_ATTRIBUTE);
+        element.removeAttribute(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
         try {
             String encoding = getIpsProject().getXmlFileCharset();
             String contents = XmlUtil.nodeToString(element, encoding);
@@ -320,7 +325,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
     /**
      * Searches all objects of the given type starting with the given prefix and adds them to the
      * result.
-     * 
+     *
      * @throws NullPointerException if either type, prefix or result is null.
      * @throws IpsException if an error occurs while searching.
      */
@@ -562,7 +567,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
             /**
              * Skip empty lines and lines starting with a comment ('#').
-             * 
+             *
              * @param line One single line (String) of the sort order.
              * @return <code>true</code> if it is a valid entry; <code>false</code> if line is empty
              *             or a comment

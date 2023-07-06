@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -31,6 +32,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -189,6 +191,24 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCreateProductComponentInitiallyWithoutSchema() throws Exception {
+        setProjectProperty(ipsProject, p -> p.setValidateIpsSchema(true));
+        IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
+        IProductCmpt product = (IProductCmpt)file.getIpsObject();
+        // no schema, no validation
+        assertThat(file.getXsdValidationErrors(), is(empty()));
+        assertFalse(IpsStringUtils.isEmpty(product.getRuntimeId()));
+
+        // saving again will add schema information
+        file.save(new NullProgressMonitor());
+        // force a reload
+        Thread.sleep(50);
+        file.getCorrespondingFile().touch(new NullProgressMonitor());
+        product = (IProductCmpt)file.getIpsObject();
+        assertThat(file.getXsdValidationErrors(), is(not(empty())));
+    }
+
+    @Test
     public void testFindIpsObjects_PackContainsInvalidFile() {
         IIpsSrcFile srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
         AFile file = srcFile.getCorrespondingFile();
@@ -274,6 +294,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
             pack.findIpsSourceFilesStartingWith(null, "M", true, result);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         // prefix null
@@ -281,6 +302,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
             pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         // result null
@@ -288,6 +310,7 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
             pack.findIpsSourceFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 

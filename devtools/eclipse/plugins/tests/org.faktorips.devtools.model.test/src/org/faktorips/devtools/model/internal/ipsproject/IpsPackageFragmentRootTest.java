@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -185,6 +185,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
             ipsRoot.findIpsSourceFilesStartingWithInternal(null, "M", true, result);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         // prefix null
@@ -192,6 +193,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
             ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, null, true, result);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
 
         // result null
@@ -199,6 +201,7 @@ public class IpsPackageFragmentRootTest extends AbstractIpsPluginTest {
             ipsRoot.findIpsSourceFilesStartingWithInternal(IpsObjectType.POLICY_CMPT_TYPE, "M", true, null);
             fail();
         } catch (NullPointerException e) {
+            // expected
         }
     }
 
