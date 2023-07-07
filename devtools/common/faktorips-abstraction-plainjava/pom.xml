@@ -21,9 +21,12 @@
             <artifactId>faktorips-abstraction</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service-annotations</artifactId>
-            <version>${auto-service.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.platform</groupId>

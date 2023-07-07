@@ -93,6 +93,7 @@
                 <artifactId>spotbugs-annotations</artifactId>
                 <version>${spotbugs-annotations.version}</version>
                 <type>jar</type>
+                <scope>provided</scope>
             </dependency>
             <!-- For traditional JAXB-support with javax.xml packages in value-converters / runtime base classes -->
             <dependency>
