@@ -30,16 +30,16 @@ import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOp
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.runtime.MessageList;
 
-public class Migration_23_12_0 extends MarkAsDirtyMigration {
+public class Migration_24_1_0 extends MarkAsDirtyMigration {
 
-    private static final String VERSION = "23.12.0"; //$NON-NLS-1$
+    private static final String VERSION = "24.1.0"; //$NON-NLS-1$
 
-    public Migration_23_12_0(IIpsProject projectToMigrate, String featureId) {
+    public Migration_24_1_0(IIpsProject projectToMigrate, String featureId) {
         super(projectToMigrate,
                 featureId,
                 Set.of(IpsObjectType.PRODUCT_CMPT, IpsObjectType.ENUM_CONTENT, IpsObjectType.TABLE_CONTENTS),
                 VERSION,
-                Messages.Migration_23_12_0_description);
+                Messages.Migration_24_1_0_description);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class Migration_23_12_0 extends MarkAsDirtyMigration {
         @Override
         public AbstractIpsProjectMigrationOperation createIpsProjectMigrationOpertation(IIpsProject ipsProject,
                 String featureId) {
-            return new Migration_23_12_0(ipsProject, featureId);
+            return new Migration_24_1_0(ipsProject, featureId);
         }
     }
 }

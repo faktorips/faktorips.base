@@ -31,7 +31,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Migration_23_12_0Test extends AbstractIpsPluginTest {
+public class Migration_24_1_0Test extends AbstractIpsPluginTest {
 
     private IIpsProject project;
 
@@ -62,7 +62,7 @@ public class Migration_23_12_0Test extends AbstractIpsPluginTest {
 
     @Test
     public void testDeleteDerivedFolders() throws Exception {
-        Migration_23_12_0 migration = new Migration_23_12_0(project, "");
+        Migration_24_1_0 migration = new Migration_24_1_0(project, "");
         migration.migrate(new NullProgressMonitor());
 
         assertThat(project.getProject().findMember("derived/package/IpsFile.xml"), is(nullValue()));
