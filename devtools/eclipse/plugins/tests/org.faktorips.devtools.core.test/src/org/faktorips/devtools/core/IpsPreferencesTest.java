@@ -1,17 +1,19 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.core;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class IpsPreferencesTest extends AbstractIpsPluginTest {
@@ -23,6 +25,11 @@ public class IpsPreferencesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetNullPresentation() throws Exception {
-        Assert.assertEquals("<null>", ipsPreferences.getNullPresentation());
+        assertThat(ipsPreferences.getNullPresentation(), is("<null>"));
+    }
+
+    @Test
+    public void testGetIpsTestRunnerMaxHeapSize() throws Exception {
+        assertThat(ipsPreferences.getIpsTestRunnerMaxHeapSize(), is("64"));
     }
 }

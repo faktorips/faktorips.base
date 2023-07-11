@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.model.plugin.IpsStatus;
@@ -172,6 +173,12 @@ public class IpsPreferences implements IIpsModelPreferences {
      * Constant that identifies the preference for delay time on change events.
      */
     public static final String CHANGE_EVENT_DELAY_TIME = IpsPlugin.PLUGIN_ID + ".changeEventDelayTime"; //$NON-NLS-1$
+
+    /**
+     * Default value for the Xmx used by the {@link IpsTestRunner}
+     */
+    public static final String DEFAULT_MAX_HEAP_SIZE = "64"; //$NON-NLS-1$
+
     /**
      * Default value in milliseconds for change event delay time
      */
@@ -190,7 +197,7 @@ public class IpsPreferences implements IIpsModelPreferences {
         prefStore.setDefault(REFACTORING_MODE, REFACTORING_MODE_EXPLICIT);
         prefStore.setDefault(WORKING_MODE, WORKING_MODE_EDIT);
         prefStore.setDefault(ENABLE_GENERATING, true);
-        prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, ""); //$NON-NLS-1$
+        prefStore.setDefault(IPSTESTRUNNER_MAX_HEAP_SIZE, DEFAULT_MAX_HEAP_SIZE);
         prefStore.setDefault(NAMED_DATA_TYPE_DISPLAY, NamedDataTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
@@ -208,7 +215,7 @@ public class IpsPreferences implements IIpsModelPreferences {
      * Retrieves the locale of the currently used keyboard layout via {@link InputContext} or the
      * java default locale if the inputContext is unavailable (e.g. in
      * headless/server-environments). The retrieved locale is used for datatype formating.
-     * 
+     *
      * @param prefStore the preference store
      */
     private void setDefaultForDatatypeFormatting(IPreferenceStore prefStore) {
@@ -284,7 +291,7 @@ public class IpsPreferences implements IIpsModelPreferences {
      * <p>
      * To be consistent with other date formats and/or input fields this {@link DateFormat} uses the
      * locale used for all data type specific formats/fields.
-     * 
+     *
      * @see #getDatatypeFormattingLocale()
      */
     @Override
@@ -357,7 +364,7 @@ public class IpsPreferences implements IIpsModelPreferences {
 
     /**
      * Sets the named data type display setting.
-     * 
+     *
      * @throws NullPointerException if etDisplay is <code>null</code>
      */
     public void setNamedDataTypeDisplay(NamedDataTypeDisplay etDisplay) {
@@ -488,7 +495,7 @@ public class IpsPreferences implements IIpsModelPreferences {
     /**
      * The default value is the locale of the default java locale instead of the configured eclipse
      * locale.
-     * 
+     *
      * @return the currently configured locale for formating values of the data types Integer,
      *             Double, Date.
      */
@@ -500,7 +507,7 @@ public class IpsPreferences implements IIpsModelPreferences {
 
     /**
      * Sets the locale used for formating values of the data types Integer, Double, Date.
-     * 
+     *
      * @param locale the new locale to be used
      */
     public void setDatatypeFormattingLocale(Locale locale) {
@@ -520,7 +527,7 @@ public class IpsPreferences implements IIpsModelPreferences {
      * <p>
      * To be consistent with other date formats and/or input fields this {@link DateFormat} uses the
      * locale used for all data type specific formats/fields.
-     * 
+     *
      * @see #getDatatypeFormattingLocale()
      */
     public DateFormat getDateTimeFormat() {

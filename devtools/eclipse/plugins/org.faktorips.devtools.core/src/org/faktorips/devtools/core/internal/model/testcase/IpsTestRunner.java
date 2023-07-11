@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,6 +63,7 @@ import org.eclipse.ui.progress.UIJob;
 import org.faktorips.devtools.abstraction.AFile;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.testcase.IIpsTestRunner;
 import org.faktorips.devtools.core.model.testcase.ITocTreeFromDependencyManagerLoader;
 import org.faktorips.devtools.model.IIpsModel;
@@ -82,7 +83,7 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Class to run ips test cases in a second VM.
- * 
+ *
  * @author Joerg Ortmann
  */
 public class IpsTestRunner implements IIpsTestRunner {
@@ -316,8 +317,8 @@ public class IpsTestRunner implements IIpsTestRunner {
 
         // sets the max heap size of the test runner virtual machine
         if (IpsStringUtils.isEmpty(testRunnerMaxHeapSize)) {
-            // set the default size to 64
-            testRunnerMaxHeapSize = "64"; //$NON-NLS-1$
+            // set the default size
+            testRunnerMaxHeapSize = IpsPreferences.DEFAULT_MAX_HEAP_SIZE;
         }
         setVmConfigMaxHeapSize(vmConfig, testRunnerMaxHeapSize);
 
@@ -549,7 +550,7 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     /**
      * Convenience method to get the jobLaunch manager.
-     * 
+     *
      * @return the jobLaunch manager
      */
     protected ILaunchManager getLaunchManager() {
@@ -1000,16 +1001,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             return;
         }
 
-        /*
-         * first check the heap size, to display an error if there is a wrong value, this is the
-         * last chance to display the error, otherwise the error will only be logged in the
-         * background
-         */
-        testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
-        if (!StringUtils.isNumeric(testRunnerMaxHeapSize)) {
-            throw new CoreException(
-                    new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
-        }
+        validateMaxHeapSize();
 
         job = new TestRunnerJob(this, classpathRepository, testsuite, mode, launch);
 
@@ -1030,6 +1022,21 @@ public class IpsTestRunner implements IIpsTestRunner {
             IpsPlugin.log(ignored);
         }
         job.schedule();
+    }
+
+    /**
+     * Checks the heap size, to display an error if there is a wrong value. This is the last chance
+     * to display the error, otherwise the error will only be logged in the background.
+     *
+     * @throws CoreException if the max heap size is not a positive numeric value, see:
+     *             {@link StringUtils#isNumeric(CharSequence)}.
+     */
+    private void validateMaxHeapSize() throws CoreException {
+        testRunnerMaxHeapSize = IpsPlugin.getDefault().getIpsPreferences().getIpsTestRunnerMaxHeapSize();
+        if (!StringUtils.isNumeric(testRunnerMaxHeapSize)) {
+            throw new CoreException(
+                    new IpsStatus(NLS.bind(Messages.IpsTestRunner_Error_WrongHeapSize, testRunnerMaxHeapSize)));
+        }
     }
 
     private void terminateLaunch(ILaunch launch) throws DebugException {
