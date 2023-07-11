@@ -12,6 +12,7 @@ package org.faktorips.valueset;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.values.NullObject;
@@ -119,7 +120,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
      *             {@link Integer#MAX_VALUE}
      */
     protected int sizeForDiscreteValuesExcludingNull() {
-        if (lowerBound != null && upperBound != null && lowerBound == upperBound) {
+        if (lowerBound != null && upperBound != null && Objects.equals(lowerBound, upperBound)) {
             return 1;
         }
         throw new RuntimeException("Needs to be implemented if the range supports incremental steps.");

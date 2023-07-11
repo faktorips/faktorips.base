@@ -14,6 +14,9 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThrows;
+
+import java.time.LocalDate;
 
 import org.junit.Test;
 
@@ -185,6 +188,31 @@ public class DefaultRangeTest {
     }
 
     @Test
+    public void testSizeForDiscreteValuesExcludingNull() {
+        LocalDate now = LocalDate.now();
+        TestRangeForDiscreteValues dateRange = new TestRangeForDiscreteValues(now, now, null, false);
+
+        assertThat(dateRange.sizeForDiscreteValuesExcludingNull(), is(1));
+    }
+
+    @Test
+    public void testSizeForDiscreteValuesExcludingNull_withStep() {
+        LocalDate now = LocalDate.now();
+
+        assertThrows(RuntimeException.class, () -> new TestRangeForDiscreteValues(now, now, now, false));
+    }
+
+    @Test
+    public void testSizeForDiscreteValuesExcludingNull_UnequalBounds() {
+        LocalDate now = LocalDate.now();
+
+        assertThrows(RuntimeException.class,
+                () -> new TestRangeForDiscreteValues(null, now, null, false).sizeForDiscreteValuesExcludingNull());
+        assertThrows(RuntimeException.class,
+                () -> new TestRangeForDiscreteValues(now, null, null, false).sizeForDiscreteValuesExcludingNull());
+    }
+
+    @Test
     public void testGetValues_UpperIsLower() {
         assertThat(new TestRange(5, 5, null).getValues(true), hasItems(Integer.valueOf(5)));
         assertThat(new TestRange(5, 5, null, true).getValues(true), hasItems(Integer.valueOf(5)));
@@ -194,6 +222,14 @@ public class DefaultRangeTest {
     @Test(expected = RuntimeException.class)
     public void testGetValues_NoStep() {
         new TestRange(1, 5, null).getValues(true);
+    }
+
+    private static class TestRangeForDiscreteValues extends DefaultRange<LocalDate> {
+        private static final long serialVersionUID = 1L;
+
+        public TestRangeForDiscreteValues(LocalDate lower, LocalDate upper, LocalDate step, boolean containsNull) {
+            super(lower, upper, step, containsNull);
+        }
     }
 
     private static class TestRange extends DefaultRange<Integer> {
