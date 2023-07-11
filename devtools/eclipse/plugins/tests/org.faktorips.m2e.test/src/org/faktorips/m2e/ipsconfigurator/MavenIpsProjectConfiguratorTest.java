@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -464,9 +464,10 @@ public class MavenIpsProjectConfiguratorTest extends AbstractIpsPluginTest {
         assertThat(resourcesFolderResources.size(), is(1));
         Resource resourcesFolderResource = resourcesFolderResources.get(0);
         List<String> includes = resourcesFolderResource.getIncludes();
-        assertThat(includes.size(), is(2));
+        assertThat(includes.size(), is(3));
         assertThat(includes.contains("**/*.xml"), is(true));
         assertThat(includes.contains("**/*.properties"), is(true));
+        assertThat(includes.contains("**/*.ips*"), is(true));
     }
 
     private void checkMavenPluginManagement(PluginManagement pluginManagement) {

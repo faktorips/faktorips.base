@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -63,7 +63,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE}.
  * <p>
  * Use this in order to configure an existent Maven project for the usage of Faktor-IPS.
- * 
+ *
  * @author Florian Orendi
  */
 public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
@@ -122,7 +122,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * <p>
      * Returns an error message containing the missing properties. The message is empty if all
      * required properties exist.
-     * 
+     *
      * @param ipsObjectPath The IPS object path
      * @return the error message
      */
@@ -148,7 +148,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     /**
      * Adds all properties to the .ipsproject file which are required for using Maven.
-     * 
+     *
      * @param ipsProject The created {@link IIpsProject}
      * @throws IpsException If setting the properties failed
      */
@@ -168,7 +168,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Maven.
      * <p>
      * Already existing attributes stay untouched.
-     * 
+     *
      * @param ipsProject The created {@link IIpsProject}
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
      *            creating a Faktor-IPS project
@@ -201,7 +201,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     /**
      * Adds all attributes required by Faktor-IPS to a passed manifest file.
-     * 
+     *
      * @param manifest The used manifest file
      * @param ipsObjectPath The {@link IIpsObjectPath}
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
@@ -231,7 +231,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Configures the existent Maven project for using it together with Faktor-IPS.
      * <p>
      * Already existing configurations stay untouched.
-     * 
+     *
      * @param project The currently selected Maven project
      * @param resourcesPath The path to the resources folder
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
@@ -275,10 +275,10 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     /**
      * Updates an existing POM file.
-     * 
+     *
      * @implNote Only using the setter for the model within the Maven project is not enough since it
      *               does not update the POM file itself.
-     * 
+     *
      * @param mavenModel The model to be written to the POM file
      * @throws IpsException If updating the POM file failed
      */
@@ -292,7 +292,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     /**
      * Adds all properties to Maven required for using Faktor-IPS.
-     * 
+     *
      * @param mavenModel The model of the selected Maven project
      */
     private void addMavenProperties(Model mavenModel) {
@@ -306,7 +306,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Adds all dependencies to Maven required for using Faktor-IPS.
      * <p>
      * Existent dependencies are not touched.
-     * 
+     *
      * @param mavenModel The model of the selected Maven project
      * @param creationProperties The {@link IpsProjectCreationProperties} containing information
      *            about the required dependencies
@@ -416,7 +416,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Adds all resources to Maven required for using Faktor-IPS.
      * <p>
      * Existent resources are not touched.
-     * 
+     *
      * @param mavenBuild The build of the selected Maven project
      * @param creationProperties The required properties {@link IpsProjectCreationProperties} for
      *            creating a Faktor-IPS project
@@ -431,6 +431,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
         String includeXML = "**/*.xml";
         String includeProperties = "**/*.properties";
+        String includeIpsFiles = "**/*.ips*";
         Resource resourcesFolderResource;
         if (resources.containsKey(resourcesPath)) {
             resourcesFolderResource = resources.get(resourcesPath);
@@ -440,11 +441,15 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
             if (!resourcesFolderResource.getIncludes().contains(includeProperties)) {
                 resourcesFolderResource.addInclude(includeProperties);
             }
+            if (!resourcesFolderResource.getIncludes().contains(includeIpsFiles)) {
+                resourcesFolderResource.addInclude(includeIpsFiles);
+            }
         } else {
             resourcesFolderResource = new Resource();
             resourcesFolderResource.setDirectory(resourcesPath);
             resourcesFolderResource.addInclude(includeXML);
             resourcesFolderResource.addInclude(includeProperties);
+            resourcesFolderResource.addInclude(includeIpsFiles);
             mavenBuild.addResource(resourcesFolderResource);
         }
 
@@ -468,9 +473,9 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Adds all plugins to the Maven Plugin-Management required for using Faktor-IPS.
      * <p>
      * Here, the versions of the plugins are defined.
-     * 
+     *
      * @param mavenBuild The build of the selected Maven project
-     * 
+     *
      */
     private void addMavenPluginManagement(Build mavenBuild) {
         PluginManagement pluginManagement = mavenBuild.getPluginManagement();
@@ -520,7 +525,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * The version is defined in {@code PluginManagement}.
      * <p>
      * Existent plugins are not touched.
-     * 
+     *
      * @param mavenBuild The build of the selected Maven project
      */
     private void addMavenPlugins(Build mavenBuild) {
@@ -583,7 +588,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * <p>
      * The configuration has to be the following DOM object:<br>
      * {@code org.codehaus.plexus.util.xml.Xpp3Dom}
-     * 
+     *
      * @param jarPlugin The Maven-Jar-Plugin to be configured
      */
     private void addJarPluginConfiguration(Plugin jarPlugin) {
@@ -601,7 +606,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * <p>
      * The configuration has to be the following DOM object:<br>
      * {@code org.codehaus.plexus.util.xml.Xpp3Dom}
-     * 
+     *
      * @param ipsPlugin The Faktor-IPS-Plugin to be configured
      */
     private void addIpsPluginConfiguration(Plugin ipsPlugin) {
@@ -628,7 +633,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Creates a part of the Maven-Jar-Plugin configuration.
      * <p>
      * {@code skip} should be set to {@code false}.
-     * 
+     *
      * @param configuration The configuration of the plugin
      */
     private void addJarPluginSkipConfiguration(Xpp3Dom configuration) {
@@ -645,7 +650,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
      * Creates a part of the Maven-Jar-Plugin configuration.
      * <p>
      * {@code archive} should point to the manifest file.
-     * 
+     *
      * @param configuration The configuration of the plugin
      */
     private void addJarPluginArchiveConfiguration(Xpp3Dom configuration) {
@@ -667,7 +672,7 @@ public class MavenIpsProjectConfigurator implements IIpsProjectConfigurator {
 
     /**
      * Provides the current Faktor-IPS version using a valid Maven format.
-     * 
+     *
      * @return The Faktor-IPS version
      */
     private String getIpsVersionForMaven() {
