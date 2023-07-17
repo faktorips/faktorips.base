@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AVersion;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
@@ -41,13 +42,18 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        ipsExtendableVersionManager = new IpsExtendableVersionManager();
-        currentVersion = AVersion.parse(ipsExtendableVersionManager.getCurrentVersion());
+        currentVersion = AVersion.parse(IpsPlugin.getInstalledFaktorIpsVersion()).majorMinorPatch();
+        ipsExtendableVersionManager = new IpsExtendableVersionManager() {
+            @Override
+            public String getCurrentVersion() {
+                return currentVersion.toString();
+            }
+        };
     }
 
     @Test
     public void testCompareToCurrentVersion() throws Exception {
-        assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion + ".zzz") > 0);
+        assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion.toString() + ".zzz") > 0);
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion("0.0.0") < 0);
         assertTrue(ipsExtendableVersionManager.compareToCurrentVersion(currentVersion.toString()) == 0);
     }
@@ -62,8 +68,8 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
 
         AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
                 .getMigrationOperations(ipsProject);
-
-        assertEquals(0, migrationOperations.length);
+        // same major.minor.patch but not release (zzz) therefore 1
+        assertEquals(1, migrationOperations.length);
 
         when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature")).thenReturn(
                 "1.0.0");

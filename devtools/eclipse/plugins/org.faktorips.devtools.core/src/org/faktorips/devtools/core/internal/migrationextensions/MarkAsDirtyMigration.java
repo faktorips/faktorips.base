@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,9 @@ import java.util.jar.Manifest;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.abstraction.AFile;
+import org.faktorips.devtools.abstraction.AVersion;
 import org.faktorips.devtools.abstraction.exception.IpsException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.migration.DefaultMigration;
 import org.faktorips.devtools.model.internal.IpsModel;
 import org.faktorips.devtools.model.internal.ipsproject.IpsBundleManifest;
@@ -46,7 +48,21 @@ public class MarkAsDirtyMigration extends DefaultMigration {
 
     @Override
     public String getTargetVersion() {
-        return targetVersion;
+        AVersion migrationTarget = AVersion.parse(targetVersion);
+        AVersion installedVersion = AVersion.parse(getFaktorIpsVersion());
+        if (isSameVersionBeforRelease(migrationTarget, installedVersion)) {
+            return installedVersion.toString();
+        }
+        return migrationTarget.toString();
+    }
+
+    /* private */ String getFaktorIpsVersion() {
+        return IpsPlugin.getInstalledFaktorIpsVersion();
+    }
+
+    private boolean isSameVersionBeforRelease(AVersion migrationTarget, AVersion installedVersion) {
+        return migrationTarget.majorMinorPatch().equals(installedVersion.majorMinorPatch())
+                && !installedVersion.isRelease();
     }
 
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -32,7 +32,7 @@ import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperation
  * <p>
  * Read {@link org.faktorips.devtools.core.internal.migrationextensions} (or package.html) for
  * instructions creating a new migration strategy!
- * 
+ *
  * @author dirmeier
  */
 public class IpsExtendableVersionManager extends CoreVersionManager {
@@ -76,12 +76,17 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
         List<AbstractIpsProjectMigrationOperation> result = new ArrayList<>();
         AVersion currentVersion = AVersion.parse(getCurrentVersion());
         for (AVersion version : versionsWithMigration) {
-            if (version.compareTo(projectsVersion) > 0 && version.compareTo(currentVersion) <= 0) {
+            if (version.compareTo(projectsVersion) > 0 && version.compareTo(currentVersion) <= 0
+                    || isSameVersionBeforRelease(projectsVersion, currentVersion, version)) {
                 result.add(getRegisteredMigrations().get(version).createIpsProjectMigrationOpertation(projectToMigrate,
                         getFeatureId()));
             }
         }
         return result;
+    }
+
+    private boolean isSameVersionBeforRelease(AVersion projectsVersion, AVersion currentVersion, AVersion version) {
+        return version.majorMinorPatch().equals(projectsVersion.majorMinorPatch()) && !currentVersion.isRelease();
     }
 
     public void setRegisteredMigrations(Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations) {

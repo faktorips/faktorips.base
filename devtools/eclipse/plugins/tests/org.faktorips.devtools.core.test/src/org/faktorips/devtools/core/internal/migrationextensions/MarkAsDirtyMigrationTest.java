@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -42,6 +42,32 @@ public class MarkAsDirtyMigrationTest extends AbstractIpsPluginTest {
     @Test
     public void testTargetVersion() {
         setUpMigration();
+
+        assertThat(migration.getTargetVersion(), is("47.11"));
+    }
+
+    @Test
+    public void testGetTargetVersion_SameReleaseButAlpha() {
+        migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", Set.of(IpsObjectType.POLICY_CMPT_TYPE,
+                IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.ENUM_TYPE), "47.11", "Lorem Ipsum") {
+            @Override
+            String getFaktorIpsVersion() {
+                return "47.11.0.a20471101-01";
+            }
+        };
+
+        assertThat(migration.getTargetVersion(), is("47.11.a20471101-01"));
+    }
+
+    @Test
+    public void testGetTargetVersion_SameReleaseButFinalRelease() {
+        migration = new MarkAsDirtyMigration(ipsProject, "irrelevant", Set.of(IpsObjectType.POLICY_CMPT_TYPE,
+                IpsObjectType.PRODUCT_CMPT_TYPE, IpsObjectType.ENUM_TYPE), "47.11.0", "Lorem Ipsum") {
+            @Override
+            String getFaktorIpsVersion() {
+                return "47.11.0.release";
+            }
+        };
 
         assertThat(migration.getTargetVersion(), is("47.11"));
     }

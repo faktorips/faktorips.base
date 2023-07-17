@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,8 @@ import static org.faktorips.devtools.abstraction.plainjava.internal.PlainJavaRes
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.Deque;
 import java.util.LinkedHashSet;
@@ -22,9 +24,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;
@@ -38,6 +43,9 @@ public enum PlainJavaImplementation implements AImplementation {
     INSTANCE;
 
     static final String ID = "Plain Java Faktor-IPS"; //$NON-NLS-1$
+
+    private static final String MANIFEST_PATH = "/META-INF/MANIFEST.MF"; //$NON-NLS-1$
+
     private final Locale locale = Locale.getDefault();
     private volatile PlainJavaWorkspace workspace;
     private final ALog log = new PlainJavaLog();
@@ -98,8 +106,39 @@ public enum PlainJavaImplementation implements AImplementation {
 
     @Override
     public AVersion getVersion() {
-        // TODO FIPS-8693: Aus dem Manifest des diese Klasse enthaltenden JARs lesen?
-        return AVersion.parse("22.12"); //$NON-NLS-1$
+        return AVersion.parse(loadVersionFromManifest());
+    }
+
+    private String loadVersionFromManifest() {
+        try (InputStream is = getManifestUrl().openStream()) {
+            Manifest manifest = new Manifest(is);
+            Attributes attr = manifest.getMainAttributes();
+            return attr.getValue("Bundle-Version"); //$NON-NLS-1$
+            // CSOFF: Illegal Catch
+        } catch (Exception e) {
+            // CSON: Illegal Catch
+            throw new RuntimeException(e);
+        }
+    }
+
+    private URL getManifestUrl() {
+        try {
+            String className = getClass().getSimpleName() + ".class"; //$NON-NLS-1$
+            URL theClassUrl = getClass().getResource(className);
+            if ("jar".equalsIgnoreCase(theClassUrl.getProtocol())) { //$NON-NLS-1$
+                return new URL(
+                        theClassUrl.toString().substring(0, theClassUrl.toString().lastIndexOf("!") + 1) //$NON-NLS-1$
+                                + MANIFEST_PATH);
+            } else {
+                String classpathOfClass = getClass().getPackageName().replace(".", "/") + "/" + className; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                return new URL("file", "", //$NON-NLS-1$ //$NON-NLS-2$
+                        theClassUrl.getPath().replace(classpathOfClass, MANIFEST_PATH));
+            }
+            // CSOFF: Illegal Catch
+        } catch (Exception e) {
+            // CSON: Illegal Catch
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -112,7 +151,7 @@ public enum PlainJavaImplementation implements AImplementation {
         // TODO später anpassen, z.B. Konfiguration über Maven?
         String property = System.getProperty(option);
         if (property == null) {
-            property = "false";
+            property = "false"; //$NON-NLS-1$
         }
         return property;
     }

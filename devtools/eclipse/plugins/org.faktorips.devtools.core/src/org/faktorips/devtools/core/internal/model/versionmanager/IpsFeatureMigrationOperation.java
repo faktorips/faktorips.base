@@ -14,8 +14,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -155,22 +156,22 @@ public class IpsFeatureMigrationOperation extends AbstractIpsFeatureMigrationOpe
             return;
         }
         IIpsProjectProperties props = projectToMigrate.getProperties();
-
-        // for every migrated feature find the maximum target version.
-        Hashtable<String, String> features = new Hashtable<>();
-        for (AbstractIpsProjectMigrationOperation operation : operations) {
-            String version = features.get(operation.getFeatureId());
-            if ((version == null)
-                    || (AVersion.parse(version).compareTo(AVersion.parse(operation.getTargetVersion())) < 0)) {
-                features.put(operation.getFeatureId(), operation.getTargetVersion());
-            }
-        }
-
-        for (Enumeration<String> keys = features.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            props.setMinRequiredVersionNumber(key, features.get(key));
+        for (Entry<String, String> entry : findMaxVersionForFeatureId().entrySet()) {
+            props.setMinRequiredVersionNumber(entry.getKey(), entry.getValue());
         }
         projectToMigrate.setProperties(props);
+    }
+
+    private Map<String, String> findMaxVersionForFeatureId() {
+        Map<String, String> features = new Hashtable<>();
+        operations.stream().forEach(o -> {
+            String version = features.get(o.getFeatureId());
+            if ((version == null)
+                    || (AVersion.parse(version).compareTo(AVersion.parse(o.getTargetVersion())) < 0)) {
+                features.put(o.getFeatureId(), o.getTargetVersion());
+            }
+        });
+        return features;
     }
 
     @Override

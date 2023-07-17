@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -29,6 +30,16 @@ public class AVersion implements Comparable<AVersion> {
     private static final String DELIMITER = "."; //$NON-NLS-1$
     private static final Pattern NUMERIC = Pattern.compile("\\d+"); //$NON-NLS-1$
     private static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
+    // 24.1.0.ci_20230711-1341
+    private static final Pattern QUALIFIER_SNAPSHOT = Pattern.compile("ci_\\d{8}-\\d{4}");
+    // 24.1.0.a20221117-02
+    private static final Pattern QUALIFIER_ALPHA = Pattern.compile("a\\d{8}-\\d{2}");
+    // 24.1.0.m01
+    private static final Pattern QUALIFIER_MILESTONE = Pattern.compile("m\\d{2}");
+    // 24.1.0.rc01
+    private static final Pattern QUALIFIER_RELEASE_CANDIDATE = Pattern.compile("rc\\d{2}");
+    // 24.1.0.release
+    private static final String QUALIFIER_RELEASE = "release";
 
     private final String versionString;
     private final long[] numericParts;
@@ -101,9 +112,19 @@ public class AVersion implements Comparable<AVersion> {
             }
         }
         if (numericParts.length == o.numericParts.length) {
-            return qualifier.compareTo(o.qualifier);
+            return compareQualifiers(o);
         }
         return numericParts.length - o.numericParts.length;
+    }
+
+    private int compareQualifiers(AVersion o) {
+        VersionType thisVersionType = VersionType.from(qualifier);
+        VersionType otherVersionType = VersionType.from(o.qualifier);
+        if (thisVersionType == otherVersionType) {
+            // rc02 is higher than rc01
+            return qualifier.compareTo(o.qualifier);
+        }
+        return thisVersionType.getPriority() - otherVersionType.getPriority();
     }
 
     @Override
@@ -145,6 +166,16 @@ public class AVersion implements Comparable<AVersion> {
     }
 
     /**
+     * Returns a new {@link AVersion version} consisting only of the {@link #getMajor() major},
+     * {@link #getMinor() minor} and {@link #getPatch() patch} parts of this version number.
+     */
+    public AVersion majorMinorPatch() {
+        return numericParts.length >= 3
+                ? new AVersion(Arrays.copyOfRange(numericParts, 0, 3), IpsStringUtils.EMPTY)
+                : new AVersion(Arrays.copyOf(numericParts, numericParts.length), IpsStringUtils.EMPTY);
+    }
+
+    /**
      * Returns the major part of this version number, which is the number before the first
      * {@value #DELIMITER}. Should the version number not contain a major part, {@code "0"} is
      * returned.
@@ -162,4 +193,112 @@ public class AVersion implements Comparable<AVersion> {
         return numericParts.length >= 2 ? Long.toString(numericParts[1]) : "0"; //$NON-NLS-1$
     }
 
+    /**
+     * Returns the patch part of this version number, which is the number between the second and
+     * third {@value #DELIMITER}. Should the version number not contain a patch part, {@code "0"} is
+     * returned.
+     */
+    public String getPatch() {
+        return numericParts.length >= 3 ? Long.toString(numericParts[2]) : "0"; //$NON-NLS-1$
+    }
+
+    /**
+     * Whether the qualifier identifies the version as release.
+     *
+     * @return {@code true} if the version ends with {@code .release}
+     */
+    public boolean isRelease() {
+        return VersionType.RELEASE == VersionType.from(qualifier);
+    }
+
+    /**
+     * Whether the qualifier identifies the version as release candidate.
+     *
+     * @return {@code true} if the version ends with {@code .rcXX}
+     */
+    public boolean isReleaseCandidate() {
+        return VersionType.RELEASE_CANDIDATE == VersionType.from(qualifier);
+    }
+
+    /**
+     * Whether the qualifier identifies the version as milestone.
+     *
+     * @return {@code true} if the version ends with {@code .mXX}
+     */
+    public boolean isMilestone() {
+        return VersionType.MILESTONE == VersionType.from(qualifier);
+    }
+
+    /**
+     * Whether the qualifier identifies the version as alpha.
+     *
+     * @return {@code true} if the version ends with {@code .aYYYYMMDD-XX}
+     */
+    public boolean isAlpha() {
+        return VersionType.ALPHA == VersionType.from(qualifier);
+    }
+
+    /**
+     * Whether the qualifier identifies the version as snapshot.
+     *
+     * @return {@code true} if the version ends with {@code .ci_YYYYMMDD-HHMM}
+     */
+    public boolean isSnapshot() {
+        return VersionType.SNAPSHOT == VersionType.from(qualifier);
+    }
+
+    /**
+     * Internal enum to classify the qualifier of a version.
+     */
+    private enum VersionType {
+
+        NONE(0),
+        OTHER(10),
+        SNAPSHOT(20),
+        ALPHA(30),
+        MILESTONE(40),
+        RELEASE_CANDIDATE(50),
+        RELEASE(60);
+
+        private final int priority;
+
+        VersionType(int priority) {
+            this.priority = priority;
+        }
+
+        /**
+         * The priority of a version is determined by its qualifier. The order of the qualifiers
+         * are: no, some, snapshot, alpha, milestone, release candidate and release.
+         *
+         * @return the priority of a version qualifier
+         */
+        public int getPriority() {
+            return priority;
+        }
+
+        /**
+         * Parses the qualifier of a version.
+         *
+         * @param qualifier the last non numeric part of a version e.g.: 24.1.1.i_am_the_qualifier
+         * @return an enum representing the type of version.
+         */
+        public static VersionType from(String qualifier) {
+            if (QUALIFIER_SNAPSHOT.matcher(qualifier).matches()) {
+                return SNAPSHOT;
+            } else if (QUALIFIER_ALPHA.matcher(qualifier).matches()) {
+                return ALPHA;
+            } else if (QUALIFIER_MILESTONE.matcher(qualifier).matches()) {
+                return MILESTONE;
+            } else if (QUALIFIER_RELEASE_CANDIDATE.matcher(qualifier).matches()) {
+                return RELEASE_CANDIDATE;
+            } else if (QUALIFIER_RELEASE.equals(qualifier)) {
+                return RELEASE;
+            } else if (StringUtils.isNotBlank(qualifier)) {
+                // some qualifier is higher than no qualifier
+                return OTHER;
+            } else {
+                return NONE;
+            }
+        }
+    }
 }
