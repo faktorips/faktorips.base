@@ -1,15 +1,15 @@
+library 'fips-jenkins-library@main'
+
 pipeline {
     agent any
 
     tools {
         jdk 'AdoptiumJDK17'
+        maven 'maven 3.8.6'
     }
 
-
-    environment {
-        PROJECT_NAME = 'FaktorIPS_Review'
-        BUILD_NAME = "${env.GERRIT_CHANGE_NUMBER}"
-        PROJECT_ID = "${PROJECT_NAME}-${BUILD_NAME}"
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
     }
 
     stages {
@@ -27,18 +27,15 @@ pipeline {
                     sh 'rm -rf $HOME/.m2/repository/p2'
                 }
 
-                withMaven(maven: 'maven 3.8.6', jdk: 'AdoptiumJDK17', publisherStrategy: 'EXPLICIT') {
-                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -T1C -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -T1C -fae -e clean verify site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
-                    }
-                }
+                osSpecificMaven commands: [
+                    "mvn -U -V -fae -e clean install -f codequality-config",
+                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
+                    "mvn -U -V -T 8 -fae -e clean verify site -Dtycho.localArtifacts=ignore"
+                    // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
+                ]
             }
         }
         stage('Prepare Artifacts for Archiving') {
-
             steps {
                 sh '''
                 #!/bin/bash
@@ -68,7 +65,11 @@ pipeline {
 
     post {
         always {
-            parentReference referenceJob: 'FaktorIPS_CI', defaultBranch: 'main',  targetBranch: 'main', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
+            parentReference referenceJob: "${JOB_NAME}", defaultBranch: 'main',  targetBranch: '$GERRIT_BRANCH', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
+
+            junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+            
+            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
             
             publishCoverage(
                 adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/**/jacoco.xml')],
@@ -108,23 +109,12 @@ pipeline {
                     [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
                 ]
             )
-
-            junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
-            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-
-            archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true
+            
+            archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true, onlyIfSuccessful: true
         }
 
         regression {
-            emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
-                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
-                <br>
-                $BUILD_URL
-            '''
+            failedEmail to: '$GERRIT_PATCHSET_UPLOADER_EMAIL'
         }
-    }
-
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14'))
     }
 }

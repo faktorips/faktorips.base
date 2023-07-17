@@ -1,3 +1,5 @@
+library 'fips-jenkins-library@main'
+
 pipeline {
     agent none
 
@@ -6,9 +8,8 @@ pipeline {
         maven 'maven 3.8.6'
     }
 
-    environment {
-        PROJECT_NAME = 'FaktorIPS_Nightly'
-        PROJECT_ID = "${PROJECT_NAME}"
+    options {
+        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
     }
 
     stages {
@@ -32,11 +33,9 @@ pipeline {
                                 sh 'rm -rf $HOME/.m2/repository/p2'
                             }
 
-                            withMaven( publisherStrategy: 'EXPLICIT') {
-                                configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                                    sh 'mvn -U -V clean verify -s "$MAVEN_SETTINGS" -t "$TOOLCHAINS"'
-                                }
-                            }
+                            osSpecificMaven commands: [
+                                "mvn -U -V -T 8 clean verify"
+                            ]
                         }
                         post {
                             always {
@@ -44,20 +43,12 @@ pipeline {
                             }
 
                             unstable {
-                                    emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
-                                        <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
-                                        <br>
-                                        $BUILD_URL
-                                    '''
+                                failedEmail to: 'fips@faktorzehn.de'
                             }
                         }
                     }
                 }
             }
         }
-    }
-
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
     }
 }
