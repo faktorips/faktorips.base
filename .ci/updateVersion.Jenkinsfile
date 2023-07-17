@@ -1,14 +1,19 @@
+library 'fips-jenkins-library@main'
 import java.text.MessageFormat
 
-def mavenVersion = 'maven 3.8.6'
-def jdkVersion = 'AdoptiumJDK17'
+def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
 pipeline {
     agent any
 
-    environment {
-        PROJECT_NAME = 'Faktor-IPS Update Versions'
-        PROJECT_ID = "${PROJECT_NAME}-${params.NEW_VERSION}"
+    parameters {
+        string description: 'Die nächste Version, z.B. 22.12.1 (-SNAPSHOT wird automatisch hinzugefügt)', name: 'NEW_VERSION'
+        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+    }
+
+    tools {
+        jdk 'AdoptiumJDK17'
+        maven 'maven 3.8.6'
     }
 
     options {
@@ -33,7 +38,7 @@ pipeline {
                     LOCAL_BRANCH = scmVars.GIT_LOCAL_BRANCH
                     
                     def xmlfile = readFile 'pom.xml'
-                    oldVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
+                    oldVersion = lib.MavenProjectVersion.fromPom(xmlfile)
                     newVersion = params.NEW_VERSION+'-SNAPSHOT'
                 }
             }
@@ -41,11 +46,9 @@ pipeline {
 
         stage('Update versions') {
             steps {
-                withMaven(maven: "${mavenVersion}", jdk: "${jdkVersion}") {
-                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh "mvn -V -T1C org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas -s $MAVEN_SETTINGS -t $TOOLCHAINS"
-                    }
-                }
+                osSpecificMaven commands: [
+                    "mvn -V -T 8 org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=${newVersion} -DgenerateBackupPoms=false -Dartifacts=base,codequality-config,faktorips-coverage,faktorips-schemas"
+                ]
                 // see https://github.com/eclipse-tycho/tycho/issues/1677
                 sh "find devtools/eclipse/targets/ -type f -name 'eclipse-*.target' -exec sed -i 's/${oldVersion}/${newVersion}/' {} \\;"
                 sh "git add . && git commit -m 'Update version to ${newVersion}'"
@@ -56,16 +59,7 @@ pipeline {
 
     post {
         unsuccessful {
-            emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Release Failure - $JOB_NAME', body: '''
-                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
-                <br>
-                $BUILD_URL
-            '''
+            failedEmail to: 'fips@faktorzehn.de'
         }
     }
-}
-
-def String extractVersionFromPom(String xml, Closure closure) {
-    def node = new XmlSlurper().parseText(xml)
-    return closure.call(node)?.text()
 }

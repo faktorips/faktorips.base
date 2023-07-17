@@ -1,3 +1,4 @@
+library 'fips-jenkins-library@main'
 import java.text.MessageFormat
 
 def mavenDocFolder = './maven/faktorips-maven-plugin'
@@ -5,12 +6,18 @@ def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
 
+def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
+
 pipeline {
     agent any
 
-    environment {
-        PROJECT_NAME = 'FaktorIPS'
-        PROJECT_ID = "${PROJECT_NAME}"
+    tools {
+        jdk 'AdoptiumJDK17'
+        maven 'maven 3.8.6'
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
     stages {
@@ -27,15 +34,13 @@ pipeline {
                     sh 'rm -rf $HOME/.m2/repository/.cache'
                     sh 'rm -rf $HOME/.m2/repository/p2'
                 }
-
-                withMaven(maven: 'maven 3.8.6', jdk: 'AdoptiumJDK17', publisherStrategy: 'EXPLICIT') {
-                    configFileProvider([configFile(fileId: '82515eae-efcb-4811-8495-ceddc084409c', variable: 'TOOLCHAINS'), configFile(fileId: 'a447dcf9-7a34-4521-834a-c2445838a7e4', variable: 'MAVEN_SETTINGS')]) {
-                        sh 'mvn -U -V -fae -e clean install -f codequality-config -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -T1C -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -U -V -T1C -fae -e clean deploy site -Dtycho.localArtifacts=ignore -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                        sh 'mvn -V -T1C -fae -e site:stage -f maven -s $MAVEN_SETTINGS -t $TOOLCHAINS'
-                    }
-                }
+                
+                osSpecificMaven commands: [
+                    "mvn -U -V -fae -e clean install -f codequality-config",
+                    "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
+                    "mvn -U -V -T 8 -fae -e clean deploy site -Dtycho.localArtifacts=ignore",
+                    "mvn -V -T 8 -fae -e site:stage -f maven"
+                ]
             }
         }
 
@@ -43,14 +48,14 @@ pipeline {
             steps {
                 script {
                     def xmlfile = readFile 'pom.xml'
-                    def fipsVersion = extractVersionFromPom(xmlfile) { xml -> xml.version }
+                    def fipsVersion = lib.MavenProjectVersion.fromPom(xmlfile)
                     def (_,major,minor,patch,kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
                     sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
                         // deploy maven plugin doc
                         def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer('doc@doc.faktorzehn.org', '2004', mavenDocFolder, "${mavenDocDeployFolder}/${fipsVersion}")
+                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:mavenDocFolder, remoteFolder:"${mavenDocDeployFolder}/${fipsVersion}"
                         // deploy xsd
-                        replaceOnServer('doc@doc.faktorzehn.org', '2004', xsdFolder, xsdDeployFolder)
+                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:xsdFolder, remoteFolder:xsdDeployFolder
                     }
                 }
             }
@@ -59,13 +64,7 @@ pipeline {
 
     post {
         always {
-            parentReference referenceJob: 'FaktorIPS_CI', defaultBranch: 'main',  targetBranch: 'main', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: true, maxBuilds: 10, maxCommits: 500
-
-            publishCoverage(
-                adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/**/jacoco.xml')],
-                sourceFileResolver: sourceFiles('STORE_LAST_BUILD'),
-                sourceCodeEncoding: 'UTF-8',
-                sourceDirectories: [
+            postPublisher targetBranch: 'hotfix/23.6',  tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()], coverageSourceDirectories: [
                     [path: 'devtools/common/faktorips-abstraction/src/main/java'],
                     [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
                     [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
@@ -97,42 +96,11 @@ pipeline {
                     [path: 'runtime/faktorips-testsupport/src/main/java'],
                     [path: 'runtime/faktorips-valuetypes/src/main/java'],
                     [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
-                ]
-            )
-
-            junit testResults: '**/target/surefire-reports/*.xml', allowEmptyResults: true
-            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
-
-            archiveArtifacts '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip'
-            archiveArtifacts '**/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip'
-            archiveArtifacts '**/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar'
-            archiveArtifacts '**/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
+                ], artifactsToArchive: '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip, **/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
         }
 
         regression {
-            emailext to: 'fips@faktorzehn.de', mimeType: 'text/html', subject: 'Jenkins Build Failure - $PROJECT_NAME', body: '''
-                <img src="https://jenkins.io/images/logos/fire/fire.png" style="max-width: 300px;" alt="Jenkins is not happy about it ...">
-                <br>
-                $BUILD_URL
-            '''
+            failedEmail to: 'fips@faktorzehn.de'
         }
     }
-
-    options {
-        buildDiscarder(logRotator(daysToKeepStr: '14', numToKeepStr: '100'))
-    }
-}
-
-// upload a local folder to a tmp folder on the server
-// mv existing remoteFolder before swaping it with the tmp one
-// remove the old folder
-def replaceOnServer(def server, def port, def localFolder, def remoteFolder) {
-    sh "scp -P ${port} -r ${localFolder} ${server}:${remoteFolder}_deploy"
-    // a non existing folder would stop the script therefore make it or ignore it (-p)
-    sh "ssh -p ${port} ${server} 'mkdir -p ${remoteFolder} && mv ${remoteFolder} ${remoteFolder}_old && mv ${remoteFolder}_deploy ${remoteFolder} && rm -rf ${remoteFolder}_old'"
-}
-
-def String extractVersionFromPom(String xml, Closure closure) {
-    def node = new XmlSlurper().parseText(xml)
-    return closure.call(node)?.text()
 }
