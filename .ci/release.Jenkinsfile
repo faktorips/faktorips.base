@@ -28,7 +28,7 @@ pipeline {
                                   <li>22.12.0.release</li>
                                 </ul>''', name: 'RELEASE_VERSION'
         string description: 'Die nächste Version; wird nach einem erfolgreichen Release mit einem eigenen Commit gesetzt. (SNAPSHOT wird automatisch hinzugefügt)', name: 'DEVELOPMENT_VERSION'
-        gitParameter branch: '', branchFilter: '.*', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
+        gitParameter branch: '', branchFilter: 'origin\\/(main|hotfix/.+)', defaultValue: 'origin/main', description: 'Der zu bauende Branch', name: 'BRANCH', quickFilterEnabled: false, selectedValue: 'NONE', sortMode: 'NONE', tagFilter: '*', type: 'GitParameterDefinition'
     }
 
     tools {
