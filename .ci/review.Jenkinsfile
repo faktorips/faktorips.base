@@ -1,12 +1,4 @@
 library 'fips-jenkins-library@main'
-import java.text.MessageFormat
-
-def mavenDocFolder = './faktorips-maven-plugin/target/site'
-def mavenDocDeployFolder = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin'
-def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
-def xsdDeployFolderTmpl = '/var/www/doc.faktorzehn.org/schema/faktor-ips/{0}.{1}'
-
-def lib = library('fips-jenkins-library@main').org.faktorips.jenkins
 
 pipeline {
     agent any
@@ -17,7 +9,7 @@ pipeline {
     }
 
     options {
-        buildDiscarder(logRotator(numToKeepStr: '10'))
+        buildDiscarder(logRotator(daysToKeepStr: '14'))
     }
 
     stages {
@@ -29,42 +21,72 @@ pipeline {
 
             steps {
                 script {
-                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}"
+                    currentBuild.displayName = "#${env.BUILD_NUMBER}.${env.GIT_BRANCH}-${env.GERRIT_TOPIC}"
                     sh 'rm -rf $HOME/.m2/repository/.meta'
                     sh 'rm -rf $HOME/.m2/repository/.cache'
                     sh 'rm -rf $HOME/.m2/repository/p2'
                 }
-                
+
                 osSpecificMaven commands: [
                     "mvn -U -V -fae -e clean install -f codequality-config",
                     "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -fae -e clean deploy site -Dtycho.localArtifacts=ignore",
-                    "mvn -V -T 8 -fae -e site:stage -f maven"
+                    "mvn -U -V -T 8 -fae -e clean verify site -Dtycho.localArtifacts=ignore"
+                    // site:site is not called for the review, as it depends on base and runtime which are not installed when built with only verify
                 ]
             }
         }
-
-        stage('Deploy Additional Artifacts') {
+        stage('Prepare Artifacts for Archiving') {
             steps {
-                script {
-                    def xmlfile = readFile 'pom.xml'
-                    def fipsVersion = lib.MavenProjectVersion.fromPom(xmlfile)
-                    def (_,major,minor,patch,kind) = (fipsVersion =~ /(\d+)\.(\d+)\.(\d+)(?:-(SNAPSHOT))?/)[0]
-                    sshagent(credentials: ['docDeployRsaKey'], ignoreMissing: true) {
-                        // deploy maven plugin doc
-                        def xsdDeployFolder = MessageFormat.format(xsdDeployFolderTmpl, major, minor)
-                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:mavenDocFolder, remoteFolder:"${mavenDocDeployFolder}/${fipsVersion}"
-                        // deploy xsd
-                        replaceOnServer server:'doc@doc.faktorzehn.org', port:'2004', localFolder:xsdFolder, remoteFolder:xsdDeployFolder
-                    }
-                }
+                sh '''
+                #!/bin/bash
+                # for DependsOn to work we need to publish artifacts to jenkins in a certain way
+
+                echo "Copy and rename pom files to match the jar artifacts"
+                # copy repos zip to jars
+                for i in $(find . -maxdepth 6 -name "*.zip" | grep -v 'sources\\|javadoc' | grep 'target/org.faktorips');
+                do
+                    to=$(echo $i | sed 's/.zip/.jar/g');
+                    cp -v $i $to;
+                done
+                # copy all poms to jar-file-name.pom
+                for i in $(find . -maxdepth 4 -name "*.jar" | grep -v 'sources\\|javadoc' | grep 'target/faktorips');
+                do
+                    to=$(echo $i | sed 's/.jar/.pom/g');
+                    from=$(dirname $i | sed 's|/target|/pom.xml|g');
+                    cp -v $from $to;
+                done
+                # use flattened poms
+                for i in $(find . -maxdepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/faktorips' | grep -v 'bin');
+                do
+                    to=$(echo $i | sed 's/.jar/.pom/g');
+                    from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
+                    cp -v $from $to;
+                done
+                for i in $(find devtools/eclipse/sites -mindepth 2 -name .flattened-pom.xml | sed 's/.flattened-pom.xml//g' | xargs -i% find % -name *.jar | grep -v 'sources\\|javadoc' | grep 'target/org.faktorips' | grep -v 'bin');
+                do
+                    to=$(echo $i | sed 's/.jar/.pom/g');
+                    from=$(dirname $i | sed 's|/target|/.flattened-pom.xml|g');
+                    cp -v $from $to;
+                done
+                '''
             }
         }
     }
 
     post {
         always {
-            postPublisher targetBranch: 'hotfix/22.12',  tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()], coverageSourceDirectories: [
+            parentReference referenceJob: "${JOB_NAME}", defaultBranch: 'hotfix/22.12',  targetBranch: '$GERRIT_BRANCH', latestBuildIfNotFound: false, latestCommitFallback: false, mergeOnlyJob: false, maxBuilds: 10, maxCommits: 500
+
+
+            junit testResults: "**/target/surefire-reports/*.xml", allowEmptyResults: true
+            
+            recordIssues enabledForFailure: true, qualityGates: [[threshold: 1, type: 'NEW', unstable: true]], tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()]
+            
+            publishCoverage(
+                adapters: [jacocoAdapter(mergeToOneReport: true, path: '**/target/**/jacoco.xml')],
+                sourceFileResolver: sourceFiles('STORE_ALL_BUILD'),
+                sourceCodeEncoding: 'UTF-8',
+                sourceDirectories: [
                     [path: 'devtools/common/faktorips-abstraction/src/main/java'],
                     [path: 'devtools/common/faktorips-abstraction-plainjava/src/main/java'],
                     [path: 'devtools/common/faktorips-abstraction-testsetup/src/main/java'],
@@ -94,11 +116,14 @@ pipeline {
                     [path: 'runtime/faktorips-testsupport/src/main/java'],
                     [path: 'runtime/faktorips-valuetypes/src/main/java'],
                     [path: 'runtime/faktorips-valuetypes-joda/src/main/java']
-                ], artifactsToArchive: '**/org.faktorips.p2repository/target/org.faktorips.p2repository*.zip, **/org.faktorips.p2repository.test/target/org.faktorips.p2repository.test*.zip, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.valuetypes*.jar, **/org.faktorips.p2repository/target/repository/plugins/org.faktorips.runtime*.jar'
+                ]
+            )
+            
+            archiveArtifacts artifacts: '**/target/*.jar, **/target/*.pom', fingerprint: true, onlyIfSuccessful: true
         }
 
         regression {
-            failedEmail to: 'fips@faktorzehn.de'
+            failedEmail to: '$GERRIT_PATCHSET_UPLOADER_EMAIL'
         }
     }
 }

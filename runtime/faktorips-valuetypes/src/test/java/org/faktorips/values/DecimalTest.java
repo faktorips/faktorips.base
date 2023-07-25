@@ -489,6 +489,8 @@ public class DecimalTest {
 
         Decimal value3 = Decimal.valueOf(105, 2);
         assertSame(value1, value1.max(value3));
+
+        assertEquals(Decimal.NULL, value1.max(Decimal.NULL));
     }
 
     @Test
@@ -501,6 +503,8 @@ public class DecimalTest {
 
         Decimal value3 = Decimal.valueOf(105, 2);
         assertSame(value1, value1.min(value3));
+
+        assertEquals(Decimal.NULL, value1.min(Decimal.NULL));
     }
 
 }

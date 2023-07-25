@@ -178,7 +178,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @return this + d
      */
     public Decimal add(Decimal d) {
-        if (d == null || d.isNull()) {
+        if (Decimals.isNull(d)) {
             return Decimal.NULL;
         }
         return new Decimal(value.add(d.value));
@@ -189,6 +189,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * returned.
      */
     public Decimal max(Decimal value) {
+        if (Decimals.isNull(value)) {
+            return Decimal.NULL;
+        }
         if (greaterThanOrEqual(value)) {
             return this;
         }
@@ -200,6 +203,9 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * returned.
      */
     public Decimal min(Decimal value) {
+        if (Decimals.isNull(value)) {
+            return Decimal.NULL;
+        }
         if (lessThanOrEqual(value)) {
             return this;
         }
@@ -239,7 +245,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @return this - d
      */
     public Decimal subtract(Decimal d) {
-        if (d == null || d.isNull()) {
+        if (Decimals.isNull(d)) {
             return Decimal.NULL;
         }
         return new Decimal(value.subtract(d.value));
@@ -268,7 +274,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      * @return this * val or null if d is null or Decimal.NULL.
      */
     public Decimal multiply(Decimal d) {
-        if (d == null || d.isNull()) {
+        if (Decimals.isNull(d)) {
             return Decimal.NULL;
         }
         return new Decimal(value.multiply(d.value));
@@ -485,7 +491,7 @@ public class Decimal extends Number implements Comparable<Decimal>, NullObjectSu
      *             insufficient to represent the result of the division exactly.
      */
     public Decimal divide(Decimal d, int scale, RoundingMode roundingMode) {
-        if (isNull() || d.isNull()) {
+        if (Decimals.isNull(d)) {
             return Decimal.NULL;
         }
         return new Decimal(value.divide(d.value, scale, roundingMode));
