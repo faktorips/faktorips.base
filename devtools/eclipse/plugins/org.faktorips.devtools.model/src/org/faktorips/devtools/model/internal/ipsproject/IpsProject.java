@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -125,7 +125,7 @@ import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
  * Implementation of IIpsProject, see the corresponding interface for more details.
- * 
+ *
  * @see org.faktorips.devtools.model.ipsproject.IIpsProject
  */
 public class IpsProject extends IpsElement implements IIpsProject {
@@ -149,7 +149,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     /**
      * The nature ID before Faktor-IPS 22.12
-     * 
+     *
      * @since 22.12
      * @deprecated do not use except for backwards compatibility
      */
@@ -579,8 +579,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(java.nio.file.Path path) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
+        String pathRoot = path.toString();
         for (IIpsPackageFragmentRoot root : roots) {
-            if (path.toString().contains(root.getName())) {
+            if (pathRoot.startsWith(root.getName())) {
                 return root;
             }
         }

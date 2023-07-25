@@ -77,7 +77,7 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
         AVersion currentVersion = AVersion.parse(getCurrentVersion());
         for (AVersion version : versionsWithMigration) {
             if (version.compareTo(projectsVersion) > 0 && version.compareTo(currentVersion) <= 0
-                    || isSameVersionBeforRelease(projectsVersion, currentVersion, version)) {
+                    || isSameVersionBeforeRelease(projectsVersion, currentVersion, version)) {
                 result.add(getRegisteredMigrations().get(version).createIpsProjectMigrationOpertation(projectToMigrate,
                         getFeatureId()));
             }
@@ -85,8 +85,9 @@ public class IpsExtendableVersionManager extends CoreVersionManager {
         return result;
     }
 
-    private boolean isSameVersionBeforRelease(AVersion projectsVersion, AVersion currentVersion, AVersion version) {
-        return version.majorMinorPatch().equals(projectsVersion.majorMinorPatch()) && !currentVersion.isRelease();
+    private boolean isSameVersionBeforeRelease(AVersion projectsVersion, AVersion currentVersion, AVersion version) {
+        return version.majorMinorPatch().equals(projectsVersion.majorMinorPatch())
+                && version.majorMinorPatch().equals(currentVersion.majorMinorPatch()) && !currentVersion.isRelease();
     }
 
     public void setRegisteredMigrations(Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations) {

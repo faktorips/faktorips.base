@@ -18,8 +18,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AVersion;
@@ -84,6 +87,21 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetMigrationOperationsOnlyShowsLatest() throws Exception {
+        currentVersion = AVersion.parse("24.1.0.qualifier");
+        mockMigrationOperations("22.12", "23.6", "24.1");
+
+        IIpsProject ipsProject = mock(IIpsProject.class, withSettings().defaultAnswer(RETURNS_DEEP_STUBS));
+        when(ipsProject.getReadOnlyProperties().getMinRequiredVersionNumber("org.faktorips.feature"))
+                .thenReturn("23.6");
+
+        AbstractIpsProjectMigrationOperation[] migrationOperations = ipsExtendableVersionManager
+                .getMigrationOperations(ipsProject);
+        assertEquals(1, migrationOperations.length);
+        assertEquals("24.1", migrationOperations[0].getTargetVersion());
+    }
+
+    @Test
     public void testIsCurrentVersionCompatibleWith() throws Exception {
         mockMigrationOperations();
 
@@ -95,17 +113,27 @@ public class IpsExtendableVersionManagerTest extends AbstractIpsPluginTest {
     }
 
     private void mockMigrationOperations() {
-        ipsProjectMigrationOperation1 = mock(AbstractIpsProjectMigrationOperation.class);
-        when(ipsProjectMigrationOperation1.getTargetVersion()).thenReturn("0.1.0");
+        ipsProjectMigrationOperation1 = mockMigrationOperation("0.1.0");
+        ipsProjectMigrationOperation2 = mockMigrationOperation(currentVersion + ".zzz");
+        mockMigrationOperations(Stream.of(ipsProjectMigrationOperation1, ipsProjectMigrationOperation2));
+    }
 
-        ipsProjectMigrationOperation2 = mock(AbstractIpsProjectMigrationOperation.class);
-        when(ipsProjectMigrationOperation2.getTargetVersion()).thenReturn(currentVersion + ".zzz");
+    private void mockMigrationOperations(String... versions) {
+        mockMigrationOperations(Arrays.stream(versions).map(this::mockMigrationOperation));
+    }
 
-        Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations = new HashMap<>();
-        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation1.getTargetVersion()),
-                (ipsProject, featureId) -> ipsProjectMigrationOperation1);
-        registeredMigrations.put(AVersion.parse(ipsProjectMigrationOperation2.getTargetVersion()),
-                (ipsProject, featureId) -> ipsProjectMigrationOperation2);
+    private AbstractIpsProjectMigrationOperation mockMigrationOperation(String version) {
+        AbstractIpsProjectMigrationOperation ipsProjectMigrationOperation = mock(
+                AbstractIpsProjectMigrationOperation.class);
+        when(ipsProjectMigrationOperation.getTargetVersion()).thenReturn(version);
+        return ipsProjectMigrationOperation;
+    }
+
+    private void mockMigrationOperations(Stream<AbstractIpsProjectMigrationOperation> operations) {
+        Map<AVersion, IIpsProjectMigrationOperationFactory> registeredMigrations = operations.collect(Collectors.toMap(
+                (Function<AbstractIpsProjectMigrationOperation, AVersion>)o -> AVersion.parse(o.getTargetVersion()),
+                (Function<AbstractIpsProjectMigrationOperation, IIpsProjectMigrationOperationFactory>)o -> (_1,
+                        _2) -> o));
         ipsExtendableVersionManager.setRegisteredMigrations(registeredMigrations);
     }
 }
