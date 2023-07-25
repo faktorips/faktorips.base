@@ -1,15 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal.productvariant;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,15 +26,22 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.IClRepositoryObject;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IXmlPersistenceSupport;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.testrepository.home.HomeProduct;
+import org.faktorips.runtime.testrepository.home.HomeProductGen;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.w3c.dom.Document;
@@ -108,6 +117,36 @@ public class ProductVariantRuntimeHelperTest {
         order.verify(objectToInitialize).initFromXml(originalElement);
         order.verify(objectToInitialize).initFromXml(variationElement);
         verifyNoMoreInteractions(objectToInitialize);
+    }
+
+    @Test
+    public void initWithVariationIntegrationTest() throws ParserConfigurationException {
+        AtomicBoolean modifiable = new AtomicBoolean(true);
+        InMemoryRuntimeRepository repository = new InMemoryRuntimeRepository() {
+            @Override
+            public boolean isModifiable() {
+                return modifiable.get();
+            }
+        };
+        HomeProduct product = new HomeProduct(repository, "x.P 1", "P", "1");
+        HomeProductGen productGen = new HomeProductGen(product);
+        productGen.setValidFrom(new DateTime(2022, 1, 1));
+        repository.putProductCmptGeneration(productGen);
+
+        HomeProduct variant = new HomeProduct(repository, "x.V 1", "V", "1");
+        variant.setVariedBase(product);
+        HomeProductGen variantGen = new HomeProductGen(product);
+        variantGen.setValidFrom(new DateTime(2023, 1, 1));
+        repository.putProductCmptGeneration(variantGen);
+
+        modifiable.set(false);
+
+        ProductVariantRuntimeHelper helper = new ProductVariantRuntimeHelper();
+        HomeProductGen objectToInitialize = new HomeProductGen(product);
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        helper.loadAndVary(productGen, variantGen.toXml(doc), objectToInitialize);
+
+        assertThat(objectToInitialize.getValidFrom(), is(new DateTime(2023, 1, 1)));
     }
 
     @Test

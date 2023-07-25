@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -26,7 +26,7 @@ import org.w3c.dom.Element;
 
 /**
  * Helper class for loading product variants or varied product components respectively.
- * 
+ *
  * @author Stefan Widmaier, FaktorZehn AG
  */
 public class ProductVariantRuntimeHelper {
@@ -37,7 +37,7 @@ public class ProductVariantRuntimeHelper {
     /**
      * The given product component is initialized with the data of the original product component
      * and the variations defined by the variant.
-     * 
+     *
      * @param originalProductComponent the original product component that provides default values
      * @param productComponentToBeInitialized the yet un-initialized product component.
      * @param prodCmptElement the XML element containing product component's variation data.
@@ -51,7 +51,7 @@ public class ProductVariantRuntimeHelper {
     /**
      * The given generation is initialized with the data of the original product component
      * generation and the variations defined by the variant.
-     * 
+     *
      * @param runtimeRepository the runtime repository calling this method. It will be used to load
      *            the original product component.
      * @param tocEntry the {@link GenerationTocEntry} for the requested
@@ -76,7 +76,7 @@ public class ProductVariantRuntimeHelper {
     /**
      * Creates a new instance of the given {@link ProductComponentGeneration}'s class. Uses the
      * given {@link ProductComponent} as new parent.
-     * 
+     *
      * @param parentProductCmpt the new parent component.
      * @param generationTemplate the generation a new instance is created of
      * @return a new {@link ProductComponentGeneration} instance of the same class as this class
@@ -101,6 +101,9 @@ public class ProductVariantRuntimeHelper {
             IClRepositoryObject objectToInitialize) {
         Document document = (Document)variationXML.getOwnerDocument().cloneNode(false);
         Element originalElement = originalObject.toXml(document);
+        // "validFrom" is used to recognize an already initialized object, so we remove it from the
+        // original's XML
+        originalElement.removeAttribute("validFrom");
         objectToInitialize.initFromXml(originalElement);
         objectToInitialize.initFromXml(variationXML);
     }
