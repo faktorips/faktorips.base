@@ -2,7 +2,7 @@ library 'fips-jenkins-library@main'
 import java.text.MessageFormat
 
 def p2RepositoryFolder = './devtools/eclipse/sites/org.faktorips.p2repository'
-def mavenDocFolder = './faktorips-maven-plugin'
+def mavenDocFolder = './faktorips-maven-plugin/target/site'
 def xsdFolder = './devtools/common/faktorips-schemas/src/main/resources'
 
 def mavenDocDeployFolderTmpl = '/var/www/doc.faktorzehn.org/faktorips-maven-plugin/{0}.{1}'
