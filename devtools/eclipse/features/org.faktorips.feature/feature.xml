@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="22.12.13.qualifier"
+      version="22.12.13.release"
       provider-name="Faktor Zehn GmbH"
       plugin="org.faktorips.devtools.core">
    <install-handler/>

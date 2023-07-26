@@ -58,7 +58,7 @@
       <unit id="org.slf4j.api" version="0.0.0"/>
       <repository location="https://update.faktorzehn.org/p2repositories/2022-06/"/>
     </location>
-    <location uri="mvn:org.faktorips:thirdparty:22.12.13-SNAPSHOT:target" type="Target"></location>
+    <location uri="mvn:org.faktorips:thirdparty:22.12.13.release:target" type="Target"></location>
     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
       <unit id="org.eclipse.babel.nls_eclipse_de.feature.group" version="0.0.0"/>
       <unit id="org.eclipse.babel.nls_modeling.emf_de.feature.group" version="0.0.0"/>
