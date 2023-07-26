@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -40,7 +41,7 @@ import org.junit.Test;
 import org.w3c.dom.Element;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPluginTest {
@@ -97,7 +98,7 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     /**
      * This is testing the special combination of product and policy type associations discussed in
      * FIPS-563
-     * 
+     *
      */
     @Test
     public void testFindPolicyCmptTypeAssociation2() {
@@ -777,4 +778,66 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         }
     }
 
+    @Test
+    public void testFIPS9915() {
+        PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Policy", "PolicyType");
+        IProductCmptType policyType = policy.findProductCmptType(ipsProject);
+        PolicyCmptType contract = newPolicyAndProductCmptType(ipsProject, "Contract", "ContractType");
+        IProductCmptType contractType = contract.findProductCmptType(ipsProject);
+
+        IAssociation assoc = policy.newAssociation();
+        assoc.setTargetRoleSingular("assoc");
+        assoc.setTargetRoleSingular("assocs");
+        assoc.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
+        assoc.setTarget(contract.getQualifiedName());
+
+        IAssociation assocType = createProdctCmptTypeAssociation(policyType, contractType);
+        ViewModelSimulation assocViewModel = new ViewModelSimulation((IProductCmptTypeAssociation)assocType);
+
+        // simulate a fresh read-in, with delete and creating the "same" association
+        assocType.delete();
+        IAssociation newAssocType = createProdctCmptTypeAssociation(policyType, contractType);
+
+        // fails if this == association
+        assertThat(assocViewModel.association.findMatchingAssociation(), is(assoc));
+        // tests the equals methods
+        assertThat(assocViewModel.association, is(newAssocType));
+        // make sure not to ask IpsObjectPart because it does: id.equals(o.id)
+        assertThat(assocViewModel.association.getId(), is(not(newAssocType.getId())));
+    }
+
+    private IAssociation createProdctCmptTypeAssociation(IProductCmptType policyType, IProductCmptType contractType) {
+        IAssociation assocType = policyType.newAssociation();
+        assocType.setTargetRoleSingular("assocType");
+        assocType.setTargetRolePlural("assocType");
+        assocType.setAssociationType(AssociationType.AGGREGATION);
+        assocType.setTarget(contractType.getQualifiedName());
+        return assocType;
+    }
+
+    private static class ViewModelSimulation {
+        private final IProductCmptTypeAssociation association;
+
+        public ViewModelSimulation(IProductCmptTypeAssociation association) {
+            this.association = association;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(association);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if ((obj == null) || (getClass() != obj.getClass())) {
+                return false;
+            }
+            ViewModelSimulation other = (ViewModelSimulation)obj;
+            return Objects.equals(association, other.association);
+        }
+
+    }
 }
