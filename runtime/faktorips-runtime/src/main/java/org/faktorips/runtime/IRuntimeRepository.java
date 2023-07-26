@@ -26,6 +26,8 @@ import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.test.IpsTestSuite;
 import org.faktorips.runtime.xml.IXmlBindingSupport;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 
 /**
  * The runtime repository gives access to the information about products, enums and tables.
@@ -207,6 +209,17 @@ public interface IRuntimeRepository {
      * Returns an empty list if no enum class is available.
      */
     List<Class<?>> getAllEnumClasses();
+
+    /**
+     * Returns the description for the given enumeration type.
+     * @param <T> The enum type
+     * @param enumClazz the enum type's class
+     * 
+     * @since 24.1
+     */
+    default <T> InternationalString getEnumDescription(Class<T> enumClazz) {
+        return DefaultInternationalString.EMPTY;
+    }
 
     /**
      * Returns the product component generation identified by the id and the effective date. Returns

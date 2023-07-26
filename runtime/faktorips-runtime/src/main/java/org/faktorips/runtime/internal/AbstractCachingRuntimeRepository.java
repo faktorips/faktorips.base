@@ -188,6 +188,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
     protected abstract <T> T getNotCachedCustomObject(Class<T> type, String ipsObjectQualifiedName);
 
+    @Override
     public <T> InternationalString getEnumDescription(Class<T> type) {
         try {
             IpsEnum<?> ipsEnum = enumValuesCacheByClass.compute(type);

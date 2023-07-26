@@ -30,11 +30,13 @@ import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
 import org.faktorips.runtime.xml.IIpsXmlAdapter;
+import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 
 /**
  * A runtime repository that keeps its data in memory.
  */
-public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
+public class InMemoryRuntimeRepository extends AbstractRuntimeRepository implements IModifiableRuntimeRepository {
 
     /** Contains product component IDs as keys and instances of product components as values. */
     private HashMap<String, IProductComponent> productCmpts = new HashMap<>();
@@ -60,6 +62,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * Contains all enumeration values for the Faktor-IPS enumerations which content is deferred.
      */
     private Map<Class<?>, List<?>> enumValuesMap = new HashMap<>();
+    private Map<Class<?>, InternationalString> enumDescriptionMap = new HashMap<>();
 
     private List<IIpsXmlAdapter<?, ?>> enumXmlAdapters = new LinkedList<>();
 
@@ -151,6 +154,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
      * 
      * @throws NullPointerException if table is <code>null</code>.
      */
+    @Override
     public void putTable(ITable<?> table) {
         @SuppressWarnings("rawtypes")
         Class<? extends ITable> tableClass = table.getClass();
@@ -174,16 +178,15 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         putTable(table);
     }
 
-    /**
-     * Puts the given enum values in the repository replacing all existing values for the given
-     * enumType.
-     * 
-     * @param enumType The Java class representing the enumeration type.
-     * @param enumValues The value of the enumeration type as list.
-     */
-    public <T> void putEnumValues(Class<T> enumType, List<T> enumValues) {
-        List<T> copy = new ArrayList<>(enumValues);
-        enumValuesMap.put(enumType, copy);
+    @Override
+    public <T> void putEnumValues(Class<T> enumTypeClass, List<T> enumValues, InternationalString description) {
+        enumValuesMap.put(enumTypeClass, new ArrayList<>(enumValues));
+        enumDescriptionMap.put(enumTypeClass, description);
+    }
+
+    @Override
+    public <T> InternationalString getEnumDescription(Class<T> enumClazz) {
+        return enumDescriptionMap.getOrDefault(enumClazz, DefaultInternationalString.EMPTY);
     }
 
     @Override
@@ -225,6 +228,16 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         productCmpts.put(productCmpt.getId(), productCmpt);
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * The {@link IModifiableRuntimeRepository} ignores the {@code qName}
+     */
+    @Override
+    public void putProductComponent(IProductComponent productCmpt, String qName) {
+        putProductComponent(productCmpt);
+    }
+
     @Override
     protected IProductComponentGeneration getProductComponentGenerationInternal(String productCmptId,
             Calendar effectiveDate) {
@@ -263,6 +276,16 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         putProductComponent(generation.getProductComponent());
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * The {@link IModifiableRuntimeRepository} ignores the {@code qName}
+     */
+    @Override
+    public void putProductCmptGeneration(IProductComponentGeneration generation, String qName) {
+        putProductCmptGeneration(generation);
+    }
+
     private SortedSet<IProductComponentGeneration> getGenerationSortedSet(String productCmptId) {
         return productCmptGenLists.computeIfAbsent(productCmptId,
                 $ -> new TreeSet<>(
@@ -295,6 +318,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * Puts the test case into the repository.
      */
+    @Override
     public void putIpsTestCase(IpsTestCaseBase test) {
         testCasesByQName.put(test.getQualifiedName(), test);
     }
@@ -373,6 +397,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     /**
      * Puts the runtimeObject into the repository.
      */
+    @Override
     public <T extends IRuntimeObject> void putCustomRuntimeObject(Class<T> type,
             String ipsObjectQualifiedName,
             T runtimeObject) {

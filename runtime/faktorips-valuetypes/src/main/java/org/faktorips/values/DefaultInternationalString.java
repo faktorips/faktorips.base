@@ -25,6 +25,14 @@ import java.util.Objects;
  */
 public class DefaultInternationalString implements InternationalString {
 
+    /**
+     * An empty {@link InternationalString}.
+     * 
+     * @since 24.1
+     **/
+    public static final InternationalString EMPTY = new DefaultInternationalString(Collections.emptyList(),
+            Locale.ROOT);
+
     private static final long serialVersionUID = -4599838166284499045L;
 
     private final Map<Locale, LocalizedString> localizedStringMap;
