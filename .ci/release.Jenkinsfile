@@ -108,8 +108,7 @@ pipeline {
                 osSpecificMaven commands: [
                     "mvn -U -V -fae -e clean install -f codequality-config",
                     "mvn -U -V -T 8 -fae -e clean install -DskipTests=true -Dmaven.skip.tests=true -pl :targets -am -Dtycho.localArtifacts=ignore",
-                    "mvn -U -V -T 8 -P release clean install site -Dtycho.localArtifacts=ignore",
-                    "mvn -V -T 8 -fae -e site:stage -f maven"
+                    "mvn -U -V -T 8 -P release clean install site -Dtycho.localArtifacts=ignore"
                 ]
                 postPublisher targetBranch: '$BRANCH',  tools: [java(), javaDoc(), spotBugs(), checkStyle(), eclipse()], coverageSourceDirectories: [
                         [path: 'devtools/common/faktorips-abstraction/src/main/java'],
