@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,6 +13,7 @@ package org.faktorips.devtools.model.internal.type;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.devtools.model.HierarchyVisitor;
@@ -35,7 +36,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IAssociation.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class Association extends TypePart implements IAssociation {
@@ -246,6 +247,36 @@ public abstract class Association extends TypePart implements IAssociation {
         boolean oldValue = this.constrain;
         this.constrain = constrain;
         valueChanged(oldValue, constrain);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        return prime * result + Objects.hash(constrain, derivedUnion, maxCardinality, minCardinality,
+                subsettedDerivedUnion, target, targetRolePlural, targetRoleSingular, type);
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || (getClass() != obj.getClass())) {
+            return false;
+        }
+        Association other = (Association)obj;
+        return constrain == other.constrain
+                && derivedUnion == other.derivedUnion
+                && maxCardinality == other.maxCardinality
+                && minCardinality == other.minCardinality
+                && Objects.equals(subsettedDerivedUnion, other.subsettedDerivedUnion)
+                && Objects.equals(target, other.target)
+                && Objects.equals(targetRolePlural, other.targetRolePlural)
+                && Objects.equals(targetRoleSingular, other.targetRoleSingular)
+                && Objects.equals(getParent(), other.getParent())
+                && type == other.type;
     }
 
     @Override

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.faktorips.devtools.abstraction.exception.IpsException;
@@ -38,7 +39,7 @@ import org.w3c.dom.Element;
 
 /**
  * Implementation of IProductCmptTypeAssociation.
- * 
+ *
  * @author Jan Ortmann
  */
 public class ProductCmptTypeAssociation extends Association implements IProductCmptTypeAssociation {
@@ -100,14 +101,14 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
         String targetQName = targetPolicyCmptType.getQualifiedName();
         collectPossibleMatchingAssociations(sourcePolicyCmptType, targetQName, result, ipsProject,
-                new HashSet<IPolicyCmptType>());
+                new HashSet<>());
         return result;
     }
 
     /**
      * searching recursively all {@link IPolicyCmptTypeAssociation} that could be configured by this
      * association
-     * 
+     *
      * @param sourcePolicyCmptType the actual {@link IPolicyCmptType} which associations are
      *            analyzed
      * @param targetQName the name of the {@link IPolicyCmptType} that is configured by the target
@@ -280,11 +281,34 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
         int index = 0;
         for (Iterator<IAssociation> it = allAssociationsForTheTargetType.iterator(); it.hasNext(); index++) {
-            if (it.next() == this) {
+            if (Objects.equals(this, it.next())) {
                 return index;
             }
         }
         throw new RuntimeException("Can't get index of association " + this); //$NON-NLS-1$
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        return prime * result
+                + Objects.hash(changingOverTime, matchingAssociationName, matchingAssociationSource, relevant);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj) || (getClass() != obj.getClass())) {
+            return false;
+        }
+        ProductCmptTypeAssociation other = (ProductCmptTypeAssociation)obj;
+        return changingOverTime == other.changingOverTime
+                && Objects.equals(matchingAssociationName, other.matchingAssociationName)
+                && Objects.equals(matchingAssociationSource, other.matchingAssociationSource)
+                && relevant == other.relevant;
     }
 
     @Override
@@ -300,7 +324,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * Validates that derived unions and their subsets have the same changing over time property.
      * e.g. if a derived union is changing over time its subsets must also be defined as changing
      * over time. If a derived union is static its subsets must also be defined as static.
-     * 
+     *
      * @param list the message list to add messages to
      * @param ipsProject the IPS project to be used for searching related IPS objects
      */
