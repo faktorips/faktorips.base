@@ -256,8 +256,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
         types.add(IpsObjectType.TEST_CASE);
 
         IIpsModelExtensions.get()
-                .getAdditionalIpsObjectTypes()
-                .forEach(t -> addIpsObjectTypeIfNotDuplicate(types, t));
+        .getAdditionalIpsObjectTypes()
+        .forEach(t -> addIpsObjectTypeIfNotDuplicate(types, t));
 
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
         ipsObjectTypes = typesArray;
@@ -481,7 +481,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
         StringBuilder folderName = new StringBuilder();
         for (int i = rootNameCount; i < relativePath.getNameCount() - 1; i++) {
-            if (i > 1) {
+            if (i > rootNameCount) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
             }
             folderName.append(relativePath.subpath(i, i + 1));
@@ -617,7 +617,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$
         }
         IIpsModelExtensions.get().getWorkspaceInteractions()
-                .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
+        .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
     }
 
     @Override
@@ -1059,8 +1059,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
         if (convention != null) {
             IpsLog.log(new IpsStatus(IStatus.WARNING,
                     "Unknown changes in time naming convention " + id //$NON-NLS-1$
-                            + ". Using default " //$NON-NLS-1$
-                            + IChangesOverTimeNamingConvention.VAA,
+                    + ". Using default " //$NON-NLS-1$
+                    + IChangesOverTimeNamingConvention.VAA,
                     null));
             return convention;
         }
@@ -1074,7 +1074,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                .size()];
+                                                                                              .size()];
         int i = 0;
         for (IChangesOverTimeNamingConvention iChangesOverTimeNamingConvention : changesOverTimeNamingConventionMap
                 .values()) {
@@ -1489,7 +1489,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out.println(
                                 "IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                        + listener);
+                                + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {
