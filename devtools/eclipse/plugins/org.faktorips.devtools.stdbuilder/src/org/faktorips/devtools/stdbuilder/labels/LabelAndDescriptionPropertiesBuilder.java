@@ -58,8 +58,17 @@ public class LabelAndDescriptionPropertiesBuilder extends AbstractLocalizedPrope
     @Override
     public String getResourceBundleBaseName(IIpsSrcFolderEntry entry) {
         return entry.getUniqueBasePackageNameForDerivedArtifacts() + "."
-                + entry.getIpsPackageFragmentRootName().replace("\\", ".").replace("/", ".")
+                + getIpsPackageFragmentRootFolderName(entry)
                 + LABEL_AND_DESCRIPTIONS_SUFFIX;
+    }
+
+    private String getIpsPackageFragmentRootFolderName(IIpsSrcFolderEntry entry) {
+        String packageFragmentRootName = entry.getIpsPackageFragmentRootName().replace("\\", ".").replace("/", ".");
+        if (packageFragmentRootName.indexOf(".") > 0) {
+            return packageFragmentRootName.substring(packageFragmentRootName.lastIndexOf(".") + 1,
+                    packageFragmentRootName.length());
+        }
+        return packageFragmentRootName;
     }
 
     @Override

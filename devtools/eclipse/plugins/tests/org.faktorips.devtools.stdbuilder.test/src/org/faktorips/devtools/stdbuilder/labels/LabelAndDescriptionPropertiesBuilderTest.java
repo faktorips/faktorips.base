@@ -48,7 +48,7 @@ public class LabelAndDescriptionPropertiesBuilderTest {
                 new StandardBuilderSet());
 
         assertThat(labelAndDesc.getResourceBundleBaseName(entry),
-                is("org.faktorips.test.UniqueQualifier.a.deep.model.folder-label-and-descriptions"));
+                is("org.faktorips.test.UniqueQualifier.folder-label-and-descriptions"));
     }
 
     @Test
