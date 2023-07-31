@@ -882,7 +882,9 @@ public class IpsBuilder {
         private boolean isIpsResource(AResource resource) {
             java.nio.file.Path resourceLocation = resource.getWorkspaceRelativePath();
             for (IIpsSrcFolderEntry srcFolderEntry : sourceFolderEntries) {
-                if (resourceLocation.startsWith(srcFolderEntry.getSourceFolder().getWorkspaceRelativePath())) {
+                if ((srcFolderEntry.getSourceFolder().getWorkspaceRelativePath().getNameCount() > 1
+                        && srcFolderEntry.getSourceFolder().getWorkspaceRelativePath().startsWith(resourceLocation))
+                        || resourceLocation.startsWith(srcFolderEntry.getSourceFolder().getWorkspaceRelativePath())) {
                     return true;
                 }
             }
