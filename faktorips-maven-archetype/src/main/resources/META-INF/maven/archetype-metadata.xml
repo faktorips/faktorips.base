@@ -37,7 +37,7 @@
         </requiredProperty>
         <requiredProperty key="IPS-SourceFolder">
             <defaultValue>model</defaultValue>
-            <validationRegex>[a-zA-Z][?:a-zA-Z\d]*</validationRegex>
+            <validationRegex>(?:[a-zA-Z][a-zA-Z\d]*(?:/|\\)?)*</validationRegex>
         </requiredProperty>
         <requiredProperty key="IPS-TocXML">
             <defaultValue>faktorips-repository-toc</defaultValue>
