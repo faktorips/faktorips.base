@@ -256,8 +256,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
         types.add(IpsObjectType.TEST_CASE);
 
         IIpsModelExtensions.get()
-        .getAdditionalIpsObjectTypes()
-        .forEach(t -> addIpsObjectTypeIfNotDuplicate(types, t));
+                .getAdditionalIpsObjectTypes()
+                .forEach(t -> addIpsObjectTypeIfNotDuplicate(types, t));
 
         IpsObjectType[] typesArray = types.toArray(new IpsObjectType[types.size()]);
         ipsObjectTypes = typesArray;
@@ -488,7 +488,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
         }
 
         if (resource.getType() == AResourceType.FOLDER) {
-            if (relativePath.getNameCount() > 2) {
+            if (relativePath.getNameCount() > rootNameCount + 1) {
                 folderName.append(IIpsPackageFragment.SEPARATOR);
             }
             folderName.append(resource.getName());
@@ -617,7 +617,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     + modificationStatusChangeListeners.size() + " listeners"); //$NON-NLS-1$
         }
         IIpsModelExtensions.get().getWorkspaceInteractions()
-        .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
+                .runInDisplayThreadSync(new RunnableModificationStatusChangeListenerImplementation(event));
     }
 
     @Override
@@ -793,7 +793,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
             }
             EmptyBuilderSet emptyBuilderSet = new EmptyBuilderSet();
             try {
-                emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<String, Object>()));
+                emptyBuilderSet.initialize(new IpsArtefactBuilderSetConfig(new HashMap<>()));
             } catch (IpsException e) {
                 IpsLog.log(e);
             }
@@ -1059,8 +1059,8 @@ public class IpsModel extends IpsElement implements IIpsModel {
         if (convention != null) {
             IpsLog.log(new IpsStatus(IStatus.WARNING,
                     "Unknown changes in time naming convention " + id //$NON-NLS-1$
-                    + ". Using default " //$NON-NLS-1$
-                    + IChangesOverTimeNamingConvention.VAA,
+                            + ". Using default " //$NON-NLS-1$
+                            + IChangesOverTimeNamingConvention.VAA,
                     null));
             return convention;
         }
@@ -1074,7 +1074,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                                                                                              .size()];
+                .size()];
         int i = 0;
         for (IChangesOverTimeNamingConvention iChangesOverTimeNamingConvention : changesOverTimeNamingConventionMap
                 .values()) {
@@ -1489,7 +1489,7 @@ public class IpsModel extends IpsElement implements IIpsModel {
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out.println(
                                 "IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                + listener);
+                                        + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {

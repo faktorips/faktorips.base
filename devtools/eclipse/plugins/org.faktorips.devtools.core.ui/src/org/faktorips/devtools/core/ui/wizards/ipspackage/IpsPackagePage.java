@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -65,7 +65,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
     // true if the input is validated and errors are displayed in the messes area.
-    protected boolean validateInput = true;
+    private boolean validateInput = true;
 
     // the resource that was selected in the workbench or null if none.
     private IResource selectedResource;
@@ -164,7 +164,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
 
     /**
      * Derives the default values for source folder and package from the selected resource.
-     * 
+     *
      * @param selectedResource The resource that was selected in the current selection when the
      *            wizard was opened.
      */
@@ -255,7 +255,7 @@ public class IpsPackagePage extends WizardPage implements ValueChangeListener {
     /**
      * Returns the ips object that is stored in the resource that was selected when the wizard was
      * opened or <code>null</code> if none is selected.
-     * 
+     *
      * @throws IpsException if the contents of the resource can't be parsed.
      */
     public IIpsObject getSelectedIpsObject() {

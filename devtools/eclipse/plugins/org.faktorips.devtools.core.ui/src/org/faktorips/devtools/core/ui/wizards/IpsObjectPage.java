@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -82,7 +82,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * @param ipsObjectType the object type to show must not be null
      * @param selection a structure selection
      * @param pageName the name of the page
-     * 
+     *
      */
     public IpsObjectPage(IpsObjectType ipsObjectType, IStructuredSelection selection, String pageName) {
         super(selection, pageName);
@@ -176,7 +176,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * <p>
      * There is no layout set for the additional composite, so subclasses must first set a layout to
      * the <code>additionalComposite</code>.
-     * 
+     *
      * @param additionalComposite the additional composite to fill
      * @param toolkit the toolkit to get widgets
      */
@@ -314,9 +314,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * This method is empty by default. Subclasses can override it when they register a subclass
      * specific <code>org.faktorips.devtools.core.ui.controller.EditField</code>s with the this
      * page's value change lister to take appropriate action if the control's value has changed.
-     * 
+     *
      * @param e the event containing the changed field
-     * 
+     *
      * @throws IpsException in case of exception
      */
     protected void valueChangedExtension(FieldValueChangedEvent e) {
@@ -354,7 +354,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     /**
      * This method is empty by default. Subclasses might override it to add specific validations.
      * This method is called by the validatePage() method before the page will be updated.
-     * 
+     *
      * @throws IpsException if these exceptions are thrown by subclasses they will be logged and
      *             displayed in an error dialog
      */
@@ -387,7 +387,9 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      */
     private void validatePackage() {
         IIpsPackageFragment pack = packageControl.getIpsPackageFragment();
-        if (pack != null && !pack.exists()) {
+        if (pack == null) {
+            setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgInvalidPackage, packageField.getText()));
+        } else if (!pack.exists()) {
             setErrorMessage(NLS.bind(Messages.IpsObjectPage_msgPackageMissing, pack.getName()));
         }
     }
@@ -397,7 +399,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
      * <p>
      * Subclasses may extend this method to perform their own validation.
      * </p>
-     * 
+     *
      * @throws IpsException in case of exception
      */
     protected void validateName() {
@@ -457,11 +459,14 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
     }
 
     private IIpsSrcFile findExistingIpsSrcFile() {
-        IIpsSrcFile[] ipsSrcFiles = getIpsPackageFragment().getIpsSrcFiles();
         IIpsSrcFile file = null;
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (ipsSrcFile.getIpsObjectName().equalsIgnoreCase(getIpsObjectName())) {
-                file = ipsSrcFile;
+        IIpsPackageFragment ipsPackageFragment = getIpsPackageFragment();
+        if (ipsPackageFragment != null) {
+            IIpsSrcFile[] ipsSrcFiles = ipsPackageFragment.getIpsSrcFiles();
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                if (ipsSrcFile.getIpsObjectName().equalsIgnoreCase(getIpsObjectName())) {
+                    file = ipsSrcFile;
+                }
             }
         }
         return file;
