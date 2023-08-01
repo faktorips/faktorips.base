@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -46,7 +46,7 @@ public class ProductAttribute extends Attribute {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated Use {@link #getType()}
      */
     @Deprecated
@@ -73,7 +73,7 @@ public class ProductAttribute extends Attribute {
      * except when the attribute is a {@linkplain #isMultiValue() multi-value} attribute - then a
      * {@link List} is returned (and it's contents can be cast to the class returned by
      * {@link #getDatatype()}).
-     * 
+     *
      * @param productComponent a product component based on the product component type this
      *            attribute belongs to.
      * @param effectiveDate (optional) the date to use for selecting the product component's
@@ -86,12 +86,13 @@ public class ProductAttribute extends Attribute {
     /**
      * Sets the value of this attribute in the given product component (or its generation identified
      * by the effectiveDate, if the attribute is changeable over time).
-     * 
+     *
      * @param productComponent a product component based on the product component type this
      *            attribute belongs to.
      * @param effectiveDate (optional) the date to use for selecting the product component's
      *            generation, if this attribute {@link #isChangingOverTime()}
      * @param value the new value
+     * @since 24.1
      */
     public void setValue(IProductComponent productComponent, Calendar effectiveDate, Object value) {
         invokeMethod(setter, getRelevantProductObject(productComponent, effectiveDate), value);
