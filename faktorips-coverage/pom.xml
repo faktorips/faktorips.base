@@ -4,7 +4,7 @@
 
     <groupId>org.faktorips</groupId>
     <artifactId>faktorips-coverage</artifactId>
-    <version>22.12.14-SNAPSHOT</version>
+    <version>22.12.14.release</version>
 
     <packaging>pom</packaging>
 
