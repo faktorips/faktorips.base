@@ -84,6 +84,20 @@ public class ProductAttribute extends Attribute {
     }
 
     /**
+     * Sets the value of this attribute in the given product component (or its generation identified
+     * by the effectiveDate, if the attribute is changeable over time).
+     * 
+     * @param productComponent a product component based on the product component type this
+     *            attribute belongs to.
+     * @param effectiveDate (optional) the date to use for selecting the product component's
+     *            generation, if this attribute {@link #isChangingOverTime()}
+     * @param value the new value
+     */
+    public void setValue(IProductComponent productComponent, Calendar effectiveDate, Object value) {
+        invokeMethod(setter, getRelevantProductObject(productComponent, effectiveDate), value);
+    }
+
+    /**
      * Whether this attribute has just one value or multiple values. If the attribute has multiple
      * values, {@link #getDatatype()} will still return the class of a single value, but
      * {@link #getValue(IProductComponent, Calendar)} will return a {@link List}.

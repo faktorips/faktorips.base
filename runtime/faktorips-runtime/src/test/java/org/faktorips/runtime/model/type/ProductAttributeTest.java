@@ -28,6 +28,7 @@ import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
+import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
@@ -96,6 +97,7 @@ public class ProductAttributeTest {
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
                 is(equalTo((Object)Arrays.asList("hello", "world"))));
+
         productComponent = new SubProdukt();
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
@@ -106,6 +108,46 @@ public class ProductAttributeTest {
                 is(equalTo((Object)"foofoo")));
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
                 is(equalTo((Object)"foobaz")));
+    }
+
+    @Test
+    public void testSetValue() {
+        Produkt productComponent = new Produkt();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        productCmptType.getAttribute("attr1").setValue(productComponent, effectiveDate, "newValue");
+        productCmptType.getAttribute("attr2").setValue(productComponent, effectiveDate, 1);
+        productCmptType.getAttribute("attrGen").setValue(productComponent, effectiveDate, "newValue");
+        productCmptType.getAttribute("multiString").setValue(productComponent, effectiveDate,
+                Arrays.asList("new", "value"));
+
+        assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)1)));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
+                is(equalTo((Object)Arrays.asList("new", "value"))));
+    }
+
+    @Test
+    public void testSetValue_noEffectiveDate() {
+        Produkt productComponent = new Produkt();
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        productCmptType.getAttribute("attr1").setValue(productComponent, null, "newValue");
+        productCmptType.getAttribute("attr2").setValue(productComponent, null, 1);
+        productCmptType.getAttribute("attrGen").setValue(productComponent, null, "newValue");
+        productCmptType.getAttribute("multiString").setValue(productComponent, null,
+                Arrays.asList("new", "value"));
+
+        assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null),
+                is(equalTo((Object)1)));
+        assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
+                is(equalTo((Object)"newValue")));
+        assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
+                is(equalTo((Object)Arrays.asList("new", "value"))));
     }
 
     @Test
@@ -184,6 +226,9 @@ public class ProductAttributeTest {
     private class Produkt extends ProductComponent {
 
         private final ProduktGen produktGen = new ProduktGen(this);
+        private String attr1 = "foo";
+        private Integer attr2 = 42;
+        private List<String> multiString = Arrays.asList("hello", "world");
 
         public Produkt() {
             super(repository, "id", "kindId", "versionId");
@@ -191,17 +236,32 @@ public class ProductAttributeTest {
 
         @IpsAttribute(name = "attr1", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public String getAttr1() {
-            return "foo";
+            return attr1;
+        }
+
+        @IpsAttributeSetter("attr1")
+        public void setAttr1(String newValue) {
+            attr1 = newValue;
         }
 
         @IpsAttribute(name = "attr2", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public Integer getAttr2() {
-            return 42;
+            return attr2;
+        }
+
+        @IpsAttributeSetter("attr2")
+        public void setAttr2(Integer newValue) {
+            attr2 = newValue;
         }
 
         @IpsAttribute(name = "multiString", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public List<String> getMultiString() {
-            return Arrays.asList("hello", "world");
+            return multiString;
+        }
+
+        @IpsAttributeSetter("multiString")
+        public void setMultiString(List<String> newValue) {
+            multiString = newValue;
         }
 
         @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -239,13 +299,20 @@ public class ProductAttributeTest {
 
     private class ProduktGen extends ProductComponentGeneration {
 
+        private String attrGen = "foobar";
+
         public ProduktGen(ProductComponent productCmpt) {
             super(productCmpt);
         }
 
         @IpsAttribute(name = "attrGen", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public String getAttrGen() {
-            return "foobar";
+            return attrGen;
+        }
+
+        @IpsAttributeSetter("attrGen")
+        public void setAttrGen(String newValue) {
+            attrGen = newValue;
         }
 
     }
