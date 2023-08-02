@@ -248,7 +248,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
         }
         Range<T> otherRange = (Range<T>)obj;
         return (isEmpty() && otherRange.isEmpty())
-                || (equals(lowerBound, otherRange.getLowerBound())
+                || ((isEmpty() == otherRange.isEmpty())
+                        && equals(lowerBound, otherRange.getLowerBound())
                         && equals(upperBound, otherRange.getUpperBound())
                         && equals(step, otherRange.getStep())
                         && equals(containsNull, otherRange.containsNull()));

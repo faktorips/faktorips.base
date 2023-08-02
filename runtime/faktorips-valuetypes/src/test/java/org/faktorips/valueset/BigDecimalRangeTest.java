@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
@@ -40,7 +42,11 @@ public class BigDecimalRangeTest {
     public void testValueOf_BoundsEmpty() {
         BigDecimalRange range = BigDecimalRange.valueOf("", "", "", false);
 
-        assertEquals(BigDecimalRange.empty(), range);
+        assertThat(range, is(not(BigDecimalRange.empty())));
+        assertThat(range.getLowerBound(), is(nullValue()));
+        assertThat(range.getUpperBound(), is(nullValue()));
+        assertThat(range.getStep(), is(nullValue()));
+        assertThat(range.containsNull(), is(false));
     }
 
     @Test
