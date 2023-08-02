@@ -104,6 +104,9 @@ public class DefaultRangeTest {
         TestRange rangeWithoutNull = new TestRange(1, 5, 2, false);
 
         assertThat(rangeWithNull, is(not(rangeWithoutNull)));
+
+        // FIPS-10440
+        assertThat(new TestRange(null, null, null, false), is(not(new TestRange())));
     }
 
     @Test
