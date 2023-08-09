@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,13 +13,17 @@ package org.faktorips.devtools.model.internal.ipsproject;
 import static org.faktorips.testsupport.IpsMatchers.hasMessageCode;
 import static org.faktorips.testsupport.IpsMatchers.isEmpty;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.abstraction.AFolder;
@@ -38,7 +42,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
@@ -329,5 +333,18 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
 
         assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
+    }
+
+    @Test
+    public void testGetIpsPackageFragmentRootName() {
+        ipsProject = mock(IIpsProject.class);
+        AFolder sourceFolder = mock(AFolder.class);
+        IpsSrcFolderEntry ipsSrcFolderEntry = new IpsSrcFolderEntry(path, sourceFolder);
+        Path windowsPath = mock(Path.class);
+        when(windowsPath.toString()).thenReturn("src\\main\\ips");
+        when(sourceFolder.getProjectRelativePath()).thenReturn(windowsPath);
+
+        assertThat(ipsSrcFolderEntry.getIpsPackageFragmentRootName(), is("src/main/ips"));
+
     }
 }

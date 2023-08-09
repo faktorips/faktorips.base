@@ -579,7 +579,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IIpsPackageFragmentRoot findIpsPackageFragmentRoot(java.nio.file.Path path) {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
-        String pathRoot = path.toString();
+        String pathRoot = PathUtil.toPortableString(path);
         for (IIpsPackageFragmentRoot root : roots) {
             if (pathRoot.startsWith(root.getName())) {
                 return root;

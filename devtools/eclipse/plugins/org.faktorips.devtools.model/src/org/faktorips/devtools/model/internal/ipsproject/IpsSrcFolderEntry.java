@@ -173,7 +173,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public String getIpsPackageFragmentRootName() {
-        return sourceFolder.getProjectRelativePath().toString();
+        return PathUtil.toPortableString(sourceFolder.getProjectRelativePath());
     }
 
     @Override

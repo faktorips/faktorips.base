@@ -53,8 +53,7 @@ public class IpsPckFragmentRootRefControl extends TextButtonControl {
             Path path = new Path(pathString);
             IFolder folder = wpRoot.getFolder(path);
             root = IIpsModel.get().getIpsProject(folder.getProject().getName())
-                    .findIpsPackageFragmentRoot(
-                            folder.getProjectRelativePath().toOSString());
+                    .findIpsPackageFragmentRoot(folder.getProjectRelativePath().toPortableString());
         } catch (IllegalArgumentException e) {
             // string is not a valid path
         }
