@@ -17,6 +17,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 
@@ -105,6 +107,15 @@ public class ProductAttribute extends Attribute {
      */
     public Boolean isMultiValue() {
         return getter.getReturnType().equals(List.class);
+    }
+
+    @Override
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent product,
+            Calendar effectiveDate) {
+        super.validate(list, context, product, effectiveDate);
+        // TODO FIPS-10498 validateValue(list, context, product, effectiveDate);
     }
 
     private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type) {

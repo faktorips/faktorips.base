@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,7 +14,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -22,6 +24,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentLinkSource;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
@@ -33,13 +36,21 @@ import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 public class DefaultPolicyAttribute extends PolicyAttribute {
 
+    public static final String MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET = "POLICY_ATTRIBUTE-DEFAULT_VALUE_NOT_IN_VALUE_SET";
+
+    public static final String PROPERTY_DEFAULT_VALUE = "defaultValue";
+
     private static final Map<Class<?>, Object> NULL_OBJECTS = new HashMap<>();
+
+    private static final String RESOURCE_BUNDLE_NAME = DefaultPolicyAttribute.class.getName();
+    private static final String MSG_KEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
 
     static {
         NULL_OBJECTS.put(Decimal.class, Decimal.NULL);
@@ -277,6 +288,38 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     @Override
     public void removeValue(IModelObject modelObject) {
         setValue(modelObject, NULL_OBJECTS.get(getDatatype()));
+    }
+
+    @Override
+    public void validate(MessageList list,
+            IValidationContext context,
+            IProductComponent product,
+            Calendar effectiveDate) {
+        super.validate(list, context, product, effectiveDate);
+        validateDefaultValue(list, context, product, effectiveDate);
+    }
+
+    <T> void validateDefaultValue(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        @SuppressWarnings("unchecked")
+        T defaultValue = (T)getDefaultValue(source, effectiveDate);
+
+        if (!ObjectUtil.isNull(defaultValue)) {
+            @SuppressWarnings("unchecked")
+            ValueSet<T> valueSet = (ValueSet<T>)getValueSet(source, effectiveDate, context);
+            if (!valueSet.contains(defaultValue)) {
+                Locale locale = context.getLocale();
+                ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale);
+                list.newError(MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
+                        String.format(messages.getString(MSG_KEY_DEFAULT_VALUE_NOT_IN_VALUE_SET),
+                                defaultValue, getLabel(locale), valueSet),
+                        this,
+                        PROPERTY_DEFAULT_VALUE);
+            }
+        }
+
     }
 
 }

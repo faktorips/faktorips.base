@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.model.type;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
@@ -30,7 +31,10 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.MessageLists;
+import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.ValidationContext;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
@@ -50,6 +54,9 @@ import org.faktorips.runtime.model.annotation.IpsDefaultValueSetter;
 import org.faktorips.runtime.model.annotation.IpsDocumented;
 import org.faktorips.runtime.model.annotation.IpsPolicyCmptType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.values.Decimal;
+import org.faktorips.values.Money;
+import org.faktorips.valueset.DecimalRange;
 import org.faktorips.valueset.DefaultRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
@@ -748,7 +755,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<String>());
+        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<>());
     }
 
     @Test
@@ -785,7 +792,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<String>());
+        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -793,7 +800,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setValueSet(new FailingProdukt(), null, new UnrestrictedValueSet<String>());
+        attribute.setValueSet(new FailingProdukt(), null, new UnrestrictedValueSet<>());
     }
 
     @Test
@@ -879,11 +886,172 @@ public class DefaultPolicyAttributeTest {
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testValidate_NoMessageList() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+
+        defaultPolicyAttribute.validate(null, new ValidationContext(), product, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testValidate_NoContext() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validate(messageList, null, product, null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testValidate_NoProduct() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validate(messageList, new ValidationContext(), null, null);
+    }
+
+    @Test
+    public void testValidate_OK() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validate(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidate_DefaultValue() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        product.defaultValueAttr1 = "foo";
+        product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+    }
+
+    @Test
+    public void testValidateDefaultValue_OK() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateDefaultValue_DefaultValueNotAllowedInValueSet() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        product.defaultValueAttr1 = "foo";
+        product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET));
+        assertThat(message.getText(), containsString("default value"));
+        assertThat(message.getText(), containsString("attribute"));
+        assertThat(message.getText(), containsString("the first attribute"));
+        assertThat(message.getText(), containsString("foo"));
+        assertThat(message.getText(), containsString("value set"));
+        assertThat(message.getText(), containsString("bar"));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+    }
+
+    @Test
+    public void testValidateDefaultValue_DefaultValueNotAllowedInValueSet_LocaleDE() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        product.defaultValueAttr1 = "foo";
+        product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.GERMAN), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET));
+        assertThat(message.getText(), containsString("Vorbelegung"));
+        assertThat(message.getText(), containsString("Attribut"));
+        assertThat(message.getText(), containsString("Das erste Attribut"));
+        assertThat(message.getText(), containsString("foo"));
+        assertThat(message.getText(), containsString("Wertemenge"));
+        assertThat(message.getText(), containsString("bar"));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_DEFAULT_VALUE));
+    }
+
+    @Test
+    public void testValidateDefaultValue_NullIsOk() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
+        Produkt product = new Produkt();
+        product.defaultValueAttr1 = null;
+        product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateDefaultValue_DecimalNullIsOk() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("decAttr");
+        Produkt product = new Produkt();
+        product.defaultValueDecAttr = Decimal.NULL;
+        product.allowedValuesForDecAttr= DecimalRange.valueOf(Decimal.ZERO, Decimal.valueOf(100), Decimal.valueOf(1, 3), false);
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateDefaultValue_MoneyNullIsOk() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("money");
+        Produkt product = new Produkt();
+        product.defaultValueMoney = Money.NULL;
+        product.allowedValuesForMoney = new OrderedValueSet<>(false, Money.NULL, Money.euro(12, 50));
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
     @IpsPolicyCmptType(name = "Vertragxyz")
     @IpsConfiguredBy(Produkt.class)
     @IpsAttributes({ "attr1", "attr2", "attrChangingOverTime", "attrWithValueSetWithoutValidationContext",
             "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
-            "deprecatedAttribute" })
+            "deprecatedAttribute", "decAttr", "money" })
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
     private class ConfVertrag implements IConfigurableModelObject {
 
         @IpsDefaultValue("attr2")
@@ -901,6 +1069,8 @@ public class DefaultPolicyAttributeTest {
         private TestExtensibleEnum attrExtensibleEnum = DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM;
         private TestExtensibleEnum attrExtensibleEnumConfigured;
         private Calendar effectiveFrom;
+        private Decimal decAttr;
+        private Money money;
 
         public ConfVertrag() {
             this(new Produkt());
@@ -1015,6 +1185,38 @@ public class DefaultPolicyAttributeTest {
             this.attrExtensibleEnumConfigured = attrExtensibleEnumConfigured;
         }
 
+        @IpsAttribute(name = "decAttr", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public Decimal getDecAttr() {
+            return decAttr;
+        }
+
+        @IpsAttributeSetter("decAttr")
+        public void setDecAttr(Decimal value) {
+            decAttr = value;
+        }
+
+        @IpsAttribute(name = "money", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public Money getMoney() {
+            return money;
+        }
+
+        @IpsAttributeSetter("money")
+        public void setMoney(Money value) {
+            money = value;
+        }
+
+        @IpsAllowedValues("money")
+        public ValueSet<Money> getSetOfAllowedValuesForMoney(IValidationContext context) {
+            return produkt.getSetOfAllowedValuesForMoney(context);
+        }
+
+        @IpsAllowedValues("decAttr")
+        public ValueSet<Decimal> getSetOfAllowedValuesForDecAttr(IValidationContext context) {
+            return produkt.getSetOfAllowedValuesForDecAttr(context);
+        }
+
         @Override
         public MessageList validate(IValidationContext context) {
             return null;
@@ -1069,6 +1271,10 @@ public class DefaultPolicyAttributeTest {
 
         private String defaultValueAttr1 = "foobar";
         private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<>();
+        private ValueSet<Decimal> allowedValuesForDecAttr = new UnrestrictedValueSet<>();
+        private ValueSet<Money> allowedValuesForMoney = new UnrestrictedValueSet<>();
+        private Decimal defaultValueDecAttr;
+        private Money defaultValueMoney;
 
         public Produkt() {
             super(repository, "id", "kindId", "versionId");
@@ -1108,6 +1314,52 @@ public class DefaultPolicyAttributeTest {
         @IpsAllowedValues("attrWithValueSetWithoutValidationContext")
         public ValueSet<String> getHandwrittenAllowedValuesForAttrWithValueSetWithoutValidationContext() {
             return new OrderedValueSet<>(false, null, "lorem", "ipsum");
+        }
+
+        @IpsDefaultValue("decAttr")
+        public Decimal getDefaultValueDecAttr() {
+            return defaultValueDecAttr;
+        }
+
+        @IpsDefaultValueSetter("decAttr")
+        public void setDefaultValueDecAttr(Decimal defaultValueDecAttr) {
+            this.defaultValueDecAttr = defaultValueDecAttr;
+        }
+
+        /**
+         * @param context validation context
+         */
+        @IpsAllowedValues("decAttr")
+        public ValueSet<Decimal> getSetOfAllowedValuesForDecAttr(IValidationContext context) {
+            return allowedValuesForDecAttr;
+        }
+
+        @IpsAllowedValuesSetter("decAttr")
+        public void setSetOfAllowedValuesForDecAttr(ValueSet<Decimal> valueSet) {
+            allowedValuesForDecAttr = valueSet;
+        }
+
+        @IpsDefaultValue("money")
+        public Money getDefaultValueMoney() {
+            return defaultValueMoney;
+        }
+
+        @IpsDefaultValueSetter("money")
+        public void setDefaultValueMoney(Money defaultValueMoney) {
+            this.defaultValueMoney = defaultValueMoney;
+        }
+
+        /**
+         * @param context validation context
+         */
+        @IpsAllowedValues("money")
+        public ValueSet<Money> getSetOfAllowedValuesForMoney(IValidationContext context) {
+            return allowedValuesForMoney;
+        }
+
+        @IpsAllowedValuesSetter("money")
+        public void setSetOfAllowedValuesForMoney(ValueSet<Money> valueSet) {
+            allowedValuesForMoney = valueSet;
         }
 
         @Override
