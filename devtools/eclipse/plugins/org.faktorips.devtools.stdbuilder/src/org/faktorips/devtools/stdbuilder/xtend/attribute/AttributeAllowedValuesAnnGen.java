@@ -18,7 +18,8 @@ import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 
 /**
- * Generates the {@link IpsAllowedValues} annotation on getter methods for allowed values.
+ * Generates the {@link IpsAllowedValues} annotation on getter methods and constants for allowed
+ * values.
  */
 public class AttributeAllowedValuesAnnGen implements IAnnotationGenerator {
 

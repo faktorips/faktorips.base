@@ -294,6 +294,11 @@ public abstract class PolicyAttribute extends Attribute {
             IValidationContext context);
 
     /**
+     * Returns the value set of this model type attribute.
+     */
+    public abstract ValueSet<?> getValueSetFromModel();
+
+    /**
      * Returns the value set of the given model object's attribute identified by this model type
      * attribute. Returns an {@link UnrestrictedValueSet} if there is no method that returns a value
      * set for this attribute.

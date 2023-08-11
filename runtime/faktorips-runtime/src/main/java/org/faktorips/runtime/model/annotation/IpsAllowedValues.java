@@ -16,10 +16,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the method returning the allowed values for an {@link IpsAttribute}.
+ * Marks the method and constant returning the allowed values for an {@link IpsAttribute}.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 public @interface IpsAllowedValues {
 
     /**

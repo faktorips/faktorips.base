@@ -36,7 +36,7 @@ class PolicyCmptAttributeTmpl {
        *
        * @generated
        */
-      «getAnnotations(AnnotatedJavaElementType.DEPRECATION)»
+      «getAnnotations(AnnotatedJavaElementType.POLICY_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES)»
       public static final «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(constantNameValueSet)» = «valuesetCode»;
     «ENDIF»
   '''

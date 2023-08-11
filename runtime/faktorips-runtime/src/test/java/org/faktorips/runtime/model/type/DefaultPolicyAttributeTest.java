@@ -277,6 +277,22 @@ public class DefaultPolicyAttributeTest {
     }
 
     @Test
+    public void testGetValueSetFromModel() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attr1");
+        ValueSet<?> valueSet = attribute.getValueSetFromModel();
+        assertEquals(Policy.MAX_ALLOWED_VALUES_FOR_ATTR1, valueSet);
+    }
+
+    @Test
+    public void testGetValueSetFromModel_NoField() {
+        PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
+        PolicyAttribute attribute = policyModel.getAttribute("attrBoolean");
+        ValueSet<?> valueSet = attribute.getValueSetFromModel();
+        assertEquals(new UnrestrictedValueSet<>(), valueSet);
+    }
+
+    @Test
     public void testGetValueSet_ModelObject_Handwritten() {
         Policy policy = new Policy();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Policy.class);
@@ -1024,7 +1040,8 @@ public class DefaultPolicyAttributeTest {
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("decAttr");
         Produkt product = new Produkt();
         product.defaultValueDecAttr = Decimal.NULL;
-        product.allowedValuesForDecAttr= DecimalRange.valueOf(Decimal.ZERO, Decimal.valueOf(100), Decimal.valueOf(1, 3), false);
+        product.allowedValuesForDecAttr = DecimalRange.valueOf(Decimal.ZERO, Decimal.valueOf(100),
+                Decimal.valueOf(1, 3), false);
         MessageList messageList = MessageLists.emptyMessageList();
 
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
@@ -1496,6 +1513,10 @@ public class DefaultPolicyAttributeTest {
 
         @IpsAttribute(name = "const", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public final String CONSTANT = "const";
+
+        @IpsAllowedValues("attr1")
+        public static final ValueSet<Integer> MAX_ALLOWED_VALUES_FOR_ATTR1 = new UnrestrictedValueSet<>(
+                false);
 
         private int attr1;
         private int primitiveUnrestrictedAttr;

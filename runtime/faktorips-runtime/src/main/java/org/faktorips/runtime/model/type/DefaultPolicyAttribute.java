@@ -67,6 +67,7 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     private Field defaultField;
 
     private Map<Type, Method> valueSetMethods = new HashMap<>(2);
+    private Map<Type, Field> valueSetFields = new HashMap<>(2);
     private Method allowedValuesSetter;
 
     public DefaultPolicyAttribute(PolicyCmptType policyCmptType, Method getter, Method setter,
@@ -199,6 +200,16 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         return getValueSet(valueSetMethod, productObject, context);
     }
 
+    @Override
+    public ValueSet<?> getValueSetFromModel() {
+        Field valueSetField = getValueSetField(getType());
+        try {
+            return valueSetField == null ? new UnrestrictedValueSet<>() : (ValueSet<?>)valueSetField.get(null);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            throw new RuntimeException("The value can not be retrieved.");
+        }
+    }
+
     // CSOFF: CyclomaticComplexity
     private ValueSet<?> getValueSet(Method valueSetMethod, Object object, IValidationContext context) {
         if (valueSetMethod == null) {
@@ -244,6 +255,16 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
         }
     }
 
+    private Field getValueSetField(Type model) {
+        if (valueSetFields.containsKey(model)) {
+            return valueSetFields.get(model);
+        } else {
+            Field valueSetField = findValueSetField(model);
+            valueSetFields.put(model, valueSetField);
+            return valueSetField;
+        }
+    }
+
     @Override
     public DefaultPolicyAttribute createOverwritingAttributeFor(Type subType) {
         return new DefaultPolicyAttribute((PolicyCmptType)subType, getter, setter, isChangingOverTime());
@@ -251,6 +272,10 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
 
     private Method findValueSetMethod(Type type) {
         return type.searchDeclaredMethod(IpsAllowedValues.class, a -> a.value().equals(getName()));
+    }
+
+    private Field findValueSetField(Type type) {
+        return type.findDeclaredField(IpsAllowedValues.class, a -> a.value().equals(getName())).orElse(null);
     }
 
     @Override
