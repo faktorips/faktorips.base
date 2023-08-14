@@ -288,6 +288,10 @@ public class EclipseProjectUtil {
 
         executeProjectConfigurators(ipsProject, creationProperties);
 
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.setValidateIpsSchema(true);
+        ipsProject.setProperties(ipsProjectProperties);
+
         return ipsProject;
     }
 
