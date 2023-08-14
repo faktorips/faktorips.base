@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -69,7 +69,7 @@ public class ProductCmptDecorator implements IIpsSrcFileDecorator {
 
     @Override
     public ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
-        if (ipsSrcFile != null) {
+        if (ipsSrcFile != null && ipsSrcFile.exists()) {
             boolean template = ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
             if (template) {
                 return IIpsDecorators.getImageHandling().createImageDescriptor(PRODUCT_CMPT_TEMPLATE_BASE_IMAGE);
