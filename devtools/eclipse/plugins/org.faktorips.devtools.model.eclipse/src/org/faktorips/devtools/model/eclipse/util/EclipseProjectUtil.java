@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -61,7 +61,7 @@ import org.faktorips.runtime.MessageList;
 
 /**
  * Utilities for the creation and modification of projects.
- * 
+ *
  * @author Thorsten Günther
  */
 public class EclipseProjectUtil {
@@ -72,9 +72,9 @@ public class EclipseProjectUtil {
 
     /**
      * Adds the Faktor-IPS nature to the given project.
-     * 
+     *
      * @param project A platform project.
-     * 
+     *
      * @throws NullPointerException If project is <code>null</code>.
      */
     public static final void addIpsNature(IProject project) {
@@ -88,7 +88,7 @@ public class EclipseProjectUtil {
     /**
      * Returns <code>true</code> if the given Java project has the Faktor-IPS Nature, otherwise
      * <code>false</code>.
-     * 
+     *
      * @param project A platform project.
      */
     public static final boolean hasIpsNature(IJavaProject project) {
@@ -98,7 +98,7 @@ public class EclipseProjectUtil {
     /**
      * Returns <code>true</code> if the given project has the Faktor-IPS Nature, otherwise
      * <code>false</code>.
-     * 
+     *
      * @param project A platform project.
      */
     public static final boolean hasIpsNature(IProject project) {
@@ -111,10 +111,10 @@ public class EclipseProjectUtil {
 
     /**
      * Disable a feature of the default IPS builder.
-     * 
+     *
      * @param ipsProject The project to disable the feature at.
      * @param featureName The name of the feature to disable.
-     * 
+     *
      * @throws IpsException if an error occurs while saving the properties to the file.
      */
     public static void disableBuilderFeature(IIpsProject ipsProject, String featureName) {
@@ -157,9 +157,9 @@ public class EclipseProjectUtil {
 
     /**
      * Creates and returns a new project.
-     * 
+     *
      * @param projectName The name for the new project.
-     * 
+     *
      * @throws IpsException if the creation of the project fails. See
      *             {@link IProject#create(org.eclipse.core.runtime.IProgressMonitor)} for details.
      */
@@ -172,10 +172,10 @@ public class EclipseProjectUtil {
 
     /**
      * Creates a new folder root folder and returns a handle to it.
-     * 
+     *
      * @param project The project to create the folder in.
      * @param folderName The name of the folder.
-     * 
+     *
      * @throws IpsException If the creation of the folder fails. See
      *             {@link IFolder#create(boolean, boolean, org.eclipse.core.runtime.IProgressMonitor)}
      *             for details.
@@ -190,12 +190,12 @@ public class EclipseProjectUtil {
 
     /**
      * Create a new folder and adds it as additional source folder entry to the IPS project.
-     * 
+     *
      * @param ipsProject The project to create the folder in and to add the source folder entry to.
      * @param folderName The name of the new folder.
      * @param outputFolderForMergableJavaFiles The folder for mergable Java files.
      * @param outputFolderForDerivedJavaFiles The folder for derived Java files.
-     * 
+     *
      * @throws IpsException if the creation of the folder fails or if the IPSObjectPath could not be
      *             set.
      */
@@ -227,10 +227,10 @@ public class EclipseProjectUtil {
 
     /**
      * Add a reference between the two projects.
-     * 
+     *
      * @param referringProject The project referring the other.
      * @param referencedProject The project referred by the first one.
-     * 
+     *
      * @throws IpsException If the IPS object path could not be set accordingly.
      */
     public static void addProjectReference(IIpsProject referringProject, IIpsProject referencedProject) {
@@ -248,7 +248,7 @@ public class EclipseProjectUtil {
      * {@value IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE} to add
      * Faktor-IPS-dependencies in a way matching the used dependency management, defaulting to
      * Eclipse Java project libraries.
-     * 
+     *
      * @param javaProject the selected java project
      * @param creationProperties the required properties {@link IpsProjectCreationProperties} for
      *            creating a Faktor-IPS project
@@ -288,6 +288,10 @@ public class EclipseProjectUtil {
 
         executeProjectConfigurators(ipsProject, creationProperties);
 
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.setValidateIpsSchema(true);
+        ipsProject.setProperties(ipsProjectProperties);
+
         return ipsProject;
     }
 
@@ -321,7 +325,7 @@ public class EclipseProjectUtil {
     /**
      * Creates a default {@link IIpsProject} and sets all properties which are definitely required
      * for the usage of Faktor-IPS in any cases.
-     * 
+     *
      * @param javaProject The selected java project
      * @param creationProperties The properties required for creating an {@link IIpsProject}
      * @return The created IPS project
@@ -349,7 +353,7 @@ public class EclipseProjectUtil {
 
     /**
      * Initializes the default {@link IIpsObjectPath}.
-     * 
+     *
      * @param creationProperties The {@link IIpsProjectProperties} of the created
      *            {@link IIpsProject}
      * @param ipsProject The created {@link IIpsProject}
@@ -387,7 +391,7 @@ public class EclipseProjectUtil {
 
     /**
      * Initializes the default {@link IIpsProjectProperties}.
-     * 
+     *
      * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
      *            {@link IIpsProject}
      * @param creationProperties The properties required for creating an {@link IIpsProject}
@@ -425,7 +429,7 @@ public class EclipseProjectUtil {
 
     /**
      * Initializes the default {@link IIpsArtefactBuilderSetConfigModel} of an {@link IIpsProject}.
-     * 
+     *
      * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
      *            {@link IIpsProject}
      * @param creationProperties The properties required for creating an {@link IIpsProject}
@@ -453,7 +457,7 @@ public class EclipseProjectUtil {
 
     /**
      * Initializes the default {@link Locale Locales} of an {@link IIpsProject}.
-     * 
+     *
      * @param ipsProjectProperties The {@link IIpsProjectProperties} of the created
      *            {@link IIpsProject}
      * @param creationProperties The properties required for creating an {@link IIpsProject}
@@ -472,7 +476,7 @@ public class EclipseProjectUtil {
 
     /**
      * Initializes the default formula language of an {@link IIpsProject}.
-     * 
+     *
      * @param properties The {@link IIpsProjectProperties} of the created {@link IIpsProject}
      */
     private static void setDefaultFunctionsLanguageLocale(IIpsProjectProperties properties) {
@@ -487,7 +491,7 @@ public class EclipseProjectUtil {
     /**
      * Creates a hidden file <code>.keepme</code> in the given folder. Returns <code>true</code> if
      * done successfully, <code>false</code> otherwise.
-     * 
+     *
      * @param folder parent folder
      */
     public static boolean createKeepMeFile(IFolder folder) {
@@ -509,10 +513,10 @@ public class EclipseProjectUtil {
      * <p>
      * The configurators are provided by the extension point
      * {@link IpsProjectConfigurerExtension#EXTENSION_POINT_ID_ADD_IPS_NATURE}.
-     * 
+     *
      * @implNote If no extension is responsible for configuring the project, use the
      *               {@link StandardJavaProjectConfigurator}
-     * 
+     *
      * @param ipsProject The created {@link IIpsProject}
      * @param creationProperties The {@link IpsProjectCreationProperties} required for creating an
      *            {@link IIpsProject}

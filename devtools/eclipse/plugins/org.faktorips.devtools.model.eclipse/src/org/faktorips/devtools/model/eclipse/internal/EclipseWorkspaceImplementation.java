@@ -66,6 +66,8 @@ public class EclipseWorkspaceImplementation implements AWorkspaceAbstractionsImp
         if (infos.length > 0) {
             props.setBuilderSetId(infos[0].getBuilderSetId());
         }
+        // will be set in EclipseProjectUtil#createIpsProject after the .ipsproject is complete
+        props.setValidateIpsSchema(false);
     }
 
     @Override
