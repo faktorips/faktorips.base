@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -205,7 +206,7 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
 
     /**
      * Validates whether the valid from of this generation is given in correct date format.
-     * 
+     *
      * @param list the message list error messages are added to
      * @param invalidObject the object that should be rendered invalid in case of an error
      */
@@ -249,4 +250,24 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         }
         return formatDescription;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime;
+        result = prime * result + Objects.hash(validFrom);
+        return prime * result + Objects.hash(getParent());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof IpsObjectGeneration other) || (getClass() != other.getClass())) {
+            return false;
+        }
+        return Objects.equals(validFrom, other.validFrom) && Objects.equals(getParent(), other.getParent());
+    }
+
 }

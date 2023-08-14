@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -89,7 +89,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
  * {@link IpsObjectEditorPage} would find the composite and register the necessary listeners
  * automatically. Otherwise you could handle setting and removing your selection provider for your
  * own.
- * 
+ *
  * @see org.eclipse.jface.viewers.ISelectionProvider
  * @see SelectionProviderIntermediate
  * @see ICompositeWithSelectableViewer
@@ -155,7 +155,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
     /**
      * Returns the ips src file being edited.
-     * 
+     *
      * @return Returns the ips src file to be edited by this editor.
      */
     @Override
@@ -247,7 +247,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     }
 
     /**
-     * 
+     *
      * Activate a context that this view uses. It will be tied to this * view activation events and
      * will be removed when the view is disposed.
      */
@@ -300,7 +300,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * This method extends the <code>addPages()</code> operation and must be implemented by
      * subclasses by adding the pages to edit the ips object with.
-     * 
+     *
      * @throws PartInitException if there is an exception while initializing a part
      * @throws IpsException in case of other core exceptions
      */
@@ -394,7 +394,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             /*
              * here we have to request the ips object once, to make sure that it's state is
              * synchronized with the enclosing resource.
-             * 
+             *
              * otherwise if some part of the ui keeps a reference to the ips object, it won't
              * contain the correct state.
              */
@@ -404,6 +404,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         }
 
         logMethodStarted("refresh"); //$NON-NLS-1$
+
+        refreshInternalState();
 
         // check to enable all controls,
         // note that this must be done before refresh the control states because
@@ -430,9 +432,14 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
         logMethodFinished("refresh"); //$NON-NLS-1$
     }
 
+    /** Refreshes the internal state */
+    protected void refreshInternalState() {
+        // subclasses can use this hook method to refresh internal references
+    }
+
     /**
      * Evaluates the new data changeable state and updates it
-     * 
+     *
      */
     public void updateDataChangeableState() {
         boolean newState = computeDataChangeableState();
@@ -570,6 +577,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
             close(false);
         }
 
+        Display.getDefault().asyncExec(this::refresh);
+
         logMethodFinished("resourceChanged()"); //$NON-NLS-1$
     }
 
@@ -704,7 +713,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     /**
      * Creates a dialog to disblay the differences to the model and ask the user if the
      * inconsistencies should be fixed. Specific logic has to be implemented in subclasses.
-     * 
+     *
      * @throws IpsException May be thrown if any error occurs.
      */
     protected Dialog createDialogToFixDifferencesToModel() {
@@ -925,9 +934,9 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         /**
          * Creates this activation listener.
-         * 
+         *
          * @param partService the part service on which to add the part listener
-         * 
+         *
          * @since 3.1
          */
         public ActivationListener(IPartService partService) {
@@ -938,7 +947,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
 
         /**
          * Disposes this activation listener.
-         * 
+         *
          * @since 3.1
          */
         public void dispose() {
@@ -1023,7 +1032,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * The <code>IpsObjectEditorErrorMarkerUpdater</code> will register as a
      * IIpsProblemChangedListener to listen on ips problem changes that correspond to the editor's
      * input. It updates the title images and refreshes the editor if it is active.
-     * 
+     *
      * @author Joerg Ortmann, Peter Erzberger
      */
     private class IpsObjectEditorErrorMarkerUpdater implements IIpsProblemChangedListener {

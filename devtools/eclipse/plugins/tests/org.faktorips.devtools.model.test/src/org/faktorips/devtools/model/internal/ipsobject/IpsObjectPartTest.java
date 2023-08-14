@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,7 +17,6 @@ import static org.mockito.Mockito.mock;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
-import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
@@ -35,7 +34,7 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
 
     private IProductCmpt productCmpt;
 
-    private IIpsObjectPart part;
+    private IProductCmptGeneration part;
 
     private IIpsObjectPart subpart;
 
@@ -60,20 +59,20 @@ public class IpsObjectPartTest extends AbstractIpsPluginTest {
     @SuppressWarnings("unlikely-arg-type")
     @Test
     public void testEquals() {
-        assertFalse(part.equals(null));
-        assertFalse(part.equals("abc"));
+        assertFalse(subpart.equals(null));
+        assertFalse(subpart.equals("abc"));
 
         // different id
-        IIpsObjectGeneration gen2 = productCmpt.newGeneration();
-        assertFalse(part.equals(gen2));
+        IIpsObjectPart subpart2 = part.newAttributeValue();
+        assertFalse(subpart.equals(subpart2));
 
-        IProductCmpt productCmpt2 = (IProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, "Product2");
-        IIpsObjectGeneration gen3 = productCmpt2.newGeneration();
+        IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration();
+        IIpsObjectPart subpart3 = gen2.newAttributeValue();
 
         // same id, different parent
-        assertFalse(part.equals(gen3));
+        assertFalse(subpart.equals(subpart3));
 
-        assertTrue(part.equals(part));
+        assertTrue(subpart.equals(subpart));
     }
 
     @Test
