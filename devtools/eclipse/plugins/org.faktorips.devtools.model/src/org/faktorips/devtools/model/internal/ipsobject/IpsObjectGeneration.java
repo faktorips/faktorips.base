@@ -15,6 +15,7 @@ import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.faktorips.devtools.model.IIpsModelExtensions;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
@@ -235,9 +236,29 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
         if (duplicateGeneration != this) {
             String msg = MessageFormat.format(Messages.IpsObjectGeneration_msgDuplicateGeneration,
                     IIpsModelExtensions.get()
-                            .getModelPreferences().getChangesOverTimeNamingConvention()
-                            .getGenerationConceptNameSingular());
+                    .getModelPreferences().getChangesOverTimeNamingConvention()
+                    .getGenerationConceptNameSingular());
             list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this, PROPERTY_VALID_FROM));
         }
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime;
+        result = prime * result + Objects.hash(validFrom);
+        return prime * result + Objects.hash(getParent());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof IpsObjectGeneration other) || (getClass() != other.getClass())) {
+            return false;
+        }
+        return Objects.equals(validFrom, other.validFrom) && Objects.equals(getParent(), other.getParent());
+    }
+
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,12 +11,15 @@
 package org.faktorips.devtools.core.ui.editors;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
 
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
@@ -77,6 +80,20 @@ public abstract class TimedIpsObjectEditor extends IpsObjectEditor {
         for (IActiveGenerationChangedListener listener : activeGenerationChangedListeners) {
             listener.activeGenerationChanged(generation);
         }
+    }
+
+    @Override
+    protected void refreshInternalState() {
+        super.refreshInternalState();
+        // replace the generation with the "same" current generation if the object was reloaded from
+        // file
+
+        Optional.ofNullable(generation).stream()
+                .map(g -> (ITimedIpsObject)g.getParent())
+                .flatMap(g -> g.getGenerations().stream())
+                .filter(Predicate.isEqual(generation))
+                .findFirst()
+                .ifPresent(this::setActiveGeneration);
     }
 
 }

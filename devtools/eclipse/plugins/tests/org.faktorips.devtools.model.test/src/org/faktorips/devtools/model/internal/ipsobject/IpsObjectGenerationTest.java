@@ -1,15 +1,18 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.model.internal.ipsobject;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -21,6 +24,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmpt;
 import org.faktorips.devtools.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
@@ -34,14 +38,15 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
 
     private ITimedIpsObject timedObj;
     private IpsObjectGeneration generation;
+    private IIpsProject ipsProject;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        ipsProject = newIpsProject();
         // we use the ProductCmptImpl to test the TimedIpsObject class
         // because TimedIpsObject is abstract.
-        IIpsProject ipsProject = newIpsProject();
         timedObj = newProductCmpt(ipsProject, "MyProduct");
         generation = (IpsObjectGeneration)timedObj.newGeneration();
     }
@@ -187,5 +192,53 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertNotNull(list.toString(),
                 list.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION));
 
+    }
+
+    @Test
+    public void testHashCode() {
+        IpsObjectGeneration gen2 = (IpsObjectGeneration)timedObj.newGeneration();
+
+        // same validFrom, same parent
+        assertThat(generation.hashCode(), is(gen2.hashCode()));
+
+        gen2.setValidFrom(new GregorianCalendar(2023, Calendar.AUGUST, 14));
+
+        // different validFrom, same parent
+        assertThat(generation.hashCode(), is(not(gen2.hashCode())));
+
+        ProductCmpt timedObj2 = newProductCmpt(ipsProject, "MyProduct2");
+        IpsObjectGeneration gen3 = (IpsObjectGeneration)timedObj2.newGeneration();
+
+        // same validFrom, different parent
+        assertThat(generation.hashCode(), is(not(gen3.hashCode())));
+
+        gen3.setValidFrom(new GregorianCalendar(2023, Calendar.AUGUST, 14));
+
+        // same validFrom, different parent
+        assertThat(gen2.hashCode(), is(not(gen3.hashCode())));
+    }
+
+    @Test
+    public void testEquals() {
+        IpsObjectGeneration gen2 = (IpsObjectGeneration)timedObj.newGeneration();
+
+        // same validFrom, same parent
+        assertThat(generation, is(gen2));
+
+        gen2.setValidFrom(new GregorianCalendar(2023, Calendar.AUGUST, 14));
+
+        // different validFrom, same parent
+        assertThat(generation, is(not(gen2)));
+
+        ProductCmpt timedObj2 = newProductCmpt(ipsProject, "MyProduct2");
+        IpsObjectGeneration gen3 = (IpsObjectGeneration)timedObj2.newGeneration();
+
+        // same validFrom, different parent
+        assertThat(generation, is(not(gen3)));
+
+        gen3.setValidFrom(new GregorianCalendar(2023, Calendar.AUGUST, 14));
+
+        // same validFrom, different parent
+        assertThat(gen2, is(not(gen3)));
     }
 }
