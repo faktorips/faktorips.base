@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,20 +12,23 @@ package org.faktorips.devtools.model.decorators.internal;
 
 import static org.faktorips.devtools.model.decorators.internal.ImageDescriptorMatchers.descriptorOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.model.IIpsElement;
 import org.faktorips.devtools.model.decorators.IIpsDecorators;
 import org.faktorips.devtools.model.decorators.IIpsElementDecorator;
+import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
@@ -153,6 +156,17 @@ public class ProductCmptDecoratorTest extends AbstractIpsPluginTest {
         ProductCmptDecorator decorator = new ProductCmptDecorator();
 
         ImageDescriptor imageDescriptor = decorator.getImageDescriptor((IIpsElement)null);
+
+        assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
+    }
+
+    @Test
+    public void testGetImageDescriptor_SrcFileDoesNotExist() {
+        ProductCmptDecorator decorator = new ProductCmptDecorator();
+        IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
+        when(srcFile.exists()).thenReturn(false);
+
+        ImageDescriptor imageDescriptor = decorator.getImageDescriptor(srcFile);
 
         assertThat(imageDescriptor, is(decorator.getDefaultImageDescriptor()));
     }
