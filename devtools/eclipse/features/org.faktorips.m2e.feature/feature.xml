@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.m2e.feature"
       label="Faktor-IPS m2e Feature"
-      version="23.6.4.qualifier"
+      version="23.6.4.release"
       provider-name="Faktor Zehn GmbH">
 
    <description url="http://www.faktorips.org">
