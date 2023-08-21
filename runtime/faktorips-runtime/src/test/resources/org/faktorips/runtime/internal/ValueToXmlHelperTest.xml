@@ -81,6 +81,13 @@
             </StringLength>
         </ValueSet>
     </ConfigElement>
+    <ConfigElement>
+        <ValueSet description="">
+            <StringLength containsNull="true">
+                <MaximumLength isNull="true"/>
+            </StringLength>
+        </ValueSet>
+    </ConfigElement>
     <AttributeValue attribute="A" id="1">
         <Value isNull="false" valueType="SingleValue">
             <InternationalString defaultLocale="hy">

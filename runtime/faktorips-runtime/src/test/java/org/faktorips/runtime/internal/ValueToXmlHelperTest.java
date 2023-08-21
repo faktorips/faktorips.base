@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,8 +32,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 
- * 
+ *
+ *
  * @author Thorsten Guenther
  */
 public class ValueToXmlHelperTest extends XmlAbstractTestCase {
@@ -146,6 +147,18 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testGetStringLengthValueSetFromElement_Unlimited() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+        Element node = (Element)configElements.item(9);
+
+        StringLengthValueSet valueSet = ValueToXmlHelper.getStringLengthValueSetFromElement(node, "ValueSet");
+
+        assertThat(valueSet.containsNull(), is(true));
+        assertThat(valueSet.getMaximumLength(), is(nullValue()));
+    }
+
+    @Test
     public void testGetUnrestrictedValueSet_containsNull() {
         Document doc = getTestDocument();
         NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
@@ -163,14 +176,14 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
     public void testAddTableUsageToElement() {
         Element element = getTestDocument().getDocumentElement();
         NodeList childNodes = element.getChildNodes();
-        assertEquals(31, childNodes.getLength());
+        assertEquals(33, childNodes.getLength());
 
         ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(32, childNodes.getLength());
-        Node namedItem = childNodes.item(31).getAttributes().getNamedItem("structureUsage");
+        assertEquals(34, childNodes.getLength());
+        Node namedItem = childNodes.item(33).getAttributes().getNamedItem("structureUsage");
         assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(31).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(33).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
     }
 

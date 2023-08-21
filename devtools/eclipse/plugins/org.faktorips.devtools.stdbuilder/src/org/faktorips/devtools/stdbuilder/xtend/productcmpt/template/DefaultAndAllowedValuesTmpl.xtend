@@ -289,7 +289,8 @@ class DefaultAndAllowedValuesTmpl {
     def private static writeStringLengthValueSet (XPolicyAttribute it) '''
         Element stringLengthElement = element.getOwnerDocument().createElement(«XML_TAG_STRINGLENGTH»);
         stringLengthElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
-        «ValueToXmlHelper».«addValueToElement("Integer.toString((("+StringLengthValueSet+")"+fieldNameValueSet+").getMaximumLength())","stringLengthElement", XML_TAG_MAXIMUM_LENGTH)»;
+        Integer maximumLength = ((«StringLengthValueSet»)«fieldNameValueSet»).getMaximumLength();
+        «ValueToXmlHelper».«addValueToElement("maximumLength == null ? null : Integer.toString(maximumLength)","stringLengthElement", XML_TAG_MAXIMUM_LENGTH)»;
         valueSetElement.appendChild(stringLengthElement);
     '''
 

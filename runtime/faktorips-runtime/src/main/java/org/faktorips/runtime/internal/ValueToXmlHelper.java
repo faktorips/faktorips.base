@@ -311,7 +311,8 @@ public enum ValueToXmlHelper {
         Optional<Element> stringLengthEl = valueSetEl.flatMap(v -> XmlUtil.findFirstElement(v, XML_TAG_STRINGLENGTH));
         return stringLengthEl.map(s -> {
             Element maximumLengthEl = XmlUtil.getFirstElement(s, XML_TAG_MAXIMUM_LENGTH);
-            int maximumLength = Integer.parseInt(maximumLengthEl.getTextContent());
+            String textContent = maximumLengthEl.getTextContent();
+            Integer maximumLength = IpsStringUtils.isBlank(textContent) ? null : Integer.valueOf(textContent);
             boolean containsNull = isAttributeTrue(s, XML_ATTRIBUTE_CONTAINS_NULL);
             return new StringLengthValueSet(maximumLength, containsNull);
         }).orElse(null);
