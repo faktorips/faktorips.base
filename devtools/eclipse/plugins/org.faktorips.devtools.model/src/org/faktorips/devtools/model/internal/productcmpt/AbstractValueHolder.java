@@ -17,9 +17,9 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -83,8 +83,12 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     @Override
     public Element toXml(Document doc) {
         Element valueEl = doc.createElement(ValueToXmlHelper.XML_TAG_VALUE);
-        valueEl.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL, Boolean.toString(isNullValue()));
-        valueEl.setAttribute(XML_ATTRIBUTE_VALUE_TYPE, getType().getXmlTypeName());
+        if (isNullValue()) {
+            valueEl.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL, Boolean.toString(isNullValue()));
+        }
+        if (AttributeValueType.MULTI_VALUE.equals(getType())) {
+            valueEl.setAttribute(XML_ATTRIBUTE_VALUE_TYPE, getType().getXmlTypeName());
+        }
         contentToXml(valueEl, doc);
         return valueEl;
     }
@@ -128,7 +132,7 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
 
     @Override
     public IValueHolder<?> copy(IAttributeValue parent) {
-        Element element = toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
+        Element element = toXml(XmlUtil.getDocumentBuilder().newDocument());
         return AbstractValueHolder.initValueHolder(parent, element);
     }
 

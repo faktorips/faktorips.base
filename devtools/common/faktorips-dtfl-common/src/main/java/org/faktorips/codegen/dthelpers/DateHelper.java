@@ -17,6 +17,7 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.classtypes.DateDatatype;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.DateUtil;
+import org.faktorips.values.ObjectUtil;
 import org.faktorips.valueset.DefaultRange;
 
 /**
@@ -49,6 +50,11 @@ public class DateHelper extends AbstractDatatypeHelper {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(ObjectUtil.class);
+        fragment.append(".isNull("); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append(")"); //$NON-NLS-1$
+        fragment.append(" ? null : "); //$NON-NLS-1$
         fragment.appendClassName(DateUtil.class);
         fragment.append(".dateToIsoDateString("); //$NON-NLS-1$
         fragment.append(fieldName);

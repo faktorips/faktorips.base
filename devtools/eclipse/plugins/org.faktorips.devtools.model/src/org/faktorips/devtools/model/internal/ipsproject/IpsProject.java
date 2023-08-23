@@ -108,7 +108,6 @@ import org.faktorips.devtools.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.model.type.IType;
 import org.faktorips.devtools.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.model.util.Tree;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.runtime.Message;
@@ -116,6 +115,7 @@ import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
@@ -241,7 +241,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
      * Saves the project properties to the .ipsproject file.
      */
     private void saveProjectProperties(IIpsProjectProperties properties) {
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         Element propertiesEl = ((IpsProjectProperties)properties).toXml(doc);
         doc.appendChild(propertiesEl);
         AFile file = getIpsProjectPropertiesFile();

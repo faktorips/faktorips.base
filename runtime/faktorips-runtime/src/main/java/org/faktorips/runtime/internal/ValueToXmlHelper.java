@@ -65,8 +65,10 @@ public enum ValueToXmlHelper {
     public static final String XML_TAG_ROW = "Row"; //$NON-NLS-1$
     public static final String XML_TAG_ROWS = "Rows"; //$NON-NLS-1$
     public static final String XML_TAG_COLUMN_TABLE_REFERENCE = "ColumnTableReference"; //$NON-NLS-1$
+    public static final String XML_TAG_DESCRIPTION = "Description"; //$NON-NLS-1$
 
     public static final String XML_ATTRIBUTE_STRUCTURE_USAGE = "structureUsage"; //$NON-NLS-1$
+    public static final String XML_ATTRIBUTE_ABSTRACT = "abstract"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_IS_NULL = "isNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
     public static final String XML_ATTRIBUTE_EMPTY = "empty"; //$NON-NLS-1$
@@ -104,6 +106,33 @@ public enum ValueToXmlHelper {
      */
     public static void addCDataValueToElement(String value, Element el, String tagName) {
         addValueAndReturnElement(value, el, tagName, true);
+    }
+
+    /**
+     * Creates and returns a new element with the tagName and attribute value. If the element
+     * already exists, it will be deleted first.
+     *
+     * @param element the XML element to add the element to.
+     * @param tagName the name of the new element
+     * @param attributeName the value for the attribute "attribute"
+     * @return the created element with the given tag name, that contains the given attribute.
+     */
+    public static Element deleteExistingElementAndCreateNewElement(Element element,
+            String tagName,
+            String attributeName) {
+        NodeList nodes = element.getElementsByTagName(tagName);
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Element node = (Element)nodes.item(i);
+            if (node.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE).equals(attributeName)) {
+                element.removeChild(node);
+                break;
+            }
+        }
+        Element newElement = element.getOwnerDocument()
+                .createElement(tagName);
+        newElement.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, attributeName);
+        element.appendChild(newElement);
+        return newElement;
     }
 
     /**

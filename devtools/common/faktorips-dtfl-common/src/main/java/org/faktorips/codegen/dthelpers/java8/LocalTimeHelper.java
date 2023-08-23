@@ -10,9 +10,13 @@
 
 package org.faktorips.codegen.dthelpers.java8;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractTimeHelper;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
+import org.faktorips.values.ObjectUtil;
 
 public class LocalTimeHelper extends AbstractTimeHelper {
 
@@ -32,4 +36,11 @@ public class LocalTimeHelper extends AbstractTimeHelper {
         return JAVA_TIME_LOCAL_TIME;
     }
 
+    @Override
+    public JavaCodeFragment getToStringExpression(String fieldName) {
+        return new JavaCodeFragment().appendClassName(ObjectUtil.class).append(".isNull(").append(fieldName) //$NON-NLS-1$
+                .append(")").append(" ? null : ") //$NON-NLS-1$ //$NON-NLS-2$
+                .append(fieldName).append(".format(").appendClassName(DateTimeFormatter.class)
+                .append(".ofPattern(\"HH:mm:ss\"))");
+    }
 }

@@ -61,6 +61,18 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertNull(ValueToXmlHelper.getValueFromElement(node, "Property"));
         assertFalse(node.hasAttribute(ValueToXmlHelper.XML_ATTRIBUTE_IS_NULL));
     }
+    
+    @Test
+    public void testDeleteExistingElementAndCreateNewElement() {
+        Document doc = getTestDocument();
+        Element parent = doc.createElement("ParentElement");
+        Element node = doc.createElement("TestElement");
+        node.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, "testAttribute");
+        parent.appendChild(node);
+        assertEquals(1, parent.getElementsByTagName("TestElement").getLength());
+        ValueToXmlHelper.deleteExistingElementAndCreateNewElement(parent, "TestElement", "testAttribute");
+        assertEquals(1, parent.getElementsByTagName("TestElement").getLength());
+    }
 
     @Test
     public void testGetValueFromElement() {

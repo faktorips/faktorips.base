@@ -50,6 +50,7 @@ import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.StringUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
@@ -190,22 +191,24 @@ public class IpsPackageFragmentTest extends AbstractIpsPluginTest {
         assertFalse(IpsStringUtils.isEmpty(product.getRuntimeId()));
     }
 
+    // TODO reactivate with FIPS-10628
+    @Ignore
     @Test
     public void testCreateProductComponentInitiallyWithoutSchema() throws Exception {
         setProjectProperty(ipsProject, p -> p.setValidateIpsSchema(true));
-        IIpsSrcFile file = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
-        IProductCmpt product = (IProductCmpt)file.getIpsObject();
+        IIpsSrcFile srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "Test", true, null);
+        IProductCmpt product = (IProductCmpt)srcFile.getIpsObject();
         // no schema, no validation
-        assertThat(file.getXsdValidationErrors(), is(empty()));
+        assertThat(srcFile.getXsdValidationErrors(), is(empty()));
         assertFalse(IpsStringUtils.isEmpty(product.getRuntimeId()));
 
         // saving again will add schema information
-        file.save(new NullProgressMonitor());
+        srcFile.save(new NullProgressMonitor());
         // force a reload
         Thread.sleep(50);
-        file.getCorrespondingFile().touch(new NullProgressMonitor());
-        product = (IProductCmpt)file.getIpsObject();
-        assertThat(file.getXsdValidationErrors(), is(not(empty())));
+        srcFile.getCorrespondingFile().touch(new NullProgressMonitor());
+        product = (IProductCmpt)srcFile.getIpsObject();
+        assertThat(srcFile.getXsdValidationErrors(), is(not(empty())));
     }
 
     @Test

@@ -69,7 +69,6 @@ import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.model.util.IpsProjectPropertiesForOldVersion;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.runtime.Message;
@@ -78,6 +77,7 @@ import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.Severity;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.faktorips.values.Decimal;
@@ -260,7 +260,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
      * Copy constructor.
      */
     public IpsProjectProperties(IIpsProject ipsProject, IpsProjectProperties props) {
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         Element el = props.toXml(doc);
         initFromXml(ipsProject, el);
         createdFromParsableFileContents = props.createdFromParsableFileContents;
@@ -588,7 +588,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         if (isValidateIpsSchema()) {
             projectEl.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
             projectEl.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", //$NON-NLS-1$
-                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + XmlUtil.getIpsProjectPropertiesSchemaLocation()); //$NON-NLS-1$
+                    XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + org.faktorips.devtools.model.util.XmlUtil.getIpsProjectPropertiesSchemaLocation()); //$NON-NLS-1$
         }
 
         // required features
@@ -1196,7 +1196,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             int childrenCount = supportedLanguagesEl.getElementsByTagName("SupportedLanguage").getLength(); //$NON-NLS-1$
             for (int i = 0; i < childrenCount; i++) {
                 ISupportedLanguage supportedLanguage = new SupportedLanguage();
-                Element childElement = XmlUtil.getElement(supportedLanguagesEl, i);
+                Element childElement = org.faktorips.devtools.model.util.XmlUtil.getElement(supportedLanguagesEl, i);
                 supportedLanguage.initFromXml(childElement);
                 supportedLanguages.add(supportedLanguage);
             }

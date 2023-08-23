@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -28,6 +29,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAssociation;
+import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xmodel.XType;
 import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute;
@@ -77,21 +79,26 @@ public abstract class XProductClass extends XType {
      * time, otherwise false.
      * <p>
      * In other words. True for product generations, false for product component class.
-     * 
+     *
      */
     public abstract boolean isChangeOverTimeClass();
 
     /**
      * Returns all declared attributes that are applicable for content generation.
-     * 
+     *
      * @implNote For a set of all declared attributes use
      *               {@link #getAttributesIncludingNoContentGeneration()}
-     * 
+     *
      * @return a set of all attributes relevant for content generation
      */
     @Override
     public Set<XProductAttribute> getAttributes() {
         return filterAttributes(getAttributesIncludingNoContentGeneration());
+    }
+
+    /** {@return a list of the given attributes, in alphabetical order by name} */
+    public <A extends XAttribute> List<A> inAlphabeticalOrder(Set<A> attributes) {
+        return attributes.stream().sorted(Comparator.comparing(XAttribute::getName)).toList();
     }
 
     protected Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
@@ -113,7 +120,7 @@ public abstract class XProductClass extends XType {
     /**
      * Returns the list of attributes. With the parameter you could specify whether you want the
      * attributes that change over time or attributes not changing over time.
-     * 
+     *
      * @param changableAttributes True to get attributes that change over time, false to get all
      *            other attributes
      * @return the list of attributes defined in this type
@@ -173,7 +180,7 @@ public abstract class XProductClass extends XType {
 
     /**
      * Returns the list of configured policy attributes.
-     * 
+     *
      * @return the list of policy attributes configured by this product class.
      */
     Set<XPolicyAttribute> getConfiguredAttributesInternal() {
@@ -217,7 +224,7 @@ public abstract class XProductClass extends XType {
      * Getting the list of associations defined in this type. With the parameter
      * changableAssociations you could specify whether you want the associations that are changeable
      * over time or not changeable (sometimes called static) associations.
-     * 
+     *
      * @param changableAssociations true if you want only associations changeable over time, false
      *            to get only not changeable over time associations
      * @return The list of associations without derived unions
@@ -257,7 +264,7 @@ public abstract class XProductClass extends XType {
      * Getting the list of {@link ITableStructureUsage} defined in this type. With the parameter
      * changableAssociations you could specify whether you want the {@link ITableStructureUsage}
      * that are changeable over time or not changeable (sometimes called static).
-     * 
+     *
      * @param changableTableStructureUsage true if you want only {@link ITableStructureUsage}
      *            changeable over time, false to get only not changeable over time
      *            {@link ITableStructureUsage}
@@ -318,7 +325,7 @@ public abstract class XProductClass extends XType {
     /**
      * Returns true if there is at least one association that is not a derived union or the inverse
      * of a derived union.
-     * 
+     *
      */
     public boolean isContainsNotDerivedOrConstrainingAssociations() {
         for (XAssociation association : getAssociations()) {
@@ -332,10 +339,10 @@ public abstract class XProductClass extends XType {
     /**
      * Check whether we need to generate the cretePolicyCmpt method for the specified policy
      * component class or not
-     * 
+     *
      * @param policyCmptClass The policy component class for which we want to generate a create
      *            method
-     * 
+     *
      * @return true if we need to generate the create method
      */
     public boolean isGenerateMethodCreatePolicyCmpt(XPolicyCmptClass policyCmptClass) {
@@ -350,7 +357,7 @@ public abstract class XProductClass extends XType {
      * we generate the method with <code>return null;</code> If it does configure a policy component
      * than this policy component needs to be not abstract and must configure this product
      * component.
-     * 
+     *
      * @return True if we need to generate the generic <code>createPolicyComponent</code> method
      */
     public boolean isGenerateMethodGenericCreatePolicyComponent() {
@@ -366,10 +373,10 @@ public abstract class XProductClass extends XType {
      * Returns the class hierarchy of the corresponding (configured) policy component type. The
      * resulting set contains only policy component types that are configured by a product component
      * type.
-     * 
+     *
      * As of version 3.13 Faktor-IPS supports configurable policy component types whose super
      * classes are not configurable. These super classes are filtered out.
-     * 
+     *
      * @return The policy component class hierarchy
      */
     public Set<XPolicyCmptClass> getPolicyTypeClassHierarchy() {
@@ -390,7 +397,7 @@ public abstract class XProductClass extends XType {
 
     /**
      * Returns the variable or parameter name for the effetiveDate.
-     * 
+     *
      */
     public String getVarNameEffectiveDate() {
         IChangesOverTimeNamingConvention convention = getChangesOverTimeNamingConvention();

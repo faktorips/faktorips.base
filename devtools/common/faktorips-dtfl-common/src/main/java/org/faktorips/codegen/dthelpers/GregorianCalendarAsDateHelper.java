@@ -18,6 +18,7 @@ import org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype;
 import org.faktorips.datatype.classtypes.GregorianCalendarDatatype;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.values.DateUtil;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * {@link DatatypeHelper} for {@link GregorianCalendarAsDateDatatype}.
@@ -70,6 +71,11 @@ public class GregorianCalendarAsDateHelper extends AbstractDatatypeHelper {
             return nullExpression();
         }
         JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(ObjectUtil.class);
+        fragment.append(".isNull("); //$NON-NLS-1$
+        fragment.append(fieldName);
+        fragment.append(")"); //$NON-NLS-1$
+        fragment.append(" ? null : "); //$NON-NLS-1$
         fragment.appendClassName(DateUtil.class);
         fragment.append(".gregorianCalendarToIsoDateString("); //$NON-NLS-1$
         fragment.append(fieldName);

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.model.internal.preferences;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import org.faktorips.devtools.model.IIpsModel;
@@ -49,7 +50,7 @@ public class DefaultIpsModelPreferences implements IIpsModelPreferences {
 
     @Override
     public DateFormat getDateFormat() {
-        return DateFormat.getDateInstance();
+        return new SimpleDateFormat("yyyy-MM-dd");
     }
 
     @Override

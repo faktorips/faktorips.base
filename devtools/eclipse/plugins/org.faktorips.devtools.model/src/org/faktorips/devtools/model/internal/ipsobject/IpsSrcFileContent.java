@@ -40,7 +40,7 @@ import org.faktorips.devtools.model.ipsobject.IpsSrcFileSaxHelper;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.util.BeanUtil;
-import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
 import org.w3c.dom.Document;
@@ -92,7 +92,7 @@ public class IpsSrcFileContent {
         ByteArrayInputStream is = null;
         try {
             is = new ByteArrayInputStream(xml.getBytes(encoding));
-            Document doc = XmlUtil.getDefaultDocumentBuilder().parse(is);
+            Document doc = XmlUtil.getDocumentBuilder().parse(is);
             ipsObject.initFromXml(doc.getDocumentElement());
             modified = newModified;
             parsable = true;
@@ -199,7 +199,7 @@ public class IpsSrcFileContent {
     private void validateXMLSchema(Document document) throws Exception {
         IpsObjectType type = getIpsSrcFile().getIpsObjectType();
 
-        Validator validator = XmlUtil.getXsdValidator(type, getXsdValidationHandler());
+        Validator validator = org.faktorips.devtools.model.util.XmlUtil.getXsdValidator(type, getXsdValidationHandler());
         validator.validate(new DOMSource(document));
     }
 
@@ -220,7 +220,7 @@ public class IpsSrcFileContent {
                 ((XmlSaxSupport)ipsObject).initFromInputStream(is);
             } else {
                 is = file.getContentFromEnclosingResource();
-                DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                DocumentBuilder builder = XmlUtil.getDocumentBuilder();
                 Document doc = builder.parse(is);
 
                 if (getIpsObject().getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
@@ -339,10 +339,10 @@ public class IpsSrcFileContent {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("IpsSrcFileContent.save() begin: " + IpsSrcFileContent.this); //$NON-NLS-1$
                 }
-                Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+                Document doc = XmlUtil.getDocumentBuilder().newDocument();
                 String encoding = ipsObject.getIpsProject().getXmlFileCharset();
                 Element xml = getIpsObject().toXml(doc);
-                XmlUtil.removeIds(xml);
+                org.faktorips.devtools.model.util.XmlUtil.removeIds(xml);
                 String newXml = XmlUtil.nodeToString(xml, encoding,
                         ipsObject.getIpsProject().getReadOnlyProperties().isEscapeNonStandardBlanks());
                 ByteArrayInputStream is = new ByteArrayInputStream(newXml.getBytes(encoding));

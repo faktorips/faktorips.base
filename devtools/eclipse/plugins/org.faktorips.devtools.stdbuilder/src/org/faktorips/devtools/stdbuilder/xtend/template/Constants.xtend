@@ -77,13 +77,25 @@ class Constants {
     def static XML_TAG_COLUMN_TABLE_REFERENCE(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_TAG_COLUMN_TABLE_REFERENCE"
     }
+    
+    def static XML_TAG_DESCRIPTION(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_TAG_DESCRIPTION"
+    }
 
     def static XML_ATTRIBUTE_ATTRIBUTE(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_ATTRIBUTE"
     }
+    
+    def static XML_ATTRIBUTE_IS_NULL(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_IS_NULL"
+    }
 
     def static XML_ATTRIBUTE_CONTAINS_NULL(AbstractGeneratorModelNode it) {
         addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_CONTAINS_NULL"
+    }
+
+    def static XML_ATTRIBUTE_ABSTRACT(AbstractGeneratorModelNode it) {
+        addImport(ValueToXmlHelper.name) + ".XML_ATTRIBUTE_ABSTRACT"
     }
 
     def static XML_ATTRIBUTE_EMPTY(AbstractGeneratorModelNode it) {
@@ -105,4 +117,5 @@ class Constants {
     def static STOP_VALIDATION(AbstractGeneratorModelNode it) {
         addStaticImport(IModelObject.name, "STOP_VALIDATION");
     }
+
 }

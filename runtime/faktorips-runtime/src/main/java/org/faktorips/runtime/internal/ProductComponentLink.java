@@ -1,20 +1,24 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IProductComponentLinkSource;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -23,7 +27,7 @@ import org.w3c.dom.Element;
  * <p>
  * As of FIPS 3.2 the cardinalities standard OPTIONAL, OBLIGATORY and FULL_RANGE are provided by the
  * {@link CardinalityRange} class.
- * 
+ *
  * @see CardinalityRange
  */
 public class ProductComponentLink<T extends IProductComponent> extends RuntimeObject
@@ -31,6 +35,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
 
     private final IProductComponentLinkSource source;
     private CardinalityRange cardinality;
+    private String targetName;
     private String targetId;
     private String associationName;
 
@@ -45,9 +50,9 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link to the given target for the given product component generation using the
      * cardinality (0,*).
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
-     * 
+     *
      */
     public ProductComponentLink(IProductComponentGeneration source, T target) {
         this((IProductComponentLinkSource)source, target, CardinalityRange.FULL_RANGE);
@@ -56,7 +61,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link with the given cardinality to the given target for the given product
      * component generation.
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
     public ProductComponentLink(IProductComponentGeneration source, T target, CardinalityRange cardinality) {
@@ -74,9 +79,9 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link to the given target for the given product component/generation using the
      * cardinality (0,*).
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
-     * 
+     *
      */
     public ProductComponentLink(IProductComponentLinkSource source, T target) {
         this(source, target, CardinalityRange.FULL_RANGE);
@@ -85,9 +90,9 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link to the given target and association name for the given product
      * component/generation using the cardinality (0,*).
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
-     * 
+     *
      */
     public ProductComponentLink(IProductComponentLinkSource source, T target, String associationName) {
         this(source, target);
@@ -101,7 +106,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link with the given cardinality to the given target for the given product
      * component/generation.
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
     public ProductComponentLink(IProductComponentLinkSource source, T target, CardinalityRange cardinality) {
@@ -112,7 +117,8 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         if (target == null) {
             throw new NullPointerException("The targetId for the ProductComponentLink may not be null.");
         }
-        this.targetId = target.getId();
+        targetId = target.getId();
+        targetName = getQualifiedName(targetId);
         if (cardinality == null) {
             throw new NullPointerException("The cardinality for the ProductComponentLink may not be null.");
         }
@@ -122,7 +128,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     /**
      * Creates a new link with the cardinality and association name to the given target for the
      * given product component/generation.
-     * 
+     *
      * @throws NullPointerException if any of the parameters is {@code null}.
      */
     public ProductComponentLink(IProductComponentLinkSource source, T target, CardinalityRange cardinality,
@@ -144,6 +150,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     public void initFromXml(Element element) {
         associationName = element.getAttribute("association");
         targetId = element.getAttribute("targetRuntimeId");
+        targetName = element.getAttribute("target");
         String maxStr = element.getAttribute("maxCardinality");
         Integer maxCardinality = null;
         if ("*".equals(maxStr) || "n".equals(maxStr.toLowerCase())) {
@@ -160,14 +167,15 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
 
     @Override
     public Element toXml(Document document) {
+        Integer upperBound = getCardinality().getUpperBound();
         Element linkElement = document.createElement("Link");
         linkElement.setAttribute("association", getAssociationName());
-        linkElement.setAttribute("targetRuntimeId", getTargetId());
-        linkElement.setAttribute("minCardinality", Integer.toString(getCardinality().getLowerBound()));
-        Integer upperBound = getCardinality().getUpperBound();
+        linkElement.setAttribute("defaultCardinality", Integer.toString(getCardinality().getDefaultCardinality()));
         linkElement.setAttribute("maxCardinality",
                 upperBound == Integer.MAX_VALUE ? "*" : Integer.toString(upperBound));
-        linkElement.setAttribute("defaultCardinality", Integer.toString(getCardinality().getDefaultCardinality()));
+        linkElement.setAttribute("minCardinality", Integer.toString(getCardinality().getLowerBound()));
+        linkElement.setAttribute("target", targetName);
+        linkElement.setAttribute("targetRuntimeId", getTargetId());
         writeExtensionPropertiesToXml(linkElement);
         return linkElement;
     }
@@ -209,6 +217,30 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     @Override
     public IProductComponentLinkSource getSource() {
         return source;
+    }
+
+    private String getQualifiedName(String runtimeId) {
+        // FIXME FIPS-10630 Hack ausbauen
+        IRuntimeRepository repository = getSource().getRepository();
+        try {
+            Method getQualifiedNameOfProductComponent = repository.getClass()
+                    .getMethod("getQualifiedNameOfProductComponent", IProductComponent.class);
+            return (String)getQualifiedNameOfProductComponent.invoke(repository, runtimeId);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            // fallback? can we find the name from the file?
+        }
+        if (runtimeId == null) {
+            return null;
+        }
+        int index = runtimeId.lastIndexOf('.');
+        if (index == -1) {
+            return runtimeId;
+        }
+        if (index == runtimeId.length() - 1) {
+            return ""; //$NON-NLS-1$
+        }
+        return runtimeId.substring(index + 1);
     }
 
 }

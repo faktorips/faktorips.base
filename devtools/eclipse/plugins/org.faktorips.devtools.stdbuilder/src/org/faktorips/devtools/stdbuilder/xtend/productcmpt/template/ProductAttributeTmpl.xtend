@@ -183,17 +183,17 @@ class ProductAttributeTmpl {
              * @generated
              */
             private void «method(methodNameWriteToXml, Element, "element")» {
-                Element attributeElement = element.getOwnerDocument().createElement(«XML_TAG_ATTRIBUTE_VALUE»);
-                attributeElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE», «constantNamePropertyName»);
+                Element attributeElement = «ValueToXmlHelper».«deleteExistingElementAndCreateNewElement("element", XML_TAG_ATTRIBUTE_VALUE, constantNamePropertyName)»;
+                
                 «IF multiValue»
                     «IF multiValueDirectXmlHandling»
                         «MultiValueXmlHelper».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
                     «ELSE»
-                        «val singlgeVal = singleValueOfMultiValueAttribute»
-                        «List_("String")» stringList«singlgeVal.fieldName.toFirstUpper» = new «ArrayList»();
-                        for («singlgeVal.javaClassName» value : this.«singlgeVal.fieldName») {
-                            String stringValue = «singlgeVal.getToStringExpression("value")»;
-                            stringList«singlgeVal.fieldName.toFirstUpper».add(stringValue);
+                        «val singleVal = singleValueOfMultiValueAttribute»
+                        «List_("String")» stringList«singleVal.fieldName.toFirstUpper» = new «ArrayList»();
+                        for («singleVal.javaClassName» value : this.«singleVal.fieldName») {
+                            String stringValue = «singleVal.getToStringExpression("value")»;
+                            stringList«singleVal.fieldName.toFirstUpper».add(stringValue);
                         }
                         «MultiValueXmlHelper».«addValuesToElement("attributeElement", "stringList" + fieldName.toFirstUpper)»;
                     «ENDIF»

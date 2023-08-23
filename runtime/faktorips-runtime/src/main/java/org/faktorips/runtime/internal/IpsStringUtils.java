@@ -197,4 +197,154 @@ public final class IpsStringUtils {
         }
         return Character.toLowerCase(firstChar) + string.substring(1);
     }
+
+    /**
+     * <p>
+     * Replaces all occurrences of Strings within another String.
+     * </p>
+     *
+     * <p>
+     * A {@code null} reference passed to this method is a no-op, or if any "search string" or
+     * "string to replace" is {@code null}, that replace will be ignored.
+     * </p>
+     *
+     * <pre>
+     *  IpsStringUtils.replaceEach(null, *, *)        = null
+     *  IpsStringUtils.replaceEach("", *, *)          = ""
+     *  IpsStringUtils.replaceEach("aba", null, null) = "aba"
+     *  IpsStringUtils.replaceEach("aba", new String[0], null) = "aba"
+     *  IpsStringUtils.replaceEach("aba", null, new String[0]) = "aba"
+     *  IpsStringUtils.replaceEach("aba", new String[]{"a"}, null)  = "aba"
+     *  IpsStringUtils.replaceEach("aba", new String[]{"a"}, new String[]{""})  = "b"
+     *  IpsStringUtils.replaceEach("aba", new String[]{null}, new String[]{"a"})  = "aba"
+     *  IpsStringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"w", "t"})  = "wcte"
+     *  (example of how it does not repeat)
+     *  IpsStringUtils.replaceEach("abcde", new String[]{"ab", "d"}, new String[]{"d", "t"})  = "dcte"
+     * </pre>
+     *
+     * @param text text to search and replace in, no-op if null
+     * @param searchList the Strings to search for, no-op if null
+     * @param replacementList the Strings to replace them with, no-op if null
+     * @return the text with any replacements processed, {@code null} if null String input
+     * @throws IllegalArgumentException if the lengths of the arrays are not the same (null is ok,
+     *             and/or size 0)
+     */
+    // adapted from Apache StringUtils, to avoid external dependencies.
+    // CSOFF: CyclomaticComplexity
+    // CSOFF: BooleanExpression
+    public static String replaceEach(final String text,
+            final String[] searchList,
+            final String[] replacementList) {
+
+        if (isEmpty(text) || isEmpty(searchList) || isEmpty(replacementList)) {
+            return text;
+        }
+
+        final int searchLength = searchList.length;
+        final int replacementLength = replacementList.length;
+
+        // make sure lengths are ok, these need to be equal
+        if (searchLength != replacementLength) {
+            throw new IllegalArgumentException("Search and Replace array lengths don't match: "
+                    + searchLength
+                    + " vs "
+                    + replacementLength);
+        }
+
+        // keep track of which still have matches
+        final boolean[] noMoreMatchesForReplIndex = new boolean[searchLength];
+
+        // index on index that the match was found
+        int textIndex = -1;
+        int replaceIndex = -1;
+        int tempIndex = -1;
+
+        // index of replace array that will replace the search string found
+        for (int i = 0; i < searchLength; i++) {
+            if (noMoreMatchesForReplIndex[i] || isEmpty(searchList[i]) || replacementList[i] == null) {
+                continue;
+            }
+            tempIndex = text.indexOf(searchList[i]);
+
+            // see if we need to keep searching for this
+            if (tempIndex == -1) {
+                noMoreMatchesForReplIndex[i] = true;
+            } else if (textIndex == -1 || tempIndex < textIndex) {
+                textIndex = tempIndex;
+                replaceIndex = i;
+            }
+        }
+
+        // no search strings found, we are done
+        if (textIndex == -1) {
+            return text;
+        }
+
+        int start = 0;
+
+        // get a good guess on the size of the result buffer so it doesn't have to double if it goes
+        // over a bit
+        int increase = 0;
+
+        // count the replacement text elements that are larger than their corresponding text being
+        // replaced
+        for (int i = 0; i < searchList.length; i++) {
+            if (searchList[i] == null || replacementList[i] == null) {
+                continue;
+            }
+            final int greater = replacementList[i].length() - searchList[i].length();
+            if (greater > 0) {
+                // assume 3 matches
+                increase += 3 * greater;
+            }
+        }
+        // have upper-bound at 20% increase, then let Java take over
+        increase = Math.min(increase, text.length() / 5);
+
+        final StringBuilder buf = new StringBuilder(text.length() + increase);
+
+        while (textIndex != -1) {
+
+            for (int i = start; i < textIndex; i++) {
+                buf.append(text.charAt(i));
+            }
+            buf.append(replacementList[replaceIndex]);
+
+            start = textIndex + searchList[replaceIndex].length();
+
+            textIndex = -1;
+            replaceIndex = -1;
+            // find the next earliest match
+            for (int i = 0; i < searchLength; i++) {
+                if (noMoreMatchesForReplIndex[i] || searchList[i] == null
+                        || searchList[i].isEmpty() || replacementList[i] == null) {
+                    continue;
+                }
+                tempIndex = text.indexOf(searchList[i], start);
+
+                // see if we need to keep searching for this
+                if (tempIndex == -1) {
+                    noMoreMatchesForReplIndex[i] = true;
+                } else if (textIndex == -1 || tempIndex < textIndex) {
+                    textIndex = tempIndex;
+                    replaceIndex = i;
+                }
+            }
+
+        }
+        final int textLength = text.length();
+        for (int i = start; i < textLength; i++) {
+            buf.append(text.charAt(i));
+        }
+        return buf.toString();
+    }
+    // CSON: BooleanExpression
+    // CSON: CyclomaticComplexity
+
+    private static boolean isEmpty(String[] stringArray) {
+        if (stringArray == null) {
+            return true;
+        }
+        return stringArray.length == 0;
+    }
 }

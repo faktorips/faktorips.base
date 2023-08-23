@@ -10,6 +10,7 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.temp
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static org.faktorips.devtools.stdbuilder.xtend.template.MethodNames.*
+import org.faktorips.devtools.stdbuilder.xmodel.productcmpt.XProductCmptClass
 
 class ProductCommonsTmpl {
 
@@ -39,9 +40,13 @@ class ProductCommonsTmpl {
                     super.«writePropertiesToXml("element")»;
                 «ELSEIF attributes.size == 0 && configuredAttributes.size == 0»
                     // no attributes to write
+                «ENDIF» 
+                «IF it instanceof XProductCmptClass»
+                element.setAttribute("productCmptType", "«name»");
+                element.setAttribute("runtimeId", «id»);
                 «ENDIF»
-                «FOR it : attributes» «writeAttributeToXmlMethodCall» «ENDFOR»
-                «FOR it : configuredAttributes» «writeAttributeToXmlMethodCall» «ENDFOR»
+                «FOR it : inAlphabeticalOrder(attributes)» «writeAttributeToXmlMethodCall» «ENDFOR»
+                «FOR it : inAlphabeticalOrder(configuredAttributes)» «writeAttributeToXmlMethodCall» «ENDFOR»
             }
 
             «FOR it : attributes» «writeAttributeToXmlMethod» «ENDFOR»

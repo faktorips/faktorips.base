@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,6 +16,7 @@ import static org.faktorips.testsupport.IpsMatchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -66,7 +67,7 @@ public class TemplateValueSettingsTest {
         handler = new TemplateValueSettings(attrValue);
         handler.propertiesToXml(element);
 
-        verify(element).setAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, "defined");
+        verify(element, never()).setAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, "defined");
     }
 
     @Test

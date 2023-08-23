@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -119,9 +120,11 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         Element prodCmptElement = mock(Element.class);
         Document ownerDocument = mock(Document.class);
         Element validToElement = mock(Element.class);
-        when(document.createElement("ProductComponent")).thenReturn(prodCmptElement);
+        when(document.createElement("ProductCmpt")).thenReturn(prodCmptElement);
         when(prodCmptElement.getOwnerDocument()).thenReturn(ownerDocument);
         when(ownerDocument.createElement("validTo")).thenReturn(validToElement);
+        when(cmpt.getRepository().getNumberOfProductComponentGenerations(cmpt)).thenReturn(1);
+        doNothing().when(prodCmptElement).setAttribute(anyString(), anyString());
 
         cmpt.toXml(document, false);
 

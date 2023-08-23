@@ -16,7 +16,7 @@ import java.io.IOException;
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.devtools.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -55,7 +55,7 @@ public class IpsObjectPartState {
      */
     public IpsObjectPartState(IIpsObjectPart part) {
         type = part.getClass();
-        state = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        state = XmlUtil.getDocumentBuilder().newDocument();
         Element root = state.createElement("root"); //$NON-NLS-1$
         state.appendChild(root);
         Element data = state.createElement(ELEMENT_DATA);

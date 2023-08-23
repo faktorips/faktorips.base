@@ -168,8 +168,8 @@
             <xsd:element ref="InternationalString" minOccurs="1" maxOccurs="1" />
             <xsd:element name="MultiValue" type="MultiValue" minOccurs="1" maxOccurs="1" />
         </xsd:choice>
-        <xsd:attribute name="isNull" type="boolean" use="required" />
-        <xsd:attribute name="valueType" type="valueType" use="required" />
+        <xsd:attribute name="isNull" type="boolean" use="optional" />
+        <xsd:attribute name="valueType" type="valueType" use="optional" />
     </xsd:complexType>
 
     <xsd:complexType name="MultiValue">
@@ -182,8 +182,8 @@
         <xsd:choice minOccurs="0" maxOccurs="1">
             <xsd:element ref="InternationalString" minOccurs="1" maxOccurs="1" />
         </xsd:choice>
-        <xsd:attribute name="isNull" type="boolean" use="required" />
-        <xsd:attribute name="valueType" type="valueType" use="required" />
+        <xsd:attribute name="isNull" type="boolean" use="optional" />
+        <xsd:attribute name="valueType" type="valueType" use="optional" />
     </xsd:complexType>
 
     <xsd:simpleType name="valueType">
@@ -217,7 +217,7 @@
     </xsd:complexType>
 
     <xsd:attributeGroup name="templateValueStatus">
-        <xsd:attribute name="templateValueStatus" use="required">
+        <xsd:attribute name="templateValueStatus" use="optional">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
                     <xsd:enumeration value="defined" />

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -49,7 +49,7 @@ public class CopyProductCmptOperation extends NewProductCmptOperation {
 
     private String getContentsOfIpsObject(IIpsObject ipsObject) {
         String encoding = ipsObject.getIpsProject().getXmlFileCharset();
-        Element xml = ipsObject.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
+        Element xml = ipsObject.toXml(XmlUtil.getDocumentBuilder().newDocument());
         try {
             return XmlUtil.nodeToString(xml, encoding);
         } catch (TransformerException e) {

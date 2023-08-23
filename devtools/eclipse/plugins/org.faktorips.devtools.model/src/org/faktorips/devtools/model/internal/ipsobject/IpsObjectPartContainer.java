@@ -39,6 +39,7 @@ import org.faktorips.devtools.model.internal.ValidationResultCache;
 import org.faktorips.devtools.model.internal.dependency.DependencyDetail;
 import org.faktorips.devtools.model.internal.method.BaseMethod;
 import org.faktorips.devtools.model.internal.method.Method;
+import org.faktorips.devtools.model.internal.productcmpt.ProductCmptLink;
 import org.faktorips.devtools.model.ipsobject.ICustomValidation;
 import org.faktorips.devtools.model.ipsobject.IDeprecation;
 import org.faktorips.devtools.model.ipsobject.IDescribedElement;
@@ -54,11 +55,11 @@ import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.model.type.ITypePart;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.memento.XmlMemento;
@@ -894,7 +895,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     @Override
     public Memento newMemento() {
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         return new XmlMemento(this, toXml(doc));
     }
 
@@ -1173,7 +1174,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public void copyFrom(IIpsObjectPartContainer source) {
         ArgumentCheck.isTrue(getClass().equals(source.getClass()));
-        Element xmlElement = source.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument());
+        Element xmlElement = source.toXml(XmlUtil.getDocumentBuilder().newDocument());
         initFromXml(xmlElement);
     }
 

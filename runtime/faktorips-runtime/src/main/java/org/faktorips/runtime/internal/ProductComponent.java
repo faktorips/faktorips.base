@@ -51,6 +51,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private static final String IS_NULL = "isNull";
 
+    private static final String GENERATION = "Generation";
+
     private static final String VALID_FROM = "validFrom";
 
     private static final String VALID_TO = "validTo";
@@ -400,17 +402,36 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public Element toXml(Document document, boolean includeGenerations) {
         IToXmlSupport.check(this);
-        Element prodCmptElement = document.createElement("ProductComponent");
-        prodCmptElement.setAttribute(PROPERTY_IMPLEMENTATION_CLASS, getClass().getName());
+        Element prodCmptElement = document.createElement("ProductCmpt");
+
+        prodCmptElement.setAttribute(TocEntry.PROPERTY_IMPLEMENTATION_CLASS, getClass().getName());
+        prodCmptElement.setAttribute(XmlUtil.XML_ATTRIBUTE_SPACE, XmlUtil.XML_ATTRIBUTE_SPACE_VALUE);
+
+        // TODO FIPS-10628 prüfen ob validateIpsSchema=true in .ipsproject
+        String version = "24.1";
+        String schemaName = "ProductCmpt";
+        String xmlSchemaLocation = String.format(XmlUtil.FAKTOR_IPS_SCHEMA_URL + "%s/%s.xsd", version, schemaName);
+        prodCmptElement.setAttribute(XmlUtil.XMLNS_ATTRIBUTE, XmlUtil.XML_IPS_DEFAULT_NAMESPACE);
+        prodCmptElement.setAttributeNS(XmlUtil.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                "xsi:schemaLocation", XmlUtil.XML_IPS_DEFAULT_NAMESPACE + " " + xmlSchemaLocation);
+
         writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
+        writeDescriptionToXml(prodCmptElement);
+
+        if (getRepository().getNumberOfProductComponentGenerations(this) == 0) {
+            Element emptyGenerationElement = prodCmptElement.getOwnerDocument().createElement(GENERATION);
+            if (validFrom != null) {
+                emptyGenerationElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+            }
+            prodCmptElement.appendChild(emptyGenerationElement);
+        }
         ((IToXmlSupport)this).writePropertiesToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
         writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeValidationRuleConfigsToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
-        writeDescriptionToXml(prodCmptElement);
         if (includeGenerations) {
             List<IProductComponentGeneration> generations = getRepository().getProductComponentGenerations(this);
             for (IProductComponentGeneration generation : generations) {
@@ -428,12 +449,13 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     private void writeValidToToXml(Element prodCmptElement) {
+        Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
         if (validTo != null) {
-            Element validToElement = prodCmptElement.getOwnerDocument().createElement(VALID_TO);
-            validToElement.setAttribute(IS_NULL, Boolean.FALSE.toString());
             validToElement.setTextContent(validTo.toIsoFormat());
-            prodCmptElement.appendChild(validToElement);
-        } 
+        } else {
+            validToElement.setAttribute(IS_NULL, Boolean.TRUE.toString());
+        }
+        prodCmptElement.appendChild(validToElement);
     }
 
     /**
