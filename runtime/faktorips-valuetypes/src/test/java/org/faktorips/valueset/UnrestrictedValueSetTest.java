@@ -10,7 +10,9 @@
 
 package org.faktorips.valueset;
 
+import static org.faktorips.valueset.TestUtil.subsetOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.faktorips.values.Money;
@@ -50,8 +52,10 @@ public class UnrestrictedValueSetTest {
     public void testContains() throws Exception {
         assertThat(new UnrestrictedValueSet<Integer>(false).contains(null), is(false));
         assertThat(new UnrestrictedValueSet<Integer>(true).contains(null), is(true));
+        assertThat(new UnrestrictedValueSet<Integer>(true).contains(42), is(true));
         assertThat(new UnrestrictedValueSet<Money>(false).contains(Money.NULL), is(false));
         assertThat(new UnrestrictedValueSet<Money>(true).contains(Money.NULL), is(true));
+        assertThat(new UnrestrictedValueSet<Money>(true).contains(Money.euro(1, 50)), is(true));
     }
 
     @Test
@@ -96,6 +100,15 @@ public class UnrestrictedValueSetTest {
     public void testToString() throws Exception {
         assertThat(new UnrestrictedValueSet<Integer>(false).toString(), is("UnrestrictedValueSet"));
         assertThat(new UnrestrictedValueSet<Integer>(true).toString(), is("UnrestrictedValueSet"));
+    }
+
+    @Test
+    public void testIsSubsetOf() {
+        assertThat(new UnrestrictedValueSet<>(false), is(subsetOf(new UnrestrictedValueSet<>(false))));
+        assertThat(new UnrestrictedValueSet<>(true), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new UnrestrictedValueSet<>(false), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new UnrestrictedValueSet<>(true), is(not(subsetOf(new UnrestrictedValueSet<>(false)))));
+        assertThat(new UnrestrictedValueSet<>(true), is(not(subsetOf(IntegerRange.valueOf(0, 100)))));
     }
 
     private enum TestEnum {

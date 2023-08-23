@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * A Range class where upper and lower bounds are {@link Double Doubles}.
@@ -197,9 +198,7 @@ public class DoubleRange extends DefaultRange<Double> {
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         double diff = Math.abs(bound - value);
-        // Need to convert to BigDecimal to avoid floating point problems
-        BigDecimal remaining = BigDecimal.valueOf(diff).remainder(BigDecimal.valueOf(getStep()));
-        return remaining.equals(BigDecimal.valueOf(0, remaining.scale()));
+        return divisibleWithoutRest(diff, getStep());
     }
 
     @Override
@@ -216,6 +215,18 @@ public class DoubleRange extends DefaultRange<Double> {
     @Override
     protected Double getNullValue() {
         return null;
+    }
+
+    @Override
+    public Optional<Class<Double>> getDatatype() {
+        return Optional.of(Double.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(Double dividend, Double divisor) {
+        // Need to convert to BigDecimal to avoid floating point problems
+        BigDecimal remaining = BigDecimal.valueOf(dividend).remainder(BigDecimal.valueOf(divisor));
+        return remaining.equals(BigDecimal.valueOf(0, remaining.scale()));
     }
 
 }

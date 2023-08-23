@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.faktorips.values.NullObject;
@@ -100,18 +101,26 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof UnrestrictedValueSet
-                && (this.containsNull() == ((UnrestrictedValueSet<?>)o).containsNull()));
+        return (o instanceof UnrestrictedValueSet)
+                && (this.containsNull() == ((UnrestrictedValueSet<?>)o).containsNull());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean isUnrestricted(boolean excludeNull) {
         if (excludeNull) {
             return true;
         }
         return containsNull();
+    }
+
+    @Override
+    public boolean isSubsetOf(ValueSet<T> otherValueSet) {
+        return (otherValueSet instanceof UnrestrictedValueSet)
+                && (otherValueSet.containsNull() || !containsNull());
+    }
+
+    @Override
+    public Optional<Class<T>> getDatatype() {
+        return Optional.empty();
     }
 }

@@ -10,13 +10,15 @@
 
 package org.faktorips.valueset;
 
+import static org.faktorips.valueset.TestUtil.subsetOf;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThrows;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.Test;
 
@@ -227,11 +229,93 @@ public class DefaultRangeTest {
         new TestRange(1, 5, null).getValues(true);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf() {
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new UnrestrictedValueSet<>(false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new UnrestrictedValueSet<>(false)))));
+        assertThat(new TestRange(null, null, null, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, null, null, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, null, null, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(null, null, null, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(0, 10, null, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, 10, null, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, 10, null, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(0, 10, null, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(null, 10, null, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, 10, null, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, 10, null, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(null, 10, null, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(0, null, null, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, null, null, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, null, null, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(0, null, null, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(null, 10, 2, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, 10, 2, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(null, 10, 2, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(null, 10, 2, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(0, null, 2, true), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, null, 2, false), is(subsetOf(new TestRange(null, null, null, true))));
+        assertThat(new TestRange(0, null, 2, false), is(subsetOf(new TestRange(null, null, null, false))));
+        assertThat(new TestRange(0, null, 2, true), is(not(subsetOf(new TestRange(null, null, null, false)))));
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new TestRange(null, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, 100, null, false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new TestRange(null, 100, null, false)))));
+        assertThat(new TestRange(null, 10, 2, true), is(not(subsetOf(new TestRange(0, 10, 2, true)))));
+        assertThat(new TestRange(null, 10, 2, false), is(not(subsetOf(new TestRange(0, 10, 2, true)))));
+        assertThat(new TestRange(null, 10, 2, false), is(not(subsetOf(new TestRange(0, 10, 2, false)))));
+        assertThat(new TestRange(null, 10, 2, true), is(not(subsetOf(new TestRange(0, 10, 2, false)))));
+        assertThat(new TestRange(0, null, 2, true), is(not(subsetOf(new TestRange(0, 10, 2, true)))));
+        assertThat(new TestRange(0, null, 2, false), is(not(subsetOf(new TestRange(0, 10, 2, true)))));
+        assertThat(new TestRange(0, null, 2, false), is(not(subsetOf(new TestRange(0, 10, 2, false)))));
+        assertThat(new TestRange(0, null, 2, true), is(not(subsetOf(new TestRange(0, 10, 2, false)))));
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new TestRange(null, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(null, 100, null, false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new TestRange(null, 100, null, false)))));
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new TestRange(0, null, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(0, null, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(0, null, null, false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new TestRange(0, null, null, false)))));
+        assertThat(new TestRange(0, 10, 2, true), is(subsetOf(new TestRange(0, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(0, 100, null, true))));
+        assertThat(new TestRange(0, 10, 2, false), is(subsetOf(new TestRange(0, 100, null, false))));
+        assertThat(new TestRange(0, 10, 2, true), is(not(subsetOf(new TestRange(0, 100, null, false)))));
+        assertThat(new TestRange(2, 10, 4, true), is(subsetOf(new TestRange(0, 20, 2, true))));
+        assertThat(new TestRange(2, 10, 4, false), is(subsetOf(new TestRange(0, 20, 2, true))));
+        assertThat(new TestRange(2, 10, 4, false), is(subsetOf(new TestRange(0, 20, 2, false))));
+        assertThat(new TestRange(2, 10, 4, true), is(not(subsetOf(new TestRange(0, 20, 2, false)))));
+        assertThat(new TestRange(0, 10, 5, true), is(not(subsetOf(new TestRange(0, 20, 2, true)))));
+        assertThat(new TestRange(0, 10, 5, false), is(not(subsetOf(new TestRange(0, 20, 2, true)))));
+        assertThat(new TestRange(0, 10, 5, false), is(not(subsetOf(new TestRange(0, 20, 2, false)))));
+        assertThat(new TestRange(2, 10, 4, true), is(not(subsetOf(new TestRange(0, 20, 2, false)))));
+        assertThat(new TestRange(1, 11, 2, false), is(not(subsetOf(new TestRange(0, 20, 2, false)))));
+        assertThat(IntegerRange.valueOf(0, 10, 2, false),
+                is(not(subsetOf((Range)LongRange.valueOf(0L, 20L, 2L, false)))));
+    }
+
     private static class TestRangeForDiscreteValues extends DefaultRange<LocalDate> {
         private static final long serialVersionUID = 1L;
 
         public TestRangeForDiscreteValues(LocalDate lower, LocalDate upper, LocalDate step, boolean containsNull) {
             super(lower, upper, step, containsNull);
+        }
+
+        @Override
+        public Optional<Class<LocalDate>> getDatatype() {
+            return Optional.of(LocalDate.class);
+        }
+
+        @Override
+        protected boolean divisibleWithoutRest(LocalDate dividend, LocalDate divisor) {
+            return false;
         }
     }
 
@@ -253,12 +337,23 @@ public class DefaultRangeTest {
 
         @Override
         protected boolean checkIfValueCompliesToStepIncrement(Integer value, Integer bound) {
-            return true;
+            return Math.abs(bound - value) % getStep() == 0;
         }
 
         @Override
         protected Integer getNullValue() {
             return null;
         }
+
+        @Override
+        public Optional<Class<Integer>> getDatatype() {
+            return Optional.of(Integer.class);
+        }
+
+        @Override
+        protected boolean divisibleWithoutRest(Integer dividend, Integer divisor) {
+            return dividend % divisor == 0;
+        }
+
     }
 }

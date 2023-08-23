@@ -10,7 +10,9 @@
 
 package org.faktorips.valueset;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 
 import org.faktorips.values.Decimal;
 
@@ -167,14 +169,7 @@ public class DecimalRange extends DefaultRange<Decimal> {
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         Decimal diff = bound.subtract(value).abs();
-        try {
-            // throws an ArithmeticException if rounding is necessary. If the value is contained in
-            // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep(), 0, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException e) {
-            return false;
-        }
-        return true;
+        return divisibleWithoutRest(diff, getStep());
     }
 
     @Override
@@ -198,6 +193,17 @@ public class DecimalRange extends DefaultRange<Decimal> {
     @Override
     protected Decimal getNullValue() {
         return Decimal.NULL;
+    }
+
+    @Override
+    public Optional<Class<Decimal>> getDatatype() {
+        return Optional.of(Decimal.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(Decimal dividend, Decimal divisor) {
+        BigDecimal[] divAndRemainder = dividend.bigDecimalValue().divideAndRemainder(divisor.bigDecimalValue());
+        return divAndRemainder[1].compareTo(BigDecimal.ZERO) == 0;
     }
 
 }

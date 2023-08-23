@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -115,5 +116,15 @@ public interface ValueSet<T> extends Serializable {
      * @since 21.12
      */
     boolean isUnrestricted(boolean excludeNull);
+
+    /**
+     * Returns whether this {@link ValueSet} is a subset of (or the same as) the given other
+     * {@link ValueSet}.
+     * 
+     * @since 24.1
+     */
+    boolean isSubsetOf(ValueSet<T> otherValueSet);
+
+    Optional<Class<T>> getDatatype();
 
 }

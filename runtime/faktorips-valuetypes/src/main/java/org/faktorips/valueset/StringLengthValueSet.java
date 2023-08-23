@@ -12,6 +12,7 @@ package org.faktorips.valueset;
 
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -118,5 +119,31 @@ public class StringLengthValueSet implements ValueSet<String> {
             return true;
         }
         return containsNull();
+    }
+
+    @Override
+    public boolean isSubsetOf(ValueSet<String> otherValueSet) {
+        if (otherValueSet instanceof UnrestrictedValueSet) {
+            return otherValueSet.containsNull() || !containsNull();
+        }
+        if (otherValueSet instanceof StringLengthValueSet) {
+            return (otherValueSet.containsNull() || !containsNull())
+                    && isSameOrSmallerMaximumLengthAs(otherValueSet);
+        }
+        return false;
+    }
+
+    // CSOFF: BooleanExpressionComplexity
+    private boolean isSameOrSmallerMaximumLengthAs(ValueSet<String> otherValueSet) {
+        return (maximumLength != null
+                && (((StringLengthValueSet)otherValueSet).maximumLength == null
+                        || maximumLength <= ((StringLengthValueSet)otherValueSet).maximumLength))
+                || (maximumLength == null && ((StringLengthValueSet)otherValueSet).maximumLength == null);
+    }
+    // CSON: BooleanExpressionComplexity
+
+    @Override
+    public Optional<Class<String>> getDatatype() {
+        return Optional.of(String.class);
     }
 }

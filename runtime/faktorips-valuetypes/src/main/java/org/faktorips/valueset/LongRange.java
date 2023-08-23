@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * A {@link Range} class where upper and lower bounds are {@link Long Longs}.
@@ -162,9 +163,8 @@ public class LongRange extends DefaultRange<Long> {
             throw new IllegalArgumentException(
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
-        BigInteger diff = BigInteger.valueOf(Math.abs(bound - value));
-        BigInteger[] divAndRemainder = diff.divideAndRemainder(BigInteger.valueOf(getStep().longValue()));
-        return divAndRemainder[1].longValue() == 0;
+        long diff = Math.abs(bound - value);
+        return divisibleWithoutRest(diff, getStep());
     }
 
     @Override
@@ -189,6 +189,17 @@ public class LongRange extends DefaultRange<Long> {
     @Override
     protected Long getNullValue() {
         return null;
+    }
+
+    @Override
+    public Optional<Class<Long>> getDatatype() {
+        return Optional.of(Long.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(Long dividend, Long divisor) {
+        BigInteger[] divAndRemainder = BigInteger.valueOf(dividend).divideAndRemainder(BigInteger.valueOf(divisor));
+        return divAndRemainder[1].longValue() == 0;
     }
 
 }

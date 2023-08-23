@@ -13,7 +13,9 @@ package org.faktorips.valueset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.faktorips.values.NullObject;
 import org.faktorips.values.ObjectUtil;
@@ -418,6 +420,75 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             return true;
         }
         return containsNull();
+    }
+
+    @Override
+    public boolean isSubsetOf(ValueSet<T> otherValueSet) {
+        if (otherValueSet.isUnrestricted(!containsNull) || isEmpty()) {
+            return otherValueSet.containsNull() || !containsNull();
+        }
+        if (!otherValueSet.containsNull() && containsNull()) {
+            return false;
+        }
+        Optional<Class<T>> datatype = getDatatype();
+        Optional<Class<T>> otherDatatype = otherValueSet.getDatatype();
+        if (!datatype.isPresent() && !otherDatatype.isPresent()) {
+            return true;
+        }
+        return otherDatatype
+                .flatMap(d -> datatype.filter(Predicate.isEqual(d)))
+                .map(d -> otherValueSet instanceof DefaultRange ? isSubRangeOf((DefaultRange<T>)otherValueSet) : false)
+                .orElse(false);
+    }
+
+    // CSOFF: CyclomaticComplexity
+    private boolean isSubRangeOf(DefaultRange<T> otherRange) {
+        if (lowerBoundInRange(otherRange) && upperBoundInRange(otherRange)) {
+            if (otherRange.step != null) {
+                if ((step == null) || !divisibleWithoutRest(step, otherRange.step)) {
+                    return false;
+                }
+
+                if (lowerBound != null && otherRange.lowerBound != null
+                        && !otherRange.checkIfValueCompliesToStepIncrement(lowerBound, otherRange.lowerBound)) {
+                    return false;
+                }
+                if (upperBound != null && otherRange.upperBound != null
+                        && !otherRange.checkIfValueCompliesToStepIncrement(upperBound, otherRange.upperBound)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+    // CSON: CyclomaticComplexity
+
+    private boolean upperBoundInRange(DefaultRange<T> otherRange) {
+        return otherRange.upperBound == null || upperBound != null && otherRange.upperBound.compareTo(upperBound) >= 0;
+    }
+
+    private boolean lowerBoundInRange(DefaultRange<T> otherRange) {
+        return otherRange.lowerBound == null || lowerBound != null && otherRange.lowerBound.compareTo(lowerBound) <= 0;
+    }
+
+    /**
+     * A subclass must override this method if it supports incremental steps. This method checks
+     * whether the provided dividend is divisible by the given divisor without rest.
+     * 
+     * @param dividend the value being divided
+     * @param divisor the value by which the dividend is to be divided
+     * @return whether the provided dividend can be divided by the the divisor without rest
+     * 
+     * @since 24.1
+     */
+    protected boolean divisibleWithoutRest(T dividend, T divisor) {
+        return false;
+    }
+
+    @Override
+    public Optional<Class<T>> getDatatype() {
+        return Optional.empty();
     }
 
 }

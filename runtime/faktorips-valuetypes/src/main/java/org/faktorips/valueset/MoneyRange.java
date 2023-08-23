@@ -10,8 +10,10 @@
 
 package org.faktorips.valueset;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.faktorips.values.Decimal;
@@ -169,14 +171,7 @@ public class MoneyRange extends DefaultRange<Money> {
         }
 
         Decimal diff = bound.subtract(value).getAmount().abs();
-        try {
-            // throws an ArithmeticException if rounding is necessary. If the value is contained in
-            // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep().getAmount(), 0, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException e) {
-            return false;
-        }
-        return true;
+        return divisibleWithoutRest(Money.valueOf(diff, bound.getCurrency()), getStep());
     }
 
     @Override
@@ -224,6 +219,18 @@ public class MoneyRange extends DefaultRange<Money> {
                 .filter(Objects::nonNull)
                 .filter(Money::isNotNull)
                 .allMatch(m -> m.getCurrency().equals(value.getCurrency()));
+    }
+
+    @Override
+    public Optional<Class<Money>> getDatatype() {
+        return Optional.of(Money.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(Money dividend, Money divisor) {
+        BigDecimal[] divAndRemainder = dividend.getAmount().bigDecimalValue()
+                .divideAndRemainder(divisor.getAmount().bigDecimalValue());
+        return divAndRemainder[1].compareTo(BigDecimal.ZERO) == 0;
     }
 
 }

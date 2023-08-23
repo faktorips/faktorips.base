@@ -10,8 +10,10 @@
 
 package org.faktorips.valueset;
 
+import static org.faktorips.valueset.TestUtil.subsetOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import org.junit.Test;
@@ -160,6 +162,41 @@ public class StringLengthValueSetTest {
         StringLengthValueSet empty = new StringLengthValueSet(0, false);
 
         assertThat(empty.isUnrestricted(true), is(false));
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Test
+    public void testIsSubsetOf() {
+        assertThat(new StringLengthValueSet(10, true), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new UnrestrictedValueSet<>(false))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new UnrestrictedValueSet<>(false)))));
+        assertThat(new StringLengthValueSet(10, true), is(subsetOf(new StringLengthValueSet(null, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(null, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(null, false))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new StringLengthValueSet(null, false)))));
+        assertThat(new StringLengthValueSet(10, true), is(subsetOf(new StringLengthValueSet(10, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(10, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(10, false))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new StringLengthValueSet(10, false)))));
+        assertThat(new StringLengthValueSet(0, true), is(subsetOf(new StringLengthValueSet(10, true))));
+        assertThat(new StringLengthValueSet(0, false), is(subsetOf(new StringLengthValueSet(10, true))));
+        assertThat(new StringLengthValueSet(0, false), is(subsetOf(new StringLengthValueSet(10, false))));
+        assertThat(new StringLengthValueSet(0, true), is(not(subsetOf(new StringLengthValueSet(10, false)))));
+        assertThat(new StringLengthValueSet(10, true), is(subsetOf(new StringLengthValueSet(12, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(12, true))));
+        assertThat(new StringLengthValueSet(10, false), is(subsetOf(new StringLengthValueSet(12, false))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new StringLengthValueSet(12, false)))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new StringLengthValueSet(5, true)))));
+        assertThat(new StringLengthValueSet(10, false), is(not(subsetOf(new StringLengthValueSet(5, true)))));
+        assertThat(new StringLengthValueSet(10, false), is(not(subsetOf(new StringLengthValueSet(5, false)))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf(new StringLengthValueSet(5, false)))));
+        assertThat(new StringLengthValueSet(10, true), is(not(subsetOf((ValueSet)IntegerRange.valueOf(0, 100)))));
+        assertThat(new StringLengthValueSet(null, true), is(subsetOf(new StringLengthValueSet(null, true))));
+        assertThat(new StringLengthValueSet(null, false), is(subsetOf(new StringLengthValueSet(null, true))));
+        assertThat(new StringLengthValueSet(null, false), is(subsetOf(new StringLengthValueSet(null, false))));
+        assertThat(new StringLengthValueSet(null, true), is(not(subsetOf(new StringLengthValueSet(null, false)))));
+        assertThat(new StringLengthValueSet(null, true), is(not(subsetOf(new StringLengthValueSet(10, true)))));
     }
 
 }

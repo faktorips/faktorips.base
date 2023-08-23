@@ -10,8 +10,10 @@
 
 package org.faktorips.valueset;
 
+import static org.faktorips.valueset.TestUtil.subsetOf;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -276,5 +279,117 @@ public class OrderedValueSetTest {
 
         // OrderedValueSet is never unrestricted
         assertThat(empty.isUnrestricted(true), is(false));
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @Test
+    public void testIsSubsetOf() {
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3), is(subsetOf(new UnrestrictedValueSet<>(true))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3), is(subsetOf(new UnrestrictedValueSet<>(false))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3),
+                is(not(subsetOf(new UnrestrictedValueSet<>(false)))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3),
+                is(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3),
+                is(not(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3)))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 3),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3, 4))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 3),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3, 4))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 3),
+                is(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3, 4))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 3),
+                is(not(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3, 4)))));
+        assertThat(new OrderedValueSet<>(true, null),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(false, null),
+                is(subsetOf(new OrderedValueSet<>(true, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(false, null),
+                is(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3))));
+        assertThat(new OrderedValueSet<>(true, null),
+                is(not(subsetOf(new OrderedValueSet<>(false, null, 1, 2, 3)))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3),
+                is(not(subsetOf(new OrderedValueSet<>(true, null, "1", "2", "3")))));
+        assertThat(new OrderedValueSet<>(true, null), is(subsetOf(new OrderedValueSet<>(true, null))));
+        assertThat(new OrderedValueSet<>(false, null), is(subsetOf(new OrderedValueSet<>(true, null))));
+        assertThat(new OrderedValueSet<>(false, null), is(subsetOf(new OrderedValueSet<>(false, null))));
+        assertThat(new OrderedValueSet<>(true, null),
+                is(not(subsetOf(new OrderedValueSet<>(false, null)))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3),
+                is(subsetOf(IntegerRange.valueOf((Integer)null, null))));
+        assertThat(new OrderedValueSet<>(false, null), is(subsetOf(IntegerRange.empty())));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3), is(subsetOf(IntegerRange.valueOf(0, 10))));
+        assertThat(new OrderedValueSet<>(true, null, 1, 2, 3), is(not(subsetOf(IntegerRange.valueOf(0, 10)))));
+        assertThat(new OrderedValueSet<>(false, null, 1, 2, 3),
+                is(not(subsetOf(IntegerRange.valueOf(0, 10, 2)))));
+        assertThat(new OrderedValueSet<>(false, null, "1", "2"),
+                is(not(subsetOf((ValueSet)IntegerRange.valueOf(0, 10)))));
+        assertThat(new OrderedValueSet<>(false, null, "A", "B", "C"), is(subsetOf(new StringLengthValueSet(1, false))));
+        assertThat(new OrderedValueSet<>(true, null, "A", "B", "C"),
+                is(not(subsetOf(new StringLengthValueSet(1, false)))));
+        assertThat(new OrderedValueSet<>(true, null, "A", "B", "C"), is(subsetOf(new StringLengthValueSet(1, true))));
+        assertThat(new OrderedValueSet<>(false, null, "A", "B", "C"), is(subsetOf(new StringLengthValueSet(1, true))));
+        assertThat(new OrderedValueSet<>(true, null, "Aaaaa", "B", "C"),
+                is(not(subsetOf(new StringLengthValueSet(1)))));
+        assertThat(new OrderedValueSet<>(false, null, "A", "B", "C"),
+                is(not(subsetOf(new ValueSet<String>() {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public boolean contains(String value) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isDiscrete() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean containsNull() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isEmpty() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isRange() {
+                        return false;
+                    }
+
+                    @Override
+                    public int size() {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public Set<String> getValues(boolean excludeNull) {
+                        throw new UnsupportedOperationException();
+                    }
+
+                    @Override
+                    public boolean isUnrestricted(boolean excludeNull) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean isSubsetOf(ValueSet<String> otherValueSet) {
+                        return false;
+                    }
+
+                    @Override
+                    public Optional<Class<String>> getDatatype() {
+                        return Optional.of(String.class);
+                    }
+                }))));
     }
 }

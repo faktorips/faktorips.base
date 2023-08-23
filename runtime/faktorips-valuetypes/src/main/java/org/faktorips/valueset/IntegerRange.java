@@ -11,6 +11,7 @@
 package org.faktorips.valueset;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * A Range class where upper and lower bounds are {@link Integer Integers}.
@@ -166,8 +167,7 @@ public class IntegerRange extends DefaultRange<Integer> {
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         int diff = Math.abs(bound - value);
-        int remaining = diff % getStep();
-        return remaining == 0;
+        return divisibleWithoutRest(diff, getStep());
     }
 
     @Override
@@ -192,6 +192,16 @@ public class IntegerRange extends DefaultRange<Integer> {
     @Override
     protected Integer getNullValue() {
         return null;
+    }
+
+    @Override
+    public Optional<Class<Integer>> getDatatype() {
+        return Optional.of(Integer.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(Integer dividend, Integer divisor) {
+        return dividend % divisor == 0;
     }
 
 }

@@ -17,9 +17,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -319,6 +321,47 @@ public class OrderedValueSet<E> implements ValueSet<E>, Iterable<E> {
             set2.add(nullValue);
         }
         return set2.stream();
+    }
+
+    // CSOFF: CyclomaticComplexity
+    @Override
+    public boolean isSubsetOf(ValueSet<E> otherValueSet) {
+        if (otherValueSet.isUnrestricted(!containsNull) || isEmpty()) {
+            return otherValueSet.containsNull() || !containsNull();
+        }
+        Optional<Class<E>> datatype = getDatatype();
+        Optional<Class<E>> otherDatatype = otherValueSet.getDatatype();
+        if (!datatype.isPresent() && !otherDatatype.isPresent()) {
+            return true;
+        }
+        return otherDatatype.flatMap(d -> datatype.filter(Predicate.isEqual(d))).map(d -> {
+            if (otherValueSet instanceof OrderedValueSet) {
+                return (otherValueSet.containsNull() || !containsNull())
+                        && (getValues().stream()
+                                .allMatch(value -> ((OrderedValueSet<E>)otherValueSet).contains(value)));
+            }
+            if (otherValueSet instanceof Range) {
+                return (otherValueSet.containsNull() || !containsNull())
+                        && (getValues().stream().allMatch(value -> otherValueSet.contains(value)));
+            }
+            if (otherValueSet instanceof StringLengthValueSet) {
+                return (otherValueSet.containsNull() || !containsNull())
+                        && (getValues().stream().allMatch(value -> (value == null || (value instanceof String))
+                                && ((StringLengthValueSet)otherValueSet).contains((String)value)));
+            }
+            return false;
+        }).orElse(false);
+    }
+    // CSON: CyclomaticComplexity
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Optional<Class<E>> getDatatype() {
+        if (set.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return set.stream().filter(e -> e != null).map(e -> (Class<E>)e.getClass()).findFirst();
+        }
     }
 
 }

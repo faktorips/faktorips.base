@@ -12,6 +12,7 @@ package org.faktorips.valueset;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -174,14 +175,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
                     "The step size cannot be zero. Use null to indicate a continuous range.");
         }
         BigDecimal diff = bound.subtract(value).abs();
-        try {
-            // throws an ArithmeticException if rounding is necessary. If the value is contained in
-            // the range no rounding is necessary since this division must return an integer value
-            diff.divide(getStep(), 0, RoundingMode.UNNECESSARY);
-        } catch (ArithmeticException e) {
-            return false;
-        }
-        return true;
+        return divisibleWithoutRest(diff, getStep());
     }
 
     @Override
@@ -209,6 +203,17 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
     @Override
     protected BigDecimal getNullValue() {
         return null;
+    }
+
+    @Override
+    public Optional<Class<BigDecimal>> getDatatype() {
+        return Optional.of(BigDecimal.class);
+    }
+
+    @Override
+    protected boolean divisibleWithoutRest(BigDecimal dividend, BigDecimal divisor) {
+        BigDecimal[] divAndRemainder = dividend.divideAndRemainder(divisor);
+        return divAndRemainder[1].compareTo(BigDecimal.ZERO) == 0;
     }
 
 }

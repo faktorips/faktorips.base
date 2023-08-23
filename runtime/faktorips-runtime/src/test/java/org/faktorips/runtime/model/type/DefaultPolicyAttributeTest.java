@@ -12,6 +12,8 @@ package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,16 +31,20 @@ import java.util.Set;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.MessageLists;
 import org.faktorips.runtime.ObjectProperty;
 import org.faktorips.runtime.ValidationContext;
+import org.faktorips.runtime.internal.AbstractModelObject;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.model.IpsModel;
 import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAllowedValuesSetter;
@@ -58,6 +64,7 @@ import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
 import org.faktorips.valueset.DecimalRange;
 import org.faktorips.valueset.DefaultRange;
+import org.faktorips.valueset.IntegerRange;
 import org.faktorips.valueset.OrderedValueSet;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
@@ -951,9 +958,27 @@ public class DefaultPolicyAttributeTest {
         product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
         MessageList messageList = MessageLists.emptyMessageList();
 
-        defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+        defaultPolicyAttribute.validate(messageList, new ValidationContext(Locale.ENGLISH), product, null);
 
         assertThat(messageList.isEmpty(), is(false));
+        assertThat(messageList.getMessageByCode(DefaultPolicyAttribute.MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET),
+                is(not(nullValue())));
+    }
+
+    @Test
+    public void testValidate_ValueSet() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfiguredPolicy.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE);
+        ConfiguringProduct product = new ConfiguringProduct(repository, "t1", "t", "1");
+        product.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(-1000, 1000));
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validate(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        assertThat(messageList.getMessageByCode(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET),
+                is(not(nullValue())));
     }
 
     @Test
@@ -1061,6 +1086,71 @@ public class DefaultPolicyAttributeTest {
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
 
         assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateValueSet_OK() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfiguredPolicy.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE);
+        ConfiguringProduct product = new ConfiguringProduct(repository, "t1", "t", "1");
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSet(messageList, new ValidationContext(), product, null);
+
+        assertThat(messageList.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testValidateValueSet_ValueSetNotInValueSet() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfiguredPolicy.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE);
+        ConfiguringProduct product = new ConfiguringProduct(repository, "t1", "t", "1");
+        product.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(-1000, 1000));
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSet(messageList, new ValidationContext(Locale.ENGLISH), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET));
+        assertThat(message.getText(), containsString("value set"));
+        assertThat(message.getText(), containsString("attribute"));
+        assertThat(message.getText(), containsString("Integer Attribute"));
+        assertThat(message.getText(), containsString("-1000-1000"));
+        assertThat(message.getText(), containsString("value set"));
+        assertThat(message.getText(), containsString("0-100"));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
+    }
+
+    @Test
+    public void testValidateValueSet_DefaultValueNotAllowedInValueSet_LocaleDE() {
+        PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfiguredPolicy.class);
+        DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType
+                .getAttribute(ConfiguredPolicy.PROPERTY_INTEGERATTRIBUTE);
+        ConfiguringProduct product = new ConfiguringProduct(repository, "t1", "t", "1");
+        product.setAllowedValuesForIntegerAttribute(IntegerRange.valueOf(-1000, 1000));
+        MessageList messageList = MessageLists.emptyMessageList();
+
+        defaultPolicyAttribute.validateValueSet(messageList, new ValidationContext(Locale.GERMAN), product, null);
+
+        assertThat(messageList.isEmpty(), is(false));
+        Message message = messageList.getMessage(0);
+        assertThat(message.getCode(), is(DefaultPolicyAttribute.MSGCODE_VALUE_SET_NOT_IN_VALUE_SET));
+        assertThat(message.getText(), containsString("Wertemenge"));
+        assertThat(message.getText(), containsString("Attribut"));
+        assertThat(message.getText(), containsString("Ganzzahliges Attribut"));
+        assertThat(message.getText(), containsString("-1000-1000"));
+        assertThat(message.getText(), containsString("Wertemenge"));
+        assertThat(message.getText(), containsString("0-100"));
+        assertThat(message.getNumOfInvalidObjectProperties(), is(1));
+        ObjectProperty objectProperty = message.getInvalidObjectProperties().get(0);
+        assertThat(objectProperty.getObject(), is(defaultPolicyAttribute));
+        assertThat(objectProperty.getProperty(), is(DefaultPolicyAttribute.PROPERTY_VALUE_SET));
     }
 
     @IpsPolicyCmptType(name = "Vertragxyz")
@@ -1709,4 +1799,130 @@ public class DefaultPolicyAttributeTest {
         TestEnum2,
         TestEnum3;
     }
+
+    @IpsPolicyCmptType(name = "ConfiguredPolicy")
+    @IpsAttributes({ "integerAttribute" })
+    @IpsConfiguredBy(ConfiguringProduct.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
+    private static class ConfiguredPolicy extends AbstractModelObject implements IConfigurableModelObject {
+
+        public static final String PROPERTY_INTEGERATTRIBUTE = "integerAttribute";
+
+        @IpsAllowedValues("integerAttribute")
+        public static final IntegerRange MAX_ALLOWED_RANGE_FOR_INTEGER_ATTRIBUTE = IntegerRange
+                .valueOf(Integer.valueOf("0"), Integer.valueOf(100), Integer.valueOf(5), false);
+
+        @IpsDefaultValue("integerAttribute")
+        public static final Integer DEFAULT_VALUE_FOR_INTEGER_ATTRIBUTE = null;
+
+        private Integer integerAttribute = DEFAULT_VALUE_FOR_INTEGER_ATTRIBUTE;
+
+        private ProductConfiguration productConfiguration;
+
+        public ConfiguredPolicy(ConfiguringProduct productCmpt) {
+            super();
+            productConfiguration = new ProductConfiguration(productCmpt);
+        }
+
+        @IpsAllowedValues("integerAttribute")
+        public ValueSet<Integer> getAllowedValuesForIntegerAttribute() {
+            return getConfiguringProduct().getAllowedValuesForIntegerAttribute();
+        }
+
+        @IpsAttribute(name = "integerAttribute", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Range)
+        @IpsConfiguredAttribute(changingOverTime = false)
+        public Integer getIntegerAttribute() {
+            return integerAttribute;
+        }
+
+        @IpsAttributeSetter("integerAttribute")
+        public void setIntegerAttribute(Integer newValue) {
+            integerAttribute = newValue;
+        }
+
+        @Override
+        public void initialize() {
+            if (getConfiguringProduct() != null) {
+                setIntegerAttribute(getConfiguringProduct().getDefaultValueIntegerAttribute());
+            }
+        }
+
+        public ConfiguringProduct getConfiguringProduct() {
+            return (ConfiguringProduct)getProductComponent();
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productConfiguration.getProductComponent();
+        }
+
+        @Override
+        public void setProductComponent(IProductComponent productComponent) {
+            productConfiguration.setProductComponent(productComponent);
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+    }
+
+    @IpsProductCmptType(name = "ConfiguringProduct")
+    @IpsConfigures(ConfiguredPolicy.class)
+    @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
+    private static class ConfiguringProduct extends ProductComponent {
+
+        private Integer defaultValueIntegerAttribute = null;
+
+        private IntegerRange rangeForIntegerAttribute = ConfiguredPolicy.MAX_ALLOWED_RANGE_FOR_INTEGER_ATTRIBUTE;
+
+        public ConfiguringProduct(IRuntimeRepository repository, String id, String kindId, String versionId) {
+            super(repository, id, kindId, versionId);
+        }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return false;
+        }
+
+        @IpsDefaultValue("integerAttribute")
+        public Integer getDefaultValueIntegerAttribute() {
+            return defaultValueIntegerAttribute;
+        }
+
+        @IpsDefaultValueSetter("integerAttribute")
+        public void setDefaultValueIntegerAttribute(Integer defaultValueIntegerAttribute) {
+            if (getRepository() != null && !getRepository().isModifiable()) {
+                throw new IllegalRepositoryModificationException();
+            }
+            this.defaultValueIntegerAttribute = defaultValueIntegerAttribute;
+        }
+
+        @IpsAllowedValues("integerAttribute")
+        public ValueSet<Integer> getAllowedValuesForIntegerAttribute() {
+            return rangeForIntegerAttribute;
+        }
+
+        @IpsAllowedValuesSetter("integerAttribute")
+        public void setAllowedValuesForIntegerAttribute(ValueSet<Integer> rangeForIntegerAttribute) {
+            if (getRepository() != null && !getRepository().isModifiable()) {
+                throw new IllegalRepositoryModificationException();
+            }
+            this.rangeForIntegerAttribute = (IntegerRange)rangeForIntegerAttribute;
+        }
+
+        public ConfiguredPolicy createConfiguredPolicy() {
+            ConfiguredPolicy policy = new ConfiguredPolicy(this);
+            policy.initialize();
+            return policy;
+        }
+
+        @Override
+        public ConfiguredPolicy createPolicyComponent() {
+            return createConfiguredPolicy();
+        }
+
+    }
+
 }

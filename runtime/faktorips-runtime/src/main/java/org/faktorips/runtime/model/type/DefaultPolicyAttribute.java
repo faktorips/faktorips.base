@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
@@ -44,13 +46,16 @@ import org.faktorips.valueset.ValueSet;
 public class DefaultPolicyAttribute extends PolicyAttribute {
 
     public static final String MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET = "POLICY_ATTRIBUTE-DEFAULT_VALUE_NOT_IN_VALUE_SET";
+    public static final String MSGCODE_VALUE_SET_NOT_IN_VALUE_SET = "POLICY_ATTRIBUTE-VALUE_SET_NOT_IN_VALUE_SET";
 
     public static final String PROPERTY_DEFAULT_VALUE = "defaultValue";
+    public static final String PROPERTY_VALUE_SET = "valueSet";
 
     private static final Map<Class<?>, Object> NULL_OBJECTS = new HashMap<>();
 
     private static final String RESOURCE_BUNDLE_NAME = DefaultPolicyAttribute.class.getName();
-    private static final String MSG_KEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
+    private static final String MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET = "Validation.DefaultValueNotInValueSet";
+    private static final String MSGKEY_VALUE_SET_NOT_IN_VALUE_SET = "Validation.ValueSetNotInValueSet";
 
     static {
         NULL_OBJECTS.put(Decimal.class, Decimal.NULL);
@@ -59,12 +64,11 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private final Method getter;
-
     private final Method setter;
 
     private Method defaultValueGetter;
     private Method defaultValueSetter;
-    private Field defaultField;
+    private Field defaultValueField;
 
     private Map<Type, Method> valueSetMethods = new HashMap<>(2);
     private Map<Type, Field> valueSetFields = new HashMap<>(2);
@@ -115,10 +119,10 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
     }
 
     private Field getDefaultValueField() {
-        if (defaultField == null) {
-            defaultField = findDefaultValueField(getType());
+        if (defaultValueField == null) {
+            defaultValueField = findDefaultValueField(getType());
         }
-        return defaultField;
+        return defaultValueField;
     }
 
     private Field findDefaultValueField(Type type) {
@@ -322,29 +326,58 @@ public class DefaultPolicyAttribute extends PolicyAttribute {
             Calendar effectiveDate) {
         super.validate(list, context, product, effectiveDate);
         validateDefaultValue(list, context, product, effectiveDate);
+        validateValueSet(list, context, product, effectiveDate);
     }
 
+    @SuppressWarnings("unchecked")
     <T> void validateDefaultValue(MessageList list,
             IValidationContext context,
             IProductComponent source,
             Calendar effectiveDate) {
-        @SuppressWarnings("unchecked")
-        T defaultValue = (T)getDefaultValue(source, effectiveDate);
+        validate(list, context,
+                () -> (T)getDefaultValue(source, effectiveDate),
+                () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
+                (defaultValue, valueSet) -> valueSet.contains(defaultValue),
+                MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
+                MSGKEY_DEFAULT_VALUE_NOT_IN_VALUE_SET,
+                PROPERTY_DEFAULT_VALUE);
+    }
 
-        if (!ObjectUtil.isNull(defaultValue)) {
-            @SuppressWarnings("unchecked")
-            ValueSet<T> valueSet = (ValueSet<T>)getValueSet(source, effectiveDate, context);
-            if (!valueSet.contains(defaultValue)) {
+    @SuppressWarnings("unchecked")
+    <T> void validateValueSet(MessageList list,
+            IValidationContext context,
+            IProductComponent source,
+            Calendar effectiveDate) {
+        validate(list, context,
+                () -> (ValueSet<T>)getValueSet(source, effectiveDate, context),
+                () -> (ValueSet<T>)getValueSetFromModel(),
+                ValueSet::isSubsetOf,
+                MSGCODE_VALUE_SET_NOT_IN_VALUE_SET,
+                MSGKEY_VALUE_SET_NOT_IN_VALUE_SET,
+                PROPERTY_VALUE_SET);
+    }
+
+    // CSOFF: ParameterNumber
+    private <V, R> void validate(MessageList list,
+            IValidationContext context,
+            Supplier<V> valueGetter,
+            Supplier<R> referenceValueGetter,
+            BiPredicate<V, R> valueChecker,
+            String msgCode,
+            String msgKey,
+            String property) {
+        V value = valueGetter.get();
+        if (!ObjectUtil.isNull(value)) {
+            R referenceValue = referenceValueGetter.get();
+            if (!ObjectUtil.isNull(referenceValue) && !valueChecker.test(value, referenceValue)) {
                 Locale locale = context.getLocale();
                 ResourceBundle messages = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, locale);
-                list.newError(MSGCODE_DEFAULT_VALUE_NOT_IN_VALUE_SET,
-                        String.format(messages.getString(MSG_KEY_DEFAULT_VALUE_NOT_IN_VALUE_SET),
-                                defaultValue, getLabel(locale), valueSet),
-                        this,
-                        PROPERTY_DEFAULT_VALUE);
+                list.newError(msgCode,
+                        String.format(messages.getString(msgKey), value, getLabel(locale), referenceValue),
+                        this, property);
             }
         }
-
     }
+    // CSON: ParameterNumber
 
 }
