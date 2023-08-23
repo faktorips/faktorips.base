@@ -12,7 +12,7 @@
 <stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Faktor-IPS (Luna) (Linux)"/>
 <booleanAttribute key="default" value="false"/>
 <booleanAttribute key="includeOptional" value="false"/>
-<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest"/>
+<stringAttribute key="location" value="${workspace_loc}/../runtime-FIPSIntegrationtest.19.12"/>
 <mapAttribute key="org.eclipse.debug.core.environmentVariables">
 <mapEntry key="SWT_GTK3" value="0"/>
 </mapAttribute>

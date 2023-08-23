@@ -21,6 +21,7 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.POIDocument;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.BuiltinFormats;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -72,7 +73,7 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
 
     protected String readCell(Cell cell, Datatype datatype) {
         if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-            if (DateUtil.isCellDateFormatted(cell)) {
+            if (DateUtil.isCellDateFormatted(cell) || isReserved(cell.getCellStyle().getDataFormat())) {
                 Date dateCellValue = cell.getDateCellValue();
                 if (mightBeOpenOffice) {
                     dateCellValue = correctOffset(cell, messageList);
@@ -91,6 +92,11 @@ public abstract class AbstractExcelImportOperation extends AbstractTableImportOp
             }
             return format.getIpsValue(value, datatype, messageList);
         }
+    }
+
+    private boolean isReserved(short dataFormatIndex) {
+        String builtinFormat = BuiltinFormats.getBuiltinFormat(dataFormatIndex);
+        return builtinFormat != null && builtinFormat.startsWith("reserved"); //$NON-NLS-1$
     }
 
     /**

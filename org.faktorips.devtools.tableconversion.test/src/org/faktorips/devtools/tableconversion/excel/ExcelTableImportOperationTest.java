@@ -110,10 +110,10 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
-        String[] row0 = new String[] { "true", "12.3", "1.79769313486231E308", "1970-01-01", "2147483647",
+        String[] row0 = new String[] { "true", "12.3", "1.79769313486231E308", "2001-04-26", "2147483647",
                 "922337203685477000", "123.45 EUR", "einfacher text" };
         assertRow(row0, importTarget.getRow(0));
-        String[] row1 = new String[] { "false", "12.3", "4.9E-324", "1970-01-01", "-2147483648", "-922337203685477000",
+        String[] row1 = new String[] { "false", "12.3", "4.9E-324", "2001-04-26", "-2147483648", "-922337203685477000",
                 "1.00 EUR", "�������{[]}" };
         assertRow(row1, importTarget.getRow(1));
         String[] row2 = new String[] { null, null, null, null, null, null, null, null };
