@@ -183,6 +183,17 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindIpsPackageFragmentRootByName_SimilarSuffix() throws Exception {
+        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
+        AFolder testFolder = ipsProject.getProject().getFolder(root.getName() + "test");
+        ipsObjectPath.newSourceFolderEntry(testFolder);
+        ipsProject.setIpsObjectPath(ipsObjectPath);
+        assertEquals(ipsProject.getIpsPackageFragmentRoots()[1],
+                ipsProject.findIpsPackageFragmentRoot(testFolder.getProjectRelativePath().toString()));
+
+    }
+
+    @Test
     public void testFindIpsPackageFragmentRoot_nonExistingProject() throws Exception {
         IIpsProject notExistingProject = IIpsModel.get().getIpsProject("NotExistingProject");
 

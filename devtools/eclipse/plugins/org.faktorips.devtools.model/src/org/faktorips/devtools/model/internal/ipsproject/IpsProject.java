@@ -581,7 +581,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         IIpsPackageFragmentRoot[] roots = getIpsPackageFragmentRoots();
         String pathRoot = PathUtil.toPortableString(path);
         for (IIpsPackageFragmentRoot root : roots) {
-            if (pathRoot.startsWith(root.getName())) {
+            String rootName = root.getName();
+            if (pathRoot.equals(rootName) || pathRoot.startsWith(rootName + '/')) {
                 return root;
             }
         }
