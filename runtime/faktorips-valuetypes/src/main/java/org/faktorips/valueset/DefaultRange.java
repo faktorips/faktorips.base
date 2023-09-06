@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.faktorips.values.ObjectUtil.isNull;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -18,7 +20,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.faktorips.values.NullObject;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * Default implementation of the <code>Range</code> interface. Implementations of this range that
@@ -333,7 +334,7 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     }
 
     private boolean isNullValue(T value) {
-        return ObjectUtil.isNull(value);
+        return isNull(value);
     }
 
     /**
@@ -444,16 +445,16 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     // CSOFF: CyclomaticComplexity
     private boolean isSubRangeOf(DefaultRange<T> otherRange) {
         if (lowerBoundInRange(otherRange) && upperBoundInRange(otherRange)) {
-            if (otherRange.step != null) {
-                if ((step == null) || !divisibleWithoutRest(step, otherRange.step)) {
+            if (!isNull(otherRange.step)) {
+                if (isNull(step) || !divisibleWithoutRest(step, otherRange.step)) {
                     return false;
                 }
 
-                if (lowerBound != null && otherRange.lowerBound != null
+                if (!isNull(lowerBound) && !isNull(otherRange.lowerBound)
                         && !otherRange.checkIfValueCompliesToStepIncrement(lowerBound, otherRange.lowerBound)) {
                     return false;
                 }
-                if (upperBound != null && otherRange.upperBound != null
+                if (!isNull(upperBound) && !isNull(otherRange.upperBound)
                         && !otherRange.checkIfValueCompliesToStepIncrement(upperBound, otherRange.upperBound)) {
                     return false;
                 }
@@ -465,11 +466,13 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
     // CSON: CyclomaticComplexity
 
     private boolean upperBoundInRange(DefaultRange<T> otherRange) {
-        return otherRange.upperBound == null || upperBound != null && otherRange.upperBound.compareTo(upperBound) >= 0;
+        return isNull(otherRange.upperBound)
+                || !isNull(upperBound) && otherRange.upperBound.compareTo(upperBound) >= 0;
     }
 
     private boolean lowerBoundInRange(DefaultRange<T> otherRange) {
-        return otherRange.lowerBound == null || lowerBound != null && otherRange.lowerBound.compareTo(lowerBound) <= 0;
+        return isNull(otherRange.lowerBound)
+                || !isNull(lowerBound) && otherRange.lowerBound.compareTo(lowerBound) <= 0;
     }
 
     /**
