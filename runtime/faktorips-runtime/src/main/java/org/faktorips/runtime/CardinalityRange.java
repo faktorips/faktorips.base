@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -15,7 +15,7 @@ import org.faktorips.valueset.IntegerRange;
 /**
  * A Range class for cardinalities. A {@link CardinalityRange} is defined by a lower and an upper
  * bound as well as a default value.
- * 
+ *
  * @author Stefan Widmaier
  */
 public class CardinalityRange extends IntegerRange {
@@ -39,7 +39,25 @@ public class CardinalityRange extends IntegerRange {
      * A cardinality that describes the empty range. It is used to mark associations as excluded in
      * product variants.
      */
-    public static final CardinalityRange EXCLUDED = new CardinalityRange();
+    public static final CardinalityRange EXCLUDED = new CardinalityRange() {
+        private static final long serialVersionUID = 1L;
+        // Product variants use an upper bound of 0 to remove links defined in the varied
+        // product component.
+
+        @Override
+        public Integer getLowerBound() {
+            // For backwards compatibility with code iterating from lower to upper bound, the empty
+            // cardinality range should not report null but 0 as its lower bound.
+            return 0;
+        }
+
+        @Override
+        public Integer getUpperBound() {
+            // For backwards compatibility with code checking for an upper bound of 0, the empty
+            // cardinality range should not report null but 0 as its upper bound.
+            return 0;
+        }
+    };
 
     /**
      * <code>serialVersionUID</code> for {@link CardinalityRange}s
@@ -52,7 +70,7 @@ public class CardinalityRange extends IntegerRange {
      * Constructs a {@link CardinalityRange} with the given lower and upper bounds as well as the
      * given default value. The default value must be in between the lower and upper bound or equal
      * to one of them (though not Integer.MAX_VALUE).
-     * 
+     *
      * @param lower the lowest possible cardinality
      * @param upper the highest possible cardinality
      * @param def the default cardinality, must be in between or equal to one of the bounds
@@ -77,6 +95,17 @@ public class CardinalityRange extends IntegerRange {
     private CardinalityRange() {
         super();
         defaultCardinality = 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * A {@link CardinalityRange} is considered empty when its {@linkplain #getUpperBound() upper
+     * bound} is 0.
+     */
+    @Override
+    public boolean isEmpty() {
+        return super.isEmpty() || Integer.valueOf(0).equals(getUpperBound());
     }
 
     public Integer getDefaultCardinality() {
