@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -17,21 +18,26 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.XmlAbstractTestCase;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
-public class ProductComponentLinkTest {
+public class ProductComponentLinkTest extends XmlAbstractTestCase {
 
     private ProductComponentLink<IProductComponent> linkSpy;
     private Element linkElement;
     private Document docMock;
+    private ProductComponentLink<IProductComponent> link;
+    private NodeList linkListInXml;
 
     @Before
     public void setUp() throws Exception {
         ProductComponentGeneration generationMock = mock(ProductComponentGeneration.class);
-        ProductComponentLink<IProductComponent> link = new ProductComponentLink<>(generationMock);
+        link = new ProductComponentLink<>(generationMock);
+        linkListInXml = getTestDocument().getDocumentElement().getElementsByTagName("Link");
         linkSpy = spy(link);
         when(linkSpy.getTargetId()).thenReturn(null);
         when(linkSpy.getAssociationName()).thenReturn("associationName");
@@ -65,4 +71,43 @@ public class ProductComponentLinkTest {
         verify(linkElement).setAttribute("defaultCardinality", "1");
     }
 
+    @Test
+    public void testToXmlWithExluded() {
+        when(linkSpy.getCardinality()).thenReturn(CardinalityRange.EXCLUDED);
+        linkSpy.toXml(docMock);
+
+        verify(linkElement).setAttribute("association", "associationName");
+        verify(linkElement).setAttribute("targetRuntimeId", null);
+        verify(linkElement).setAttribute("minCardinality", "0");
+        verify(linkElement).setAttribute("maxCardinality", "0");
+        verify(linkElement).setAttribute("defaultCardinality", "0");
+    }
+
+    @Test
+    public void testInitFromXml() {
+        link.initFromXml((Element)linkListInXml.item(0));
+        CardinalityRange cardinality = link.getCardinality();
+        
+        assertEquals(Integer.valueOf(2), cardinality.getLowerBound());
+        assertEquals(Integer.valueOf(3), cardinality.getUpperBound());
+        assertEquals(Integer.valueOf(2), cardinality.getDefaultCardinality());
+    }
+
+    @Test
+    public void testInitFromXml_UnlimitedUpperBound() {
+        link.initFromXml((Element)linkListInXml.item(1));
+        CardinalityRange cardinality = link.getCardinality();
+        
+        assertEquals(Integer.valueOf(1), cardinality.getLowerBound());
+        assertEquals((Integer)Integer.MAX_VALUE, cardinality.getUpperBound());
+        assertEquals(Integer.valueOf(1), cardinality.getDefaultCardinality());
+    }
+
+    @Test
+    public void testInitFromXml_Excluded() {
+        link.initFromXml((Element)linkListInXml.item(2));
+        CardinalityRange cardinality = link.getCardinality();
+        
+        assertEquals(CardinalityRange.EXCLUDED, cardinality);
+    }
 }
