@@ -157,7 +157,11 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
 
         Integer minCardinality = Integer.valueOf(element.getAttribute("minCardinality"));
         Integer defaultCardinality = Integer.valueOf(element.getAttribute("defaultCardinality"));
-        cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
+        if (maxCardinality == null || Integer.valueOf(0).equals(maxCardinality)) {
+            cardinality = CardinalityRange.EXCLUDED;
+        } else {
+            cardinality = new CardinalityRange(minCardinality, maxCardinality, defaultCardinality);
+        }
         initExtensionPropertiesFromXml(element);
     }
 
