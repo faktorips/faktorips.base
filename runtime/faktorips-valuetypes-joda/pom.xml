@@ -54,8 +54,8 @@
                             <module>
                                 <moduleInfoSource>
                                     module org.faktorips.valuetypes.joda {
-                                    	requires joda.time;
-                                    	exports org.faktorips.valuetypes.joda.util;
+                                        requires transitive joda.time;
+                                        exports org.faktorips.valuetypes.joda.util;
                                     }
                                 </moduleInfoSource>
                             </module>

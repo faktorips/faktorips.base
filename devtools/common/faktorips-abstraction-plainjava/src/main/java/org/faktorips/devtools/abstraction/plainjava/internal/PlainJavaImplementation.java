@@ -29,7 +29,6 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.abstraction.ALog;
 import org.faktorips.devtools.abstraction.ALogListener;

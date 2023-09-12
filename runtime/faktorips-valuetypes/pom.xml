@@ -61,7 +61,7 @@
                                 <moduleInfoSource>
                                     module org.faktorips.valuetypes {
                                         requires static com.github.spotbugs.annotations;
-                                        requires java.xml.bind;
+                                        requires static java.xml.bind;
                                         exports org.faktorips.annotation;
                                         exports org.faktorips.values;
                                         exports org.faktorips.values.xml;

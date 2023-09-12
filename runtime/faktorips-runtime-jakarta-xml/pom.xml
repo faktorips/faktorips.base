@@ -40,6 +40,7 @@
                                     module org.faktorips.runtime.xml.jakarta {
                                         requires transitive org.faktorips.runtime;
                                         requires transitive jakarta.xml.bind;
+                                        requires static com.github.spotbugs.annotations;
                                         exports org.faktorips.runtime.xml.jakarta;
                                     }
                                 </moduleInfoSource>

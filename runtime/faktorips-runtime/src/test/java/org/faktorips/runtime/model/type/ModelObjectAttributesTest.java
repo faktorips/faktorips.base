@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,7 +13,6 @@ package org.faktorips.runtime.model.type;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.Arrays;
 import java.util.List;
@@ -284,7 +283,8 @@ public class ModelObjectAttributesTest {
         TestPolicyWithVisitor modelObject = new TestPolicyWithVisitor();
         modelObject.setAllowedValuesForOnTheFly(new OrderedValueSet<>(false, null));
 
-        assertDoesNotThrow(() -> ModelObjectAttributes.resetIrrelevantAttributes(modelObject));
+        ModelObjectAttributes.resetIrrelevantAttributes(modelObject);
+        // did not throw an exception
     }
 
     private void assertAttributeIsReset(List<ModelObjectAttribute> moa,
