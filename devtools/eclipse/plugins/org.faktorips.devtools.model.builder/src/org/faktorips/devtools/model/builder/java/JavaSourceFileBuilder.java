@@ -788,7 +788,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private String removeUnusedImports(String content) {
-        return new IpsRemoveImportsOperation().removeUnusedImports(content);
+        return new IpsRemoveImportsOperation().removeUnusedAndDuplicateImports(content);
     }
 
     /**

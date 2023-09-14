@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 
 /**
  * This is a util class to remove unused import statements after code generation.
- * 
- * 
+ *
+ *
  * @author dirmeier
  */
 public class IpsRemoveImportsOperation {
@@ -42,7 +42,7 @@ public class IpsRemoveImportsOperation {
     private static Pattern importPattern = Pattern
             .compile("(?<!\\S) *import\\s[\\.\\s\\p{L}0-9_$]*\\.[\\s]*" + wordPatternString + "[\\s]*; *\\r?\\n?"); //$NON-NLS-1$ //$NON-NLS-2$
 
-    public String removeUnusedImports(String input) {
+    public String removeUnusedAndDuplicateImports(String input) {
         String withoutComments = removeComments(input);
         String withoutImports = removeImports(withoutComments);
         Set<String> words = getRelevantWords(withoutImports);
@@ -50,14 +50,17 @@ public class IpsRemoveImportsOperation {
     }
 
     private String removeImports(String input, Set<String> words) {
+        Set<String> imports = new HashSet<>();
         StringBuilder inputWithRemovedImports = new StringBuilder();
         Matcher importMatcher = importPattern.matcher(input);
         int lastEnd = 0;
         while (importMatcher.find()) {
             inputWithRemovedImports.append(input.substring(lastEnd, importMatcher.start()));
-            String importWord = importMatcher.group(1);
-            if (words.contains(importWord)) {
-                inputWithRemovedImports.append(input.substring(importMatcher.start(), importMatcher.end()));
+            if (imports.add(importMatcher.group(0))) {
+                String importWord = importMatcher.group(1);
+                if (words.contains(importWord)) {
+                    inputWithRemovedImports.append(input.substring(importMatcher.start(), importMatcher.end()));
+                }
             }
             lastEnd = importMatcher.end();
         }
