@@ -105,6 +105,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private final ValidationRules validationRules;
 
+    private String qualifiedName;
+
     /**
      * Creates a new product component with the indicate id, kind id and version id.
      *
@@ -151,6 +153,15 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getQualifiedName() {
+        return qualifiedName;
+    }
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
 
     @Override

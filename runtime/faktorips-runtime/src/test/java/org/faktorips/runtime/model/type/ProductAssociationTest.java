@@ -292,7 +292,7 @@ public class ProductAssociationTest {
     public void testGetLink_Static() {
         Source source = new Source();
         Target target = new Target("id2");
-        ((IModifiableRuntimeRepository)repository).putProductComponent(target, null);
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target);
         source.target = target;
 
         Optional<IProductComponentLink<Target>> link = association.getLink(source, target, null);
@@ -317,13 +317,13 @@ public class ProductAssociationTest {
         ProductGen productGen = source.productGen;
         ProductGen productGen2 = source.productGen2;
         Target targetGen1 = new Target("id3");
-        ((IModifiableRuntimeRepository)repository).putProductComponent(targetGen1, null);
+        ((IModifiableRuntimeRepository)repository).putProductComponent(targetGen1);
         productGen.target = targetGen1;
         Target target1Gen2 = new Target("id4");
-        ((IModifiableRuntimeRepository)repository).putProductComponent(target1Gen2, null);
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target1Gen2);
         productGen2.target = target1Gen2;
         Target target2Gen2 = new Target("id5");
-        ((IModifiableRuntimeRepository)repository).putProductComponent(target2Gen2, null);
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target2Gen2);
         productGen2.target2 = target2Gen2;
 
         Optional<IProductComponentLink<Target>> linkGen1 = association2.getLink(source, targetGen1, effectiveDate);

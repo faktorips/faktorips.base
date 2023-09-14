@@ -10,15 +10,11 @@
 
 package org.faktorips.runtime.internal;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IProductComponentLinkSource;
-import org.faktorips.runtime.IRuntimeRepository;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -118,7 +114,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
             throw new NullPointerException("The targetId for the ProductComponentLink may not be null.");
         }
         targetId = target.getId();
-        targetName = getQualifiedName(targetId);
+        targetName = target.getQualifiedName();
         if (cardinality == null) {
             throw new NullPointerException("The cardinality for the ProductComponentLink may not be null.");
         }
@@ -217,30 +213,6 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
     @Override
     public IProductComponentLinkSource getSource() {
         return source;
-    }
-
-    private String getQualifiedName(String runtimeId) {
-        // FIXME FIPS-10630 Hack ausbauen
-        IRuntimeRepository repository = getSource().getRepository();
-        try {
-            Method getQualifiedNameOfProductComponent = repository.getClass()
-                    .getMethod("getQualifiedNameOfProductComponent", IProductComponent.class);
-            return (String)getQualifiedNameOfProductComponent.invoke(repository, runtimeId);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
-            // fallback? can we find the name from the file?
-        }
-        if (runtimeId == null) {
-            return null;
-        }
-        int index = runtimeId.lastIndexOf('.');
-        if (index == -1) {
-            return runtimeId;
-        }
-        if (index == runtimeId.length() - 1) {
-            return ""; //$NON-NLS-1$
-        }
-        return runtimeId.substring(index + 1);
     }
 
 }

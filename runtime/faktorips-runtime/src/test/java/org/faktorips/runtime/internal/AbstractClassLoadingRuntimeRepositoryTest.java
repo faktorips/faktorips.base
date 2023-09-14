@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -62,6 +62,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
     @Test
     public void shouldLoadNormalProductComponentNormally() {
         ProductCmptTocEntry entry = mock(ProductCmptTocEntry.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
+        when(entry.getIpsObjectQualifiedName()).thenReturn("qualified.Name");
         Element element = mock(Element.class);
         ProductComponent newProdCmptInstance = mock(ProductComponent.class);
 
@@ -73,12 +74,14 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         repo.createProductCmpt(entry);
 
         verify(newProdCmptInstance).initFromXml(element);
-        verifyNoMoreInteractions(loadedProdCmpt);
+        verify(newProdCmptInstance).setQualifiedName("qualified.Name");
+        verifyNoMoreInteractions(newProdCmptInstance);
     }
 
     @Test
     public void shouldLoadVariedProductComponent() {
         ProductCmptTocEntry entry = mock(ProductCmptTocEntry.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
+        when(entry.getIpsObjectQualifiedName()).thenReturn("qualified.Name");
         Element element = mock(Element.class, withSettings().defaultAnswer(RETURNS_SMART_NULLS));
         Element copyElement = mock(Element.class);
         Document docMock = mock(Document.class);
@@ -96,6 +99,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
 
         verify(newProdCmptInstance).initFromXml(element);
         verify(newProdCmptInstance).initFromXml(copyElement);
+        verify(newProdCmptInstance).setQualifiedName("qualified.Name");
         verifyNoMoreInteractions(newProdCmptInstance);
     }
 
