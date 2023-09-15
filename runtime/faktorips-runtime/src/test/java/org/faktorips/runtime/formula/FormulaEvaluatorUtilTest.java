@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
@@ -76,7 +75,7 @@ public class FormulaEvaluatorUtilTest {
             protected IBranch getTargetInternal(ITree sourceObject) {
                 return sourceObject.getBranch();
             }
-        }.getTargets(Arrays.asList(tree));
+        }.getTargets(List.of(tree));
         assertNotNull(targets);
         assertEquals(1, targets.size());
         assertEquals(branch, targets.get(0));
@@ -92,14 +91,14 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testAssociationToManyHelper() {
         IBranch branch2 = mock(IBranch.class);
-        when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
+        when(tree.getBranches()).thenReturn(List.of(branch, branch2));
         List<? extends IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
 
             @Override
             protected List<IBranch> getTargetsInternal(ITree sourceObject) {
                 return sourceObject.getBranches();
             }
-        }.getTargets(Arrays.asList(tree));
+        }.getTargets(List.of(tree));
         assertNotNull(targets);
         assertEquals(2, targets.size());
         assertEquals(branch, targets.get(0));
@@ -119,15 +118,15 @@ public class FormulaEvaluatorUtilTest {
         IBranch branch2 = mock(IBranch.class);
         ITree tree2 = mock(ITree.class);
         IBranch branch3 = mock(IBranch.class);
-        when(tree.getBranches()).thenReturn(Arrays.asList(branch, branch2));
-        when(tree2.getBranches()).thenReturn(Arrays.asList(branch2, branch3));
+        when(tree.getBranches()).thenReturn(List.of(branch, branch2));
+        when(tree2.getBranches()).thenReturn(List.of(branch2, branch3));
         List<? extends IBranch> targets = new AssociationToManyHelper<ITree, IBranch>() {
 
             @Override
             protected List<IBranch> getTargetsInternal(ITree sourceObject) {
                 return sourceObject.getBranches();
             }
-        }.getTargets(Arrays.asList(tree, tree2));
+        }.getTargets(List.of(tree, tree2));
         assertNotNull(targets);
         assertEquals(3, targets.size());
         assertEquals(branch, targets.get(0));
@@ -176,10 +175,10 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testGetModelObjectByIdListOfTString() {
         when(treePC.getId()).thenReturn("id1");
-        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(tree), "id2");
+        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(tree), "id2");
         assertNull(modelObject);
 
-        modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(tree), "id1");
+        modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(tree), "id1");
         assertNotNull(modelObject);
         assertEquals(tree, modelObject);
 
@@ -198,7 +197,7 @@ public class FormulaEvaluatorUtilTest {
         when(tree4.getProductComponent()).thenReturn(treePC4);
         when(treePC4.getId()).thenReturn("id2");
 
-        modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(tree, tree2, tree3, tree4), "id2");
+        modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(tree, tree2, tree3, tree4), "id2");
         assertNotNull(modelObject);
         assertEquals(tree2, modelObject);
     }
@@ -212,7 +211,7 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetModelObjectByIdListOfTString_emptyList() {
-        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(new ArrayList<ITree>(), "id1");
+        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(new ArrayList<>(), "id1");
         assertNull(modelObject);
     }
 
@@ -226,7 +225,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testGetModelObjectByIdListOfTString_notInList() {
         when(treePC.getId()).thenReturn("id1");
-        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(tree), "id2");
+        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(tree), "id2");
         assertNull(modelObject);
     }
 
@@ -240,7 +239,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testGetModelObjectByIdListOfTString_singleTarget() {
         when(treePC.getId()).thenReturn("id1");
-        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(tree), "id1");
+        ITree modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(tree), "id1");
         assertNotNull(modelObject);
         assertEquals(tree, modelObject);
     }
@@ -254,7 +253,7 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetModelObjectByIdListOfTString_notConfigurable() {
-        IBranch modelObject = FormulaEvaluatorUtil.getModelObjectById(Arrays.asList(branch), "id1");
+        IBranch modelObject = FormulaEvaluatorUtil.getModelObjectById(List.of(branch), "id1");
         assertNull(modelObject);
     }
 
@@ -327,7 +326,7 @@ public class FormulaEvaluatorUtilTest {
         when(treePC3.getId()).thenReturn("id3");
 
         List<? extends ITree> modelObjectList = FormulaEvaluatorUtil
-                .getListModelObjectById(Arrays.asList(tree, tree2, tree22, tree3), "id2");
+                .getListModelObjectById(List.of(tree, tree2, tree22, tree3), "id2");
         assertFalse(modelObjectList.isEmpty());
         assertEquals(2, modelObjectList.size());
     }
@@ -341,7 +340,7 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetListModelObjectByIdListOfTString_emptyList() {
-        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<ITree>(),
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(new ArrayList<>(),
                 "id1");
         assertTrue(modelObjectList.isEmpty());
     }
@@ -356,7 +355,7 @@ public class FormulaEvaluatorUtilTest {
     @Test
     public void testGetListModelObjectByIdListOfTString_notInList() {
         when(treePC.getId()).thenReturn("id1");
-        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(tree), "id2");
+        List<? extends ITree> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(List.of(tree), "id2");
         assertTrue(modelObjectList.isEmpty());
     }
 
@@ -369,7 +368,7 @@ public class FormulaEvaluatorUtilTest {
      */
     @Test
     public void testGetListModelObjectByIdListOfTString_notConfigurable() {
-        List<? extends IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(Arrays.asList(branch),
+        List<? extends IBranch> modelObjectList = FormulaEvaluatorUtil.getListModelObjectById(List.of(branch),
                 "id1");
         assertTrue(modelObjectList.isEmpty());
     }
@@ -421,7 +420,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperSum() {
-        return new FunctionWithListAsArgumentHelper<Integer>() {
+        return new FunctionWithListAsArgumentHelper<>() {
             @Override
             public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
                 return currentResult + nextElement;
@@ -435,7 +434,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected List<Integer> setUpIntList(Integer... values) {
-        return new ArrayList<>(Arrays.asList(values));
+        return new ArrayList<>(List.of(values));
     }
 
     @Test
@@ -460,7 +459,7 @@ public class FormulaEvaluatorUtilTest {
     }
 
     protected FunctionWithListAsArgumentHelper<Integer> setUpFunctionWithListArgumentHelperMax() {
-        return new FunctionWithListAsArgumentHelper<Integer>() {
+        return new FunctionWithListAsArgumentHelper<>() {
             @Override
             public Integer getPreliminaryResult(Integer currentResult, Integer nextElement) {
                 return Math.max(currentResult, nextElement);

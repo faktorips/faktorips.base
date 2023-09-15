@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import org.junit.Test;
@@ -96,7 +97,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Empty() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList());
+        StringBuilderJoiner.join(sb, List.of());
         sb.append(" end");
 
         assertThat(sb.toString(), is("start  end"));
@@ -105,7 +106,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Single() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo"));
+        StringBuilderJoiner.join(sb, List.of("foo"));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start foo end"));
@@ -114,7 +115,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"));
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start foo, bar end"));
@@ -132,7 +133,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Consumer_Empty() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList(), o -> sb.append(Objects.toString(o).toUpperCase()));
+        StringBuilderJoiner.join(sb, List.of(), o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start  end"));
@@ -141,7 +142,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Consumer_Single() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo"), o -> sb.append(Objects.toString(o).toUpperCase()));
+        StringBuilderJoiner.join(sb, List.of("foo"), o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start FOO end"));
@@ -150,7 +151,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Consumer_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"), o -> sb.append(Objects.toString(o).toUpperCase()));
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"), o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start FOO, BAR end"));
@@ -169,7 +170,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Consumer_Empty() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList(), "|", o -> sb.append(Objects.toString(o).toUpperCase()));
+        StringBuilderJoiner.join(sb, List.of(), "|", o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start  end"));
@@ -178,7 +179,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Consumer_Single() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo"), "|", o -> sb.append(Objects.toString(o).toUpperCase()));
+        StringBuilderJoiner.join(sb, List.of("foo"), "|", o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
         assertThat(sb.toString(), is("start FOO end"));
@@ -187,7 +188,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Consumer_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"), "|",
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"), "|",
                 o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
@@ -197,7 +198,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_NullSeparator_Consumer_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"), null,
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"), null,
                 o -> sb.append(Objects.toString(o).toUpperCase()));
         sb.append(" end");
 
@@ -217,7 +218,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Empty() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList(), "|");
+        StringBuilderJoiner.join(sb, List.of(), "|");
         sb.append(" end");
 
         assertThat(sb.toString(), is("start  end"));
@@ -226,7 +227,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Single() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo"), "|");
+        StringBuilderJoiner.join(sb, List.of("foo"), "|");
         sb.append(" end");
 
         assertThat(sb.toString(), is("start foo end"));
@@ -235,7 +236,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_Separator_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"), "|");
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"), "|");
         sb.append(" end");
 
         assertThat(sb.toString(), is("start foo|bar end"));
@@ -244,7 +245,7 @@ public class StringBuilderJoinerTest {
     @Test
     public void testJoin_Iterable_NullSeparator_Multi() throws Exception {
         StringBuilder sb = new StringBuilder("start ");
-        StringBuilderJoiner.join(sb, Arrays.asList("foo", "bar"), (String)null);
+        StringBuilderJoiner.join(sb, List.of("foo", "bar"), (String)null);
         sb.append(" end");
 
         assertThat(sb.toString(), is("start foobar end"));

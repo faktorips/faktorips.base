@@ -17,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,8 +58,8 @@ public class TableStructureTest {
         assertNotNull(columns);
         assertEquals(3, columns.size());
 
-        List<String> names = Arrays.asList("company", "Gender", "rate");
-        List<Class<?>> datatypes = Arrays.asList(String.class, Integer.class, Decimal.class);
+        List<String> names = List.of("company", "Gender", "rate");
+        List<Class<?>> datatypes = List.of(String.class, Integer.class, Decimal.class);
 
         for (int i = 0; i <= 2; i++) {
             assertEquals(names.get(i), columns.get(i).getName());
@@ -81,7 +80,7 @@ public class TableStructureTest {
 
     @Test
     public void testGetColumnnames() {
-        List<String> names = Arrays.asList("company", "Gender", "rate");
+        List<String> names = List.of("company", "Gender", "rate");
         assertEquals(names, tableStructure.getColumnNames());
     }
 

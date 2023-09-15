@@ -14,7 +14,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNull.nullValue;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,8 +45,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(
                 ModelObjectAttributes.resetIrrelevantAttributes(modelObject),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE));
         assertThat(modelObject.getIntegerAttribute(), is(nullValue()));
     }
 
@@ -103,8 +102,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(
                 ModelObjectAttributes.resetIrrelevantAttributes(modelObject),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
         assertThat(modelObject.getStringAttribute(), is(IpsStringUtils.EMPTY));
     }
 
@@ -149,8 +148,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(
                 ModelObjectAttributes.resetIrrelevantAttributes(modelObject),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_MONEY_ATTRIBUTE));
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_MONEY_ATTRIBUTE));
         assertThat(modelObject.getMoneyAttribute(), is(Money.NULL));
     }
 
@@ -195,8 +194,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(
                 ModelObjectAttributes.resetIrrelevantAttributes(modelObject),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE));
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE));
         assertThat(modelObject.getDecimalAttribute(), is(Decimal.NULL));
     }
 
@@ -231,8 +230,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(ModelObjectAttributes.resetAttributes(modelObject,
                 ModelObjectAttribute::isValuePresent),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE));
         assertThat(modelObject.getDecimalAttribute(), is(Decimal.NULL));
@@ -254,8 +253,8 @@ public class ModelObjectAttributesTest {
 
         assertAttributeIsReset(ModelObjectAttributes.resetAttributes(modelObject,
                 ModelObjectAttributes.IS_IRRELEVANT_BUT_NOT_EMPTY.or(ModelObjectAttribute::isMandatory)),
-                Arrays.asList(modelObject),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
+                List.of(modelObject),
+                List.of(TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_STRING_ATTRIBUTE,
                         TestPolicyWithVisitor.PROPERTY_MONEY_ATTRIBUTE));
     }
@@ -273,8 +272,8 @@ public class ModelObjectAttributesTest {
         List<ModelObjectAttribute> moas = ModelObjectAttributes.resetIrrelevantAttributes(policy);
 
         assertAttributeIsReset(moas,
-                Arrays.asList(policy, deckung),
-                Arrays.asList(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
+                List.of(policy, deckung),
+                List.of(TestPolicyWithVisitor.PROPERTY_DECIMAL_ATTRIBUTE,
                         TestDeckungWithVisitor.PROPERTY_MONEY_ATTRIBUTE));
     }
 

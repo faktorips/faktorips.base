@@ -140,7 +140,7 @@ public class ConstantPolicyAttributeTest {
         PolicyCmptType policyCmptType = IpsModel.getPolicyCmptType(policy);
         PolicyAttribute policyAttribute = policyCmptType.getAttribute(ConstPolicy.PROPERTY_NULL_ATTR);
 
-        assertEquals(new OrderedValueSet<Integer>(true, null), policyAttribute.getValueSet(policy, null));
+        assertEquals(new OrderedValueSet<>(true, null), policyAttribute.getValueSet(policy, null));
     }
 
     @Test

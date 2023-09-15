@@ -16,7 +16,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -167,12 +166,12 @@ public class TypeTest {
 
         @Override
         public List<ISuperTarget> getSuperTargets() {
-            return Arrays.asList((ISuperTarget)target);
+            return List.of((ISuperTarget)target);
         }
 
         @Override
         public List<? extends ITarget> getTargets() {
-            return Arrays.asList(target);
+            return List.of(target);
         }
 
     }

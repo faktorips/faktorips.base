@@ -42,7 +42,7 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
      * @throws NullPointerException if the {@link RangeType} is <code>null</code>
      */
     RangeStructure(RangeType rangeType) {
-        super(new TreeMap<K, V>());
+        super(new TreeMap<>());
         if (rangeType == null) {
             throw new NullPointerException("RangeType must not be null");
         }
@@ -93,7 +93,7 @@ public class RangeStructure<K extends Comparable<? super K>, V extends SearchStr
 
     @Override
     public RangeStructure<K, V, R> copy() {
-        return fillCopy(new RangeStructure<K, V, R>(rangeType));
+        return fillCopy(new RangeStructure<>(rangeType));
     }
 
 }

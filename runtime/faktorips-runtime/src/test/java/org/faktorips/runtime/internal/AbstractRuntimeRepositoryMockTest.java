@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,11 +22,9 @@ import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IRuntimeRepositoryLookup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +62,7 @@ public class AbstractRuntimeRepositoryMockTest {
 
         List<RealEnum> enumValues = abstractRuntimeRepository.getEnumValuesDefinedInType(RealEnum.class);
 
-        assertEquals(Arrays.asList(RealEnum.values()), enumValues);
+        assertEquals(List.of(RealEnum.values()), enumValues);
     }
 
     @Test
@@ -107,11 +105,11 @@ public class AbstractRuntimeRepositoryMockTest {
             AbstractRuntimeRepository... referencedRepositories) throws Exception {
         Field declaredField = AbstractRuntimeRepository.class.getDeclaredField("repositories");
         declaredField.setAccessible(true);
-        declaredField.set(referencingRepository, new ArrayList<IRuntimeRepository>());
+        declaredField.set(referencingRepository, new ArrayList<>());
         mockRepository(referencingRepository);
 
         for (AbstractRuntimeRepository referencedRepository : referencedRepositories) {
-            declaredField.set(referencedRepository, new ArrayList<IRuntimeRepository>());
+            declaredField.set(referencedRepository, new ArrayList<>());
             referencingRepository.addDirectlyReferencedRepository(referencedRepository);
             mockRepository(referencedRepository);
         }
@@ -140,7 +138,7 @@ public class AbstractRuntimeRepositoryMockTest {
 
         public static final ExtensibleEnum VALUE2 = new ExtensibleEnum();
 
-        public static final List<ExtensibleEnum> VALUES = Arrays.asList(VALUE1, VALUE2);
+        public static final List<ExtensibleEnum> VALUES = List.of(VALUE1, VALUE2);
 
     }
 

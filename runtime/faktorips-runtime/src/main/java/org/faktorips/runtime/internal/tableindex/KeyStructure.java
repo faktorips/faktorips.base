@@ -23,7 +23,7 @@ public class KeyStructure<K, V extends SearchStructure<R> & MergeAndCopyStructur
         AbstractMapStructure<K, V, R> implements MergeAndCopyStructure<KeyStructure<K, V, R>> {
 
     KeyStructure() {
-        super(new HashMap<K, V>());
+        super(new HashMap<>());
     }
 
     /**
@@ -61,6 +61,6 @@ public class KeyStructure<K, V extends SearchStructure<R> & MergeAndCopyStructur
 
     @Override
     public KeyStructure<K, V, R> copy() {
-        return fillCopy(new KeyStructure<K, V, R>());
+        return fillCopy(new KeyStructure<>());
     }
 }

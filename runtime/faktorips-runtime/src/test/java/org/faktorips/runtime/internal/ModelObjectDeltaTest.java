@@ -1,10 +1,10 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org Copyright (c) Faktor Zehn AG.
  * <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +48,7 @@ import org.faktorips.runtime.model.type.ValueSetKind;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ModelObjectDeltaTest {
@@ -228,7 +227,7 @@ public class ModelObjectDeltaTest {
         delta.markPropertyChanged("unkownProperty");
         List<String> properties = delta.getChangedProperties();
 
-        assertThat(properties, is(Arrays.asList("unkownProperty", "property", "additionalProperty")));
+        assertThat(properties, is(List.of("unkownProperty", "property", "additionalProperty")));
     }
 
     @Test

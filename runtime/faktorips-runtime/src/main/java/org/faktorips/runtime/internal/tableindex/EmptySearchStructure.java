@@ -10,7 +10,6 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
-import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -26,7 +25,7 @@ class EmptySearchStructure<R> extends SearchStructure<R> {
 
     @Override
     public Set<R> get() {
-        return Collections.emptySet();
+        return Set.of();
     }
 
     @Override

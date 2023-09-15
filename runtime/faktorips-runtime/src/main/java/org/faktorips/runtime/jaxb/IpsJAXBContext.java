@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -33,11 +33,12 @@ import org.w3c.dom.Node;
  * Faktor-IPS enumerations that defer their values to an enumeration content that is hold by a
  * Faktor-IPS IRuntimeRepository. See {@link #createMarshaller()} and {@link #createUnmarshaller()}
  * for more details. All other methods just delegate to the wrapped context.
- * 
+ *
  * @deprecated for removal since 23.6; use {@code org.faktorips.runtime.xml.javax.IpsJAXBContext} or
  *                 {@code org.faktorips.runtime.xml.jakarta.IpsJAXBContext} instead
  */
 @Deprecated
+@SuppressWarnings("exports")
 public class IpsJAXBContext extends JAXBContext {
 
     private JAXBContext wrappedCtx;

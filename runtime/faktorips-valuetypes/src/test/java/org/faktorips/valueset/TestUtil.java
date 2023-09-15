@@ -42,7 +42,7 @@ public abstract class TestUtil {
     }
 
     static <T> Matcher<ValueSet<T>> subsetOf(ValueSet<T> otherValueSet) {
-        return new TypeSafeMatcher<ValueSet<T>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {

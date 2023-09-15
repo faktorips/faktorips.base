@@ -14,9 +14,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Optional;
@@ -69,13 +67,13 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         productComponent = new SubProdukt();
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)23)));
         assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, effectiveDate),
@@ -96,13 +94,13 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
 
         productComponent = new SubProdukt();
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("hello", "world"))));
+                is(equalTo((Object)List.of("hello", "world"))));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)23)));
         assertThat(productCmptType.getAttribute("attr3").getValue(productComponent, null),
                 is(equalTo((Object)"foofoo")));
@@ -118,7 +116,7 @@ public class ProductAttributeTest {
         productCmptType.getAttribute("attr2").setValue(productComponent, effectiveDate, 1);
         productCmptType.getAttribute("attrGen").setValue(productComponent, effectiveDate, "newValue");
         productCmptType.getAttribute("multiString").setValue(productComponent, effectiveDate,
-                Arrays.asList("new", "value"));
+                List.of("new", "value"));
 
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"newValue")));
@@ -127,7 +125,7 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"newValue")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
-                is(equalTo((Object)Arrays.asList("new", "value"))));
+                is(equalTo((Object)List.of("new", "value"))));
     }
 
     @Test
@@ -138,7 +136,7 @@ public class ProductAttributeTest {
         productCmptType.getAttribute("attr2").setValue(productComponent, null, 1);
         productCmptType.getAttribute("attrGen").setValue(productComponent, null, "newValue");
         productCmptType.getAttribute("multiString").setValue(productComponent, null,
-                Arrays.asList("new", "value"));
+                List.of("new", "value"));
 
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null),
                 is(equalTo((Object)"newValue")));
@@ -147,7 +145,7 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("attrGen").getValue(productComponent, null),
                 is(equalTo((Object)"newValue")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
-                is(equalTo((Object)Arrays.asList("new", "value"))));
+                is(equalTo((Object)List.of("new", "value"))));
     }
 
     @Test
@@ -228,7 +226,7 @@ public class ProductAttributeTest {
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
         private Integer attr2 = 42;
-        private List<String> multiString = Arrays.asList("hello", "world");
+        private List<String> multiString = List.of("hello", "world");
 
         public Produkt() {
             super(repository, "id", "kindId", "versionId");
@@ -266,7 +264,7 @@ public class ProductAttributeTest {
 
         @IpsAttribute(name = "multiEnum", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
         public List<? extends AbstractEnumType> getMultiEnum() {
-            return Collections.emptyList();
+            return List.of();
         }
 
         @IpsAttribute(name = "deprecatedAttribute", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -323,7 +321,7 @@ public class ProductAttributeTest {
     private class SubProdukt extends Produkt {
 
         private final SubProduktGen subProduktGen = new SubProduktGen(this);
-        private final List<ConcreteEnumType> multiEnum = Arrays.asList(new ConcreteEnumType());
+        private final List<ConcreteEnumType> multiEnum = List.of(new ConcreteEnumType());
 
         @Override
         @IpsAttribute(name = "attr2", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)

@@ -650,7 +650,7 @@ public class IpsBuildMojo extends AbstractMojo {
                     .filter(p -> new File(p.getBasedir().getAbsoluteFile(), "pom.xml").exists())
                     .collect(Collectors.toList());
         }
-        return Collections.emptyList();
+        return List.of();
     }
 
     private boolean usesCustomJdk() {

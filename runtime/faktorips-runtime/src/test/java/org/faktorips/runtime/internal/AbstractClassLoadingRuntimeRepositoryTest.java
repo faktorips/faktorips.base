@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -28,7 +28,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
@@ -206,7 +205,7 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
 
     public static class TestEnum {
 
-        public static final List<TestEnum> VALUES = Arrays.asList(new TestEnum(0, "A", "A", null),
+        public static final List<TestEnum> VALUES = List.of(new TestEnum(0, "A", "A", null),
                 new TestEnum(1, "B", "B", null));
 
         private final int index;

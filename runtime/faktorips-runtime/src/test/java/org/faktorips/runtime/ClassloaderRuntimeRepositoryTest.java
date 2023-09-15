@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
@@ -306,7 +305,7 @@ public class ClassloaderRuntimeRepositoryTest {
 
             @Override
             public Set<String> getExtensionPropertyIds() {
-                return Collections.emptySet();
+                return Set.of();
             }
 
             @Override

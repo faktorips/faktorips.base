@@ -449,7 +449,7 @@ public class RelevanceTest {
     }
 
     private Matcher<ValueSet<?>> emptyRange() {
-        return new TypeSafeMatcher<ValueSet<?>>() {
+        return new TypeSafeMatcher<>() {
 
             @Override
             public void describeTo(Description description) {
@@ -476,7 +476,7 @@ public class RelevanceTest {
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_RANGE_ATTRIBUTE);
 
         assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Unrestricted),
-                is(new UnrestrictedValueSet<Integer>(false)));
+                is(new UnrestrictedValueSet<>(false)));
 
         assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, policyAttribute_Boolean),
                 is(new OrderedValueSet<>(false, null, Boolean.TRUE, Boolean.FALSE)));
@@ -494,7 +494,7 @@ public class RelevanceTest {
         TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedMandatoryValueSet();
 
         assertThat(Relevance.MANDATORY.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
-                is(new UnrestrictedValueSet<Integer>(false)));
+                is(new UnrestrictedValueSet<>(false)));
     }
 
     @Test
@@ -621,9 +621,9 @@ public class RelevanceTest {
                 .getAttribute(TestPolicyWithVisitor.PROPERTY_RANGE_ATTRIBUTE);
 
         assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Unrestricted),
-                is(new UnrestrictedValueSet<Integer>(true)));
+                is(new UnrestrictedValueSet<>(true)));
         assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_MONEY_ATTRIBUTE),
-                is(new UnrestrictedValueSet<Money>(true)));
+                is(new UnrestrictedValueSet<>(true)));
 
         assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, policyAttribute_Boolean),
                 is(new OrderedValueSet<>(true, null, Boolean.TRUE, Boolean.FALSE)));
@@ -641,7 +641,7 @@ public class RelevanceTest {
         TestPolicyWithVisitor modelObject = new TestPolicyWithDerivedOptionalValueSet();
 
         assertThat(Relevance.OPTIONAL.asValueSetFor(modelObject, TestPolicyWithVisitor.PROPERTY_INTEGER_ATTRIBUTE),
-                is(new UnrestrictedValueSet<Integer>(true)));
+                is(new UnrestrictedValueSet<>(true)));
     }
 
     @Test

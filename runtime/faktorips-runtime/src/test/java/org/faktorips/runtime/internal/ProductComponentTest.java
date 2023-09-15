@@ -26,7 +26,6 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -182,7 +181,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         when(cmpt.isChangingOverTime()).thenReturn(true);
         IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
 
-        when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
+        when(repository.getProductComponentGenerations(cmpt)).thenReturn(List.of(productComponentGeneration));
         when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900)))
                 .thenReturn(productComponentGeneration);
 
@@ -202,7 +201,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         when(cmpt.isChangingOverTime()).thenReturn(true);
         IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
 
-        when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
+        when(repository.getProductComponentGenerations(cmpt)).thenReturn(List.of(productComponentGeneration));
         when(repository.getLatestProductComponentGeneration(cmpt)).thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getLatestProductComponentGeneration());

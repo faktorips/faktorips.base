@@ -800,8 +800,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             }
         } catch (NoSuchFieldException e) {
             // No values are defined in the enum class
-            ENUMVALUECACHE.putIfAbsent(enumClass, Collections.emptyList());
-            return Collections.emptyList();
+            ENUMVALUECACHE.putIfAbsent(enumClass, List.of());
+            return List.of();
         } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

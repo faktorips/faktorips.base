@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -63,7 +62,7 @@ public class DefaultInternationalStringTest {
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.GERMANY));
         assertEquals(GERMAN_TEXT, internationalString.get(Locale.CHINESE));
         assertEquals(GERMAN_TEXT, internationalString.get(new Locale("")));
-        DefaultInternationalString internationalString2 = new DefaultInternationalString(Arrays.asList(
+        DefaultInternationalString internationalString2 = new DefaultInternationalString(List.of(
                 koreanLocalizedString, englishLocalizedString), Locale.KOREAN);
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREAN));
         assertEquals(KOREAN_TEXT, internationalString2.get(Locale.KOREA));

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,7 +12,6 @@ package org.faktorips.runtime;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -42,7 +41,7 @@ import org.faktorips.runtime.util.StringBuilderJoiner;
  * <p>
  * Message is an immutable value object. Two message objects are considered equal if they have the
  * same severity, code, text, "invalid properties" and replacement parameters.
- * 
+ *
  * @see MsgReplacementParameter
  */
 public class Message implements Serializable {
@@ -93,7 +92,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by using the fields of a {@link Builder}.
-     * 
+     *
      * @param builder the {@link Builder}
      */
     public Message(Builder builder) {
@@ -103,7 +102,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by copying everything of the given {@link Message}.
-     * 
+     *
      * @param msg the {@link Message} to copy from
      */
     public Message(Message msg) {
@@ -112,7 +111,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
      */
@@ -122,7 +121,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -133,7 +132,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -145,7 +144,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -157,7 +156,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}:
@@ -173,19 +172,19 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
      * @param invalidObjectProperties An array of object properties the message refers to
      */
     public Message(String code, String text, Severity severity, ObjectProperty... invalidObjectProperties) {
-        this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties)));
+        this(new Builder(text, severity).code(code).invalidObjects(List.of(invalidObjectProperties)));
     }
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -197,7 +196,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -211,7 +210,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -226,7 +225,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -241,7 +240,7 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -250,13 +249,13 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties,
             MsgReplacementParameter[] parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties))
+        this(new Builder(text, severity).code(code).invalidObjects(List.of(invalidObjectProperties))
                 .replacements(parameters).markers(Collections.<IMarker> emptySet()));
     }
 
     /**
      * Creates a new message by defining the following parameters.
-     * 
+     *
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
@@ -271,19 +270,19 @@ public class Message implements Serializable {
         this.text = text;
         this.severity = severity;
         if (markers != null) {
-            this.markers = Collections.unmodifiableSet(new LinkedHashSet<IMarker>(markers));
+            this.markers = Collections.unmodifiableSet(new LinkedHashSet<>(markers));
         } else {
-            this.markers = Collections.emptySet();
+            this.markers = Set.of();
         }
         if (invalidObjectProperties != null) {
-            invalidOp = Collections.unmodifiableList(new ArrayList<>(invalidObjectProperties));
+            invalidOp = List.copyOf(invalidObjectProperties);
         } else {
-            invalidOp = Collections.emptyList();
+            invalidOp = List.of();
         }
         if (parameters != null) {
-            replacementParameters = Collections.unmodifiableList(new ArrayList<>(parameters));
+            replacementParameters = List.copyOf(parameters);
         } else {
-            replacementParameters = Collections.emptyList();
+            replacementParameters = List.of();
         }
     }
 
@@ -295,7 +294,7 @@ public class Message implements Serializable {
      * Message.error("MessageText").code("1").invalidObjects("object",
      * "property").create();
      * </code>
-     * 
+     *
      * @param text The human readable text of this message
      */
     public static final Builder error(String text) {
@@ -310,7 +309,7 @@ public class Message implements Serializable {
      * Message.warning("MessageText").code("1").invalidObjects("object",
      * "property").create();
      * </code>
-     * 
+     *
      * @param text The human readable text of this message
      */
     public static final Builder warning(String text) {
@@ -325,7 +324,7 @@ public class Message implements Serializable {
      * Message.info("MessageText").code("1").invalidObjects("object",
      * "property").create();
      * </code>
-     * 
+     *
      * @param text The human readable text of this message
      */
     public static final Builder info(String text) {
@@ -353,7 +352,7 @@ public class Message implements Serializable {
     /**
      * Creates and returns a copy of the given message and replaces all references to the old object
      * with the new object.
-     * 
+     *
      * @param objectPropertyMap The <code>Map</code> between old and new <code>ObjectProperty</code>
      * @return Message
      */
@@ -374,7 +373,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new information message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      */
@@ -384,7 +383,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new information message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object
@@ -397,7 +396,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new warning message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      */
@@ -407,7 +406,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new warning message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object
@@ -418,7 +417,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new warning message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object
@@ -434,7 +433,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new error message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      */
@@ -444,7 +443,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new error message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object to refer to.
@@ -457,7 +456,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs and returns a new error message.
-     * 
+     *
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObjectProperty The invalid object properties to refer to.
@@ -499,7 +498,7 @@ public class Message implements Serializable {
      */
     public List<ObjectProperty> getInvalidObjectProperties() {
         if (invalidOp == null) {
-            return new ArrayList<>(0);
+            return List.of();
         }
         return Collections.unmodifiableList(invalidOp);
     }
@@ -520,7 +519,7 @@ public class Message implements Serializable {
      */
     public List<MsgReplacementParameter> getReplacementParameters() {
         if (replacementParameters == null) {
-            return new ArrayList<>(0);
+            return List.of();
         }
         return replacementParameters;
     }
@@ -544,7 +543,7 @@ public class Message implements Serializable {
     /**
      * Returns the value for the given replacement parameter. Returns <code>null</code> if the
      * message hasn't got a parameter with the indicated name.
-     * 
+     *
      * @see #hasReplacementParameter(String)
      */
     public Object getReplacementValue(String paramName) {
@@ -619,7 +618,7 @@ public class Message implements Serializable {
 
     /**
      * Returns true if o is a Message and severity, code and text are equal.
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -656,7 +655,7 @@ public class Message implements Serializable {
      * call {@link #invalidObjectWithProperties(Object object, String... properties)} to provide
      * some invalid object properties. When the builder has every information that is needed to
      * create a proper message call {@link #create()}.
-     * 
+     *
      * @see Message#error(String)
      * @see Message#warning(String)
      * @see Message#info(String)
@@ -678,7 +677,7 @@ public class Message implements Serializable {
         /**
          * Creates a new builder that is able to create a proper {@link Message} with all needed
          * information.
-         * 
+         *
          * @param text The human readable text of this message
          * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
          */
@@ -690,7 +689,7 @@ public class Message implements Serializable {
         /**
          * Creates a new builder from a given {@link Message} to create a copy of the
          * {@link Message} with all information.
-         * 
+         *
          * @param message the {@link Message} to copy
          */
         public Builder(Message message) {
@@ -703,7 +702,7 @@ public class Message implements Serializable {
 
         /**
          * Set the message's code that identifies the kind of the message.
-         * 
+         *
          * @param code A message code that identifies the kind of the message
          * @return This builder instance to directly add further properties
          */
@@ -714,7 +713,7 @@ public class Message implements Serializable {
 
         /**
          * Set the message's text which is human readable.
-         * 
+         *
          * @param text The human readable text of this message
          * @return This builder instance to directly add further properties
          */
@@ -725,7 +724,7 @@ public class Message implements Serializable {
 
         /**
          * Set the message's severity, in exact {@link #ERROR}, {@link #WARNING} or {@link #INFO}.
-         * 
+         *
          * @param severity Severity of the message: {@link #ERROR}, {@link #WARNING} or
          *            {@link #INFO}
          * @return This builder instance to directly add further properties
@@ -737,7 +736,7 @@ public class Message implements Serializable {
 
         /**
          * Add a list of object properties that the message refers to.
-         * 
+         *
          * @param invalidObjectProperties A list of object properties that the message refers to
          * @return This builder instance to directly add further properties
          */
@@ -748,10 +747,10 @@ public class Message implements Serializable {
 
         /**
          * Add an object property that the message refers to.
-         * 
+         *
          * @param invalidObjectProperty An object property that the message refers to
          * @return This builder instance to directly add further properties
-         * 
+         *
          */
         public Builder invalidObject(ObjectProperty invalidObjectProperty) {
             return invalidObjects(invalidObjectProperty);
@@ -759,22 +758,22 @@ public class Message implements Serializable {
 
         /**
          * Add object properties that the message refers to.
-         * 
+         *
          * @param invalidObjectProperties Object properties that the message refers to
          * @return This builder instance to directly add further properties
          */
         public Builder invalidObjects(ObjectProperty... invalidObjectProperties) {
-            return invalidObjects(Arrays.asList(invalidObjectProperties));
+            return invalidObjects(List.of(invalidObjectProperties));
         }
 
         /**
          * Add some object properties the message refers to by creating instances of
          * {@link ObjectProperty} for every given property and the given object.
-         * 
+         *
          * @param object The object the message refers to
          * @param properties Some properties the message refers to
          * @return This builder instance to directly add further properties
-         * 
+         *
          */
         public Builder invalidObjectWithProperties(Object object, String... properties) {
             if (properties.length == 0) {
@@ -789,7 +788,7 @@ public class Message implements Serializable {
 
         /**
          * A list of replacement parameters the message should reference.
-         * 
+         *
          * @param replacementParams a list of replacement parameters
          * @return This builder instance to directly add further properties
          */
@@ -800,18 +799,18 @@ public class Message implements Serializable {
 
         /**
          * Some replacement parameters the message should reference.
-         * 
+         *
          * @param replacementParams Some replacement parameters
          * @return This builder instance to directly add further properties
          */
         public Builder replacements(MsgReplacementParameter... replacementParams) {
-            this.replacementParams.addAll(Arrays.asList(replacementParams));
+            this.replacementParams.addAll(List.of(replacementParams));
             return this;
         }
 
         /**
          * Creates a new {@link MsgReplacementParameter} the message should reference
-         * 
+         *
          * @param name The name of the {@link MsgReplacementParameter}
          * @param value The value of the {@link MsgReplacementParameter}
          * @return This builder instance to directly add further properties
@@ -823,7 +822,7 @@ public class Message implements Serializable {
 
         /**
          * Set a collection of markers that should be provided to the new message.
-         * 
+         *
          * @param markers a set of markers
          * @return This builder instance to directly add further properties
          */
@@ -834,18 +833,18 @@ public class Message implements Serializable {
 
         /**
          * Set some markers that should be provided to the new message.
-         * 
+         *
          * @param markers Some markers
          * @return This builder instance to directly add further properties
          */
         public Builder markers(IMarker... markers) {
-            this.markers.addAll(Arrays.asList(markers));
+            this.markers.addAll(List.of(markers));
             return this;
         }
 
         /**
          * Creates a new {@link Message} with all previously given properties.
-         * 
+         *
          * @return A new message that has the parameters of this builder.
          */
         public Message create() {

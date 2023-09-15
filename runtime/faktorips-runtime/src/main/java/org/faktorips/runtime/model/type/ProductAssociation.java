@@ -542,7 +542,7 @@ public class ProductAssociation extends Association {
             IProductComponentLink<T> link = (IProductComponentLink<T>)invokeMethod(getLinksMethod,
                     prodCmptOrGeneration);
             if (link == null) {
-                return Collections.emptyList();
+                return List.of();
             } else {
                 return Collections.singletonList(link);
             }

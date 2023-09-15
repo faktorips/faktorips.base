@@ -134,7 +134,7 @@ public class XmlUtil {
     /**
      * This is a thread local variable because the {@link Transformer} is not thread safe.
      */
-    private static ThreadLocal<Transformer> transformerHolder = new ThreadLocal<Transformer>() {
+    private static ThreadLocal<Transformer> transformerHolder = new ThreadLocal<>() {
         @Override
         protected Transformer initialValue() {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -151,7 +151,7 @@ public class XmlUtil {
      * This is a thread local variable because the document builder is not thread safe. For every
      * thread the method {@link #createDocumentBuilder()} is called automatically
      */
-    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<DocumentBuilder>() {
+    private static ThreadLocal<DocumentBuilder> docBuilderHolder = new ThreadLocal<>() {
         @Override
         protected DocumentBuilder initialValue() {
             return createDocumentBuilder();

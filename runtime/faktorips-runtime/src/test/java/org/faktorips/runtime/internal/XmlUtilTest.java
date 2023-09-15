@@ -33,7 +33,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
@@ -204,8 +203,6 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         docBuilder.parse(new ByteArrayInputStream(xml.getBytes(UTF8)));
     }
 
-    // Ignored till FIPS-10096/FIPS-10545, when the tests are run with Java 11 instead of Java 8
-    @Ignore
     @Test
     public void testJava9NoIndentationToXmlDataContent() throws Exception {
         File xmlFile = createXmlFileAndSaveWithIdent();
@@ -232,8 +229,6 @@ public class XmlUtilTest extends XmlAbstractTestCase {
         }
     }
 
-    // Ignored till FIPS-10096/FIPS-10545, when the tests are run with Java 11 instead of Java 8
-    @Ignore
     @Test
     public void testJava9NoIndentationToXmlDataContentWithTabs() throws Exception {
         Document doc = getTestDocument();
@@ -285,8 +280,6 @@ public class XmlUtilTest extends XmlAbstractTestCase {
                         + "</DocElement>" + LF));
     }
 
-    // Ignored till FIPS-10096/FIPS-10545, when the tests are run with Java 11 instead of Java 8
-    @Ignore
     @Test
     public void testJava9NoIndentationToXmlMixedContent() throws Exception {
         File xmlFile = createXmlFileAndSaveWithIdent((d, e) -> {

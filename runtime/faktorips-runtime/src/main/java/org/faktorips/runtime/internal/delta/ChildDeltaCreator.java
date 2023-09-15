@@ -87,7 +87,7 @@ public class ChildDeltaCreator {
         if (item != null) {
             return Collections.singletonList(item);
         } else {
-            return Collections.emptyList();
+            return List.of();
         }
     }
 

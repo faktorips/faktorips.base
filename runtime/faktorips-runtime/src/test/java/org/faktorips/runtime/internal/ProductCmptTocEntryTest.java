@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -81,7 +80,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
                 new DateTime(2010, 1, 1));
         GenerationTocEntry genEntry0 = new GenerationTocEntry(entry, new DateTime(2006, 1, 1), "class", "resource");
         GenerationTocEntry genEntry1 = new GenerationTocEntry(entry, new DateTime(2005, 1, 1), "class", "resource");
-        entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
+        entry.setGenerationEntries(List.of(genEntry0, genEntry1));
 
         Element element = entry.toXml(newDocument());
         AbstractTocEntryFactory.ProductCmptTocEntryFactory productCmptTocEntryFactory = new AbstractTocEntryFactory.ProductCmptTocEntryFactory();
@@ -101,7 +100,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
         assertNull(entry.getGenerationEntry(effectiveDate));
         GenerationTocEntry genEntry0 = new GenerationTocEntry(entry, new DateTime(2005, 1, 1), "class", "resource");
         GenerationTocEntry genEntry1 = new GenerationTocEntry(entry, new DateTime(2006, 1, 1), "class", "resource");
-        entry.setGenerationEntries(Arrays.asList(genEntry0, genEntry1));
+        entry.setGenerationEntries(List.of(genEntry0, genEntry1));
         assertNull(entry.getGenerationEntry(new GregorianCalendar(2004, 11, 31)));
         assertSame(genEntry0, entry.getGenerationEntry(new GregorianCalendar(2005, 0, 1)));
         assertSame(genEntry0, entry.getGenerationEntry(new GregorianCalendar(2005, 11, 31)));
