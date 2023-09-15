@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.faktorips.runtime.CardinalityRange;
@@ -64,7 +65,7 @@ public class ProductAssociation extends Association {
 
     /**
      * Returns the model type this association belongs to.
-     * 
+     *
      * @deprecated Use {@link #getType()}
      */
     @Deprecated
@@ -75,7 +76,7 @@ public class ProductAssociation extends Association {
 
     /**
      * Returns the target type of this association.
-     * 
+     *
      */
     @Override
     public ProductCmptType getTarget() {
@@ -88,7 +89,7 @@ public class ProductAssociation extends Association {
      * generation) the date is used to retrieve the correct generation. If the date is
      * <code>null</code> the latest generation is used. If the association is not changing over time
      * the date will be ignored.
-     * 
+     *
      * @param productComponentSource a product object corresponding to the {@link ProductCmptType}
      *            this association belongs to
      * @param effectiveDate The date that should be used to get the
@@ -120,7 +121,7 @@ public class ProductAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly create a tree of
      * objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * SalesProduct <>---- Product <>---- CoverageType
@@ -128,7 +129,7 @@ public class ProductAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      products.addTargetObjects(salesProduct,
@@ -136,7 +137,7 @@ public class ProductAssociation extends Association {
      *              coverageType1, coverageType2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to add a target object to
      * @param effectiveDate The date that should be used to get the
      *            {@link IProductComponentGeneration} if this association is changing over time. May
@@ -148,7 +149,7 @@ public class ProductAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 20.6
      */
     public <S extends IProductComponent> S addTargetObjects(S source,
@@ -187,7 +188,7 @@ public class ProductAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly create a tree of
      * objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * SalesProduct <>---- Product <>---- CoverageType
@@ -195,7 +196,7 @@ public class ProductAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      products.addTargetObjects(salesProduct,
@@ -203,7 +204,7 @@ public class ProductAssociation extends Association {
      *              coverageType1, coverageType2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to add a target object to
      * @param effectiveDate the date that should be used to get the
      *            {@link IProductComponentGeneration} if this association is changing over time. May
@@ -215,7 +216,7 @@ public class ProductAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 20.6
      */
     public <S extends IProductComponent> S addTargetObjects(S source,
@@ -232,7 +233,7 @@ public class ProductAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly create a tree of
      * objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * SalesProduct <>---- Product <>---- CoverageType
@@ -240,7 +241,7 @@ public class ProductAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      products.addTargetObject(salesProduct,
@@ -248,7 +249,7 @@ public class ProductAssociation extends Association {
      *              coverageType));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to add a target object to
      * @param effectiveDate the date that should be used to get the
      *            {@link IProductComponentGeneration} if this association is changing over time. May
@@ -261,7 +262,7 @@ public class ProductAssociation extends Association {
      *             association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple target objects provided for a ..1 ("to
      *             one") association
-     * 
+     *
      * @since 20.6
      */
     public <S extends IProductComponent> S addTargetObject(S source,
@@ -296,7 +297,7 @@ public class ProductAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly remove objects in
      * a tree of objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * SalesProduct <>---- Product <>---- CoverageType
@@ -304,7 +305,7 @@ public class ProductAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      products.removeTargetObjects(SalesProduct,
@@ -312,7 +313,7 @@ public class ProductAssociation extends Association {
      *              coverageType1, coverageType2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to remove a target object from
      * @param effectiveDate the date that should be used to get the
      *            {@link IProductComponentGeneration} if this association is changing over time. May
@@ -325,7 +326,7 @@ public class ProductAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple or no target objects provided for a
      *             ..1 ("to one") association
-     * 
+     *
      * @since 20.6
      */
     public <S extends IProductComponent> S removeTargetObjects(S source,
@@ -369,7 +370,7 @@ public class ProductAssociation extends Association {
      * <p>
      * The return value is the updated source object. It could be used to directly remove objects in
      * a tree of objects. For example with a model like:
-     * 
+     *
      * <pre>
      * {@code
      * SalesProduct <>---- Product <>---- CoverageType
@@ -377,7 +378,7 @@ public class ProductAssociation extends Association {
      * </pre>
      *
      * You could write such code:
-     * 
+     *
      * <pre>
      * <code>
      *      products.removeTargetObjects(SalesProduct,
@@ -385,7 +386,7 @@ public class ProductAssociation extends Association {
      *              coverageType1, coverageType2));
      * </code>
      * </pre>
-     * 
+     *
      * @param source the object to remove a target object from
      * @param effectiveDate the date that should be used to get the
      *            {@link IProductComponentGeneration} if this association is changing over time. May
@@ -398,7 +399,7 @@ public class ProductAssociation extends Association {
      *             the case if the association {@link #isDerivedUnion() is a derived union}.
      * @throws IllegalArgumentException if there are multiple or no target objects provided for a
      *             ..1 ("to one") association
-     * 
+     *
      * @since 20.6
      */
     public <S extends IProductComponent> S removeTargetObjects(S source,
@@ -409,9 +410,9 @@ public class ProductAssociation extends Association {
 
     /**
      * Returns the {@link PolicyCmptType} identified by {@link #getMatchingAssociationSource()}
-     * 
+     *
      * @see #getMatchingAssociationSource()
-     * 
+     *
      * @return The policy component type of the matching association source
      */
     @Override
@@ -422,7 +423,7 @@ public class ProductAssociation extends Association {
     /**
      * Returns the matching policy component type association or <code>null</code> if no matching
      * association is defined for this association.
-     * 
+     *
      * @return The matching association
      */
     @Override
@@ -433,7 +434,7 @@ public class ProductAssociation extends Association {
     /**
      * Returns the matching policy component type association or an {@link Optional#empty() empty
      * Optional} if no matching association is defined for this association.
-     * 
+     *
      * @return The matching association
      */
     @Override
@@ -444,7 +445,7 @@ public class ProductAssociation extends Association {
     /**
      * Checks whether this association is changing over time (resides in the generation) or not
      * (resides in the product component).
-     * 
+     *
      * @return <code>true</code> if this association is changing over time, else <code>false</code>
      */
     public boolean isChangingOverTime() {
@@ -454,7 +455,7 @@ public class ProductAssociation extends Association {
     /**
      * Retrieves all {@link IProductComponentLink links} for this association from a product
      * component.
-     * 
+     *
      * @param prodCmpt the source product component to retrieve the links from
      * @param effectiveDate the effective-date of the adjustment (a.k.a. product component
      *            generation). Ignored if this is a static association
@@ -464,7 +465,7 @@ public class ProductAssociation extends Association {
      * @throws IllegalArgumentException if there is no method annotated with
      *             {@link IpsAssociationLinks @IpsAssociationLinks}. This is the case if the
      *             association {@link #isDerivedUnion() is a derived union}.
-     * 
+     *
      * @since 3.22
      */
     public <T extends IProductComponent> Collection<IProductComponentLink<T>> getLinks(IProductComponent prodCmpt,
@@ -477,6 +478,33 @@ public class ProductAssociation extends Association {
         }
     }
 
+    /**
+     * Retrieves the {@link IProductComponentLink link} - based on this association - from the
+     * source product component to the target product component, if one such link exists.
+     *
+     * @param source the source product component to retrieve the links from
+     * @param target the target product component of the link
+     * @param effectiveDate the effective-date of the adjustment (a.k.a. product component
+     *            generation). Ignored if this is a static association
+     *            ({@link #isChangingOverTime()}==false).
+     * @return the {@link IProductComponentLink link} - based on this association - from the source
+     *             product component to the target product component, if one such link exists
+     * @throws IllegalArgumentException if there is no method annotated with
+     *             {@link IpsAssociationLinks @IpsAssociationLinks}. This is the case if the
+     *             association {@link #isDerivedUnion() is a derived union}.
+     *
+     * @since 24.1
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends IProductComponent> Optional<IProductComponentLink<T>> getLink(IProductComponent source,
+            IProductComponent target,
+            Calendar effectiveDate) {
+        return getLinks(source, effectiveDate).stream()
+                .filter(l -> Objects.equals(l.getTarget(), target))
+                .map(l -> ((IProductComponentLink<T>)l))
+                .findFirst();
+    }
+
     @Override
     public ProductAssociation getSuperAssociation() {
         return (ProductAssociation)super.getSuperAssociation();
@@ -485,7 +513,7 @@ public class ProductAssociation extends Association {
     /**
      * ..1 associations have no remove method. Call set(null) instead. Does nothing if the currently
      * associated object is not equal to targetToReset.
-     * 
+     *
      * Uses getTargetObjects().contains() to check whether the single instance is the one that
      * should be removed.
      */

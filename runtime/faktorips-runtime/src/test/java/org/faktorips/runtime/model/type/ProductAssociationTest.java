@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -34,6 +34,7 @@ import java.util.Optional;
 import org.faktorips.runtime.CardinalityRange;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModifiableRuntimeRepository;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
@@ -288,6 +289,73 @@ public class ProductAssociationTest {
     }
 
     @Test
+    public void testGetLink_Static() {
+        Source source = new Source();
+        Target target = new Target("id2");
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target, null);
+        source.target = target;
+
+        Optional<IProductComponentLink<Target>> link = association.getLink(source, target, null);
+
+        assertTrue(link.isPresent());
+        assertSame(source.target.getId(), link.get().getTargetId());
+    }
+
+    @Test
+    public void testGetLink_to1NoLink() {
+        Source source = new Source();
+        Target target = new Target("id2");
+        source.target = target;
+
+        Optional<IProductComponentLink<Target>> link = overriddenAsso.getLink(source, target, null);
+        assertFalse(link.isPresent());
+    }
+
+    @Test
+    public void testGetLink_OnGeneration() {
+        Source source = new Source();
+        ProductGen productGen = source.productGen;
+        ProductGen productGen2 = source.productGen2;
+        Target targetGen1 = new Target("id3");
+        ((IModifiableRuntimeRepository)repository).putProductComponent(targetGen1, null);
+        productGen.target = targetGen1;
+        Target target1Gen2 = new Target("id4");
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target1Gen2, null);
+        productGen2.target = target1Gen2;
+        Target target2Gen2 = new Target("id5");
+        ((IModifiableRuntimeRepository)repository).putProductComponent(target2Gen2, null);
+        productGen2.target2 = target2Gen2;
+
+        Optional<IProductComponentLink<Target>> linkGen1 = association2.getLink(source, targetGen1, effectiveDate);
+        assertTrue(linkGen1.isPresent());
+        assertSame(productGen.target.getId(), linkGen1.get().getTargetId());
+
+        Optional<IProductComponentLink<Target>> linkGen2 = association2.getLink(source, target2Gen2,
+                new GregorianCalendar());
+        assertTrue(linkGen2.isPresent());
+        assertSame(productGen2.target2.getId(), linkGen2.get().getTargetId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetLink_NoMethod() {
+        Source source = new Source();
+        ProductAssociation association4 = productCmptType.getAssociation("asso4");
+
+        association4.getLink(source, new Target(), effectiveDate);
+    }
+
+    @Test
+    public void testGetLink_Overridden() {
+        SubSource source = new SubSource();
+        Target target = new Target("id2");
+        source.subAssoTarget = target;
+
+        Optional<IProductComponentLink<Target>> link = IpsModel.getProductCmptType(source)
+                .getAssociation("overriddenAsso").getLink(source, target, null);
+        assertFalse(link.isPresent());
+    }
+
+    @Test
     public void testIsOverriding() throws Exception {
         ProductCmptType subSource = IpsModel.getProductCmptType(SubSource.class);
         assertFalse(subSource.getAssociation("SubAsso").isOverriding());
@@ -440,7 +508,7 @@ public class ProductAssociationTest {
     public void testAddTargetObjects_ToN_DoNothingIfEmptyList() {
         Source source = new Source();
 
-        association2.addTargetObjects(source, null, new ArrayList<IProductComponent>());
+        association2.addTargetObjects(source, null, new ArrayList<>());
 
         assertThat(source.productGen.getTargets().size(), is(0));
     }
@@ -579,7 +647,7 @@ public class ProductAssociationTest {
         Target target = new Target();
         generation.addTarget(target);
 
-        association2.removeTargetObjects(source, effectiveDate, new ArrayList<IProductComponent>());
+        association2.removeTargetObjects(source, effectiveDate, new ArrayList<>());
 
         assertThat(generation.getTargets().get(0), is(target));
     }
