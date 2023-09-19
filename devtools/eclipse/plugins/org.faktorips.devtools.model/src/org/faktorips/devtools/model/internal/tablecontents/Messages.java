@@ -29,7 +29,8 @@ public class Messages extends NLS {
     public static String Row_MissingValueForUniqueKey;
     public static String Row_NameMustBeValidJavaIdentifier;
     public static String Row_ValueNotParsable;
-
+    public static String Row_NumberOfValuesIsInvalid;
+    
     public static String TableContents_msgMissingTablestructure;
     public static String TableContents_msgColumncountMismatch;
     public static String TableContents_msgNameStructureAndContentsNotSameWhenEnum;
@@ -38,6 +39,7 @@ public class Messages extends NLS {
     public static String TableContents_ReferencedColumnOrderingInvalid;
     public static String TableContents_ReferencedColumnCountInvalid;
     public static String TableContents_ReferencedColumnNamesInvalid;
+    public static String TableContents_NumberOfColumnsInvalid;
 
     public static String UniqueKeyValidator_msgUniqueKeyViolation;
     public static String UniqueKeyValidatorRange_msgTooManyUniqueKeyViolations;

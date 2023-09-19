@@ -84,7 +84,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
         if (tableStructure != null) {
             updateUniqueKeyCacheFor(newRow, tableStructure.getUniqueKeys());
         }
-
+        newRow.setNumberOfValues(columns.size());
         return newRow;
     }
 

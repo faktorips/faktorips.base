@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -48,9 +48,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int rowNumber = 0;
 
+    private int numberOfValues;
+
     Row(TableRows parent, String id) {
         super(parent, id);
         initValues();
+        numberOfValues = getNumOfColumnsViaTableContents();
     }
 
     @Override
@@ -71,6 +74,10 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private void initValues() {
         values = new ArrayList<>(Arrays.asList(new String[getNumOfColumnsViaTableContents()]));
+    }
+
+    void setNumberOfValues(int numberOfValues) {
+        this.numberOfValues = numberOfValues;
     }
 
     @Override
@@ -204,13 +211,19 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         if (tableStructure == null) {
             return;
         }
+        if (numberOfValues != getNumOfColumnsViaTableContents()) {
+            String text = MessageFormat.format(Messages.Row_NumberOfValuesIsInvalid, numberOfValues,
+                    getNumOfColumnsViaTableContents());
+            Message message = new Message(MSGCODE_NUMBER_OF_VALUES_IS_INVALID, text, Message.ERROR, this);
+            list.add(message);
+            return;
+        }
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypesByReferences(tableStructure,
                 ipsProject);
         validateThis(list, tableStructure, datatypes);
     }
 
     private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-
         List<IIndex> indices = tableStructure.getIndices();
         validateMissingAndInvalidIndexValue(result, datatypes, tableStructure, indices);
         validateRowValue(result, tableStructure, datatypes);
@@ -329,8 +342,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateRowValue(MessageList list, ITableStructure structure, ValueDatatype[] datatypes) {
         int numOfColumnsInStructure = structure.getNumOfColumns();
         for (int i = 0; i < getNumOfColumnsViaTableContents(); i++) {
-            if (i >= numOfColumnsInStructure) {
-                // datatypes couldn't be checked because structure contains no more columns
+            if (i >= numOfColumnsInStructure || i >= datatypes.length) {
+                // datatypes couldn't be checked because structure contains no more columns or
+                // column reference is missing
                 return;
             }
             IColumn column = structure.getColumn(i);

@@ -401,6 +401,12 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
         }
+        if (tableStructure.getNumOfColumns() != getNumOfColumns()) {
+            String text = MessageFormat.format(Messages.TableContents_NumberOfColumnsInvalid, getNumOfColumns(),
+                    tableStructure.getNumOfColumns());
+            Message validationMessage = new Message(MSGCODE_INVALID_NUM_OF_COLUMNS, text, Message.ERROR, this);
+            list.add(validationMessage);
+        }
         DeprecationValidation.validateTableStructureIsNotDeprecated(this, getQualifiedName(), tableStructure,
                 ipsProject, list);
         validateColumnReferences(list, tableStructure);

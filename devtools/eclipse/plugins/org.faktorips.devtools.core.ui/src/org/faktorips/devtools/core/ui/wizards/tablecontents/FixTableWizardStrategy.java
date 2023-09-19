@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -55,7 +55,9 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
 
     @Override
     public String getContentAttributeReferenceName(List<IPartReference> contentAttributeReferences, int i) {
-        return contentAttributeReferences.get(i).getName();
+        return i < contentAttributeReferences.size()
+                ? contentAttributeReferences.get(i).getName()
+                : tableContents.findTableStructure(getIpsProject()).getColumn(i).getName();
     }
 
     @Override
