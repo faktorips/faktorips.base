@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -30,7 +30,7 @@ import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Strategy implementation of {@link TabularContentStrategy}
- * 
+ *
  * @author PBui
  */
 public class FixTableContentStrategy implements TabularContentStrategy<ITableStructure, IColumn> {
@@ -87,12 +87,13 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
             AssignContentAttributesPage<ITableStructure, IColumn> assignEnumAttributesPage) {
         ITableStructure structure;
         structure = tableContents.findTableStructure(getIpsProject());
+        String defaultValue = assignEnumAttributesPage.isFillNewColumnsWithNull() ? null : IpsStringUtils.EMPTY;
         if (structure != null) {
             int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
             for (int currentPosition = 0; currentPosition < columnOrder.length; currentPosition++) {
                 if (columnOrder[currentPosition] == 0) {
                     String columnName = structure.getColumn(currentPosition).getName();
-                    tableContents.newColumn(IpsStringUtils.EMPTY, columnName);
+                    tableContents.newColumn(defaultValue, columnName);
                 }
             }
         }

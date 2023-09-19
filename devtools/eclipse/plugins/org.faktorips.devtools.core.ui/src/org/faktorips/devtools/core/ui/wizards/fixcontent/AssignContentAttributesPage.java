@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -22,11 +22,14 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.model.IIpsModel;
 import org.faktorips.devtools.model.IPartReference;
 import org.faktorips.devtools.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.model.tablestructure.ITableStructure;
 
 /**
  * The wizard page that lets the user comfortably assign {@code ContentAttribute}s of the chosen
@@ -53,6 +56,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
      */
     private Label[] labels;
     private T contentType;
+    private Checkbox fillNewColumnsWithNull;
 
     /** Creates the {@code AssignContentAttributesPage}. */
     public AssignContentAttributesPage(T contentType, UIToolkit uiToolkit,
@@ -126,6 +130,12 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
             combos[i].select(preSelectedComboIndexes[i]);
         }
 
+        if (contentType instanceof ITableStructure) {
+            fillNewColumnsWithNull = uiToolkit.createCheckbox(contents,
+                    Messages.bind(Messages.FixContentWizard_checkboxFillNewColumnsWithNull,
+                            IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
+        }
+
         scrolledControl.setContent(attributesGroup);
         scrolledControl.setExpandHorizontal(true);
         scrolledControl.setExpandVertical(true);
@@ -185,9 +195,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         }
 
         // If all columns have been assigned, fill all remaining automatically for the user.
-        if (
-
-        getCurrentlyNotAssignedColumns().size() == 0) {
+        if (getCurrentlyNotAssignedColumns().size() == 0) {
             pageComplete = true;
             for (Combo currentCombo : combos) {
                 if (currentCombo.getText().length() == 0) {
@@ -254,6 +262,10 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
             }
         }
         return columnOrder;
+    }
+
+    public boolean isFillNewColumnsWithNull() {
+        return fillNewColumnsWithNull != null & fillNewColumnsWithNull.isChecked();
     }
 
     /**
