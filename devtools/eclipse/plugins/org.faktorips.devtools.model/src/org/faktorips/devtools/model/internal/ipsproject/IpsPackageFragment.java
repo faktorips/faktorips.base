@@ -55,8 +55,8 @@ import org.faktorips.devtools.model.plugin.IpsModelActivator;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.model.util.QNameUtil;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
@@ -245,7 +245,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
             IProgressMonitor monitor) {
         String filename = type.getFileName(ipsObjectName);
         IIpsObject ipsObject = type.newObject(getIpsSrcFile(filename));
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         Element element = ipsObject.toXml(doc);
         // Newly created objects may not yet be valid, so remove validation information. It will be
         // re-added when the finalized object is saved.

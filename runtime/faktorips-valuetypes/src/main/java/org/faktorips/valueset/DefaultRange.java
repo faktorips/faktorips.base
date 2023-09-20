@@ -278,8 +278,8 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
             return 19;
         } else {
             int result = 17;
-            result = result * 37 + lowerBound.hashCode();
-            result = result * 37 + upperBound.hashCode();
+            result = (lowerBound == null) ? result : result * 37 + lowerBound.hashCode();
+            result = (upperBound == null) ? result : result * 37 + upperBound.hashCode();
             result = (step == null) ? result : result * 37 + step.hashCode();
             return result * 37 + (containsNull() ? 1 : 0);
         }

@@ -123,6 +123,14 @@ public class DefaultRangeTest {
     }
 
     @Test
+    public void testHashCode_NullValues() {
+        TestRange rangeWithNull = new TestRange(null, 5, null, true);
+        TestRange rangeWithoutNull = new TestRange(0, 5, null, true);
+
+        assertThat(rangeWithNull.hashCode(), is(not(rangeWithoutNull.hashCode())));
+    }
+
+    @Test
     public void testIsUnrestricted_EmptyRange_includesNull() {
         TestRange emptyRangeWithoutNull = new TestRange();
 

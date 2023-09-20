@@ -1,5 +1,7 @@
 package org.faktorips.devtools.stdbuilder.xtend.template
 
+import org.w3c.dom.Element
+
 class MethodNames {
 
     // ---------------------------------
@@ -156,10 +158,20 @@ class MethodNames {
     def static addValueAndReturnElement(String valueParam, String elementParam, String tagNameParam)  {     "addValueAndReturnElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")"    }
 
     def static addValueToElement(String valueParam, String elementParam, String tagNameParam)  {     "addValueToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")"    }
+    
+    def static setValue(String valueParam, String elementParam)  {
+     "setValue(" + valueParam + ", " +  elementParam + ")"
+    }
 
     def static addInternationalStringToElement(String valueParam, String elementParam, String tagNameParam)  {     "addInternationalStringToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")"    }
 
     def static getUnrestrictedValueSet(String paramConfigElement, String paramValueSet)  {     "getUnrestrictedValueSet("+ paramConfigElement + ", " + paramValueSet + ")"    }
+    
+    
+    def static deleteExistingElementAndCreateNewElement(String elementParam, String tagNameParam, String attributeNameParam) {
+      "deleteExistingElementAndCreateNewElement(" + elementParam + ", " + tagNameParam + ", " + attributeNameParam + ")"
+    }
+    
 
     // ---------------------------------
     // Methods in MultiValueXmlHelper

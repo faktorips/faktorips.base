@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -37,12 +37,12 @@ import org.faktorips.devtools.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.model.versionmanager.IIpsProjectMigrationOperationFactory;
 import org.faktorips.devtools.model.versionmanager.options.IpsEnumMigrationOption;
 import org.faktorips.devtools.model.versionmanager.options.IpsMigrationOption;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -108,7 +108,7 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
         try {
             boolean changed = false;
             InputStream is = srcFile.getContentFromEnclosingResource();
-            Document document = XmlUtil.getDefaultDocumentBuilder().parse(is);
+            Document document = XmlUtil.getDocumentBuilder().parse(is);
             Element doc = document.getDocumentElement();
             NodeList childNodes = doc.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
@@ -149,15 +149,17 @@ public class Migration_22_6_0 extends MarkAsDirtyMigration {
     }
 
     private void writeToFile(IIpsSrcFile srcFile, Element doc) {
-        XmlUtil.resetXsdValidators();
+        org.faktorips.devtools.model.util.XmlUtil.resetXsdValidators();
         try {
             if (getIpsProject().getReadOnlyProperties().isValidateIpsSchema()) {
                 String xmlNamespace = XmlUtil.XML_IPS_DEFAULT_NAMESPACE;
                 doc.setAttribute(XMLConstants.XMLNS_ATTRIBUTE, xmlNamespace);
+                doc.removeAttribute("xsi:schemaLocation");
                 doc.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
                         "xsi:schemaLocation", //$NON-NLS-1$
                         xmlNamespace + " " //$NON-NLS-1$
-                                + XmlUtil.getSchemaLocation(srcFile.getIpsObjectType()));
+                                + org.faktorips.devtools.model.util.XmlUtil
+                                        .getSchemaLocation(srcFile.getIpsObjectType()));
             }
             String xmlFileCharset = srcFile.getIpsProject().getXmlFileCharset();
             String nodeToString = XmlUtil.nodeToString(doc, xmlFileCharset,

@@ -32,10 +32,10 @@ import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.Severity;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.StringUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -233,7 +233,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
      * @see #supportsXmlSchema()
      */
     protected String getXmlSchemaLocation() {
-        return XmlUtil.getSchemaLocation(getIpsObjectType());
+        return org.faktorips.devtools.model.util.XmlUtil.getSchemaLocation(getIpsObjectType());
     }
 
     @Override
@@ -310,7 +310,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
             IProgressMonitor monitor) {
         IpsObjectType type = getIpsObjectType();
         String filename = type.getFileName(name);
-        Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+        Document doc = XmlUtil.getDocumentBuilder().newDocument();
         Element element;
 
         IIpsSrcFile ipsSrcFile;

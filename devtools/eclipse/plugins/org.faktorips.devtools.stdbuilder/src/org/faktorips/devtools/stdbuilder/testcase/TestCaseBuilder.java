@@ -94,7 +94,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
             Element element = toRuntimeTestCaseXml(doc, testCase);
             String encoding = ipsSrcFile.getIpsProject() == null ? "UTF-8" //$NON-NLS-1$
                     : testCase.getIpsProject().getXmlFileCharset();
-            content = XmlUtil.nodeToString(element, encoding);
+            content = org.faktorips.runtime.internal.XmlUtil.nodeToString(element, encoding);
             is = convertContentAsStream(content, encoding);
 
             AFile file = getXmlContentFile(ipsSrcFile);

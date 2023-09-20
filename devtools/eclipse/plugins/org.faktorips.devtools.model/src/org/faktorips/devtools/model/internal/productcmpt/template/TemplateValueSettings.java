@@ -119,7 +119,9 @@ public class TemplateValueSettings {
     }
 
     public void propertiesToXml(Element element) {
-        element.setAttribute(PROPERTY_TEMPLATE_VALUE_STATUS, status.getXmlValue());
+        if (!TemplateValueStatus.DEFINED.equals(status)) {
+            element.setAttribute(PROPERTY_TEMPLATE_VALUE_STATUS, status.getXmlValue());
+        }
     }
 
 }

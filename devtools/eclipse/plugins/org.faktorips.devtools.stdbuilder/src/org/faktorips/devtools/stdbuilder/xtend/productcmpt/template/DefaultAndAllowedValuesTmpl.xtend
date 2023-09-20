@@ -14,17 +14,18 @@ import static extension org.faktorips.devtools.stdbuilder.xtend.productcmpt.temp
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.ClassNames.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.CommonGeneratorExtensions.*
 import static extension org.faktorips.devtools.stdbuilder.xtend.template.Constants.*
+import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter
 
 class DefaultAndAllowedValuesTmpl {
 
-    def package static defaultAndAllowedValuesFields (XPolicyAttribute it) '''
+    def package static defaultAndAllowedValuesFields(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «defaultField»
             «allowedValueSetField»
         «ENDIF»
     '''
 
-    def private static defaultField (XPolicyAttribute it) '''
+    def private static defaultField(XPolicyAttribute it) '''
         /**
          *«localizedJDoc("FIELD_DEFAULTVALUE", name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -35,7 +36,7 @@ class DefaultAndAllowedValuesTmpl {
         private «javaClassName» «field(fieldNameDefaultValue)» = «defaultValueCode»;
     '''
 
-    def private static allowedValueSetField (XPolicyAttribute it) '''
+    def private static allowedValueSetField(XPolicyAttribute it) '''
         /**
          *«localizedJDoc(getJavadocKey("FIELD"), name)»
         «getAnnotations(AnnotatedJavaElementType.ELEMENT_JAVA_DOC)»
@@ -46,7 +47,7 @@ class DefaultAndAllowedValuesTmpl {
         private «getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE)» «field(fieldNameValueSet)»«IF generateConstantForValueSet» = «IF generatePublishedInterfaces && published»«policyCmptNode.interfaceName»«ELSE»«policyCmptNode.implClassName»«ENDIF».«constantNameValueSet»«ENDIF»;
     '''
 
-    def package static getterAndSetter (XPolicyAttribute it) '''
+    def package static getterAndSetter(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «getterDefaultValue»
             «setterDefaultValue»
@@ -57,11 +58,12 @@ class DefaultAndAllowedValuesTmpl {
         «ENDIF»
     '''
 
-    def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XProductClass it, XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
+    def package static allowedValuesMethodForNotOverriddenAttributesButDifferentUnifyValueSetSettings(XProductClass it,
+        XPolicyAttribute attributeSuperType, GenerateValueSetType valueSetMethods) '''
         /**
          *«localizedText("OVERRIDE_UNIFY_METHODS_JAVADOC")»
          *«IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»
-            *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
+                    *@deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
          «ENDIF»
          * @generated
          */
@@ -69,12 +71,12 @@ class DefaultAndAllowedValuesTmpl {
         «IF attributeSuperType.isDeprecatedGetAllowedValuesMethodForNotOverrideAttributesButDifferentUnifyValueSetSettings(valueSetMethods)»@Deprecated«ENDIF»
         public «attributeSuperType.getValueSetJavaClassName(valueSetMethods)» «method(attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods), attributeSuperType.getAllowedValuesMethodParameterSignature(valueSetMethods))» 
         «IF genInterface() || isAbstract()»;«ELSE» {
-          return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
-        }
+                  return «castFromTo(attributeSuperType.getValueSetJavaClassName(valueSetMethods.inverse), attributeSuperType.getValueSetJavaClassName(valueSetMethods))»super.«attributeSuperType.getMethodNameGetAllowedValuesFor(valueSetMethods.inverse)»(«attributeSuperType.allowedValuesMethodParameter(valueSetMethods, valueSetMethods.inverse)»);
+            }
         «ENDIF»
     '''
 
-    def private static getterDefaultValue (XPolicyAttribute it) '''
+    def private static getterDefaultValue(XPolicyAttribute it) '''
         /**
          *«inheritDocOrJavaDocIf(genInterface, "METHOD_GET_DEFAULTVALUE", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
@@ -85,13 +87,13 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»«javaClassName» «method(methodNameGetDefaultValue)»
         «IF genInterface || isAbstract»;«ELSE»
-        {
-            return «fieldNameDefaultValue»;
-        }
+                {
+                    return «fieldNameDefaultValue»;
+                }
         «ENDIF»
     '''
-    
-    def private static setterDefaultValue (XPolicyAttribute it) '''
+
+    def private static setterDefaultValue(XPolicyAttribute it) '''
         /**
          *«inheritDocOrJavaDocIf(genInterface, "METHOD_SET_DEFAULTVALUE", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
@@ -102,14 +104,14 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface && published, overrideGetDefaultValue && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetDefaultValue, javaClassName, fieldNameDefaultValue)»
         «IF genInterface || isAbstract»;«ELSE»
-        {
-            «checkRepositoryModifyable»
-            this.«fieldNameDefaultValue» = «fieldNameDefaultValue»;
-        }
+                {
+                    «checkRepositoryModifyable»
+                    this.«fieldNameDefaultValue» = «fieldNameDefaultValue»;
+                }
         «ENDIF»
     '''
 
-    def private static getterAllowedValues (XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
+    def private static getterAllowedValues(XPolicyAttribute it, GenerateValueSetTypeRule rule) '''
         «IF isGenerateGetterAllowedValues(rule)»
             /**
              *«inheritDocOrJavaDocIf(genInterface, getJavadocKey("METHOD_GET"), name)»
@@ -118,21 +120,21 @@ class DefaultAndAllowedValuesTmpl {
             «IF isGetAllowedValuesMethodDeprecated(rule)»
                 * @deprecated «localizedText("DEPRECATED_UNIFY_METHODS_JAVADOC")»
             «ENDIF»
-             * @generated
-             */
+            * @generated
+            */
             «getAnnotationsForPublishedInterfaceModifierRelevant(PRODUCT_CMPT_DECL_CLASS_ATTRIBUTE_ALLOWED_VALUES, genInterface)»
             «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, isConditionForOverrideAnnotation(rule) && overwrittenAttribute.productRelevantInHierarchy)»
             «IF isGetAllowedValuesMethodDeprecated(rule)»@Deprecated«ENDIF»
             public «IF isAbstract»abstract «ENDIF»«getValueSetJavaClassName(rule.fromMethod)» «method(getMethodNameGetAllowedValuesFor(rule.fromMethod), getAllowedValuesMethodParameterSignature(rule.fromMethod))»
             «IF genInterface || isAbstract»;«ELSE»
-            {
-                return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
-            }
+                    {
+                        return «IF rule.fromMethod.generateUnified && generateBothMethodsToGetAllowedValues»«getMethodNameGetAllowedValuesFor(GenerateValueSetType.GENERATE_BY_TYPE)»(«allowedValuesMethodParameter(rule.fromMethod, GenerateValueSetType.GENERATE_BY_TYPE)»)«ELSE»«fieldNameValueSet»«ENDIF»;
+                    }
             «ENDIF»
         «ENDIF»
     '''
 
-    def private static setterAllowedValues (XPolicyAttribute it) '''
+    def private static setterAllowedValues(XPolicyAttribute it) '''
         /**
          *«inheritDocOrJavaDocIf(genInterface, "METHOD_SET_VALUESET", name)»
         «getAnnotations(ELEMENT_JAVA_DOC)»
@@ -143,20 +145,20 @@ class DefaultAndAllowedValuesTmpl {
         «overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrideSetAllowedValuesFor && overwrittenAttribute.productRelevantInHierarchy)»
         public «IF isAbstract»abstract «ENDIF»void «method(methodNameSetAllowedValuesFor, ValueSet(javaClassUsedForValueSet), fieldNameValueSet)»
         «IF genInterface || isAbstract»;«ELSE»
-        {
-            «checkRepositoryModifyable»
-            this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE))»«fieldNameValueSet»;
-        }
+                {
+                    «checkRepositoryModifyable»
+                    this.«fieldNameValueSet» = «castFromTo(ValueSet(javaClassUsedForValueSet),getValueSetJavaClassName(GenerateValueSetType.GENERATE_BY_TYPE))»«fieldNameValueSet»;
+                }
         «ENDIF»
     '''
 
-    def package static initFromXmlMethodCall (XPolicyAttribute it) '''
+    def package static initFromXmlMethodCall(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «methodNameDoInitFromXml»(configMap);
         «ENDIF»
     '''
 
-    def package static initFromXmlMethod (XPolicyAttribute it) '''
+    def package static initFromXmlMethod(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             /**
              * @generated
@@ -181,11 +183,11 @@ class DefaultAndAllowedValuesTmpl {
                     «ENDIF»
                 «ENDIF»
                 «IF valueSetStringLength»
-                	«StringLengthValueSet» stringLengthValueSet = «ValueToXmlHelper».«getStringLengthValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
-                	if (stringLengthValueSet != null) {
-                		«fieldNameValueSet» = stringLengthValueSet;
-                		return;
-                	}
+                    «StringLengthValueSet» stringLengthValueSet = «ValueToXmlHelper».«getStringLengthValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
+                    if (stringLengthValueSet != null) {
+                    	«fieldNameValueSet» = stringLengthValueSet;
+                    	return;
+                    }
                 «ENDIF»
                 «IF valueSetEnum || ((valueSetUnrestricted || valueSetStringLength || valueSetConfiguredDynamic) && enumValueSetSupported)»
                     «EnumValues» values = «ValueToXmlHelper».«getEnumValueSetFromElement("valueSetElement", XML_TAG_VALUE_SET)»;
@@ -210,27 +212,28 @@ class DefaultAndAllowedValuesTmpl {
                     }
                 «ENDIF»
             }
-        }
-         «ENDIF»
+            }
+            «ENDIF»
     '''
 
-    def package static writeAttributeToXmlMethodCall (XPolicyAttribute it) '''
+    def package static writeAttributeToXmlMethodCall(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             «methodNameWriteToXml»(element);
         «ENDIF»
     '''
 
-    def package static writeAttributeToXmlMethod (XPolicyAttribute it) '''
+    def package static writeAttributeToXmlMethod(XPolicyAttribute it) '''
         «IF generateGetAllowedValuesForAndGetDefaultValue»
             /**
              * @generated
              */
-            private void «method(methodNameWriteToXml, Element, "element")» {
-                Element defaultValueElement = «ValueToXmlHelper».«addValueAndReturnElement(toStringExpression, "element", XML_TAG_CONFIGURED_DEFAULT)»;
-                defaultValueElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE», «policyCmptNode.implClassName».«constantNamePropertyName»);
-
-                Element configuredValueSetElement = element.getOwnerDocument().createElement(«XML_TAG_CONFIGURED_VALUE_SET»);
+            private void «method(methodNameWriteToXml, Element, "element")» { 
+                Element configuredValueSetElement = «ValueToXmlHelper».«deleteExistingElementAndCreateNewElement("element", XML_TAG_CONFIGURED_VALUE_SET, policyCmptNode.implClassName+"."+constantNamePropertyName)»;
                 Element valueSetElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE_SET»);
+                «IF it.isAbstract»
+                    valueSetElement.setAttribute(«XML_ATTRIBUTE_ABSTRACT», "true");
+                «ENDIF»
+                
                 «IF valueSetUnrestricted»
                     if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
                         Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
@@ -244,39 +247,50 @@ class DefaultAndAllowedValuesTmpl {
                         «writeRange("range", it)»
                     }
                 «ELSEIF valueSetRange»
-                        «writeRange(fieldNameValueSet, it)»
+                    «writeRange(fieldNameValueSet, it)»
                 «ENDIF»
                 «IF (valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported»
                     if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
                         «writeEnumValueSet»
                     }
                 «ELSEIF valueSetEnum»
-                           «writeEnumValueSet»
+                    «writeEnumValueSet»
                 «ENDIF»
                 «IF valueSetStringLength»
                     if («fieldNameValueSet» instanceof «StringLengthValueSet») {
                         «writeStringLengthValueSet»
                     }
                 «ENDIF»
-                configuredValueSetElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE», «policyCmptNode.implClassName».«constantNamePropertyName»);
                 configuredValueSetElement.appendChild(valueSetElement);
                 element.appendChild(configuredValueSetElement);
+                
+                Element defaultValueElement = «ValueToXmlHelper».«deleteExistingElementAndCreateNewElement("element", XML_TAG_CONFIGURED_DEFAULT, policyCmptNode.implClassName+"."+constantNamePropertyName)»;
+                «ValueToXmlHelper».«setValue(toStringExpression, "defaultValueElement")»;
+                element.appendChild(defaultValueElement);
             }
         «ENDIF»
     '''
 
-
     def private static writeRange(String rangeVar, XPolicyAttribute it) '''
         Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE»);
         valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
-        valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_EMPTY», Boolean.toString(«fieldNameValueSet».«isEmpty»));
+        if («fieldNameValueSet».«empty») {
+            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_EMPTY», Boolean.toString(«fieldNameValueSet».«isEmpty»));
+        }
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"), "valueSetValuesElement", XML_TAG_LOWER_BOUND)»;
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getUpperBound()"), "valueSetValuesElement", XML_TAG_UPPER_BOUND)»;
         «ValueToXmlHelper».«addValueToElement(getToStringExpression(rangeVar + ".getStep()"), "valueSetValuesElement", XML_TAG_STEP)»;
         valueSetElement.appendChild(valueSetValuesElement);
     '''
 
-    def private static writeEnumValueSet (XPolicyAttribute it) '''
+    def private static writeEnumValueSet(XPolicyAttribute it) '''
+        «IF datatype instanceof EnumTypeDatatypeAdapter»
+            if («fieldNameValueSet».getValues(false).containsAll(«getAllEnumValuesCode("getRepository()")») && «fieldNameValueSet».«containsNull») {
+               Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
+               valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
+               valueSetElement.appendChild(valueElement);
+            } else {
+        «ENDIF»
         Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_ENUM»);
         for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(false)) {
             Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE»);
@@ -284,9 +298,12 @@ class DefaultAndAllowedValuesTmpl {
             valueSetValuesElement.appendChild(valueElement);
         }
         valueSetElement.appendChild(valueSetValuesElement);
+        «IF datatype instanceof EnumTypeDatatypeAdapter»
+            }
+        «ENDIF»
     '''
 
-    def private static writeStringLengthValueSet (XPolicyAttribute it) '''
+    def private static writeStringLengthValueSet(XPolicyAttribute it) '''
         Element stringLengthElement = element.getOwnerDocument().createElement(«XML_TAG_STRINGLENGTH»);
         stringLengthElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
         Integer maximumLength = ((«StringLengthValueSet»)«fieldNameValueSet»).getMaximumLength();

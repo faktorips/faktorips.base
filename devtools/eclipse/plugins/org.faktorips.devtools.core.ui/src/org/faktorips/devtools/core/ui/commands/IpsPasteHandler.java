@@ -71,7 +71,7 @@ import org.faktorips.devtools.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.model.plugin.IpsStatus;
 import org.faktorips.devtools.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.model.util.XmlUtil;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -382,7 +382,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         String contents;
         try {
             contents = XmlUtil.nodeToString(
-                    ipsObject.toXml(XmlUtil.getDefaultDocumentBuilder().newDocument()),
+                    ipsObject.toXml(XmlUtil.getDocumentBuilder().newDocument()),
                     encoding);
         } catch (TransformerException e) {
             throw new RuntimeException(e);

@@ -62,7 +62,6 @@ import org.faktorips.devtools.model.tablecontents.ITableContents;
 import org.faktorips.devtools.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.model.testcase.ITestCase;
 import org.faktorips.devtools.model.testcasetype.ITestCaseType;
-import org.faktorips.devtools.model.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -72,6 +71,7 @@ import org.faktorips.devtools.stdbuilder.testcasetype.TestCaseTypeClassBuilder;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.IpsStringUtils;
+import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
@@ -196,7 +196,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         String xml = null;
         try {
-            Document doc = XmlUtil.getDefaultDocumentBuilder().newDocument();
+            Document doc = XmlUtil.getDocumentBuilder().newDocument();
             IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
@@ -263,7 +263,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 InputStream is = tocFile.getContents();
                 Document doc;
                 try {
-                    DocumentBuilder builder = XmlUtil.getDefaultDocumentBuilder();
+                    DocumentBuilder builder = XmlUtil.getDocumentBuilder();
                     doc = builder.parse(is);
                 } catch (IOException | SAXException e) {
                     // can happen if the file is deleted in the filesystem, but the workspace has

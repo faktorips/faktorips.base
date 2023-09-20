@@ -82,17 +82,18 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
             assertThat(XmlUtil.getCDATAorTextContent(configuredDefaultElement), is(" test \t "));
 
             assertThat(fileContent.replaceAll(" id=\"[a-f0-9-]+\"", ""), is(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                            + "<ProductCmpt implementationClass=\"org.faktorips.sample.model.internal.ProductType\" productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
-                            + " <validTo isNull=\"true\"/>\n"
-                            + " <Description locale=\"de\"/>\n"
-                            + " <Description locale=\"en\"/>\n"
-                            + " <Generation validFrom=\"2021-01-01\"/>\n"
-                            + " <ConfiguredDefault attribute=\"TestAttribute\" templateValueStatus=\"defined\"> test \t <ExtensionProperties>\n"
-                            + "   <Value id=\"TestExtensionId\" isNull=\"false\"><![CDATA[true]]></Value>\n"
-                            + "  </ExtensionProperties>\n"
-                            + " </ConfiguredDefault>\n"
-                            + "</ProductCmpt>"));
+                    """
+                            <?xml version="1.0" encoding="UTF-8"?>
+                            <ProductCmpt implementationClass="org.faktorips.sample.model.internal.ProductType" productCmptType="ProductType" runtimeId="Product" validFrom="2021-01-01" xml:space="preserve">
+                             <validTo isNull="true"/>
+                             <Description locale="de"/>
+                             <Description locale="en"/>
+                             <Generation validFrom="2021-01-01"/>
+                             <ConfiguredDefault attribute="TestAttribute"> test 	 <ExtensionProperties>
+                               <Value id="TestExtensionId" isNull="false"><![CDATA[true]]></Value>
+                              </ExtensionProperties>
+                             </ConfiguredDefault>
+                            </ProductCmpt>"""));
 
             ProductCmptXMLBuilder productCmptXMLBuilder = findProductCmptXMLBuilder();
             productCmptXMLBuilder.build(productCmpt.getIpsSrcFile());
@@ -104,17 +105,18 @@ public class ProductCmptWithExtensionPropertiesTest extends AbstractStdBuilderTe
             assertThat(XmlUtil.getCDATAorTextContent(configuredDefaultElement), is(" test \t "));
             fileContent = getFileContent(xmlContentFile);
             assertThat(fileContent.replaceAll(" id=\"[a-f0-9-]+\"", ""), is(
-                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                            + "<ProductCmpt implementationClass=\"org.faktorips.sample.model.internal.ProductType\" productCmptType=\"ProductType\" runtimeId=\"Product\" validFrom=\"2021-01-01\" xml:space=\"preserve\">\n"
-                            + " <validTo isNull=\"true\"/>\n"
-                            + " <Description locale=\"de\"/>\n"
-                            + " <Description locale=\"en\"/>\n"
-                            + " <Generation validFrom=\"2021-01-01\"/>\n"
-                            + " <ConfiguredDefault attribute=\"TestAttribute\" templateValueStatus=\"defined\"> test \t <ExtensionProperties>\n"
-                            + "   <Value id=\"TestExtensionId\" isNull=\"false\"><![CDATA[true]]></Value>\n"
-                            + "  </ExtensionProperties>\n"
-                            + " </ConfiguredDefault>\n"
-                            + "</ProductCmpt>"));
+                    """
+                            <?xml version="1.0" encoding="UTF-8"?>
+                            <ProductCmpt implementationClass="org.faktorips.sample.model.internal.ProductType" productCmptType="ProductType" runtimeId="Product" validFrom="2021-01-01" xml:space="preserve">
+                             <validTo isNull="true"/>
+                             <Description locale="de"/>
+                             <Description locale="en"/>
+                             <Generation validFrom="2021-01-01"/>
+                             <ConfiguredDefault attribute="TestAttribute"> test 	 <ExtensionProperties>
+                               <Value id="TestExtensionId" isNull="false"><![CDATA[true]]></Value>
+                              </ExtensionProperties>
+                             </ConfiguredDefault>
+                            </ProductCmpt>"""));
         }
     }
 
