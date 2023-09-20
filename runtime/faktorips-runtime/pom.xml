@@ -12,10 +12,10 @@
     <packaging>bundle</packaging>
 
     <name>Faktor-IPS Runtime</name>
-    <description>Runtime library for Faktor-IPS. 
-    When using Java 9 or newer, you need to provide the jaxb-api. 
+    <description>Runtime library for Faktor-IPS.
+    When using the JAXB support use either faktorips-runtime-jakarta-xml or faktorips-runtime-javax-xml as dependency.
     When using CSV to read tables, add the optional dependencies to opencsv, commons-lang3 and commons-text. 
-    If you want to run Faktor-IPS tests as JUnit-Tests, you need to provide either junit (JUnit 4) or junit-jupiter-api (JUnit 5)</description>
+    If you want to run Faktor-IPS tests as JUnit tests, you need to provide either junit (JUnit 4) or junit-jupiter-api (JUnit 5).</description>
 
     <build>
         <plugins>

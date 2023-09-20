@@ -12,8 +12,8 @@
 
     <packaging>bundle</packaging>
     <name>Faktor-IPS Value Types</name>
-    <description>Value type runtime library for Faktor-IPS. 
-    When using Java 9 or newer, you need to provide the jaxb-api.</description>
+    <description>Value type runtime library for Faktor-IPS.
+    When using the JAXB support use either faktorips-runtime-jakarta-xml or faktorips-runtime-javax-xml as dependency.</description>
 
     <dependencies>
         <dependency>
