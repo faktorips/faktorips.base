@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -29,6 +28,7 @@ import org.faktorips.devtools.core.model.value.ValueTypeMismatch;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.AssignContentAttributesPage;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.DeltaFixWizardStrategy;
 import org.faktorips.devtools.core.ui.wizards.fixcontent.TabularContentStrategy;
+import org.faktorips.runtime.internal.IpsStringUtils;
 
 /**
  * Strategy implementation of {@link TabularContentStrategy}
@@ -93,12 +93,13 @@ public class FixTableContentStrategy implements TabularContentStrategy<ITableStr
         ITableStructure structure;
         try {
             structure = tableContents.findTableStructure(getIpsProject());
+            String defaultValue = assignEnumAttributesPage.isFillNewColumnsWithNull() ? null : IpsStringUtils.EMPTY;
             if (structure != null) {
                 int[] columnOrder = assignEnumAttributesPage.getColumnOrder();
                 for (int currentPosition = 0; currentPosition < columnOrder.length; currentPosition++) {
                     if (columnOrder[currentPosition] == 0) {
                         String columnName = structure.getColumn(currentPosition).getName();
-                        tableContents.newColumn(StringUtils.EMPTY, columnName);
+                        tableContents.newColumn(defaultValue, columnName);
                     }
                 }
             }

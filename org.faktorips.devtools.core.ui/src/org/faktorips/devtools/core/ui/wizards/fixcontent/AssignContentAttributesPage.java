@@ -27,7 +27,9 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IPartReference;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 /**
  * The wizard page that lets the user comfortably assign {@code ContentAttribute}s of the chosen
@@ -54,6 +56,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
      */
     private Label[] labels;
     private T contentType;
+    private Checkbox fillNewColumnsWithNull;
 
     /** Creates the {@code AssignContentAttributesPage}. */
     public AssignContentAttributesPage(T contentType, UIToolkit uiToolkit,
@@ -131,6 +134,12 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
             combos[i].select(preSelectedComboIndexes[i]);
         }
 
+        if (contentType instanceof ITableStructure) {
+            fillNewColumnsWithNull = uiToolkit.createCheckbox(contents,
+                    Messages.bind(Messages.FixContentWizard_checkboxFillNewColumnsWithNull,
+                            IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
+        }
+
         scrolledControl.setContent(attributesGroup);
         scrolledControl.setExpandHorizontal(true);
         scrolledControl.setExpandVertical(true);
@@ -190,9 +199,7 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
         }
 
         // If all columns have been assigned, fill all remaining automatically for the user.
-        if (
-
-        getCurrentlyNotAssignedColumns().size() == 0) {
+        if (getCurrentlyNotAssignedColumns().size() == 0) {
             pageComplete = true;
             for (Combo currentCombo : combos) {
                 if (currentCombo.getText().length() == 0) {
@@ -259,6 +266,10 @@ public class AssignContentAttributesPage<T extends IIpsObject, E extends ILabele
             }
         }
         return columnOrder;
+    }
+
+    public boolean isFillNewColumnsWithNull() {
+        return fillNewColumnsWithNull != null & fillNewColumnsWithNull.isChecked();
     }
 
     /**

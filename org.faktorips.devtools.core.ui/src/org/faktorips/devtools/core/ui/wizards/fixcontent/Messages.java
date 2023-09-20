@@ -42,6 +42,7 @@ public class Messages extends NLS {
     public static String FixContentWizard_assignColumnsGroup;
     public static String FixContentWizard_assignColumnMismatchPageTitle;
     public static String FixContentWizard_assignColumnsDataTypesNotMatching;
+    public static String FixContentWizard_checkboxFillNewColumnsWithNull;
 
     public static String FixContentWizard_messageMultilingual;
     public static String FixContentWizard_messageNoMultilingual;
