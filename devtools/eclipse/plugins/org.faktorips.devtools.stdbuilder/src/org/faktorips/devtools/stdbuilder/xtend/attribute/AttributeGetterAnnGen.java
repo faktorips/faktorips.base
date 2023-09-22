@@ -72,6 +72,8 @@ public class AttributeGetterAnnGen implements IAnnotationGenerator {
         return switch (attribute.getValueSet().getValueSetType()) {
             case ENUM -> ValueSetKind.Enum;
             case RANGE -> ValueSetKind.Range;
+            case STRINGLENGTH -> ValueSetKind.StringLength;
+            case DERIVED -> ValueSetKind.Derived;
             default -> ValueSetKind.AllValues;
         };
     }

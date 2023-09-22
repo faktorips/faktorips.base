@@ -16,5 +16,7 @@ package org.faktorips.runtime.model.type;
 public enum ValueSetKind {
     Enum,
     Range,
-    AllValues;
+    AllValues,
+    Derived,
+    StringLength;
 }

@@ -84,6 +84,32 @@ public class AttributeGetterAnnGenTest {
                         "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)"
                                 + System.lineSeparator())));
     }
+    
+    @Test
+    public void testCreateAnnotation_product_stringlength() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.STRINGLENGTH);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.StringLength)"
+                                + System.lineSeparator())));
+    }
+    
+    @Test
+    public void testCreateAnnotation_product_derived() throws Exception {
+        XProductAttribute xProductAttribute = xProductAttribute("foo", ValueSetType.DERIVED);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xProductAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        "@IpsAttribute(name = \"foo\", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.Derived)"
+                                + System.lineSeparator())));
+    }
 
     @Test
     public void testCreateAnnotation_policy_changeable_enum() throws Exception {
@@ -122,6 +148,34 @@ public class AttributeGetterAnnGenTest {
                 codeFragment.getSourcecode(),
                 is(equalTo(
                         ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.AllValues)"
+                                + System.lineSeparator()))));
+    }
+    
+    @Test
+    public void testCreateAnnotation_policy_changeable_stringlength() throws Exception {
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.STRINGLENGTH);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xPolicyAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.StringLength)"
+                                + System.lineSeparator()))));
+    }
+    
+    @Test
+    public void testCreateAnnotation_policy_changeable_derived() throws Exception {
+        XPolicyAttribute xPolicyAttribute = xPolicyAttribute("bar", AttributeType.CHANGEABLE,
+                ValueSetType.DERIVED);
+
+        JavaCodeFragment codeFragment = attributeGetterAnnGen.createAnnotation(xPolicyAttribute);
+
+        assertThat(
+                codeFragment.getSourcecode(),
+                is(equalTo(
+                        ("@IpsAttribute(name = \"bar\", kind = AttributeKind.CHANGEABLE, valueSetKind = ValueSetKind.Derived)"
                                 + System.lineSeparator()))));
     }
 
