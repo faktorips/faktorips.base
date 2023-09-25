@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,9 +51,12 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int rowNumber = 0;
 
+    private int numberOfValues;
+
     Row(TableRows parent, String id) {
         super(parent, id);
         initValues();
+        numberOfValues = getNumOfColumnsViaTableContents();
     }
 
     @Override
@@ -75,6 +79,10 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         values = new ArrayList<String>(Arrays.asList(new String[getNumOfColumnsViaTableContents()]));
     }
 
+    void setNumberOfValues(int numberOfValues) {
+        this.numberOfValues = numberOfValues;
+    }
+
     @Override
     public String getName() {
         return "" + (rowNumber + 1); //$NON-NLS-1$
@@ -91,8 +99,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     /**
-     * Sets the row number of this row. To keep row numbers up to date the tableContents object calls
-     * this method every time the list of rows changes.
+     * Sets the row number of this row. To keep row numbers up to date the tableContents object
+     * calls this method every time the list of rows changes.
      */
     void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
@@ -193,22 +201,29 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     /**
-     * Validates the values in this row against unique-keys and datatypes defined by the TableStructure
-     * of this row's TableContents.
+     * Validates the values in this row against unique-keys and datatypes defined by the
+     * TableStructure of this row's TableContents.
      * <p>
-     * For every unique key the TableStructure defines all columns that are part of the unique key are
-     * processed. If a column of this row does not contain a value as dictated by unique keys, a new
-     * <code>ERROR</code>-<code>Message</code> is added to the given <code>MessageList</code>.
+     * For every unique key the TableStructure defines all columns that are part of the unique key
+     * are processed. If a column of this row does not contain a value as dictated by unique keys, a
+     * new <code>ERROR</code>-<code>Message</code> is added to the given <code>MessageList</code>.
      * <p>
-     * The datatype for every column is retrieved and the corresponding value is tested. If the value
-     * does not match the datatype (is not parsable) a new <code>ERROR</code>- <code>Message</code> is
-     * added to the given <code>MessageList</code>. {@inheritDoc}
+     * The datatype for every column is retrieved and the corresponding value is tested. If the
+     * value does not match the datatype (is not parsable) a new <code>ERROR</code>-
+     * <code>Message</code> is added to the given <code>MessageList</code>. {@inheritDoc}
      */
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = findTableStructure();
         if (tableStructure == null) {
+            return;
+        }
+        if (numberOfValues != getNumOfColumnsViaTableContents()) {
+            String text = MessageFormat.format(Messages.Row_NumberOfValuesIsInvalid, numberOfValues,
+                    getNumOfColumnsViaTableContents());
+            Message message = new Message(MSGCODE_NUMBER_OF_VALUES_IS_INVALID, text, Message.ERROR, this);
+            list.add(message);
             return;
         }
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypesByReferences(tableStructure,
@@ -343,8 +358,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateRowValue(MessageList list, ITableStructure structure, ValueDatatype[] datatypes) {
         int numOfColumnsInStructure = structure.getNumOfColumns();
         for (int i = 0; i < getNumOfColumnsViaTableContents(); i++) {
-            if (i >= numOfColumnsInStructure) {
-                // datatypes couldn't be checked because structure contains no more columns
+            if (i >= numOfColumnsInStructure || i >= datatypes.length) {
+                // datatypes couldn't be checked because structure contains no more columns or
+                // column reference is missing
                 return;
             }
             IColumn column = structure.getColumn(i);

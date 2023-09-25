@@ -60,7 +60,12 @@ public class FixTableWizardStrategy implements DeltaFixWizardStrategy<ITableStru
 
     @Override
     public String getContentAttributeReferenceName(List<IPartReference> contentAttributeReferences, int i) {
-        return contentAttributeReferences.get(i).getName();
+        try {
+            return i < contentAttributeReferences.size() ? contentAttributeReferences.get(i).getName()
+                    : tableContents.findTableStructure(getIpsProject()).getColumn(i).getName();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

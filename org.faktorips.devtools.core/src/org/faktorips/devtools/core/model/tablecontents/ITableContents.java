@@ -39,6 +39,11 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
     public static final String MSGCODE_UNKNWON_STRUCTURE = MSGCODE_PREFIX + "UnknownStructure"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the number of columns is invalid.
+     */
+    String MSGCODE_INVALID_NUM_OF_COLUMNS = MSGCODE_PREFIX + "NumOfColumns"; //$NON-NLS-1$
+
+    /**
      * Validation message code to indicate that the structure has a different number of columns than
      * this content.
      * 

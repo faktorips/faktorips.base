@@ -43,6 +43,12 @@ public interface IRow extends IIpsObjectPart {
     public static final String MSGCODE_UNIQUE_KEY_FROM_COLUMN_VALUE_IS_GREATER_TO_COLUMN_VALUE = "UniqueKeyFromVolumnValueIsGreaterToColumnValue"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the number of values for this row is not matching
+     * the number of columns.
+     */
+    String MSGCODE_NUMBER_OF_VALUES_IS_INVALID = "NUMBER_OF_VALUES_IS_INVALID"; //$NON-NLS-1$
+
+    /**
      * Returns the row number as string.
      * 
      * @see org.faktorips.devtools.core.model.IIpsElement#getName()

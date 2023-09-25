@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -417,6 +418,12 @@ public class TableContents extends BaseIpsObject implements ITableContents {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
             return;
+        }
+        if (tableStructure.getNumOfColumns() != getNumOfColumns()) {
+            String text = MessageFormat.format(Messages.TableContents_NumberOfColumnsInvalid, getNumOfColumns(),
+                    tableStructure.getNumOfColumns());
+            Message validationMessage = new Message(MSGCODE_INVALID_NUM_OF_COLUMNS, text, Message.ERROR, this);
+            list.add(validationMessage);
         }
         validateColumnReferences(list, tableStructure);
         SingleTableContentsValidator singleTableContentsValidator = SingleTableContentsValidator.createFor(this);

@@ -434,6 +434,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         // or greater than the number of table contents columns.
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_TABLE_CONTENTS_REFERENCED_COLUMNS_COUNT_INVALID));
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_INVALID_NUM_OF_COLUMNS));
 
         // test validate with missing table structure
         table.setTableStructure("NONE");
@@ -481,6 +482,48 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("0.5", rows[0].getValue(1));
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
+    }
+
+    @Test
+    public void testValidate_InvalidNumberOfColumns() throws Exception {
+        IColumn column1 = structure.newColumn();
+        column1.setDatatype(Datatype.STRING.getQualifiedName());
+        column1.setName("first");
+        IColumn column2 = structure.newColumn();
+        column2.setDatatype(Datatype.STRING.getQualifiedName());
+        column2.setName("second");
+        table.setTableStructure(structure.getQualifiedName());
+        table.newColumn("1", "first");
+        table.newColumn("2", "second");
+        IColumn column3 = structure.newColumn();
+        column3.setDatatype(Datatype.STRING.getQualifiedName());
+        column3.setName("third");
+
+        MessageList msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(ITableContents.MSGCODE_INVALID_NUM_OF_COLUMNS));
+    }
+
+    @Test
+    public void testValidate_InvalidNumberOfValuesInRow() throws Exception {
+        IColumn column1 = structure.newColumn();
+        column1.setDatatype(Datatype.STRING.getQualifiedName());
+        column1.setName("first");
+        IColumn column2 = structure.newColumn();
+        column2.setDatatype(Datatype.STRING.getQualifiedName());
+        column2.setName("second");
+        IColumn column3 = structure.newColumn();
+        column3.setDatatype(Datatype.STRING.getQualifiedName());
+        column3.setName("third");
+        table.setTableStructure(structure.getQualifiedName());
+        ITableRows tableGen = table.newTableRows();
+        table.newColumn("1", "first");
+        table.newColumn("2", "second");
+        table.newColumn("3", "third");
+        Row row = (Row)tableGen.newRow();
+        row.setNumberOfValues(2);
+
+        MessageList msgList = table.validate(project);
+        assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_NUMBER_OF_VALUES_IS_INVALID));
     }
 
     @Test
