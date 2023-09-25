@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.model.plugin.IpsLog;
 import org.faktorips.devtools.model.plugin.IpsStatus;
-import org.faktorips.devtools.model.util.NetUtil;
 import org.faktorips.devtools.model.util.XmlUtil;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
@@ -49,7 +48,7 @@ public class XsdValidatorHolder extends ThreadLocal<Validator> {
 
     /**
      * Create the {@link ThreadLocal} with {@link Validator} for a specific {@link IpsObjectType}.
-     * 
+     *
      * @param ipsObjectType the IPS object type
      */
     public XsdValidatorHolder(IpsObjectType ipsObjectType) {
@@ -58,21 +57,13 @@ public class XsdValidatorHolder extends ThreadLocal<Validator> {
 
     @Override
     protected Validator initialValue() {
-
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-
-        Schema schema;
         try {
-            if (NetUtil.isSchemaReachable(ipsObjectType)
-                    && NetUtil.isUrlReachable("https://www.w3.org/2009/01/xml.xsd")) {
-                schema = factory.newSchema();
-            } else {
-                // offline developers need to copy the content of
-                // faktorips-schemas/src/main/resources to the folder
-                // org.faktorips.devtools.model/xsd-schema
-                factory.setResourceResolver(new IpsXsdResourceResolver());
-                schema = factory.newSchema(loadIpsSchemaFileFromClasspath());
-            }
+            // offline developers need to copy the content of
+            // faktorips-schemas/src/main/resources to the folder
+            // org.faktorips.devtools.model/xsd-schema
+            factory.setResourceResolver(new IpsXsdResourceResolver());
+            Schema schema = factory.newSchema(loadIpsSchemaFileFromClasspath());
             Validator validator = schema.newValidator();
             validator.setErrorHandler(new LoggingErrorHandler());
             return validator;
