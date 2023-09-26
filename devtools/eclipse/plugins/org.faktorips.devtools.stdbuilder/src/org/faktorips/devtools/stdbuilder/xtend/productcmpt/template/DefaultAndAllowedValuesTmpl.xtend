@@ -234,14 +234,14 @@ class DefaultAndAllowedValuesTmpl {
                     valueSetElement.setAttribute(«XML_ATTRIBUTE_ABSTRACT», "true");
                 «ENDIF»
                 
-                «IF valueSetUnrestricted»
+                «IF valueSetUnrestricted || valueSetDerived»
                     if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
                         Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES»);
                         valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL», Boolean.toString(«fieldNameValueSet».«containsNull»));
                         valueSetElement.appendChild(valueElement);
                     }
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetStringLength) && rangeSupported»
+                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && rangeSupported»
                     if («fieldNameValueSet» instanceof «qnameRange("?")») {
                         «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
                         «writeRange("range", it)»
@@ -249,7 +249,7 @@ class DefaultAndAllowedValuesTmpl {
                 «ELSEIF valueSetRange»
                     «writeRange(fieldNameValueSet, it)»
                 «ENDIF»
-                «IF (valueSetUnrestricted || valueSetStringLength) && enumValueSetSupported»
+                «IF (valueSetUnrestricted || valueSetDerived || valueSetStringLength) && enumValueSetSupported»
                     if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
                         «writeEnumValueSet»
                     }
