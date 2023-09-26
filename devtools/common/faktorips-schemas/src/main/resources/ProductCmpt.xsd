@@ -106,7 +106,7 @@
                 <xsd:element ref="ExtensionProperties" minOccurs="0" maxOccurs="1" />
                 <xsd:element name="Expression" type="string" minOccurs="1" maxOccurs="1" />
                 <xsd:element name="Description" type="Description" minOccurs="1" maxOccurs="unbounded" />
-                <xsd:element name="compiledExpression" type="string" minOccurs="1" maxOccurs="1" />
+                <xsd:element name="compiledExpression" type="string" minOccurs="0" maxOccurs="1" />
             </xsd:sequence>
             <xsd:attribute name="formulaSignature" type="string" use="required" />
             <xsd:attributeGroup ref="id" />
