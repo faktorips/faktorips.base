@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -31,7 +31,7 @@ import org.w3c.dom.NodeList;
  * <em>The table of contents can be extended to read toc entries for new object types by
  * implementing and registering a {@link ITocEntryFactory}.</em>
  * </p>
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableOfContents {
@@ -47,7 +47,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
     /**
      * Creates a new TOC that uses the given {@link ClassLoader} to find {@link ITocEntryFactory}
      * implementations via {@link ServiceLoader}.
-     * 
+     *
      * @param classLoader the {@link ClassLoader} used to find {@link ITocEntryFactory}
      *            implementations
      */
@@ -90,7 +90,7 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      * loader.
      *
      * @param newTocEntryFactoriesByXmlTag the new Map being initialized
-     * 
+     *
      * @see ServiceLoader
      */
     @SuppressWarnings("rawtypes")
@@ -213,6 +213,10 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
         StringBuilderJoiner.join(sb, getTableTocEntries(), System.lineSeparator());
         sb.append(System.lineSeparator());
         StringBuilderJoiner.join(sb, getTestCaseTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getModelTypeTocEntries(), System.lineSeparator());
+        sb.append(System.lineSeparator());
+        StringBuilderJoiner.join(sb, getEnumXmlAdapterTocEntries(), System.lineSeparator());
         sb.append(System.lineSeparator());
         return sb.toString();
     }
