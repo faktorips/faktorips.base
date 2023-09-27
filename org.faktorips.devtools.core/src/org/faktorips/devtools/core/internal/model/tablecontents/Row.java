@@ -193,11 +193,13 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         } else {
             values.add(defaultValue);
         }
+        numberOfValues++;
         objectHasChanged();
     }
 
     void removeColumn(int column) {
         values.remove(column);
+        numberOfValues--;
     }
 
     /**
@@ -232,7 +234,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     private void validateThis(MessageList result, ITableStructure tableStructure, ValueDatatype[] datatypes) {
-
         List<IIndex> indices = tableStructure.getIndices();
         validateMissingAndInvalidIndexValue(result, datatypes, tableStructure, indices);
         validateRowValue(result, tableStructure, datatypes);
