@@ -192,14 +192,13 @@ public class XProductAttribute extends XAttribute {
      *
      * <ul>
      * <li>For abstract attributes we never call setDefaultValue</li>
-     * <li>If the default value is not <code>null</code> then call setDefaultValue</li>
      * <li>If the attribute was configured in a super type we always call setDefaultValue. To get
      * this we could check if it is not abstract and no content code is generated.</li>
      * </ul>
      *
      */
     public boolean isCallSetDefaultValue() {
-        return !isAbstract() && (!isDefaultValueNull() || !isGenerateContentCode());
+        return !isAbstract() && !isGenerateContentCode();
     }
 
     /**
@@ -209,7 +208,18 @@ public class XProductAttribute extends XAttribute {
      * If the attribute is overwriting an other attribute we only generate code if the super
      * attribute was abstract.
      */
-    protected boolean isGenerateContentCode() {
+    public boolean isGenerateContentCode() {
         return !isAbstract() && (!isOverwrite() || getOverwrittenAttribute().isAbstract());
+    }
+
+    public boolean isGenerateConstantForValueSet() {
+        // NonExtensibleEnumValueSet können nicht generiert werden da die Werte aus einem Repository
+        // geladen werden, das im statischen Kontext nicht bekannt ist. Siehe
+        // https://jira.faktorzehn.de/browse/FIPS-3981 dazu.
+        return !isAbstract() && (!isValueSetEnum() || isNonExtensibleEnumValueSet());
+    }
+
+    public boolean isGenerateField() {
+        return !isAbstract();
     }
 }

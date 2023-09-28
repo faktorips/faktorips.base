@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,19 +13,30 @@ package org.faktorips.devtools.stdbuilder.xmodel;
 import org.apache.commons.lang3.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.abstraction.exception.IpsException;
 import org.faktorips.devtools.model.ipsobject.Modifier;
 import org.faktorips.devtools.model.type.IAttribute;
 import org.faktorips.devtools.model.util.DatatypeUtil;
+import org.faktorips.devtools.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
+import org.faktorips.devtools.model.valueset.ValueSetType;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.util.DatatypeHelperUtil;
+import org.faktorips.devtools.stdbuilder.xmodel.policycmpt.XPolicyAttribute.GenerateValueSetType;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.util.StringUtil;
+import org.faktorips.valueset.OrderedValueSet;
+import org.faktorips.valueset.StringLengthValueSet;
+import org.faktorips.valueset.UnrestrictedValueSet;
+import org.faktorips.valueset.ValueSet;
 
 /**
  * Contains common behavior for product- and policy-attributes alike.
- * 
+ *
  * @author widmaier
  */
 public abstract class XAttribute extends AbstractGeneratorModelNode {
@@ -106,7 +117,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
 
     /**
      * Return the qualified java class name of the data type for this attribute.
-     * 
+     *
      * @see #getJavaClassName()
      */
     public String getQualifiedJavaClassName() {
@@ -117,7 +128,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
      * Returns the code to create a new instance. The expression is the code to retrieve the value
      * from, e.g. another variable. The repositoryExpression is the code for getting a repository.
      * It may be needed for enumerations with separated content.
-     * 
+     *
      * @param expression The expression to get the value from
      * @param repositoryExpression the expression to get the repository
      * @return The code needed to create a new instance for a value set
@@ -130,7 +141,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
      * Returns the code to create a new instance. The expression is the code to retrieve the value
      * from, e.g. another variable. The repositoryExpression is the code for getting a repository.
      * It may be needed for enumerations with separated content.
-     * 
+     *
      * @param datatypeHelper The data type helper of the data type you need the new instance
      *            expression for
      * @param expression The expression to get the value from
@@ -149,7 +160,7 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
     /**
      * Returns <code>true</code> if this attributes data type is an enumeration-type with values in
      * type and separated content.
-     * 
+     *
      */
     public boolean isDatatypeExtensibleEnum() {
         return DatatypeUtil.isExtensibleEnumType(getDatatype());
@@ -227,5 +238,196 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
      */
     public boolean isGenerateAbstractMethods() {
         return !getGeneratorConfig().isGeneratePublishedInterfaces(getIpsProject()) && isAbstract() && !isOverwrite();
+    }
+
+    protected boolean isNonExtensibleEnumValueSet() {
+        return isValueSetEnum() && !isDatatypeExtensibleEnum();
+    }
+
+    public boolean isValueSet() {
+        return getAttribute().getValueSet() != null;
+    }
+
+    public boolean isValueSetEnum() {
+        return isValueSetOfType(ValueSetType.ENUM);
+    }
+
+    public boolean isValueSetRange() {
+        return isValueSetOfType(ValueSetType.RANGE);
+    }
+
+    public boolean isValueSetUnrestricted() {
+        return isValueSetOfType(ValueSetType.UNRESTRICTED);
+    }
+
+    public boolean isValueSetDerived() {
+        return isValueSetOfType(ValueSetType.DERIVED);
+    }
+
+    public boolean isValueSetStringLength() {
+        return isValueSetOfType(ValueSetType.STRINGLENGTH);
+    }
+
+    private boolean isValueSetOfType(ValueSetType valueSetType) {
+        return getValueSetType() == valueSetType;
+    }
+
+    public boolean isAbstractValueSet() {
+        return getAttribute().getValueSet().isAbstract();
+    }
+
+    public ValueSetType getValueSetType() {
+        return getAttribute().getValueSet().getValueSetType();
+    }
+
+    /**
+     * Returns the javadoc key used to localize the java doc. The key depends on the kind of the
+     * allowed value set and of the kind of artifact you want to generate, identified by the prefix.
+     * <p>
+     * For example the if the allowed values are configured as range and you want to generate a
+     * field for this range you call this method with prefix "FIELD". The method adds the suffix
+     * "_RANGE" and returns the key "FIELD_RANGE". Use this key with method
+     * {@link #localizedJDoc(String)} to access the translation from property file with the key
+     * "FIELD_RANGE_JAVADOC".
+     *
+     */
+    public String getJavadocKey(String prefix) {
+        if (isValueSetRange()) {
+            return prefix + "_RANGE";
+        } else if (isValueSetEnum()) {
+            return prefix + "_ALLOWED_VALUES";
+        } else {
+            return prefix + "_SET_OF_ALLOWED_VALUES";
+        }
+    }
+
+    /**
+     * Returns the java class name for value set. For example <code>ValueSet&lt;Integer&gt;</code>
+     *
+     * @return The class name of the value set
+     */
+    public String getValueSetJavaClassName(GenerateValueSetType generateValueSetType) {
+        return getValueSetJavaClassName(generateValueSetType, false);
+    }
+
+    protected String getValueSetJavaClassName(GenerateValueSetType generateValueSetType, boolean useWildcards) {
+        String wildcards = useWildcards ? "? extends " : "";
+        if (generateValueSetType.isGenerateUnified() || isValueSetUnrestricted() || isValueSetDerived()) {
+            String valueSetClass = addImport(ValueSet.class);
+            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
+        } else if (isValueSetEnum()) {
+            String valueSetClass = addImport(OrderedValueSet.class);
+            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
+        } else if (isValueSetRange()) {
+            // call this method to add import statement the type
+            getValuesetDatatypeHelper().getJavaClassName();
+            return addImport(getValuesetDatatypeHelper().getRangeJavaClassName(true));
+        } else if (isValueSetStringLength()) {
+            return addImport(ValueSet.class) + "<String>";
+        } else {
+            throw new RuntimeException("Unexpected valueset type for attribute " + getName());
+        }
+    }
+
+    /**
+     * Adds an import for the datatype's java class name and returns it. The java class may differ
+     * for value sets. For example when the type is primitive we need to use the wrapped type
+     * instead.
+     *
+     * @return The name of the java class used for value sets.
+     */
+    public String getJavaClassUsedForValueSet() {
+        return addImport(getValuesetDatatypeHelper().getValueSetJavaClassName());
+    }
+
+    public DatatypeHelper getValuesetDatatypeHelper() {
+        return StdBuilderHelper.getDatatypeHelperForValueSet(getAttribute().getIpsProject(), getDatatypeHelper());
+    }
+
+    public String getConstantNameValueSet() {
+        String constName = convertNameForConstant(getName());
+        if (isValueSetRange()) {
+            return "MAX_ALLOWED_RANGE_FOR_" + constName;
+        } else if (isValueSetStringLength()) {
+            return "MAX_ALLOWED_STRING_LENGTH_FOR_" + constName;
+        } else {
+            return "MAX_ALLOWED_VALUES_FOR_" + constName;
+        }
+    }
+
+    public String getConstantNameDefaultValue() {
+        return "DEFAULT_VALUE_FOR_" + convertNameForConstant(getFieldName());
+    }
+
+    private String convertNameForConstant(String name) {
+        String constName = name;
+        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
+            constName = StringUtil.camelCaseToUnderscore(constName, false);
+        }
+        return StringUtils.upperCase(constName);
+    }
+
+    /**
+     * Returns the code needed to instantiate a value set.
+     * <p>
+     * It is used to generate the code for the value set constant if there is a value set defined in
+     * the model.
+     *
+     * @return The code that instantiates the defined value set.
+     */
+    public String getValuesetCode() {
+        JavaCodeFragment result;
+        if (isValueSetRange()) {
+            IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
+            if (range.isEmpty()) {
+                result = new JavaCodeFragment("new ");
+                result.appendClassName(getValuesetDatatypeHelper().getRangeJavaClassName(true));
+                result.append("()");
+            } else {
+                JavaCodeFragment containsNullFrag = new JavaCodeFragment();
+                containsNullFrag.append(range.isContainsNull());
+                result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
+                        createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
+                        containsNullFrag, true);
+            }
+        } else if (isValueSetEnum()) {
+            String[] valueIds;
+            boolean containsNull;
+            if (getAttribute().getValueSet().isEnum()) {
+                IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
+                valueIds = set.getValues();
+                containsNull = !getDatatype().isPrimitive() && set.isContainsNull();
+            } else if (getDatatype() instanceof EnumDatatype) {
+                valueIds = ((EnumDatatype)getDatatype()).getAllValueIds(true);
+                containsNull = !getDatatype().isPrimitive();
+            } else {
+                throw new IllegalArgumentException("This method is only applicable to attributes "
+                        + "based on an EnumDatatype or containing an EnumValueSet.");
+            }
+            result = getValuesetDatatypeHelper().newEnumValueSetInstance(valueIds, containsNull, true);
+        } else if (isValueSetStringLength()) {
+            IStringLengthValueSet stringy = (IStringLengthValueSet)getAttribute().getValueSet();
+            result = new JavaCodeFragment("new ");
+            result.appendClassName(StringLengthValueSet.class);
+            result.append(String.format("(%1$s, %2$s)", stringy.getMaximumLength(), stringy.isContainsNull()));
+        } else {
+            result = getUnrestrictedValueSetCode();
+        }
+        addImport(result.getImportDeclaration());
+        return result.getSourcecode();
+    }
+
+    private JavaCodeFragment getUnrestrictedValueSetCode() {
+        JavaCodeFragment result = new JavaCodeFragment();
+        result.append("new "); //$NON-NLS-1$
+        result.appendClassName(UnrestrictedValueSet.class);
+        result.append("<>("); //$NON-NLS-1$
+        result.append(getAttribute().getValueSet().isContainsNull());
+        result.appendln(")"); //$NON-NLS-1$
+        return result;
+    }
+
+    private JavaCodeFragment createCastExpression(String bound) {
+        return getValuesetDatatypeHelper().createCastExpression(bound);
     }
 }

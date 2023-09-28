@@ -14,9 +14,7 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.model.builder.naming.BuilderAspect;
 import org.faktorips.devtools.model.builder.settings.ValueSetMethods;
 import org.faktorips.devtools.model.enums.EnumTypeDatatypeAdapter;
@@ -25,22 +23,13 @@ import org.faktorips.devtools.model.pctype.AttributeType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeMethod;
-import org.faktorips.devtools.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.model.valueset.IStringLengthValueSet;
 import org.faktorips.devtools.model.valueset.ValueSetType;
-import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.xmodel.GeneratorConfig;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.XMethod;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xtend.template.ClassNames;
-import org.faktorips.runtime.internal.IpsStringUtils;
-import org.faktorips.util.StringUtil;
-import org.faktorips.valueset.OrderedValueSet;
-import org.faktorips.valueset.StringLengthValueSet;
-import org.faktorips.valueset.UnrestrictedValueSet;
 import org.faktorips.valueset.ValueSet;
 
 public class XPolicyAttribute extends XAttribute {
@@ -61,10 +50,6 @@ public class XPolicyAttribute extends XAttribute {
     @Override
     public IPolicyCmptTypeAttribute getAttribute() {
         return getIpsObjectPartContainer();
-    }
-
-    public DatatypeHelper getValuesetDatatypeHelper() {
-        return StdBuilderHelper.getDatatypeHelperForValueSet(getAttribute().getIpsProject(), getDatatypeHelper());
     }
 
     @Override
@@ -173,15 +158,6 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     /**
-     * Returns the java class name for value set. For example <code>ValueSet&lt;Integer&gt;</code>
-     *
-     * @return The class name of the value set
-     */
-    public String getValueSetJavaClassName(GenerateValueSetType generateValueSetType) {
-        return getValueSetJavaClassName(generateValueSetType, false);
-    }
-
-    /**
      * Returns the java class name for value set with wildcard type. For example an
      * <code>ValueSet&lt;? extends AbstractEnumType&gt;</code>
      *
@@ -189,36 +165,6 @@ public class XPolicyAttribute extends XAttribute {
      */
     public String getValueSetJavaClassNameWithWildcard(GenerateValueSetType generateValueSetType) {
         return getValueSetJavaClassName(generateValueSetType, true);
-    }
-
-    private String getValueSetJavaClassName(GenerateValueSetType generateValueSetType, boolean useWildcards) {
-        String wildcards = useWildcards ? "? extends " : "";
-        if (generateValueSetType.isGenerateUnified() || isValueSetUnrestricted() || isValueSetDerived()) {
-            String valueSetClass = addImport(ValueSet.class);
-            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
-        } else if (isValueSetEnum()) {
-            String valueSetClass = addImport(OrderedValueSet.class);
-            return valueSetClass + "<" + wildcards + getJavaClassUsedForValueSet() + ">";
-        } else if (isValueSetRange()) {
-            // call this method to add import statement the type
-            getValuesetDatatypeHelper().getJavaClassName();
-            return addImport(getValuesetDatatypeHelper().getRangeJavaClassName(true));
-        } else if (isValueSetStringLength()) {
-            return addImport(ValueSet.class) + "<String>";
-        } else {
-            throw new RuntimeException("Unexpected valueset type for attribute " + getName());
-        }
-    }
-
-    /**
-     * Adds an import for the datatype's java class name and returns it. The java class may differ
-     * for value sets. For example when the type is primitive we need to use the wrapped type
-     * instead.
-     *
-     * @return The name of the java class used for value sets.
-     */
-    public String getJavaClassUsedForValueSet() {
-        return addImport(getValuesetDatatypeHelper().getJavaClassName());
     }
 
     public String getValueSetNullValueCode() {
@@ -396,45 +342,9 @@ public class XPolicyAttribute extends XAttribute {
         return !isAbstract() && (!isAbstractValueSet() || !isProductRelevant());
     }
 
-    private boolean isNonExtensibleEnumValueSet() {
-        return isValueSetEnum() && !isDatatypeExtensibleEnum();
-    }
-
     public boolean isOverwritingValueSetEqualType() {
         return getValueSetType()
                 .equals(getOverwrittenAttribute().getValueSetType());
-    }
-
-    public boolean isValueSet() {
-        return getAttribute().getValueSet() != null;
-    }
-
-    public boolean isValueSetEnum() {
-        return isValueSetOfType(ValueSetType.ENUM);
-    }
-
-    public boolean isValueSetRange() {
-        return isValueSetOfType(ValueSetType.RANGE);
-    }
-
-    public boolean isValueSetUnrestricted() {
-        return isValueSetOfType(ValueSetType.UNRESTRICTED);
-    }
-
-    public boolean isValueSetDerived() {
-        return isValueSetOfType(ValueSetType.DERIVED);
-    }
-
-    public boolean isValueSetStringLength() {
-        return isValueSetOfType(ValueSetType.STRINGLENGTH);
-    }
-
-    private boolean isValueSetOfType(ValueSetType valueSetType) {
-        return getValueSetType() == valueSetType;
-    }
-
-    public boolean isAbstractValueSet() {
-        return getAttribute().getValueSet().isAbstract();
     }
 
     public boolean isConsiderInDeltaComputation() {
@@ -627,10 +537,6 @@ public class XPolicyAttribute extends XAttribute {
         }
     }
 
-    public ValueSetType getValueSetType() {
-        return getAttribute().getValueSet().getValueSetType();
-    }
-
     public boolean isOverwritingAttributeWithDifferentValueSetTypeAndGenerateValueSetType() {
         if (isOverwrite() && getOverwrittenAttribute().isGenerateGetAllowedValuesForAndGetDefaultValue()) {
             ValueSetMethods superSetting = getUnifyValueSetSettingFormAttribute(getOverwrittenAttribute());
@@ -675,100 +581,6 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getFieldNameDefaultValue() {
         return "defaultValue" + StringUtils.capitalize(getFieldName());
-    }
-
-    public String getConstantNameValueSet() {
-        String constName = convertNameForConstant(getName());
-        if (isValueSetRange()) {
-            return "MAX_ALLOWED_RANGE_FOR_" + constName;
-        } else if (isValueSetStringLength()) {
-            return "MAX_ALLOWED_STRING_LENGTH_FOR_" + constName;
-        } else {
-            return "MAX_ALLOWED_VALUES_FOR_" + constName;
-        }
-    }
-
-    public String getConstantNameDefaultValue() {
-        return "DEFAULT_VALUE_FOR_" + convertNameForConstant(getFieldName());
-    }
-
-    private String convertNameForConstant(String name) {
-        String constName = name;
-        if (getGeneratorConfig().isGenerateSeparatedCamelCase()) {
-            constName = StringUtil.camelCaseToUnderscore(constName, false);
-        }
-        return StringUtils.upperCase(constName);
-    }
-
-    /**
-     * Returns the code needed to instantiate a value set.
-     * <p>
-     * It is used to generate the code for the value set constant if there is a value set defined in
-     * the model.
-     *
-     * @return The code that instantiates the defined value set.
-     */
-    public String getValuesetCode() {
-        JavaCodeFragment result;
-        if (isValueSetRange()) {
-            IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
-            if (range.isEmpty()) {
-                result = new JavaCodeFragment("new ");
-                result.appendClassName(getValuesetDatatypeHelper().getRangeJavaClassName(true));
-                result.append("()");
-            } else {
-                JavaCodeFragment containsNullFrag = new JavaCodeFragment();
-                containsNullFrag.append(range.isContainsNull());
-                result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
-                        createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
-                        containsNullFrag, true);
-            }
-        } else if (isValueSetEnum()) {
-            String[] valueIds;
-            boolean containsNull;
-            if (getAttribute().getValueSet().isEnum()) {
-                IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
-                valueIds = set.getValues();
-                containsNull = !getDatatype().isPrimitive() && set.isContainsNull();
-            } else if (getDatatype() instanceof EnumDatatype) {
-                valueIds = ((EnumDatatype)getDatatype()).getAllValueIds(true);
-                containsNull = !getDatatype().isPrimitive();
-            } else {
-                throw new IllegalArgumentException("This method is only applicable to attributes "
-                        + "based on an EnumDatatype or containing an EnumValueSet.");
-            }
-            result = getValuesetDatatypeHelper().newEnumValueSetInstance(valueIds, containsNull, true);
-        } else if (isValueSetStringLength()) {
-            IStringLengthValueSet stringy = (IStringLengthValueSet)getAttribute().getValueSet();
-            result = new JavaCodeFragment("new ");
-            result.appendClassName(StringLengthValueSet.class);
-            result.append(String.format("(%1$s, %2$s)", stringy.getMaximumLength(), stringy.isContainsNull()));
-        } else {
-            result = getUnrestrictedValueSetCode();
-        }
-        addImport(result.getImportDeclaration());
-        return result.getSourcecode();
-    }
-
-    private JavaCodeFragment getUnrestrictedValueSetCode() {
-        JavaCodeFragment result = new JavaCodeFragment();
-        result.append("new "); //$NON-NLS-1$
-        result.appendClassName(UnrestrictedValueSet.class);
-        result.append("<>("); //$NON-NLS-1$
-        result.append(getAttribute().getValueSet().isContainsNull());
-        result.appendln(")"); //$NON-NLS-1$
-        return result;
-    }
-
-    private JavaCodeFragment createCastExpression(String bound) {
-        JavaCodeFragment frag = new JavaCodeFragment();
-        if (IpsStringUtils.isEmpty(bound) && !getValuesetDatatypeHelper().getDatatype().hasNullObject()) {
-            frag.append('(');
-            frag.appendClassName(getValuesetDatatypeHelper().getJavaClassName());
-            frag.append(')');
-        }
-        frag.append(getValuesetDatatypeHelper().newInstance(bound));
-        return frag;
     }
 
     /**
@@ -846,27 +658,6 @@ public class XPolicyAttribute extends XAttribute {
 
     public String getMethodNameComputeAttribute() {
         return getAttribute().getComputationMethodSignature();
-    }
-
-    /**
-     * Returns the javadoc key used to localize the java doc. The key depends on the kind of the
-     * allowed value set and of the kind of artifact you want to generate, identified by the prefix.
-     * <p>
-     * For example the if the allowed values are configured as range and you want to generate a
-     * field for this range you call this method with prefix "FIELD". The method adds the suffix
-     * "_RANGE" and returns the key "FIELD_RANGE". Use this key with method
-     * {@link #localizedJDoc(String)} to access the translation from property file with the key
-     * "FIELD_RANGE_JAVADOC".
-     *
-     */
-    public String getJavadocKey(String prefix) {
-        if (isValueSetRange()) {
-            return prefix + "_RANGE";
-        } else if (isValueSetEnum()) {
-            return prefix + "_ALLOWED_VALUES";
-        } else {
-            return prefix + "_SET_OF_ALLOWED_VALUES";
-        }
     }
 
     /**

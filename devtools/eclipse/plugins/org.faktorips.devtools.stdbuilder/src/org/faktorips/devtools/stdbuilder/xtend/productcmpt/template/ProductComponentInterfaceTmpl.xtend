@@ -39,6 +39,10 @@ class ProductComponentInterfaceTmpl{
              «FOR it : attributes»
                  «IF published »
                      «constantForPropertyName»
+                     «IF !abstract»
+                       «constantForValueSet»
+                       «constantForDefaultValue»
+                     «ENDIF»
                  «ENDIF»
              «ENDFOR»
 

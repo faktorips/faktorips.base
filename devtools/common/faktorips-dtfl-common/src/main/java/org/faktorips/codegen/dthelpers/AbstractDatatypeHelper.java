@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -21,7 +21,7 @@ import org.faktorips.valueset.OrderedValueSet;
 
 /**
  * Abstract base class for datatype helpers.
- * 
+ *
  * @author Jan Ortmann
  */
 public abstract class AbstractDatatypeHelper implements DatatypeHelper {
@@ -114,9 +114,9 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * Code sample
-     * 
+     *
      * <pre>
      *  (IEnumValueSet)new DefaultEnumValueSet&lt;&gt;(
      *      true,
@@ -136,10 +136,10 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         frag.append("<>("); //$NON-NLS-1$
         frag.append(containsNull);
         frag.append(", "); //$NON-NLS-1$
-        frag.append(newInstance(null));
+        frag.append(newValueInstance(null));
         for (String value : values) {
             frag.append(", "); //$NON-NLS-1$
-            frag.append(newInstance(value));
+            frag.append(newValueInstance(value));
         }
         frag.appendln(")"); //$NON-NLS-1$
         return frag;
@@ -175,7 +175,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     /**
      * Helpers for immutable datatypes must override this method to create a copy of the value given
      * in the expression.
-     * 
+     *
      * @param expression The expression of which you want to get the new safe copy code fragment
      *            from
      */
@@ -193,12 +193,24 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
     /**
      * Returns {@code "null"}.
-     * 
+     *
      * {@inheritDoc}
      */
     @Override
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("null"); //$NON-NLS-1$
+    }
+
+    @Override
+    public JavaCodeFragment createCastExpression(String bound) {
+        JavaCodeFragment frag = new JavaCodeFragment();
+        if (IpsStringUtils.isEmpty(bound) && !getDatatype().hasNullObject()) {
+            frag.append('(');
+            frag.appendClassName(getJavaClassName());
+            frag.append(')');
+        }
+        frag.append(newValueInstance(bound));
+        return frag;
     }
 
 }

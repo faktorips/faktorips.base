@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.stdbuilder.xmodel.productcmpt;
 
+import static java.util.function.Predicate.not;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -93,7 +95,13 @@ public abstract class XProductClass extends XType {
      */
     @Override
     public Set<XProductAttribute> getAttributes() {
-        return filterAttributes(getAttributesIncludingNoContentGeneration());
+        return onlyWithGenerateContentCode(getAttributesIncludingNoContentGeneration());
+    }
+
+    public Set<XProductAttribute> getOverwritingAttributes() {
+        return filter(getAttributesIncludingNoContentGeneration(),
+                not(XProductAttribute::isGenerateContentCode)
+                        .and(XProductAttribute::isOverwrite));
     }
 
     /** {@return a list of the given attributes, in alphabetical order by name} */
@@ -101,9 +109,15 @@ public abstract class XProductClass extends XType {
         return attributes.stream().sorted(Comparator.comparing(XAttribute::getName)).toList();
     }
 
-    protected Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
-        return xAttributes.stream().filter(XProductAttribute::isGenerateContentCode)
-                .collect(Collectors.toCollection(LinkedHashSet<XProductAttribute>::new));
+    protected Set<XProductAttribute> onlyWithGenerateContentCode(Set<XProductAttribute> xAttributes) {
+        return filter(xAttributes, (Predicate<? super XProductAttribute>)XProductAttribute::isGenerateContentCode);
+    }
+
+    private LinkedHashSet<XProductAttribute> filter(Set<XProductAttribute> xAttributes,
+            Predicate<? super XProductAttribute> filter) {
+        return xAttributes.stream()
+                .filter(filter)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Set<XProductAttribute> getAttributesIncludingNoContentGeneration() {

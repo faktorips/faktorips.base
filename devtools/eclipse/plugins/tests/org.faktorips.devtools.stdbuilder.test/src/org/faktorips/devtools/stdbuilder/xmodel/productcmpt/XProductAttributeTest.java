@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -164,15 +164,13 @@ public class XProductAttributeTest {
     @Test
     public void testIsCallSetDefaultValue_notAbstractDefaultNotNull() throws Exception {
         mockDatatype(attribute, DATATYPE, false);
-        when(attribute.getDefaultValue()).thenReturn("anyDefault");
 
-        assertTrue(xProductAttribute.isCallSetDefaultValue());
+        assertFalse(xProductAttribute.isCallSetDefaultValue());
     }
 
     @Test
     public void testIsCallSetDefaultValue_notAbstractDefaultNullSuperAttributeAbstract() throws Exception {
         mockDatatype(attribute, DATATYPE, false);
-        when(attribute.getDefaultValue()).thenReturn(null);
         mockDatatype(superAttribute, ABSTRACT_DATATYPE, true);
         when(attribute.isOverwrite()).thenReturn(true);
         when(attribute.findOverwrittenAttribute(ipsProject)).thenReturn(superAttribute);
@@ -183,16 +181,14 @@ public class XProductAttributeTest {
     @Test
     public void testIsCallSetDefaultValue_notAbstractDefaultNotNullSuperAttributeAbstract() throws Exception {
         mockDatatype(attribute, DATATYPE, false);
-        when(attribute.getDefaultValue()).thenReturn("asdsa");
         mockDatatype(superAttribute, ABSTRACT_DATATYPE, true);
 
-        assertTrue(xProductAttribute.isCallSetDefaultValue());
+        assertFalse(xProductAttribute.isCallSetDefaultValue());
     }
 
     @Test
     public void testIsCallSetDefaultValue_notAbstractDefaultNullSuperAttributeNotAbstract() throws Exception {
         mockDatatype(attribute, DATATYPE, false);
-        when(attribute.getDefaultValue()).thenReturn(null);
         mockDatatype(superAttribute, DATATYPE, false);
         when(attribute.isOverwrite()).thenReturn(true);
         when(attribute.findOverwrittenAttribute(ipsProject)).thenReturn(superAttribute);

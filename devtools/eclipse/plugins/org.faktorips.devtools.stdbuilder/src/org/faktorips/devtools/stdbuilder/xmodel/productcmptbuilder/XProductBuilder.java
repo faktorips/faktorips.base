@@ -120,12 +120,12 @@ public class XProductBuilder extends XProductCmptClass
     @Override
     public Set<XProductAttribute> getAttributes() {
         if (isCached(XProductAttribute.class)) {
-            return filterAttributes(getCachedObjects(XProductAttribute.class));
+            return onlyWithGenerateContentCode(getCachedObjects(XProductAttribute.class));
         } else {
             Set<XProductAttribute> nodesForParts = initNodesForParts(getType().getProductCmptTypeAttributes(),
                     XProductAttribute.class);
             putToCache(nodesForParts);
-            return filterAttributes(nodesForParts);
+            return onlyWithGenerateContentCode(nodesForParts);
         }
     }
 
