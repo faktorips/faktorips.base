@@ -185,11 +185,13 @@ public class Row extends AtomicIpsObjectPart implements IRow {
         } else {
             values.add(defaultValue);
         }
+        numberOfValues++;
         objectHasChanged();
     }
 
     void removeColumn(int column) {
         values.remove(column);
+        numberOfValues--;
     }
 
     /**
