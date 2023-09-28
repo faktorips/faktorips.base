@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Valuetypes for joda Tests
 Bundle-SymbolicName: org.faktorips.valuetypes.joda.test
-Bundle-Version: 19.12.5.qualifier
+Bundle-Version: 19.12.6.qualifier
 Fragment-Host: org.faktorips.valuetypes.joda
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn GmbH
