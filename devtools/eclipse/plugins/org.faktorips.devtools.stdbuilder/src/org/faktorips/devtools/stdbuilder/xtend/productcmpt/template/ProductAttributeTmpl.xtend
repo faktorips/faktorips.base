@@ -33,7 +33,7 @@ class ProductAttributeTmpl {
              * @generated
              */
             «getAnnotations(PRODUCT_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD)»
-            private «javaClassName» «field(fieldName)»;
+            private «javaClassName» «field(fieldName)»«IF multilingual && !multiValue»=«javaClassName».EMPTY«ENDIF»;
     '''
 
     def package static abstractGetter (XProductAttribute it) '''

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -25,6 +25,7 @@ import org.faktorips.devtools.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.stdbuilder.xmodel.ModelService;
 import org.faktorips.devtools.stdbuilder.xmodel.XAttribute;
 import org.faktorips.devtools.stdbuilder.xtend.GeneratorModelContext;
+import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.values.ListUtil;
 
 /**
@@ -34,7 +35,7 @@ import org.faktorips.values.ListUtil;
  * attributes. For example it does return an special data type so you could generate most of the
  * code just like for single value data type. If you need the data type of the single value just
  * take the {@link XSingleValueOfMultiValueAttribute} model node.
- * 
+ *
  * @author dirmeier
  */
 public class XProductAttribute extends XAttribute {
@@ -109,7 +110,7 @@ public class XProductAttribute extends XAttribute {
      * {@inheritDoc}
      * <p>
      * For single value product attributes we never generate a safe copy.
-     * 
+     *
      */
     @Override
     public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
@@ -133,7 +134,12 @@ public class XProductAttribute extends XAttribute {
         String[] defaultValues = MultiValueHolder.Factory.getSplitMultiValue(getAttribute().getDefaultValue());
         List<String> defaultValueCodes = new ArrayList<>(defaultValues.length);
         for (String defaultValue : defaultValues) {
-            JavaCodeFragment fragment = super.getDatatypeHelper().newInstance(defaultValue);
+            JavaCodeFragment fragment;
+            if (defaultValue == null && isMultilingual()) {
+                fragment = new JavaCodeFragment(DefaultInternationalString.class.getSimpleName() + ".EMPTY");
+            } else {
+                fragment = super.getDatatypeHelper().newInstance(defaultValue);
+            }
             addImport(fragment.getImportDeclaration());
             defaultValueCodes.add(fragment.getSourcecode());
         }
@@ -183,14 +189,14 @@ public class XProductAttribute extends XAttribute {
 
     /**
      * The default value is set under following circumstances:
-     * 
+     *
      * <ul>
      * <li>For abstract attributes we never call setDefaultValue</li>
      * <li>If the default value is not <code>null</code> then call setDefaultValue</li>
      * <li>If the attribute was configured in a super type we always call setDefaultValue. To get
      * this we could check if it is not abstract and no content code is generated.</li>
      * </ul>
-     * 
+     *
      */
     public boolean isCallSetDefaultValue() {
         return !isAbstract() && (!isDefaultValueNull() || !isGenerateContentCode());
@@ -199,7 +205,7 @@ public class XProductAttribute extends XAttribute {
     /**
      * For abstract attributes we only generate an abstract getter but no further elements hence
      * this method returns <code>false</code>.
-     * 
+     *
      * If the attribute is overwriting an other attribute we only generate code if the super
      * attribute was abstract.
      */
