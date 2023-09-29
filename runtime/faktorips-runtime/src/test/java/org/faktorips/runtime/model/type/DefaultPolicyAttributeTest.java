@@ -196,7 +196,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ProductComponent() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
@@ -207,7 +207,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_Product_ChangingOverTime() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
 
@@ -222,7 +222,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_Product_ChangingOverTimeWithCalendar() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen gen = new ProduktGen(source);
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
         repository.putProductCmptGeneration(gen);
@@ -238,7 +238,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_Product_ChangingOverTime_Handwritten() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
 
@@ -253,7 +253,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test(expected = IllegalStateException.class)
     public void testGetValueSet_Product_ChangingOverTime_TooManyArgs() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
 
@@ -268,7 +268,7 @@ public class DefaultPolicyAttributeTest {
     public void testGetValueSet_Product_ExtensibleEnum() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
         repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen produktGen = new ProduktGen(source);
         repository.putProductCmptGeneration(produktGen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -322,7 +322,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ModelObject() {
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
@@ -382,7 +382,7 @@ public class DefaultPolicyAttributeTest {
     public void testGetValueSet_ModelObject_ExtensibleEnum() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
         repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
@@ -399,7 +399,7 @@ public class DefaultPolicyAttributeTest {
     public void testGetValueSet_ModelObject_ExtensibleEnum_NoProduct() {
         TestExtensibleEnum testExtensibleEnum = new TestExtensibleEnum(2, "a3ID", "a3Name");
         repository.putEnumValues(TestExtensibleEnum.class, Arrays.asList(testExtensibleEnum));
-        ConfVertrag vertrag = new ConfVertrag(null);
+        ConfVertrag vertrag = new ConfVertrag((Produkt)null);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
@@ -447,9 +447,9 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ModelObject_ChangingOverTime() {
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         vertrag.effectiveFrom = Calendar.getInstance();
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -462,7 +462,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ModelObject_ChangingOverTime_NoEffectiveDate() {
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -474,7 +474,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ModelObject_NotChangingOverTime_Handwritten() {
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithoutValidationContext");
@@ -486,7 +486,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test(expected = IllegalStateException.class)
     public void testGetValueSet_ModelObject_NotChangingOverTime_TooManyArgs() {
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrWithValueSetWithTooManyArgs");
@@ -515,7 +515,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetValueSet_ModelObject_NotConfiguredOnConfigurablePolicy() {
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
@@ -530,7 +530,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
-        Object defaultValue = attribute.getDefaultValue(new Produkt(), null);
+        Object defaultValue = attribute.getDefaultValue(new Produkt(repository), null);
 
         assertEquals("foobar", defaultValue);
     }
@@ -540,7 +540,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
-        Object defaultValue = attribute.getDefaultValue(new ConfVertrag());
+        Object defaultValue = attribute.getDefaultValue(new ConfVertrag(repository));
 
         assertEquals(ConfVertrag.DEFAULT_VALUE_FOR_ATTR2, defaultValue);
     }
@@ -550,17 +550,16 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrExtensibleEnum");
-        Object defaultValue = attribute.getDefaultValue(new ConfVertrag());
+        Object defaultValue = attribute.getDefaultValue(new ConfVertrag(repository));
 
         assertEquals(TestExtensibleEnum.ENUM2, defaultValue);
     }
 
-    @Test(expected = IllegalStateException.class)
     public void testGetDefaultValue_ModelObject_MissingConstant() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(DummyVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
-        attribute.getDefaultValue(new DummyVertrag());
+        assertThat(attribute.getDefaultValue(new DummyVertrag()), is(nullValue()));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -568,13 +567,13 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
-        attribute.getDefaultValue(new Produkt(), null);
+        attribute.getDefaultValue(new Produkt(repository), null);
     }
 
     @Test
     public void testGetDefaultValue_ChangingOverTimeWithCalendar() {
-        Produkt source = new Produkt();
-        ProduktGen gen = new ProduktGen();
+        Produkt source = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
         repository.putProductCmptGeneration(gen);
 
@@ -588,7 +587,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetDefaultValue_ChangingOverTime() {
-        Produkt source = new Produkt();
+        Produkt source = new Produkt(repository);
         ProduktGen gen = new ProduktGen(source);
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -604,7 +603,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.getDefaultValue(new Produkt(), null);
+        attribute.getDefaultValue(new Produkt(repository), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -619,11 +618,11 @@ public class DefaultPolicyAttributeTest {
     public void testGetDefaultValue_ModelObject() {
         GregorianCalendar effectiveFrom = new GregorianCalendar();
 
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
         repository.putProductCmptGeneration(gen);
 
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         vertrag.effectiveFrom = effectiveFrom;
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
@@ -635,9 +634,9 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testGetDefaultValue_ModelObject_NoEffectiveFrom() {
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
 
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -650,7 +649,7 @@ public class DefaultPolicyAttributeTest {
     public void testSetDefaultValue() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
-        Produkt produkt = new Produkt();
+        Produkt produkt = new Produkt(repository);
 
         attribute.setDefaultValue(produkt, null, "new");
 
@@ -662,13 +661,13 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        attribute.setDefaultValue(new Produkt(), null, "not product relevant");
+        attribute.setDefaultValue(new Produkt(repository), null, "not product relevant");
     }
 
     @Test
     public void testSetDefaultValue_ChangingOverTimeWithCalendar() {
-        Produkt produkt = new Produkt();
-        ProduktGen gen = new ProduktGen();
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -681,7 +680,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testSetDefaultValue_ChangingOverTime() {
-        Produkt produkt = new Produkt();
+        Produkt produkt = new Produkt(repository);
         ProduktGen gen = new ProduktGen(produkt);
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -697,7 +696,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setDefaultValue(new Produkt(), null, "new");
+        attribute.setDefaultValue(new Produkt(repository), null, "new");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -711,10 +710,10 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testSetDefaultValue_ModelObject() {
         GregorianCalendar effectiveFrom = new GregorianCalendar();
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         vertrag.effectiveFrom = effectiveFrom;
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -726,9 +725,9 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testSetDefaultValue_ModelObject_NoEffectiveFrom() {
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
 
@@ -741,7 +740,7 @@ public class DefaultPolicyAttributeTest {
     public void testSetValueSet() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
-        Produkt produkt = new Produkt();
+        Produkt produkt = new Produkt(repository);
         OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
 
         attribute.setValueSet(produkt, null, valueSet);
@@ -753,7 +752,7 @@ public class DefaultPolicyAttributeTest {
     public void testSetValueSet_WithWrongGenericType() {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
-        Produkt produkt = new Produkt();
+        Produkt produkt = new Produkt(repository);
         OrderedValueSet<Integer> valueSet = new OrderedValueSet<>(false, null, 1, 2, 3);
 
         attribute.setValueSet(produkt, null, valueSet);
@@ -778,13 +777,13 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr2");
 
-        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<>());
+        attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
     }
 
     @Test
     public void testSetValueSet_ChangingOverTimeWithCalendar() {
-        Produkt produkt = new Produkt();
-        ProduktGen gen = new ProduktGen();
+        Produkt produkt = new Produkt(repository);
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveDate));
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -798,7 +797,7 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testSetValueSet_ChangingOverTime() {
-        Produkt produkt = new Produkt();
+        Produkt produkt = new Produkt(repository);
         ProduktGen gen = new ProduktGen(produkt);
         repository.putProductCmptGeneration(gen);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
@@ -815,7 +814,7 @@ public class DefaultPolicyAttributeTest {
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(Vertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attr1");
 
-        attribute.setValueSet(new Produkt(), null, new UnrestrictedValueSet<>());
+        attribute.setValueSet(new Produkt(repository), null, new UnrestrictedValueSet<>());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -829,10 +828,10 @@ public class DefaultPolicyAttributeTest {
     @Test
     public void testSetValueSet_ModelObject() {
         GregorianCalendar effectiveFrom = new GregorianCalendar();
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         gen.setValidFrom(DateTime.createDateOnly(effectiveFrom));
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         vertrag.effectiveFrom = effectiveFrom;
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
@@ -845,9 +844,9 @@ public class DefaultPolicyAttributeTest {
 
     @Test
     public void testSetValueSet_ModelObject_NoEffectiveFrom() {
-        ProduktGen gen = new ProduktGen();
+        ProduktGen gen = new ProduktGen(repository);
         repository.putProductCmptGeneration(gen);
-        ConfVertrag vertrag = new ConfVertrag();
+        ConfVertrag vertrag = new ConfVertrag(repository);
         PolicyCmptType policyModel = IpsModel.getPolicyCmptType(ConfVertrag.class);
         PolicyAttribute attribute = policyModel.getAttribute("attrChangingOverTime");
         OrderedValueSet<String> valueSet = new OrderedValueSet<>(false, null, "A", "B", "C");
@@ -913,7 +912,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidate_NoMessageList() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
 
         defaultPolicyAttribute.validate(null, new ValidationContext(), product, null);
     }
@@ -922,7 +921,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidate_NoContext() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         MessageList messageList = MessageLists.emptyMessageList();
 
         defaultPolicyAttribute.validate(messageList, null, product, null);
@@ -941,7 +940,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidate_OK() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         MessageList messageList = MessageLists.emptyMessageList();
 
         defaultPolicyAttribute.validate(messageList, new ValidationContext(), product, null);
@@ -953,7 +952,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidate_DefaultValue() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueAttr1 = "foo";
         product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
         MessageList messageList = MessageLists.emptyMessageList();
@@ -985,7 +984,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_OK() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         MessageList messageList = MessageLists.emptyMessageList();
 
         defaultPolicyAttribute.validateDefaultValue(messageList, new ValidationContext(), product, null);
@@ -997,7 +996,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_DefaultValueNotAllowedInValueSet() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueAttr1 = "foo";
         product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
         MessageList messageList = MessageLists.emptyMessageList();
@@ -1023,7 +1022,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_DefaultValueNotAllowedInValueSet_LocaleDE() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueAttr1 = "foo";
         product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
         MessageList messageList = MessageLists.emptyMessageList();
@@ -1049,7 +1048,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_NullIsOk() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("attr1");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueAttr1 = null;
         product.allowedValuesForAttr1 = new OrderedValueSet<>(false, null, "bar");
         MessageList messageList = MessageLists.emptyMessageList();
@@ -1063,7 +1062,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_DecimalNullIsOk() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("decAttr");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueDecAttr = Decimal.NULL;
         product.allowedValuesForDecAttr = DecimalRange.valueOf(Decimal.ZERO, Decimal.valueOf(100),
                 Decimal.valueOf(1, 3), false);
@@ -1078,7 +1077,7 @@ public class DefaultPolicyAttributeTest {
     public void testValidateDefaultValue_MoneyNullIsOk() {
         PolicyCmptType modelType = IpsModel.getPolicyCmptType(ConfVertrag.class);
         DefaultPolicyAttribute defaultPolicyAttribute = (DefaultPolicyAttribute)modelType.getAttribute("money");
-        Produkt product = new Produkt();
+        Produkt product = new Produkt(repository);
         product.defaultValueMoney = Money.NULL;
         product.allowedValuesForMoney = new OrderedValueSet<>(false, Money.NULL, Money.euro(12, 50));
         MessageList messageList = MessageLists.emptyMessageList();
@@ -1159,12 +1158,12 @@ public class DefaultPolicyAttributeTest {
             "attrWithValueSetWithTooManyArgs", "attrExtensibleEnum", "attrExtensibleEnumConfigured",
             "deprecatedAttribute", "decAttr", "money" })
     @IpsDocumented(bundleName = "org.faktorips.runtime.model.type.DefaultPolicyAttributeTest", defaultLocale = "de")
-    private class ConfVertrag implements IConfigurableModelObject {
+    private static class ConfVertrag implements IConfigurableModelObject {
 
         @IpsDefaultValue("attr2")
         public static final String DEFAULT_VALUE_FOR_ATTR2 = "foo";
         @IpsDefaultValue("attrExtensibleEnum")
-        public /* static */ final TestExtensibleEnum DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM = TestExtensibleEnum.ENUM2;
+        public static final TestExtensibleEnum DEFAULT_VALUE_FOR_ATTR_EXTENSIBLE_ENUM = TestExtensibleEnum.ENUM2;
 
         private Produkt produkt;
 
@@ -1179,8 +1178,8 @@ public class DefaultPolicyAttributeTest {
         private Decimal decAttr;
         private Money money;
 
-        public ConfVertrag() {
-            this(new Produkt());
+        public ConfVertrag(IRuntimeRepository repository) {
+            this(new Produkt(repository));
         }
 
         public ConfVertrag(Produkt produkt) {
@@ -1374,7 +1373,7 @@ public class DefaultPolicyAttributeTest {
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsConfigures(ConfVertrag.class)
     @IpsChangingOverTime(ProduktGen.class)
-    private class Produkt extends ProductComponent {
+    private static class Produkt extends ProductComponent {
 
         private String defaultValueAttr1 = "foobar";
         private ValueSet<String> allowedValuesForAttr1 = new UnrestrictedValueSet<>();
@@ -1383,7 +1382,7 @@ public class DefaultPolicyAttributeTest {
         private Decimal defaultValueDecAttr;
         private Money defaultValueMoney;
 
-        public Produkt() {
+        public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
         }
 
@@ -1526,14 +1525,14 @@ public class DefaultPolicyAttributeTest {
         }
     }
 
-    private class ProduktGen extends ProductComponentGeneration {
+    private static class ProduktGen extends ProductComponentGeneration {
 
         private String defaultValueAttrChangingOverTime = "blub";
         private ValueSet<String> allowedValuesForAttrChangingOverTime = new OrderedValueSet<>(false, null,
                 "foo", "bar");
 
-        public ProduktGen() {
-            this(new Produkt());
+        public ProduktGen(IRuntimeRepository repository) {
+            this(new Produkt(repository));
         }
 
         public ProduktGen(Produkt produkt) {

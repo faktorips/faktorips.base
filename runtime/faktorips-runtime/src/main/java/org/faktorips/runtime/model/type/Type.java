@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -59,7 +59,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns the association at the given <code>index</code>. Associations defined in the type's
      * super types are not returned.
-     * 
+     *
      * @throws IndexOutOfBoundsException if no association exists for the given <code>index</code>.
      */
     public Association getDeclaredAssociation(int index) {
@@ -68,7 +68,7 @@ public abstract class Type extends ModelElement {
 
     /**
      * Returns the declared attribute at the given <code>index</code>.
-     * 
+     *
      * @throws IndexOutOfBoundsException if no attribute exists for the given <code>index</code>.
      */
     public Attribute getDeclaredAttribute(int index) {
@@ -78,7 +78,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns the association with the given <code>name</code> declared in this type or one of it's
      * super types. The name could either be the singular or the plural name.
-     * 
+     *
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists.
      */
     public Association getAssociation(String name) {
@@ -94,7 +94,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns the attribute with the given <code>name</code> declared in this type or one of it's
      * super types.
-     * 
+     *
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists.
      */
     public Attribute getAttribute(String name) {
@@ -158,12 +158,12 @@ public abstract class Type extends ModelElement {
      * Searches for a method with the given annotation that matches the condition defined by a
      * {@link AnnotatedElementMatcher matcher}. Only methods in this type's declaration class are
      * considered, thus no methods from super classes are found.
-     * 
+     *
      * @param annotationClass the class of the annotation the method must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
      *             annotated properties. <code>null</code> if no such method can be found.
-     * 
+     *
      * @see #findDeclaredMethod(Class, AnnotatedElementMatcher) findDeclaredMethod for null-safe
      *          processing
      */
@@ -176,7 +176,7 @@ public abstract class Type extends ModelElement {
      * Searches for a method with the given annotation that matches the condition defined by a
      * {@link AnnotatedElementMatcher matcher}. Only methods in this type's declaration class are
      * considered, thus no methods from super classes are found.
-     * 
+     *
      * @param annotationClass the class of the annotation the method must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first method that is both annotated with the given annotation and has the correct
@@ -198,7 +198,7 @@ public abstract class Type extends ModelElement {
      * Searches for a field with the given annotation that matches the condition defined by a
      * {@link AnnotatedElementMatcher matcher}. Only fields in this type's declaration class are
      * considered, thus no fields from super classes are found.
-     * 
+     *
      * @param annotationClass the class of the annotation the field must be annotated with
      * @param matcher matcher to determine if the annotation has the correct properties
      * @return the first field that is both annotated with the given annotation and has the correct
@@ -219,14 +219,14 @@ public abstract class Type extends ModelElement {
     /**
      * Returns a list containing all associations declared in this type. Associations defined in the
      * type's super types are not returned.
-     * 
+     *
      * @return the list of associations declared in this type
      */
     public abstract List<? extends Association> getDeclaredAssociations();
 
     /**
      * Returns the type's associations including those defined in it's super types.
-     * 
+     *
      * @return the list of all associations declared in this type or in any super type
      */
     public abstract List<? extends Association> getAssociations();
@@ -235,12 +235,12 @@ public abstract class Type extends ModelElement {
      * Returns the association with the given <code>name</code> declared in this type. Associations
      * defined in the type's super types are not considered. The name could either be the singular
      * or the plural name.
-     * 
+     *
      * @param name the name of the association
      * @return the association if it was found in this type
-     * 
+     *
      * @throws IllegalArgumentException if no association with the given <code>name</code> exists
-     * 
+     *
      * @see #isAssociationDeclared(String)
      */
     public abstract Association getDeclaredAssociation(String name);
@@ -248,11 +248,11 @@ public abstract class Type extends ModelElement {
     /**
      * Returns whether the association with the given <code>name</code> is declared in this type.
      * Associations defined in the type's super types are not considered.
-     * 
+     *
      * @param name the name of the association
      * @return <code>true</code> if the association is declared in this type, <code>false</code> if
      *             not
-     * 
+     *
      * @see #isAssociationPresent(String)
      */
     public abstract boolean isAssociationDeclared(String name);
@@ -260,11 +260,11 @@ public abstract class Type extends ModelElement {
     /**
      * Returns whether the association with the given <code>name</code> is declared in this type or
      * in any supertype.
-     * 
+     *
      * @param name the name of the association
      * @return <code>true</code> if the association is declared in this type or in any supertype,
      *             <code>false</code> if not
-     * 
+     *
      * @see #isAssociationDeclared(String)
      */
     public boolean isAssociationPresent(String name) {
@@ -276,7 +276,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns a list containing all attributes declared in this model type. Attributes defined in
      * the type's super types are not returned.
-     * 
+     *
      * @return the list of attributes declared in this type
      */
     public abstract List<? extends Attribute> getDeclaredAttributes();
@@ -284,7 +284,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns whether the attribute with the given <code>name</code> is declared in this type.
      * Attributes defined in the type's super types are not considered.
-     * 
+     *
      * @param name the name of the attribute
      * @return <code>true</code> if the attribute is declared in this type, <code>false</code> if
      *             not
@@ -294,7 +294,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns whether the attribute with the given <code>name</code> is declared in this type or in
      * any supertype.
-     * 
+     *
      * @param name the name of the attribute
      * @return <code>true</code> if the attribute is declared in this type or in any supertype,
      *             <code>false</code> if not
@@ -308,7 +308,7 @@ public abstract class Type extends ModelElement {
     /**
      * Returns a list containing the type's attributes including those defined in the type's super
      * types.
-     * 
+     *
      * @return the list of all attributes declared in this type or in any supertype
      */
     public abstract List<? extends Attribute> getAttributes();
@@ -316,19 +316,19 @@ public abstract class Type extends ModelElement {
     /**
      * Returns the attribute with the given <code>name</code> declared in this type. Attributes
      * defined in the type's super types are not returned.
-     * 
+     *
      * @param name the name of the attribute
      * @return the attribute if it was found in this type
-     * 
+     *
      * @throws IllegalArgumentException if no attribute with the given <code>name</code> exists
-     * 
+     *
      * @see #isAttributeDeclared(String)
      */
     public abstract Attribute getDeclaredAttribute(String name);
 
     /**
      * Returns whether this type has a super type.
-     * 
+     *
      * @return <code>true</code> if this type has a supertype, <code>false</code> if not
      */
     public boolean isSuperTypePresent() {
@@ -337,7 +337,7 @@ public abstract class Type extends ModelElement {
 
     /**
      * Returns this type's super type or <code>null</code> if it has none.
-     * 
+     *
      * @see #findSuperType() findSuperType for null-safe processing
      */
     public abstract Type getSuperType();
@@ -357,13 +357,13 @@ public abstract class Type extends ModelElement {
 
     /**
      * Matcher for methods or fields based on annotation properties.
-     * 
+     *
      * @param <T> is the type of annotation that is expected.
      */
     @FunctionalInterface
     public interface AnnotatedElementMatcher<T extends Annotation> {
         /**
-         * 
+         *
          * @param annotation the annotation found.
          * @return <code>true</code> if the annotation matches the condition, <code>false</code>
          *             else.

@@ -1,17 +1,20 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
 package org.faktorips.runtime.model.type;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -90,7 +93,7 @@ public class ProductCmptType extends Type {
 
     /**
      * Returns whether this product component type is changing over time.
-     * 
+     *
      * @return <code>true</code> if it has generations else <code>false</code>
      */
     public boolean isChangingOverTime() {
@@ -99,7 +102,7 @@ public class ProductCmptType extends Type {
 
     /**
      * Returns whether this product component type is a configuration for a policy component type.
-     * 
+     *
      * @return <code>true</code> if this type configures a policy component type, <code>false</code>
      *             if not
      */
@@ -110,7 +113,7 @@ public class ProductCmptType extends Type {
     /***
      * Returns whether this {@link ProductCmptType} is the same or sub-type compared to a reference
      * {@link ProductCmptType}.
-     * 
+     *
      * @param reference the {@link ProductCmptType} to compare to
      * @return <code>true</code> if this type is the same or sub-type of the reference.
      */
@@ -124,9 +127,9 @@ public class ProductCmptType extends Type {
     /**
      * Returns the policy component type which is configured by this product component type. If this
      * product component class has no configuration it throws a {@link NullPointerException}.
-     * 
+     *
      * @see #isConfigurationForPolicyCmptType()
-     * 
+     *
      * @return The configured policy component type
      * @throws NullPointerException if the product component type is not a configuration for a
      *             policy component type
@@ -139,10 +142,10 @@ public class ProductCmptType extends Type {
     /**
      * Returns the {@link TableUsage} for the specified name. May look in super types if there is no
      * table usage in this type.
-     * 
+     *
      * @param name The name of the table usage
      * @return The {@link TableUsage} with the specified name
-     * 
+     *
      * @throws IllegalArgumentException if there is no table usage with the specified name
      */
     public TableUsage getTableUsage(String name) {
@@ -158,7 +161,7 @@ public class ProductCmptType extends Type {
     /**
      * Returns a list of {@link TableUsage TableUsages} which are declared in this type. In contrast
      * to {@link #getTableUsages()} this does not return table usages of super types.
-     * 
+     *
      * @return A list of {@link TableUsage TableUsages} declared in this type
      */
     public List<TableUsage> getDeclaredTableUsages() {
@@ -168,10 +171,10 @@ public class ProductCmptType extends Type {
     /**
      * Returns the {@link TableUsage} with the given {@code name} which is declared in this type.
      * Any table usage defined in the super types will not be returned.
-     * 
+     *
      * @param name The name of the {@link TableUsage}
      * @return {@link TableUsage} declared in this type with the given name
-     * 
+     *
      * @throws IllegalArgumentException if this type does not have a declared table usage with the
      *             given name
      */
@@ -194,7 +197,7 @@ public class ProductCmptType extends Type {
     /**
      * Returns a list of {@link TableUsage TableUsages} which are declared in this type or in any
      * super type.
-     * 
+     *
      * @return All {@link TableUsage TableUsages} accessible in this product type.
      */
     public List<TableUsage> getTableUsages() {
@@ -308,6 +311,20 @@ public class ProductCmptType extends Type {
         return asscCollector.getResult();
     }
 
+    public <T extends Annotation> Optional<Field> findDeclaredFieldFromGeneration(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        return Arrays.stream(getGenerationDeclarationClass().getDeclaredFields())
+                .filter(field -> (field.isAnnotationPresent(annotationClass)
+                        && matcher.matches(field.getAnnotation(annotationClass))))
+                .findFirst();
+    }
+
+    @Override
+    public <T extends Annotation> Optional<Field> findDeclaredField(Class<T> annotationClass,
+            AnnotatedElementMatcher<T> matcher) {
+        return super.findDeclaredField(annotationClass, matcher);
+    }
+
     static class TableUsagesCollector extends TypeHierarchyVisitor {
 
         private List<TableUsage> result = new ArrayList<>();
@@ -339,5 +356,4 @@ public class ProductCmptType extends Type {
             return !hasDeclaredTableUsage;
         }
     }
-
 }

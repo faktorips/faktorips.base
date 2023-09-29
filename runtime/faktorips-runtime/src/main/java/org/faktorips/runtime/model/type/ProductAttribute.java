@@ -13,12 +13,14 @@ package org.faktorips.runtime.model.type;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
 
@@ -81,8 +83,9 @@ public class ProductAttribute extends Attribute {
      * @param effectiveDate (optional) the date to use for selecting the product component's
      *            generation, if this attribute {@link #isChangingOverTime()}
      */
-    public Object getValue(IProductComponent productComponent, Calendar effectiveDate) {
-        return invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
+    @SuppressWarnings("unchecked")
+    public <T> T getValue(IProductComponent productComponent, Calendar effectiveDate) {
+        return (T)invokeMethod(getter, getRelevantProductObject(productComponent, effectiveDate));
     }
 
     /**
@@ -116,6 +119,16 @@ public class ProductAttribute extends Attribute {
             Calendar effectiveDate) {
         super.validate(list, context, product, effectiveDate);
         // TODO FIPS-10498 validateValue(list, context, product, effectiveDate);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getDefaultValueFromModel() {
+        T defaultValue = super.getDefaultValueFromModel();
+        if (isMultiValue() && IpsStringUtils.EMPTY.equals(defaultValue)) {
+            return (T)Arrays.asList(defaultValue);
+        }
+        return defaultValue;
     }
 
     private static final Class<?> getInnermostGenericClass(java.lang.reflect.Type type) {

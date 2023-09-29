@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,7 +11,10 @@
 package org.faktorips.runtime.model.type;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Arrays;
@@ -24,15 +27,21 @@ import java.util.Optional;
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.runtime.model.IpsModel;
+import org.faktorips.runtime.model.annotation.IpsAllowedValues;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsAttributeSetter;
 import org.faktorips.runtime.model.annotation.IpsAttributes;
 import org.faktorips.runtime.model.annotation.IpsChangingOverTime;
+import org.faktorips.runtime.model.annotation.IpsDefaultValue;
 import org.faktorips.runtime.model.annotation.IpsEnumType;
 import org.faktorips.runtime.model.annotation.IpsProductCmptType;
+import org.faktorips.valueset.StringLengthValueSet;
+import org.faktorips.valueset.UnrestrictedValueSet;
+import org.faktorips.valueset.ValueSet;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -44,7 +53,7 @@ public class ProductAttributeTest {
     @Mock
     private IRuntimeRepository repository;
 
-    private final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
+    private static final Calendar effectiveDate = new GregorianCalendar(1999, 1, 1);
 
     @Test
     public void testIsProductRelevant() {
@@ -60,7 +69,7 @@ public class ProductAttributeTest {
 
     @Test
     public void testGetValue() {
-        Produkt productComponent = new Produkt();
+        Produkt productComponent = new Produkt(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
@@ -70,7 +79,7 @@ public class ProductAttributeTest {
                 is(equalTo((Object)"foobar")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)Arrays.asList("hello", "world"))));
-        productComponent = new SubProdukt();
+        productComponent = new SubProdukt(repository);
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, effectiveDate),
                 is(equalTo((Object)"foo")));
@@ -89,7 +98,7 @@ public class ProductAttributeTest {
 
     @Test
     public void testGetValue_noEffectiveDate() {
-        Produkt productComponent = new Produkt();
+        Produkt productComponent = new Produkt(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("attr2").getValue(productComponent, null), is(equalTo((Object)42)));
@@ -98,7 +107,7 @@ public class ProductAttributeTest {
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
                 is(equalTo((Object)Arrays.asList("hello", "world"))));
 
-        productComponent = new SubProdukt();
+        productComponent = new SubProdukt(repository);
         productCmptType = IpsModel.getProductCmptType(SubProdukt.class);
         assertThat(productCmptType.getAttribute("attr1").getValue(productComponent, null), is(equalTo((Object)"foo")));
         assertThat(productCmptType.getAttribute("multiString").getValue(productComponent, null),
@@ -112,7 +121,7 @@ public class ProductAttributeTest {
 
     @Test
     public void testSetValue() {
-        Produkt productComponent = new Produkt();
+        Produkt productComponent = new Produkt(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         productCmptType.getAttribute("attr1").setValue(productComponent, effectiveDate, "newValue");
         productCmptType.getAttribute("attr2").setValue(productComponent, effectiveDate, 1);
@@ -132,7 +141,7 @@ public class ProductAttributeTest {
 
     @Test
     public void testSetValue_noEffectiveDate() {
-        Produkt productComponent = new Produkt();
+        Produkt productComponent = new Produkt(repository);
         ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
         productCmptType.getAttribute("attr1").setValue(productComponent, null, "newValue");
         productCmptType.getAttribute("attr2").setValue(productComponent, null, 1);
@@ -220,17 +229,82 @@ public class ProductAttributeTest {
         assertThat(deprecation.get().isMarkedForRemoval(), is(false));
     }
 
+    @Test
+    public void testGetDefaultValueFromModel() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attr1");
+
+        assertThat(attribute.getDefaultValueFromModel(), is("bar"));
+    }
+
+    @Test
+    public void testGetDefaultValueFromModel_NoField() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attr2");
+
+        assertThat(attribute.getDefaultValueFromModel(), is(nullValue()));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetDefaultValueFromModel_ListNoField() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("multiString");
+
+        assertThat(attribute.getDefaultValueFromModel(), is(notNullValue()));
+        assertThat(((List<String>)attribute.getDefaultValueFromModel()).size(), is(1));
+        assertThat(((List<String>)attribute.getDefaultValueFromModel()), hasItem(IpsStringUtils.EMPTY));
+    }
+
+    @Test
+    public void testGetValueSetFromModel() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attr1");
+
+        assertThat(attribute.getValueSetFromModel(), is(new StringLengthValueSet(10)));
+    }
+
+    @Test
+    public void testGetValueSetFromModelNoField() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attr2");
+
+        assertThat(attribute.getValueSetFromModel(), is(new UnrestrictedValueSet<>()));
+    }
+
+    @Test
+    public void testGetDefaultValueFromModel_Gen() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attrGen");
+
+        assertThat(attribute.getDefaultValueFromModel(), is("foobar"));
+    }
+
+    @Test
+    public void testGetValueSetFromModel_Gen() {
+        ProductCmptType productCmptType = IpsModel.getProductCmptType(Produkt.class);
+        ProductAttribute attribute = productCmptType.getAttribute("attrGen");
+
+        assertThat(attribute.getValueSetFromModel(), is(new StringLengthValueSet(10)));
+    }
+
     @IpsProductCmptType(name = "ProductXYZ")
     @IpsChangingOverTime(ProduktGen.class)
     @IpsAttributes({ "attr1", "attr2", "multiString", "attrGen", "multiEnum", "deprecatedAttribute" })
-    private class Produkt extends ProductComponent {
+    private static class Produkt extends ProductComponent {
+
+        @IpsDefaultValue("attr1")
+        public static final String DEFAULT_ATTR1 = "bar";
+
+        @IpsAllowedValues("attr1")
+        public static final ValueSet<String> ALLOWED_VALUES_ATTR1 = new StringLengthValueSet(10);
 
         private final ProduktGen produktGen = new ProduktGen(this);
         private String attr1 = "foo";
         private Integer attr2 = 42;
         private List<String> multiString = Arrays.asList("hello", "world");
 
-        public Produkt() {
+        public Produkt(IRuntimeRepository repository) {
             super(repository, "id", "kindId", "versionId");
         }
 
@@ -297,9 +371,15 @@ public class ProductAttributeTest {
 
     }
 
-    private class ProduktGen extends ProductComponentGeneration {
+    private static class ProduktGen extends ProductComponentGeneration {
 
-        private String attrGen = "foobar";
+        @IpsAllowedValues("attrGen")
+        public static final ValueSet<String> ALLOWED_VALUES_ATTRGEN = new StringLengthValueSet(10);
+
+        @IpsDefaultValue("attrGen")
+        public static final String DEFAULT_ATTRGEN = "foobar";
+
+        private String attrGen = DEFAULT_ATTRGEN;
 
         public ProduktGen(ProductComponent productCmpt) {
             super(productCmpt);
@@ -320,10 +400,14 @@ public class ProductAttributeTest {
     @IpsProductCmptType(name = "SubProductXYZ")
     @IpsChangingOverTime(SubProduktGen.class)
     @IpsAttributes({ "attr2", "attrGen", "attr3", "multiEnum" })
-    private class SubProdukt extends Produkt {
+    private static class SubProdukt extends Produkt {
 
         private final SubProduktGen subProduktGen = new SubProduktGen(this);
         private final List<ConcreteEnumType> multiEnum = Arrays.asList(new ConcreteEnumType());
+
+        public SubProdukt(IRuntimeRepository repository) {
+            super(repository);
+        }
 
         @Override
         @IpsAttribute(name = "attr2", kind = AttributeKind.CONSTANT, valueSetKind = ValueSetKind.AllValues)
@@ -354,7 +438,7 @@ public class ProductAttributeTest {
 
         @Override
         public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
-            if (effectiveDate != ProductAttributeTest.this.effectiveDate) {
+            if (effectiveDate != ProductAttributeTest.effectiveDate) {
                 return new SubProduktGen(this) {
 
                     @Override
@@ -374,7 +458,7 @@ public class ProductAttributeTest {
 
     }
 
-    private class SubProduktGen extends ProduktGen {
+    private static class SubProduktGen extends ProduktGen {
 
         public SubProduktGen(ProductComponent productCmpt) {
             super(productCmpt);

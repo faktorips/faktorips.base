@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn GmbH - faktorzehn.org
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -51,7 +51,7 @@ public abstract class PolicyAttribute extends Attribute {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated Use {@link #getType()}
      */
     @Deprecated
@@ -68,7 +68,7 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Returns the value of the given model object's attribute identified by this model type
      * attribute.
-     * 
+     *
      * @param modelObject a model object corresponding to the {@link Type} this attribute belongs to
      * @return the value of the given model object's attribute identified by this model type
      *             attribute
@@ -80,7 +80,7 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Sets the given model object's attribute identified by this model type attribute to the given
      * value. This only works for changeable attributes.
-     * 
+     *
      * @param modelObject a model object corresponding to the {@link Type} this attribute belongs to
      * @param value an object of this model type attribute's datatype
      * @throws IllegalArgumentException if the model object does not have a changeable attribute
@@ -96,7 +96,7 @@ public abstract class PolicyAttribute extends Attribute {
      * null-value ({@code null} for most datatypes, a {@link NullObject} for the
      * {@link NullObjectSupport}-datatypes {@link Decimal} and {@link Money}, and an empty string
      * for the datatype {@link String}) This only works for changeable attributes.
-     * 
+     *
      * @param modelObject a model object corresponding to the {@link Type} this attribute belongs to
      * @throws IllegalArgumentException if the model object does not have a changeable attribute
      *             fitting this model type attribute or that attribute is not accessible for any
@@ -140,7 +140,7 @@ public abstract class PolicyAttribute extends Attribute {
      * configurable model type attribute. Throws an {@link IllegalStateException} if the model
      * object has no default value constant or the product has no getDefaultValue~() method for this
      * attribute.
-     * 
+     *
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @see #getDefaultValue(IProductComponent, Calendar)
@@ -148,7 +148,7 @@ public abstract class PolicyAttribute extends Attribute {
      *             product has no getter method for this attribute's default value.
      * @throws IllegalArgumentException if the invocation of the method that should get the default
      *             value for this attribute fails for any reason
-     * 
+     *
      * @see #getDefaultValue(IModelObject)
      * @apiNote this method is supplanted by the more general {@link #getDefaultValue(IModelObject)}
      *              but remains here for compile time compatibility with older versions.
@@ -161,7 +161,7 @@ public abstract class PolicyAttribute extends Attribute {
      * Returns the (product configured) default value of the attribute identified by this model type
      * attribute. Throws an {@link IllegalStateException} if the model object has no default value
      * constant or the product has no getDefaultValue~() method for this attribute.
-     * 
+     *
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @see #getDefaultValue(IProductComponent, Calendar)
@@ -176,7 +176,7 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Returns the product configured default value of the attribute identified by this model type
      * attribute.
-     * 
+     *
      * @param source the product component to read the attribute default value from.
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
@@ -194,7 +194,7 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Sets the product configured default value of the attribute identified by this model type
      * attribute.
-     * 
+     *
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @param defaultValue the new default value
@@ -212,7 +212,7 @@ public abstract class PolicyAttribute extends Attribute {
     /**
      * Sets the product configured default value of the attribute identified by this model type
      * attribute.
-     * 
+     *
      * @param target the product component to write the attribute default value to
      * @param effectiveDate the date to determine the product component generation. If
      *            <code>null</code> the latest generation is used. Is ignored if the attribute's
@@ -294,11 +294,6 @@ public abstract class PolicyAttribute extends Attribute {
             IValidationContext context);
 
     /**
-     * Returns the value set of this model type attribute.
-     */
-    public abstract ValueSet<?> getValueSetFromModel();
-
-    /**
      * Returns the value set of the given model object's attribute identified by this model type
      * attribute. Returns an {@link UnrestrictedValueSet} if there is no method that returns a value
      * set for this attribute.
@@ -327,7 +322,7 @@ public abstract class PolicyAttribute extends Attribute {
      * of a mismatched type with this method, for example an {@link OrderedValueSet
      * OrderedValueSet&lt;String&gt;} for an attribute with {@link #getDatatype()} {@link Integer},
      * which will result in a {@link ClassCastException} on later method calls.
-     * 
+     *
      * @param modelObject the configurable model object from which product component and (if
      *            necessary) effective date can be retrieved
      * @param valueSet the new value set
@@ -352,7 +347,7 @@ public abstract class PolicyAttribute extends Attribute {
      * of a mismatched type with this method, for example an {@link OrderedValueSet
      * OrderedValueSet&lt;String&gt;} for an attribute with {@link #getDatatype()} {@link Integer},
      * which will result in a {@link ClassCastException} on later method calls.
-     * 
+     *
      * @param target the product component to write the attribute value set to. Must correspond to
      *            the {@link Type} this attribute belongs to.
      * @param effectiveDate the date to determine the product component generation. If

@@ -23,6 +23,8 @@ import org.faktorips.runtime.Message;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.model.annotation.IpsAttribute;
 import org.faktorips.runtime.model.annotation.IpsExtensionProperties;
+import org.faktorips.valueset.UnrestrictedValueSet;
+import org.faktorips.valueset.ValueSet;
 
 /**
  * A {@link Attribute} represents an attribute from a PolicyCmptType or a ProductCmptType.
@@ -35,12 +37,18 @@ public abstract class Attribute extends TypePart {
 
     private final boolean changingOverTime;
 
+    private final FieldFinder.ModelValueSet modelValueSet;
+
+    private final FieldFinder.ModelDefaultValue modelDefaultValue;
+
     public Attribute(Type type, IpsAttribute attributeAnnotation, IpsExtensionProperties extensionProperties,
             Class<?> datatype, boolean changingOverTime, Optional<Deprecation> deprecation) {
         super(attributeAnnotation.name(), type, extensionProperties, deprecation);
         this.attributeAnnotation = attributeAnnotation;
         this.datatype = datatype;
         this.changingOverTime = changingOverTime;
+        modelValueSet = new FieldFinder.ModelValueSet(type, getName(), changingOverTime);
+        modelDefaultValue = new FieldFinder.ModelDefaultValue(type, getName(), changingOverTime);
     }
 
     /**
@@ -176,6 +184,25 @@ public abstract class Attribute extends TypePart {
         requireNonNull(list, "list must not be null");
         requireNonNull(context, "context must not be null");
         requireNonNull(product, "product must not be null");
+    }
+
+    /**
+     * Returns the value set defined in the model for this attribute.
+     *
+     * @since 24.1
+     */
+    public ValueSet<?> getValueSetFromModel() {
+        return modelValueSet.get().orElseGet(UnrestrictedValueSet::new);
+    }
+
+    /**
+     * Returns the default value defined in the model for this attribute.
+     *
+     * @since 24.1
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T getDefaultValueFromModel() {
+        return (T)modelDefaultValue.get().orElseGet(() -> NullObjects.of(getDatatype()));
     }
 
 }
